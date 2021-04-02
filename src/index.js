@@ -1,13 +1,12 @@
-import React from "react"
-// Enables JSX syntax
-import ReactDOM from "react-dom"
-// Allows interactions with DOM
+import React from "react";
+import ReactDOM from "react-dom";
 
-ReactDOM.render(
-    <div>
-        <h1>Hello world!</h1>
-        <p>Loren ipsum...</p>
-    </div>
-    , 
-    document.getElementById("root")
-);
+import { BrowserRouter } from 'react-router-dom';
+
+import App from "./App";
+
+ReactDOM.render((
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
+), document.getElementById('root'));
