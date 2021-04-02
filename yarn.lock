@@ -9231,7 +9231,7 @@
     "prop-types" "^15.7.2"
     "react-router" "6.0.0-beta.0"
 
-"react-router@6.0.0-beta.0":
+"react-router@^6.0.0-beta.0", "react-router@6.0.0-beta.0":
   "integrity" "sha512-VgMdfpVcmFQki/LZuLh8E/MNACekDetz4xqft+a6fBZvvJnVqKbLqebF7hyoawGrV1HcO5tVaUang2Og4W2j1Q=="
   "resolved" "https://registry.npmjs.org/react-router/-/react-router-6.0.0-beta.0.tgz"
   "version" "6.0.0-beta.0"
