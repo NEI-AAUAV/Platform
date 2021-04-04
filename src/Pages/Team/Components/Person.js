@@ -3,17 +3,25 @@ import React from 'react';
 
 import Image from 'react-bootstrap/Image';
 import { Container, Row, Col } from 'react-bootstrap';
+import "./Person.css";
 
 
-const Person = ({img,name,description}) => {
+const Logo = process.env.PUBLIC_URL + "/linkedingLogo.png";
+
+
+const Person = ({img,name,description,linke}) => {
     return (
         <div>
             <Container>
                 <Row>
-                    <Col style={{textAlign: "center"}}>
-                        <Image src={img} roundedCircle style={{width: 200}}/>
+                    <Col style={{textAlign: "center", marginBottom: 40}}>
+                        <Image src={img} roundedCircle style={{width: 200, marginBottom: 20}}/>
                         <h3>{name}</h3>
-                        <p>{description}</p>
+                        <p id='desc'>{description.toUpperCase()}</p>
+                        {
+                        linke && 
+                        <a href={linke}><Image src={Logo} style={{width: 50}}/></a>
+                        }
                     </Col>
                 </Row>
             </Container>
