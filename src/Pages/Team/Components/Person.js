@@ -4,6 +4,8 @@ import React from 'react';
 import Image from 'react-bootstrap/Image';
 import { Container, Row, Col } from 'react-bootstrap';
 import "./Person.css";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import { faLinkedin } from '@fortawesome/free-brands-svg-icons'
 
 
 const Logo = process.env.PUBLIC_URL + "/linkedingLogo.png";
@@ -20,8 +22,11 @@ const Person = ({img,name,description,linke}) => {
                         <p id='desc'>{description.toUpperCase()}</p>
                         {
                         linke && 
-                        <a href={linke}><Image src={Logo} style={{width: 50}}/></a>
+                        <a id="linke" href={linke}>
+                            <FontAwesomeIcon id="linke" icon={ faLinkedin } size="2x"/>
+                        </a>
                         }
+                        
                     </Col>
                 </Row>
             </Container>
