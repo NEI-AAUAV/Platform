@@ -4,16 +4,16 @@ import './index.css';
 
 const ImageCard = (props) => {
     /* Prop list:
-    **  pre_title (optional): plain text on top
+    **  preTitle (optional): plain text on top
     **  title: large colored anchor text in middle
     **  text: plain text on bottom
     **  image: card image
     **  anchor: link associated with image and title
-    **  dark_mode (optional): set to a non-false value (e.g. "on" or True) to use a dark color scheme
+    **  darkMode (optional): set to a non-false value (e.g. "on" or True) to use a dark color scheme
     */
 
     var color_class = "";
-    if (props.dark_mode) {
+    if (props.darkMode) {
         color_class = " dark"
     }
 
@@ -28,7 +28,7 @@ const ImageCard = (props) => {
             </div>
 
             <Card.Body className={color_class}>
-                {props.pre_title && <p1>{props.pre_title}</p1> }
+                {props.preTitle && <p1 className="mb-4">{props.preTitle}</p1> }
                 <Card.Title><a href={props.anchor}>{props.title}</a></Card.Title>
                 <Card.Text><small>{props.text}</small></Card.Text>
             </Card.Body>

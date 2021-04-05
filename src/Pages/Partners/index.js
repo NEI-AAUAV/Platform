@@ -44,7 +44,7 @@ const Partners = () => {
                                 title={partner.name}
                                 text={partner.text}
                                 anchor="#"
-                                dark_mode="on"
+                                darkMode="on"
                             ></ImageCard>
                         </Col>
                     );

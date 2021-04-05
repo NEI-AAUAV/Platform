@@ -7,6 +7,7 @@ import Homepage from "./Pages/Homepage";
 import Team from "./Pages/Team";
 import Partners from "./Pages/Partners";
 import Error404 from "./Pages/Error404";
+import News from "./Pages/News";
 
 
 const routes = [
@@ -15,6 +16,7 @@ const routes = [
 		element: <MainLayout />,
 		children: [
             { path: "/", element: <Homepage /> },
+			{ path: "/noticias", element: <News /> },
             { path: "/equipa", element: <Team /> },
             { path: "/parceiros", element: <Partners /> },
             { path: "/:id", element: <Error404 /> },

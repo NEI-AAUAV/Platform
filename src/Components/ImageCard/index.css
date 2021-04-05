@@ -33,6 +33,7 @@
 
 .image-card .card-text * {
     align-self: center;
+    flex-grow: 1 !important;
 }
 
 .image-card .plus-button {
@@ -56,8 +57,17 @@
     font-weight: 100;
 }
 
-.image-card a:link, .image-card a:visited, .image-card a:hover, .image-card a:active {
+.image-card a:link, .image-card a:visited, .image-card a:active {
     text-decoration: none;
+    color: #147a26;
+}
+
+.image-card a:hover {
+    text-decoration: none;
+    color: #1db939;
+}
+
+.image-card.dark a:link, .image-card.dark a:visited, .image-card.dark a:hover, .image-card.dark a:active {
     color: inherit;
 }
 
