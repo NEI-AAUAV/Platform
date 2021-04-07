@@ -1,6 +1,6 @@
-import React from "react";
-import ImageCard from "../../Components/ImageCard"
-import { Col, Container, Row } from "react-bootstrap"
+import React, { useState } from "react";
+import { Container, Button, ToggleButton, ToggleButtonGroup } from "react-bootstrap"
+import NewsList from "./NewsList";
 
 // for testing
 const news = [
@@ -37,6 +37,22 @@ const news = [
 ];
 
 const News = () => {
+    // get set of news types
+    var news_types = [];    // need to use array instead of Set for map() to work
+    news.forEach( n => {
+        if (! news_types.includes(n.type))
+            news_types.push(n.type);
+    });
+
+    // set of news types to show
+    const [whitelist, setWhitelist] = useState(news_types);
+    // change whitelist to selected boxes
+    const handleToggles = (val) => setWhitelist(val);
+
+    const resetToggles = () => {
+        setWhitelist(news_types);
+    }
+
     return (
         <Container>
             {
@@ -45,22 +61,25 @@ const News = () => {
             // also, background particles (that might be in the MainLayout?)
             }
             <h1 className="text-center">Notícias</h1>
+
+            <Button variant="outline-success" onClick={resetToggles}>
+                Tudo
+            </Button>
+
+            {news_types.map( t => {
+                return (
+                    <ToggleButtonGroup type="checkbox" value={whitelist} onChange={handleToggles}>
+                        <ToggleButton variant="outline-success" value={t}>
+                            {t}
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                );
+            })}
             
-            <Row>
-                {news.map( article => {
-                    return(
-                        <Col md={4} sm={6}>
-                            <ImageCard
-                                image={article.image}
-                                title={article.name}
-                                preTitle={article.type}
-                                text={article.text}
-                                anchor="#"
-                            ></ImageCard>
-                        </Col>
-                    );
-                })}
-            </Row>
+            <NewsList
+                news={news}
+                whitelist={whitelist}
+            ></NewsList>
         </Container>
     );
 }
