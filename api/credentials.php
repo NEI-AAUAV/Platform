@@ -4,6 +4,9 @@
     $username = "aauav-nei-web";
     $password = "@VsmlVJT^ajtKH3x$4Nx&F2R%MB%nakmBFdyWvm3QOFZXYtPUSngozy^XpY!gjjZ9!M&S3yG3D5CXNgYCBey*BhR4t38^W@Qy";
 
+    // Tell browser the response is JSON encoded
+    header('Content-Type: application/json');
+
     // Connect to database
     try{
         // Create connection

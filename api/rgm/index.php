@@ -5,7 +5,7 @@
 <?php
     
     // Get url parameter and validate it 
-    $par = $_GET["categoria"];
+    $par = $_GET["category"];
     $validOptions = $conn->query("SELECT DISTINCT categoria FROM rgm")->fetchAll(PDO::FETCH_ASSOC);
     $valid = false;
     foreach($validOptions as $op) {
@@ -26,7 +26,7 @@
 
     try{
         $st = $conn->prepare($query_getContent);
-        $st->execute([':categoria' => $_GET["categoria"]]);
+        $st->execute([':categoria' => $par]);
         if($st->rowCount() > 0){
             $res = $st->fetchAll(PDO::FETCH_ASSOC);
             $object = (object) ['data' => $res];
