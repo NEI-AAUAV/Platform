@@ -9,7 +9,7 @@
 <?php
 
     // Get url parameter and validate it 
-    $category = $_GET["category"];
+    $categories = $_GET["category"]!=NULL ? $_GET["category"] : [];
     $article = $_GET["article"];
 
     // Pagination
@@ -20,18 +20,22 @@
     );
 
     // Prevent filtering by both parameters
-    if (!empty($category) and !empty($article)) {
+    if (count($categories)>0 and !empty($article)) {
         errorResponse('Não é possível filtrar por mais do que um parâmetro!');
     }
 
     // Category filtering
-    if(!empty($category)) {
+    if(count($categories)>0) {
         $validOptions = $conn->query("SELECT DISTINCT category FROM news WHERE status='1'")->fetchAll(PDO::FETCH_ASSOC);
-        $valid = false;
-        foreach($validOptions as $op) {
-            if ($op['category']==$category) {
-                $valid = true;
+        $valid = true;
+        foreach($categories as $category) {
+            $validCat = false;
+            foreach($validOptions as $op) {
+                if ($op['category']==$category) {
+                    $validCat = true;
+                }
             }
+            $valid = $valid && $validCat;
         }
         if(!$valid) {
             errorResponse('Categoria inválida!');
@@ -41,8 +45,16 @@
     // Get news list (with or without category filtering)
     $query_getContent = "SELECT id, title, header, category, created_at FROM `news` WHERE status='1'";
 
-    if(empty(!$category)) {
-        $query_getContent.=" AND category=:category";    
+    if(count($categories)>0) {
+        $query_getContent.=" AND";    
+        $counter = 0;
+        foreach($categories as $category) {
+            $query_getContent.=" category=:category{$counter}";
+            $counter = $counter + 1;
+            if($counter < count($categories)) {
+                $query_getContent.=" OR";
+            }    
+        }
     }
 
     $query_getContent.= " ORDER BY created_at DESC";
@@ -56,8 +68,12 @@
     try{
         $st = $conn->prepare($query_getContent);
         // Bind parameters to query
-        if(empty(!$category)) {
-            $st->bindParam(':category', $category);
+        if(count($categories)>0) {
+            $counter = 0;
+            foreach($categories as $category) {
+                $st->bindParam(":category{$counter}", $categories[$counter]);
+                $counter = $counter + 1;    
+            }
         }
         if(!empty($article)) {
             $st->bindParam(':id', $article);
