@@ -1,5 +1,10 @@
 <?php
 
+    /**
+     * This script provides functions to assist on the pagination processs
+     * and prevent code duplication for that end
+     */
+
     // Load response assistant script
     require_once("../response.php");
 
@@ -7,7 +12,13 @@
     $page_size = 9;
     $page_number = 1;
 
-    // Parameter validation
+    /**
+     * This function gets the pagionation parameter from the (GET) request and validates them
+     * 
+     * @param $page_number Default page number
+     * @param $page_size Default page size
+     * @return Array with effective page number and size
+     */
     function validatePagination($page_number, $page_size) {
         $page_number = empty($_GET["page"]) ? $page_number : (int)$_GET["page"];
         $page_size = empty($_GET["itemsPerPage"]) ? $page_size : (int)$_GET["itemsPerPage"];
@@ -17,6 +28,13 @@
         return array($page_number, $page_size);
     }
 
+    /**
+     * Executes query and returns (echo) paginated results
+     * 
+     * @param $st Connection with query prepared for execution
+     * @param $page_number Number of page to return
+     * @param $page_size The size of the page to return 
+     */
     // Paginate query results
     function paginate($st, $page_number, $page_size) {
         // Execute query

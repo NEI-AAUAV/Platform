@@ -3,7 +3,9 @@
     // This script gathers response related code, to avoid code duplication
 
     /**
-     * This function returns an array as JSON
+     * Executes query and returns (echo) results
+     * 
+     * @param $st Connection with query prepared for execution
      */
     function response($st) {
         // Execute query
@@ -20,6 +22,12 @@
         }
     }
 
+    /**
+     * Returns (echo) error message
+     * 
+     * @param $message Error message text.
+     * @param $statusCode The HTTP error status. 400 by default
+     */
     function errorResponse($message, $statusCode=400) {
         // Build JSON
         $object = (object) ['error' => $message];
