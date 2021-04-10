@@ -24,8 +24,4 @@
         exit();
     }
 
-    // Pagination
-    $page_size = 9;
-    $page_number = 1;
-
 ?>
