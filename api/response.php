@@ -5,7 +5,7 @@
     /**
      * This function returns an array as JSON
      */
-    function response($st, $res) {
+    function response($st) {
         // Execute query
         $st->execute();
         
