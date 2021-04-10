@@ -66,7 +66,6 @@
                     $object = (object) ['page' => (object) [ 
                         'itemsPerPage' => $page_size, 
                         'currentPage' => $page_number, 
-                        'count' => count($res),
                         'pagesNumber' => $pages_number,
                     ], 'data' => $res];
                 }
@@ -81,7 +80,6 @@
                 $object = (object) ['page' => (object) [ 
                     'itemsPerPage' => $page_size, 
                     'currentPage' => $page_number, 
-                    'count' => 0,
                     'pagesNumber' => 1,
                 ], 'data' => []];
             }
