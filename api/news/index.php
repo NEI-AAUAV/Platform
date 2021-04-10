@@ -13,7 +13,11 @@
     $article = $_GET["article"];
 
     // Pagination
-    list($page_number, $page_size) = validatePagination($page_number, $page_size);
+    list($page_number, $page_size) = validatePagination(
+        $page_number, 
+        $page_size, 
+        !empty($article) ? ['article'] : []
+    );
 
     // Prevent filtering by both parameters
     if (!empty($category) and !empty($article)) {
@@ -57,8 +61,9 @@
         }
         if(!empty($article)) {
             $st->bindParam(':id', $article);
+            // Return response
+            response($st);
         }
-
         // Return paginated results
         paginate($st, $page_number, $page_size);
     } catch(Exception $e){

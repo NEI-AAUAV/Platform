@@ -20,6 +20,7 @@
             $object = (object) ['data' => []];
             echo json_encode($object);
         }
+        exit();
     }
 
     /**

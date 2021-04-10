@@ -17,9 +17,19 @@
      * 
      * @param $page_number Default page number
      * @param $page_size Default page size
+     * @param $conflicts GET arguments that can't be used with pagination
      * @return Array with effective page number and size
      */
-    function validatePagination($page_number, $page_size) {
+    function validatePagination($page_number, $page_size, $conflicts=[]) {
+        // If request has pagination, validate if there are conflicts
+        if (!empty($_GET["page"]) or !empty($_GET["itemsPerPage"])) {
+            foreach($conflicts as $conf) {
+                if(!empty($_GET[$conf])) {
+                    errorResponse('Argumento inválido com paginação!');
+                }
+            }
+        }
+        // Set page from URL data
         $page_number = empty($_GET["page"]) ? $page_number : (int)$_GET["page"];
         $page_size = empty($_GET["itemsPerPage"]) ? $page_size : (int)$_GET["itemsPerPage"];
         if($page_number<=0 || $page_size<=0) {
@@ -78,6 +88,7 @@
             $myJSON = json_encode($object);
             echo $myJSON;
         }
+        exit();
     }
 
 ?>
