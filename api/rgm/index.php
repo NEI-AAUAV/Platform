@@ -1,6 +1,6 @@
 <?php 
-    // Load database connection from credentials.php file
-    require_once("../credentials.php");
+    // Load database connection from start.php file
+    require_once("../start.php");
     // Load response assistant script
     require_once("../response.php");
 ?>
