@@ -16,7 +16,7 @@
         }
     }
     if(!$valid) {
-        errorResponse('Parâmetro inválido!');
+        errorResponse('Parâmetro "category" em falta!');
     }
 
     // Make query to the database
