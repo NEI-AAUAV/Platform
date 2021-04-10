@@ -1,24 +1,22 @@
 <?php 
     // Load database connection from credentials.php file
-    require_once("../credentials.php")
+    require_once("../credentials.php");
+    // Load response assistant script
+    require_once("../response.php");
 ?>
 <?php
     
     // Get url parameter and validate it 
-    $par = $_GET["category"];
+    $category = $_GET["category"];
     $validOptions = $conn->query("SELECT DISTINCT categoria FROM rgm")->fetchAll(PDO::FETCH_ASSOC);
     $valid = false;
     foreach($validOptions as $op) {
-        if ($op['categoria']==$par) {
+        if ($op['categoria']==$category) {
             $valid = true;
         }
     }
     if(!$valid) {
-        $object = (object) ['error' => 'Parâmetro inválido!'];
-        $myJSON = json_encode($object);
-        echo $myJSON;
-        http_response_code(400);
-        exit();
+        errorResponse('Parâmetro inválido!');
     }
 
     // Make query to the database
@@ -26,23 +24,12 @@
 
     try{
         $st = $conn->prepare($query_getContent);
-        $st->execute([':categoria' => $par]);
-        if($st->rowCount() > 0){
-            $res = $st->fetchAll(PDO::FETCH_ASSOC);
-            $object = (object) ['data' => $res];
-            $myJSON = json_encode($object);
-            echo $myJSON;
-        } else {
-            $object = (object) ['data' => []];
-            $myJSON = json_encode($object);
-            echo $myJSON;
-        }
+        // Bind parameters to query
+        $st->bindParam(':categoria', $category);
+        // Return response
+        response($st);
     } catch(Exception $e){
-        $object = (object) ['error' => 'Ocorreu um erro inesperado.'];
-        $myJSON = json_encode($object);
-        echo $myJSON;
-        http_response_code(500);
-        exit();
+        errorResponse('Ocorreu um erro inesperado.', 500);
     }
 
     // The connection is closed automatically when the script ends

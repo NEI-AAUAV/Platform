@@ -1,6 +1,8 @@
 <?php 
     // Load database connection from credentials.php file
-    require_once("../../credentials.php")
+    require_once("../../credentials.php");
+    // Load response assistant script
+    require_once("../../response.php");
 ?>
 <?php
 
@@ -9,23 +11,10 @@
 
     try{
         $st = $conn->prepare($query_getContent);
-        $st->execute();
-        if($st->rowCount() > 0){
-            $res = $st->fetchAll(PDO::FETCH_ASSOC);
-            $object = (object) ['data' => $res];
-            $myJSON = json_encode($object);
-            echo $myJSON;
-        } else {
-            $object = (object) ['data' => []];
-            $myJSON = json_encode($object);
-            echo $myJSON;
-        }
+        // Return response
+        response($st);
     } catch(Exception $e){
-        $object = (object) ['error' => 'Ocorreu um erro inesperado.'];
-        $myJSON = json_encode($object);
-        echo $myJSON;
-        http_response_code(500);
-        exit();
+        errorResponse('Ocorreu um erro inesperado.', 500);
     }
 
     // The connection is closed automatically when the script ends

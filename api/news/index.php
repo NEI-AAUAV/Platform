@@ -1,6 +1,9 @@
 <?php 
     // Load database connection from credentials.php file
     require_once("../credentials.php");
+    // Load response assistant script
+    require_once("../response.php");
+    // Load pagination assistant script
     require_once("../pagination.php");
 ?>
 <?php
@@ -14,11 +17,7 @@
 
     // Prevent filtering by both parameters
     if (!empty($category) and !empty($article)) {
-        $object = (object) ['error' => 'Não é possível filtrar por mais do que um parâmetro!'];
-        $myJSON = json_encode($object);
-        echo $myJSON;
-        http_response_code(400);
-        exit();
+        errorResponse('Não é possível filtrar por mais do que um parâmetro!');
     }
 
     // Category filtering
@@ -31,11 +30,7 @@
             }
         }
         if(!$valid) {
-            $object = (object) ['error' => 'Categoria inválida!'];
-            $myJSON = json_encode($object);
-            echo $myJSON;
-            http_response_code(400);
-            exit();
+            errorResponse('Categoria inválida!');
         }
     }
 
@@ -67,14 +62,7 @@
         // Return paginated results
         paginate($st, $page_number, $page_size);
     } catch(Exception $e){
-        $object = (object) [
-            'error' => 'Ocorreu um erro inesperado.', 
-            // 'description' => $e->getMessage() // Dev only!
-        ];
-        $myJSON = json_encode($object);
-        echo $myJSON;
-        http_response_code(500);
-        exit();
+        errorResponse('Ocorreu um erro inesperado.', 500);
     }
 
     // The connection is closed automatically when the script ends

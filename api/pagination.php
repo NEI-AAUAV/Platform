@@ -1,5 +1,8 @@
 <?php
 
+    // Load response assistant script
+    require_once("../response.php");
+
     // Default values
     $page_size = 9;
     $page_number = 1;
@@ -9,13 +12,8 @@
         $page_number = empty($_GET["page"]) ? $page_number : (int)$_GET["page"];
         $page_size = empty($_GET["itemsPerPage"]) ? $page_size : (int)$_GET["itemsPerPage"];
         if($page_number<=0 || $page_size<=0) {
-            $object = (object) ['error' => $page_number<=0 ? 'Página inválida!' : 'Número de items por página inválido!'];
-            $myJSON = json_encode($object);
-            echo $myJSON;
-            http_response_code(400);
-            exit();
+            errorResponse($page_number<=0 ? 'Página inválida!' : 'Número de items por página inválido!');
         }
-
         return array($page_number, $page_size);
     }
 
@@ -32,8 +30,7 @@
                 // If news list, add pagination
                 if (($page_size*($page_number-1)) > count($res)) {
                     // Validate there are that many pages
-                    $object = (object) ['error' => 'Página inválida!'];
-                    http_response_code(400);
+                    errorResponse('Página inválida!');
                 } else {
                     // If so, slice array
                     $pages_number = ceil(count($res)/$page_size);
@@ -51,8 +48,7 @@
         } else {
             if ($page_number>1) {
                 // Validate there are that many pages
-                $object = (object) ['error' => 'Página inválida!'];
-                http_response_code(400);
+                errorResponse('Página inválida!');
             } else {
                 $object = (object) ['page' => (object) [ 
                     'itemsPerPage' => $page_size, 
