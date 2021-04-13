@@ -29,7 +29,7 @@
         // Return response
         response($st);
     } catch(Exception $e){
-        errorResponse('Ocorreu um erro inesperado.', 500);
+        errorResponse('Ocorreu um erro inesperado.', 500, $e);
     }
 
     // The connection is closed automatically when the script ends
