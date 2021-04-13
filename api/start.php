@@ -9,7 +9,7 @@
     // Load database credentials from credentials.php file
     require_once("credentials.php");
     // Load response assistant script
-    require_once("../response.php");
+    require_once("response.php");
 
     // Tell browser the response is JSON encoded
     header('Content-Type: application/json');
