@@ -8,6 +8,8 @@
 
     // Load database credentials from credentials.php file
     require_once("credentials.php");
+    // Load response assistant script
+    require_once("response.php");
 
     // Tell browser the response is JSON encoded
     header('Content-Type: application/json');
@@ -24,11 +26,7 @@
         // Return associative aray as default
         // $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     } catch (PDOException $e){
-        $object = (object) ['error' => 'Ocorreu um erro na conexão à base de dados.'];
-        $myJSON = json_encode($object);
-        echo $myJSON;
-        http_response_code(500);
-        exit();
+        errorResponse('Ocorreu um erro na conexão à base de dados.', 500, $e);
     }
 
 ?>
