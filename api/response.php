@@ -29,9 +29,13 @@
      * @param $message Error message text.
      * @param $statusCode The HTTP error status. 400 by default
      */
-    function errorResponse($message, $statusCode=400) {
+    function errorResponse($message, $statusCode=400, $error=NULL) {
         // Build JSON
         $object = (object) ['error' => $message];
+        // TODO Remove on production
+        if ($error!=NULL) {
+            $object = (object) ['error' => $message, 'detail' => $error->getMessage()];
+        }
         echo json_encode($object);
         // Set HTTP status
         http_response_code($statusCode);

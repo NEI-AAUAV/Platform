@@ -83,7 +83,7 @@
         // Return paginated results
         paginate($st, $page_number, $page_size);
     } catch(Exception $e){
-        errorResponse('Ocorreu um erro inesperado.', 500);
+        errorResponse('Ocorreu um erro inesperado.', 500, $e);
     }
 
     // The connection is closed automatically when the script ends
