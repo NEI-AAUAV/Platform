@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ImageCard from "../../Components/ImageCard"
 import { Col, Container, Row } from "react-bootstrap"
 
 // for testing
+/*
 const partners = [
     {
         image: process.env.PUBLIC_URL + "/testImage.jpg",
@@ -24,9 +25,23 @@ const partners = [
         name: "fourth partner",
         text: "lorem ipsum ev no rvji orvireo vikv reij reivj erikvwvw  irvwei jwi rhvrrie vhjei kb"
     }
-];
+]; */
 
 const Partners = () => {
+
+    const [partners, setPartners] = useState([]);
+
+    // Get API data when component renders
+    useEffect(() => {
+        fetch(process.env.REACT_APP_API + "/partners")
+            .then(response => response.json())
+            .then((response) => {
+                if('data' in response) {
+                    setPartners(response['data']);
+                }
+            });
+    }, []);
+
     return (
         <Container>
             {
@@ -40,10 +55,10 @@ const Partners = () => {
                     return(
                         <Col md={6}>
                             <ImageCard
-                                image={partner.image}
-                                title={partner.name}
-                                text={partner.text}
-                                anchor="#"
+                                image={process.env.PUBLIC_URL + partner.header}
+                                title={partner.company}
+                                text={partner.description}
+                                anchor={partner.link}
                                 darkMode="on"
                             ></ImageCard>
                         </Col>

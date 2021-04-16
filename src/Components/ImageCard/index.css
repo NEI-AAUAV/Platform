@@ -16,14 +16,19 @@
 
 .image-card img {
     height: 200px;
-    /*object-fit: contain;  not sure which is better, cover is as it is in current site*/
+    /* object-fit: contain;  not sure which is better, cover is as it is in current site */
     object-fit: cover;
+    background-color: white;
 }
 
 .image-card .card-body {
     min-height: 198px;
     display: flex;
     flex-direction: column;
+}
+
+.image-card .card-title {
+    font-size: 1em;
 }
 
 .image-card .card-text {

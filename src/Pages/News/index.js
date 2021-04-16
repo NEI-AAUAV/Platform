@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Button, ToggleButton, ToggleButtonGroup } from "react-bootstrap"
 import NewsList from "./NewsList";
 
 // for testing
+/*
 const news = [
     {
         image: process.env.PUBLIC_URL + "/testImage.jpg",
@@ -34,24 +35,50 @@ const news = [
         type: "Event",
         text: "9-10-2021"
     }
-];
+]; */
 
 const News = () => {
-    // get set of news types
-    var news_types = [];    // need to use array instead of Set for map() to work
-    news.forEach( n => {
-        if (! news_types.includes(n.type))
-            news_types.push(n.type);
-    });
 
-    // set of news types to show
-    const [whitelist, setWhitelist] = useState(news_types);
+    const [news, setNews] = useState([]);
+    const [newsTypes, setNewsTypes] = useState([]);
+    const [whitelist, setWhitelist] = useState([]);
+
+    // Get initial news page from API when component renders
+    useEffect(() => {
+        fetch(process.env.REACT_APP_API + "/news")
+            .then(response => response.json())
+            .then((response) => {
+                if('data' in response) {
+                    setNews(response['data']);
+                }
+            });
+    }, []);
+
+    // Get categories from API when component renders
+    useEffect(() => {
+        fetch(process.env.REACT_APP_API + "/news/categories")
+            .then(response => response.json())
+            .then((response) => {
+                if('data' in response) {
+                    response['data'].forEach( c => newsTypes.push(c.category) );
+                    setWhitelist(newsTypes);
+                }
+            });
+    }, []);
+
+    const fetchNews = () => {
+        
+    };
+
+    const changePage = (p_num) => {
+
+    };
+
+    
     // change whitelist to selected boxes
     const handleToggles = (val) => setWhitelist(val);
 
-    const resetToggles = () => {
-        setWhitelist(news_types);
-    }
+    const resetToggles = () => setWhitelist(newsTypes);
 
     return (
         <Container>
@@ -66,7 +93,7 @@ const News = () => {
                 Tudo
             </Button>
 
-            {news_types.map( t => {
+            {newsTypes.map( t => {
                 return (
                     <ToggleButtonGroup type="checkbox" value={whitelist} onChange={handleToggles}>
                         <ToggleButton variant="outline-success" value={t}>

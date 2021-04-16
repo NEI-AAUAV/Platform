@@ -28,7 +28,7 @@ const ImageCard = (props) => {
             </div>
 
             <Card.Body className={color_class}>
-                {props.preTitle && <p1 className="mb-4">{props.preTitle}</p1> }
+                {props.preTitle && <p className="mb-4">{props.preTitle}</p> }
                 <Card.Title><a href={props.anchor}>{props.title}</a></Card.Title>
                 <Card.Text><small>{props.text}</small></Card.Text>
             </Card.Body>

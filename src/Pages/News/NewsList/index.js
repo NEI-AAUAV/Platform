@@ -7,15 +7,16 @@ const NewsList = (props) => {
         <Row>
             {props.news.map( article => {
                 // render only if news type is in whitelist
-                if (props.whitelist.includes(article.type)) {
+                if (props.whitelist.includes(article.category)) {
                     return(
-                        <Col md={4} sm={6}>
+                        <Col lg={4} md={6} sm={12}>
                             <ImageCard
-                                image={article.image}
-                                title={article.name}
-                                preTitle={article.type}
-                                text={article.text}
-                                anchor="#"
+                                //image={process.env.PUBLIC_URL + article.header}
+                                image={"https://nei.web.ua.pt/" + article.header}
+                                title={article.title}
+                                preTitle={article.category}
+                                text={article.created_at}
+                                anchor="#" // TODO: use article.id here
                             ></ImageCard>
                         </Col>
                     );
