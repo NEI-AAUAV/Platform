@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Container, Button, ToggleButton, ToggleButtonGroup } from "react-bootstrap"
+import { Row, Container, Button, ToggleButton, ToggleButtonGroup, Accordion, Card } from "react-bootstrap"
 import NewsList from "./NewsList";
+import PageNav from "./PageNav";
 
 // for testing
 /*
@@ -43,16 +44,28 @@ const News = () => {
     const [newsTypes, setNewsTypes] = useState([]);
     const [whitelist, setWhitelist] = useState([]);
 
-    // Get initial news page from API when component renders
-    useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/news")
+    const [currPage, setCurrPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [apiString, setApiString] = useState("/news?");
+
+    /** Get given news page from API */
+    const fetchPage = (p_num) => {
+        console.log("currPage: " + currPage + ", new_page: " + p_num);
+        console.log("apiString: " + apiString);
+
+        fetch(process.env.REACT_APP_API + apiString + "page=" + p_num)
             .then(response => response.json())
             .then((response) => {
                 if('data' in response) {
+                    setCurrPage(p_num);
+                    setTotalPages(response["page"].pagesNumber);
                     setNews(response['data']);
                 }
             });
-    }, []);
+    };
+
+    // Get initial news page from API when component renders, and when apiString is changed
+    useEffect( () => {fetchPage(1)}, [apiString]);
 
     // Get categories from API when component renders
     useEffect(() => {
@@ -66,47 +79,77 @@ const News = () => {
             });
     }, []);
 
-    const fetchNews = () => {
-        
+
+    // passed to PageNav component as a callback
+    const handlePage = (e) => {
+        //console.log(e);
+        //console.log(e.target.attributes.value.value);
+        // will sometimes crash, provavelmente quando o componente PageNav ainda não finalizou o re-render 
+        var val = e.target.attributes.value.value;
+
+        if (val == "prev")
+            fetchPage(currPage-1);
+        else if (val == "next")
+            fetchPage(currPage/1 +1);
+        else
+            fetchPage(val);
+    }
+
+    // change whitelist to selected boxes and update apiString
+    const handleToggles = (val) => {
+        setWhitelist(val);
+
+        var str = "/news?";
+
+        if (val != newsTypes) {
+            val.forEach( v => {
+                str = str + "category[]=" + v + "&"; 
+            });
+        }
+        setApiString(str);
     };
 
-    const changePage = (p_num) => {
+    const resetToggles = () => handleToggles(newsTypes);
 
-    };
-
-    
-    // change whitelist to selected boxes
-    const handleToggles = (val) => setWhitelist(val);
-
-    const resetToggles = () => setWhitelist(newsTypes);
 
     return (
         <Container>
             {
             // TODO: this needs to be changed to the self-writing text thing,
-            // "Pill" buttons for sorting and filtering
             // also, background particles (that might be in the MainLayout?)
             }
             <h1 className="text-center">Notícias</h1>
 
-            <Button variant="outline-success" onClick={resetToggles}>
-                Tudo
-            </Button>
+            <Accordion>
+                <div className="d-flex justify-content-between mt-4">
+                    <Accordion.Toggle as={Button} variant="success" className="mb-3" eventKey="1">
+                        Filters
+                    </Accordion.Toggle>
 
-            {newsTypes.map( t => {
-                return (
-                    <ToggleButtonGroup type="checkbox" value={whitelist} onChange={handleToggles}>
-                        <ToggleButton variant="outline-success" value={t}>
-                            {t}
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                );
-            })}
-            
-            <NewsList
-                news={news}
-                whitelist={whitelist}
-            ></NewsList>
+                    <PageNav page={currPage} total={totalPages} handler={handlePage}></PageNav>
+                </div>
+
+                <Accordion.Collapse eventKey="1">
+                    <div className="pt-3 mb-3 border-top">
+                        <Button variant="outline-success" className="mr-4" onClick={resetToggles}>
+                            Tudo
+                        </Button>
+
+                        {newsTypes.map( t => {
+                            return (
+                                <ToggleButtonGroup type="checkbox" value={whitelist} onChange={handleToggles} className="mr-2" key={t}>
+                                    <ToggleButton variant="outline-success pill" className="rounded-pill" value={t}>
+                                        {t}
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
+                            );
+                        })}
+                    </div>
+                </Accordion.Collapse>
+            </Accordion>
+
+            <NewsList news={news}></NewsList>
+
         </Container>
     );
 }
