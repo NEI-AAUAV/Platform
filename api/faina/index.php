@@ -8,7 +8,7 @@
     
     // Get url parameter and validate it 
     $mandate = $_GET["mandate"];
-    $validOptions = $conn->query("SELECT DISTINCT mandato FROM team")->fetchAll(PDO::FETCH_ASSOC);
+    $validOptions = $conn->query("SELECT DISTINCT mandato FROM faina")->fetchAll(PDO::FETCH_ASSOC);
     $valid = false;
     foreach($validOptions as $op) {
         if ($op['mandato']==$mandate) {
@@ -22,7 +22,7 @@
     }
 
     // Make query to the database
-    $query_getContent = "SELECT name, linkedIn, header, title, mandato FROM team INNER JOIN users ON team.user_id=users.id WHERE mandato=:mandate";
+    $query_getContent = "SELECT imagem, mandato FROM faina WHERE mandato=:mandate";
 
     try{
         $st = $conn->prepare($query_getContent);
