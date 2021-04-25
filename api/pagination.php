@@ -52,23 +52,22 @@
         // Build JSON Response
         if($st->rowCount() > 0){
             $res = $st->fetchAll(PDO::FETCH_ASSOC);
-            if(!empty($article)) {
-                $object = (object) ['data' => $res[0]];
+            // Add pagination
+            if (($page_size*($page_number-1)) > count($res)) {
+                // Validate there are that many pages
+                errorResponse('Página inválida!');
             } else {
-                // If news list, add pagination
-                if (($page_size*($page_number-1)) > count($res)) {
-                    // Validate there are that many pages
-                    errorResponse('Página inválida!');
-                } else {
-                    // If so, slice array
-                    $pages_number = ceil(count($res)/$page_size);
-                    $res = array_slice($res, ($page_size*($page_number-1)), $page_size);
-                    $object = (object) ['page' => (object) [ 
-                        'itemsPerPage' => $page_size, 
-                        'currentPage' => $page_number, 
-                        'pagesNumber' => $pages_number,
-                    ], 'data' => $res];
-                }
+                // If so, slice array
+                $pages_number = ceil(count($res)/$page_size);
+                $itemsTotal = count($res);
+                $res = array_slice($res, ($page_size*($page_number-1)), $page_size);
+                $object = (object) ['page' => (object) [ 
+                    'itemsPerPage' => $page_size, 
+                    'currentPage' => $page_number, 
+                    'pagesNumber' => $pages_number,
+                    'itemsTotal' => $itemsTotal,
+                    'itemsThisPage' => count($res)
+                ], 'data' => $res];
             }
             $myJSON = json_encode($object);
             echo $myJSON;

@@ -46,7 +46,7 @@
     $query_getContent = "SELECT id, title, header, category, created_at FROM `news` WHERE status='1'";
 
     if(count($categories)>0) {
-        $query_getContent.=" AND";    
+        $query_getContent.=" AND (";    
         $counter = 0;
         foreach($categories as $category) {
             $query_getContent.=" category=:category{$counter}";
@@ -55,6 +55,7 @@
                 $query_getContent.=" OR";
             }    
         }
+        $query_getContent.=")";
     }
 
     $query_getContent.= " ORDER BY created_at DESC";
