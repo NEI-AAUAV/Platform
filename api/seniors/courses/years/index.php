@@ -15,7 +15,7 @@
             $valid = true;
         }
     }
-    if(!$valid and is_null($_GET["course"])) {
+    if(!$valid and empty($_GET["course"])) {
         errorResponse('Parâmetro "course" em falta!');
     } else if (!$valid) {
         errorResponse('Parâmetro "course" inválido!');

@@ -20,11 +20,11 @@
             $validYear = true;
         }
     }
-    if(!$validCourse and is_null($_GET["course"])) {
+    if(!$validCourse and empty($_GET["course"])) {
         errorResponse('Parâmetro "course" em falta!');
     } else if (!$validCourse) {
         errorResponse('Parâmetro "course" inválido!');
-    } else if(!$validYear and is_null($_GET["year"])) {
+    } else if(!$validYear and empty($_GET["year"])) {
         errorResponse('Parâmetro "year" em falta!');
     } else if (!$validYear) {
         errorResponse('Parâmetro "year" inválido!');

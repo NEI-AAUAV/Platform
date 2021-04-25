@@ -19,7 +19,7 @@
     $note = $_GET["note"];
 
     // Prevent filtering by both parameters
-    if ((count($categories)>0 or !is_null($teacher) or !is_null($student) or !is_null($subject) or !is_null($schoolYear)) and !is_null($note)) {
+    if ((count($categories)>0 or !empty($teacher) or !empty($student) or !empty($subject) or !empty($schoolYear)) and !empty($note)) {
         errorResponse('Não é possível filtrar com o argumento "note"!');
     }
 
@@ -27,7 +27,7 @@
     list($page_number, $page_size) = validatePagination(
         $page_number, 
         $page_size,
-        !is_null($note) ? ['note'] : []
+        !empty($note) ? ['note'] : []
     );
 
     // Parameter validation
@@ -65,7 +65,7 @@
     $query_getContent.= " ORDER BY notes_schoolyear.yearEnd DESC, notes.createdAt DESC";
 
     // Get note by ID 
-    if(!is_null($note)) {
+    if(!empty($note)) {
         $query_getContent = "SELECT 
                 notes.name, 
                 notes.location, 
@@ -101,17 +101,17 @@
     try{
         $st = $conn->prepare($query_getContent);
         // Bind parameters to query
-        if(is_null($note)) {
-            if(!is_null($teacherQuery)) {
+        if(empty($note)) {
+            if(!empty($teacherQuery)) {
                 $st->bindParam(":teacher", $teacher);
             }
-            if(!is_null($studentQuery)) {
+            if(!empty($studentQuery)) {
                 $st->bindParam(":student", $student);
             }
-            if(!is_null($subjectQuery)) {
+            if(!empty($subjectQuery)) {
                 $st->bindParam(":subject", $subject);
             }
-            if(!is_null($schoolYearQuery)) {
+            if(!empty($schoolYearQuery)) {
                 $st->bindParam(":schoolYear", $schoolYear);
             }
             // Return paginated results

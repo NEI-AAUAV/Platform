@@ -7,7 +7,7 @@
     */
 
     function validateTeacher($teacher, $conn) {
-        if(!is_null($teacher)) {
+        if(!empty($teacher)) {
             $validOptions = $conn->query("SELECT DISTINCT teacher FROM notes")->fetchAll(PDO::FETCH_ASSOC);
             $valid = false;
             foreach($validOptions as $op) {
@@ -24,7 +24,7 @@
     }
 
     function validateStudent($student, $conn) {
-        if(!is_null($student)) {
+        if(!empty($student)) {
             $validOptions = $conn->query("SELECT DISTINCT author FROM notes")->fetchAll(PDO::FETCH_ASSOC);
             $valid = false;
             foreach($validOptions as $op) {
@@ -41,7 +41,7 @@
     }
 
     function validateSubject($subject, $conn) {
-        if(!is_null($subject)) {
+        if(!empty($subject)) {
             $validOptions = $conn->query("SELECT DISTINCT subject FROM notes")->fetchAll(PDO::FETCH_ASSOC);
             $valid = false;
             foreach($validOptions as $op) {
@@ -58,7 +58,7 @@
     }
 
     function validateSchoolYear($schoolYear, $conn) {
-        if(!is_null($schoolYear)) {
+        if(!empty($schoolYear)) {
             $validOptions = $conn->query("SELECT DISTINCT schoolYear FROM notes")->fetchAll(PDO::FETCH_ASSOC);
             $valid = false;
             foreach($validOptions as $op) {

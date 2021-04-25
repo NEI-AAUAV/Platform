@@ -15,7 +15,7 @@
             $valid = true;
         }
     }
-    if(!$valid and is_null($_GET["mandate"])) {
+    if(!$valid and empty($_GET["mandate"])) {
         errorResponse('Parâmetro "mandate" em falta!');
     } else if (!$valid) {
         errorResponse('Parâmetro "mandate" inválido!');

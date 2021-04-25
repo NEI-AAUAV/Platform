@@ -15,7 +15,7 @@
             $valid = true;
         }
     }
-    if(!$valid and is_null($_GET["category"])) {
+    if(!$valid and empty($_GET["category"])) {
         errorResponse('Parâmetro "category" em falta!');
     } else if (!$valid) {
         errorResponse('Parâmetro "category" inválido!');

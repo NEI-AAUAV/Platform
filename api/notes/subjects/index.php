@@ -35,13 +35,13 @@
     try{
         $st = $conn->prepare($query_getContent);
         // Bind parameters to query
-        if(!is_null($teacherQuery)) {
+        if(!empty($teacherQuery)) {
             $st->bindParam(":teacher", $teacher);
         }
-        if(!is_null($studentQuery)) {
+        if(!empty($studentQuery)) {
             $st->bindParam(":student", $student);
         }
-        if(!is_null($schoolYearQuery)) {
+        if(!empty($schoolYearQuery)) {
             $st->bindParam(":schoolYear", $schoolYear);
         }
         // Return response
