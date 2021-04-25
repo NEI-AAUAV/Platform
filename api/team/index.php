@@ -22,7 +22,7 @@
     }
 
     // Make query to the database
-    $query_getContent = "SELECT name, linkedIn, header, title, mandato FROM team INNER JOIN users ON team.user_id=users.id WHERE mandato=:mandate";
+    $query_getContent = "SELECT users.name, linkedIn, header, mandato, team_roles.name AS role FROM team INNER JOIN users ON team.user_id=users.id INNER JOIN team_roles ON team.`role`=team_roles.id WHERE mandato=:mandate ORDER BY team_roles.weight DESC, team_roles.name, users.name";
 
     try{
         $st = $conn->prepare($query_getContent);

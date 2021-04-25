@@ -173,3 +173,15 @@ INSERT INTO faina_member(year, role, member) VALUES
     (2019, 7, 1419),
     (2019, 7, 1512)
 ;
+
+-- Team tables
+
+CREATE TABLE team_roles (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(120), 
+    weight INT
+);
+
+ALTER TABLE team ADD COLUMN role INT REFERENCES team_roles(id);
+
+ALTER TABLE team DROP COLUMN title;
