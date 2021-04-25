@@ -44,3 +44,89 @@ INSERT INTO seniors_students (course, year, userId) VALUES
     ("LEI", 2020, 879),
     ("MEI", 2020, 1059)
 ;
+
+-- Apontamentos Data Model
+
+CREATE TABLE notes_teachers (
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    name VARCHAR(100) UNIQUE,
+    personalPage VARCHAR(255)
+);
+
+CREATE TABLE notes_schoolyear (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    yearBegin SMALLINT(4),
+    yearEnd SMALLINT(4),
+);
+
+CREATE TABLE notes_subjects (
+  paco_code INT PRIMARY KEY,
+  name VARCHAR(60) NOT NULL,
+  year INT NOT NULL,
+  semester INT NOT NULL,
+  short VARCHAR(5) NOT NULL
+);
+
+INSERT INTO notes_subjects (`paco_code`, `name`, `year`, `semester`, `short`) VALUES
+    (40337, 'Métodos Probabilísticos para Engenharia Informática', 2, 1, 'MPEI'),
+    (40379, 'Fundamentos de Programação', 1, 1, 'FP'),
+    (40380, 'Introdução às Tecnologias Web', 1, 1, 'ITW'),
+    (40381, 'Sistemas Operativos', 2, 1, 'SO'),
+    (40382, 'Computação Distribuída', 2, 2, 'CD'),
+    (40383, 'Padrões e Desenho de Software', 2, 2, 'PDS'),
+    (40384, 'Introdução à Engenharia de Software', 3, 1, 'IES'),
+    (40385, 'Complementos de Bases de Dados', 3, 1, 'CBD'),
+    (40431, 'Modelação e Análise de Sistemas', 1, 2, 'MAS'),
+    (40432, 'Sistemas Multimédia', 2, 1, 'SM'),
+    (40433, 'Redes e Serviços', 2, 1, 'RS'),
+    (40436, 'Programação Orientada a Objetos', 1, 2, 'POO'),
+    (40437, 'Algoritmos e Estruturas de Dados', 2, 1, 'AED'),
+    (40551, 'Tecnologias e Programação Web', 3, 2, 'TPW'),
+    (40751, 'Algoritmos Avançados', 4, 1, 'AA'),
+    (40752, 'Teoria Algorítmica da Informação', 4, 1, 'TAI'),
+    (40753, 'Computação em Larga Escala', 4, 2, 'CLE'),
+    (40756, 'Gestão de Infraestruturas de Computação', 4, 2, 'GIC'),
+    (40757, 'Arquiteturas de Software', 4, 2, 'AS'),
+    (40846, 'Inteligência Artificial', 3, 1, 'IA'),
+    (41469, 'Compiladores', 2, 2, 'C'),
+    (41549, 'Interação Humano-Computador', 2, 2, 'IHC'),
+    (41791, 'Elementos de Fisíca', 1, 1, 'EF'),
+    (42502, 'Introdução à Arquitetura de Computadores', 1, 2, 'IAC'),
+    (42532, 'Bases de Dados', 2, 2, 'BD'),
+    (42573, 'Segurança Informática e Nas Organizações', 3, 1, 'SIO'),
+    (42709, 'Álgebra Linear e Geometria Analítica', 1, 1, 'ALGA'),
+    (42728, 'Cálculo I', 1, 1, 'C1'),
+    (42729, 'Cálculo II', 1, 2, 'C2'),
+    (44156, 'Visualização de Informação', 4, 1, 'VI'),
+    (44158, 'Web Semântica', 4, 2, 'WS'),
+    (45424, 'Introdução à Computação Móvel', 3, 1, 'ICM'),
+    (45426, 'Teste e Qualidade de Software', 3, 2, 'TQS'),
+    (45587, 'Exploração de Dados', 4, 1, 'ED'),
+    (47166, 'Matemática Discreta', 1, 2, 'MD');
+
+CREATE TABLE notes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255), 
+    location VARCHAR(255), 
+    -- Foreign keys
+    subject INT, 
+    author INT,
+    schoolYear INT(4),
+    teacher INT,
+    -- Tags
+    summary BOOLEAN,
+    tests BOOLEAN,
+    bibliography BOOLEAN,
+    slides BOOLEAN,
+    exercises BOOLEAN,
+    projects BOOLEAN,
+    notebook BOOLEAN,
+    -- Extra details
+    content TEXT,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP, -- Define default value to getDate() on PHPMyAdmin
+    -- Contraints
+    FOREIGN KEY (subject) REFERENCES notes_subjects(paco_code),
+    FOREIGN KEY (author) REFERENCES users(id),
+    FOREIGN KEY (schoolYear) REFERENCES notes_schoolyear(id),
+    FOREIGN KEY (teacher) REFERENCES notes_teachers(id)
+);
