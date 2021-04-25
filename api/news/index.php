@@ -10,6 +10,8 @@
 
     // Get url parameter and validate it 
     $categories = $_GET["category"]!=NULL ? $_GET["category"] : [];
+    $since = $_GET["since"];
+    $until = $_GET["until"];
     $article = $_GET["article"];
 
     // Pagination
@@ -20,11 +22,11 @@
     );
 
     // Prevent filtering by both parameters
-    if (count($categories)>0 and !empty($article)) {
-        errorResponse('Não é possível filtrar por mais do que um parâmetro!');
+    if ((!empty($since) or !empty($until) or count($categories)>0) and !empty($article)) {
+        errorResponse('Não é possível filtrar com o argumento "article"!');
     }
 
-    // Category filtering
+    // Parameter validation
     if(count($categories)>0) {
         $validOptions = $conn->query("SELECT DISTINCT category FROM news WHERE status='1'")->fetchAll(PDO::FETCH_ASSOC);
         $valid = true;
@@ -39,6 +41,13 @@
         }
         if(!$valid) {
             errorResponse('Categoria inválida!');
+        }
+    }
+    if(!empty($since) and !empty($until)) {
+        $untilDate = strtotime($until);
+        $sinceDate = strtotime($since);
+        if($sinceDate>$untilDate) {
+            errorResponse("A data de início não pode ser superior à de término!");
         }
     }
 
@@ -56,6 +65,12 @@
             }    
         }
         $query_getContent.=")";
+    }
+    if(!empty($since)) {
+        $query_getContent.=" AND created_at>=:since";    
+    }
+    if(!empty($until)) {
+        $query_getContent.=" AND created_at<=:until";    
     }
 
     $query_getContent.= " ORDER BY created_at DESC";
@@ -75,6 +90,12 @@
                 $st->bindParam(":category{$counter}", $categories[$counter]);
                 $counter = $counter + 1;    
             }
+        }
+        if(!empty($since)) {
+            $st->bindParam(":since", $since);
+        }
+        if(!empty($until)) {
+            $st->bindParam(":until", $until);
         }
         if(!empty($article)) {
             $st->bindParam(':id', $article);
