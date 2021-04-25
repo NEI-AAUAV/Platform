@@ -130,3 +130,46 @@ CREATE TABLE notes (
     FOREIGN KEY (schoolYear) REFERENCES notes_schoolyear(id),
     FOREIGN KEY (teacher) REFERENCES notes_teachers(id)
 );
+
+--- Faina
+CREATE TABLE faina_roles (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(20), 
+    weight INT
+);
+
+INSERT INTO faina_roles(id, name, weight) VALUES
+    (10, "Mestre de Curso", 6),
+    (9, "Varina", 6),
+    (8, "Arrais", 6),
+    (7, "Mestre", 5),
+    (6, "Salineira", 3),
+    (5, "Marnoto", 4),
+    (4, "Moça", 2),
+    (3, "Moço", 2),
+    (2, "Caniça", 1),
+    (1, "Junco", 1)
+;
+
+CREATE TABLE faina_member (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    member INT,
+    year INT,
+    role INT,
+    -- Contraints
+    FOREIGN KEY (member) REFERENCES users(id),
+    FOREIGN KEY (year) REFERENCES faina(mandato),
+    FOREIGN KEY (role) REFERENCES faina_roles(id)
+);
+
+INSERT INTO faina_member(year, role, member) VALUES
+    (2017, 10, 984),
+    (2017, 4, 1704),
+    (2017, 7, 1107),
+    (2018, 2, 1002),
+    (2018, 1, 900),
+    (2018, 4, 1902),
+    (2019, 10, 1365),
+    (2019, 7, 1419),
+    (2019, 7, 1512)
+;

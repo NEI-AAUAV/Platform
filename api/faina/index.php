@@ -23,13 +23,27 @@
 
     // Make query to the database
     $query_getContent = "SELECT imagem, mandato FROM faina WHERE mandato=:mandate";
+    // Get members
+    $query_getContent2 = "SELECT users.name, faina_roles.name AS role FROM faina_member INNER JOIN users ON faina_member.member=users.id INNER JOIN faina_roles ON faina_member.role=faina_roles.id WHERE year=:mandate ORDER BY faina_roles.weight DESC, users.name";
 
     try{
+        // Query 1
         $st = $conn->prepare($query_getContent);
-        // Bind parameters to query
         $st->bindParam(':mandate', $mandate);
+        // Query 2
+        $st2 = $conn->prepare($query_getContent2);
+        $st2->bindParam(':mandate', $mandate);
+        // Execute query
+        $st->execute();
+        $st2->execute();
         // Return response
-        response($st);
+        // Build JSON Response
+        $res = $st->fetchAll(PDO::FETCH_ASSOC);
+        $res2 = $st2->fetchAll(PDO::FETCH_ASSOC);
+        // Add res2 to res
+        $res[0]['members'] = $res2;
+        $object = (object) ['data' => $res];
+        echo json_encode($object);
     } catch(Exception $e){
         errorResponse('Ocorreu um erro inesperado.', 500, $e);
     }
