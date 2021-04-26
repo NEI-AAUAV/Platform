@@ -107,7 +107,7 @@
         if(!empty($article)) {
             $st->bindParam(':id', $article);
             // Return response
-            response($st);
+            response($st, true);
         }
         // Return paginated results
         paginate($st, $page_number, $page_size);

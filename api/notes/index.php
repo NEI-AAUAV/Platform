@@ -119,7 +119,7 @@
         } else {
             $st->bindParam(":note", $note);
             // Return response
-            response($st);
+            response($st, true);
         }
     } catch(Exception $e){
         errorResponse('Ocorreu um erro inesperado.', 500, $e);

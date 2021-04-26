@@ -52,7 +52,7 @@
         $res2 = $st2->fetchAll(PDO::FETCH_ASSOC);
         // Add res2 to res
         $res[0]['students'] = $res2;
-        $object = (object) ['data' => $res];
+        $object = (object) ['data' => $res[0]];
         echo json_encode($object);
         exit();
     } catch(Exception $e){
