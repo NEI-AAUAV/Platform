@@ -185,3 +185,9 @@ CREATE TABLE team_roles (
 ALTER TABLE team ADD COLUMN role INT REFERENCES team_roles(id);
 
 ALTER TABLE team DROP COLUMN title;
+
+CREATE TABLE team_colaborators (
+    colaborator INT,
+    mandate INT,
+    FOREIGN KEY (colaborator) REFERENCES users(id)
+);

@@ -21,15 +21,28 @@
         errorResponse('Parâmetro "mandate" inválido!');
     }
 
-    // Make query to the database
+    // Get team
     $query_getContent = "SELECT users.name, linkedIn, header, mandato, team_roles.name AS role FROM team INNER JOIN users ON team.user_id=users.id INNER JOIN team_roles ON team.`role`=team_roles.id WHERE mandato=:mandate ORDER BY team_roles.weight DESC, team_roles.name, users.name";
+    // Get colaborators
+    $query_getContent2 = "SELECT users.name FROM team_colaborators INNER JOIN users ON team_colaborators.colaborator=users.id WHERE mandate=:mandate ORDER BY users.name";
 
     try{
+        // Query 1
         $st = $conn->prepare($query_getContent);
-        // Bind parameters to query
         $st->bindParam(':mandate', $mandate);
+        // Query 2
+        $st2 = $conn->prepare($query_getContent2);
+        $st2->bindParam(':mandate', $mandate);
+        // Execute query
+        $st->execute();
+        $st2->execute();
         // Return response
-        response($st);
+        // Build JSON Response
+        $res = $st->fetchAll(PDO::FETCH_ASSOC);
+        $res2 = $st2->fetchAll(PDO::FETCH_ASSOC);
+        // Return objects
+        $object = (object) ['data' => (object) ['team' => $res, 'colaborators' => $res2]];
+        echo json_encode($object);
     } catch(Exception $e){
         errorResponse('Ocorreu um erro inesperado.', 500, $e);
     }
