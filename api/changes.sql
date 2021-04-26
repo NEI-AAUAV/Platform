@@ -191,3 +191,12 @@ CREATE TABLE team_colaborators (
     mandate INT,
     FOREIGN KEY (colaborator) REFERENCES users(id)
 );
+
+-- News
+
+ALTER TABLE news ADD COLUMN author INT REFERENCES users(id);
+
+INSERT INTO `users` (`id`, `name`, `full_name`, `uu_email`, `uu_iupi`, `curriculo`, `linkedIn`, `git`, `permission`, `created_at`) VALUES
+(1, 'NEI', 'Núcleo de Estudantes de Informática', '', '', '', '', '', '', '2021-04-26');
+
+UPDATE news SET author=1 WHERE 1;

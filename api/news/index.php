@@ -13,6 +13,7 @@
     $since = $_GET["since"];
     $until = $_GET["until"];
     $article = $_GET["article"];
+    $author = $_GET["author"];
 
     // Pagination
     list($page_number, $page_size) = validatePagination(
@@ -55,7 +56,7 @@
     $query_getContent = "SELECT id, title, header, category, created_at FROM `news` WHERE status='1'";
 
     if(count($categories)>0) {
-        $query_getContent.=" AND (";    
+        $query_getContent.=" AND (";
         $counter = 0;
         foreach($categories as $category) {
             $query_getContent.=" category=:category{$counter}";
@@ -72,12 +73,15 @@
     if(!empty($until)) {
         $query_getContent.=" AND created_at<=:until";    
     }
+    if(!empty($author)) {
+        $query_getContent.=" AND author=:author";    
+    }
 
     $query_getContent.= " ORDER BY created_at DESC";
 
     // Get article by ID 
     if(!empty($article)) {
-        $query_getContent = "SELECT title, header, content, category, created_at, last_change_at FROM `news` WHERE id=:id";
+        $query_getContent = "SELECT news.title, news.header, news.content, news.category, news.created_at, last_change_at, users.name AS author, users.id AS authorId FROM `news` LEFT JOIN users ON news.author=users.id WHERE news.id=:id";
     }
 
     // Make query to database
@@ -96,6 +100,9 @@
         }
         if(!empty($until)) {
             $st->bindParam(":until", $until);
+        }
+        if(!empty($author)) {
+            $st->bindParam(":author", $author);
         }
         if(!empty($article)) {
             $st->bindParam(':id', $article);
