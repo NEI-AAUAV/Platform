@@ -3,39 +3,53 @@ import "./index.css";
 
 
 import Person from "./Components/Person.js";
-import Year from "./Components/Year.js"
+import Tabs from "../../Components/Tabs/index.js"
 import {Container, Row, Col} from 'react-bootstrap';
-
-
-
-const years = [2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013]; // Array unico dos anos
 
 
 
 
 const Team = () => {
+    const [years,setYears] = useState([]);
 
-    const [selectedYear,setSelectedYear] = useState(2021);
+    const [selectedYear,setSelectedYear] = useState(null);
 
     const [people,setPeople] = useState();
+    const [colaborators,Colaborators] = useState();
 
-    const yearsC = years.map((el, index) => <Year year={years[index]} func={setSelectedYear}/>)
+    const yearsC = years.map((el, index) => <Tabs year={years[index]} func={setSelectedYear}/>)
+
 
     useEffect(() => {
-
-        fetch("http://localhost:8000/api/team?mandate="+selectedYear)
+        fetch("http://localhost:8000/api/team/mandates")
         .then(response => response.json())
         .then((response) => {
-            console.log(response.data)
-            setPeople(response.data.map(person => 
-                <Person
-                    img = {process.env.PUBLIC_URL + person.header} 
-                    name = {person.name} 
-                    description = {person.title} linke={person.linkedIn} 
-                />
-            ))
+            var anos = response.data.map(year => 
+                year.mandato
+            ).sort((a,b) => b-a);
+            setYears(anos)
+            setSelectedYear(anos[0])
         })
+        
+    }, [])
+
+
+    useEffect(() => {
+        if (selectedYear != null){
+            fetch("http://localhost:8000/api/team?mandate="+selectedYear)
+            .then(response => response.json())
+            .then((response) => {
+                setPeople(response.data.team.map(person => 
+                    <Person
+                        img = {process.env.PUBLIC_URL + person.header} 
+                        name = {person.name} 
+                        description = {person.role} linke={person.linkedIn} 
+                    />
+                ))
+            })
+        }
     }, [selectedYear])
+
 
 
 
@@ -44,11 +58,16 @@ const Team = () => {
         <div>
             <h1 id="title">Equipa do NEI</h1>
 
+            { /*
             <Container>
                 <Row className="justify-content-center">
                     {yearsC}    
                 </Row>
             </Container>
+            */
+            }
+
+            <Tabs tabs={years} _default={selectedYear} onChange={setSelectedYear} />
             
 
             <Container>
