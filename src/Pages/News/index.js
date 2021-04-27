@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Row, Container, Button, ToggleButton, ToggleButtonGroup, Accordion, Card } from "react-bootstrap"
 import NewsList from "./NewsList";
-import PageNav from "./PageNav";
+import PageNav from "../../Components/PageNav";
 
 // for testing
 /*
@@ -82,10 +82,13 @@ const News = () => {
 
     // passed to PageNav component as a callback
     const handlePage = (e) => {
-        //console.log(e);
-        //console.log(e.target.attributes.value.value);
+        console.log(e);
+        //console.log(e.target.attributes.value);
         // will sometimes crash, provavelmente quando o componente PageNav ainda não finalizou o re-render 
-        var val = e.target.attributes.value.value;
+        if (e.target.attributes.value == undefined)
+            var val = e.target.parentElement.attributes.value.value;
+        else
+            var val = e.target.attributes.value.value;
 
         if (val == "prev")
             fetchPage(currPage-1);
