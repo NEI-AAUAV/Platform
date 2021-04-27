@@ -2,21 +2,38 @@ import React from "react";
 import ImageCard from "../../../Components/ImageCard"
 import { Col, Row } from "react-bootstrap"
 
+/* Show list of news in cards
+**
+** Props:
+** - news: the news list
+** - loading: is the page still loading
+*/
 const NewsList = (props) => {
     var key = 1;
 
     return (
         <Row>
+            {
+            props.loading ?     
+                <Col sm={12}>
+                    <h3 className="text-center">A carregar notícias...</h3>
+                </Col>
+            :
+            props.news.length == 0 &&     
+                <Col sm={12}>
+                    <h3 className="text-center mt-3">Nenhuma notícia encontrada</h3>
+                    <h4 className="text-center">Tente definir filtros menos restritivos</h4>
+                </Col>
+            }
             {props.news.map( article => {
                 return(
                     <Col lg={4} md={6} sm={12} key={key++}>
                         <ImageCard
-                            //image={process.env.PUBLIC_URL + article.header}
-                            image={"https://nei.web.ua.pt/" + article.header}
+                            image={process.env.REACT_APP_UPLOADS + article.header}
                             title={article.title}
                             preTitle={article.category}
                             text={article.created_at}
-                            anchor="#" // TODO: use article.id here
+                            anchor={process.env.REACT_APP_API + "/article/" + article.id}
                         ></ImageCard>
                     </Col>
                 );

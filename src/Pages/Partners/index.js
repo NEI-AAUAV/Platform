@@ -55,7 +55,7 @@ const Partners = () => {
                     return(
                         <Col md={6}>
                             <ImageCard
-                                image={process.env.PUBLIC_URL + partner.header}
+                                image={process.env.REACT_APP_UPLOADS + partner.header}
                                 title={partner.company}
                                 text={partner.description}
                                 anchor={partner.link}

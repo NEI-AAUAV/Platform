@@ -6,12 +6,12 @@ import FilterSelect from "../../Components/FilterSelect";
 
 const News = () => {
 
-    const [news, setNews] = useState([]);
-    const [newsTypes, setNewsTypes] = useState([]);
-    const [whitelist, setWhitelist] = useState([]);
-
-    const [currPage, setCurrPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);       // used to change message when no news are available
+    const [news, setNews] = useState([]);                   // list of news articles
+    const [newsTypes, setNewsTypes] = useState([]);         // list of all news categories
+    const [whitelist, setWhitelist] = useState([]);         // list of currently active categories
+    const [currPage, setCurrPage] = useState(1);            // current page
+    const [totalPages, setTotalPages] = useState(1);        // total number of pages
 
     /** Get given news page from API */
     const fetchPage = (p_num) => {
@@ -32,9 +32,13 @@ const News = () => {
         }        
         // TODO: add author stuff later
 
+        setIsLoading(true);
+        setNews([]);
+
         fetch(process.env.REACT_APP_API + api + "page=" + p_num)
             .then(response => response.json())
             .then((response) => {
+                setIsLoading(false);
                 if('data' in response) {
                     setCurrPage(p_num);
                     setTotalPages(response["page"].pagesNumber);
@@ -72,7 +76,7 @@ const News = () => {
                 <PageNav page={currPage} total={totalPages} handler={fetchPage}></PageNav>
             </FilterSelect>
 
-            <NewsList news={news}></NewsList>
+            <NewsList news={news} loading={isLoading}></NewsList>
 
         </Container>
     );
