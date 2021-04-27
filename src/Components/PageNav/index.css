@@ -1,1 +1,9 @@
-/* TODO: make it green */
+.page-link {
+    color: #28a745 !important;
+}
+
+.page-item.active .page-link {
+    color: white !important;
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
