@@ -1,0 +1,8 @@
+p {
+    transition: ease-in-out;
+    transition-duration: 0.0625s;
+}
+
+p:hover {
+    color: rgb(78, 156, 54);
+}
