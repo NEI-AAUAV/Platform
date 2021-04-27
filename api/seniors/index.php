@@ -20,11 +20,11 @@
             $validYear = true;
         }
     }
-    if(!$validCourse and is_null($_GET["course"])) {
+    if(!$validCourse and empty($_GET["course"])) {
         errorResponse('Parâmetro "course" em falta!');
     } else if (!$validCourse) {
         errorResponse('Parâmetro "course" inválido!');
-    } else if(!$validYear and is_null($_GET["year"])) {
+    } else if(!$validYear and empty($_GET["year"])) {
         errorResponse('Parâmetro "year" em falta!');
     } else if (!$validYear) {
         errorResponse('Parâmetro "year" inválido!');
@@ -52,7 +52,7 @@
         $res2 = $st2->fetchAll(PDO::FETCH_ASSOC);
         // Add res2 to res
         $res[0]['students'] = $res2;
-        $object = (object) ['data' => $res];
+        $object = (object) ['data' => $res[0]];
         echo json_encode($object);
         exit();
     } catch(Exception $e){
