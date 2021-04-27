@@ -6,6 +6,8 @@ import "./index.css"
 
 
 const Tab = ({val, func, selectedElement, update}) => {
+    //console.log("selEl = "+selectedElement);
+    //console.log("val = "+val);
     return (
         <div>
             <Container>

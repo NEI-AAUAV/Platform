@@ -22,7 +22,7 @@ const Team = () => {
 
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/team/mandates")
+        fetch(process.env.REACT_APP_API+"/team/mandates")
         .then(response => response.json())
         .then((response) => {
             var anos = response.data.map(year => 
@@ -37,7 +37,7 @@ const Team = () => {
 
     useEffect(() => {
         if (selectedYear != null){
-            fetch("http://localhost:8000/api/team?mandate="+selectedYear)
+            fetch(process.env.REACT_APP_API+"/team?mandate="+selectedYear)
             .then(response => response.json())
             .then(
                 (response) => {
@@ -45,7 +45,7 @@ const Team = () => {
 
                 setPeople(resp.team.map(person => 
                     <Person
-                        img = {process.env.PUBLIC_URL + person.header} 
+                        img = {process.env.REACT_APP_UPLOADS + person.header} 
                         name = {person.name} 
                         description = {person.role} linke={person.linkedIn} 
                     />

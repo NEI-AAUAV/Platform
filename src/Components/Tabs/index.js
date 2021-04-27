@@ -8,15 +8,18 @@ import "./index.css"
 
 
 const Tabs = ({tabs, _default, onChange}) => {
+    console.log("def = "+_default);
 
-    const [selectedElement, setSelectedElement] = useState(_default);
+    const [selectedElement, setSelectedElement] = useState(null);
+    console.log("selEl=" + selectedElement)
 
     const tab = tabs.map(tab => <Tab func={onChange} val={tab} 
         selectedElement={selectedElement} update={setSelectedElement}/>)
     
     useEffect(() => {
-        onChange(_default) // Por o valor no default no inicio
-    }, [])
+        setSelectedElement(_default)
+    }, [_default])
+    
 
     return (
         <Container>
