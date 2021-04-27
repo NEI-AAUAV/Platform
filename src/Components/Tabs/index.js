@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from "react";
 import {Button} from 'react-bootstrap'
 import { Container, Row, Col } from 'react-bootstrap';
 import Tab from './Tab/index.js'
@@ -6,8 +6,13 @@ import Tab from './Tab/index.js'
 import "./index.css"
 
 
+
 const Tabs = ({tabs, _default, onChange}) => {
-    const tab = tabs.map(tab => <Tab func={onChange} val={tab}/>)
+
+    const [selectedElement, setSelectedElement] = useState(_default);
+
+    const tab = tabs.map(tab => <Tab func={onChange} val={tab} 
+        selectedElement={selectedElement} update={setSelectedElement}/>)
     
     useEffect(() => {
         onChange(_default) // Por o valor no default no inicio
@@ -16,7 +21,7 @@ const Tabs = ({tabs, _default, onChange}) => {
     return (
         <Container>
             <Row className="justify-content-center">
-                {tab}    
+                {tab}
             </Row>
         </Container>
     )

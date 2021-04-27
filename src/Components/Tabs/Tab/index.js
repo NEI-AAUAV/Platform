@@ -5,12 +5,13 @@ import { Container, Row, Col } from 'react-bootstrap';
 import "./index.css"
 
 
-const Tab = ({val, func}) => {
+const Tab = ({val, func, selectedElement, update}) => {
     return (
         <div>
             <Container>
                 <Col xs={11} lg={10} style={{textAlign: "center", marginBottom: 40}}>
-                    <p onClick={() => func(val)}>{val}</p>
+                    <p className={val == selectedElement ? "selected" : ""} 
+                    onClick={(el) =>{ func(val); update(val)}}>{val}</p>
                 </Col>
             </Container>
             

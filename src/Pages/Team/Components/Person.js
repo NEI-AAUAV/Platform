@@ -16,7 +16,7 @@ const Person = ({img,name,description,linke}) => {
         <div>
             { 
             <Container>
-                <Col xs={11} lg={10} style={{textAlign: "center", marginBottom: 40}}>
+                <Col className="mx-auto" style={{textAlign: "center", marginBottom: 40}}>
                     <Image src={img} roundedCircle style={{width: 200, marginBottom: 20}}/>
                     <h3>{name}</h3>
                     <p id='desc'>{description.toUpperCase()}</p>

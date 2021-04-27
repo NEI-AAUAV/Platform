@@ -4,6 +4,7 @@ import "./index.css";
 
 import Person from "./Components/Person.js";
 import Tabs from "../../Components/Tabs/index.js"
+import TextList from "./Components/TextList.js"
 import {Container, Row, Col} from 'react-bootstrap';
 
 
@@ -15,7 +16,7 @@ const Team = () => {
     const [selectedYear,setSelectedYear] = useState(null);
 
     const [people,setPeople] = useState();
-    const [colaborators,Colaborators] = useState();
+    const [colaborators,setColaborators] = useState();
 
     const yearsC = years.map((el, index) => <Tabs year={years[index]} func={setSelectedYear}/>)
 
@@ -38,13 +39,20 @@ const Team = () => {
         if (selectedYear != null){
             fetch("http://localhost:8000/api/team?mandate="+selectedYear)
             .then(response => response.json())
-            .then((response) => {
-                setPeople(response.data.team.map(person => 
+            .then(
+                (response) => {
+                var resp = response.data
+
+                setPeople(resp.team.map(person => 
                     <Person
                         img = {process.env.PUBLIC_URL + person.header} 
                         name = {person.name} 
                         description = {person.role} linke={person.linkedIn} 
                     />
+                ))
+
+                setColaborators(resp.colaborators.map(colab => 
+                    <TextList text={colab.name}/>
                 ))
             })
         }
@@ -58,15 +66,6 @@ const Team = () => {
         <div>
             <h1 id="title">Equipa do NEI</h1>
 
-            { /*
-            <Container>
-                <Row className="justify-content-center">
-                    {yearsC}    
-                </Row>
-            </Container>
-            */
-            }
-
             <Tabs tabs={years} _default={selectedYear} onChange={setSelectedYear} />
             
 
@@ -75,6 +74,22 @@ const Team = () => {
                     {people}
                 </Row>
             </Container>
+
+            {
+            colaborators != null && colaborators.length > 0 && 
+                <Row className="justify-content-center">
+                    <h2>Colaboradores</h2>
+                </Row>
+                
+            }
+
+            <Container>
+                <Row xs={1} lg={3}>
+                    {colaborators}
+                </Row>
+            </Container>
+            
+            
 
         </div>
     ); 
