@@ -8,7 +8,7 @@
     
     // Get url parameter and validate it 
     $mandate = $_GET["mandate"];
-    $validOptions = $conn->query("SELECT DISTINCT mandato FROM team")->fetchAll(PDO::FETCH_ASSOC);
+    $validOptions = $conn->query("SELECT DISTINCT mandato FROM faina")->fetchAll(PDO::FETCH_ASSOC);
     $valid = false;
     foreach($validOptions as $op) {
         if ($op['mandato']==$mandate) {
@@ -21,10 +21,10 @@
         errorResponse('Parâmetro "mandate" inválido!');
     }
 
-    // Get team
-    $query_getContent = "SELECT users.name, linkedIn, header, mandato, team_roles.name AS role FROM team INNER JOIN users ON team.user_id=users.id INNER JOIN team_roles ON team.`role`=team_roles.id WHERE mandato=:mandate ORDER BY team_roles.weight DESC, team_roles.name, users.name";
-    // Get colaborators
-    $query_getContent2 = "SELECT users.name FROM team_colaborators INNER JOIN users ON team_colaborators.colaborator=users.id WHERE mandate=:mandate ORDER BY users.name";
+    // Make query to the database
+    $query_getContent = "SELECT imagem, mandato FROM faina WHERE mandato=:mandate";
+    // Get members
+    $query_getContent2 = "SELECT users.name, faina_roles.name AS role FROM faina_member INNER JOIN users ON faina_member.member=users.id INNER JOIN faina_roles ON faina_member.role=faina_roles.id WHERE year=:mandate ORDER BY faina_roles.weight DESC, users.name";
 
     try{
         // Query 1
@@ -40,8 +40,9 @@
         // Build JSON Response
         $res = $st->fetchAll(PDO::FETCH_ASSOC);
         $res2 = $st2->fetchAll(PDO::FETCH_ASSOC);
-        // Return objects
-        $object = (object) ['data' => (object) ['team' => $res, 'colaborators' => $res2]];
+        // Add res2 to res
+        $res[0]['members'] = $res2;
+        $object = (object) ['data' => $res[0]];
         echo json_encode($object);
     } catch(Exception $e){
         errorResponse('Ocorreu um erro inesperado.', 500, $e);

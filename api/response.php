@@ -7,19 +7,19 @@
      * 
      * @param $st Connection with query prepared for execution
      */
-    function response($st) {
+    function response($st, $object=false) {
         // Execute query
         $st->execute();
         
         // Build JSON Response
         if($st->rowCount() > 0){
             $res = $st->fetchAll(PDO::FETCH_ASSOC);
-            $object = (object) ['data' => $res];
-            echo json_encode($object);
+            $res = $object ? $res[0] : $res;
         } else {
-            $object = (object) ['data' => []];
-            echo json_encode($object);
+            $res = $object ? NULL : [];
         }
+        $object = (object) ['data' => $res];
+        echo json_encode($object);
         exit();
     }
 
