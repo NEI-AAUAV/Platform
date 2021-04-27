@@ -24,7 +24,7 @@
     // Get team
     $query_getContent = "SELECT users.name, linkedIn, header, mandato, team_roles.name AS role FROM team INNER JOIN users ON team.user_id=users.id INNER JOIN team_roles ON team.`role`=team_roles.id WHERE mandato=:mandate ORDER BY team_roles.weight DESC, team_roles.name, users.name";
     // Get colaborators
-    $query_getContent2 = "SELECT users.name FROM team_colaborators INNER JOIN users ON team_colaborators.colaborator=users.id WHERE mandate=:mandate ORDER BY users.name";
+    $query_getContent2 = "SELECT DISTINCT users.name FROM team_colaborators INNER JOIN users ON team_colaborators.colaborator=users.id WHERE mandate=:mandate ORDER BY users.name";
 
     try{
         // Query 1
