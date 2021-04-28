@@ -11,3 +11,24 @@ p:hover {
 .selected {
     color: rgb(115, 187, 93);
 }
+
+p::before {
+    border-bottom: 11px solid #fff;
+    border-bottom-width: 11px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(255, 255, 255);
+    border-left: 11px solid transparent;
+    border-left-width: 11px;
+    border-left-style: solid;
+    border-left-color: transparent;
+    border-right: 11px solid transparent;
+    border-right-width: 11px;
+    border-right-style: solid;
+    border-right-color: transparent;
+    content: "";
+    display: inline-block;
+    position: absolute;
+    right: 40%;
+    bottom: 5px;
+    box-sizing: border-box;
+}
