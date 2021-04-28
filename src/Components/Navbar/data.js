@@ -6,6 +6,10 @@ const data = [
     {
         'name': 'Equipa',
         'link': '/equipa'
+    },
+    {
+        'name': 'Finalistas',
+        'link': '/seniorsLEI'
     }
 ]
 

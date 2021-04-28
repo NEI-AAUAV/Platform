@@ -4,6 +4,12 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 import "./index.css"
 
+/*
+Tab é um componente em que é um "pseudo navbar" para acessar um conjunto de valores, dado em um array.
+
+
+*/
+
 
 const Tab = ({val, func, selectedElement, update}) => {
     //console.log("selEl = "+selectedElement);

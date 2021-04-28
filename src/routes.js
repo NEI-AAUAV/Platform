@@ -7,7 +7,7 @@ import Homepage from "./Pages/Homepage";
 import Team from "./Pages/Team";
 import Partners from "./Pages/Partners";
 import Error404 from "./Pages/Error404";
-
+import SeniorsLEI from "./Pages/SeniorsLEI"
 
 const routes = [
 	{
@@ -18,6 +18,7 @@ const routes = [
             { path: "/equipa", element: <Team /> },
             { path: "/parceiros", element: <Partners /> },
             { path: "/:id", element: <Error404 /> },
+			{ path: "/seniorsLEI", element: <SeniorsLEI/>}
 		],
 	}
 ];
