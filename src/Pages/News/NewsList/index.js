@@ -33,7 +33,7 @@ const NewsList = (props) => {
                             title={article.title}
                             preTitle={article.category}
                             text={article.created_at}
-                            anchor={process.env.REACT_APP_API + "/article/" + article.id}
+                            anchor={"/noticia?article=" + article.id} // TODO: should probably use something other than "?"
                         ></ImageCard>
                     </Col>
                 );

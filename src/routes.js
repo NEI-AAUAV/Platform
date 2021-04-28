@@ -8,6 +8,7 @@ import Team from "./Pages/Team";
 import Partners from "./Pages/Partners";
 import Error404 from "./Pages/Error404";
 import News from "./Pages/News";
+import NewsArticle from "./Pages/NewsArticle";
 
 
 const routes = [
@@ -17,6 +18,7 @@ const routes = [
 		children: [
             { path: "/", element: <Homepage /> },
 			{ path: "/noticias", element: <News /> },
+			{ path: "/noticia", element: <NewsArticle /> },
             { path: "/equipa", element: <Team /> },
             { path: "/parceiros", element: <Partners /> },
             { path: "/:id", element: <Error404 /> },
