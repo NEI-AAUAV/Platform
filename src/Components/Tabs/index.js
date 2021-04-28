@@ -16,10 +16,8 @@ onChange -> função setState que altera o valor de um state.
 */
 
 const Tabs = ({tabs, _default, onChange}) => {
-    console.log("def = "+_default);
 
     const [selectedElement, setSelectedElement] = useState(null);
-    console.log("selEl=" + selectedElement)
 
     const tab = tabs.map(tab => <Tab func={onChange} val={tab} 
         selectedElement={selectedElement} update={setSelectedElement}/>)
