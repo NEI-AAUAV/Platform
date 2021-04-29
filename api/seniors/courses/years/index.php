@@ -1,33 +1,33 @@
 <?php 
     // Load database connection from start.php file
-    require_once("../start.php");
+    require_once("../../../start.php");
     // Load response assistant script
-    require_once("../response.php");
+    require_once("../../../response.php");
 ?>
 <?php
     
     // Get url parameter and validate it 
-    $category = $_GET["category"];
-    $validOptions = $conn->query("SELECT DISTINCT categoria FROM rgm")->fetchAll(PDO::FETCH_ASSOC);
+    $course = $_GET["course"];
+    $validOptions = $conn->query("SELECT DISTINCT course FROM seniors")->fetchAll(PDO::FETCH_ASSOC);
     $valid = false;
     foreach($validOptions as $op) {
-        if ($op['categoria']==$category) {
+        if ($op['course']==$course) {
             $valid = true;
         }
     }
-    if(!$valid and empty($_GET["category"])) {
-        errorResponse('Parâmetro "category" em falta!');
+    if(!$valid and empty($_GET["course"])) {
+        errorResponse('Parâmetro "course" em falta!');
     } else if (!$valid) {
-        errorResponse('Parâmetro "category" inválido!');
+        errorResponse('Parâmetro "course" inválido!');
     }
 
     // Make query to the database
-    $query_getContent = "SELECT mandato, file FROM `rgm` WHERE categoria=:categoria ORDER BY mandato DESC, file";
+    $query_getContent = "SELECT DISTINCT year FROM seniors WHERE course=:courseVar ORDER BY year";
 
     try{
         $st = $conn->prepare($query_getContent);
         // Bind parameters to query
-        $st->bindParam(':categoria', $category);
+        $st->bindParam(':courseVar', $course);
         // Return response
         response($st);
     } catch(Exception $e){

@@ -1,0 +1,22 @@
+#desc {
+    color: gray;
+    font-size: small;
+}
+
+#linke {
+    transition: ease-in-out;
+    transition-duration: 0.25s;
+    color: rgb(78, 156, 54);
+    
+}
+
+#linke:hover {
+    color: rgb(56, 104, 42);
+}
+
+#circle {
+    background: rgb(78, 156, 54);
+    border-radius: 50%;
+    width: 50px;
+    position: center;
+}

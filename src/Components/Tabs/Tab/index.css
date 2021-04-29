@@ -1,0 +1,13 @@
+p {
+    transition: ease-in-out;
+    transition-duration: 0.0625s;
+}
+
+p:hover {
+    color: rgb(78, 156, 54);
+    cursor: pointer;
+}
+
+.selected {
+    color: rgb(115, 187, 93);
+}
