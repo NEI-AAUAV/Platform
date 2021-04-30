@@ -22,7 +22,7 @@
     }
 
     // Make query to the database
-    $query_getContent = "SELECT mandato, file FROM `rgm` WHERE categoria=:categoria ORDER BY mandato DESC, file";
+    $query_getContent = "SELECT mandato, file FROM `rgm` WHERE categoria=:categoria ORDER BY mandato DESC, file DESC";
 
     try{
         $st = $conn->prepare($query_getContent);

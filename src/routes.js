@@ -7,6 +7,7 @@ import Homepage from "./Pages/Homepage";
 import Team from "./Pages/Team";
 import Partners from "./Pages/Partners";
 import Error404 from "./Pages/Error404";
+import RGM from "./Pages/RGM";
 
 
 const routes = [
@@ -17,6 +18,7 @@ const routes = [
             { path: "/", element: <Homepage /> },
             { path: "/equipa", element: <Team /> },
             { path: "/parceiros", element: <Partners /> },
+			{ path: "/rgm/:id", element: <RGM /> },
             { path: "/:id", element: <Error404 /> },
 		],
 	}

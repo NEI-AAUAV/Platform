@@ -19,7 +19,7 @@ const data = [
                 'link': '/rgm/rac'
             },
             {
-                'name': 'ATAs',
+                'name': 'Atas',
                 'link': '/rgm/atas'
             }
         ]

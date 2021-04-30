@@ -1,0 +1,11 @@
+.document {
+    border-radius: .25rem;
+}
+a.document, a.document:hover {
+    text-transform: none;
+    text-decoration: none!important;
+}
+
+a.document:hover {
+    background-color: #e9fbec;
+}

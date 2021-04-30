@@ -4,3 +4,8 @@ body {
     font-family: Montserrat, Helvetica,Arial,sans-serif;
     font-weight: 300;
 }
+
+/* Bootstrap corrections */
+.text-primary { color: #147a26!important }
+
+a { color: #147a26!important }
