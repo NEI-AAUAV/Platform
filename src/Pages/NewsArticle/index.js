@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Jumbotron, Image } from "react-bootstrap";
+import { Container, Row, Col, Image } from "react-bootstrap";
 import "./index.css";
 
 const NewsArticle = () => {
@@ -17,7 +17,7 @@ const NewsArticle = () => {
             .then((response) => {
                 if('data' in response) {
                     setIsLoading(false);
-                    setArticle(response["data"][0]);
+                    setArticle(response["data"]);
                 }
             });
     }, []);
@@ -37,7 +37,7 @@ const NewsArticle = () => {
             </h3>
         </Container>
         :
-        <Container>
+        <Container id="article-body">
             <Row>
                 <Image src={process.env.REACT_APP_UPLOADS + article.header} alt="header" className="w-100" rounded />
             </Row>
@@ -48,6 +48,8 @@ const NewsArticle = () => {
             <Row className="text-center justify-content-center mt-3">
                 <Col md={4} sm={12}>
                     <b>Autor:</b> {article.author ? article.author : "NEI"}
+                    <br/>
+                    <a href={"noticias?author=" + article.authorId}>Mais deste autor</a>
                 </Col>
                 <Col md={4} sm={12}>
                     <b>Criado em:</b> {article.created_at}
@@ -60,7 +62,7 @@ const NewsArticle = () => {
             </Row>
             <Row className="mt-4 text-justify">
                 { /* this seems bad, maybe use this instead: https://github.com/remarkablemark/html-react-parser */ }
-                <p id="content" dangerouslySetInnerHTML={{__html: article.content}}></p>
+                <p dangerouslySetInnerHTML={{__html: article.content}}></p>
             </Row>
 
             { /* idea: a button to go back to news page, with previous filters? */ }

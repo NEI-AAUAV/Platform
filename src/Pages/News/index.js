@@ -24,13 +24,16 @@ const News = () => {
         }
 
         // build string for api request
-        var api = "/news?";
+        if (window.location.search)
+            var api = "/news" + window.location.search + "&";
+        else
+            var api = "/news?";
+            
         if (whitelist != newsTypes) {
             whitelist.forEach( v => {
                 api = api + "category[]=" + v + "&"; 
             });
         }        
-        // TODO: add author stuff later
 
         setIsLoading(true);
         setNews([]);
