@@ -15,7 +15,7 @@ const News = () => {
 
     /** Get given news page from API */
     const fetchPage = (p_num) => {
-        console.log("currPage: " + currPage + ", new_page: " + p_num);
+        //console.log("currPage: " + currPage + ", new_page: " + p_num);
 
         // check if there are no categories selected
         if (whitelist.length == 0) {

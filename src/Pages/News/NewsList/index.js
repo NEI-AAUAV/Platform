@@ -33,7 +33,7 @@ const NewsList = (props) => {
                             title={article.title}
                             preTitle={article.category}
                             text={article.created_at}
-                            anchor={"/noticia?article=" + article.id} // TODO: should probably use something other than "?"
+                            anchor={"/noticia/" + article.id}
                         ></ImageCard>
                     </Col>
                 );

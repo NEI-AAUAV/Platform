@@ -18,7 +18,7 @@ const routes = [
 		children: [
             { path: "/", element: <Homepage /> },
 			{ path: "/noticias", element: <News /> },
-			{ path: "/noticia", element: <NewsArticle /> },
+			{ path: "/noticia/:id", element: <NewsArticle /> },
             { path: "/equipa", element: <Team /> },
             { path: "/parceiros", element: <Partners /> },
             { path: "/:id", element: <Error404 /> },
