@@ -1,5 +1,9 @@
 const data = [
     {
+        'name': 'Notícias',
+        'link': '/noticias'
+    },
+    {
         'name': 'Parceiros',
         'link': '/parceiros'
     },

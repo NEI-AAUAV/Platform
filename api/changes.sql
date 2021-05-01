@@ -1,5 +1,8 @@
 -- Changes to data model
 
+-- Partners
+UPDATE TABLE partners SET header=CONCAT("upload",header);
+
 -- Create table for History
 CREATE TABLE history (
     moment DATE PRIMARY KEY,
