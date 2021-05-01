@@ -1,13 +1,13 @@
-p {
+.tab p {
     transition: ease-in-out;
     transition-duration: 0.0625s;
 }
 
-p:hover {
+.tab p:hover {
     color: rgb(78, 156, 54);
     cursor: pointer;
 }
 
-.selected {
+.tab .selected {
     color: rgb(115, 187, 93);
 }
