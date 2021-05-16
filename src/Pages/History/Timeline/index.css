@@ -1,0 +1,10 @@
+.timeline::before {
+    content: "";
+    position: absolute;
+    height: 85%;
+    width: 4px;
+    background: #66615b;
+    left: 50%;
+    margin-top: -20px;
+    margin-left: -2px;
+}

@@ -1,0 +1,18 @@
+.timeline-card {
+    border: 1px solid grey;
+    border-radius: 0.30em;
+}
+
+.timeline-marker img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.timeline-item:nth-child(2) {
+    flex-direction: row-reverse;
+}
+
+.timeline-item:nth-child(2) .timeline-date {
+    text-align: right;
+}

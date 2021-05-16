@@ -10,6 +10,7 @@ import Error404 from "./Pages/Error404";
 import News from "./Pages/News";
 import NewsArticle from "./Pages/NewsArticle";
 import RGM from "./Pages/RGM";
+import History from "./Pages/History";
 
 
 const routes = [
@@ -23,6 +24,7 @@ const routes = [
             { path: "/equipa", element: <Team /> },
             { path: "/parceiros", element: <Partners /> },
 			{ path: "/rgm/:id", element: <RGM /> },
+			{ path: "/historia", element: <History />},
             { path: "/:id", element: <Error404 /> },
 		],
 	}

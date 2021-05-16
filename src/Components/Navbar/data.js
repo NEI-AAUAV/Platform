@@ -12,6 +12,10 @@ const data = [
         'link': '/equipa'
     },
     {
+        'name': 'História',
+        'link': '/historia'
+    },
+    {
         'name': 'RGM',
         'dropdown': [
             {
