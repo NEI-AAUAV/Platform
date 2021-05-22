@@ -94,26 +94,6 @@ const NEICalendar = () => {
         setCalendarTo(next);
     }
 
-    useEffect(() => {
-        console.log("STARTED REQUEST");
-        fetch('https://www.googleapis.com/calendar/v3/calendars/7m2mlm7k1huomjeaa45gbhog0k%40group.calendar.google.com/events?key=AIzaSyDnT8fO6ARjx3OxMJCimhenNDLTkGuOmjE&timeMin=2021-04-25T00%3A00%3A00%2B01%3A00&timeMax=2021-06-06T00%3A00%3A00%2B01%3A00&singleEvents=true&maxResults=9999')
-            .then(res => res.json())
-            .then(json => {
-                console.log(json['items']);
-                let apiEvents = [];
-                json['items'].forEach(e => {
-                    apiEvents.push({
-                        'id': e['id'],
-                        'title': e['summary'],
-                        'start': new Date(e['start']['date']),
-                        'end': new Date(e['end']['date'])
-                    });
-                });
-                console.log(apiEvents);
-                setEvents(apiEvents);
-            });
-    }, []);
-
     return (
         events.length>0
         &&
