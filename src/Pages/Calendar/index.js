@@ -1,10 +1,7 @@
-import React from "react";
-
+import React, {useEffect, useState} from "react";
 import NEICalendar from "./NEICalendar";
 
-
 const Calendar = () => {
-
 
     return (
         <div>
