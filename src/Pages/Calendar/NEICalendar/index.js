@@ -58,12 +58,19 @@ const NEICalendar = () => {
                     console.log(json['items']);
                     let apiEvents = [];
                     json['items'].forEach(e => {
+                        const start = 'date' in e['start'] ? e['start']['date'] : e['start']['dateTime'];
+                        let end = 'date' in e['end'] ? e['end']['date'] : e['end']['dateTime'];
+                        if ('date' in e['end']) {
+                            let endDate = new Date(end);
+                            endDate = endDate.setDate(endDate.getDate()-1);
+                            end = endDate;
+                        }
                         apiEvents.push({
                             'id': e['id'],
                             'title': e['summary'],
-                            'start': new Date(e['start']['date']),
-                            'end': new Date(e['end']['date']),
-                            
+                            'start': new Date(start),
+                            'end': new Date(end),
+                            'allDay': 'date' in e['start']
                         });
                     });
                     console.log(apiEvents);
