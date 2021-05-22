@@ -9,13 +9,51 @@ import "./index.css";
 
 
 let allViews = Object.keys(Views).map(k => Views[k]);
+const localizer = momentLocalizer(moment);
 
 const ColoredDateCellWrapper = ({ children }) =>
     React.cloneElement(React.Children.only(children), {
         style: {
             backgroundColor: 'lightblue',
         },
-    });
+
+// COMPONENT
+const NEICalendar = () => {
+    
+    // State
+    const [events, setEvents] = useState([]);
+    const [calendarSince, setCalendarSince] = useState(null);
+    const [calendarTo, setCalendarTo] = useState(null);
+
+    // On render, initialize calendarSince and calendarTo based on current moment
+    useEffect(() => {
+        timespanChanged(new Date());
+    }, []);
+
+    // Get events from API on render
+    useEffect(() => {
+        if(calendarSince!=null && calendarTo!=null) {
+            const tmin = `${calendarSince.getFullYear()}-${calendarSince.getMonth()+1}-${calendarSince.getDate()}T00%3A00%3A00%2B01%3A00`;
+            const tmax = `${calendarTo.getFullYear()}-${calendarTo.getMonth()+1}-${calendarTo.getDate()}T00%3A00%3A00%2B01%3A00`;
+            fetch(`https://www.googleapis.com/calendar/v3/calendars/7m2mlm7k1huomjeaa45gbhog0k%40group.calendar.google.com/events?key=AIzaSyDnT8fO6ARjx3OxMJCimhenNDLTkGuOmjE&timeMin=${tmin}&timeMax=${tmax}&singleEvents=true&maxResults=9999`)
+                .then(res => res.json())
+                .then(json => {
+                    console.log(json['items']);
+                    let apiEvents = [];
+                    json['items'].forEach(e => {
+                        apiEvents.push({
+                            'id': e['id'],
+                            'title': e['summary'],
+                            'start': new Date(e['start']['date']),
+                            'end': new Date(e['end']['date']),
+                            
+                        });
+                    });
+                    console.log(apiEvents);
+                    setEvents(apiEvents);
+                });
+        }
+    }, [calendarSince, calendarTo]);
 
 const localizer = momentLocalizer(moment);
 
