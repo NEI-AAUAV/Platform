@@ -1,18 +1,46 @@
 
+// CONSTANTS
+const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+const categories = {
+    '1A': {
+        'filters': ['[1A]'],
+        'color': 'rgb(1, 202, 228)'
+    },
+    '2A': {
+        'filters': ['[2A]'],
+        'color': 'rgb(1, 171, 192)'
+    },
+    '3A': {
+        'filters': ['[3A]'],
+        'color': 'rgb(1, 135, 152)'
+    },
+    'MEI': {
+        'filters': ['[MEI]'],
+        'color': 'rgb(1, 90, 101)'
+    },
+    'Calendário escolar': {
+        'filters': ["FERIADO", "Época de", "Férias"],
+        'color': 'rgb(255, 162, 0)'
+    },
+    'NEI': {
+        'filters': ["*"], // default
+        'color': 'rgb(20, 122, 38)'
+    }
+}
+
+// FUNCTIONS
 // Colorize events acoording to type
 const eventStyleGetter = (event, start, end, isSelected) => {
     let color = "rgba(20, 122, 38";
-    if (event.['title'].indexOf("MEI")>=0) {
-        color = "rgba(1, 90, 101";
-    } else if (event.['title'].indexOf("[3A]")>=0) {
-        color = "rgba(1, 135, 152";
-    } else if (event.['title'].indexOf("[2A]")>=0) {
-        color = "rgba(1, 171, 192";
-    } else if (event.['title'].indexOf("[1A]")>=0) {
-        color = "rgba(1, 202, 228";
-    } else if (["FERIADO", "Época de", "Férias"].some(term => event['title'].toLowerCase().indexOf(term.toLowerCase())>=0)) {
-        color = "rgba(255, 162, 0";
-    }
+
+    Object.entries(categories).forEach(([key, c]) => {
+        c['filters'].forEach(f => {
+            if(event['title'].toLowerCase().indexOf(f.toLowerCase())>=0) {
+                color = c['color'].replace('rgb(', 'rgba(').replace(')', '');
+            }
+        });
+    });
 
     // Reduce opacity in past events
     var yesterday = new Date((new Date()).valueOf() - 1000*60*60*24);
@@ -51,7 +79,5 @@ const tooltipAcessor = (e) => {
 
 // Add leading zeros to numbers (Example: (3, 2) => 03)
 const zeroPad = (num, places) => String(num).padStart(places, '0');
-
-const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
  
-export {eventStyleGetter, tooltipAcessor, zeroPad, months};
+export {eventStyleGetter, tooltipAcessor, zeroPad, months, categories};
