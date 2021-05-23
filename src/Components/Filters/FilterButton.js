@@ -10,8 +10,9 @@ import { ToggleButton, ToggleButtonGroup } from "react-bootstrap";
  *                                          color: Normal color (optional, if missing .primary will be applied)
  * - activeFilters          str[]       List of active filters
  * - setActiveFilters       function    Function to change active filters list
+ * - btnClass               str         Class for button
  */
-const FilterButton = ({filter, setActiveFilters, activeFilters}) => {
+const FilterButton = ({filter, setActiveFilters, activeFilters, btnClass}) => {
 
     const [style, setStyle] = useState({});
     const [hover, setHover] = useState(false);
@@ -49,6 +50,7 @@ const FilterButton = ({filter, setActiveFilters, activeFilters}) => {
             key={filter['filter']}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
+            className={btnClass}
         >
             <ToggleButton 
                 variant="outline-primary pill" 

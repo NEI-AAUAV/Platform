@@ -11,13 +11,14 @@ const Calendar = () => {
         <div>
             <h1 className="text-center">Calendário</h1>
 
-            <div className="col-12 d-flex my-3">
-                <h6 className="text-primary my-auto ml-auto mr-3">Categorias</h6>
+            <div className="col-12 d-flex flex-row flex-wrap my-5">
+                <h6 className="text-primary mb-3 my-md-auto ml-auto pr-3 col-12 col-md-4 text-center text-md-right">Categorias</h6>
                 <Filters 
                     filterList={filters}
                     activeFilters={selection}
                     setActiveFilters={setSelection}
-                    className="mr-auto"
+                    className="mr-auto col-12 col-md-8 d-flex flex-row flex-wrap"
+                    btnClass="mx-auto mr-md-2 ml-md-0 mb-2"
                 />
             </div>
 

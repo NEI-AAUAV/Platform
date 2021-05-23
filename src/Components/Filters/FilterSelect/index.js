@@ -12,10 +12,10 @@ import Filters from "../";
  * - setActiveFilters                   see FilterButton doc
  */
 
-const FilterSelect = ({children, activeFilters, setActiveFilters, filterList}) => {
+const FilterSelect = ({children, activeFilters, setActiveFilters, filterList, className, btnClass}) => {
 
     return(
-        <Accordion>
+        <Accordion className={className}>
             { /* Accordion header,with the toggler button. Can display props.children on the right side. */ }
             <div className="d-flex justify-content-between mt-4">
                 <Accordion.Toggle as={Button} variant="primary" className="mb-3" eventKey="1">
@@ -31,6 +31,7 @@ const FilterSelect = ({children, activeFilters, setActiveFilters, filterList}) =
                     activeFilters={activeFilters}
                     setActiveFilters={setActiveFilters}
                     filterList={filterList}
+                    btnClass={btnClass}
                 />
             </Accordion.Collapse>
         </Accordion>
