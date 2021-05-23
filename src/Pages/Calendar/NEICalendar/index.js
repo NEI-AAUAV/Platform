@@ -39,7 +39,6 @@ const NEICalendar = ({selection, setInitialCategories}) => {
             fetch(`https://www.googleapis.com/calendar/v3/calendars/7m2mlm7k1huomjeaa45gbhog0k%40group.calendar.google.com/events?key=AIzaSyDnT8fO6ARjx3OxMJCimhenNDLTkGuOmjE&timeMin=${tmin}&timeMax=${tmax}&singleEvents=true&maxResults=9999`)
                 .then(res => res.json())
                 .then(json => {
-                    console.log(json['items']);
                     let apiEvents = [];
                     json['items'].forEach(e => {
                         // Check that event matches selection
@@ -73,7 +72,6 @@ const NEICalendar = ({selection, setInitialCategories}) => {
                             'allDay': 'date' in e['start']
                         });
                     });
-                    console.log(apiEvents);
                     setEvents(apiEvents);
                 });
         }

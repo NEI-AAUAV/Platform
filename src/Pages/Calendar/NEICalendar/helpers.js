@@ -44,7 +44,7 @@ const eventStyleGetter = (event, start, end, isSelected) => {
 
     // Reduce opacity in past events
     var yesterday = new Date((new Date()).valueOf() - 1000*60*60*24);
-    color += (end <= yesterday) ? ", 0.6)" : ", 1)";
+    color += (event['end'] <= yesterday) ? ", 0.6)" : ", 1)";
 
     return {
         style: {
