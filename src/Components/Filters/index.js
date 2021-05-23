@@ -7,8 +7,9 @@ import { Button, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 ** - filterList: all available filters
 ** - activeFilters: currently selected filters
 ** - handler: function to call with onChange
+** - className: class text for parent element
 */
-const Filters = ({activeFilters, handler, filterList}) => {
+const Filters = ({activeFilters, handler, filterList, className}) => {
 
     console.log("filterList", filterList);
 
@@ -17,7 +18,7 @@ const Filters = ({activeFilters, handler, filterList}) => {
     // update toggle button text
     useEffect( () => {
         if (activeFilters.length == filterList.length)
-            setToggleText("Nenhum");
+            setToggleText("Nenhumas");
         else
             setToggleText("Todas");
     }, [activeFilters]);
@@ -31,7 +32,7 @@ const Filters = ({activeFilters, handler, filterList}) => {
     };
 
     return (
-        <div className="pt-3 mb-3">
+        <div className={"pt-3 mb-3 " + className}>
             <Button variant="outline-success" className="mr-4" onClick={toggleAll}>
                 {toggleText}
             </Button>

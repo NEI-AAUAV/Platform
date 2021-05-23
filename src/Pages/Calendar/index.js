@@ -9,13 +9,17 @@ const Calendar = () => {
 
     return (
         <div>
-            <h1 className="text-center mb-5">Calendário</h1>
+            <h1 className="text-center">Calendário</h1>
 
-            <Filters 
-                filterList={filters}
-                activeFilters={selection}
-                handler={setSelection}
-            />
+            <div className="col-12 d-flex my-3">
+                <h5 className="text-primary my-auto ml-auto mr-3">Categorias</h5>
+                <Filters 
+                    filterList={filters}
+                    activeFilters={selection}
+                    handler={setSelection}
+                    className="mr-auto"
+                />
+            </div>
 
             <NEICalendar 
                 selection={selection}
