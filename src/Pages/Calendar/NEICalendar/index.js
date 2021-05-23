@@ -8,6 +8,7 @@ import NEIAgenda from "./NEIAgenda";
 import {eventStyleGetter, tooltipAcessor, zeroPad, dayString, months} from "./helpers";
 import "./index.css";
 
+require('moment/locale/pt.js');
 
 // COMPONENT
 const NEICalendar = () => {
@@ -95,6 +96,15 @@ const NEICalendar = () => {
                 agenda: {
                     event: NEIAgenda
                 }
+            }}
+            messages={{
+                next: "Próximo",
+                previous: "Anterior",
+                today: "Hoje",
+                month: "Mês",
+                week: "Semana",
+                day: "Dia",
+                allDay: "Todo o dia"
             }}
         />
     );
