@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import NEICalendar from "./NEICalendar";
-import FilterSelect from "../../Components/FilterSelect";
+import Filters from "../../Components/Filters";
 
 const Calendar = () => {
 
@@ -11,7 +11,7 @@ const Calendar = () => {
         <div>
             <h1 className="text-center mb-5">Calendário</h1>
 
-            <FilterSelect 
+            <Filters 
                 filterList={filters}
                 activeFilters={selection}
                 handler={setSelection}

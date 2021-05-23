@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap"
 import NewsList from "./NewsList";
 import PageNav from "../../Components/PageNav";
-import FilterSelect from "../../Components/FilterSelect";
+import FilterSelect from "../../Components/Filters/FilterSelect";
 
 const News = () => {
 
@@ -75,7 +75,7 @@ const News = () => {
             }
             <h1 className="text-center">Notícias</h1>
 
-            <FilterSelect filterList={newsTypes} activeFilters={whitelist} handler={setWhitelist}>
+            <FilterSelect accordion={true} filterList={newsTypes} activeFilters={whitelist} handler={setWhitelist}>
                 <PageNav page={currPage} total={totalPages} handler={fetchPage}></PageNav>
             </FilterSelect>
 
