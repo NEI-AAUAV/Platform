@@ -27,25 +27,26 @@ const eventStyleGetter = (event, start, end, isSelected) => {
 
 // Tooltip acessor
 // This method returns the text tooltip given an event 
-const tooltipAcessor = (e) => {    
+const tooltipAcessor = (e) => {
+    let message = e['title'] + '\n___\n';
+
     if (e['allDay']) {
-        return "Todo o dia";
+        message += "Todo o dia";
     }
     // If not all day, compute text for time span
-    if ((Math.abs(e['end']-e['start'])/(1000 * 60 * 60))<24) {
+    else if ((Math.abs(e['end']-e['start'])/(1000 * 60 * 60))<24) {
         // Same day (less than 24 hours diff)
-        return `Das ${zeroPad(e['start'].getHours()+1, 2)}:${zeroPad(e['start'].getMinutes(), 2)} às ${zeroPad(e['end'].getHours()+1, 2)}:${zeroPad(e['end'].getMinutes(), 2)}`;
+        message += `Das ${zeroPad(e['start'].getHours()+1, 2)}:${zeroPad(e['start'].getMinutes(), 2)} às ${zeroPad(e['end'].getHours()+1, 2)}:${zeroPad(e['end'].getMinutes(), 2)}`;
+    // Else, different days
+    // On same month
+    } else if (e['start'].getMonth() == e['end'].getMonth()) {
+        message += `De dia ${e['start'].getDate()} às ${zeroPad(e['start'].getHours()+1, 2)}:${zeroPad(e['start'].getMinutes(), 2)} a dia ${e['end'].getDate()} às ${zeroPad(e['end'].getHours()+1, 2)}:${zeroPad(e['end'].getMinutes(), 2)}`;
+    // On different months
     } else {
-        // Else, different days
-        if (e['start'].getMonth() == e['end'].getMonth()) {
-            // On same month
-            return `De dia ${e['start'].getDate()} às ${zeroPad(e['start'].getHours()+1, 2)}:${zeroPad(e['start'].getMinutes(), 2)} a dia ${e['end'].getDate()} às ${zeroPad(e['end'].getHours()+1, 2)}:${zeroPad(e['end'].getMinutes(), 2)}`;
-        } else {
-            // On different months
-            return `De ${e['start'].getDate()} de ${months[e['start'].getMonth()]} às ${zeroPad(e['start'].getHours()+1, 2)}:${zeroPad(e['start'].getMinutes(), 2)} até ${e['end'].getDate()} de ${months[e['end'].getMonth()]} às ${zeroPad(e['end'].getHours()+1, 2)}:${zeroPad(e['end'].getMinutes(), 2)}`;
-        }
+        message += `De ${e['start'].getDate()} de ${months[e['start'].getMonth()]} às ${zeroPad(e['start'].getHours()+1, 2)}:${zeroPad(e['start'].getMinutes(), 2)} até ${e['end'].getDate()} de ${months[e['end'].getMonth()]} às ${zeroPad(e['end'].getHours()+1, 2)}:${zeroPad(e['end'].getMinutes(), 2)}`;
     }
-    return "";
+
+    return message;
 }
 
 // Add leading zeros to numbers (Example: (3, 2) => 03)
