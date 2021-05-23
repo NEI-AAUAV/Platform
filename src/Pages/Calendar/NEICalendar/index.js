@@ -101,6 +101,7 @@ const NEICalendar = () => {
         events.length>0
         &&
         <ReactCalendar
+            popup
             className="col-12 vh-100"
             events={events}
             views={['month', 'agenda']}
