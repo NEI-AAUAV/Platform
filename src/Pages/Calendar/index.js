@@ -16,7 +16,7 @@ const Calendar = () => {
                 <Filters 
                     filterList={filters}
                     activeFilters={selection}
-                    handler={setSelection}
+                    setActiveFilters={setSelection}
                     className="mr-auto"
                 />
             </div>
@@ -25,7 +25,7 @@ const Calendar = () => {
                 selection={selection}
                 setInitialCategories={(fs) => {
                     setFilters(fs);
-                    setSelection(fs);
+                    setSelection(fs.map(f => f['filter']));
                 }}
             />
         </div>

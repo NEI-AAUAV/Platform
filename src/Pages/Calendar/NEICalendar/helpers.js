@@ -5,27 +5,33 @@ const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', '
 const categories = {
     '1A': {
         'filters': ['[1A]'],
-        'color': 'rgb(1, 202, 228)'
+        'color': 'rgb(1, 202, 228)',
+        'hover': '#019db2'
     },
     '2A': {
         'filters': ['[2A]'],
-        'color': 'rgb(1, 171, 192)'
+        'color': 'rgb(1, 171, 192)',
+        'hover': '#018798'
     },
     '3A': {
         'filters': ['[3A]'],
-        'color': 'rgb(1, 135, 152)'
+        'color': 'rgb(1, 135, 152)',
+        'hover': '#015a65'
     },
     'MEI': {
         'filters': ['[MEI]'],
-        'color': 'rgb(1, 90, 101)'
+        'color': 'rgb(1, 90, 101)',
+        'hover': '#012d32'
     },
     'Calendário escolar': {
         'filters': ["FERIADO", "Época de", "Férias", "Último dia"],
-        'color': 'rgb(255, 162, 0)'
+        'color': 'rgb(255, 162, 0)',
+        'hover': '#cc8100'
     },
     'NEI': {
         'filters': ["*"], // default
-        'color': 'rgb(20, 122, 38)'
+        'color': 'rgb(20, 122, 38)',
+        'hover': '#0e581c'
     }
 }
 

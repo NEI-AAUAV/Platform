@@ -22,7 +22,13 @@ const NEICalendar = ({selection, setInitialCategories}) => {
     // Also initialize categories
     useEffect(() => {
         timespanChanged(new Date());
-        setInitialCategories(Object.keys(categoriesTypes));
+        setInitialCategories(Object.entries(categoriesTypes).map(([key, val]) => {
+            return {
+                'filter': key,
+                'color': val['color'],
+                'hover': val['hover']
+            }
+        }));
     }, []);
 
     // Get events from API on render (and every time selection or time span changes)
