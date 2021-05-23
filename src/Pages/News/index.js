@@ -75,7 +75,12 @@ const News = () => {
             }
             <h1 className="text-center">Notícias</h1>
 
-            <FilterSelect accordion={true} filterList={newsTypes} activeFilters={whitelist} handler={setWhitelist}>
+            <FilterSelect 
+                accordion={true}
+                filterList={newsTypes.map(nt => {return {'filter': nt}})}
+                activeFilters={whitelist}
+                setActiveFilters={setWhitelist}
+            >
                 <PageNav page={currPage} total={totalPages} handler={fetchPage}></PageNav>
             </FilterSelect>
 
