@@ -88,3 +88,27 @@
 .rbc-off-range-bg {
     background-color: rgba(242, 242, 242, 0.4);
 }
+
+/* Views // Agenda */
+tr {
+    display:flex;
+    flex-direction: row;
+    background: none!important;
+    border: none!important;
+}
+tr > td:first-of-type {
+    margin-left: auto;
+}
+td {
+    border-width: 1px 0 0 0!important;
+    border-color: #DDD;
+    border-style: solid;
+    width: 33.33%!important;
+    padding-bottom: 2rem!important;
+}
+thead th:nth-of-type(1){width:20%!important;max-width:20%!important;}
+thead th:nth-of-type(2){width:30%!important;max-width:30%!important;}
+thead th:nth-of-type(3){width:50%!important;max-width:50%!important;}
+td.rbc-agenda-date-cell{width:20%!important;max-width:20%!important;}
+td.rbc-agenda-time-cell{width:30%!important;max-width:30%!important;}
+td.rbc-agenda-event-cell{width:50%!important;max-width:50%!important;padding:0!important}
