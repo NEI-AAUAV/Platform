@@ -5,13 +5,13 @@ import {
 } from 'react-big-calendar';
 import moment from 'moment';
 import NEIAgenda from "./NEIAgenda";
-import {eventStyleGetter, tooltipAcessor, zeroPad, dayString, months} from "./helpers";
+import {eventStyleGetter, tooltipAcessor, zeroPad, dayString, months, categories as categoriesTypes} from "./helpers";
 import "./index.css";
 
 require('moment/locale/pt.js');
 
 // COMPONENT
-const NEICalendar = () => {
+const NEICalendar = ({selection, setInitialCategories}) => {
     
     // State
     const [events, setEvents] = useState([]);
@@ -19,11 +19,13 @@ const NEICalendar = () => {
     const [calendarTo, setCalendarTo] = useState(null);
 
     // On render, initialize calendarSince and calendarTo based on current moment
+    // Also initialize categories
     useEffect(() => {
         timespanChanged(new Date());
+        setInitialCategories(Object.keys(categoriesTypes));
     }, []);
 
-    // Get events from API on render
+    // Get events from API on render (and every time selection or time span changes)
     useEffect(() => {
         if(calendarSince!=null && calendarTo!=null) {
             const tmin = `${calendarSince.getFullYear()}-${calendarSince.getMonth()+1}-${calendarSince.getDate()}T00%3A00%3A00%2B01%3A00`;
@@ -34,6 +36,22 @@ const NEICalendar = () => {
                     console.log(json['items']);
                     let apiEvents = [];
                     json['items'].forEach(e => {
+                        // Check that event matches selection
+                        let matchAny = false;
+                        let matchSelected = false;
+                        Object.entries(categoriesTypes).forEach(([key, c]) => {
+                            c['filters'].forEach(f => {
+                                if(e['summary'].toLowerCase().indexOf(f.toLowerCase())>=0) {
+                                    matchAny=true;
+                                    matchSelected = selection.indexOf(key)>=0;
+                                }
+                            });
+                        });
+                        // It must match any filter, if not, is considered NEI event (default) and to be showed NEI must be in selection
+                        if(matchSelected==false && (matchAny && selection.indexOf('NEI')>=0 || selection.indexOf('NEI')<0)) {
+                            return;
+                        }
+                        // If so, compute object to add to events list
                         const start = 'date' in e['start'] ? e['start']['date'] : e['start']['dateTime'];
                         let end = 'date' in e['end'] ? e['end']['date'] : e['end']['dateTime'];
                         if ('date' in e['end']) {
@@ -53,7 +71,7 @@ const NEICalendar = () => {
                     setEvents(apiEvents);
                 });
         }
-    }, [calendarSince, calendarTo]);
+    }, [selection, calendarSince, calendarTo]);
 
     // On navigate, update next and prev moments and recall API
     const timespanChanged = (date) => {
@@ -78,8 +96,6 @@ const NEICalendar = () => {
     }
 
     return (
-        events.length>0
-        &&
         <ReactCalendar
             popup
             className="col-12 vh-100"
