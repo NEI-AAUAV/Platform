@@ -1,18 +1,22 @@
 
 // Colorize events acoording to type
 const eventStyleGetter = (event, start, end, isSelected) => {
-    let color = "#147a26";
+    let color = "rgba(20, 122, 38";
     if (event.['title'].indexOf("MEI")>=0) {
-        color = "#015a65";
+        color = "rgba(1, 90, 101";
     } else if (event.['title'].indexOf("[3A]")>=0) {
-        color = "#018798";
+        color = "rgba(1, 135, 152";
     } else if (event.['title'].indexOf("[2A]")>=0) {
-        color = "#01abc0";
+        color = "rgba(1, 171, 192";
     } else if (event.['title'].indexOf("[1A]")>=0) {
-        color = "#01cae4";
+        color = "rgba(1, 202, 228";
     } else if (["FERIADO", "Época de", "Férias"].some(term => event['title'].toLowerCase().indexOf(term.toLowerCase())>=0)) {
-        color = "#FFA200";
+        color = "rgba(255, 162, 0";
     }
+
+    // Reduce opacity in past events
+    var yesterday = new Date((new Date()).valueOf() - 1000*60*60*24);
+    color += (end <= yesterday) ? ", 0.6)" : ", 1)";
 
     return {
         style: {
