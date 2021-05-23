@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Button, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+import FilterButton from "./FilterButton";
 
-/* Filter pills
-**
-** Props:
-** - filterList: all available filters
-** - activeFilters: currently selected filters
-** - handler: function to call with onChange
-** - className: class text for parent element
-*/
-const Filters = ({activeFilters, handler, filterList, className}) => {
-
-    console.log("filterList", filterList);
+/**
+ * Filter pills
+ * 
+ * Parameters:
+ * - filterList                 str[]   List of available filters
+ * - className                  str     class text for parent element
+ * - activeFilters                      see FilterButton doc 
+ * - setActiveFilters                   see FilterButton doc
+ */
+const Filters = ({activeFilters, setActiveFilters, filterList, className}) => {
 
     const [toggleText, setToggleText] = useState("Nenhum");
 
@@ -26,9 +26,9 @@ const Filters = ({activeFilters, handler, filterList, className}) => {
     // unselect all filters if all are selected, otherwise select all of them
     const toggleAll = () => {
         if (activeFilters.length == filterList.length)
-            handler([]);
+            setActiveFilters([]);
         else
-            handler(filterList);
+            setActiveFilters(filterList.map(f => f['filter']));
     };
 
     return (
@@ -37,15 +37,15 @@ const Filters = ({activeFilters, handler, filterList, className}) => {
                 {toggleText}
             </Button>
 
-            {filterList.map( t => {
-                return (
-                    <ToggleButtonGroup type="checkbox" value={activeFilters} onChange={handler} className="mr-2" key={t}>
-                        <ToggleButton variant="outline-primary pill" className="rounded-pill" value={t}>
-                            {t}
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                );
-            })}
+            {
+                filterList.map( f => 
+                    <FilterButton
+                        filter={f} 
+                        setActiveFilters={setActiveFilters}
+                        activeFilters={activeFilters}
+                    />
+                )
+            }
         </div>
     );
 }
