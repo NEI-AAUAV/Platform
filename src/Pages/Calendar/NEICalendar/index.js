@@ -1,15 +1,11 @@
 import React, {useState, useEffect} from "react";
 import {
     Calendar as ReactCalendar,
-    Views,
     momentLocalizer
 } from 'react-big-calendar';
 import moment from 'moment';
 import "./index.css";
 
-
-let allViews = Object.keys(Views).map(k => Views[k]);
-const localizer = momentLocalizer(moment);
 
 // Colorize events acoording to type
 const eventStyleGetter = (event, start, end, isSelected) => {
@@ -107,12 +103,12 @@ const NEICalendar = () => {
         <ReactCalendar
             className="col-12 vh-100"
             events={events}
-            views={allViews}
+            views={['month', 'agenda']}
             step={60}
             showMultiDayTimes
             defaultDate={new Date()}
             eventPropGetter={eventStyleGetter}
-            localizer={localizer}
+            localizer={momentLocalizer(moment)}
             onNavigate={(date) => timespanChanged(date)}
         />
     );
