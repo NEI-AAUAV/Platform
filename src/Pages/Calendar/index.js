@@ -12,7 +12,7 @@ const Calendar = () => {
             <h1 className="text-center">Calendário</h1>
 
             <div className="col-12 d-flex my-3">
-                <h5 className="text-primary my-auto ml-auto mr-3">Categorias</h5>
+                <h6 className="text-primary my-auto ml-auto mr-3">Categorias</h6>
                 <Filters 
                     filterList={filters}
                     activeFilters={selection}

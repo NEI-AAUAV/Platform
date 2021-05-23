@@ -33,14 +33,14 @@ const Filters = ({activeFilters, handler, filterList, className}) => {
 
     return (
         <div className={"pt-3 mb-3 " + className}>
-            <Button variant="outline-success" className="mr-4" onClick={toggleAll}>
+            <Button variant="outline-primary" className="mr-4" onClick={toggleAll}>
                 {toggleText}
             </Button>
 
             {filterList.map( t => {
                 return (
                     <ToggleButtonGroup type="checkbox" value={activeFilters} onChange={handler} className="mr-2" key={t}>
-                        <ToggleButton variant="outline-success pill" className="rounded-pill" value={t}>
+                        <ToggleButton variant="outline-primary pill" className="rounded-pill" value={t}>
                             {t}
                         </ToggleButton>
                     </ToggleButtonGroup>

@@ -54,7 +54,7 @@
     border-width: 2px;
     background-color: transparent;
     
-    padding: 7px 18px;
+    padding: .375rem .75rem;
     border-color: #147a26;
     color: #147a26;
     -webkit-transition: all .15s linear;

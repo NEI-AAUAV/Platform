@@ -18,7 +18,7 @@ const FilterSelect = ({children, activeFilters, handler, filterList}) => {
         <Accordion>
             { /* Accordion header,with the toggler button. Can display props.children on the right side. */ }
             <div className="d-flex justify-content-between mt-4">
-                <Accordion.Toggle as={Button} variant="success" className="mb-3" eventKey="1">
+                <Accordion.Toggle as={Button} variant="primary" className="mb-3" eventKey="1">
                     Filtros
                 </Accordion.Toggle>
 
