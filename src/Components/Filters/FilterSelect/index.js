@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Accordion, Button, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import Filters from "../";
 
-/* An accordion for selecting filters
-**
-** Props:
-** - filterList: all available filters
-** - activeFilters: currently selected filters
-** - handler: function to call with onChange
-** - children: components to render in accordion header
-*/
-const FilterSelect = ({children, activeFilters, handler, filterList}) => {
+/**
+ * An accordion for selecting filters
+ * 
+ * Parameters:
+ * - filterList                 str[]   List of available filters
+ * - children                           components to render in accordion header
+ * - activeFilters                      see FilterButton doc 
+ * - setActiveFilters                   see FilterButton doc
+ */
 
-    console.log("filterList1", filterList);
+const FilterSelect = ({children, activeFilters, setActiveFilters, filterList}) => {
 
     return(
         <Accordion>
@@ -29,7 +29,7 @@ const FilterSelect = ({children, activeFilters, handler, filterList}) => {
             <Accordion.Collapse eventKey="1">
                 <Filters 
                     activeFilters={activeFilters}
-                    handler={handler}
+                    setActiveFilters={setActiveFilters}
                     filterList={filterList}
                 />
             </Accordion.Collapse>

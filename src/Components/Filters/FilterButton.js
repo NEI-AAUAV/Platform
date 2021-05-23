@@ -5,10 +5,9 @@ import { ToggleButton, ToggleButtonGroup } from "react-bootstrap";
  * This component renders a filter button
  * 
  * Parameters:
- * - filter                 obj         {name: str, color: str, hover: str}
- *                                      name: Filter name
- *                                      color: Normal color
- *                                      hover: Color when hover or active
+ * - filter                 obj         {filter: str, color: str, hover: str}
+ *                                          filter: Filter name (required)
+ *                                          color: Normal color (optional, if missing .primary will be applied)
  * - activeFilters          str[]       List of active filters
  * - setActiveFilters       function    Function to change active filters list
  */
@@ -19,6 +18,10 @@ const FilterButton = ({filter, setActiveFilters, activeFilters}) => {
 
     // Change color on hover and activeFilters change
     useEffect(() => {
+        // If filter does not have color, ignore (default .primary will be applied)
+        if (!('color' in filter)) {
+            return;
+        }
         // If active or hover, fill
         if (hover || activeFilters.includes(filter['filter'])) {
             setStyle({
