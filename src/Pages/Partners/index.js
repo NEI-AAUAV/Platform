@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ImageCard from "../../Components/ImageCard"
-import { Col, Container, Row } from "react-bootstrap"
+import { Col, Row } from "react-bootstrap"
 
 // for testing
 /*
@@ -43,12 +43,12 @@ const Partners = () => {
     }, []);
 
     return (
-        <Container>
+        <div>
             {
             // TODO: this needs to be changed to the self-writing text thing
             // also, background particles (that might be in the MainLayout?)
             }
-            <h1 className="text-center">Parceiros</h1>
+            <h1 className="text-center mb-4">Parceiros</h1>
             
             <Row>
                 {partners.map( partner => {
@@ -65,7 +65,7 @@ const Partners = () => {
                     );
                 })}
             </Row>
-        </Container>
+        </div>
     );
 }
 

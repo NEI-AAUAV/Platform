@@ -12,22 +12,21 @@ import "./index.css";
  */
 const TimelineItem = (props) => {
 
-    
-
     return(
-        <Row className="justify-content-center my-5 timeline-item">
-            <Col>
+        <Row className="my-5 timeline-item">
+            <Col xs="11" lg="5">
+                <span className="d-lg-none" >{props.moment}</span>
                 <div className="timeline-card px-4 pt-4 pb-2 text-center">
                     <h3 className="mb-3">{props.title}</h3>
                     <p>{props.body}</p>
                 </div>
             </Col>
 
-            <Col md="1" className="timeline-marker px-0 d-flex justify-content-center">
+            <Col xs="1" className="timeline-marker px-0 d-flex justify-content-center">
                 <img src={process.env.PUBLIC_URL + props.image} />
             </Col>
 
-            <Col className="timeline-date">
+            <Col lg="5" className="timeline-date d-none d-lg-block">
                 <span>{props.moment}</span>
             </Col>
         </Row>

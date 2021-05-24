@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
 import Timeline from "./Timeline";
 
 const History = () => {
@@ -20,10 +19,10 @@ const History = () => {
     console.log(data)
 
     return(
-        <Container>
+        <div>
             <h1 className="text-center">História do NEI</h1>
             <Timeline events={data}></Timeline>
-        </Container>
+        </div>
     )
 }
 
