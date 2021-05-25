@@ -94,6 +94,10 @@
 .rbc-off-range-bg {
     background-color: rgba(242, 242, 242, 0.4);
 }
+.rbc-month-view .rbc-event-content {
+    color: #fff!important;
+    font-weight: bold;
+}
 
 /* Views // Agenda */
 .rbc-agenda-table tr {
@@ -123,6 +127,10 @@
     border-top:none!important;
     border-left:none!important;
     border-right:none!important;
+}
+.rbc-agenda-table .rbc-agenda-event-cell {
+    color: #fff!important;
+    font-weight: bold;
 }
 
 /* Responsiveness */
