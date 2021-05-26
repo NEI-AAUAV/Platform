@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { Row, Col, Image } from "react-bootstrap";
 import "./index.css";
 
 const NewsArticle = () => {
@@ -27,22 +27,22 @@ const NewsArticle = () => {
 
     return(
         isLoading ?
-        <Container>
+        <div>
             <h3 className="text-center">
                 A carregar notícia...
             </h3>
-        </Container>
+        </div>
 
         :
         article == undefined ?
-        <Container>
+        <div>
             <h3 className="text-center">
                 Notícia não encontrada...
             </h3>
-        </Container>
+        </div>
 
         :
-        <Container id="article-body">
+        <div id="article-body">
             <Row>
                 <Image src={process.env.REACT_APP_UPLOADS + article.header} alt="header" className="w-100" rounded />
             </Row>
@@ -76,7 +76,7 @@ const NewsArticle = () => {
 
             { /* idea: a button to go back to news page, with previous filters? */ }
             
-        </Container>
+        </div>
     );
 }
 
