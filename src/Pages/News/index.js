@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Container } from "react-bootstrap"
 import NewsList from "./NewsList";
 import PageNav from "../../Components/PageNav";
 import FilterSelect from "../../Components/Filters/FilterSelect";
@@ -68,7 +67,7 @@ const News = () => {
     }, []);
 
     return (
-        <Container>
+        <div>
             {
             // TODO: this needs to be changed to the self-writing text thing,
             // also, background particles (that might be in the MainLayout?)
@@ -88,7 +87,7 @@ const News = () => {
 
             <NewsList news={news} loading={isLoading}></NewsList>
 
-        </Container>
+        </div>
     );
 }
 

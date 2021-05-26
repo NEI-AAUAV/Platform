@@ -73,7 +73,7 @@
 }
 
 .image-card.dark a:link, .image-card.dark a:visited, .image-card.dark a:hover, .image-card.dark a:active {
-    color: inherit;
+    color: white !important;
 }
 
 

@@ -11,6 +11,7 @@ import News from "./Pages/News";
 import NewsArticle from "./Pages/NewsArticle";
 import RGM from "./Pages/RGM";
 import Calendar from "./Pages/Calendar";
+import History from "./Pages/History";
 
 
 const routes = [
@@ -25,6 +26,7 @@ const routes = [
             { path: "/parceiros", element: <Partners /> },
 			{ path: "/calendario", element: <Calendar /> },
 			{ path: "/rgm/:id", element: <RGM /> },
+			{ path: "/historia", element: <History />},
             { path: "/:id", element: <Error404 /> },
 
 		],
