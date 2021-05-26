@@ -38,7 +38,7 @@ const SeniorsLEI = () => {
         .then((response) => response.json())
         .then((response) => {
             console.log(response)
-            setPeople(response.data.students.map((person) => <TextList text={person.name} />))
+            setPeople(response.data.students.map((person) => <TextList colSize={3} text={person.name} />))
             setImg(<Image style={{"marginBottom":50}} src={response.data.image} rounded fluid />);
             console.log(selectedYear);
             console.log(people);
@@ -59,11 +59,9 @@ const SeniorsLEI = () => {
                 </Row>
             </Container>
 
-            <Container>
-                <Row lg={4}>
-                    {people}
-                </Row>
-            </Container>
+            <Row>
+                {people}
+            </Row>
            
             
 

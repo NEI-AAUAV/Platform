@@ -11,16 +11,13 @@ text -> nome
 
 */
 
-const TextList = ({text}) => {
+const TextList = ({colSize,text}) => {
     return (
-    <Container>
-            <Col className="mx-auto" style={{textAlign: "center"}}>
-                <div className="colName">
-                    {text.toUpperCase()}
-                </div>
-                
-            </Col>
-    </Container>
+        <Col lg={colSize} className="text-center" style={{textAlign: "center"}}>
+            <div className="colName">
+                {text.toUpperCase()}
+            </div>
+        </Col>
     )
 }
 

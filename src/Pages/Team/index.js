@@ -52,7 +52,7 @@ const Team = () => {
                 ))
 
                 setColaborators(resp.colaborators.map(colab => 
-                    <TextList text={colab.name}/>
+                    <TextList colSize={4} text={colab.name}/>
                 ))
             })
         }
