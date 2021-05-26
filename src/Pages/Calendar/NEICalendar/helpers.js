@@ -19,14 +19,18 @@ const categories = {
         'filters': ['[MEI]'],
         'color': 'rgb(1, 90, 101)'
     },
+    'NEI': {
+        'filters': ["*"], // default
+        'color': 'rgb(20, 122, 38)'
+    },
+    'Taça UA': {
+        'filters': ["[Taça UA]"],
+        'color': 'rgb(211, 17, 21)'
+    },
     'Calendário escolar': {
         'filters': ["FERIADO", "Época de", "Férias", "Último dia"],
         'color': 'rgb(255, 162, 0)'
     },
-    'NEI': {
-        'filters': ["*"], // default
-        'color': 'rgb(20, 122, 38)'
-    }
 }
 
 // FUNCTIONS
