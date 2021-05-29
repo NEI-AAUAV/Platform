@@ -9,7 +9,17 @@ const data = [
     },
     {
         'name': 'Finalistas',
-        'link': '/seniorsLEI'
+        'link': '',
+        'drop': [
+            {
+                'name': 'Licenciatura',
+                'link': '/seniorsLEI'
+            },
+            {
+                'name': 'Mestrado',
+                'link': '/seniorsMEI'
+            }
+        ]
     }
 ]
 

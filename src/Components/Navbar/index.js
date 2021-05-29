@@ -2,7 +2,8 @@ import React from "react";
 
 import {
     Navbar as BNavbar,
-    Nav
+    Nav,
+    NavDropdown
 } from "react-bootstrap";
 
 import data from "./data";
@@ -18,14 +19,27 @@ const Navbar = () => {
                     {
                         data.map(
                             navEl =>
+                            navEl.link != "" ?
                             <Nav.Link 
                                 href={navEl.link}
                                 className={
                                     window.location.pathname==navEl.link && "active"
                                 }
-                            >
+                            > 
                                 {navEl.name}
                             </Nav.Link>
+                            : <NavDropdown title={navEl.name}>
+                                {
+                                navEl.drop.map(
+                                    item => <NavDropdown.Item
+                                        href={item.link}
+                                    >
+                                        {item.name}
+                                    </NavDropdown.Item>
+                                )
+                                }    
+                            </NavDropdown>
+                            
                         )
                     }
                 </Nav>
