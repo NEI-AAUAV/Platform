@@ -6,6 +6,7 @@ import {
 } from "react-bootstrap";
 
 import Navbar from "../../Components/Navbar";
+import Footer from "../../Components/Footer";
 
 const MainLayout = () => {
     return (
@@ -19,6 +20,8 @@ const MainLayout = () => {
             >
                 <Outlet />
             </Col>
+
+            <Footer />
         </div>
     );
 }
