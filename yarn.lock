@@ -5067,7 +5067,7 @@
   "resolved" "https://registry.npmjs.org/extsprintf/-/extsprintf-1.3.0.tgz"
   "version" "1.3.0"
 
-"fast-deep-equal@^3.1.1":
+"fast-deep-equal@^3.1.1", "fast-deep-equal@^3.1.3":
   "integrity" "sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q=="
   "resolved" "https://registry.npmjs.org/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz"
   "version" "3.1.3"
@@ -8227,6 +8227,11 @@
   "resolved" "https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz"
   "version" "4.0.0"
 
+"pathseg@^1.2.0":
+  "integrity" "sha512-+pQS7lTaoVIXhaCW7R3Wd/165APzZHWzYVqe7dxzdupxQwebgpBaCmf0/XZwmoA/rkDq3qvzO0qv4d5oFVrBRw=="
+  "resolved" "https://registry.npmjs.org/pathseg/-/pathseg-1.2.0.tgz"
+  "version" "1.2.0"
+
 "pbkdf2@^3.0.3":
   "integrity" "sha512-4Ejy1OPxi9f2tt1rRV7Go7zmfDQ+ZectEQz3VGUQhgq62HtIRPDyG/JtnwIxs6x3uNMwo2V7q1fMvKjb+Tnpqg=="
   "resolved" "https://registry.npmjs.org/pbkdf2/-/pbkdf2-3.1.1.tgz"
@@ -9473,7 +9478,17 @@
     "loose-envify" "^1.4.0"
     "prop-types" "^15.6.2"
 
-"react@*", "react@^17.0.2", "react@>= 16", "react@>=0.14.0", "react@>=15.0.0", "react@>=16.3.0", "react@>=16.3.2", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@>=16.x", "react@17.0.2":
+"react-tsparticles@^1.27.0":
+  "integrity" "sha512-RcSZ08H7tirIrkHDP7jWJYL7Bfa6K3UzJ06i8r5dsoyM1i7UBpAhOS3PNG7qwkPJjZjT6OKf4rnkyf+8ijIppw=="
+  "resolved" "https://registry.npmjs.org/react-tsparticles/-/react-tsparticles-1.27.0.tgz"
+  "version" "1.27.0"
+  dependencies:
+    "fast-deep-equal" "^3.1.3"
+    "react" ">=16"
+    "tslib" "^2.1.0"
+    "tsparticles" "^1.27.0"
+
+"react@*", "react@^17.0.2", "react@>= 16", "react@>=0.14.0", "react@>=15.0.0", "react@>=16", "react@>=16.3.0", "react@>=16.3.2", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@>=16.x", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"
@@ -11166,10 +11181,17 @@
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   "version" "1.14.1"
 
-"tslib@^2.0.3":
+"tslib@^2.0.3", "tslib@^2.1.0":
   "integrity" "sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A=="
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.1.0.tgz"
   "version" "2.1.0"
+
+"tsparticles@^1.27.0":
+  "integrity" "sha512-7gBErOh21DNDbcflrxb7PT6eQPldTZURx6l099DRZbtbzzhT/N3Jyx80xsvjVPB52m30KiQswAsaMMg2lq+iFA=="
+  "resolved" "https://registry.npmjs.org/tsparticles/-/tsparticles-1.27.0.tgz"
+  "version" "1.27.0"
+  optionalDependencies:
+    "pathseg" "^1.2.0"
 
 "tsutils@^3.17.1":
   "integrity" "sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA=="
