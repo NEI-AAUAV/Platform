@@ -1,5 +1,4 @@
 .section {
-    width: 100%;
     padding-top: 4em;
     padding-bottom: 4em;
 }
@@ -8,6 +7,23 @@
     padding-top: 4em;
     padding-bottom: 4em;
     background-color: #222222;
+}
+
+/* makes the element take up the whole width of the viewport */
+.full-width {
+    width: 100vw;
+    position: relative;
+    margin-left: -50vw;
+    left: 50%;
+    overflow-x: hidden;
+}
+
+/* take the scrollbar into account on large screens 
+   mobile browsers have no scroll bar */
+@media screen and (min-width:700px){
+    .full-width {
+        width: calc(100vw - 8.1px);
+    }
 }
 
 .home-main-header h1 {
