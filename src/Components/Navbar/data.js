@@ -9,8 +9,7 @@ const data = [
     },
     {
         'name': 'Finalistas',
-        'link': '',
-        'drop': [
+        'dropdown': [
             {
                 'name': 'Licenciatura',
                 'link': '/seniorsLEI'

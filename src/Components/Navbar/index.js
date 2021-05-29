@@ -19,7 +19,7 @@ const Navbar = () => {
                     {
                         data.map(
                             navEl =>
-                            navEl.link != "" ?
+                            !navEl.dropdown ?
                             <Nav.Link 
                                 href={navEl.link}
                                 className={
@@ -28,14 +28,10 @@ const Navbar = () => {
                             > 
                                 {navEl.name}
                             </Nav.Link>
-                            : <NavDropdown title={navEl.name}>
+                            : <NavDropdown title={navEl.name} id={"dropdown-"+navEl.name.replace(" ", "")}>
                                 {
-                                navEl.drop.map(
-                                    item => <NavDropdown.Item
-                                        href={item.link}
-                                    >
-                                        {item.name}
-                                    </NavDropdown.Item>
+                                navEl.dropdown.map(
+                                    dropdown => <NavDropdown.Item href={dropdown.link}>{dropdown.name}</NavDropdown.Item>
                                 )
                                 }    
                             </NavDropdown>
