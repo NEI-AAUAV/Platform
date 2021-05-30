@@ -16,7 +16,7 @@ const TimelineItem = (props) => {
         <Row className="my-5 timeline-item">
             <Col xs="11" lg="5">
                 <span className="d-lg-none" >{props.moment}</span>
-                <div className="timeline-card px-4 pt-4 pb-2 text-center">
+                <div className="timeline-card px-4 pt-4 pb-2 text-center bg-white">
                     <h3 className="mb-3">{props.title}</h3>
                     <p>{props.body}</p>
                 </div>
