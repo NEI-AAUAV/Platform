@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import {
     Navbar as BNavbar,
@@ -12,47 +12,63 @@ import "./index.css";
 
 const Navbar = () => {
 
+    const [transparent, setTransparent] = useState(true);
+
+    // On scrool, make bg white
+    useEffect(() => {
+        window.addEventListener('scroll', (event) => {
+            // Get scroll position
+            if (window.pageYOffset>20) {
+                setTransparent(false);
+            } else {
+                setTransparent(true);
+            }
+        });
+    }, []);
+
     return (
-        <BNavbar bg="transparent" expand="lg" className="col-10 mx-auto my-4">
-            <BNavbar.Brand href="/">
-                <img
-                    src={logo}
-                    width="75"
-                    height="75"
-                    className="d-inline-block align-top mr-5"
-                    alt="NEI"
-                />
-            </BNavbar.Brand>
-            <BNavbar.Toggle aria-controls="basic-BNavbar-nav" />
-            <BNavbar.Collapse id="basic-BNavbar-nav">
-                <Nav className="mr-auto">
-                    {
-                        data.map(
-                            navEl =>
-                                !navEl.dropdown 
-                                ?    
-                                <Nav.Link 
-                                    href={navEl.link}
-                                    className={
-                                        window.location.pathname==navEl.link ? "active mr-3" : "mr-3"
-                                    }
-                                >
-                                    {navEl.name}
-                                </Nav.Link>
-                                :
-                                <NavDropdown title={navEl.name} id={"dropdown-"+navEl.name.replace(" ", "")}>
-                                    {
-                                        navEl.dropdown.map(
-                                            dropdown => 
-                                            <NavDropdown.Item href={dropdown.link}>{dropdown.name}</NavDropdown.Item>
-                                        )
-                                    }
-                                </NavDropdown>
-                        )
-                    }
-                </Nav>
-            </BNavbar.Collapse>
-        </BNavbar>
+        <div className={transparent ? "navbardiv col-12 py-4 position-fixed bg-transparent" : "navbardiv col-12 py-4 position-fixed bg-white"}>
+            <BNavbar bg="transparent" expand="lg" className="col-10 mx-auto">
+                <BNavbar.Brand href="/">
+                    <img
+                        src={logo}
+                        width="75"
+                        height="75"
+                        className="d-inline-block align-top mr-5"
+                        alt="NEI"
+                    />
+                </BNavbar.Brand>
+                <BNavbar.Toggle aria-controls="basic-BNavbar-nav" />
+                <BNavbar.Collapse id="basic-BNavbar-nav">
+                    <Nav className="mr-auto">
+                        {
+                            data.map(
+                                navEl =>
+                                    !navEl.dropdown
+                                        ?
+                                        <Nav.Link
+                                            href={navEl.link}
+                                            className={
+                                                window.location.pathname == navEl.link ? "active mr-3" : "mr-3"
+                                            }
+                                        >
+                                            {navEl.name}
+                                        </Nav.Link>
+                                        :
+                                        <NavDropdown title={navEl.name} id={"dropdown-" + navEl.name.replace(" ", "")}>
+                                            {
+                                                navEl.dropdown.map(
+                                                    dropdown =>
+                                                        <NavDropdown.Item href={dropdown.link}>{dropdown.name}</NavDropdown.Item>
+                                                )
+                                            }
+                                        </NavDropdown>
+                            )
+                        }
+                    </Nav>
+                </BNavbar.Collapse>
+            </BNavbar>
+        </div>
     );
 
 }

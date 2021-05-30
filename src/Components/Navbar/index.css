@@ -50,3 +50,10 @@
     border: none!important;
     color: #000!important;
 }
+
+/* Custom styling */
+.navbardiv {
+    z-index: 5;
+    top: 0;
+    transition: .25s ease;
+}
