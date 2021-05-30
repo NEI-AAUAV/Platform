@@ -13,12 +13,13 @@ import "./index.css";
 const Navbar = () => {
 
     const [transparent, setTransparent] = useState(true);
+    const [collapsed, setCollapsed] = useState(false);
 
     // On scrool, make bg white
     useEffect(() => {
         window.addEventListener('scroll', (event) => {
             // Get scroll position
-            if (window.pageYOffset>20) {
+            if (window.pageYOffset > 20) {
                 setTransparent(false);
             } else {
                 setTransparent(true);
@@ -28,7 +29,12 @@ const Navbar = () => {
 
     return (
         <div className={transparent ? "navbardiv col-12 p-0 position-fixed bg-transparent" : "navbardiv col-12 p-0 position-fixed bg-white"}>
-            <BNavbar bg="transparent" expand="lg" className="col-12 col-md-10 mx-auto">
+            <BNavbar 
+                bg="transparent" 
+                expand="lg" 
+                className="col-12 col-md-10 mx-auto"
+                onToggle={(col) => setCollapsed(col)}
+            >
                 <BNavbar.Brand href="/">
                     <img
                         src={logo}
@@ -38,7 +44,16 @@ const Navbar = () => {
                         alt="NEI"
                     />
                 </BNavbar.Brand>
-                <BNavbar.Toggle aria-controls="basic-BNavbar-nav" />
+                <BNavbar.Toggle aria-controls="basic-BNavbar-nav">
+                    <div
+                        className={collapsed ? "hamburguer open" : "hamburguer"}
+                    >
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </BNavbar.Toggle>
                 <BNavbar.Collapse id="basic-BNavbar-nav" className="bg-white">
                     <Nav className="mr-auto">
                         {
