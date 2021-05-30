@@ -9,7 +9,7 @@ import Navbar from "../../Components/Navbar";
 
 const MainLayout = () => {
     return (
-        <div className="pt-5 bg-danger">
+        <div className="pt-5">
             <Navbar />
 
             <Col

@@ -27,8 +27,8 @@ const Navbar = () => {
     }, []);
 
     return (
-        <div className={transparent ? "navbardiv col-12 py-4 position-fixed bg-transparent" : "navbardiv col-12 py-4 position-fixed bg-white"}>
-            <BNavbar bg="transparent" expand="lg" className="col-10 mx-auto">
+        <div className={transparent ? "navbardiv col-12 p-0 position-fixed bg-transparent" : "navbardiv col-12 p-0 position-fixed bg-white"}>
+            <BNavbar bg="transparent" expand="lg" className="col-12 col-md-10 mx-auto">
                 <BNavbar.Brand href="/">
                     <img
                         src={logo}
@@ -39,7 +39,7 @@ const Navbar = () => {
                     />
                 </BNavbar.Brand>
                 <BNavbar.Toggle aria-controls="basic-BNavbar-nav" />
-                <BNavbar.Collapse id="basic-BNavbar-nav">
+                <BNavbar.Collapse id="basic-BNavbar-nav" className="bg-white">
                     <Nav className="mr-auto">
                         {
                             data.map(
