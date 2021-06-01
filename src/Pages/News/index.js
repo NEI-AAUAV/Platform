@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import NewsList from "./NewsList";
 import PageNav from "../../Components/PageNav";
-import FilterSelect from "../../Components/FilterSelect";
+import FilterSelect from "../../Components/Filters/FilterSelect";
 
 const News = () => {
 
@@ -74,7 +74,14 @@ const News = () => {
             }
             <h1 className="text-center">Notícias</h1>
 
-            <FilterSelect filterList={newsTypes} activeFilters={whitelist} handler={setWhitelist}>
+            <FilterSelect 
+                accordion={true}
+                filterList={newsTypes.map(nt => {return {'filter': nt}})}
+                activeFilters={whitelist}
+                setActiveFilters={setWhitelist}
+                className="mb-5"
+                btnClass="mr-2"
+            >
                 <PageNav page={currPage} total={totalPages} handler={fetchPage}></PageNav>
             </FilterSelect>
 
