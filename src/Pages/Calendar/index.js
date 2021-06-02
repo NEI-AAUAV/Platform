@@ -9,10 +9,12 @@ const Calendar = () => {
 
     return (
         <div>
-            <h1 className="text-center">Calendário</h1>
+            <h2 className="text-center">Calendário</h2>
 
             <div className="col-12 d-flex flex-row flex-wrap my-5">
-                <h6 className="text-primary mb-3 my-md-auto ml-auto pr-3 col-12 col-md-4 text-center text-md-right">Categorias</h6>
+                <div className="mb-2 col-12 col-md-4 d-flex">
+                    <p className="col-12 text-primary mb-3 my-md-auto ml-auto pr-3 text-center text-md-right">Categorias</p>
+                </div>
                 <Filters 
                     filterList={filters}
                     activeFilters={selection}

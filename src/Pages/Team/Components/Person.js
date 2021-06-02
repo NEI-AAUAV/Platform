@@ -19,7 +19,7 @@ const Person = ({img,name,description,linke}) => {
                 <Col className="mx-auto" style={{textAlign: "center", marginBottom: 40}}>
                     <Image src={img} roundedCircle style={{width: 200, marginBottom: 20}}/>
                     <h3>{name}</h3>
-                    <p id='desc'>{description.toUpperCase()}</p>
+                    <p>{description.toUpperCase()}</p>
                     {
                     linke && 
                     <a id="linke" href={linke}>
