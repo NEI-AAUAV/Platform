@@ -21,7 +21,7 @@ const MainLayout = () => {
                 options={config}
                 className="position-absolute"
             />
-            <div className="pt-5">
+            <div className="pt-10">
                 <Navbar />
 
                 <Col

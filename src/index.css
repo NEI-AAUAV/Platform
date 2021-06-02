@@ -52,3 +52,7 @@ a { color: #147a26!important }
     flex: 0 0 auto;
     width: 75%;
 }
+
+.pt-10 {
+    padding-top: 6rem !important;
+}

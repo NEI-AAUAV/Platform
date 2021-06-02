@@ -21,7 +21,7 @@ const CleanLayout = () => {
                 options={config}
                 className="position-absolute"
             />
-            <div className="pt-5">
+            <div className="pt-10">
                 <Navbar />
                 <Outlet />
                 <Footer />
