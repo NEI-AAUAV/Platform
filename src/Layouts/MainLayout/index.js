@@ -24,17 +24,17 @@ const MainLayout = () => {
             <div className="pt-5">
                 <Navbar />
 
+                <Col
+                    lg={10}
+                    xs={11}
+                    className="mx-auto py-5"
+                >
+                    <Outlet />
+                </Col>
 
-            <Col
-                lg={10}
-                xs={11}
-                className="mx-auto py-5"
-            >
-                <Outlet />
-            </Col>
-
-            <Footer />
-        </div>
+                <Footer />
+            </div>
+        </>
     );
 }
 
