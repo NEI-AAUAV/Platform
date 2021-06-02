@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "./index.css";
 
 
 import Person from "./Components/Person.js";
@@ -64,7 +63,7 @@ const Team = () => {
 
     return (
         <div>
-            <h1 id="title">Equipa do NEI</h1>
+            <h2 className="mb-5 text-center">Equipa do NEI</h2>
 
             <Tabs tabs={years} _default={selectedYear} onChange={setSelectedYear} />
             
