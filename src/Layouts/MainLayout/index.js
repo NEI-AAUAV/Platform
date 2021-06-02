@@ -20,7 +20,7 @@ const MainLayout = () => {
                 options={config}
                 className="position-absolute"
             />
-            <div>
+            <div className="pt-5">
                 <Navbar />
 
 
