@@ -1,13 +1,57 @@
-.tab p {
+.tabItem {
     transition: ease-in-out;
     transition-duration: 0.0625s;
+    margin-bottom: 4px;
 }
 
-.tab p:hover {
+.tabItem:hover {
     color: rgb(78, 156, 54);
     cursor: pointer;
 }
 
 .tab .selected {
     color: rgb(115, 187, 93);
+}
+
+.tabDiv {
+    border-bottom: rgb(180, 178, 178) 1px solid;
+    text-align: "center";
+    margin-bottom: 40px;
+   
+}
+
+.selected ::before {
+    
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    background-color: white;
+    content: "";
+    display: inline-block;
+    position: absolute;
+    border-top: rgb(180, 178, 178) 1px solid;
+    border-left: rgb(180, 178, 178) 1px solid;
+    bottom: -5px;
+    left: 45%;
+    /*
+    border-bottom: 11px solid #fff;
+    border-bottom-width: 11px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(255, 255, 255);
+    border-left: 11px solid transparent;
+    border-left-width: 11px;
+    border-left-style: solid;
+    border-left-color: transparent;
+    border-right: 11px solid transparent;
+    border-right-width: 11px;
+    border-right-style: solid;
+    border-right-color: transparent;
+    content: "";
+    display: inline-block;
+    position: absolute;
+    right: 40%;
+    bottom: 5px;
+    box-sizing: border-box;
+    */
+    
 }

@@ -4,7 +4,7 @@ import "./index.css";
 
 import Person from "./Components/Person.js";
 import Tabs from "../../Components/Tabs/index.js"
-import TextList from "./Components/TextList.js"
+import TextList from "../../Components/TextList/index.js"
 import {Container, Row, Col} from 'react-bootstrap';
 
 
@@ -52,7 +52,7 @@ const Team = () => {
                 ))
 
                 setColaborators(resp.colaborators.map(colab => 
-                    <TextList text={colab.name}/>
+                    <TextList colSize={4} text={colab.name}/>
                 ))
             })
         }

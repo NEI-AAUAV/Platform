@@ -12,6 +12,19 @@ const data = [
         'link': '/equipa'
     },
     {
+        'name': 'Finalistas',
+        'dropdown': [
+            {
+                'name': 'Licenciatura',
+                'link': '/seniorsLEI'
+            },
+            {
+                'name': 'Mestrado',
+                'link': '/seniorsMEI'
+            }
+        ]
+    },
+    {
         'name': 'História',
         'link': '/historia'
     },
