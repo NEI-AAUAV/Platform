@@ -1,5 +1,9 @@
 const data = [
     {
+        'name': 'Notícias',
+        'link': '/noticias'
+    },
+    {
         'name': 'Parceiros',
         'link': '/parceiros'
     },
@@ -19,6 +23,31 @@ const data = [
                 'link': '/seniorsMEI'
             }
         ]
+    },
+    {
+        'name': 'História',
+        'link': '/historia'
+    },
+    {
+        'name': 'RGM',
+        'dropdown': [
+            {
+                'name': 'PAOs',
+                'link': '/rgm/pao'
+            },
+            {
+                'name': 'RACs',
+                'link': '/rgm/rac'
+            },
+            {
+                'name': 'Atas',
+                'link': '/rgm/atas'
+            }
+        ]
+    },
+    {
+        'name': 'Calendário',
+        'link': '/calendario'
     }
 ]
 

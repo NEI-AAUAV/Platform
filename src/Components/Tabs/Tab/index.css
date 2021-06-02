@@ -9,7 +9,7 @@
     cursor: pointer;
 }
 
-.selected {
+.tab .selected {
     color: rgb(115, 187, 93);
 }
 

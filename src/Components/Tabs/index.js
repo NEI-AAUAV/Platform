@@ -28,7 +28,7 @@ const Tabs = ({tabs, _default, onChange}) => {
     
 
     return (
-        <Container>
+        <Container className="tab-container">
             <Row className="justify-content-center">
                 {tab}
             </Row>
