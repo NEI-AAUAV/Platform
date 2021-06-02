@@ -7,6 +7,7 @@ import {
 } from "react-bootstrap";
 
 import Navbar from "../../Components/Navbar";
+import Footer from "../../Components/Footer";
 import config from "./config";
 
 const MainLayout = () => {
@@ -24,15 +25,16 @@ const MainLayout = () => {
                 <Navbar />
 
 
-                <Col
-                    lg={10}
-                    xs={11}
-                    className="mx-auto py-5"
-                >
-                    <Outlet />
-                </Col>
-            </div>
-        </>
+            <Col
+                lg={10}
+                xs={11}
+                className="mx-auto py-5"
+            >
+                <Outlet />
+            </Col>
+
+            <Footer />
+        </div>
     );
 }
 
