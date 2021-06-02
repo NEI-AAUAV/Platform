@@ -42,7 +42,7 @@ const Homepage = () => {
 
             <div className="section-dark">
                 <Col xs={11} sm={10} className="mx-auto col-xxl-9 text-center">
-                    <h1 className="header-dark mb-4">Notícias</h1>
+                    <h2 className="header-dark mb-4">Notícias</h2>
                     <NewsList news={news} loading={isLoading}></NewsList>
                     <Button
                         variant="outline-dark"
@@ -56,7 +56,7 @@ const Homepage = () => {
 
             <div className="section">
                 <Col xs={11} sm={10} className="mx-auto col-xxl-9 text-center">
-                    <h1 className="mb-3">NEI</h1>
+                    <h2 className="mb-3">NEI</h2>
                     <h4 className="text-secondary px-5 mb-5">
                         Criado a 24 de janeiro de 2013, o Núcleo de Estudantes de Informática da Associação Académica da Universidade de Aveiro (NEI-AAUAv), surgiu com o intuito de ajudar, incentivar e apoiar em diversas áreas os alunos do curso de Engenharia Informática, que havia sido recentemente criado. Desde então, têm sido inúmeras as atividades proporcionadas por este, envolvendo não só os alunos do respetivo curso, mas também toda a comunidade académica, contribuindo, desta forma, para uma melhor formação e desenvolvimento pessoal dos seus estudantes.
                     </h4>

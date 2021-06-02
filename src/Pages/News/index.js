@@ -72,7 +72,7 @@ const News = () => {
             // TODO: this needs to be changed to the self-writing text thing,
             // also, background particles (that might be in the MainLayout?)
             }
-            <h1 className="text-center">Notícias</h1>
+            <h2 className="text-center">Notícias</h2>
 
             <FilterSelect 
                 accordion={true}
