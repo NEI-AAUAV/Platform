@@ -25,8 +25,9 @@ const MainLayout = () => {
                 <Navbar />
 
                 <Col
-                    lg={10}
                     xs={11}
+                    sm={10}
+                    xxl={9}
                     className="mx-auto py-5"
                 >
                     <Outlet />
