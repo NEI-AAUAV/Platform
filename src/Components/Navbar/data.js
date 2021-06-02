@@ -31,6 +31,10 @@ const data = [
                 'link': '/rgm/atas'
             }
         ]
+    },
+    {
+        'name': 'Calendário',
+        'link': '/calendario'
     }
 ]
 

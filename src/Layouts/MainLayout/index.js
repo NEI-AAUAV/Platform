@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet } from 'react-router-dom';
+import Particles from "react-tsparticles";
 
 import {
     Col
@@ -7,11 +8,22 @@ import {
 
 import Navbar from "../../Components/Navbar";
 import Footer from "../../Components/Footer";
+import config from "./config";
 
 const MainLayout = () => {
+
     return (
-        <div>
-            <Navbar />
+        <>
+            <Particles
+                id="tsparticles"
+                init={() => console.log("INIT")}
+                loaded={() => console.log("LOADED")}
+                options={config}
+                className="position-absolute"
+            />
+            <div className="pt-5">
+                <Navbar />
+
 
             <Col
                 lg={10}
