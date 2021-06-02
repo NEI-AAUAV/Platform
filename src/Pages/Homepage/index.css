@@ -1,0 +1,85 @@
+.section {
+    padding-top: 4em;
+    padding-bottom: 4em;
+}
+
+.section-dark {
+    padding-top: 4em;
+    padding-bottom: 4em;
+    background-color: #222222;
+}
+
+/* makes the element take up the whole width of the viewport */
+.full-width {
+    width: 100vw;
+    position: relative;
+    margin-left: -50vw;
+    left: 50%;
+    overflow-x: hidden;
+}
+
+/* take the scrollbar into account on large screens 
+   mobile browsers have no scroll bar */
+@media screen and (min-width:700px){
+    .full-width {
+        width: calc(100vw - 8.1px);
+    }
+}
+
+.home-main-header h1 {
+    font-size: 3.6em !important;
+}
+
+.home-main-header h1:last-child {
+    font-weight: bold;
+}
+
+.header-dark {
+    color: white;
+}
+
+.header-dark::after {
+    content: "";
+    display: block;
+    width: 1.2em;
+    height: 5px;
+    background-color: white;
+    position: absolute;
+    left: 50%;
+    margin-left: -0.6em;
+}
+
+.btn-outline-dark {
+    border: white solid 2px !important;
+    background-color: transparent !important;
+    color: white !important;
+    padding-left: 1em !important;
+    padding-right: 1em !important;
+}
+
+.btn-outline-dark:hover {
+    background-color: white !important;
+    color: black !important;
+}
+
+
+
+/*
+    Turn the columns into flex containers
+    All this really does is align the links at the bottom,
+    is this worth it?
+*/
+.home-info-col {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+.home-info-col p {
+    flex-grow: 1;
+}
+
+.home-info-col svg {
+    display: inline-block !important;
+    width: 100% !important;
+}
