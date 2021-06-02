@@ -69,11 +69,9 @@ const Team = () => {
             <Tabs tabs={years} _default={selectedYear} onChange={setSelectedYear} />
             
 
-            <Container>
                 <Row xs={1} lg={3}>
                     {people}
                 </Row>
-            </Container>
 
             {
             colaborators != null && colaborators.length > 0 && 
