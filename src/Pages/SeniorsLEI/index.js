@@ -53,11 +53,9 @@ const SeniorsLEI = () => {
 
             {anos}
 
-            <Container>
-                <Row>
-                    {img}
-                </Row>
-            </Container>
+            <Row>
+                {img}
+            </Row>
 
             <Row>
                 {people}
