@@ -32,7 +32,7 @@ const Navbar = () => {
             <BNavbar 
                 bg="transparent" 
                 expand="lg" 
-                className="col-12 col-md-10 mx-auto"
+                className="px-0 col-11 col-sm-10 col-xxl-9 mx-auto"
                 onToggle={(col) => setCollapsed(col)}
             >
                 <BNavbar.Brand href="/">
