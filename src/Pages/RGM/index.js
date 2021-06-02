@@ -63,7 +63,7 @@ const RGM = () => {
 
     return (
         <div>
-            <h1 id="title">{title}</h1>
+            <h2 className="text-center mb-5">{title}</h2>
             {
                 // Only show tabs to ATAS category
                 !loading && id.toUpperCase()=="ATAS" &&
