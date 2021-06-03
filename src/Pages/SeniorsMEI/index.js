@@ -49,15 +49,13 @@ const SeniorsLEI = () => {
 
     return(
         <div>
-            <h1 id="title">Finalistas de Licenciatura</h1>
+            <h2 className="mb-5 text-center">Finalistas de Mestrado</h2>
 
             {anos}
 
-            <Container>
-                <Row>
-                    {img}
-                </Row>
-            </Container>
+            <Row>
+                {img}
+            </Row>
 
             <Row>
                 {people}

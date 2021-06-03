@@ -14,24 +14,31 @@ import NewsArticle from "./Pages/NewsArticle";
 import RGM from "./Pages/RGM";
 import Calendar from "./Pages/Calendar";
 import History from "./Pages/History";
+import CleanLayout from "./Layouts/CleanLayout";
 
 
 const routes = [
 	{
 		path: "/",
+		element: <CleanLayout />,
+		children: [
+			{ path: "/", element: <Homepage /> },
+		]
+	},
+	{
+		path: "/",
 		element: <MainLayout />,
 		children: [
-      { path: "/", element: <Homepage /> },
 			{ path: "/noticias", element: <News /> },
 			{ path: "/noticia/:id", element: <NewsArticle /> },
-      { path: "/equipa", element: <Team /> },
-      { path: "/parceiros", element: <Partners /> },
+			{ path: "/equipa", element: <Team /> },
+			{ path: "/parceiros", element: <Partners /> },
 			{ path: "/calendario", element: <Calendar /> },
 			{ path: "/rgm/:id", element: <RGM /> },
-			{ path: "/historia", element: <History />},
-			{ path: "/seniorsLEI", element: <SeniorsLEI/>},
-			{ path: "/seniorsMEI", element: <SeniorsMEI/>},
-      { path: "/:id", element: <Error404 /> }
+			{ path: "/historia", element: <History /> },
+			{ path: "/seniorsLEI", element: <SeniorsLEI /> },
+			{ path: "/seniorsMEI", element: <SeniorsMEI /> },
+			{ path: "/:id", element: <Error404 /> }
 		],
 	}
 ];

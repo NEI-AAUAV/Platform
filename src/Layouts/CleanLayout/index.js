@@ -10,7 +10,7 @@ import Navbar from "../../Components/Navbar";
 import Footer from "../../Components/Footer";
 import config from "../backgroundconfig";
 
-const MainLayout = () => {
+const CleanLayout = () => {
 
     return (
         <>
@@ -23,19 +23,11 @@ const MainLayout = () => {
             />
             <div className="pt-10">
                 <Navbar />
-
-                <Col
-                    xs={11}
-                    sm={10}
-                    className="mx-auto py-5 col-xxl-9"
-                >
-                    <Outlet />
-                </Col>
-
+                <Outlet />
                 <Footer />
             </div>
         </>
     );
 }
 
-export default MainLayout;
+export default CleanLayout;

@@ -25,9 +25,9 @@ const Homepage = () => {
 
 
     return (
-        <div>
-            <div className="section full-width">
-                <Container>
+        <div className="py-5">
+            <div className="section">
+                <Col xs={11} sm={10} className="mx-auto col-xxl-9">
                     <Row>
                         <Col md="12" lg="7" className="home-main-header">
                             <h1 className="mb-5">Bem-Vindo ao</h1>
@@ -37,12 +37,12 @@ const Homepage = () => {
                             bash terminal goes here
                         </Col>
                     </Row>
-                </Container>
+                </Col>
             </div>
 
-            <div className="section-dark text-center full-width">
-                <Container>
-                    <h1 className="header-dark mb-4">Notícias</h1>
+            <div className="section-dark">
+                <Col xs={11} sm={10} className="mx-auto col-xxl-9 text-center">
+                    <h2 className="header-dark mb-4">Notícias</h2>
                     <NewsList news={news} loading={isLoading}></NewsList>
                     <Button
                         variant="outline-dark"
@@ -51,12 +51,12 @@ const Homepage = () => {
                         href="/noticias"
                         >Ver Todas
                     </Button>
-                </Container>
+                </Col>
             </div>
 
-            <div className="section full-width text-center">
-                <Container>
-                    <h1 className="mb-3">NEI</h1>
+            <div className="section">
+                <Col xs={11} sm={10} className="mx-auto col-xxl-9 text-center">
+                    <h2 className="mb-3">NEI</h2>
                     <h4 className="text-secondary px-5 mb-5">
                         Criado a 24 de janeiro de 2013, o Núcleo de Estudantes de Informática da Associação Académica da Universidade de Aveiro (NEI-AAUAv), surgiu com o intuito de ajudar, incentivar e apoiar em diversas áreas os alunos do curso de Engenharia Informática, que havia sido recentemente criado. Desde então, têm sido inúmeras as atividades proporcionadas por este, envolvendo não só os alunos do respetivo curso, mas também toda a comunidade académica, contribuindo, desta forma, para uma melhor formação e desenvolvimento pessoal dos seus estudantes.
                     </h4>
@@ -97,8 +97,8 @@ const Homepage = () => {
                             <a className="font-weight-bold" href="#">Mais informações</a> { /* TODO */ }
                         </Col>
                     </Row>
-                </Container>
-            </div> 
+                </Col>
+            </div>
         </div>
     );
 }

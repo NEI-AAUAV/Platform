@@ -48,23 +48,25 @@ const NewsArticle = () => {
             </Row>
 
             <Row className="mt-5">
-                <h1 className="text-center w-100">{article.title}</h1>
-                <h5 className="text-center w-100 text-secondary">{article.category}</h5>
+                <h2 className="text-center w-100">{article.title}</h2>
+                <h4 className="text-center w-100 text-secondary">{article.category}</h4>
             </Row>
 
             <Row className="text-center justify-content-center mt-3">
                 <Col md={4} sm={12}>
-                    <b>Autor: </b> 
-                    <a href={"/noticias?author=" + article.authorId} title="Mais deste autor">
-                        {article.author}
-                    </a>
+                    <h5>
+                        <b>Autor: </b> 
+                        <a href={"/noticias?author=" + article.authorId} title="Mais deste autor">
+                            {article.author}
+                        </a>
+                    </h5>
                 </Col>
                 <Col md={4} sm={12}>
-                    <b>Criado em:</b> {article.created_at}
+                    <h5><b>Criado em:</b> {article.created_at}</h5>
                 </Col>
                 {article.last_change_at != null &&
                 <Col md={4} sm={12}>
-                    <b>Modificado em:</b> {article.last_change_at}
+                    <h5><b>Modificado em:</b> {article.last_change_at}</h5>
                 </Col>
                 }
             </Row>

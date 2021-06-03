@@ -44,11 +44,7 @@ const Partners = () => {
 
     return (
         <div>
-            {
-            // TODO: this needs to be changed to the self-writing text thing
-            // also, background particles (that might be in the MainLayout?)
-            }
-            <h1 className="text-center mb-4">Parceiros</h1>
+            <h2 className="text-center mb-4">Parceiros</h2>
             
             <Row>
                 {partners.map( partner => {

@@ -5,7 +5,7 @@ import { faFacebookSquare, faInstagram, faYoutube } from '@fortawesome/free-bran
 
 const Footer = () => {
     return (
-        <div className="d-flex flew-row col-10 mx-auto mt-4 mb-2 text-secondary">
+        <div className="d-flex flew-row col-11 col-sm-10 col-xxl-9 mx-auto mt-4 mb-2 text-secondary">
             <div>
                 <a href="https://www.facebook.com/nei.aauav" target="_blank" className="mr-3 text-secondary">
                     <FontAwesomeIcon icon={ faFacebookSquare } size="lg"/>

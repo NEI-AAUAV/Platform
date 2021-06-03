@@ -3,7 +3,6 @@
 body {
     font-family: Montserrat, Helvetica,Arial,sans-serif;
     font-weight: 300;
-    font-size: 16px;
 }
 
 /* Bootstrap corrections */
@@ -46,3 +45,22 @@ a { color: #147a26!important }
     background-color: #147a26;
     border-color: #147a26;
 }
+
+/* cols from Bootstrap 5 */
+.col-xxl-9 {
+    flex: 0 0 auto;
+    width: 75%;
+}
+
+.pt-10 {
+    padding-top: 6rem !important;
+}
+
+/* text size */
+body { font-size: 1rem!important; }
+small, .small { font-size: .75rem!important; }
+h1 { font-size: 3.6rem!important; }
+h2 { font-size: 2.8rem!important; }
+h3 { font-size: 1.75rem!important; }
+h4 { font-size: 1.25rem!important; }
+h5, .h5 { font-size: 1.15rem!important; }

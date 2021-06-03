@@ -20,7 +20,7 @@ const History = () => {
 
     return(
         <div>
-            <h1 className="text-center">História do NEI</h1>
+            <h2 className="text-center">História do NEI</h2>
             <Timeline events={data}></Timeline>
         </div>
     )
