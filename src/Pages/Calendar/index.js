@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import NEICalendar from "./NEICalendar";
 import Filters from "../../Components/Filters";
+import Typist from 'react-typist';
 
 const Calendar = () => {
 
@@ -13,7 +14,9 @@ const Calendar = () => {
 
     return (
         <div>
-            <h2 className="text-center">Calendário</h2>
+            <h2 className="text-center">
+                <Typist>Calendário</Typist>
+            </h2>
 
             <div className="col-12 d-flex flex-row flex-wrap my-5">
                 <div 
