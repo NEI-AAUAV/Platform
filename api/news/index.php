@@ -1,0 +1,119 @@
+<?php 
+    // Load database connection from start.php file
+    require_once("../start.php");
+    // Load response assistant script
+    require_once("../response.php");
+    // Load pagination assistant script
+    require_once("../pagination.php");
+?>
+<?php
+
+    // Get url parameter and validate it 
+    $categories = $_GET["category"]!=NULL ? $_GET["category"] : [];
+    $since = $_GET["since"];
+    $until = $_GET["until"];
+    $article = $_GET["article"];
+    $author = $_GET["author"];
+
+    // Pagination
+    list($page_number, $page_size) = validatePagination(
+        $page_number, 
+        $page_size, 
+        !empty($article) ? ['article'] : []
+    );
+
+    // Prevent filtering by both parameters
+    if ((!empty($since) or !empty($until) or count($categories)>0) and !empty($article)) {
+        errorResponse('Não é possível filtrar com o argumento "article"!');
+    }
+
+    // Parameter validation
+    if(count($categories)>0) {
+        $validOptions = $conn->query("SELECT DISTINCT category FROM news WHERE status='1'")->fetchAll(PDO::FETCH_ASSOC);
+        $valid = true;
+        foreach($categories as $category) {
+            $validCat = false;
+            foreach($validOptions as $op) {
+                if ($op['category']==$category) {
+                    $validCat = true;
+                }
+            }
+            $valid = $valid && $validCat;
+        }
+        if(!$valid) {
+            errorResponse('Categoria inválida!');
+        }
+    }
+    if(!empty($since) and !empty($until)) {
+        $untilDate = strtotime($until);
+        $sinceDate = strtotime($since);
+        if($sinceDate>$untilDate) {
+            errorResponse("A data de início não pode ser superior à de término!");
+        }
+    }
+
+    // Get news list (with or without category filtering)
+    $query_getContent = "SELECT id, title, header, category, created_at FROM `news` WHERE status='1'";
+
+    if(count($categories)>0) {
+        $query_getContent.=" AND (";
+        $counter = 0;
+        foreach($categories as $category) {
+            $query_getContent.=" category=:category{$counter}";
+            $counter = $counter + 1;
+            if($counter < count($categories)) {
+                $query_getContent.=" OR";
+            }    
+        }
+        $query_getContent.=")";
+    }
+    if(!empty($since)) {
+        $query_getContent.=" AND created_at>=:since";    
+    }
+    if(!empty($until)) {
+        $query_getContent.=" AND created_at<=:until";    
+    }
+    if(!empty($author)) {
+        $query_getContent.=" AND author=:author";    
+    }
+
+    $query_getContent.= " ORDER BY created_at DESC";
+
+    // Get article by ID 
+    if(!empty($article)) {
+        $query_getContent = "SELECT news.title, news.header, news.content, news.category, news.created_at, last_change_at, users.name AS author, users.id AS authorId FROM `news` LEFT JOIN users ON news.author=users.id WHERE news.id=:id";
+    }
+
+    // Make query to database
+    try{
+        $st = $conn->prepare($query_getContent);
+        // Bind parameters to query
+        if(count($categories)>0) {
+            $counter = 0;
+            foreach($categories as $category) {
+                $st->bindParam(":category{$counter}", $categories[$counter]);
+                $counter = $counter + 1;    
+            }
+        }
+        if(!empty($since)) {
+            $st->bindParam(":since", $since);
+        }
+        if(!empty($until)) {
+            $st->bindParam(":until", $until);
+        }
+        if(!empty($author)) {
+            $st->bindParam(":author", $author);
+        }
+        if(!empty($article)) {
+            $st->bindParam(':id', $article);
+            // Return response
+            response($st, true);
+        }
+        // Return paginated results
+        paginate($st, $page_number, $page_size);
+    } catch(Exception $e){
+        errorResponse('Ocorreu um erro inesperado.', 500, $e);
+    }
+
+    // The connection is closed automatically when the script ends
+?>

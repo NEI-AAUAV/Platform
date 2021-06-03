@@ -1,0 +1,84 @@
+.image-card {
+    border-radius: 0% !important;
+    border: none !important;
+    box-shadow: 0 6px 10px -4px rgba(0, 0, 0, 0.3);
+    transition: transform .3s cubic-bezier(.34,2,.6,1), box-shadow .2s ease,-webkit-transform .3s cubic-bezier(.34,2,.6,1);
+}
+
+.image-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 18px 0px rgba(0, 0, 0, 0.3);
+}
+
+.image-card * {
+    border-radius: 0% !important;
+}
+
+.image-card img {
+    height: 200px;
+    /* object-fit: contain;  not sure which is better, cover is as it is in current site */
+    object-fit: cover;
+    background-color: white;
+}
+
+.image-card .card-body {
+    min-height: 198px;
+    display: flex;
+    flex-direction: column;
+}
+
+/*
+.image-card .card-title {
+    font-size: 1em;
+} */
+
+.image-card .card-text {
+    flex-grow: 1 !important;
+    display: flex;
+}
+
+.image-card .card-text * {
+    align-self: center;
+    flex-grow: 1 !important;
+}
+
+.image-card .plus-button {
+    position: absolute;
+    top: 180px;
+    left: 8px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    display: flex;
+}
+
+.image-card .plus-button span {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    flex-grow: 1;
+    font-family: Roboto, sans-serif;
+    font-size: 26px;
+    font-weight: 100;
+}
+
+.image-card a:link, .image-card a:visited, .image-card a:active {
+    text-decoration: none;
+    color: #147a26;
+}
+
+.image-card a:hover {
+    text-decoration: none;
+    color: #1db939;
+}
+
+.image-card.dark a:link, .image-card.dark a:visited, .image-card.dark a:hover, .image-card.dark a:active {
+    color: white !important;
+}
+
+
+.image-card.dark, .image-card .dark {
+    color: white;
+    background-color: #4a4946;
+}
