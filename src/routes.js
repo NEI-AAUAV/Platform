@@ -15,6 +15,7 @@ import RGM from "./Pages/RGM";
 import Calendar from "./Pages/Calendar";
 import History from "./Pages/History";
 import CleanLayout from "./Layouts/CleanLayout";
+import Apontamentos from "./Pages/Apontamentos";
 
 
 const routes = [
@@ -31,6 +32,7 @@ const routes = [
 		children: [
 			{ path: "/noticias", element: <News /> },
 			{ path: "/noticia/:id", element: <NewsArticle /> },
+			{ path: "/apontamentos", element: <Apontamentos />},
 			{ path: "/equipa", element: <Team /> },
 			{ path: "/parceiros", element: <Partners /> },
 			{ path: "/calendario", element: <Calendar /> },
