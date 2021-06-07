@@ -46,6 +46,10 @@ const data = [
         ]
     },
     {
+        'name': 'Merchandising',
+        'link': '/merch'
+    },
+    {
         'name': 'Calendário',
         'link': '/calendario'
     }
