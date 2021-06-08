@@ -1,14 +1,14 @@
 import React from 'react';
 import "./index.css";
 
-const ListViewItem = () => {
+const GridViewItem = () => {
 
     
     return(
         <div>
-            wow!
+            uau!
         </div>
     );
 }
 
-export default ListViewItem;
+export default GridViewItem;
