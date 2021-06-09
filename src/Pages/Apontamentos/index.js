@@ -5,6 +5,7 @@ import { faTh, faThList } from '@fortawesome/free-solid-svg-icons';
 import ListViewItem from './ListViewItem';
 import GridViewItem from './GridViewItem';
 import "./index.css";
+import PageNav from '../../Components/PageNav';
 
 const Apontamentos = () => {
 
@@ -168,10 +169,11 @@ const Apontamentos = () => {
                                 <FontAwesomeIcon icon={ faTh } />
                                 <span className="ml-3">Grid</span>
                             </Nav.Link></Nav.Item>
-                            <Nav.Item><Nav.Link eventKey="list" className="h5">
+                            <Nav.Item className="mr-auto"><Nav.Link eventKey="list" className="h5">
                                 <FontAwesomeIcon icon={ faThList } />
                                 <span className="ml-3">List</span>
                             </Nav.Link></Nav.Item>
+                            <PageNav page={1} total={3} handler={()=>{console.log("handle")}}></PageNav>
                         </Nav>
 
                         <Tab.Content>
