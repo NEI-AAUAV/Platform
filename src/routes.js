@@ -24,6 +24,7 @@ const routes = [
 		element: <CleanLayout />,
 		children: [
 			{ path: "/", element: <Homepage /> },
+			{ path: "/merch", element: <Merchandising/> }
 		]
 	},
 	{
@@ -36,7 +37,6 @@ const routes = [
 			{ path: "/parceiros", element: <Partners /> },
 			{ path: "/calendario", element: <Calendar /> },
 			{ path: "/rgm/:id", element: <RGM /> },
-			{ path: "/merch", element: <Merchandising/> },
 			{ path: "/historia", element: <History /> },
 			{ path: "/seniorsLEI", element: <SeniorsLEI /> },
 			{ path: "/seniorsMEI", element: <SeniorsMEI /> },
