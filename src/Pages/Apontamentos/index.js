@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Tab, Nav } from 'react-bootstrap';
+import { Row, Col, Tab, Nav, Accordion } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTh, faThList } from '@fortawesome/free-solid-svg-icons';
 import ListViewItem from './ListViewItem';
