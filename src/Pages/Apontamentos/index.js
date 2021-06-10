@@ -143,6 +143,7 @@ const Apontamentos = () => {
     const [showData, setShowData] = useState([]);  
     const [subjects, setSubjects] = useState([]); // todos os subjects
     const [selectedSubject, setSelectedSubject] = useState("Subject...");
+    const [subjectName, setSubjectName] = useState("");
 
     // API stuff, filters, etc...
     // ...
@@ -156,6 +157,7 @@ const Apontamentos = () => {
                     subjs.push(d.subjectShort)
             }
         )
+        subjs = subjs.sort();
         subjs = subjs.map( s => <option value={s}>{s}</option>)
         
         setSubjects(subjs)
@@ -182,13 +184,15 @@ const Apontamentos = () => {
     useEffect( () => {
         let datas = [];
         data.map(d => {
-            var sel;
+            var sel = true;
             console.log("sel: "+selectedSubject);
             
-            if (selectedSubject == "Subject...")
-                sel = true;
-            else
-                sel = d["subjectShort"] == selectedSubject;
+            if (selectedSubject != "Subject..." && !(d["subjectShort"] == selectedSubject))
+                sel = false;
+            if (subjectName != "" && !(d.name.includes(subjectName))) 
+                sel = false;
+            
+
             if (sel) {
                 activeFilters.forEach(f => {
                     if (d[f.toLowerCase()] == "1" && !datas.includes(d)) 
@@ -199,7 +203,7 @@ const Apontamentos = () => {
         });
         
         setShowData(datas);
-    }, [activeFilters, selectedSubject])
+    }, [activeFilters, selectedSubject, subjectName])
 
     useEffect( () => {
         setActiveFilters(filters.map(content => content.filter));
@@ -212,10 +216,17 @@ const Apontamentos = () => {
                 <Col md="3">
                     <Form>
                         <Form.Group controlId="searhByName">
-                            <Form.Control type="text"></Form.Control>
+                            <Form.Control 
+                                type="text" 
+                                placeholder="Name"
+                                onChange={ (e) => setSubjectName(e.target.value)}
+                            />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Control as="select" onChange={ (e) => setSelectedSubject(e.target.value)}>
+                            <Form.Control 
+                                as="select" 
+                                onChange={ (e) => setSelectedSubject(e.target.value)}
+                            >
                                 <option>Subject...</option>
                                 {subjects}
                             </Form.Control>
