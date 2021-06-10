@@ -25,8 +25,9 @@ const Homepage = () => {
     }, []);
 
     const commands = {
-        whoami: "jackharper",
-        cd: (directory) => `changed path to ${directory}`
+        whoami: "nei-os",
+        cd: (directory) => `changed path to ${directory}`,
+        help: "list of commands: \n whoami \n cd \n help"
       };
 
 
@@ -47,13 +48,16 @@ const Homepage = () => {
                                 commands={commands}
                                 themes={{
                                     myCustomTheme: {
-                                      themeBGColor: "#272B36",
+                                      themeBGColor: "black",
                                       themeToolbarColor: "#DBDBDB",
                                       themeColor: "#FFFEFC",
-                                      themePromptColor: "#FFFEFC"
+                                      themePromptColor: "chartreuse"
                                     }
                                   }}
                                   theme="myCustomTheme"
+                                  prompt="nei@nei-os ~ $"
+                                  //welcomeMessage="Welcome to the hacker zone! Use 'help' if you want to see the commands :)"
+                                  // o welcome n tem \n...?
                               />
                             }
                             
