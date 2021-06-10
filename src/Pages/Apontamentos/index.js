@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Tab, Nav, Accordion, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTh, faThList } from '@fortawesome/free-solid-svg-icons';
-import ListViewItem from './ListViewItem';
-import GridViewItem from './GridViewItem';
+import ListView from './ListView';
+import GridView from './GridView';
 import "./index.css";
 import PageNav from '../../Components/PageNav';
-import Filters from "../../Components/Filters"
+import Filters from "../../Components/Filters";
 import FilterSelect from "../../Components/Filters/FilterSelect";
 
 const Apontamentos = () => {
@@ -239,7 +239,7 @@ const Apontamentos = () => {
             setData([]);
         }
         else {
-            var fullNotes = "?page="+selPage;
+            var fullNotes = "?page="+selPage+"&";
 
             fullNotes += extraTeacher;
             fullNotes += extraSubj;
@@ -252,8 +252,9 @@ const Apontamentos = () => {
             fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
             .then((response) => response.json())
             .then((response) => {            
-                setData(response.data.map(s => s))
+                setData(response.data)
                 setPageNumber(response.page.pagesNumber);
+
             })
         }
 
@@ -293,11 +294,6 @@ const Apontamentos = () => {
 
     }, [activeFilters, selectedSubject, subjectName, selStudent, selYear, selPage]);
     
-    useEffect( () => {
-        // modify props as needed
-        setGridItems(data.map( d => <GridViewItem data={d}></GridViewItem>));
-        setListItems(data.map( d => <ListViewItem data={d}></ListViewItem>));
-    }, [data])
 
     useEffect( () => {
         setActiveFilters(filters.map(content => content.filter));
@@ -320,7 +316,7 @@ const Apontamentos = () => {
                                 as="select" 
                                 onChange={ (e) => setSelYear(e.target.value)}
                             >
-                                <option value="">Year...</option>
+                                <option value="">Ano Letivo...</option>
                                 {years}
                             </Form.Control>
                         </Form.Group>
@@ -343,7 +339,7 @@ const Apontamentos = () => {
                                 as="select" 
                                 onChange={ (e) => setSelectedSubject(e.target.value)}
                             >
-                                <option value="">Subject...</option>
+                                <option value="">Cadeira...</option>
                                 {subjects}
                             </Form.Control>
                         </Form.Group>
@@ -353,7 +349,7 @@ const Apontamentos = () => {
                                 as="select" 
                                 onChange={ (e) => setSelStudent(e.target.value)}
                             >
-                                <option value="">Student...</option>
+                                <option value="">Autor...</option>
                                 {student}
                             </Form.Control>
                         </Form.Group>
@@ -363,7 +359,7 @@ const Apontamentos = () => {
                                 as="select" 
                                 onChange={ (e) => setSelTeacher(e.target.value)}
                             >
-                                <option value="">Teacher...</option>
+                                <option value="">Professor...</option>
                                 {teachers}
                             </Form.Control>
                         </Form.Group>
@@ -377,9 +373,6 @@ const Apontamentos = () => {
                         className="mb-5"
                         btnClass="mr-2"
                     />
-                    {
-                        //<div style={{backgroundColor:"darkcyan", height:"600px",width:"100%"}}>Filters and search</div>
-                    }
                 </Col>
 
                 {/* The two views are controlled by a bootstrap tabs component,
@@ -402,10 +395,10 @@ const Apontamentos = () => {
 
                         <Tab.Content>
                             <Tab.Pane eventKey="grid">
-                                {gridItems}
+                                <GridView data={data}></GridView>
                             </Tab.Pane>
                             <Tab.Pane eventKey="list">
-                                {listItems}
+                                <ListView data={data}></ListView>
                             </Tab.Pane>
                         </Tab.Content>
                     </Tab.Container>

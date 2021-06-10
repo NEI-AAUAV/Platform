@@ -1,7 +1,7 @@
 import React from 'react';
 import "./index.css";
 
-const GridViewItem = () => {
+const GridView = () => {
 
     
     return(
@@ -11,4 +11,4 @@ const GridViewItem = () => {
     );
 }
 
-export default GridViewItem;
+export default GridView;
