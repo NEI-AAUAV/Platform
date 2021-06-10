@@ -315,6 +315,10 @@ const Apontamentos = () => {
                     <Details 
                         note={selectedNote}
                         close={() => setSelectedNote(null)}
+                        setSelYear={setSelYear}
+                        setSelectedSubject={setSelectedSubject}
+                        setSelStudent={setSelStudent}
+                        setSelTeacher={setSelTeacher}
                     />
                     <Form>
                         {/*

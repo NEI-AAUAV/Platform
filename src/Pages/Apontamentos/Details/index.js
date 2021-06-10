@@ -4,7 +4,7 @@ import './index.css';
 import parse from 'html-react-parser';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faFilter } from '@fortawesome/free-solid-svg-icons';
 
 function titleCase(str) {
     var splitStr = str.toLowerCase().split(' ');
@@ -17,7 +17,7 @@ function titleCase(str) {
     return splitStr.join(' ');
 }
 
-const Details = ({ note, close }) => {
+const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, setSelTeacher }) => {
 
     return (
         note &&
@@ -46,21 +46,48 @@ const Details = ({ note, close }) => {
                     {
                         note.yearBegin && note.yearEnd &&
                         <>
-                            <dt className="small font-weight-bold">Ano letivo</dt>
+                            <dt className="small font-weight-bold">
+                                <span className="mr-1">Ano letivo</span>
+                                <FontAwesomeIcon
+                                    className="text-primary mr-1 link"
+                                    icon={faFilter}
+                                    size={"1x"}
+                                    title="Filtrar por ano letivo"
+                                    onClick={() => setSelYear(note.yearId)}
+                                />
+                            </dt>
                             <dd>{note.yearBegin}/{note.yearEnd}</dd>
                         </>
                     }
                     {
                         note.subjectName &&
                         <>
-                            <dt className="small font-weight-bold">Cadeira</dt>
+                            <dt className="small font-weight-bold">
+                                <span className="mr-1">Cadeira</span>
+                                <FontAwesomeIcon
+                                    className="text-primary mr-1 link"
+                                    icon={faFilter}
+                                    size={"1x"}
+                                    title="Filtrar por cadeira"
+                                    onClick={() => setSelectedSubject(note.subjectId)}
+                                />
+                            </dt>
                             <dd>{note.subjectName}</dd>
                         </>
                     }
                     {
                         note.authorName &&
                         <>
-                            <dt className="small font-weight-bold">Autor</dt>
+                            <dt className="small font-weight-bold">
+                                <span className="mr-1">Autor</span>
+                                <FontAwesomeIcon
+                                    className="text-primary mr-1 link"
+                                    icon={faFilter}
+                                    size={"1x"}
+                                    title="Filtrar por autor"
+                                    onClick={() => setSelStudent(note.authorId)}
+                                />
+                            </dt>
                             <dd>{titleCase(note.authorName)}</dd>
                         </>
                     }
@@ -68,7 +95,16 @@ const Details = ({ note, close }) => {
                         note.teacherName &&
                         <>
                             <dt className="small font-weight-bold">
-                                <span className="mr-1">Docente</span>
+                                <span className="mr-1">
+                                    <span className="mr-1">Docente</span>
+                                    <FontAwesomeIcon
+                                        className="text-primary mr-1 link"
+                                        icon={faFilter}
+                                        size={"1x"}
+                                        title="Filtrar por docente"
+                                        onClick={() => setSelTeacher(note.teacherId)}
+                                    />
+                                </span>
                                 {
                                     note.teacherPage &&
                                     <a
