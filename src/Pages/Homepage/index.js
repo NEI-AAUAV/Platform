@@ -6,6 +6,7 @@ import { faHistory, faUsers } from "@fortawesome/free-solid-svg-icons";
 import NewsList from "../News/NewsList";
 import "./index.css";
 import { ReactTerminal } from "react-terminal";
+import commands from "./commands"
 
 const Homepage = () => {
 
@@ -23,13 +24,6 @@ const Homepage = () => {
                 }
             });
     }, []);
-
-    const commands = {
-        whoami: "nei-os",
-        cd: (directory) => `changed path to ${directory}`,
-        help: "list of commands: \n whoami \n cd \n help"
-      };
-
 
     return (
         <div className="py-5">
@@ -56,6 +50,7 @@ const Homepage = () => {
                                   }}
                                   theme="myCustomTheme"
                                   prompt="nei@nei-os ~ $"
+                                  errorMessage="invalid command"
                                   //welcomeMessage="Welcome to the hacker zone! Use 'help' if you want to see the commands :)"
                                   // o welcome n tem \n...?
                               />
