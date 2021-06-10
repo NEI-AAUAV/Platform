@@ -4,10 +4,6 @@ const data = [
         'link': '/noticias'
     },
     {
-        'name': 'Apontamentos',
-        'link': '/apontamentos'
-    },
-    {
         'name': 'Parceiros',
         'link': '/parceiros'
     },
