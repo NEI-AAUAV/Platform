@@ -49,7 +49,9 @@
             notes.slides, 
             notes.exercises, 
             notes.projects, 
-            notes.notebook 
+            notes.notebook,
+            notes.location,
+            notes.content
         FROM notes 
             INNER JOIN notes_subjects ON notes.subject=notes_subjects.paco_code 
             INNER JOIN notes_schoolyear ON notes.schoolYear=notes_schoolyear.id
