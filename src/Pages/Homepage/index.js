@@ -5,6 +5,7 @@ import { faLightbulb, faFutbol } from "@fortawesome/free-regular-svg-icons";
 import { faHistory, faUsers } from "@fortawesome/free-solid-svg-icons";
 import NewsList from "../News/NewsList";
 import "./index.css";
+import { ReactTerminal } from "react-terminal";
 
 const Homepage = () => {
 
@@ -23,6 +24,11 @@ const Homepage = () => {
             });
     }, []);
 
+    const commands = {
+        whoami: "jackharper",
+        cd: (directory) => `changed path to ${directory}`
+      };
+
 
     return (
         <div className="py-5">
@@ -34,7 +40,23 @@ const Homepage = () => {
                             <h1>Núcleo de Estudantes de Informática</h1>
                         </Col>
                         <Col>
-                            bash terminal goes here
+                            {//bash terminal goes here
+                            }
+                            {
+                                <ReactTerminal
+                                commands={commands}
+                                themes={{
+                                    myCustomTheme: {
+                                      themeBGColor: "#272B36",
+                                      themeToolbarColor: "#DBDBDB",
+                                      themeColor: "#FFFEFC",
+                                      themePromptColor: "#FFFEFC"
+                                    }
+                                  }}
+                                  theme="myCustomTheme"
+                              />
+                            }
+                            
                         </Col>
                     </Row>
                 </Col>
