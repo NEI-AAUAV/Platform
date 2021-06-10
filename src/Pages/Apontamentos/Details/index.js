@@ -1,15 +1,18 @@
 import React from "react";
 import './index.css';
 
+import parse from 'html-react-parser';
+
 const Details = ({ note, close }) => {
+
     return (
         note &&
         <div className="notesDetails bg-white p-3 mb-4">
             <h4 className="">Resumos FP 2018/2019 (zip)</h4>
-            <button 
-                type="button" 
-                className="close" 
-                data-dismiss="modal" 
+            <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
                 aria-label="Close"
                 onClick={close}
             >
@@ -26,14 +29,41 @@ const Details = ({ note, close }) => {
             </div>
             <div>
                 <dl>
-                    <dt className="small font-weight-bold">Ano letivo</dt>
-                    <dd>{note.yearBegin}/{note.yearEnd}</dd>
-                    <dt className="small font-weight-bold">Cadeira</dt>
-                    <dd>{note.subjectName}</dd>
-                    <dt className="small font-weight-bold">Autor</dt>
-                    <dd className="text-lowercase text-capitalize">{note.authorName}</dd>
-                    <dt className="small font-weight-bold">Docente</dt>
-                    <dd>{note.teacherName}</dd>
+                    {
+                        note.yearBegin && note.yearEnd &&
+                        <>
+                            <dt className="small font-weight-bold">Ano letivo</dt>
+                            <dd>{note.yearBegin}/{note.yearEnd}</dd>
+                        </>
+                    }
+                    {
+                        note.subjectName &&
+                        <>
+                            <dt className="small font-weight-bold">Cadeira</dt>
+                            <dd>{note.subjectName}</dd>
+                        </>
+                    }
+                    {
+                        note.authorName &&
+                        <>
+                            <dt className="small font-weight-bold">Autor</dt>
+                            <dd className="text-lowercase text-capitalize">{note.authorName}</dd>
+                        </>
+                    }
+                    {
+                        note.teacherName &&
+                        <>
+                            <dt className="small font-weight-bold">Docente</dt>
+                            <dd>{note.teacherName}</dd>
+                        </>
+                    }
+                    {
+                        note.content &&
+                        <>
+                            <dt className="small font-weight-bold">Ficheiros</dt>
+                            <dd>{parse(note.content)}</dd>
+                        </>
+                    }
                 </dl>
             </div>
         </div>

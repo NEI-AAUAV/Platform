@@ -70,3 +70,8 @@ h5, .h5 { font-size: 1.15rem!important; }
 .link:hover {
     cursor: pointer!important;
 }
+
+/* removing marker from li with ul inside */
+li.sub {
+    list-style-type: none;
+}
