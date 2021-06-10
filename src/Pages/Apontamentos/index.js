@@ -183,6 +183,9 @@ const Apontamentos = () => {
 
 
     useEffect( () => {
+
+        // Every time a new call is made to the API, close details
+        setSelectedNote(null);
         
         //console.log("mh")
         
@@ -396,7 +399,7 @@ const Apontamentos = () => {
                 */}
                 <Col md="9">
                     <Tab.Container defaultActiveKey="grid">
-                        <Nav>
+                        <Nav onSelect={() => setSelectedNote(null)}>
                             <Nav.Item><Nav.Link eventKey="grid" className="h5">
                                 <FontAwesomeIcon icon={ faTh } />
                                 <span className="ml-3">Grid</span>
