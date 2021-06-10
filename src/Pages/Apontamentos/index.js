@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Tab, Nav, Accordion } from 'react-bootstrap';
+import { Row, Col, Tab, Nav, Accordion, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTh, faThList } from '@fortawesome/free-solid-svg-icons';
 import ListViewItem from './ListViewItem';
@@ -141,12 +141,24 @@ const Apontamentos = () => {
     const [activeFilters, setActiveFilters] = useState([]);
     const [selection, setSelection] = useState([]);  
     const [showData, setShowData] = useState([]);  
+    const [subjects, setSubjects] = useState([]); // todos os subjects
+    const [selectedSubject, setSelectedSubject] = useState("Subject...");
 
     // API stuff, filters, etc...
     // ...
     useEffect( () => {
         setData(test_data);
         setShowData(test_data);
+        var subjs = []; 
+        test_data.map( d => 
+            {
+                if (!subjs.includes(d.subjectShort))
+                    subjs.push(d.subjectShort)
+            }
+        )
+        subjs = subjs.map( s => <option value={s}>{s}</option>)
+        
+        setSubjects(subjs)
         setFilters(
             [
                 {'filter': 'Bibliography'},
@@ -158,6 +170,7 @@ const Apontamentos = () => {
                 {'filter': 'Tests'}
             ]
         )
+
     }, []);
     
     useEffect( () => {
@@ -169,14 +182,24 @@ const Apontamentos = () => {
     useEffect( () => {
         let datas = [];
         data.map(d => {
-            activeFilters.forEach(f => {
-                if (d[f.toLowerCase()] == "1" && !datas.includes(d)) 
-                    datas.push(d); 
-            })
+            var sel;
+            console.log("sel: "+selectedSubject);
+            
+            if (selectedSubject == "Subject...")
+                sel = true;
+            else
+                sel = d["subjectShort"] == selectedSubject;
+            if (sel) {
+                activeFilters.forEach(f => {
+                    if (d[f.toLowerCase()] == "1" && !datas.includes(d)) 
+                        datas.push(d); 
+                })
+            }
+
         });
         
         setShowData(datas);
-    }, [activeFilters])
+    }, [activeFilters, selectedSubject])
 
     useEffect( () => {
         setActiveFilters(filters.map(content => content.filter));
@@ -187,6 +210,18 @@ const Apontamentos = () => {
         <div>
             <Row>
                 <Col md="3">
+                    <Form>
+                        <Form.Group controlId="searhByName">
+                            <Form.Control type="text"></Form.Control>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Control as="select" onChange={ (e) => setSelectedSubject(e.target.value)}>
+                                <option>Subject...</option>
+                                {subjects}
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
+                    
                     <FilterSelect
                         accordion={true}
                         filterList={filters}
