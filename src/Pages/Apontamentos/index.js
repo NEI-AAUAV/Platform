@@ -143,12 +143,12 @@ const Apontamentos = () => {
     const [subjects, setSubjects] = useState([]); // todos os subjects
     const [selectedSubject, setSelectedSubject] = useState("");
     const [subjectName, setSubjectName] = useState("");
-    const [years, setYears] = useState("Year...");
+    const [years, setYears] = useState("");
     const [selYear, setSelYear] = useState("");
-    const [selSemester, setSelSemester] = useState("Semester...");
-    const [student, setStudents] = useState("Student...");
+    //const [selSemester, setSelSemester] = useState("");
+    const [student, setStudents] = useState("");
     const [selStudent, setSelStudent] = useState("");
-    const [teachers, setTeachers] = useState("Teachers...");
+    const [teachers, setTeachers] = useState("");
     const [selTeacher, setSelTeacher] = useState("");
 
     // API stuff, filters, etc...
@@ -188,8 +188,8 @@ const Apontamentos = () => {
         var extraTeacher = selTeacher == "" ? "" : "teacher=" + selTeacher + "&";
         var extraCategory = "";
 
-        for (var i=0; i<activeFilters; i++) {
-            extraCategory += "category[]=" + activeFilters[i] + "&";
+        for (var i=0; i<activeFilters.length; i++) {
+            extraCategory += "category[]=" + activeFilters[i].toLowerCase() + "&";
         }
         
         var fullTeacher = "";
@@ -224,29 +224,36 @@ const Apontamentos = () => {
 
         var fullStud = "";
 
-        if (extraTeacher != "" || extraSubj != "") {
+        if (extraTeacher != "" || extraSubj != "" || extraYear != "" ) {
             fullStud = "?";
             fullStud += extraTeacher;
             fullStud += extraSubj;
+            fullStud += extraYear;
             fullStud = fullStud.substring(0,fullStud.length-1);
         }
 
-        var fullNotes = "";
-
-        if (extraTeacher != "" || extraSubj != "" ||  extraStud != "" || extraCategory != "") {
-            fullNotes = "?";
-            fullNotes += extraTeacher;
-            fullNotes += extraSubj;
-            fullNotes += extraStud;
-            fullNotes += extraCategory;
-            fullNotes = fullNotes.substring(0,fullNotes.length-1);
+        if (extraCategory.length == 0) {
+            setData([]);
         }
+        else {
+            var fullNotes = "";
 
-        fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
-        .then((response) => response.json())
-        .then((response) => {            
-            setData(response.data.map(s => s))
-        })
+            if (extraTeacher != "" || extraSubj != "" ||  extraStud != "" || extraCategory != "" || extraYear != "") {
+                fullNotes = "?";
+                fullNotes += extraTeacher;
+                fullNotes += extraSubj;
+                fullNotes += extraStud;
+                fullNotes += extraCategory;
+                fullNotes += extraYear;
+                fullNotes = fullNotes.substring(0,fullNotes.length-1);
+            }
+
+            fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
+            .then((response) => response.json())
+            .then((response) => {            
+                setData(response.data.map(s => s))
+            })
+        }
 
         //console.log("extra: "+ extra);
 
@@ -282,39 +289,13 @@ const Apontamentos = () => {
             setTeachers(response.data.map(s => <option value={s.id}>{s.name}</option>))
         })
 
-    }, [activeFilters, selectedSubject, subjectName, selStudent, selSemester, selYear]);
+    }, [activeFilters, selectedSubject, subjectName, selStudent, selYear]);
     
     useEffect( () => {
         // modify props as needed
         setGridItems(data.map( d => <GridViewItem data={d}></GridViewItem>));
         setListItems(data.map( d => <ListViewItem data={d}></ListViewItem>));
     }, [data])
-
-    /*
-    useEffect( () => {
-        let datas = [];
-        data.map(d => {
-            var sel = true;
-            //console.log("sel: "+selectedSubject);
-            
-            if (selectedSubject != "Subject..." && !(d["subjectShort"] == selectedSubject))
-                sel = false;
-            if (subjectName != "" && !(d.name.includes(subjectName))) 
-                sel = false;
-            
-
-            if (sel) {
-                activeFilters.forEach(f => {
-                    if (d[f.toLowerCase()] == "1" && !datas.includes(d)) 
-                        datas.push(d); 
-                })
-            }
-
-        });
-        
-        setShowData(datas);
-    }, [activeFilters, selectedSubject, subjectName, author, selSemester, selYear])
-    */
 
     useEffect( () => {
         setActiveFilters(filters.map(content => content.filter));
@@ -337,11 +318,12 @@ const Apontamentos = () => {
                                 as="select" 
                                 onChange={ (e) => setSelYear(e.target.value)}
                             >
-                                <option>Year...</option>
+                                <option value="">Year...</option>
                                 {years}
                             </Form.Control>
                         </Form.Group>
-                        <Form.Group>
+                        {/*
+                            <Form.Group>
                             <Form.Control 
                                 as="select" 
                                 onChange={ (e) => setSelSemester(e.target.value)}
@@ -351,13 +333,15 @@ const Apontamentos = () => {
                                 <option value="2">2</option>
                             </Form.Control>
                         </Form.Group>
+                        */}
+                        
 
                         <Form.Group>
                             <Form.Control 
                                 as="select" 
                                 onChange={ (e) => setSelectedSubject(e.target.value)}
                             >
-                                <option>Subject...</option>
+                                <option value="">Subject...</option>
                                 {subjects}
                             </Form.Control>
                         </Form.Group>
@@ -367,7 +351,7 @@ const Apontamentos = () => {
                                 as="select" 
                                 onChange={ (e) => setSelStudent(e.target.value)}
                             >
-                                <option>Student...</option>
+                                <option value="">Student...</option>
                                 {student}
                             </Form.Control>
                         </Form.Group>
@@ -377,7 +361,7 @@ const Apontamentos = () => {
                                 as="select" 
                                 onChange={ (e) => setSelTeacher(e.target.value)}
                             >
-                                <option>Teacher...</option>
+                                <option value="">Teacher...</option>
                                 {teachers}
                             </Form.Control>
                         </Form.Group>
