@@ -7,7 +7,7 @@ const commands = {
             return "usage: rm <name>"
         if (args == "/") {
             alert("YOU SHOULDN'T HAVE DONE THAT")
-            window.open("https://i.ytimg.com/vi/CUT09UP6yo0/maxresdefault.jpg");
+            window.open("https://cdn.discordapp.com/attachments/822074448961077260/848594704357392414/IMG_20210530_171126.jpg");
         }
         return "removed " + args;
     },
