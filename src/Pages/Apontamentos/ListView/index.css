@@ -6,9 +6,13 @@
 }
 
 .list-view-item {
-    margin-top: 8px;
+    padding-top: 8px;
     padding-bottom: 8px;
     border-bottom: 1px solid #dfdfdf;
+}
+
+.list-view-item:hover {
+    background-color: #ebebeb;
 }
 
 .list-view-name, .list-view-subject-name, .list-view-subject-short {

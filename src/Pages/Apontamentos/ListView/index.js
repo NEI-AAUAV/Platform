@@ -29,7 +29,7 @@ const ListView = (props) => {
             {
             props.data.map( item => {
                 return(
-                    <div className="list-view-item">
+                    <div className="list-view-item mx-n3 px-3">
                         <Row>
                             <Col md="5" className="list-view-name">
                                 {item.name}

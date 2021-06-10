@@ -301,6 +301,8 @@ const Apontamentos = () => {
     
     return (
         <div>
+            <h2 className="text-center">Apontamentos</h2>
+            
             <Row>
                 <Col md="3">
                     <Form>
