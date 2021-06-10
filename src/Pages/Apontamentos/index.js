@@ -140,30 +140,29 @@ const Apontamentos = () => {
     const [filters, setFilters] = useState([]);
     const [activeFilters, setActiveFilters] = useState([]);
     const [selection, setSelection] = useState([]);  
+
+    // varName, setVarname --> used to save the group
+    // selVarName, setVarName --> used to save the selected element of the group
+
     const [subjects, setSubjects] = useState([]); // todos os subjects
     const [selectedSubject, setSelectedSubject] = useState("");
     const [subjectName, setSubjectName] = useState("");
     const [years, setYears] = useState("");
     const [selYear, setSelYear] = useState("");
-    //const [selSemester, setSelSemester] = useState("");
+    //const [selSemester, setSelSemester] = useState(""); // Will we use this?
     const [student, setStudents] = useState("");
     const [selStudent, setSelStudent] = useState("");
     const [teachers, setTeachers] = useState("");
     const [selTeacher, setSelTeacher] = useState("");
+    const [pageNumber, setPageNumber] = useState(1);
+    const [selPage, setSelPage] = useState(1);
 
-    // API stuff, filters, etc...
-    // ...
-    /*
-    fetch(process.env.REACT_APP_API+"/team/mandates")
-        .then(response => response.json())
-        .then((response) => {
-            var anos = response.data.map(year => 
-                year.mandato
-            ).sort((a,b) => b-a);
-            setYears(anos)
-            setSelectedYear(anos[0])
-        })
-    */
+    const fetchPage = (p_num) => {
+        console.log("currPage: " + selPage + ", new_page: " + p_num);
+
+        setSelPage(p_num);
+    }
+
     useEffect( () => {
         setFilters(
             [
@@ -181,7 +180,9 @@ const Apontamentos = () => {
 
     useEffect( () => {
         
-        console.log("mh")
+        //console.log("mh")
+        
+        // extraVarName --> base used to concatenate and compare the optionals of every fetch
         var extraYear = selYear == "" ? "" : "schoolYear=" + selYear + "&";
         var extraSubj = selectedSubject == "" ? "" : "subject=" + selectedSubject + "&";
         var extraStud = selStudent == "" ? "" : "student=" + selStudent + "&";
@@ -192,6 +193,8 @@ const Apontamentos = () => {
             extraCategory += "category[]=" + activeFilters[i].toLowerCase() + "&";
         }
         
+
+        // fullVarName --> sum of optionals of every fetch
         var fullTeacher = "";
 
         if (extraYear != "" || extraSubj != "" || extraStud != "") {
@@ -199,7 +202,7 @@ const Apontamentos = () => {
             fullTeacher += extraYear;
             fullTeacher += extraSubj;
             fullTeacher += extraStud;
-            fullTeacher = fullTeacher.substring(0,fullTeacher.length-1);
+            fullTeacher = fullTeacher.substring(0,fullTeacher.length-1); // ignore the last '&'
         }
 
         var fullYear = "";
@@ -209,7 +212,7 @@ const Apontamentos = () => {
             fullYear += extraTeacher;
             fullYear += extraSubj;
             fullYear += extraStud;
-            fullYear = fullYear.substring(0,fullYear.length-1);
+            fullYear = fullYear.substring(0,fullYear.length-1); // ignore the last '&'
         }
 
         var fullSubj = "";
@@ -219,7 +222,7 @@ const Apontamentos = () => {
             fullSubj += extraYear;
             fullSubj += extraStud;
             fullSubj += extraTeacher;
-            fullSubj = fullSubj.substring(0,fullSubj.length-1);
+            fullSubj = fullSubj.substring(0,fullSubj.length-1); // ignore the last '&'
         }
 
         var fullStud = "";
@@ -229,29 +232,28 @@ const Apontamentos = () => {
             fullStud += extraTeacher;
             fullStud += extraSubj;
             fullStud += extraYear;
-            fullStud = fullStud.substring(0,fullStud.length-1);
+            fullStud = fullStud.substring(0,fullStud.length-1); // ignore the last '&'
         }
 
         if (extraCategory.length == 0) {
             setData([]);
         }
         else {
-            var fullNotes = "";
+            var fullNotes = "?page="+selPage;
 
-            if (extraTeacher != "" || extraSubj != "" ||  extraStud != "" || extraCategory != "" || extraYear != "") {
-                fullNotes = "?";
-                fullNotes += extraTeacher;
-                fullNotes += extraSubj;
-                fullNotes += extraStud;
-                fullNotes += extraCategory;
-                fullNotes += extraYear;
-                fullNotes = fullNotes.substring(0,fullNotes.length-1);
-            }
+            fullNotes += extraTeacher;
+            fullNotes += extraSubj;
+            fullNotes += extraStud;
+            fullNotes += extraCategory;
+            fullNotes += extraYear;
+            fullNotes = fullNotes.substring(0,fullNotes.length-1); // ignore the last '&'
+
 
             fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
             .then((response) => response.json())
             .then((response) => {            
                 setData(response.data.map(s => s))
+                setPageNumber(response.page.pagesNumber);
             })
         }
 
@@ -286,10 +288,10 @@ const Apontamentos = () => {
         fetch(process.env.REACT_APP_API + "/notes/teachers" + fullTeacher)
         .then((response) => response.json())
         .then((response) => {            
-            setTeachers(response.data.map(s => <option value={s.id}>{s.name}</option>))
+            setTeachers(response.data.map(s => <option value={s.id}>{s.name}</option>));
         })
 
-    }, [activeFilters, selectedSubject, subjectName, selStudent, selYear]);
+    }, [activeFilters, selectedSubject, subjectName, selStudent, selYear, selPage]);
     
     useEffect( () => {
         // modify props as needed
@@ -395,7 +397,7 @@ const Apontamentos = () => {
                                 <FontAwesomeIcon icon={ faThList } />
                                 <span className="ml-3">List</span>
                             </Nav.Link></Nav.Item>
-                            <PageNav page={1} total={3} handler={()=>{console.log("handle")}}></PageNav>
+                            <PageNav page={selPage} total={pageNumber} handler={fetchPage}></PageNav>
                         </Nav>
 
                         <Tab.Content>
