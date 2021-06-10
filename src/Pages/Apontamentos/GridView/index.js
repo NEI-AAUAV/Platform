@@ -15,15 +15,7 @@ const getIcon = (url) => {
 }
 
 
-/** Takes a single prop: data, a list of objects containing the following properties:
- *  - id
-    - name: the name of the file
-    - subjectShort: abbreviation of subject name (e.g. "FP")
-    - subjectName: full subject name
-    - summary, tests, bibliography, slides, exercises, projects, notebook:
-        The string "0" or "1", representing if the notes belong in the category 
- */
-const GridView = ({data}) => {
+const GridView = ({data, setSelected}) => {
 
     
     return(
@@ -33,12 +25,12 @@ const GridView = ({data}) => {
                     apontamento => 
                     <Document
                         name={apontamento.name}
-                        blank={true}
-                        link={process.env.REACT_APP_UPLOADS_UNLOCK + apontamento.location}
                         description={apontamento.subjectName}
-                        className="col-xl-4"
+                        className="col-xl-4 link"
                         size="2x"
                         icon={getIcon(apontamento.location)}
+                        onClick={() => setSelected(apontamento)}
+                        title="Detalhes"
                     />
                 )
             }

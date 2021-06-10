@@ -1,0 +1,12 @@
+.notesDetails {
+    border-radius: 0% !important;
+    border: none !important;
+    box-shadow: 0 6px 10px -4px rgba(0, 0, 0, 0.3);
+    transition: transform .3s cubic-bezier(.34,2,.6,1), box-shadow .2s ease;
+}
+
+.notesDetails .close {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+}

@@ -8,6 +8,7 @@ import "./index.css";
 import PageNav from '../../Components/PageNav';
 import Filters from "../../Components/Filters";
 import FilterSelect from "../../Components/Filters/FilterSelect";
+import Details from "./Details";
 
 const Apontamentos = () => {
 
@@ -131,6 +132,9 @@ const Apontamentos = () => {
             "notebook": "0"
         }
     ];
+
+    // Grid view selected note
+    const [selectedNote, setSelectedNote] = useState(null);
 
 
     // useStates and other variables
@@ -305,6 +309,10 @@ const Apontamentos = () => {
             
             <Row>
                 <Col md="3">
+                    <Details 
+                        note={selectedNote}
+                        close={() => setSelectedNote(null)}
+                    />
                     <Form>
                         {/*
                             <Form.Group>
@@ -402,7 +410,7 @@ const Apontamentos = () => {
 
                         <Tab.Content>
                             <Tab.Pane eventKey="grid">
-                                <GridView data={data}></GridView>
+                                <GridView data={data} setSelected={setSelectedNote}></GridView>
                             </Tab.Pane>
                             <Tab.Pane eventKey="list">
                                 <ListView data={data}></ListView>
