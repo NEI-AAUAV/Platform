@@ -79,7 +79,7 @@ const News = () => {
                 filterList={newsTypes.map(nt => {return {'filter': nt}})}
                 activeFilters={whitelist}
                 setActiveFilters={setWhitelist}
-                className="mb-5"
+                className="mb-5 py-5"
                 btnClass="mr-2"
             >
                 <PageNav page={currPage} total={totalPages} handler={fetchPage}></PageNav>

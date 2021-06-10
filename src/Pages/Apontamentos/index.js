@@ -6,6 +6,8 @@ import ListViewItem from './ListViewItem';
 import GridViewItem from './GridViewItem';
 import "./index.css";
 import PageNav from '../../Components/PageNav';
+import Filters from "../../Components/Filters"
+import FilterSelect from "../../Components/Filters/FilterSelect";
 
 const Apontamentos = () => {
 
@@ -135,27 +137,67 @@ const Apontamentos = () => {
     const [data, setData] = useState([]);
     const [gridItems, setGridItems] = useState([]);
     const [listItems, setListItems] = useState([]);
-
+    const [filters, setFilters] = useState([]);
+    const [activeFilters, setActiveFilters] = useState([]);
+    const [selection, setSelection] = useState([]);  
+    const [showData, setShowData] = useState([]);  
 
     // API stuff, filters, etc...
     // ...
     useEffect( () => {
-        setData(test_data)
+        setData(test_data);
+        setShowData(test_data);
+        setFilters(
+            [
+                {'filter': 'Bibliography'},
+                {'filter': 'Exercises'},
+                {'filter': 'Notebook'},
+                {'filter': 'Projects'},
+                {'filter': 'Slides'},
+                {'filter':'Summary'}, 
+                {'filter': 'Tests'}
+            ]
+        )
     }, []);
     
     useEffect( () => {
         // modify props as needed
-        setGridItems(data.map( d => <GridViewItem data={d}></GridViewItem>));
-        setListItems(data.map( d => <ListViewItem data={d}></ListViewItem>));
-    }, [data])
+        setGridItems(showData.map( d => <GridViewItem data={d}></GridViewItem>));
+        setListItems(showData.map( d => <ListViewItem data={d}></ListViewItem>));
+    }, [showData])
+
+    useEffect( () => {
+        let datas = [];
+        data.map(d => {
+            activeFilters.forEach(f => {
+                if (d[f.toLowerCase()] == "1" && !datas.includes(d)) 
+                    datas.push(d); 
+            })
+        });
+        
+        setShowData(datas);
+    }, [activeFilters])
+
+    useEffect( () => {
+        setActiveFilters(filters.map(content => content.filter));
+    }, [filters])
     
 
     return (
         <div>
             <Row>
                 <Col md="3">
-                    { /* TODO: Filters and search */ }
-                    <div style={{backgroundColor:"darkcyan", height:"600px",width:"100%"}}>Filters and search</div>
+                    <FilterSelect
+                        accordion={true}
+                        filterList={filters}
+                        activeFilters={activeFilters}
+                        setActiveFilters={setActiveFilters}
+                        className="mb-5"
+                        btnClass="mr-2"
+                    />
+                    {
+                        //<div style={{backgroundColor:"darkcyan", height:"600px",width:"100%"}}>Filters and search</div>
+                    }
                 </Col>
 
                 {/* The two views are controlled by a bootstrap tabs component,
