@@ -264,7 +264,7 @@ const Apontamentos = () => {
         .then((response) => response.json())
         .then((response) => {
             setYears(response.data.map( (year) => 
-                <option value={year.id}>{year.yearBegin + "-" + year.yearEnd}</option>
+                <option value={year.id} selected={year.id == selYear}>{year.yearBegin + "-" + year.yearEnd}</option>
             ))
         })
         
@@ -272,7 +272,7 @@ const Apontamentos = () => {
         .then((response) => response.json())
         .then((response) => {
 
-            var subjs = response.data.map(s => <option value={s.paco_code}>{s.short}</option>)
+            var subjs = response.data.map(s => <option value={s.paco_code} selected={s.paco_code == selectedSubject}>{s.short}</option>)
             setSubjects(subjs);
         })
 
@@ -281,7 +281,7 @@ const Apontamentos = () => {
         fetch(process.env.REACT_APP_API + "/notes/students" + fullStud)
         .then((response) => response.json())
         .then((response) => {            
-            setStudents(response.data.map(s => <option value={s.id}>{s.name}</option>))
+            setStudents(response.data.map(s => <option value={s.id} selected={s.id == selStudent}>{s.name}</option>))
             
         })
 
@@ -289,7 +289,7 @@ const Apontamentos = () => {
         fetch(process.env.REACT_APP_API + "/notes/teachers" + fullTeacher)
         .then((response) => response.json())
         .then((response) => {            
-            setTeachers(response.data.map(s => <option value={s.id}>{s.name}</option>));
+            setTeachers(response.data.map(s => <option value={s.id} selected={s.id == selTeacher}>{s.name}</option>));
         })
 
     }, [activeFilters, selectedSubject, subjectName, selStudent, selYear, selPage]);
@@ -338,6 +338,7 @@ const Apontamentos = () => {
                             <Form.Control 
                                 as="select" 
                                 onChange={ (e) => setSelectedSubject(e.target.value)}
+                                defaultValue={selectedSubject}
                             >
                                 <option value="">Cadeira...</option>
                                 {subjects}
@@ -348,6 +349,7 @@ const Apontamentos = () => {
                             <Form.Control 
                                 as="select" 
                                 onChange={ (e) => setSelStudent(e.target.value)}
+                                defaultValue={selStudent}
                             >
                                 <option value="">Autor...</option>
                                 {student}
