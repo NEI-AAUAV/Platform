@@ -291,7 +291,7 @@ const Apontamentos = () => {
             setTeachers(response.data.map(s => <option value={s.id} selected={s.id == selTeacher}>{s.name}</option>));
         })
 
-    }, [activeFilters, selectedSubject, subjectName, selStudent, selYear, selPage]);
+    }, [activeFilters, selectedSubject, selStudent, selYear, selPage, selTeacher]);
     
     useEffect( () => {
         // modify props as needed
@@ -308,13 +308,16 @@ const Apontamentos = () => {
             <Row>
                 <Col md="3">
                     <Form>
-                        <Form.Group>
+                        {/*
+                            <Form.Group>
                             <Form.Control 
                                 type="text" 
                                 placeholder="Name"
                                 onChange={ (e) => setSubjectName(e.target.value)}
                             />
-                        </Form.Group>
+                            </Form.Group>
+                        */}
+                        
                         <Form.Group>
                             <Form.Control 
                                 as="select" 
