@@ -38,7 +38,7 @@ const Faina = () => {
         .then((response) => response.json())
         .then((response) => {
             console.log(response)
-            setPeople(response.data.members.map((person) => <TextList colSize={12} text={person.name} />))
+            setPeople(response.data.members.map((person) => <TextList colSize={12} text={person.role + " " + person.name} />))
             setImg(<Image style={{"marginBottom":50}} src={process.env.REACT_APP_UPLOADS + response.data.imagem} rounded fluid />);
             console.log(selectedYear);
             console.log(people);
