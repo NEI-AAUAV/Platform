@@ -13,17 +13,20 @@ import "./index.css";
  *  description     File description
  *  link            Link for file (without base URL)
  *  blank           Open link in new tab?
+ *  className       Extra classes                   (Optional)
+ *  icon            Icon component                  (Optional, default PDF)
+ *  size            Icon size                       (Optional, default 3x)
  */
-const Document = ({name, description, link, blank}) => {
+const Document = ({name, description, link, blank, className, icon, size}) => {
     return (
         <a 
             href={link ? link : "#"} 
             target={blank ? "_blank" : "_self"}
             rel={blank ? "noreferrer" : ""}
-            className="col-lg-3 d-flex text-left mb-5 p-3 document" 
+            className={"d-flex text-left mb-5 p-3 document " + className}
             title="Descarregar ficheiro"
         >
-            <FontAwesomeIcon className="text-primary mr-3" icon={ faFilePdf } size="3x"/>
+            <FontAwesomeIcon className="text-primary mr-3" icon={ icon ? icon : faFilePdf } size={size ? size : "3x"}/>
             <div>
                 <h4 className="mb-0 text-dark">{name}</h4>
                 <p className="small text-secondary mb-0">{description}</p>
