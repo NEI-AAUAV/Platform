@@ -3,6 +3,20 @@ import './index.css';
 
 import parse from 'html-react-parser';
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+
+function titleCase(str) {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+        // You do not need to check if i is larger than splitStr length, as your for does that for you
+        // Assign it back to the array
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+    }
+    // Directly return the joined string
+    return splitStr.join(' ');
+}
+
 const Details = ({ note, close }) => {
 
     return (
@@ -47,13 +61,31 @@ const Details = ({ note, close }) => {
                         note.authorName &&
                         <>
                             <dt className="small font-weight-bold">Autor</dt>
-                            <dd className="text-lowercase text-capitalize">{note.authorName}</dd>
+                            <dd>{titleCase(note.authorName)}</dd>
                         </>
                     }
                     {
                         note.teacherName &&
                         <>
-                            <dt className="small font-weight-bold">Docente</dt>
+                            <dt className="small font-weight-bold">
+                                <span className="mr-1">Docente</span>
+                                {
+                                    note.teacherPage &&
+                                    <a
+                                        title="Perfil do docente ua.pt"
+                                        href={note.teacherPage}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+
+                                        <FontAwesomeIcon
+                                            className="text-primary mr-3"
+                                            icon={faInfoCircle}
+                                            size={"1x"}
+                                        />
+                                    </a>
+                                }
+                            </dt>
                             <dd>{note.teacherName}</dd>
                         </>
                     }
