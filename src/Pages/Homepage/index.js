@@ -76,7 +76,7 @@ const Homepage = () => {
                             <p className="text-secondary">
                                 Responsáveis por guiar a Faina do nosso curso, uma importante faceta do percurso académico com o intuito de dinamizar e integrar os novos estudantes. Encarregam-se também de organizar certos eventos lúdicos como Jantares e Festas de Curso.
                             </p>
-                            <a className="font-weight-bold" href="/faina">Ver equipas</a>
+                            <a className="font-weight-bold" href="/faina">Ver comissões</a>
                         </Col>
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
                             <FontAwesomeIcon icon={ faLightbulb } size="4x" className="text-primary mb-4" />
