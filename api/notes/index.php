@@ -62,10 +62,10 @@
             users.full_name AS authorName,
             users.id AS authorId
         FROM notes 
-            INNER JOIN notes_subjects ON notes.subject=notes_subjects.paco_code 
-            INNER JOIN notes_schoolyear ON notes.schoolYear=notes_schoolyear.id
-            INNER JOIN notes_teachers ON notes.teacher=notes_teachers.id 
-            INNER JOIN users ON users.id=notes.author 
+            LEFT JOIN notes_subjects ON notes.subject=notes_subjects.paco_code 
+            LEFT JOIN notes_schoolyear ON notes.schoolYear=notes_schoolyear.id
+            LEFT JOIN notes_teachers ON notes.teacher=notes_teachers.id 
+            LEFT JOIN users ON users.id=notes.author 
         ";
 
     $query_getContent.= " WHERE";
