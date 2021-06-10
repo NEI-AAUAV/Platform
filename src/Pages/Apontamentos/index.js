@@ -140,27 +140,31 @@ const Apontamentos = () => {
     const [filters, setFilters] = useState([]);
     const [activeFilters, setActiveFilters] = useState([]);
     const [selection, setSelection] = useState([]);  
-    const [showData, setShowData] = useState([]);  
     const [subjects, setSubjects] = useState([]); // todos os subjects
-    const [selectedSubject, setSelectedSubject] = useState("Subject...");
+    const [selectedSubject, setSelectedSubject] = useState("");
     const [subjectName, setSubjectName] = useState("");
+    const [years, setYears] = useState("Year...");
+    const [selYear, setSelYear] = useState("");
+    const [selSemester, setSelSemester] = useState("Semester...");
+    const [student, setStudents] = useState("Student...");
+    const [selStudent, setSelStudent] = useState("");
+    const [teachers, setTeachers] = useState("Teachers...");
+    const [selTeacher, setSelTeacher] = useState("");
 
     // API stuff, filters, etc...
     // ...
+    /*
+    fetch(process.env.REACT_APP_API+"/team/mandates")
+        .then(response => response.json())
+        .then((response) => {
+            var anos = response.data.map(year => 
+                year.mandato
+            ).sort((a,b) => b-a);
+            setYears(anos)
+            setSelectedYear(anos[0])
+        })
+    */
     useEffect( () => {
-        setData(test_data);
-        setShowData(test_data);
-        var subjs = []; 
-        test_data.map( d => 
-            {
-                if (!subjs.includes(d.subjectShort))
-                    subjs.push(d.subjectShort)
-            }
-        )
-        subjs = subjs.sort();
-        subjs = subjs.map( s => <option value={s}>{s}</option>)
-        
-        setSubjects(subjs)
         setFilters(
             [
                 {'filter': 'Bibliography'},
@@ -172,20 +176,126 @@ const Apontamentos = () => {
                 {'filter': 'Tests'}
             ]
         )
+    }, [])
 
-    }, []);
+
+    useEffect( () => {
+        
+        console.log("mh")
+        var extraYear = selYear == "" ? "" : "schoolYear=" + selYear + "&";
+        var extraSubj = selectedSubject == "" ? "" : "subject=" + selectedSubject + "&";
+        var extraStud = selStudent == "" ? "" : "student=" + selStudent + "&";
+        var extraTeacher = selTeacher == "" ? "" : "teacher=" + selTeacher + "&";
+        var extraCategory = "";
+
+        for (var i=0; i<activeFilters; i++) {
+            extraCategory += "category[]=" + activeFilters[i] + "&";
+        }
+        
+        var fullTeacher = "";
+
+        if (extraYear != "" || extraSubj != "" || extraStud != "") {
+            fullTeacher = "?";
+            fullTeacher += extraYear;
+            fullTeacher += extraSubj;
+            fullTeacher += extraStud;
+            fullTeacher = fullTeacher.substring(0,fullTeacher.length-1);
+        }
+
+        var fullYear = "";
+
+        if (extraTeacher != "" || extraSubj != "" || extraStud != "") {
+            fullYear = "?";
+            fullYear += extraTeacher;
+            fullYear += extraSubj;
+            fullYear += extraStud;
+            fullYear = fullYear.substring(0,fullYear.length-1);
+        }
+
+        var fullSubj = "";
+
+        if (extraTeacher != "" || extraYear != "" || extraStud != "") {
+            fullSubj = "?";
+            fullSubj += extraYear;
+            fullSubj += extraStud;
+            fullSubj += extraTeacher;
+            fullSubj = fullSubj.substring(0,fullSubj.length-1);
+        }
+
+        var fullStud = "";
+
+        if (extraTeacher != "" || extraSubj != "") {
+            fullStud = "?";
+            fullStud += extraTeacher;
+            fullStud += extraSubj;
+            fullStud = fullStud.substring(0,fullStud.length-1);
+        }
+
+        var fullNotes = "";
+
+        if (extraTeacher != "" || extraSubj != "" ||  extraStud != "" || extraCategory != "") {
+            fullNotes = "?";
+            fullNotes += extraTeacher;
+            fullNotes += extraSubj;
+            fullNotes += extraStud;
+            fullNotes += extraCategory;
+            fullNotes = fullNotes.substring(0,fullNotes.length-1);
+        }
+
+        fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
+        .then((response) => response.json())
+        .then((response) => {            
+            setData(response.data.map(s => s))
+        })
+
+        //console.log("extra: "+ extra);
+
+        fetch(process.env.REACT_APP_API + "/notes/years" + fullYear)
+        .then((response) => response.json())
+        .then((response) => {
+            setYears(response.data.map( (year) => 
+                <option value={year.id}>{year.yearBegin + "-" + year.yearEnd}</option>
+            ))
+        })
+        
+        fetch(process.env.REACT_APP_API + "/notes/subjects" + fullSubj)
+        .then((response) => response.json())
+        .then((response) => {
+
+            var subjs = response.data.map(s => <option value={s.paco_code}>{s.short}</option>)
+            setSubjects(subjs);
+        })
+
+        //console.log("subjects: "+subjects)
+        //console.log("extra: "+extraSubj)
+        fetch(process.env.REACT_APP_API + "/notes/students" + fullStud)
+        .then((response) => response.json())
+        .then((response) => {            
+            setStudents(response.data.map(s => <option value={s.id}>{s.name}</option>))
+            
+        })
+
+
+        fetch(process.env.REACT_APP_API + "/notes/teachers" + fullTeacher)
+        .then((response) => response.json())
+        .then((response) => {            
+            setTeachers(response.data.map(s => <option value={s.id}>{s.name}</option>))
+        })
+
+    }, [activeFilters, selectedSubject, subjectName, selStudent, selSemester, selYear]);
     
     useEffect( () => {
         // modify props as needed
-        setGridItems(showData.map( d => <GridViewItem data={d}></GridViewItem>));
-        setListItems(showData.map( d => <ListViewItem data={d}></ListViewItem>));
-    }, [showData])
+        setGridItems(data.map( d => <GridViewItem data={d}></GridViewItem>));
+        setListItems(data.map( d => <ListViewItem data={d}></ListViewItem>));
+    }, [data])
 
+    /*
     useEffect( () => {
         let datas = [];
         data.map(d => {
             var sel = true;
-            console.log("sel: "+selectedSubject);
+            //console.log("sel: "+selectedSubject);
             
             if (selectedSubject != "Subject..." && !(d["subjectShort"] == selectedSubject))
                 sel = false;
@@ -203,19 +313,19 @@ const Apontamentos = () => {
         });
         
         setShowData(datas);
-    }, [activeFilters, selectedSubject, subjectName])
+    }, [activeFilters, selectedSubject, subjectName, author, selSemester, selYear])
+    */
 
     useEffect( () => {
         setActiveFilters(filters.map(content => content.filter));
     }, [filters])
     
-
     return (
         <div>
             <Row>
                 <Col md="3">
                     <Form>
-                        <Form.Group controlId="searhByName">
+                        <Form.Group>
                             <Form.Control 
                                 type="text" 
                                 placeholder="Name"
@@ -225,10 +335,50 @@ const Apontamentos = () => {
                         <Form.Group>
                             <Form.Control 
                                 as="select" 
+                                onChange={ (e) => setSelYear(e.target.value)}
+                            >
+                                <option>Year...</option>
+                                {years}
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Control 
+                                as="select" 
+                                onChange={ (e) => setSelSemester(e.target.value)}
+                            >
+                                <option>Semester...</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                            </Form.Control>
+                        </Form.Group>
+
+                        <Form.Group>
+                            <Form.Control 
+                                as="select" 
                                 onChange={ (e) => setSelectedSubject(e.target.value)}
                             >
                                 <option>Subject...</option>
                                 {subjects}
+                            </Form.Control>
+                        </Form.Group>
+
+                        <Form.Group>
+                            <Form.Control 
+                                as="select" 
+                                onChange={ (e) => setSelStudent(e.target.value)}
+                            >
+                                <option>Student...</option>
+                                {student}
+                            </Form.Control>
+                        </Form.Group>
+
+                        <Form.Group>
+                            <Form.Control 
+                                as="select" 
+                                onChange={ (e) => setSelTeacher(e.target.value)}
+                            >
+                                <option>Teacher...</option>
+                                {teachers}
                             </Form.Control>
                         </Form.Group>
                     </Form>
