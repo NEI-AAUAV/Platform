@@ -41,7 +41,7 @@ const Merchandising = () => {
                 {idx%2 == 0 ?
                 <div style={{textAlign:"right"}} className="impar">
                     <Row>
-                        <Image col={6} src={img.url}  style={{width: 200}}/>
+                        <Image className="img" col={6} src={img.url}  style={{width: 200}}/>
                         <Col col={6}>
                             <h2>{img.name}</h2>
                             <h5>Preço: {img.preco}€ Portes: {img.portes}€</h5>
@@ -66,17 +66,10 @@ const Merchandising = () => {
                                 }
                             </h3> 
                         </Col>
-                        <Image col={6} src={img.url}  style={{width: 200}}/>
+                        <Image className="img" col={6} src={img.url}  style={{width: 200}}/>
                     </Row>
                 </div>
                 }
-                <Button style={{position: "relative"}}
-                        variant="outline-dark"
-                        className="rounded-pill mx-auto"
-                        size="lg"
-                        href="https://aauav.pt/nucleos/"
-                        >Ver Todas
-                </Button>
             </div>
            
        ));
@@ -85,10 +78,18 @@ const Merchandising = () => {
     }, [])
 
     return (
-        <div>
+        <div className="py-5">
             <h2 style={{position:"relative"}} className="mb-5 text-center">Merchandising</h2>
 
            {imgs}
+
+           <Button      style={{position: "relative"}}
+                        variant="outline-dark"
+                        className="rounded-pill mx-auto"
+                        size="lg"
+                        href="https://aauav.pt/nucleos/"
+                        >Ver Todas
+            </Button>
 
         </div>
     ); 

@@ -1,8 +1,8 @@
 .par {
     padding-top: 4em;
     padding-bottom: 4em;
-    padding-left: 8em;
-    padding-right: 8em;
+    padding-left: 12em;
+    padding-right: 12em;
     background-color: rgb(78, 156, 54);
     position: relative;
     color: white;
@@ -11,8 +11,8 @@
 .par2 {
     padding-top: 4em;
     padding-bottom: 4em;
-    padding-left: 8em;
-    padding-right: 8em;
+    padding-left: 12em;
+    padding-right: 12em;
     background-color: #222222;
     position: relative;
     color: white;
@@ -21,11 +21,20 @@
 .impar {
         padding-top: 4em;
         padding-bottom: 4em;
-        padding-left: 8em;
-        padding-right: 8em;
-        background-color: white;
+        padding-left: 12em;
+        padding-right: 12em;
+        
         color: black;
         position: relative;
 
+}
+
+.img {
+    transition: ease-in-out;
+    transition-duration: 0.25s;
+}
+
+.img:hover {
+    transform: scale(1.1);
 }
 
