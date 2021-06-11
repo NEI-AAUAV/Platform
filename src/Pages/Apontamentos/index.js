@@ -235,7 +235,7 @@ const Apontamentos = () => {
             <h2 className="text-center">Apontamentos</h2>
             
             <Row className="mt-4">
-                <Col md="3">
+                <Col lg="3">
                     <Details 
                         note={selectedNote}
                         close={() => setSelectedNote(null)}
@@ -381,7 +381,7 @@ const Apontamentos = () => {
                  ** using a custom layout. The Nav element contains the buttons that switch
                  ** the views, which are specified in each Tab.Pane element.
                 */}
-                <Col md="9">
+                <Col lg="9">
                     <Tab.Container defaultActiveKey="grid">
                         <Nav onSelect={() => setSelectedNote(null)}>
                             <Nav.Item><Nav.Link eventKey="grid" className="h5">
