@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Button, Row, Col, Container } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb, faFutbol } from "@fortawesome/free-regular-svg-icons";
 import { faHistory, faUsers } from "@fortawesome/free-solid-svg-icons";
 import NewsList from "../News/NewsList";
 import "./index.css";
-import { ReactTerminal } from "react-terminal";
-import commands from "./commands"
+import { ReactTerminal } from "react-terminal-component";
+import terminalstate from "./terminalconf";
 
 const Homepage = () => {
 
@@ -30,32 +30,65 @@ const Homepage = () => {
             <div className="section">
                 <Col xs={11} sm={10} className="mx-auto col-xxl-9">
                     <Row>
-                        <Col md="12" lg="7" className="home-main-header">
+                        <Col sm="12" xl="7" className="home-main-header">
                             <h1 className="mb-5">Bem-Vindo ao</h1>
                             <h1>Núcleo de Estudantes de Informática</h1>
                         </Col>
-                        <Col>
-                            {//bash terminal goes here
-                            }
-                            {
-                                <ReactTerminal
-                                commands={commands}
-                                themes={{
-                                    myCustomTheme: {
-                                      themeBGColor: "black",
-                                      themeToolbarColor: "#DBDBDB",
-                                      themeColor: "#FFFEFC",
-                                      themePromptColor: "chartreuse"
-                                    }
-                                  }}
-                                  theme="myCustomTheme"
-                                  prompt="nei@nei-os ~ $"
-                                  errorMessage="invalid command"
-                                  //welcomeMessage="Welcome to the hacker zone! Use 'help' if you want to see the commands :)"
-                                  // o welcome n tem \n...?
-                              />
-                            }
-                            
+                        <Col className="px-xl-0 pt-xl-0 pt-3">
+                            <div
+                                style={{
+                                    height:"34px",
+                                    width:"100%",
+                                    padding:"7px",
+                                    backgroundColor:"rgb(238, 238, 238)",
+                                    borderRadius:"5px 5px 0 0",
+                                    display:"flex",
+                                    justifyContent:"flex-end"
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        height:"20px",
+                                        width:"20px",
+                                        backgroundColor:"rgb(163, 190, 140)",
+                                        borderRadius:"50%"
+                                    }}
+                                ></div>
+                                <div
+                                    style={{
+                                        height:"20px",
+                                        width:"20px",
+                                        marginLeft:"4px",
+                                        backgroundColor:"rgb(235, 203, 139)",
+                                        borderRadius:"50%"
+                                    }}
+                                ></div>
+                                <div
+                                    style={{
+                                        height:"20px",
+                                        width:"20px",
+                                        marginLeft:"4px",
+                                        backgroundColor:"rgb(191, 97, 106)",
+                                        borderRadius:"50%"
+                                    }}
+                                ></div>
+                            </div>
+                            <ReactTerminal
+                                emulatorState={terminalstate}
+                                clickToFocus={true}
+                                autoFocus={true}
+                                theme={{
+                                    height:"320px",
+                                    fontFamily:"monospace",
+                                    fontSize:"1.1rem",
+                                    promptSymbolColor:"rgb(0, 255, 0)",
+                                    commandColor:"#fcfcfc",
+                                    outputColor:"#fcfcfc",
+                                    errorOutputColor:"#fcfcfc",
+                                    background:"#222222",
+                                }}
+                                promptSymbol="nei@nei-os $"
+                            />
                         </Col>
                     </Row>
                 </Col>

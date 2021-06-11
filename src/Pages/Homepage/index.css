@@ -48,6 +48,10 @@
     color: black !important;
 }
 
+.terminalContainer {
+    padding-left: 6px;
+    padding-right: 6px;
+}
 
 
 /*
