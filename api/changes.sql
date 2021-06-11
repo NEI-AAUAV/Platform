@@ -169,6 +169,33 @@ CREATE TABLE notes (
 );
 
 --- Faina
+INSERT INTO faina (mandato, imagem) VALUES
+    (2012, NULL),
+    (2013, NULL),
+    (2014, NULL),
+    (2015, NULL),
+    (2016, NULL),
+    (2017, NULL),
+    (2018, '/upload/faina/team/2018.jpg'),
+    (2019, '/upload/faina/team/2019.jpg')
+;
+
+ALTER TABLE faina ADD anoLetivo VARCHAR(9);
+
+UPDATE faina SET anoLetivo="2011/2012" WHERE mandato=2012;
+UPDATE faina SET anoLetivo="2012/2013" WHERE mandato=2013;
+UPDATE faina SET anoLetivo="2013/2014" WHERE mandato=2014;
+UPDATE faina SET anoLetivo="2014/2015" WHERE mandato=2015;
+UPDATE faina SET anoLetivo="2015/2016" WHERE mandato=2016;
+UPDATE faina SET anoLetivo="2016/2017" WHERE mandato=2017;
+UPDATE faina SET anoLetivo="2017/2018" WHERE mandato=2018;
+UPDATE faina SET anoLetivo="2018/2019" WHERE mandato=2019;
+
+INSERT INTO faina (mandato, imagem, anoLetivo) VALUES
+    (2020, NULL, "2019/2020"),
+    (2021, NULL, "2020/2021")
+;
+
 CREATE TABLE faina_roles (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(20), 
