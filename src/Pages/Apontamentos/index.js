@@ -281,6 +281,11 @@ const Apontamentos = () => {
                 return x;
             })
 
+            arr.push({
+                value: "",
+                label: "Ano Letivo..."
+            })
+
             setYears(arr)
 
         })
@@ -297,6 +302,11 @@ const Apontamentos = () => {
                 return x;
             })
 
+            arr.push({
+                value: "",
+                label: "Cadeira..."
+            })
+
             setSubjects(arr)
         })
 
@@ -311,6 +321,11 @@ const Apontamentos = () => {
                 return x;
             })
 
+            arr.push({
+                value: "",
+                label: "Autor..."
+            })
+
             setStudents(arr)
         })
 
@@ -322,6 +337,11 @@ const Apontamentos = () => {
             var arr = response.data.map(t => {
                 const x = { value: t.id, label: t.name };
                 return x;
+            })
+
+            arr.push({
+                value: "",
+                label: "Professor..."
             })
 
             //console.log(arr)
