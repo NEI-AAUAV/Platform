@@ -2,6 +2,7 @@
 
 -- Partners
 UPDATE TABLE partners SET header=CONCAT("upload",header);
+DELETE FROM partners WHERE id!=1; -- Apagar todos menos Lavandaria
 
 -- Create table for History
 CREATE TABLE history (
