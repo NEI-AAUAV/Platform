@@ -24,3 +24,7 @@
 .tag-notebook {
     background-color: khaki;
 }
+
+.react-select {
+    padding-bottom: 1em;
+}

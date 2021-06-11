@@ -9,6 +9,7 @@ import PageNav from '../../Components/PageNav';
 import Filters from "../../Components/Filters";
 import FilterSelect from "../../Components/Filters/FilterSelect";
 import Details from "./Details";
+import Select from "react-select";
 
 const Apontamentos = () => {
 
@@ -161,6 +162,7 @@ const Apontamentos = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [selPage, setSelPage] = useState(1);
 
+
     const fetchPage = (p_num) => {
         console.log("currPage: " + selPage + ", new_page: " + p_num);
 
@@ -270,17 +272,32 @@ const Apontamentos = () => {
         fetch(process.env.REACT_APP_API + "/notes/years" + fullYear)
         .then((response) => response.json())
         .then((response) => {
-            setYears(response.data.map( (year) => 
+            /*setYears(response.data.map( (year) => 
                 <option value={year.id} selected={year.id == selYear}>{year.yearBegin + "-" + year.yearEnd}</option>
             ))
+            */
+            var arr = response.data.map(year => {
+                const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd };
+                return x;
+            })
+
+            setYears(arr)
+
         })
         
         fetch(process.env.REACT_APP_API + "/notes/subjects" + fullSubj)
         .then((response) => response.json())
         .then((response) => {
 
-            var subjs = response.data.map(s => <option value={s.paco_code} selected={s.paco_code == selectedSubject}>{s.short}</option>)
-            setSubjects(subjs);
+            //var subjs = response.data.map(s => <option value={s.paco_code} selected={s.paco_code == selectedSubject}>{s.short}</option>)
+            //setSubjects(subjs);
+
+            var arr = response.data.map(subj => {
+                const x = { value: subj.paco_code, label: subj.short };
+                return x;
+            })
+
+            setSubjects(arr)
         })
 
         //console.log("subjects: "+subjects)
@@ -288,15 +305,27 @@ const Apontamentos = () => {
         fetch(process.env.REACT_APP_API + "/notes/students" + fullStud)
         .then((response) => response.json())
         .then((response) => {            
-            setStudents(response.data.map(s => <option value={s.id} selected={s.id == selStudent}>{s.name}</option>))
-            
+            //setStudents(response.data.map(s => <option value={s.id} selected={s.id == selStudent}>{s.name}</option>))
+            var arr = response.data.map(t => {
+                const x = { value: t.id, label: t.name };
+                return x;
+            })
+
+            setStudents(arr)
         })
 
 
         fetch(process.env.REACT_APP_API + "/notes/teachers" + fullTeacher)
         .then((response) => response.json())
         .then((response) => {            
-            setTeachers(response.data.map(s => <option value={s.id} selected={s.id == selTeacher}>{s.name}</option>));
+            //setTeachers(response.data.map(s => <option value={s.id} selected={s.id == selTeacher}>{s.name}</option>));
+            var arr = response.data.map(t => {
+                const x = { value: t.id, label: t.name };
+                return x;
+            })
+
+            //console.log(arr)
+            setTeachers(arr)
         })
 
     }, [activeFilters, selectedSubject, selStudent, selYear, selPage, selTeacher]);
@@ -320,8 +349,37 @@ const Apontamentos = () => {
                         setSelStudent={setSelStudent}
                         setSelTeacher={setSelTeacher}
                     />
+
+                        <Select 
+                            className="react-select"
+                            options={years}
+                            onChange={ (e) => setSelYear(e.value)}
+                            placeholder="Ano Letivo..."
+                        />
+
+                        <Select 
+                            className="react-select"
+                            options={subjects}
+                            onChange={ (e) => setSelectedSubject(e.value)}
+                            placeholder="Cadeira..."
+                        />
+
+                        <Select 
+                            className="react-select"
+                            options={student}
+                            onChange={ (e) => setSelStudent(e.value)}
+                            placeholder="Autor..."
+                        />
+
+                        <Select 
+                            className="react-select"
+                            options={teachers}
+                            onChange={ (e) => setSelTeacher(e.value)}
+                            placeholder="Professor..."
+                        />
+                    {/*
                     <Form>
-                        {/*
+                        
                             <Form.Group>
                             <Form.Control 
                                 type="text" 
@@ -329,7 +387,7 @@ const Apontamentos = () => {
                                 onChange={ (e) => setSubjectName(e.target.value)}
                             />
                             </Form.Group>
-                        */}
+                        
                         
                         <Form.Group>
                             <Form.Control 
@@ -351,7 +409,7 @@ const Apontamentos = () => {
                                 <option value="2">2</option>
                             </Form.Control>
                         </Form.Group>
-                        */}
+                        
                         
 
                         <Form.Group>
@@ -365,7 +423,10 @@ const Apontamentos = () => {
                             </Form.Control>
                         </Form.Group>
 
-                        <Form.Group>
+                        
+
+                        {/*
+                            <Form.Group>
                             <Form.Control 
                                 as="select" 
                                 onChange={ (e) => setSelStudent(e.target.value)}
@@ -375,8 +436,13 @@ const Apontamentos = () => {
                                 {student}
                             </Form.Control>
                         </Form.Group>
+                        }
+                        
 
-                        <Form.Group>
+                        
+
+                        {/*
+                            <Form.Group>
                             <Form.Control 
                                 as="select" 
                                 onChange={ (e) => setSelTeacher(e.target.value)}
@@ -385,7 +451,11 @@ const Apontamentos = () => {
                                 {teachers}
                             </Form.Control>
                         </Form.Group>
+                        
+                        
                     </Form>
+                    */
+                }
                     
                     <FilterSelect
                         accordion={true}
