@@ -14,11 +14,11 @@
     border-radius: 50%;
 }
 
-.timeline-item:nth-child(2) {
+.timeline-item:nth-child(2n) {
     flex-direction: row-reverse;
 }
 
-.timeline-item:nth-child(2) .timeline-date {
+.timeline-item:nth-child(2n) .timeline-date {
     text-align: right;
 }
 

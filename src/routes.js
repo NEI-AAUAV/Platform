@@ -9,12 +9,15 @@ import Partners from "./Pages/Partners";
 import Error404 from "./Pages/Error404";
 import SeniorsLEI from "./Pages/SeniorsLEI"
 import SeniorsMEI from "./Pages/SeniorsMEI"
+import Faina from "./Pages/Faina"
 import News from "./Pages/News";
 import NewsArticle from "./Pages/NewsArticle";
 import RGM from "./Pages/RGM";
 import Calendar from "./Pages/Calendar";
 import History from "./Pages/History";
 import CleanLayout from "./Layouts/CleanLayout";
+import Apontamentos from "./Pages/Apontamentos";
+
 
 
 const routes = [
@@ -31,6 +34,7 @@ const routes = [
 		children: [
 			{ path: "/noticias", element: <News /> },
 			{ path: "/noticia/:id", element: <NewsArticle /> },
+			{ path: "/apontamentos", element: <Apontamentos />},
 			{ path: "/equipa", element: <Team /> },
 			{ path: "/parceiros", element: <Partners /> },
 			{ path: "/calendario", element: <Calendar /> },
@@ -38,6 +42,7 @@ const routes = [
 			{ path: "/historia", element: <History /> },
 			{ path: "/seniorsLEI", element: <SeniorsLEI /> },
 			{ path: "/seniorsMEI", element: <SeniorsMEI /> },
+			{ path: "/faina", element: <Faina/> },
 			{ path: "/:id", element: <Error404 /> }
 		],
 	}

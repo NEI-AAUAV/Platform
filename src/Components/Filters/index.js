@@ -12,7 +12,7 @@ import FilterButton from "./FilterButton";
  * - activeFilters                      see FilterButton doc 
  * - setActiveFilters                   see FilterButton doc
  */
-const Filters = ({activeFilters, setActiveFilters, filterList, className, btnClass, style}) => {
+const Filters = ({activeFilters, setActiveFilters, filterList, className, btnClass, allBtnClass, style}) => {
 
     const [toggleText, setToggleText] = useState("Nenhum");
 
@@ -37,7 +37,7 @@ const Filters = ({activeFilters, setActiveFilters, filterList, className, btnCla
             className={className}
             style={style}
         >
-            <Button variant={"outline-primary " + btnClass} className="mr-4" onClick={toggleAll}>
+            <Button variant={"outline-primary " + btnClass} className={allBtnClass} onClick={toggleAll}>
                 {toggleText}
             </Button>
 

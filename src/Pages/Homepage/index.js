@@ -79,13 +79,11 @@ const Homepage = () => {
                         </Col>
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
                             <FontAwesomeIcon icon={ faUsers } size="4x" className="text-primary mb-4" />
-                            { /* O título e a descrição não parecem bater certo,
-                                o título refere-se à faina mas a descrição parece estar mais relacionada com as equipas do NEI */ }
                             <h3>Comissões de Faina</h3>
                             <p className="text-secondary">
-                                Desde 2013 existiram várias coordenações, podes aqui ver quem ao longo destes anos trabalhou para tornar o NEI naquilo que é hoje, um núcleo virado para os estudantes e que ajuda os estudantes!
+                                Responsáveis por guiar a Faina do nosso curso, uma importante faceta do percurso académico com o intuito de dinamizar e integrar os novos estudantes. Encarregam-se também de organizar certos eventos lúdicos como Jantares e Festas de Curso.
                             </p>
-                            <a className="font-weight-bold" href="/equipa">Ver equipas</a>
+                            <a className="font-weight-bold" href="/faina">Ver comissões</a>
                         </Col>
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
                             <FontAwesomeIcon icon={ faLightbulb } size="4x" className="text-primary mb-4" />
@@ -101,7 +99,7 @@ const Homepage = () => {
                             <p className="text-secondary">
                                 Sabemos que por vezes é dificil acompanhar a Taça UA sem te perderes, como não queremos que estejas fora do acontecimento, temos uma nova plataforma para acompanhares tudo o que se passa!
                             </p>
-                            <a className="font-weight-bold" href="#">Mais informações</a> { /* TODO */ }
+                            <a className="font-weight-bold" href="https://taca-ua-nei-pt/">Mais informações</a> { /* TODO */ }
                         </Col>
                     </Row>
                 </Col>

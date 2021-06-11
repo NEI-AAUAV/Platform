@@ -1,13 +1,13 @@
 <?php 
     // Load database connection from start.php file
-    require_once("../../start.php");
+    require_once("../start.php");
     // Load response assistant script
-    require_once("../../response.php");
+    require_once("../response.php");
 ?>
 <?php
 
     // Make query to the database
-    $query_getContent = "SELECT DISTINCT anoLetivo AS mandato FROM faina ORDER BY mandato";
+    $query_getContent = "SELECT name, image, price FROM `merchandisings` ORDER BY name";
 
     try{
         $st = $conn->prepare($query_getContent);
