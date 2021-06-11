@@ -31,7 +31,7 @@
         $st = $conn->prepare($query_getContent);
         $st->bindParam(':mandate', $mandate);
         // Query 2
-        $year = explode("/", $mandate)[0];
+        $year = explode("/", $mandate)[1];
         $st2 = $conn->prepare($query_getContent2);
         $st2->bindParam(':year', $year);
         // Execute query
