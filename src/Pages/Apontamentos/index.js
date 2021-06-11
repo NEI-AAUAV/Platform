@@ -25,19 +25,26 @@ const Apontamentos = () => {
 
     // varName, setVarname --> used to save the group
     // selVarName, setVarName --> used to save the selected element of the group
+    // shownVarName --> used to change the value on the ReactSelect to the choosen map
 
     const [subjects, setSubjects] = useState([]); // todos os subjects
     const [selectedSubject, setSelectedSubject] = useState("");
     const [subjectName, setSubjectName] = useState("");
     const [years, setYears] = useState("");
     const [selYear, setSelYear] = useState("");
-    //const [selSemester, setSelSemester] = useState(""); // Will we use this?
+    //const [selSemester, setSelSemester] = useState(""); // Will we use this? --> no :P
     const [student, setStudents] = useState("");
     const [selStudent, setSelStudent] = useState("");
     const [teachers, setTeachers] = useState("");
     const [selTeacher, setSelTeacher] = useState("");
     const [pageNumber, setPageNumber] = useState(1);
     const [selPage, setSelPage] = useState(1);
+
+    
+    const [shownYear, setShownYear] = useState();
+    const [shownSubj, setShownSubj] = useState();
+    const [shownAuth, setShownAuth] = useState();
+    const [shownTeacher, setShownTeacher] = useState();
 
 
     const fetchPage = (p_num) => {
@@ -155,14 +162,10 @@ const Apontamentos = () => {
             */
             if ('data' in response) {
                 var arr = response.data.map(year => {
-                    /*
-                    console.log("bool: "+year.id==selYear);
-                    console.log("selYear: "+selYear);
-                    console.log("year.id: "+year.id);
-                    console.log(year.id + " == " + selYear +": "+ (year.id==selYear));
-                    */
-                    const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd, isSelected: year.id == selYear};
-                    //console.log(x)
+
+                    const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd};
+                    if (x.value == selYear) 
+                        setShownYear(x)
                     return x;
                 })
 
@@ -181,8 +184,12 @@ const Apontamentos = () => {
 
             if ('data' in response) {
 
+            
                 var arr = response.data.map(subj => {
+
                     const x = { value: subj.paco_code, label: subj.short };
+                    if (x.value == selectedSubject) 
+                        setShownSubj(x)
                     return x;
                 })
 
@@ -200,6 +207,9 @@ const Apontamentos = () => {
             if ('data' in response) {
                 var arr = response.data.map(t => {
                     const x = { value: t.id, label: t.name };
+                    if (x.value == selStudent) 
+                        setShownAuth(x)
+
                     return x;
                 })
 
@@ -215,6 +225,9 @@ const Apontamentos = () => {
             if ('data' in response) {
                 var arr = response.data.map(t => {
                     const x = { value: t.id, label: t.name };
+                    if (x.value == selTeacher) 
+                        setShownTeacher(x)
+
                     return x;
                 })
 
@@ -250,40 +263,38 @@ const Apontamentos = () => {
                             id="teste"
                             className="react-select"
                             options={years}
-                            onChange={ (e) => { if (e == null) setSelYear(""); else setSelYear(e.value);}}
-                            placeholder="Ano Letivo..."
-                            //isOptionSelected={(e) => {console.log("--------");console.log(e); return e.isSelected;}}
-                            setValue={ (e,p) => {console.log(e); console.log(p)}}
-                            
+                            onChange={ (e) => { if (e == null){ setSelYear(""); setShownYear("")} else setSelYear(e.value);}}
+                            placeholder="Ano Letivo..."                            
                             isClearable={true}
-                            //inputValue="2"
-                            //selectOption={ (e) => {console.log("hihi");console.log(e); return false;} }
-                            //selectOption={ (selYear) => {console.log(selYear); return false;}}
+                            value={shownYear}
                             
                         />
 
                         <Select 
                             className="react-select"
                             options={subjects}
-                            onChange={ (e) =>{ if (e == null) setSelectedSubject(""); else setSelectedSubject(e.value)}}
+                            onChange={ (e) =>{ if (e == null){ setSelectedSubject(""); setShownSubj("")} else setSelectedSubject(e.value)}}
                             placeholder="Cadeira..."
                             isClearable={true}
+                            value={shownSubj}
                         />
 
                         <Select 
                             className="react-select"
                             options={student}
-                            onChange={ (e) =>{ if (e == null) setSelStudent(""); else setSelStudent(e.value)}}
+                            onChange={ (e) =>{ if (e == null){ setSelStudent(""); setShownAuth("")} else setSelStudent(e.value)}}
                             placeholder="Autor..."
                             isClearable={true}
+                            value={shownAuth}
                         />
 
                         <Select 
                             className="react-select"
                             options={teachers}
-                            onChange={ (e) =>{ if (e == null) setSelTeacher(""); else setSelTeacher(e.value)}}
+                            onChange={ (e) =>{ if (e == null){ setSelTeacher(""); setShownTeacher("")} else setSelTeacher(e.value)}}
                             placeholder="Professor..."
                             isClearable={true}
+                            value={shownTeacher}
                         />
                     {/*
                     <Form>
