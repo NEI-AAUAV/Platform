@@ -223,6 +223,26 @@ CREATE TABLE team_colaborators (
     FOREIGN KEY (colaborator) REFERENCES users(id)
 );
 
+INSERT INTO users (id, name, full_name, uu_email, uu_iupi, curriculo, linkedIn, git, permission, created_at) VALUES
+    (2132, "Catarina Costa", "Catarina Costa", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2133, "Leonardo Almeida", "Leonardo Almeida", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2134, "Lucius Filho", "Lucius Vinicius Rocha Machado Filho", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2135, "Yanis Faquir", "Yanis Marina Faquir", "", "", "", "", "", "DEFAULT", "2021-06-11")
+;
+
+INSERT INTO team_colaborators (colaborator, mandate) VALUES
+    (2104, 2021), -- Afonso Campos
+    (2132, 2021), -- Catarina Costa
+    (2030, 2021), -- Daniel Ferreira
+    (2033, 2021), -- Diana Oliveira
+    (2035, 2021), -- Diogo Monteiro
+    (2133, 2021), -- Leonardo Almeida
+    (2055, 2021), -- Miguel Ferreira
+    (2134, 2021), -- Lucius Filho
+    (2058, 2021), -- Paulo Pereira
+    (2132, 2021) -- Yanis
+;
+
 -- News
 
 ALTER TABLE news ADD COLUMN author INT REFERENCES users(id);
