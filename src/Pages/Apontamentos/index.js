@@ -236,7 +236,7 @@ const Apontamentos = () => {
         <div>
             <h2 className="text-center">Apontamentos</h2>
             
-            <Row>
+            <Row className="mt-4">
                 <Col md="3">
                     <Details 
                         note={selectedNote}
@@ -360,7 +360,9 @@ const Apontamentos = () => {
                         activeFilters={activeFilters}
                         setActiveFilters={setActiveFilters}
                         className="mb-5"
-                        btnClass="mr-2"
+                        btnClass="btn-sm"
+                        listClass="d-flex flex-column"
+                        allBtnClass="mx-2 py-2 mb-2"
                     />
                 </Col>
 
