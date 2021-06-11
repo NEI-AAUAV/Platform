@@ -226,16 +226,106 @@ CREATE TABLE faina_member (
     FOREIGN KEY (role) REFERENCES faina_roles(id)
 );
 
+INSERT INTO users (id, name, full_name, uu_email, uu_iupi, curriculo, linkedIn, git, permission, created_at) VALUES
+    (2137, "Filipe Silva", "Filipe Silva", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2138, "Alexandre Santos", "Alexandre Santos", "", "", "", "", "", "DEFAULT", "2021-06-11")
+;
+
 INSERT INTO faina_member(year, role, member) VALUES
-    (2017, 10, 984),
-    (2017, 4, 1704),
-    (2017, 7, 1107),
-    (2018, 2, 1002),
-    (2018, 1, 900),
-    (2018, 4, 1902),
-    (2019, 10, 1365),
-    (2019, 7, 1419),
-    (2019, 7, 1512)
+    -- 2012
+    (2012, 10, 1179), -- Mestre de Curso Diogo Paiva
+    (2012, 7, 1593), -- Mestre Marco Miranda
+    (2012, 5, 1062), -- Marnoto João Costa
+    (2012, 5, 1080), -- Marnoto Daniel Rodrigues
+    (2012, 5, 2137), -- Marnoto Filipe Silva (N encontrei, criei novo)
+    (2012, 6, 1380), -- Salineira Joana Coelho
+    (2012, 6, 1893), -- Salineira Joana Silva
+    (2012, 6, 1848), -- Salineira Rita Jesus
+    (2012, 6, 1167), -- Moço Diogo Ramos
+    (2012, 6, 1599), -- Moço Marcus Silva
+    (2012, 6, 1785), -- Moço Pedro Neves
+    -- 2013
+    (2013, 10, 1893), -- Mestre de Curso Joana Silva
+    (2013, 7, 1848), -- Mestre Rita Jesus
+    (2013, 5, 1218), -- Marnoto Fábio Almeida
+    (2013, 5, 1599), -- Marnoto Marcos Silva
+    (2013, 5, 1785), -- Marnoto Pedro Neves
+    (2013, 5, 1917), -- Marnoto Sérgio Martins
+    (2013, 4, 1032), -- Moça Andreia Castro
+    (2013, 3, 1488), -- Moço João Ribeiro
+    (2013, 3, 1551), -- Moço Luís Santos
+    (2013, 2, 1629), -- Caniça Maxlaine Moreira
+    (2013, 1, 1854), -- Junco Rafael Martins
+    -- 2014
+    (2014, 10, 1785), -- Mestre de Curso Pedro Neves
+    (2014, 7, 1005), -- Mestre Carlos Pacheco
+    (2014, 7, 1218), -- Mestre Fábio de Almeida
+    (2014, 7, 1917), -- Mestre Sérgio Martins
+    (2014, 5, 1551), -- Marnoto Luís Santos
+    (2014, 4, 1038), -- Moça Catarina Vinagre
+    (2014, 3, 1455), -- Moço João Alegria (?? Há dois!)
+    (2014, 3, 1554), -- Moço Luís Oliveira (?? Há dois!)
+    (2014, 4, 1629), -- Moça Maxlaine Moreira
+    (2014, 3, 1854), -- Moço Rafael Martins
+    (2014, 4, 1923), -- Moça Sara Furão
+    -- 2015
+    (2015, 10, 1551), -- Mestre de Curso Luís Santos
+    (2015, 7, 894), -- Mestre Ana Ortega
+    (2015, 7, 1194), -- Mestre Emanuel Laranjo
+    (2015, 7, 1293), -- Mestre Guilherme Moura
+    (2015, 5, 2138), -- Marnoto Alexandre Santos (N encontrei, criei novo)
+    (2015, 5, 987), -- Marnoto Bruno Pinto
+    (2015, 5, 1065), -- Marnoto João Freitas
+    (2015, 5, 1653), -- Marnoto Miguel Antunes
+    (2015, 3, 984), -- Moço Bruno Barbosa
+    (2015, 1, 858), -- Junco André Moleirinho
+    (2015, 1, 1437), -- Junco João Paúl
+    -- 2016
+    (2016, 10, 1293), -- Mestre de Curso Guilherme Moura
+    (2016, 7, 2138), -- Mestre Alex Santos
+    (2016, 5, 984), -- Marnoto Bruno Barbosa
+    (2016, 6, 1071), -- Salineira Mimi Cunha
+    (2016, 5, 1752), -- Marnoto Pedro Matos
+    (2016, 3, 1437), -- Moço João Paúl
+    (2016, 3, 1596), -- Moço Marco Ventura
+    (2016, 2, 1704), -- Caniça Andreia Patrocínio
+    (2016, 1, 1059), -- Junco Carlos Soares
+    (2016, 1, 1947), -- Junco Tiago Cardoso
+    -- 2017
+    (2017, 10, 984), -- Mestre de Curso Bruno Barbosa
+    (2017, 7, 1116), -- Mestre David Ferreira
+    (2017, 4, 1704), -- Moça Andreia Patrocínio
+    (2017, 3, 1059), -- Moço Carlos Soares
+    (2017, 4, 1023), -- Moça Carolina Albuquerque
+    (2017, 3, 1101), -- Moço David Fernandes
+    (2017, 3, 1134), -- Moço Dimitri da Silva
+    (2017, 3, 1365), -- Moço João Artur Costa
+    (2017, 3, 1947), -- Moço Tiago Cardoso
+    (2017, 1, 1929), -- Junco Simão Arrais
+    -- 2018
+    (2018, 9, 1704), -- Varina Andreia Patrocínio
+    (2018, 5, 1365), -- Marnoto João Artur Costa
+    (2018, 5, 1512), -- Marnoto João Magalhães
+    (2018, 5, 1485), -- Marnoto José Moreira
+    (2018, 3, 1053), -- Moço Cláudio Costa
+    (2018, 3, 1266), -- Moço Francisco Silveira
+    (2018, 3, 1524), -- Moço Luís Costa
+    (2018, 4, 1902), -- Moça Sandra Andrade
+    (2018, 1, 900), -- Junco André Alves
+    (2018, 2, 1002), -- Caniça Carina Neves
+    (2018, 1, 1965), -- Junco Tiago Mendes
+    -- 2019
+    (2019, 10, 1365), -- Mestre de Curso João Artur Costa
+    (2019, 7, 1419), -- Mestre João Ferreira
+    (2019, 7, 1512), -- Mestre João Magalhães
+    (2019, 7, 1485), -- Mestre José Moreira
+    (2019, 4, 1002), -- Moça Carina Neves
+    (2019, 3, 1548), -- Moço Luís Silva
+    (2019, 4, 1626), -- Moça Marta Ferreira
+    (2019, 3, 1965), -- Moço Tiago Mendes
+    (2019, 1, 1068), -- Junco Dinis Cruz
+    (2019, 1, 1200), -- Junco Eduardo Santos
+    (2019, 1, 1716) -- Junco Pedro Bastos
 ;
 
 -- Team tables
