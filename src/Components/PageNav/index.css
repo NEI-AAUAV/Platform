@@ -6,4 +6,5 @@
     color: white !important;
     background-color: #28a745 !important;
     border-color: #28a745 !important;
+    z-index: 0 !important;
 }

@@ -11,7 +11,7 @@ import "./index.css";
 require('moment/locale/pt.js');
 
 // COMPONENT
-const NEICalendar = ({selection, setInitialCategories}) => {
+const NEICalendar = ({style, className, selection, setInitialCategories}) => {
     
     // State
     const [events, setEvents] = useState([]);
@@ -102,7 +102,7 @@ const NEICalendar = ({selection, setInitialCategories}) => {
     return (
         <ReactCalendar
             popup
-            className="col-12 vh-100"
+            className={"col-12 vh-100 " + className}
             events={events}
             views={['month', 'agenda']}
             step={60}
@@ -126,6 +126,7 @@ const NEICalendar = ({selection, setInitialCategories}) => {
                 day: "Dia",
                 allDay: "Todo o dia"
             }}
+            style={style}
         />
     );
 }

@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^12.1.10",
     "bootstrap": "^4.6.0",
     "history": "^5.0.0",
+    "html-react-parser": "^1.2.6",
     "node-ical": "*",
     "react": "^17.0.2",
     "react-big-calendar": "^0.33.3",
@@ -21,7 +22,9 @@
     "react-router": "^6.0.0-beta.0",
     "react-router-dom": "^6.0.0-beta.0",
     "react-scripts": "4.0.3",
+    "react-select": "^4.3.1",
     "react-tsparticles": "^1.27.0",
+    "react-typist": "^2.0.5",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
