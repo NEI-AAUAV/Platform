@@ -4,7 +4,7 @@ import './index.css';
 import parse from 'html-react-parser';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faFilter, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
 
 function titleCase(str) {
     var splitStr = str.toLowerCase().split(' ');
@@ -32,7 +32,7 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
             >
                 <span aria-hidden="true">×</span>
             </button>
-            <div className="row my-3">
+            <div className="row mx-0 my-3">
                 {note.summary === "1" && <span className="mb-1 badge badge-pill tag-summary"  >resumos</span>}
                 {note.tests === "1" && <span className="mb-1 badge badge-pill tag-tests"    >testes</span>}
                 {note.bibliography === "1" && <span className="mb-1 badge badge-pill tag-biblio"   >bibliografia</span>}
@@ -41,6 +41,17 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                 {note.projects === "1" && <span className="mb-1 badge badge-pill tag-projects" >projetos</span>}
                 {note.notebook === "1" && <span className="mb-1 badge badge-pill tag-notebook" >caderno</span>}
             </div>
+
+            <a href={process.env.REACT_APP_UPLOADS_UNLOCK + note.location} target="_blank" rel="noreferrer">
+                <button className="btn btn-sm btn-outline-primary mb-3 ml-0">
+                    <FontAwesomeIcon
+                        icon={faCloudDownloadAlt}
+                        size={"1x"}
+                    />
+                    <span className="ml-1">Descarregar</span>
+                </button>
+            </a>
+
             <div>
                 <dl>
                     {
