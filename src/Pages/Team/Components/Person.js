@@ -22,7 +22,7 @@ const Person = ({img,name,description,linke}) => {
                     <p>{description.toUpperCase()}</p>
                     {
                     linke && 
-                    <a id="linke" href={linke}>
+                    <a id="linke" href={linke} target="_blank" rel="noreferrer">
                         <FontAwesomeIcon id="linke" icon={ faLinkedin } size="2x"/>
                     </a>
                     }

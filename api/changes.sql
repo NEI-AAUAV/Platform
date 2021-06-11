@@ -2,6 +2,7 @@
 
 -- Partners
 UPDATE TABLE partners SET header=CONCAT("upload",header);
+DELETE FROM partners WHERE id!=1; -- Apagar todos menos Lavandaria
 
 -- Create table for History
 CREATE TABLE history (
@@ -15,6 +16,12 @@ INSERT INTO history (moment, title, image, body) VALUES
     ("2019-06-30", "Candidatura ENEI 2020", "/images/history/20190630.png", "Entrega de uma candidatura conjunta (NEI+NEECT+AETTUA) para a organização do Encontro Nacional de Estudantes de Informática 2019. Esta candidatura teve a concorrência de uma candidatura conjunta da CESIUM, constituída por alunos da Universidade do Minho, que acabaram por ser a candidatura vencedora."),
     ("2019-06-12", "2º Lugar Futsal", "/images/history/20190612.jpg", "Num jogo em que se fizeram das tripas coração, o NEI defrontou a equipa de EGI num jogo que veio a perder, foi um jogo bastante disputado, contudo, acabou por ganhar EGI remetendo o NEI para o 2º lugar."),
     ("2018-04-30", "Elaboração de Candidatura para o Encontro Nacional de Estudantes de Informática 2019", "/images/history/20180430.png", "Entrega de uma candidatura conjunta (NEI+AETTUA) para a organização do Encontro Nacional de Estudantes de Informática 2019. Esta candidatura teve a concorrência de uma candidatura conjunta do ISCAC Junior Solutions e Junisec, constituída por alunos do Politécnico de Coimbra, que acabaram por ser a candidatura vencedora.")
+;
+
+INSERT INTO history (moment, title, image, body) VALUES 
+    ("2019-03-09", "1ª Edição ThinkTwice", "/images/history/20190309.png", "A primeira edição do evento, realizada em 2019, teve lugar no Auditório Mestre Hélder Castanheira da Universidade de Aveiro e contou com uma duração de 24 horas para a resolução de 30 desafios colocados, que continham diferentes graus de dificuldade. O evento contou com a participação de 34 estudantes, perfazendo um total de 12 equipas."),
+    ("2020-03-06", "2ª Edição ThinkTwice", "/images/history/20200306.png", "A edição de 2020 contou com a participação de 57 participantes divididos em 19 equipas, com 40 desafios de algoritmia de várias dificuldades para serem resolvidos em 40 horas, tendo lugar nas instalações da Casa do Estudante da Universidade de Aveiro. Esta edição contou ainda com 2 workshops e um momento de networking com as empresas patrocinadoras do evento."),
+    ("2021-05-07", "3ª Edição ThinkTwice", "/images/history/20210507.png", "Devido ao contexto pandémico que se vivia a 3ª edição foi 100% online através de plataformas como o Discord e a Twitch, de 7 a 9 de maio. Nesta edição as 11 equipas participantes puderam escolher participar em uma de três tipos de competição: desafios de algoritmia, projeto de gamificação e projeto de cibersegurança. O evento contou ainda com 4 workshops e uma sessão de networking com as empresas patrocinadoras.")
 ;
 
 -- Create table for seniors
@@ -39,14 +46,41 @@ CREATE TABLE seniors_students (
     PRIMARY KEY (year, course, userId)
 )
 
-INSERT INTO seniors_students (course, year, userId) VALUES
-    ("LEI", 2020, 873),
-    ("LEI", 2020, 900),
-    ("LEI", 2020, 1545),
-    ("LEI", 2020, 1362),
-    ("LEI", 2020, 879),
-    ("MEI", 2020, 1059)
+-- SELECT * FROM seniors_students INNER JOIN users ON userId=users.id; 
+
+INSERT INTO users (id, name, full_name, uu_email, uu_iupi, curriculo, linkedIn, git, permission, created_at) VALUES
+    (2130, "Rodrigo Oliveira", "Rodrigo Oliveira", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2131, "Miguel Fonseca", "Miguel Fonseca", "", "", "", "", "", "DEFAULT", "2021-06-11")
 ;
+
+INSERT INTO seniors_students (course, year, userId) VALUES
+    -- LEI
+    ("LEI", 2020, 873), -- Alexandre
+    ("LEI", 2020, 879), -- Alina
+    ("LEI", 2020, 897), -- Rafaela Vieira
+    ("LEI", 2020, 927), -- André Amarante
+    ("LEI", 2020, 900), -- André Alves
+    ("LEI", 2020, 999), -- Camila
+    ("LEI", 2020, 1002), -- Carina
+    ("LEI", 2020, 1137), -- Diogo Andrade
+    ("LEI", 2020, 1161), -- Diogo Silva (??????)
+    ("LEI", 2020, 1245), -- Flávia Figueiredo
+    ("LEI", 2020, 1266), -- Francisco
+    ("LEI", 2020, 1545), -- Luís Fonseca
+    ("LEI", 2020, 1425), -- João Dias (??????)
+    ("LEI", 2020, 1362), -- João Vasconcelos (??????)
+    ("LEI", 2020, 1476), -- José Frias
+    ("LEI", 2020, 1647), -- Miguel Mota
+    ("LEI", 2020, 1764), -- Pedro Oliveira
+    ("LEI", 2020, 1938), -- Sofia Moniz
+    ("LEI", 2020, 1995), -- Tomás Costa
+    ("LEI", 2020, 2130), -- Rodrigo Oliveira
+    -- MEI
+    ("MEI", 2020, 1059), -- Carlos Soares
+    ("MEI", 2020, 2131) -- Miguel Fonseca
+;
+
+
 
 -- Apontamentos Data Model
 
@@ -135,6 +169,33 @@ CREATE TABLE notes (
 );
 
 --- Faina
+INSERT INTO faina (mandato, imagem) VALUES
+    (2012, NULL),
+    (2013, NULL),
+    (2014, NULL),
+    (2015, NULL),
+    (2016, NULL),
+    (2017, NULL),
+    (2018, '/upload/faina/team/2018.jpg'),
+    (2019, '/upload/faina/team/2019.jpg')
+;
+
+ALTER TABLE faina ADD anoLetivo VARCHAR(9);
+
+UPDATE faina SET anoLetivo="2011/2012" WHERE mandato=2012;
+UPDATE faina SET anoLetivo="2012/2013" WHERE mandato=2013;
+UPDATE faina SET anoLetivo="2013/2014" WHERE mandato=2014;
+UPDATE faina SET anoLetivo="2014/2015" WHERE mandato=2015;
+UPDATE faina SET anoLetivo="2015/2016" WHERE mandato=2016;
+UPDATE faina SET anoLetivo="2016/2017" WHERE mandato=2017;
+UPDATE faina SET anoLetivo="2017/2018" WHERE mandato=2018;
+UPDATE faina SET anoLetivo="2018/2019" WHERE mandato=2019;
+
+INSERT INTO faina (mandato, imagem, anoLetivo) VALUES
+    (2020, NULL, "2019/2020"),
+    (2021, NULL, "2020/2021")
+;
+
 CREATE TABLE faina_roles (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(20), 
@@ -165,16 +226,106 @@ CREATE TABLE faina_member (
     FOREIGN KEY (role) REFERENCES faina_roles(id)
 );
 
+INSERT INTO users (id, name, full_name, uu_email, uu_iupi, curriculo, linkedIn, git, permission, created_at) VALUES
+    (2137, "Filipe Silva", "Filipe Silva", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2138, "Alexandre Santos", "Alexandre Santos", "", "", "", "", "", "DEFAULT", "2021-06-11")
+;
+
 INSERT INTO faina_member(year, role, member) VALUES
-    (2017, 10, 984),
-    (2017, 4, 1704),
-    (2017, 7, 1107),
-    (2018, 2, 1002),
-    (2018, 1, 900),
-    (2018, 4, 1902),
-    (2019, 10, 1365),
-    (2019, 7, 1419),
-    (2019, 7, 1512)
+    -- 2012
+    (2012, 10, 1179), -- Mestre de Curso Diogo Paiva
+    (2012, 7, 1593), -- Mestre Marco Miranda
+    (2012, 5, 1062), -- Marnoto João Costa
+    (2012, 5, 1080), -- Marnoto Daniel Rodrigues
+    (2012, 5, 2137), -- Marnoto Filipe Silva (N encontrei, criei novo)
+    (2012, 6, 1380), -- Salineira Joana Coelho
+    (2012, 6, 1893), -- Salineira Joana Silva
+    (2012, 6, 1848), -- Salineira Rita Jesus
+    (2012, 6, 1167), -- Moço Diogo Ramos
+    (2012, 6, 1599), -- Moço Marcus Silva
+    (2012, 6, 1785), -- Moço Pedro Neves
+    -- 2013
+    (2013, 10, 1893), -- Mestre de Curso Joana Silva
+    (2013, 7, 1848), -- Mestre Rita Jesus
+    (2013, 5, 1218), -- Marnoto Fábio Almeida
+    (2013, 5, 1599), -- Marnoto Marcos Silva
+    (2013, 5, 1785), -- Marnoto Pedro Neves
+    (2013, 5, 1917), -- Marnoto Sérgio Martins
+    (2013, 4, 1032), -- Moça Andreia Castro
+    (2013, 3, 1488), -- Moço João Ribeiro
+    (2013, 3, 1551), -- Moço Luís Santos
+    (2013, 2, 1629), -- Caniça Maxlaine Moreira
+    (2013, 1, 1854), -- Junco Rafael Martins
+    -- 2014
+    (2014, 10, 1785), -- Mestre de Curso Pedro Neves
+    (2014, 7, 1005), -- Mestre Carlos Pacheco
+    (2014, 7, 1218), -- Mestre Fábio de Almeida
+    (2014, 7, 1917), -- Mestre Sérgio Martins
+    (2014, 5, 1551), -- Marnoto Luís Santos
+    (2014, 4, 1038), -- Moça Catarina Vinagre
+    (2014, 3, 1455), -- Moço João Alegria (?? Há dois!)
+    (2014, 3, 1554), -- Moço Luís Oliveira (?? Há dois!)
+    (2014, 4, 1629), -- Moça Maxlaine Moreira
+    (2014, 3, 1854), -- Moço Rafael Martins
+    (2014, 4, 1923), -- Moça Sara Furão
+    -- 2015
+    (2015, 10, 1551), -- Mestre de Curso Luís Santos
+    (2015, 7, 894), -- Mestre Ana Ortega
+    (2015, 7, 1194), -- Mestre Emanuel Laranjo
+    (2015, 7, 1293), -- Mestre Guilherme Moura
+    (2015, 5, 2138), -- Marnoto Alexandre Santos (N encontrei, criei novo)
+    (2015, 5, 987), -- Marnoto Bruno Pinto
+    (2015, 5, 1065), -- Marnoto João Freitas
+    (2015, 5, 1653), -- Marnoto Miguel Antunes
+    (2015, 3, 984), -- Moço Bruno Barbosa
+    (2015, 1, 858), -- Junco André Moleirinho
+    (2015, 1, 1437), -- Junco João Paúl
+    -- 2016
+    (2016, 10, 1293), -- Mestre de Curso Guilherme Moura
+    (2016, 7, 2138), -- Mestre Alex Santos
+    (2016, 5, 984), -- Marnoto Bruno Barbosa
+    (2016, 6, 1071), -- Salineira Mimi Cunha
+    (2016, 5, 1752), -- Marnoto Pedro Matos
+    (2016, 3, 1437), -- Moço João Paúl
+    (2016, 3, 1596), -- Moço Marco Ventura
+    (2016, 2, 1704), -- Caniça Andreia Patrocínio
+    (2016, 1, 1059), -- Junco Carlos Soares
+    (2016, 1, 1947), -- Junco Tiago Cardoso
+    -- 2017
+    (2017, 10, 984), -- Mestre de Curso Bruno Barbosa
+    (2017, 7, 1116), -- Mestre David Ferreira
+    (2017, 4, 1704), -- Moça Andreia Patrocínio
+    (2017, 3, 1059), -- Moço Carlos Soares
+    (2017, 4, 1023), -- Moça Carolina Albuquerque
+    (2017, 3, 1101), -- Moço David Fernandes
+    (2017, 3, 1134), -- Moço Dimitri da Silva
+    (2017, 3, 1365), -- Moço João Artur Costa
+    (2017, 3, 1947), -- Moço Tiago Cardoso
+    (2017, 1, 1929), -- Junco Simão Arrais
+    -- 2018
+    (2018, 9, 1704), -- Varina Andreia Patrocínio
+    (2018, 5, 1365), -- Marnoto João Artur Costa
+    (2018, 5, 1512), -- Marnoto João Magalhães
+    (2018, 5, 1485), -- Marnoto José Moreira
+    (2018, 3, 1053), -- Moço Cláudio Costa
+    (2018, 3, 1266), -- Moço Francisco Silveira
+    (2018, 3, 1524), -- Moço Luís Costa
+    (2018, 4, 1902), -- Moça Sandra Andrade
+    (2018, 1, 900), -- Junco André Alves
+    (2018, 2, 1002), -- Caniça Carina Neves
+    (2018, 1, 1965), -- Junco Tiago Mendes
+    -- 2019
+    (2019, 10, 1365), -- Mestre de Curso João Artur Costa
+    (2019, 7, 1419), -- Mestre João Ferreira
+    (2019, 7, 1512), -- Mestre João Magalhães
+    (2019, 7, 1485), -- Mestre José Moreira
+    (2019, 4, 1002), -- Moça Carina Neves
+    (2019, 3, 1548), -- Moço Luís Silva
+    (2019, 4, 1626), -- Moça Marta Ferreira
+    (2019, 3, 1965), -- Moço Tiago Mendes
+    (2019, 1, 1068), -- Junco Dinis Cruz
+    (2019, 1, 1200), -- Junco Eduardo Santos
+    (2019, 1, 1716) -- Junco Pedro Bastos
 ;
 
 -- Team tables
@@ -195,6 +346,27 @@ CREATE TABLE team_colaborators (
     FOREIGN KEY (colaborator) REFERENCES users(id)
 );
 
+INSERT INTO users (id, name, full_name, uu_email, uu_iupi, curriculo, linkedIn, git, permission, created_at) VALUES
+    (2132, "Catarina Costa", "Catarina Costa", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2133, "Leonardo Almeida", "Leonardo Almeida", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2134, "Lucius Filho", "Lucius Vinicius Rocha Machado Filho", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2135, "Yanis Faquir", "Yanis Marina Faquir", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2136, "Daniel Ferreira", "Daniel Martins Ferreira,", "", "", "", "", "", "DEFAULT", "2021-06-11")
+;
+
+INSERT INTO team_colaborators (colaborator, mandate) VALUES
+    (2104, 2021), -- Afonso Campos
+    (2132, 2021), -- Catarina Costa
+    (2136, 2021), -- Daniel Ferreira
+    (2033, 2021), -- Diana Oliveira
+    (2035, 2021), -- Diogo Monteiro
+    (2133, 2021), -- Leonardo Almeida
+    (2055, 2021), -- Miguel Ferreira
+    (2134, 2021), -- Lucius Filho
+    (2058, 2021), -- Paulo Pereira
+    (2132, 2021) -- Yanis
+;
+
 -- News
 
 ALTER TABLE news ADD COLUMN author INT REFERENCES users(id);
@@ -203,3 +375,16 @@ INSERT INTO `users` (`id`, `name`, `full_name`, `uu_email`, `uu_iupi`, `curricul
 (1, 'NEI', 'Núcleo de Estudantes de Informática', '', '', '', '', '', '', '2021-04-26');
 
 UPDATE news SET author=1 WHERE 1;
+
+-- Users corrections
+UPDATE users SET name="Margarida Martins" WHERE id=1602;
+UPDATE users SET name="Alina Yanchuk" WHERE id=879;
+
+UPDATE users SET linkedin="https://www.linkedin.com/in/pedro-figueiredo-9983181ba/" WHERE id=2124;
+UPDATE users SET linkedin="https://www.linkedin.com/in/renato-a-l-dias-2919a3195/" WHERE id=2066;
+UPDATE users SET linkedin="http://www.linkedin.com/in/daniel-carvalho-a89b1b176" WHERE id=2127;
+UPDATE users SET linkedin="https://www.linkedin.com/in/v%C3%ADtor-dias-7b566920a" WHERE id=2075;
+UPDATE users SET linkedin="https://www.linkedin.com/in/goncalofmatos/" WHERE id=1275;
+
+
+UPDATE users SET uu_email="dl.carvalho@ua.pt" WHERE id=2127;
