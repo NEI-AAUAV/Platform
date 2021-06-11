@@ -235,3 +235,12 @@ UPDATE news SET author=1 WHERE 1;
 -- Users corrections
 UPDATE users SET name="Margarida Martins" WHERE id=1602;
 UPDATE users SET name="Alina Yanchuk" WHERE id=879;
+
+UPDATE users SET linkedin="https://www.linkedin.com/in/pedro-figueiredo-9983181ba/" WHERE id=2124;
+UPDATE users SET linkedin="https://www.linkedin.com/in/renato-a-l-dias-2919a3195/" WHERE id=2066;
+UPDATE users SET linkedin="http://www.linkedin.com/in/daniel-carvalho-a89b1b176" WHERE id=2127;
+UPDATE users SET linkedin="https://www.linkedin.com/in/v%C3%ADtor-dias-7b566920a" WHERE id=2075;
+UPDATE users SET linkedin="https://www.linkedin.com/in/goncalofmatos/" WHERE id=1275;
+
+
+UPDATE users SET uu_email="dl.carvalho@ua.pt" WHERE id=2127;
