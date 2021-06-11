@@ -231,3 +231,7 @@ INSERT INTO `users` (`id`, `name`, `full_name`, `uu_email`, `uu_iupi`, `curricul
 (1, 'NEI', 'Núcleo de Estudantes de Informática', '', '', '', '', '', '', '2021-04-26');
 
 UPDATE news SET author=1 WHERE 1;
+
+-- Users corrections
+UPDATE users SET name="Margarida Martins" WHERE id=1602;
+UPDATE users SET name="Alina Yanchuk" WHERE id=879;
