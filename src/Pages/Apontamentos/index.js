@@ -13,135 +13,12 @@ import Select from "react-select";
 
 const Apontamentos = () => {
 
-    // for testing purposes
-    const test_data = [
-        {
-            "id": "65",
-            "name": "Resumos ALGA 2018/2019 (zip)",
-            "subjectShort": "ALGA",
-            "subjectName": "Álgebra Linear e Geometria Analítica",
-            "summary": "1",
-            "tests": "0",
-            "bibliography": "0",
-            "slides": "0",
-            "exercises": "0",
-            "projects": "0",
-            "notebook": "0"
-        },
-        {
-            "id": "51",
-            "name": "Exercícios 2018/19",
-            "subjectShort": "EF",
-            "subjectName": "Elementos de Fisíca",
-            "summary": "0",
-            "tests": "1",
-            "bibliography": "0",
-            "slides": "0",
-            "exercises": "1",
-            "projects": "0",
-            "notebook": "0"
-        },
-        {
-            "id": "50",
-            "name": "Resumos EF 2018/2019 (zip)",
-            "subjectShort": "EF",
-            "subjectName": "Elementos de Fisíca",
-            "summary": "0",
-            "tests": "0",
-            "bibliography": "0",
-            "slides": "0",
-            "exercises": "1",
-            "projects": "0",
-            "notebook": "0"
-        },
-        {
-            "id": "28",
-            "name": "Resumos POO 2018/2019 (zip)",
-            "subjectShort": "POO",
-            "subjectName": "Programação Orientada a Objetos",
-            "summary": "1",
-            "tests": "1",
-            "bibliography": "0",
-            "slides": "0",
-            "exercises": "1",
-            "projects": "0",
-            "notebook": "0"
-        },
-        {
-            "id": "16",
-            "name": "Preparação para Exame Final de MAS",
-            "subjectShort": "MAS",
-            "subjectName": "Modelação e Análise de Sistemas",
-            "summary": "1",
-            "tests": "0",
-            "bibliography": "0",
-            "slides": "0",
-            "exercises": "0",
-            "projects": "0",
-            "notebook": "0"
-        },
-        {
-            "id": "6",
-            "name": "Resoluções 18/19",
-            "subjectShort": "FP",
-            "subjectName": "Fundamentos de Programação",
-            "summary": "0",
-            "tests": "0",
-            "bibliography": "0",
-            "slides": "0",
-            "exercises": "1",
-            "projects": "0",
-            "notebook": "0"
-        },
-        {
-            "id": "85",
-            "name": "Resumos MD 2018/2019 (zip)",
-            "subjectShort": "MD",
-            "subjectName": "Matemática Discreta",
-            "summary": "1",
-            "tests": "0",
-            "bibliography": "0",
-            "slides": "0",
-            "exercises": "0",
-            "projects": "0",
-            "notebook": "0"
-        },
-        {
-            "id": "75",
-            "name": "Resumos Cálculo II 2018/2019 (zip)",
-            "subjectShort": "C2",
-            "subjectName": "Cálculo II",
-            "summary": "1",
-            "tests": "0",
-            "bibliography": "0",
-            "slides": "0",
-            "exercises": "0",
-            "projects": "0",
-            "notebook": "0"
-        },
-        {
-            "id": "4",
-            "name": "Resumos FP 2018/2019 (zip)",
-            "subjectShort": "FP",
-            "subjectName": "Fundamentos de Programação",
-            "summary": "1",
-            "tests": "1",
-            "bibliography": "0",
-            "slides": "0",
-            "exercises": "1",
-            "projects": "0",
-            "notebook": "0"
-        }
-    ];
-
     // Grid view selected note
     const [selectedNote, setSelectedNote] = useState(null);
 
 
     // useStates and other variables
     const [data, setData] = useState([]);
-    const [gridItems, setGridItems] = useState([]);
-    const [listItems, setListItems] = useState([]);
     const [filters, setFilters] = useState([]);
     const [activeFilters, setActiveFilters] = useState([]);
     const [selection, setSelection] = useState([]);  
@@ -510,7 +387,13 @@ const Apontamentos = () => {
                                 <GridView data={data} setSelected={setSelectedNote}></GridView>
                             </Tab.Pane>
                             <Tab.Pane eventKey="list">
-                                <ListView data={data}></ListView>
+                                <ListView
+                                    data={data}
+                                    setSelYear={setSelYear}
+                                    setSelectedSubject={setSelectedSubject}
+                                    setSelStudent={setSelStudent}
+                                    setSelTeacher={setSelTeacher}
+                                ></ListView>
                             </Tab.Pane>
                         </Tab.Content>
                     </Tab.Container>

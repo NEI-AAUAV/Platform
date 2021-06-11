@@ -6,12 +6,27 @@
 }
 
 .list-view-item {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #dfdfdf;
+    padding: 0;
+    border: none !important;
+    border-bottom: 1px solid #dfdfdf !important;
+    border-radius: 0 !important;
 }
 
-.list-view-item:hover {
+.list-view-item .card-header {
+    padding: 8px 15px;
+    background-color: transparent;
+    border-radius: 0;
+    margin-left: -15px;
+    margin-right: -15px;
+    cursor: pointer;
+}
+
+.list-view-item .card-body {
+    padding-top: 10px;
+    padding-bottom: 8px;
+}
+
+.list-view-item .card-header:hover {
     background-color: #ebebeb;
 }
 
