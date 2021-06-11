@@ -77,3 +77,20 @@ h5, .h5 { font-size: 1.15rem!important; }
 li.sub {
     list-style-type: none;
 }
+
+/* animations */
+.animation {
+    opacity: 0;
+    animation-name: fadeIn;
+    animation-duration: 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

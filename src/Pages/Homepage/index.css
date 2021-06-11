@@ -11,15 +11,6 @@
     position: relative;
 }
 
-
-.home-main-header h1 {
-    font-size: 3.6em !important;
-}
-
-.home-main-header h1:last-child {
-    font-weight: bold;
-}
-
 .header-dark {
     color: white;
 }
