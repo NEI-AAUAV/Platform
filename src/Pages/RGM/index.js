@@ -92,6 +92,7 @@ const RGM = () => {
                                 description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandato}
                                 link={process.env.REACT_APP_UPLOADS_UNLOCK + doc.file}
                                 blank={true}
+                                className="col-lg-6 col-xl-3"
                             />
                         )
                     }

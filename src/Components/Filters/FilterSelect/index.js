@@ -12,13 +12,13 @@ import Filters from "../";
  * - setActiveFilters                   see FilterButton doc
  */
 
-const FilterSelect = ({children, activeFilters, setActiveFilters, filterList, className, btnClass}) => {
+const FilterSelect = ({children, activeFilters, setActiveFilters, filterList, className, btnClass, listClass, allBtnClass}) => {
 
     return(
         <Accordion className={className}>
             { /* Accordion header,with the toggler button. Can display props.children on the right side. */ }
             <div className="d-flex justify-content-between mt-4">
-                <Accordion.Toggle as={Button} variant="primary" className="mb-3" eventKey="1">
+                <Accordion.Toggle as={Button} variant="primary" className="mb-3" eventKey="filters">
                     Filtros
                 </Accordion.Toggle>
 
@@ -26,12 +26,14 @@ const FilterSelect = ({children, activeFilters, setActiveFilters, filterList, cl
             </div>
 
             { /* Accordion body, contains list of filter buttons. Starts collapsed. */ }
-            <Accordion.Collapse eventKey="1">
+            <Accordion.Collapse eventKey="filters">
                 <Filters 
                     activeFilters={activeFilters}
                     setActiveFilters={setActiveFilters}
                     filterList={filterList}
                     btnClass={btnClass}
+                    className={listClass}
+                    allBtnClass={allBtnClass}
                 />
             </Accordion.Collapse>
         </Accordion>
