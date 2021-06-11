@@ -10,6 +10,8 @@ body {
 
 a { color: #147a26!important }
 
+.tab-container {max-width: none!important;}
+
 /* .btn */
 .btn {
     font-size: inherit;

@@ -29,6 +29,19 @@ const data = [
         ]
     },
     {
+        'name': 'Faina',
+        'dropdown': [
+            {
+                'name': 'Comissões de Faina',
+                'link': '/faina'
+            },
+            {
+                'name': 'Código de Faina',
+                'link': 'https://nei.web.ua.pt/upload/faina/CodigoFaina.pdf'
+            }
+        ]
+    },
+    {
         'name': 'História',
         'link': '/historia'
     },
