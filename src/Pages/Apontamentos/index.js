@@ -134,10 +134,10 @@ const Apontamentos = () => {
             fullNotes += extraYear;
             fullNotes = fullNotes.substring(0,fullNotes.length-1); // ignore the last '&'
 
-
+            //console.log(fullNotes)
             fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
             .then((response) => response.json())
-            .then((response) => {            
+            .then((response) => {       
                 setData(response.data)
                 setPageNumber(response.page.pagesNumber);
 
@@ -153,17 +153,22 @@ const Apontamentos = () => {
                 <option value={year.id} selected={year.id == selYear}>{year.yearBegin + "-" + year.yearEnd}</option>
             ))
             */
-            var arr = response.data.map(year => {
-                const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd };
-                return x;
-            })
+            if ('data' in response) {
+                var arr = response.data.map(year => {
+                    /*
+                    console.log("bool: "+year.id==selYear);
+                    console.log("selYear: "+selYear);
+                    console.log("year.id: "+year.id);
+                    console.log(year.id + " == " + selYear +": "+ (year.id==selYear));
+                    */
+                    const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd, isSelected: year.id == selYear};
+                    //console.log(x)
+                    return x;
+                })
 
-            arr.push({
-                value: "",
-                label: "Ano Letivo..."
-            })
+                setYears(arr)
+            }
 
-            setYears(arr)
 
         })
         
@@ -174,17 +179,15 @@ const Apontamentos = () => {
             //var subjs = response.data.map(s => <option value={s.paco_code} selected={s.paco_code == selectedSubject}>{s.short}</option>)
             //setSubjects(subjs);
 
-            var arr = response.data.map(subj => {
-                const x = { value: subj.paco_code, label: subj.short };
-                return x;
-            })
+            if ('data' in response) {
 
-            arr.push({
-                value: "",
-                label: "Cadeira..."
-            })
+                var arr = response.data.map(subj => {
+                    const x = { value: subj.paco_code, label: subj.short };
+                    return x;
+                })
 
-            setSubjects(arr)
+                setSubjects(arr)
+            }
         })
 
         //console.log("subjects: "+subjects)
@@ -193,17 +196,15 @@ const Apontamentos = () => {
         .then((response) => response.json())
         .then((response) => {            
             //setStudents(response.data.map(s => <option value={s.id} selected={s.id == selStudent}>{s.name}</option>))
-            var arr = response.data.map(t => {
-                const x = { value: t.id, label: t.name };
-                return x;
-            })
 
-            arr.push({
-                value: "",
-                label: "Autor..."
-            })
+            if ('data' in response) {
+                var arr = response.data.map(t => {
+                    const x = { value: t.id, label: t.name };
+                    return x;
+                })
 
-            setStudents(arr)
+                setStudents(arr)
+            }
         })
 
 
@@ -211,18 +212,15 @@ const Apontamentos = () => {
         .then((response) => response.json())
         .then((response) => {            
             //setTeachers(response.data.map(s => <option value={s.id} selected={s.id == selTeacher}>{s.name}</option>));
-            var arr = response.data.map(t => {
-                const x = { value: t.id, label: t.name };
-                return x;
-            })
+            if ('data' in response) {
+                var arr = response.data.map(t => {
+                    const x = { value: t.id, label: t.name };
+                    return x;
+                })
 
-            arr.push({
-                value: "",
-                label: "Professor..."
-            })
-
-            //console.log(arr)
-            setTeachers(arr)
+                //console.log(arr)
+                setTeachers(arr)
+            }
         })
 
     }, [activeFilters, selectedSubject, selStudent, selYear, selPage, selTeacher]);
@@ -245,34 +243,47 @@ const Apontamentos = () => {
                         setSelectedSubject={setSelectedSubject}
                         setSelStudent={setSelStudent}
                         setSelTeacher={setSelTeacher}
+                        setSelPage={setSelPage}
                     />
 
                         <Select 
+                            id="teste"
                             className="react-select"
                             options={years}
-                            onChange={ (e) => setSelYear(e.value)}
+                            onChange={ (e) => { if (e == null) setSelYear(""); else setSelYear(e.value);}}
                             placeholder="Ano Letivo..."
+                            //isOptionSelected={(e) => {console.log("--------");console.log(e); return e.isSelected;}}
+                            setValue={ (e,p) => {console.log(e); console.log(p)}}
+                            
+                            isClearable={true}
+                            //inputValue="2"
+                            //selectOption={ (e) => {console.log("hihi");console.log(e); return false;} }
+                            //selectOption={ (selYear) => {console.log(selYear); return false;}}
+                            
                         />
 
                         <Select 
                             className="react-select"
                             options={subjects}
-                            onChange={ (e) => setSelectedSubject(e.value)}
+                            onChange={ (e) =>{ if (e == null) setSelectedSubject(""); else setSelectedSubject(e.value)}}
                             placeholder="Cadeira..."
+                            isClearable={true}
                         />
 
                         <Select 
                             className="react-select"
                             options={student}
-                            onChange={ (e) => setSelStudent(e.value)}
+                            onChange={ (e) =>{ if (e == null) setSelStudent(""); else setSelStudent(e.value)}}
                             placeholder="Autor..."
+                            isClearable={true}
                         />
 
                         <Select 
                             className="react-select"
                             options={teachers}
-                            onChange={ (e) => setSelTeacher(e.value)}
+                            onChange={ (e) =>{ if (e == null) setSelTeacher(""); else setSelTeacher(e.value)}}
                             placeholder="Professor..."
+                            isClearable={true}
                         />
                     {/*
                     <Form>

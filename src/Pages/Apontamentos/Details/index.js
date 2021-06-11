@@ -17,7 +17,7 @@ function titleCase(str) {
     return splitStr.join(' ');
 }
 
-const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, setSelTeacher }) => {
+const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, setSelTeacher, setSelPage }) => {
 
     return (
         note &&
@@ -64,7 +64,7 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                                     icon={faFilter}
                                     size={"1x"}
                                     title="Filtrar por ano letivo"
-                                    onClick={() => setSelYear(note.yearId)}
+                                    onClick={() => { setSelYear(note.yearId); setSelPage(1) }}
                                 />
                             </dt>
                             <dd>{note.yearBegin}/{note.yearEnd}</dd>
@@ -80,7 +80,7 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                                     icon={faFilter}
                                     size={"1x"}
                                     title="Filtrar por cadeira"
-                                    onClick={() => setSelectedSubject(note.subjectId)}
+                                    onClick={() => {setSelectedSubject(note.subjectId); setSelPage(1)}}
                                 />
                             </dt>
                             <dd>{note.subjectName}</dd>
@@ -96,7 +96,7 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                                     icon={faFilter}
                                     size={"1x"}
                                     title="Filtrar por autor"
-                                    onClick={() => setSelStudent(note.authorId)}
+                                    onClick={() => { setSelStudent(note.authorId); setSelPage(1) }}
                                 />
                             </dt>
                             <dd>{titleCase(note.authorName)}</dd>
@@ -113,7 +113,7 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                                         icon={faFilter}
                                         size={"1x"}
                                         title="Filtrar por docente"
-                                        onClick={() => setSelTeacher(note.teacherId)}
+                                        onClick={() => { setSelTeacher(note.teacherId); setSelPage(1)}}
                                     />
                                 </span>
                                 {
