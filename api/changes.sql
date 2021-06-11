@@ -39,14 +39,41 @@ CREATE TABLE seniors_students (
     PRIMARY KEY (year, course, userId)
 )
 
-INSERT INTO seniors_students (course, year, userId) VALUES
-    ("LEI", 2020, 873),
-    ("LEI", 2020, 900),
-    ("LEI", 2020, 1545),
-    ("LEI", 2020, 1362),
-    ("LEI", 2020, 879),
-    ("MEI", 2020, 1059)
+-- SELECT * FROM seniors_students INNER JOIN users ON userId=users.id; 
+
+INSERT INTO users (id, name, full_name, uu_email, uu_iupi, curriculo, linkedIn, git, permission, created_at) VALUES
+    (2130, "Rodrigo Oliveira", "Rodrigo Oliveira", "", "", "", "", "", "DEFAULT", "2021-06-11"),
+    (2131, "Miguel Fonseca", "Miguel Fonseca", "", "", "", "", "", "DEFAULT", "2021-06-11")
 ;
+
+INSERT INTO seniors_students (course, year, userId) VALUES
+    -- LEI
+    ("LEI", 2020, 873), -- Alexandre
+    ("LEI", 2020, 879), -- Alina
+    ("LEI", 2020, 897), -- Rafaela Vieira
+    ("LEI", 2020, 927), -- André Amarante
+    ("LEI", 2020, 900), -- André Alves
+    ("LEI", 2020, 999), -- Camila
+    ("LEI", 2020, 1002), -- Carina
+    ("LEI", 2020, 1137), -- Diogo Andrade
+    ("LEI", 2020, 1161), -- Diogo Silva (??????)
+    ("LEI", 2020, 1245), -- Flávia Figueiredo
+    ("LEI", 2020, 1266), -- Francisco
+    ("LEI", 2020, 1545), -- Luís Fonseca
+    ("LEI", 2020, 1425), -- João Dias (??????)
+    ("LEI", 2020, 1362), -- João Vasconcelos (??????)
+    ("LEI", 2020, 1476), -- José Frias
+    ("LEI", 2020, 1647), -- Miguel Mota
+    ("LEI", 2020, 1764), -- Pedro Oliveira
+    ("LEI", 2020, 1938), -- Sofia Moniz
+    ("LEI", 2020, 1995), -- Tomás Costa
+    ("LEI", 2020, 2130), -- Rodrigo Oliveira
+    -- MEI
+    ("MEI", 2020, 1059), -- Carlos Soares
+    ("MEI", 2020, 2131) -- Miguel Fonseca
+;
+
+
 
 -- Apontamentos Data Model
 
