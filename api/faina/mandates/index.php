@@ -7,7 +7,7 @@
 <?php
 
     // Make query to the database
-    $query_getContent = "SELECT DISTINCT mandato FROM faina ORDER BY mandato";
+    $query_getContent = "SELECT DISTINCT anoLetivo AS mandato FROM faina ORDER BY mandato";
 
     try{
         $st = $conn->prepare($query_getContent);

@@ -8,7 +8,7 @@
     
     // Get url parameter and validate it 
     $mandate = $_GET["mandate"];
-    $validOptions = $conn->query("SELECT DISTINCT mandato FROM faina")->fetchAll(PDO::FETCH_ASSOC);
+    $validOptions = $conn->query("SELECT DISTINCT anoLetivo AS mandato FROM faina")->fetchAll(PDO::FETCH_ASSOC);
     $valid = false;
     foreach($validOptions as $op) {
         if ($op['mandato']==$mandate) {
@@ -22,17 +22,18 @@
     }
 
     // Make query to the database
-    $query_getContent = "SELECT imagem, mandato FROM faina WHERE mandato=:mandate";
+    $query_getContent = "SELECT imagem, anoLetivo AS mandato FROM faina WHERE anoLetivo=:mandate";
     // Get members
-    $query_getContent2 = "SELECT users.name, faina_roles.name AS role FROM faina_member INNER JOIN users ON faina_member.member=users.id INNER JOIN faina_roles ON faina_member.role=faina_roles.id WHERE year=:mandate ORDER BY faina_roles.weight DESC, users.name";
+    $query_getContent2 = "SELECT users.name, faina_roles.name AS role FROM faina_member INNER JOIN users ON faina_member.member=users.id INNER JOIN faina_roles ON faina_member.role=faina_roles.id WHERE year=:year ORDER BY faina_roles.weight DESC, users.name";
 
     try{
         // Query 1
         $st = $conn->prepare($query_getContent);
         $st->bindParam(':mandate', $mandate);
         // Query 2
+        $year = explode("/", $mandate)[0];
         $st2 = $conn->prepare($query_getContent2);
-        $st2->bindParam(':mandate', $mandate);
+        $st2->bindParam(':year', $year);
         // Execute query
         $st->execute();
         $st2->execute();
