@@ -1,0 +1,9 @@
+.floatingbtn {
+    position: fixed;
+    z-index: 5;
+}
+
+.floatingbtn.bottomRight {
+    bottom: 1rem;
+    right: 1rem;
+}

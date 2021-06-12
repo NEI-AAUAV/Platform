@@ -73,6 +73,10 @@ h5, .h5 { font-size: 1.15rem!important; }
     cursor: pointer!important;
 }
 
+.mhvh-100 {
+    min-height: 100vh;
+}
+
 /* removing marker from li with ul inside */
 li.sub {
     list-style-type: none;
