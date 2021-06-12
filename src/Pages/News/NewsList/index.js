@@ -10,6 +10,7 @@ import { Col, Row } from "react-bootstrap"
 */
 const NewsList = (props) => {
     var key = 1;
+    var animKey = 0;
 
     return (
         <Row>
@@ -25,7 +26,8 @@ const NewsList = (props) => {
                     <h4 className="text-center">Tente definir filtros menos restritivos</h4>
                 </Col>
             }
-            {props.news.map( article => {
+            {
+            props.news.map( article => {    
                 return(
                     <Col lg={4} md={6} sm={12} key={key++}>
                         <ImageCard
@@ -34,6 +36,7 @@ const NewsList = (props) => {
                             preTitle={article.category}
                             text={article.created_at}
                             anchor={"/noticia/" + article.id}
+                            animKey={animKey++}
                         ></ImageCard>
                     </Col>
                 );

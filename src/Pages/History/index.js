@@ -16,8 +16,6 @@ const History = () => {
                 }
             });
     }, []);
-    
-    console.log(data)
 
     return(
         <div>
