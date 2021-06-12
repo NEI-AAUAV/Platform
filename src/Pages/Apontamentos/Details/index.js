@@ -53,7 +53,7 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                     )
                 }
             </div>
-            <a href={process.env.REACT_APP_UPLOADS_UNLOCK + note.location} target="_blank" rel="noreferrer">
+            <a href={process.env.REACT_APP_STATIC + note.location} target="_blank" rel="noreferrer">
                 <button className="btn btn-sm btn-outline-primary mb-3 ml-0">
                     <FontAwesomeIcon
                         icon={faCloudDownloadAlt}
