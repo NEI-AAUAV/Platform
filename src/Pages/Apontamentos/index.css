@@ -4,25 +4,25 @@
 }
 
 .tag-summary {
-    background-color: blue;
+    background-color: #ffa200;
 }
 .tag-tests {
-    background-color: crimson;
+    background-color: #147a26;
 }
 .tag-biblio {
-    background-color: purple;
+    background-color: #01cae4;
 }
 .tag-slides {
-    background-color: green;
+    background-color: #015a65;
 }
 .tag-exercises {
-    background-color: orange;
+    background-color: #20c53e;
 }
 .tag-projects {
-    background-color: turquoise;
+    background-color: #65e67d;
 }
 .tag-notebook {
-    background-color: khaki;
+    background-color: #d31115;
 }
 
 .react-select {

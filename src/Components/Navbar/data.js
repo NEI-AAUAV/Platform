@@ -24,7 +24,7 @@ const data = [
             },
             {
                 'name': 'Novos alunos',
-                'link': 'http://deti-cdn.clients.ua.pt/lei/',
+                'link': 'https://www.ua.pt/pt/deti',
                 'external': true
             },
         ]

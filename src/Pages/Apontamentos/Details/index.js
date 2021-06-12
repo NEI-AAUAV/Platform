@@ -19,6 +19,17 @@ function titleCase(str) {
 
 const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, setSelTeacher, setSelPage }) => {
 
+    var tags = [];
+    if (note) {
+        note.summary == "1" && tags.push({ "name": "Resumos", "className": "tag-summary" });
+        note.tests == "1" && tags.push({ "name": "Testes e exames", "className": "tag-tests" });
+        note.bibliography == "1" && tags.push({ "name": "Bibliografia", "className": "tag-biblio" });
+        note.slides == "1" && tags.push({ "name": "Slides", "className": "tag-slides" });
+        note.exercises == "1" && tags.push({ "name": "Exercícios", "className": "tag-exercises" });
+        note.projects == "1" && tags.push({ "name": "Projetos", "className": "tag-projects" });
+        note.notebook == "1" && tags.push({ "name": "Caderno", "className": "tag-notebook" });
+    }
+
     return (
         note &&
         <div className="notesDetails bg-white p-3 mb-4">
@@ -33,16 +44,16 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                 <span aria-hidden="true">×</span>
             </button>
             <div className="row mx-0 my-3">
-                {note.summary === "1" && <span className="mb-1 badge badge-pill tag-summary"  >resumos</span>}
-                {note.tests === "1" && <span className="mb-1 badge badge-pill tag-tests"    >testes</span>}
-                {note.bibliography === "1" && <span className="mb-1 badge badge-pill tag-biblio"   >bibliografia</span>}
-                {note.slides === "1" && <span className="mb-1 badge badge-pill tag-slides"   >slides</span>}
-                {note.exercises === "1" && <span className="mb-1 badge badge-pill tag-exercises">exercícios</span>}
-                {note.projects === "1" && <span className="mb-1 badge badge-pill tag-projects" >projetos</span>}
-                {note.notebook === "1" && <span className="mb-1 badge badge-pill tag-notebook" >caderno</span>}
+                {
+                    tags.map(
+                        tag =>
+                            <span
+                                className={"ml-0 mb-1 mr-1 badge badge-pill " + tag.className}
+                            >{tag.name}</span>
+                    )
+                }
             </div>
-
-            <a href={process.env.REACT_APP_UPLOADS_UNLOCK + note.location} target="_blank" rel="noreferrer">
+            <a href={process.env.REACT_APP_STATIC + note.location} target="_blank" rel="noreferrer">
                 <button className="btn btn-sm btn-outline-primary mb-3 ml-0">
                     <FontAwesomeIcon
                         icon={faCloudDownloadAlt}
@@ -80,7 +91,7 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                                     icon={faFilter}
                                     size={"1x"}
                                     title="Filtrar por cadeira"
-                                    onClick={() => {setSelectedSubject(note.subjectId); setSelPage(1)}}
+                                    onClick={() => { setSelectedSubject(note.subjectId); setSelPage(1) }}
                                 />
                             </dt>
                             <dd>{note.subjectName}</dd>
@@ -113,7 +124,7 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                                         icon={faFilter}
                                         size={"1x"}
                                         title="Filtrar por docente"
-                                        onClick={() => { setSelTeacher(note.teacherId); setSelPage(1)}}
+                                        onClick={() => { setSelTeacher(note.teacherId); setSelPage(1) }}
                                     />
                                 </span>
                                 {

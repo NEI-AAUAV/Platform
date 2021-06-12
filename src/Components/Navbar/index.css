@@ -4,7 +4,6 @@
 
 .navbar .navbar-nav .nav-link {
     line-height: 1.6;
-    margin: 15px 3px;
     padding: 10px 15px;
     opacity: .8;
     text-transform: uppercase;
@@ -28,7 +27,7 @@
     color: #000!important;
     padding: 10px 45px 10px 30px!important;
 }
-.dropdown-item:focus, .dropdown-item:hover {
+.dropdown-item:focus, .dropdown-item:hover, .dropdown-item.active, .dropdown-item:active {
     color: #fff!important;
     text-decoration: none;
     background-color: #147a26!important;
