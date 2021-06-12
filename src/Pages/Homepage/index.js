@@ -38,6 +38,8 @@ const Homepage = () => {
                                     Bem-vindo ao
                                     <br /><br />
                                     <b>Núcleo de Estudantes de Informática</b>
+                                    <br/>
+                                    da AAUAv
                                 </Typist>
                             </h1>
                             <h3 className="d-md-none">
@@ -45,6 +47,8 @@ const Homepage = () => {
                                     Bem-vindo ao
                                     <br /><br />
                                     <b>Núcleo de Estudantes de Informática</b>
+                                    <br/>
+                                    da AAUAv
                                 </Typist>
                             </h3>
                         </Col>
