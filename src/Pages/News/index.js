@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import NewsList from "./NewsList";
 import PageNav from "../../Components/PageNav";
 import FilterSelect from "../../Components/Filters/FilterSelect";
+import Typist from 'react-typist';
 
 const News = () => {
 
@@ -68,11 +69,7 @@ const News = () => {
 
     return (
         <div>
-            {
-            // TODO: this needs to be changed to the self-writing text thing,
-            // also, background particles (that might be in the MainLayout?)
-            }
-            <h2 className="text-center">Notícias</h2>
+            <h2 className="text-center"><Typist>Notícias</Typist></h2>
 
             <FilterSelect 
                 accordion={true}

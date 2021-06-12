@@ -98,3 +98,20 @@ li.sub {
         opacity: 1;
     }
 }
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.slideUpFade {
+    transform: translateY(20px);
+    opacity: 0;
+    animation-name: slideUp, fadeIn;
+    animation-duration: 0.7s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}

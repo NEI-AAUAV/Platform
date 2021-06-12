@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Button, Row, Col, Container } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb, faFutbol } from "@fortawesome/free-regular-svg-icons";
 import { faHistory, faUsers } from "@fortawesome/free-solid-svg-icons";
 import NewsList from "../News/NewsList";
 import "./index.css";
+import { ReactTerminal } from "react-terminal-component";
+import terminalstate from "./terminalconf";
 
 import Typist from 'react-typist';
 
@@ -25,7 +27,6 @@ const Homepage = () => {
             });
     }, []);
 
-
     return (
         <div className="py-5">
             <div className="section" style={{"minHeight": "calc(100vh - 7rem)"}}>
@@ -40,8 +41,61 @@ const Homepage = () => {
                                 </Typist>
                             </h1>
                         </Col>
-                        <Col>
-                            bash terminal goes here
+                        <Col className="px-xl-0 pt-xl-0 pt-3">
+                            <div
+                                style={{
+                                    height:"34px",
+                                    width:"100%",
+                                    padding:"7px",
+                                    backgroundColor:"rgb(238, 238, 238)",
+                                    borderRadius:"5px 5px 0 0",
+                                    display:"flex",
+                                    justifyContent:"flex-end"
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        height:"20px",
+                                        width:"20px",
+                                        backgroundColor:"rgb(163, 190, 140)",
+                                        borderRadius:"50%"
+                                    }}
+                                ></div>
+                                <div
+                                    style={{
+                                        height:"20px",
+                                        width:"20px",
+                                        marginLeft:"4px",
+                                        backgroundColor:"rgb(235, 203, 139)",
+                                        borderRadius:"50%"
+                                    }}
+                                ></div>
+                                <div
+                                    style={{
+                                        height:"20px",
+                                        width:"20px",
+                                        marginLeft:"4px",
+                                        backgroundColor:"rgb(191, 97, 106)",
+                                        borderRadius:"50%"
+                                    }}
+                                ></div>
+                            </div>
+                            <ReactTerminal
+                                emulatorState={terminalstate}
+                                clickToFocus={true}
+                                autoFocus={true}
+                                theme={{
+                                    height:"320px",
+                                    fontFamily:"monospace",
+                                    fontSize:"1.1rem",
+                                    promptSymbolColor:"rgb(0, 255, 0)",
+                                    commandColor:"#fcfcfc",
+                                    outputColor:"#fcfcfc",
+                                    errorOutputColor:"#fcfcfc",
+                                    background:"#222222",
+                                }}
+                                promptSymbol="nei@nei-os $"
+                            />
                         </Col>
                     </Row>
                 </Col>

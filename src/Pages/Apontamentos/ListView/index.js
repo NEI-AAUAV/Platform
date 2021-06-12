@@ -25,6 +25,8 @@ function titleCase(str) {
  */
 const ListView = (props) => {
     
+    var animKey = 0;
+
     return(
         <div className="mx-3">
             <Row className="list-view-header">
@@ -43,7 +45,10 @@ const ListView = (props) => {
             {
             props.data.map( item => {
                 return(
-                    <Card className="list-view-item mx-n3 px-3">
+                    <Card
+                        className="list-view-item mx-n3 px-3 slideUpFade"
+                        style={{animationDelay: animKey++*0.1+"s"}}
+                    >
                         <Accordion.Toggle as={Card.Header} eventKey={item.id}>
                             <Row>
                                 <Col md="5" className="list-view-name">
