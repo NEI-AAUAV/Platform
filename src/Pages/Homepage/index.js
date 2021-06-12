@@ -28,7 +28,7 @@ const Homepage = () => {
 
     return (
         <div className="py-5">
-            <div className="section">
+            <div className="section" style={{"minHeight": "calc(100vh - 7rem)"}}>
                 <Col xs={11} sm={10} className="mx-auto col-xxl-9">
                     <Row>
                         <Col md="12" lg="7" className="home-main-header">
