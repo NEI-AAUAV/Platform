@@ -41,7 +41,7 @@
         }
 
         // Send notification to Slack
-        $jsontext = "*New feedback*\n\nBy $name ($email)\n\nMessage below\n----------$message\n----------";
+        $jsontext = "*New feedback*\n\nBy $name ($email)\n\nMessage below\n----------\n$message\n----------";
         $jsonobj = (object) ['text' => $jsontext];
         $response = httpPost(
             "https://hooks.slack.com/services/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",
@@ -54,6 +54,10 @@
 
         errorResponse("Ocorreu um erro inesperado, tenta novamente.", 500);
     } 
+
+    if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
+        successResponse("");
+    }
 
     errorResponse("Este endpoint só suporta pedidos POST!", 400);
     // The connection is closed automatically when the script ends

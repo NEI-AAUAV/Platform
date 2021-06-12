@@ -6,6 +6,7 @@ const FeedbackForm = () => {
 
     const [form, setForm] = useState({
         'email': '',
+        'name': '',
         'message': ''
     });
     const [sent, setSent] = useState(false);
@@ -22,10 +23,27 @@ const FeedbackForm = () => {
 
     const formSubmitted = (event) => {
         event.preventDefault();
-        console.log("Submitted");
-        setSent(true);
-        // setError("Error message");
+
+        // POST form
+        return fetch(process.env.REACT_APP_API + '/forms/feedback', {
+            method: 'POST',
+            body: JSON.stringify(form),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                setSent(true);
+            } else if ('error' in response) {
+                setError(response['error']);
+            } else {
+                setError("Tenta novamente.");
+            }
+        }).catch(err => {
+            setError("Estamos a ter dificuldades em submetê-lo. Por favor tenta novamente e se o problema persistir contacta-nos por um meio alternativo.");
+        });
     }
+
 
     if (sent) {
         return (
@@ -69,6 +87,18 @@ const FeedbackForm = () => {
             <Form
                 onSubmit={formSubmitted}
             >
+                <Form.Group className="mb-3" controlId="formBasicName">
+                    <Form.Label>Nome</Form.Label>
+                    <Form.Control
+                        type="tetxt"
+                        placeholder="Qual o teu nome?"
+                        required="true"
+                        value={form.name}
+                        onChange={formUpdated}
+                        name="name"
+                    />
+                </Form.Group>
+
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
