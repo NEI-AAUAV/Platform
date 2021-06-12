@@ -22,7 +22,7 @@ const Apontamentos = () => {
     const [data, setData] = useState([]);
     const [filters, setFilters] = useState([]);
     const [activeFilters, setActiveFilters] = useState([]);
-    const [selection, setSelection] = useState([]);  
+    const [selection, setSelection] = useState([]);
 
     const [subjects, setSubjects] = useState([]); // todos os subjects
     const [selectedSubject, setSelectedSubject] = useState("");
@@ -37,7 +37,7 @@ const Apontamentos = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [selPage, setSelPage] = useState(1);
 
-    
+
     const [shownYear, setShownYear] = useState();
     const [shownSubj, setShownSubj] = useState();
     const [shownAuth, setShownAuth] = useState();
@@ -50,7 +50,7 @@ const Apontamentos = () => {
         setSelPage(p_num);
     }
 
-    useEffect( () => {
+    useEffect(() => {
         setFilters(
             [
                 {
@@ -84,7 +84,7 @@ const Apontamentos = () => {
                     'color': 'rgb(211, 17, 21)'
                 },
                 {
-                    'db':'summary',
+                    'db': 'summary',
                     'filter': 'Resumos',
                     'color': 'rgb(255, 162, 0)'
                 },
@@ -93,12 +93,12 @@ const Apontamentos = () => {
     }, [])
 
 
-    useEffect( () => {
+    useEffect(() => {
 
         // Every time a new call is made to the API, close details
         setSelectedNote(null);
-        
-        
+
+
         // extraVarName --> base used to concatenate and compare the optionals of every fetch
         var extraYear = selYear == "" ? "" : "schoolYear=" + selYear + "&";
         var extraSubj = selectedSubject == "" ? "" : "subject=" + selectedSubject + "&";
@@ -106,10 +106,10 @@ const Apontamentos = () => {
         var extraTeacher = selTeacher == "" ? "" : "teacher=" + selTeacher + "&";
         var extraCategory = "";
 
-        for (var i=0; i<activeFilters.length; i++) {
-            extraCategory += "category[]=" + filters.filter(f => f['filter']==activeFilters[i])[0]['db'] + "&";
+        for (var i = 0; i < activeFilters.length; i++) {
+            extraCategory += "category[]=" + filters.filter(f => f['filter'] == activeFilters[i])[0]['db'] + "&";
         }
-        
+
 
         // fullVarName --> sum of optionals of every fetch
         var fullTeacher = "";
@@ -119,7 +119,7 @@ const Apontamentos = () => {
             fullTeacher += extraYear;
             fullTeacher += extraSubj;
             fullTeacher += extraStud;
-            fullTeacher = fullTeacher.substring(0,fullTeacher.length-1); // ignore the last '&'
+            fullTeacher = fullTeacher.substring(0, fullTeacher.length - 1); // ignore the last '&'
         }
 
         var fullYear = "";
@@ -129,7 +129,7 @@ const Apontamentos = () => {
             fullYear += extraTeacher;
             fullYear += extraSubj;
             fullYear += extraStud;
-            fullYear = fullYear.substring(0,fullYear.length-1); // ignore the last '&'
+            fullYear = fullYear.substring(0, fullYear.length - 1); // ignore the last '&'
         }
 
         var fullSubj = "";
@@ -139,126 +139,126 @@ const Apontamentos = () => {
             fullSubj += extraYear;
             fullSubj += extraStud;
             fullSubj += extraTeacher;
-            fullSubj = fullSubj.substring(0,fullSubj.length-1); // ignore the last '&'
+            fullSubj = fullSubj.substring(0, fullSubj.length - 1); // ignore the last '&'
         }
 
         var fullStud = "";
 
-        if (extraTeacher != "" || extraSubj != "" || extraYear != "" ) {
+        if (extraTeacher != "" || extraSubj != "" || extraYear != "") {
             fullStud = "?";
             fullStud += extraTeacher;
             fullStud += extraSubj;
             fullStud += extraYear;
-            fullStud = fullStud.substring(0,fullStud.length-1); // ignore the last '&'
+            fullStud = fullStud.substring(0, fullStud.length - 1); // ignore the last '&'
         }
 
         if (extraCategory.length == 0) {
             setData([]);
         }
         else {
-            var fullNotes = "?page="+selPage+"&";
+            var fullNotes = "?page=" + selPage + "&";
 
             fullNotes += extraTeacher;
             fullNotes += extraSubj;
             fullNotes += extraStud;
             fullNotes += extraCategory;
             fullNotes += extraYear;
-            fullNotes = fullNotes.substring(0,fullNotes.length-1); // ignore the last '&'
+            fullNotes = fullNotes.substring(0, fullNotes.length - 1); // ignore the last '&'
 
             //console.log(fullNotes)
             fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
-            .then((response) => response.json())
-            .then((response) => {     
-                if ('data' in response) {
-                    setData(response.data)
-                    setPageNumber(response.page.pagesNumber);
-                }  
+                .then((response) => response.json())
+                .then((response) => {
+                    if ('data' in response) {
+                        setData(response.data)
+                        setPageNumber(response.page.pagesNumber);
+                    }
 
-            })
+                })
         }
 
         fetch(process.env.REACT_APP_API + "/notes/years" + fullYear)
-        .then((response) => response.json())
-        .then((response) => {
-            /*setYears(response.data.map( (year) => 
-                <option value={year.id} selected={year.id == selYear}>{year.yearBegin + "-" + year.yearEnd}</option>
-            ))
-            */
-            if ('data' in response) {
-                var arr = response.data.map(year => {
+            .then((response) => response.json())
+            .then((response) => {
+                /*setYears(response.data.map( (year) => 
+                    <option value={year.id} selected={year.id == selYear}>{year.yearBegin + "-" + year.yearEnd}</option>
+                ))
+                */
+                if ('data' in response) {
+                    var arr = response.data.map(year => {
 
-                    const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd};
-                    if (x.value == selYear) 
-                        setShownYear(x)
-                    return x;
-                })
+                        const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd };
+                        if (x.value == selYear)
+                            setShownYear(x)
+                        return x;
+                    })
 
-                setYears(arr)
-            }
+                    setYears(arr)
+                }
 
 
-        })
-        
+            })
+
         fetch(process.env.REACT_APP_API + "/notes/subjects" + fullSubj)
-        .then((response) => response.json())
-        .then((response) => {
+            .then((response) => response.json())
+            .then((response) => {
 
-            if ('data' in response) {
+                if ('data' in response) {
 
-            
-                var arr = response.data.map(subj => {
 
-                    const x = { value: subj.paco_code, label: subj.short };
-                    if (x.value == selectedSubject) 
-                        setShownSubj(x)
-                    return x;
-                })
+                    var arr = response.data.map(subj => {
 
-                setSubjects(arr)
-            }
-        })
+                        const x = { value: subj.paco_code, label: subj.short };
+                        if (x.value == selectedSubject)
+                            setShownSubj(x)
+                        return x;
+                    })
+
+                    setSubjects(arr)
+                }
+            })
 
         fetch(process.env.REACT_APP_API + "/notes/students" + fullStud)
-        .then((response) => response.json())
-        .then((response) => {            
+            .then((response) => response.json())
+            .then((response) => {
 
-            if ('data' in response) {
-                var arr = response.data.map(t => {
-                    const x = { value: t.id, label: t.name };
-                    if (x.value == selStudent) 
-                        setShownAuth(x)
+                if ('data' in response) {
+                    var arr = response.data.map(t => {
+                        const x = { value: t.id, label: t.name };
+                        if (x.value == selStudent)
+                            setShownAuth(x)
 
-                    return x;
-                })
+                        return x;
+                    })
 
-                setStudents(arr)
-            }
-        })
+                    setStudents(arr)
+                }
+            })
 
 
         fetch(process.env.REACT_APP_API + "/notes/teachers" + fullTeacher)
-        .then((response) => response.json())
-        .then((response) => {            
-            if ('data' in response) {
-                var arr = response.data.map(t => {
-                    const x = { value: t.id, label: t.name };
-                    if (x.value == selTeacher) 
-                        setShownTeacher(x)
+            .then((response) => response.json())
+            .then((response) => {
+                if ('data' in response) {
+                    var arr = response.data.map(t => {
+                        const x = { value: t.id, label: t.name };
+                        if (x.value == selTeacher)
+                            setShownTeacher(x)
 
-                    return x;
-                })
+                        return x;
+                    })
 
-                setTeachers(arr)
-            }
-        })
+                    setTeachers(arr)
+                }
+            })
 
     }, [activeFilters, selectedSubject, selStudent, selYear, selPage, selTeacher]);
-    
 
-    useEffect( () => {
+
+    useEffect(() => {
         setActiveFilters(filters.map(content => content.filter));
     }, [filters])
-    
+
     return (
         <div>
             <h2 className="text-center mb-5">
@@ -267,7 +267,7 @@ const Apontamentos = () => {
             
             <Row className="mt-4">
                 <Col lg="3">
-                    <Details 
+                    <Details
                         note={selectedNote}
                         close={() => setSelectedNote(null)}
                         setSelYear={setSelYear}
@@ -277,45 +277,48 @@ const Apontamentos = () => {
                         setSelPage={setSelPage}
                     />
 
-                        <Select 
-                            id="teste"
-                            className="react-select"
-                            options={years}
-                            onChange={ (e) => { if (e == null){ setSelYear(""); setShownYear("")} else setSelYear(e.value);}}
-                            placeholder="Ano Letivo..."                            
-                            isClearable={true}
-                            value={shownYear}
-                            
-                        />
+                    <h4 className="">Filtros</h4>
 
-                        <Select 
-                            className="react-select"
-                            options={subjects}
-                            onChange={ (e) =>{ if (e == null){ setSelectedSubject(""); setShownSubj("")} else setSelectedSubject(e.value)}}
-                            placeholder="Cadeira..."
-                            isClearable={true}
-                            value={shownSubj}
-                        />
+                    <Select
+                        id="teste"
+                        className="react-select"
+                        options={years}
+                        onChange={(e) => { if (e == null) { setSelYear(""); setShownYear("") } else setSelYear(e.value); }}
+                        placeholder="Ano Letivo..."
+                        isClearable={true}
+                        value={shownYear}
 
-                        <Select 
-                            className="react-select"
-                            options={student}
-                            onChange={ (e) =>{ if (e == null){ setSelStudent(""); setShownAuth("")} else setSelStudent(e.value)}}
-                            placeholder="Autor..."
-                            isClearable={true}
-                            value={shownAuth}
-                        />
+                    />
 
-                        <Select 
-                            className="react-select"
-                            options={teachers}
-                            onChange={ (e) =>{ if (e == null){ setSelTeacher(""); setShownTeacher("")} else setSelTeacher(e.value)}}
-                            placeholder="Professor..."
-                            isClearable={true}
-                            value={shownTeacher}
-                        />
-                    
-                    <FilterSelect
+                    <Select
+                        className="react-select"
+                        options={subjects}
+                        onChange={(e) => { if (e == null) { setSelectedSubject(""); setShownSubj("") } else setSelectedSubject(e.value) }}
+                        placeholder="Cadeira..."
+                        isClearable={true}
+                        value={shownSubj}
+                    />
+
+                    <Select
+                        className="react-select"
+                        options={student}
+                        onChange={(e) => { if (e == null) { setSelStudent(""); setShownAuth("") } else setSelStudent(e.value) }}
+                        placeholder="Autor..."
+                        isClearable={true}
+                        value={shownAuth}
+                    />
+
+                    <Select
+                        className="react-select"
+                        options={teachers}
+                        onChange={(e) => { if (e == null) { setSelTeacher(""); setShownTeacher("") } else setSelTeacher(e.value) }}
+                        placeholder="Professor..."
+                        isClearable={true}
+                        value={shownTeacher}
+                    />
+
+                    <h4 className="mt-3">Categorias</h4>
+                    <Filters
                         accordion={true}
                         filterList={filters}
                         activeFilters={activeFilters}
@@ -323,7 +326,7 @@ const Apontamentos = () => {
                         className="mb-5"
                         btnClass="btn-sm"
                         listClass="d-flex flex-column"
-                        allBtnClass="mx-2 py-2 mb-2"
+                        allBtnClass="mb-2 p-0 col-12"
                     />
                 </Col>
 
@@ -335,11 +338,11 @@ const Apontamentos = () => {
                     <Tab.Container defaultActiveKey="grid">
                         <Nav onSelect={() => setSelectedNote(null)}>
                             <Nav.Item><Nav.Link eventKey="grid" className="h5">
-                                <FontAwesomeIcon icon={ faTh } />
+                                <FontAwesomeIcon icon={faTh} />
                                 <span className="ml-3">Grid</span>
                             </Nav.Link></Nav.Item>
                             <Nav.Item className="mr-auto"><Nav.Link eventKey="list" className="h5">
-                                <FontAwesomeIcon icon={ faThList } />
+                                <FontAwesomeIcon icon={faThList} />
                                 <span className="ml-3">List</span>
                             </Nav.Link></Nav.Item>
                             <PageNav page={selPage} total={pageNumber} handler={fetchPage}></PageNav>

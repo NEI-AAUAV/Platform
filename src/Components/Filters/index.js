@@ -37,7 +37,7 @@ const Filters = ({activeFilters, setActiveFilters, filterList, className, btnCla
             className={className}
             style={style}
         >
-            <Button variant={"outline-primary " + btnClass} className={allBtnClass} onClick={toggleAll}>
+            <Button variant={"outline-primary " + btnClass} className={allBtnClass + " p-2"} onClick={toggleAll}>
                 {toggleText}
             </Button>
 
@@ -47,7 +47,7 @@ const Filters = ({activeFilters, setActiveFilters, filterList, className, btnCla
                         filter={f} 
                         setActiveFilters={setActiveFilters}
                         activeFilters={activeFilters}
-                        btnClass={btnClass}
+                        btnClass={btnClass + " " + allBtnClass}
                     />
                 )
             }
