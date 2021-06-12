@@ -33,13 +33,20 @@ const Homepage = () => {
                 <Col xs={11} sm={10} className="mx-auto col-xxl-9">
                     <Row>
                         <Col md="12" lg="7" className="home-main-header">
-                            <h1>
+                            <h1 className="d-none d-md-block">
                                 <Typist>
                                     Bem-vindo ao
                                     <br /><br />
                                     <b>Núcleo de Estudantes de Informática</b>
                                 </Typist>
                             </h1>
+                            <h3 className="d-md-none">
+                                <Typist>
+                                    Bem-vindo ao
+                                    <br /><br />
+                                    <b>Núcleo de Estudantes de Informática</b>
+                                </Typist>
+                            </h3>
                         </Col>
                         <Col className="px-xl-0 pt-xl-0 pt-3">
                             <div
