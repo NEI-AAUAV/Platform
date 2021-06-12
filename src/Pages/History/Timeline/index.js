@@ -2,6 +2,12 @@ import React from "react";
 import TimelineItem from "../TimelineItem";
 import "./index.css";
 
+
+// Animation
+const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
+const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
+
+
 /** A vertical timeline that renders alternating windows
  * 
  * Props:
@@ -15,13 +21,17 @@ const Timeline = (props) => {
 
     return(
         <div className="timeline animation">
-            {props.events.map( event => {
+            {props.events.map((event, i) => {
                 return(
                     <TimelineItem
                         moment={event.moment}
                         title={event.title}
                         body={event.body}
                         image={event.image}
+                        className="slideUpFade"
+                        style={{
+                            animationDelay: animationBase + animationIncrement*i + "s",
+                        }}
                     ></TimelineItem>
                 );
             })}

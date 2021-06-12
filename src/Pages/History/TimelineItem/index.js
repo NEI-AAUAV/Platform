@@ -10,10 +10,10 @@ import "./index.css";
  *   - body: event text
  *   - image: marker image src
  */
-const TimelineItem = (props) => {
+const TimelineItem = ({className, style, ...props}) => {
 
     return(
-        <Row className="my-5 timeline-item">
+        <Row className={"my-5 timeline-item " + className} style={style}>
             <Col xs="11" lg="5">
                 <span className="d-lg-none" >{props.moment}</span>
                 <div className="timeline-card px-4 pt-4 pb-2 text-center bg-white">
