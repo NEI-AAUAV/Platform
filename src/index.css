@@ -92,7 +92,7 @@ li.sub {
     animation-duration: 1s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
-    transition: 1s ease all;
+    transition: .3s ease all;
 }
 @keyframes fadeIn {
     from {
