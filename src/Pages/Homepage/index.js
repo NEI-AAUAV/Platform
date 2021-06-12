@@ -10,6 +10,10 @@ import terminalstate from "./terminalconf";
 
 import Typist from 'react-typist';
 
+// Animation
+const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
+const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
+
 const Homepage = () => {
 
     const [news, setNews] = useState([]);
@@ -52,7 +56,10 @@ const Homepage = () => {
                                 </Typist>
                             </h3>
                         </Col>
-                        <Col className="px-xl-0 pt-xl-0 pt-3">
+                        <Col 
+                            className="px-xl-0 pt-xl-0 pt-3 slideUpFade"
+                            style={{animationDelay: animationBase+1*animationIncrement}}
+                        >
                             <div
                                 style={{
                                     height:"34px",
