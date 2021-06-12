@@ -1,4 +1,4 @@
-import React from "react";
+import React,  {useState, useEffect} from "react";
 import { Pagination, Nav } from "react-bootstrap";
 import "./index.css";
 
@@ -27,15 +27,42 @@ const PageNav = (props) => {
     }
 
     // create each numbered page button
-    var pages = [];
-    for (let i = 1; i <= props.total; i++) {
-        pages.push(
-            <Pagination.Item onClick={handlePage} active={i == props.page} value={i} key={i /* idk what this even does */}>
-                {i}
-            </Pagination.Item>
-        );
-    }
+    const [pages, setPages] = useState([]);
 
+    useEffect(() => {
+        const pagesArray = [];
+        if (props.total<5) {
+            for (let i = 1; i <= props.total; i++) {
+                pagesArray.push(i);
+            }
+        } else {
+            // 1 2 3 ...  X
+            if (props.page<=2) {
+                for (let i=1; i<=3; i++) {
+                    pagesArray.push(i);
+                }
+                pagesArray.push(-1);
+                pagesArray.push(props.total);
+            // 1 ...  X-2 X-1 X
+            } else if (props.page>=props.total-1) {
+                pagesArray.push(1);
+                pagesArray.push(-1);
+                for (let i=props.total-2; i<=props.total; i++) {
+                    pagesArray.push(i);
+                }
+            // ... X-1 X X+1 ...
+            } else {
+                let currentpage = parseInt(props.page);
+                pagesArray.push(-1);
+                pagesArray.push(currentpage-1);
+                pagesArray.push(currentpage);
+                pagesArray.push(currentpage+1);
+                pagesArray.push(-1);
+            }
+        }
+        setPages(pagesArray);
+    }, [props.total, props.page]);
+    
     return(
         <Nav>
             <Pagination>
@@ -48,7 +75,18 @@ const PageNav = (props) => {
                 <Pagination.Ellipsis />
                 }
                 
-                {pages}
+                {
+                    pages.map(
+                        page =>
+                        page>=1 
+                        ?
+                        <Pagination.Item onClick={handlePage} active={page == props.page} value={page} key={page}>
+                            {page}
+                        </Pagination.Item>
+                        :
+                        <Pagination.Ellipsis />
+                    )
+                }
 
                 {
                 // Not sure how to render this yet, so keeping the condition false for now
