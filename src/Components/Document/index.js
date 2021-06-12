@@ -41,7 +41,7 @@ const Document = ({name, description, link, blank, className, icon, size, onClic
                         tags.map(
                             tag =>
                             <span 
-                                className={"ml-0 mb-1 badge badge-pill " + tag.className}  
+                                className={"ml-0 mb-1 mr-1 badge badge-pill " + tag.className}  
                             >{tag.name}</span>
                         )
                     }

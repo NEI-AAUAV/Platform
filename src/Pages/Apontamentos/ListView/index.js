@@ -62,13 +62,13 @@ const ListView = (props) => {
                                 </Col>
                             </Row>
                             <Row className="pl-2 mt-1">
-                                {item.summary     ==="1" && <span className="badge badge-pill tag-summary"  >resumos</span>}
-                                {item.tests       ==="1" && <span className="badge badge-pill tag-tests"    >testes</span>}
-                                {item.bibliography==="1" && <span className="badge badge-pill tag-biblio"   >bibliografia</span>}
-                                {item.slides      ==="1" && <span className="badge badge-pill tag-slides"   >slides</span>}
-                                {item.exercises   ==="1" && <span className="badge badge-pill tag-exercises">exercícios</span>}
-                                {item.projects    ==="1" && <span className="badge badge-pill tag-projects" >projetos</span>}
-                                {item.notebook    ==="1" && <span className="badge badge-pill tag-notebook" >caderno</span>}
+                                {item.summary     ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-summary"  >Resumos</span>}
+                                {item.tests       ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-tests"    >Testes e exames</span>}
+                                {item.bibliography==="1" && <span className="badge mr-0 ml-1 badge-pill tag-biblio"   >Bibliografia</span>}
+                                {item.slides      ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-slides"   >Slides</span>}
+                                {item.exercises   ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-exercises">Exercícios</span>}
+                                {item.projects    ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-projects" >Projetos</span>}
+                                {item.notebook    ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-notebook" >Caderno</span>}
                             </Row>
                         </Accordion.Toggle>
 
