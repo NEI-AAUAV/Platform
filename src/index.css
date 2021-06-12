@@ -44,8 +44,11 @@ a { color: #147a26!important }
 }
 .btn-outline-primary:hover {
     color: #fff;
-    background-color: #147a26!important;
+    background-color: #147a26;
     border-color: #147a26;
+}
+.btn-outline-primary-force:hover {
+    background-color: #147a26!important;
 }
 
 /* cols from Bootstrap 5 */
