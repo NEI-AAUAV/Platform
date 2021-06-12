@@ -16,7 +16,8 @@ import RGM from "./Pages/RGM";
 import Calendar from "./Pages/Calendar";
 import History from "./Pages/History";
 import CleanLayout from "./Layouts/CleanLayout";
-
+import Apontamentos from "./Pages/Apontamentos";
+import FeedbackForm from './Pages/Forms/FeedbackForm';
 
 
 const routes = [
@@ -33,6 +34,7 @@ const routes = [
 		children: [
 			{ path: "/noticias", element: <News /> },
 			{ path: "/noticia/:id", element: <NewsArticle /> },
+			{ path: "/apontamentos", element: <Apontamentos />},
 			{ path: "/equipa", element: <Team /> },
 			{ path: "/parceiros", element: <Partners /> },
 			{ path: "/calendario", element: <Calendar /> },
@@ -41,6 +43,9 @@ const routes = [
 			{ path: "/seniorsLEI", element: <SeniorsLEI /> },
 			{ path: "/seniorsMEI", element: <SeniorsMEI /> },
 			{ path: "/faina", element: <Faina/> },
+			// Forms
+			{ path: "/forms/feedback", element: <FeedbackForm/> },
+			// Everything else is 404
 			{ path: "/:id", element: <Error404 /> }
 		],
 	}

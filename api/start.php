@@ -13,8 +13,9 @@
 
     // Tell browser the response is JSON encoded
     header('Content-Type: application/json');
-    // Define CORS 
     header('Access-Control-Allow-Origin: *');
+    header("Access-Control-Allow-Methods:GET,POST");
+    header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
     // Connect to database
     try{

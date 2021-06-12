@@ -8,6 +8,8 @@ import App from "./App";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
+import "react-typist/dist/Typist.css";
+
 ReactDOM.render((
     <BrowserRouter>
         <App />

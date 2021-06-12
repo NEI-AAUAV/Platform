@@ -13,7 +13,7 @@ const Faina = () => {
     const [people,setPeople] = useState([]);
     const [selectedYear, setSelectedYear] = useState();
     const [anos, setAnos] = useState([]);
-    const [img, setImg] = useState("");
+    const [img, setImg] = useState(null);
 
     useEffect(() => {
         // pegar o número de anos
@@ -39,7 +39,9 @@ const Faina = () => {
         .then((response) => {
             console.log(response)
             setPeople(response.data.members.map((person) => <TextList colSize={12} text={person.role + " " + person.name} />))
-            setImg(<Image style={{"marginBottom":50}} src={process.env.REACT_APP_UPLOADS + response.data.imagem} rounded fluid />);
+            if (response.data.imagem) {
+                setImg(<Image style={{"marginBottom":50}} src={process.env.REACT_APP_UPLOADS + response.data.imagem} rounded fluid />);
+            }
             console.log(selectedYear);
             console.log(people);
         })

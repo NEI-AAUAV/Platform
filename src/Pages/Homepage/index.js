@@ -8,6 +8,8 @@ import "./index.css";
 import { ReactTerminal } from "react-terminal-component";
 import terminalstate from "./terminalconf";
 
+import Typist from 'react-typist';
+
 const Homepage = () => {
 
     const [news, setNews] = useState([]);
@@ -27,12 +29,17 @@ const Homepage = () => {
 
     return (
         <div className="py-5">
-            <div className="section">
+            <div className="section" style={{"minHeight": "calc(100vh - 7rem)"}}>
                 <Col xs={11} sm={10} className="mx-auto col-xxl-9">
                     <Row>
-                        <Col sm="12" xl="7" className="home-main-header">
-                            <h1 className="mb-5">Bem-Vindo ao</h1>
-                            <h1>Núcleo de Estudantes de Informática</h1>
+                        <Col md="12" lg="7" className="home-main-header">
+                            <h1>
+                                <Typist>
+                                    Bem-vindo ao
+                                    <br /><br />
+                                    <b>Núcleo de Estudantes de Informática</b>
+                                </Typist>
+                            </h1>
                         </Col>
                         <Col className="px-xl-0 pt-xl-0 pt-3">
                             <div

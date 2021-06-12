@@ -11,6 +11,10 @@
     color: #000!important;
 }
 
+.navbar .navbar-nav {
+    flex-wrap: wrap;
+}
+
 .navbar .navbar-nav .nav-link:hover {
     color: #147a26!important;
 }
@@ -63,6 +67,15 @@
 .navbar-toggler {
     border: none!important;
     color: #000!important;
+}
+
+@media only screen and (max-width: 991px){
+    .navbar .navbar-collapse .navbar-nav {
+        border-radius: 0% !important;
+        border: none !important;
+        box-shadow: 0 6px 10px -4px rgba(0, 0, 0, 0.3);
+        transition: transform .3s cubic-bezier(.34,2,.6,1), box-shadow .2s ease;
+    }
 }
 
 /* Custom styling */

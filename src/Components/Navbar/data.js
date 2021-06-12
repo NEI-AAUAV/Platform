@@ -4,42 +4,30 @@ const data = [
         'link': '/noticias'
     },
     {
-        'name': 'Parceiros',
-        'link': '/parceiros'
+        'name': 'Apontamentos',
+        'link': '/apontamentos'
     },
     {
-        'name': 'Equipa',
-        'link': '/equipa'
+        'name': 'Calendário',
+        'link': '/calendario'
     },
     {
-        'name': 'Finalistas',
+        'name': 'NEI',
         'dropdown': [
             {
-                'name': 'Licenciatura',
-                'link': '/seniorsLEI'
+                'name': 'História',
+                'link': '/historia'
             },
             {
-                'name': 'Mestrado',
-                'link': '/seniorsMEI'
-            }
-        ]
-    },
-    {
-        'name': 'Faina',
-        'dropdown': [
-            {
-                'name': 'Comissões de Faina',
-                'link': '/faina'
+                'name': 'Equipa',
+                'link': '/equipa'
             },
             {
-                'name': 'Código de Faina',
-                'link': 'https://nei.web.ua.pt/upload/faina/CodigoFaina.pdf'
-            }
+                'name': 'Novos alunos',
+                'link': 'http://deti-cdn.clients.ua.pt/lei/',
+                'external': true
+            },
         ]
-    },
-    {
-        'name': 'História',
-        'link': '/historia'
     },
     {
         'name': 'RGM',
@@ -59,9 +47,39 @@ const data = [
         ]
     },
     {
-        'name': 'Calendário',
-        'link': '/calendario'
-    }
+        'name': 'Merchandising',
+        'link': '#'
+    },
+    {
+        'name': 'Faina',
+        'dropdown': [
+            {
+                'name': 'Comissões de Faina',
+                'link': '/faina'
+            },
+            {
+                'name': 'Código de Faina',
+                'link': 'https://nei.web.ua.pt/upload/faina/CodigoFaina.pdf'
+            }
+        ]
+    },
+    {
+        'name': 'Finalistas',
+        'dropdown': [
+            {
+                'name': 'Licenciatura',
+                'link': '/seniorsLEI'
+            },
+            {
+                'name': 'Mestrado',
+                'link': '/seniorsMEI'
+            }
+        ]
+    },
+    {
+        'name': 'Parceiros',
+        'link': '/parceiros'
+    },
 ]
 
 export default data;
