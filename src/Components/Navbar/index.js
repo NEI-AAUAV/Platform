@@ -54,7 +54,7 @@ const Navbar = () => {
                         <span></span>
                     </div>
                 </BNavbar.Toggle>
-                <BNavbar.Collapse id="basic-BNavbar-nav" className="bg-white">
+                <BNavbar.Collapse id="basic-BNavbar-nav" className="bg-white small">
                     <Nav className="mr-auto">
                         {
                             data.map(
@@ -64,7 +64,7 @@ const Navbar = () => {
                                         <Nav.Link
                                             href={navEl.link}
                                             className={
-                                                window.location.pathname == navEl.link ? "active mr-3" : "mr-3"
+                                                window.location.pathname == navEl.link ? "active" : ""
                                             }
                                             target={navEl.external && "_blank"}
                                             rel={navEl.external && "noreferrer"}
