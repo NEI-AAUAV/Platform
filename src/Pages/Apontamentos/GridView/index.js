@@ -13,6 +13,9 @@ const getIcon = (url) => {
     return faFilePdf;
 }
 
+// Animation
+const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
+const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
 
 const GridView = ({data, setSelected}) => {
 
@@ -21,11 +24,12 @@ const GridView = ({data, setSelected}) => {
         <div className="d-flex flex-row flex-wrap col-12">
             {
                 data.map(
-                    apontamento => 
+                    (apontamento, i) => 
                     <Document
                         name={apontamento.name}
                         description={apontamento.subjectName}
-                        className="col-xl-4 link"
+                        className="col-xl-4 link slideUpFade"
+                        style={{animationDelay: (animationBase + (i*animationIncrement)) + "s"}}
                         size="2x"
                         icon={getIcon(apontamento.location)}
                         onClick={() => setSelected(apontamento)}

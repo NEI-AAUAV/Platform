@@ -19,8 +19,9 @@ import "./index.css";
  *  onClick         on click event handler          (Optional)
  *  title           title attribute                 (Optional)
  *  tags            pills {name: str, color: str, className: str} (Optional)
+ *  style (Optional)
  */
-const Document = ({name, description, link, blank, className, icon, size, onClick, title, tags}) => {
+const Document = ({name, description, link, blank, className, icon, size, onClick, title, tags, style}) => {
     console.log(tags);
     return (
         <a 
@@ -31,6 +32,7 @@ const Document = ({name, description, link, blank, className, icon, size, onClic
             title="Descarregar ficheiro"
             onClick={onClick}
             title={title ? title : ""}
+            style={style}
         >
             <FontAwesomeIcon className="text-primary mr-3" icon={ icon ? icon : faFilePdf } size={size ? size : "3x"}/>
             <div>
