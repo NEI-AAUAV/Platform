@@ -30,6 +30,18 @@ const GridView = ({data, setSelected}) => {
                         icon={getIcon(apontamento.location)}
                         onClick={() => setSelected(apontamento)}
                         title="Detalhes"
+                        tags={(() => {
+                            console.log(apontamento);
+                            var tags = [];
+                            apontamento.summary=="1" && tags.push({"name": "Resumos", "className": "tag-summary"});
+                            apontamento.tests=="1" && tags.push({"name": "Testes e exames", "className": "tag-tests"});
+                            apontamento.bibliography=="1" && tags.push({"name": "Bibliografia", "className": "tag-biblio"});
+                            apontamento.slides=="1" && tags.push({"name": "Slides teóricos", "className": "tag-slides"});
+                            apontamento.exercises=="1" && tags.push({"name": "Exercícios", "className": "tag-exercises"});
+                            apontamento.projects=="1" && tags.push({"name": "Projetos", "className": "tag-projects"});
+                            apontamento.notebook=="1" && tags.push({"name": "Caderno", "className": "tag-notebook"});
+                            return tags;
+                        })()}
                     />
                 )
             }

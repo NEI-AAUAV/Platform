@@ -18,8 +18,10 @@ import "./index.css";
  *  size            Icon size                       (Optional, default 3x)
  *  onClick         on click event handler          (Optional)
  *  title           title attribute                 (Optional)
+ *  tags            pills {name: str, color: str, className: str} (Optional)
  */
-const Document = ({name, description, link, blank, className, icon, size, onClick, title}) => {
+const Document = ({name, description, link, blank, className, icon, size, onClick, title, tags}) => {
+    console.log(tags);
     return (
         <a 
             href={link && link} 
@@ -34,6 +36,16 @@ const Document = ({name, description, link, blank, className, icon, size, onClic
             <div>
                 <h4 className="mb-0 text-dark">{name}</h4>
                 <p className="small text-secondary mb-0">{description}</p>
+                <div className="row mx-0 mt-1">
+                    {
+                        tags.map(
+                            tag =>
+                            <span 
+                                className={"ml-0 mb-1 badge badge-pill " + tag.className}  
+                            >{tag.name}</span>
+                        )
+                    }
+                </div>
             </div>
         </a>
     );
