@@ -8,6 +8,11 @@ import {Container, Row } from 'react-bootstrap';
 import Typist from 'react-typist';
 
 
+// Animation
+const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
+const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
+
+
 const Team = () => {
     const [years,setYears] = useState([]);
 
@@ -41,11 +46,15 @@ const Team = () => {
                 (response) => {
                 var resp = response.data
 
-                setPeople(resp.team.map(person => 
+                setPeople(resp.team.map((person, i) => 
                     <Person
                         img = {process.env.REACT_APP_STATIC + person.header} 
                         name = {person.name} 
                         description = {person.role} linke={person.linkedIn} 
+                        className="slideUpFade"
+                        style={{
+                            animationDelay: animationBase + animationIncrement*i + "s",
+                        }}
                     />
                 ))
 
