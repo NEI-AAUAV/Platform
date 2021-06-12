@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Timeline from "./Timeline";
+import Typist from 'react-typist';
 
 const History = () => {
 
@@ -20,7 +21,7 @@ const History = () => {
 
     return(
         <div>
-            <h2 className="text-center">História do NEI</h2>
+            <h2 className="text-center"><Typist>História do NEI</Typist></h2>
             <Timeline events={data}></Timeline>
         </div>
     )

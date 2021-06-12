@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Tab, Nav, Accordion, Form } from 'react-bootstrap';
+import { Row, Col, Tab, Nav } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTh, faThList } from '@fortawesome/free-solid-svg-icons';
 import ListView from './ListView';
@@ -10,6 +10,7 @@ import Filters from "../../Components/Filters";
 import FilterSelect from "../../Components/Filters/FilterSelect";
 import Details from "./Details";
 import Select from "react-select";
+import Typist from 'react-typist';
 
 const Apontamentos = () => {
 
@@ -22,10 +23,6 @@ const Apontamentos = () => {
     const [filters, setFilters] = useState([]);
     const [activeFilters, setActiveFilters] = useState([]);
     const [selection, setSelection] = useState([]);  
-
-    // varName, setVarname --> used to save the group
-    // selVarName, setVarName --> used to save the selected element of the group
-    // shownVarName --> used to change the value on the ReactSelect to the choosen map
 
     const [subjects, setSubjects] = useState([]); // todos os subjects
     const [selectedSubject, setSelectedSubject] = useState("");
@@ -73,7 +70,6 @@ const Apontamentos = () => {
         // Every time a new call is made to the API, close details
         setSelectedNote(null);
         
-        //console.log("mh")
         
         // extraVarName --> base used to concatenate and compare the optionals of every fetch
         var extraYear = selYear == "" ? "" : "schoolYear=" + selYear + "&";
@@ -151,8 +147,6 @@ const Apontamentos = () => {
             })
         }
 
-        //console.log("extra: "+ extra);
-
         fetch(process.env.REACT_APP_API + "/notes/years" + fullYear)
         .then((response) => response.json())
         .then((response) => {
@@ -179,9 +173,6 @@ const Apontamentos = () => {
         .then((response) => response.json())
         .then((response) => {
 
-            //var subjs = response.data.map(s => <option value={s.paco_code} selected={s.paco_code == selectedSubject}>{s.short}</option>)
-            //setSubjects(subjs);
-
             if ('data' in response) {
 
             
@@ -197,12 +188,9 @@ const Apontamentos = () => {
             }
         })
 
-        //console.log("subjects: "+subjects)
-        //console.log("extra: "+extraSubj)
         fetch(process.env.REACT_APP_API + "/notes/students" + fullStud)
         .then((response) => response.json())
         .then((response) => {            
-            //setStudents(response.data.map(s => <option value={s.id} selected={s.id == selStudent}>{s.name}</option>))
 
             if ('data' in response) {
                 var arr = response.data.map(t => {
@@ -221,7 +209,6 @@ const Apontamentos = () => {
         fetch(process.env.REACT_APP_API + "/notes/teachers" + fullTeacher)
         .then((response) => response.json())
         .then((response) => {            
-            //setTeachers(response.data.map(s => <option value={s.id} selected={s.id == selTeacher}>{s.name}</option>));
             if ('data' in response) {
                 var arr = response.data.map(t => {
                     const x = { value: t.id, label: t.name };
@@ -231,7 +218,6 @@ const Apontamentos = () => {
                     return x;
                 })
 
-                //console.log(arr)
                 setTeachers(arr)
             }
         })
@@ -245,7 +231,7 @@ const Apontamentos = () => {
     
     return (
         <div>
-            <h2 className="text-center">Apontamentos</h2>
+            <h2 className="text-center"><Typist>Apontamentos</Typist></h2>
             
             <Row className="mt-4">
                 <Col lg="3">
@@ -296,85 +282,6 @@ const Apontamentos = () => {
                             isClearable={true}
                             value={shownTeacher}
                         />
-                    {/*
-                    <Form>
-                        
-                            <Form.Group>
-                            <Form.Control 
-                                type="text" 
-                                placeholder="Name"
-                                onChange={ (e) => setSubjectName(e.target.value)}
-                            />
-                            </Form.Group>
-                        
-                        
-                        <Form.Group>
-                            <Form.Control 
-                                as="select" 
-                                onChange={ (e) => setSelYear(e.target.value)}
-                            >
-                                <option value="">Ano Letivo...</option>
-                                {years}
-                            </Form.Control>
-                        </Form.Group>
-                        {/*
-                            <Form.Group>
-                            <Form.Control 
-                                as="select" 
-                                onChange={ (e) => setSelSemester(e.target.value)}
-                            >
-                                <option>Semester...</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                            </Form.Control>
-                        </Form.Group>
-                        
-                        
-
-                        <Form.Group>
-                            <Form.Control 
-                                as="select" 
-                                onChange={ (e) => setSelectedSubject(e.target.value)}
-                                defaultValue={selectedSubject}
-                            >
-                                <option value="">Cadeira...</option>
-                                {subjects}
-                            </Form.Control>
-                        </Form.Group>
-
-                        
-
-                        {/*
-                            <Form.Group>
-                            <Form.Control 
-                                as="select" 
-                                onChange={ (e) => setSelStudent(e.target.value)}
-                                defaultValue={selStudent}
-                            >
-                                <option value="">Autor...</option>
-                                {student}
-                            </Form.Control>
-                        </Form.Group>
-                        }
-                        
-
-                        
-
-                        {/*
-                            <Form.Group>
-                            <Form.Control 
-                                as="select" 
-                                onChange={ (e) => setSelTeacher(e.target.value)}
-                            >
-                                <option value="">Professor...</option>
-                                {teachers}
-                            </Form.Control>
-                        </Form.Group>
-                        
-                        
-                    </Form>
-                    */
-                }
                     
                     <FilterSelect
                         accordion={true}

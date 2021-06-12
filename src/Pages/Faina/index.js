@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import {Container, Row, Col} from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
 
 import Tabs from "../../Components/Tabs/index.js";
 
 import TextList from "../../Components/TextList"
-
+import Typist from 'react-typist';
 
 
 const Faina = () => {  
@@ -51,7 +51,7 @@ const Faina = () => {
 
     return(
         <div>
-            <h2 className="mb-5 text-center">Comissão de Faina</h2>
+            <h2 className="mb-5 text-center"><Typist>Comissão de Faina</Typist></h2>
 
             {anos}
 
