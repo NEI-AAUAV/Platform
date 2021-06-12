@@ -4,9 +4,8 @@ import React, { useEffect, useState } from "react";
 import Person from "./Components/Person.js";
 import Tabs from "../../Components/Tabs/index.js"
 import TextList from "../../Components/TextList/index.js"
-import {Container, Row, Col} from 'react-bootstrap';
-
-
+import {Container, Row } from 'react-bootstrap';
+import Typist from 'react-typist';
 
 
 const Team = () => {
@@ -63,7 +62,7 @@ const Team = () => {
 
     return (
         <div>
-            <h2 className="mb-5 text-center">Equipa do NEI</h2>
+            <h2 className="mb-5 text-center"><Typist>Equipa do NEI</Typist></h2>
 
             <Tabs tabs={years} _default={selectedYear} onChange={setSelectedYear} />
             

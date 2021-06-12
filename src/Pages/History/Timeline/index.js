@@ -14,7 +14,7 @@ import "./index.css";
 const Timeline = (props) => {
 
     return(
-        <div className="timeline">
+        <div className="timeline animation">
             {props.events.map( event => {
                 return(
                     <TimelineItem

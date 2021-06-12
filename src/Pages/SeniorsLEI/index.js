@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import {Container, Row, Col} from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
 
 import Tabs from "../../Components/Tabs/index.js";
 
-import TextList from "../../Components/TextList"
+import TextList from "../../Components/TextList";
+import Typist from 'react-typist';
 
 
 
@@ -49,7 +50,7 @@ const SeniorsLEI = () => {
 
     return(
         <div>
-            <h2 className="mb-5 text-center">Finalistas de Licenciatura</h2>
+            <h2 className="mb-5 text-center"><Typist>Finalistas de Licenciatura</Typist></h2>
 
             {anos}
 

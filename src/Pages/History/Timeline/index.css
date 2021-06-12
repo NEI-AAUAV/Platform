@@ -1,7 +1,7 @@
 .timeline::before {
     content: "";
     position: absolute;
-    height: 85%;
+    height: calc(100% - 210px);
     width: 4px;
     background: #66615b;
     margin-top: -20px;
