@@ -16,7 +16,7 @@ const App = () => {
                 location="bottomRight"
                 content={<FontAwesomeIcon icon={faComment} />}
                 title="Dá-nos o teu feedback!"
-                onClick={() => alert("CLICKED")}
+                onClick={() => window.location.replace("/forms/feedback")}
             />
             {routing}
         </>

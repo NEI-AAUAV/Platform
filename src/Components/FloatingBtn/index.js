@@ -12,7 +12,7 @@ import './index.css';
 const FloatingBtn = ({location, content, onClick, title}) => {
     return (
         <button 
-            className={"floatingbtn btn btn-outline-primary rounded-circle " + location}
+            className={"floatingbtn btn bg-white btn-outline-primary rounded-circle " + location}
             title={title}
             onClick={onClick}
         >
