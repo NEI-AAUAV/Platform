@@ -53,13 +53,41 @@ const Apontamentos = () => {
     useEffect( () => {
         setFilters(
             [
-                {'filter': 'Bibliography'},
-                {'filter': 'Exercises'},
-                {'filter': 'Notebook'},
-                {'filter': 'Projects'},
-                {'filter': 'Slides'},
-                {'filter':'Summary'}, 
-                {'filter': 'Tests'}
+                {
+                    'db': 'bibliography',
+                    'filter': 'Bibliografia',
+                    'color': 'rgb(1, 202, 228)'
+                },
+                {
+                    'db': 'slides',
+                    'filter': 'Slides teóricos',
+                    'color': 'rgb(1, 90, 101)'
+                },
+                {
+                    'db': 'projects',
+                    'filter': 'Projetos',
+                    'color': 'rgb(101, 230, 125)'
+                },
+                {
+                    'db': 'exercises',
+                    'filter': 'Guiões práticos e exercícios',
+                    'color': 'rgb(32, 197, 62)'
+                },
+                {
+                    'db': 'tests',
+                    'filter': 'Testes e exames',
+                    'color': 'rgb(20, 122, 38)'
+                },
+                {
+                    'db': 'notebook',
+                    'filter': 'Caderno',
+                    'color': 'rgb(211, 17, 21)'
+                },
+                {
+                    'db':'summary',
+                    'filter': 'Resumos',
+                    'color': 'rgb(255, 162, 0)'
+                },
             ]
         )
     }, [])
@@ -79,7 +107,7 @@ const Apontamentos = () => {
         var extraCategory = "";
 
         for (var i=0; i<activeFilters.length; i++) {
-            extraCategory += "category[]=" + activeFilters[i].toLowerCase() + "&";
+            extraCategory += "category[]=" + filters.filter(f => f['filter']==activeFilters[i])[0]['db'] + "&";
         }
         
 
@@ -140,9 +168,11 @@ const Apontamentos = () => {
             //console.log(fullNotes)
             fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
             .then((response) => response.json())
-            .then((response) => {       
-                setData(response.data)
-                setPageNumber(response.page.pagesNumber);
+            .then((response) => {     
+                if ('data' in response) {
+                    setData(response.data)
+                    setPageNumber(response.page.pagesNumber);
+                }  
 
             })
         }
