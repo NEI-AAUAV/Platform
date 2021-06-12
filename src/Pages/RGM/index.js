@@ -90,7 +90,7 @@ const RGM = () => {
                                     "ATA" + ' ' + (arr.length - index) + ' '
                                 }
                                 description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandato}
-                                link={process.env.REACT_APP_UPLOADS_UNLOCK + doc.file}
+                                link={process.env.REACT_APP_STATIC + doc.file}
                                 blank={true}
                                 className="col-lg-6 col-xl-3"
                             />

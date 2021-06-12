@@ -40,7 +40,7 @@ const Faina = () => {
             console.log(response)
             setPeople(response.data.members.map((person) => <TextList colSize={12} text={person.role + " " + person.name} />))
             if (response.data.imagem) {
-                setImg(<Image style={{"marginBottom":50}} src={process.env.REACT_APP_UPLOADS + response.data.imagem} rounded fluid />);
+                setImg(<Image style={{"marginBottom":50}} src={process.env.REACT_APP_STATIC + response.data.imagem} rounded fluid />);
             }
             console.log(selectedYear);
             console.log(people);

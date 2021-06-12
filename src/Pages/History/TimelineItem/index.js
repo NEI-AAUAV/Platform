@@ -23,7 +23,7 @@ const TimelineItem = (props) => {
             </Col>
 
             <Col xs="1" className="timeline-marker px-0 d-flex justify-content-center">
-                <img src={process.env.PUBLIC_URL + props.image} />
+                <img src={process.env.REACT_APP_STATIC + props.image} />
             </Col>
 
             <Col lg="5" className="timeline-date d-none d-lg-block">
