@@ -66,6 +66,8 @@ const Navbar = () => {
                                             className={
                                                 window.location.pathname == navEl.link ? "active mr-3" : "mr-3"
                                             }
+                                            target={navEl.external && "_blank"}
+                                            rel={navEl.external && "noreferrer"}
                                         >
                                             {navEl.name}
                                         </Nav.Link>
@@ -74,7 +76,11 @@ const Navbar = () => {
                                             {
                                                 navEl.dropdown.map(
                                                     dropdown =>
-                                                        <NavDropdown.Item href={dropdown.link}>{dropdown.name}</NavDropdown.Item>
+                                                        <NavDropdown.Item 
+                                                            href={dropdown.link} 
+                                                            target={dropdown.external && "_blank"}
+                                                            rel={dropdown.external && "noreferrer"}
+                                                        >{dropdown.name}</NavDropdown.Item>
                                                 )
                                             }
                                         </NavDropdown>
