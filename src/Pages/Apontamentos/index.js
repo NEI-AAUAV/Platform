@@ -369,7 +369,7 @@ const Apontamentos = () => {
             <div className="text-center mt-5">
                 <h3>É a tua vez!</h3>
                 <p>
-                    Ajuda-nos a manter este repositório atualizado com os conteúdos mais recentes. Partilha connosco os teus através do email <a href="mailto:nei@aauav.pt">nei@aauav.pt</a>. Estamos ansiosos pela tua mensagem!
+                    Ajuda-nos a manter este repositório atualizado com os conteúdos mais recentes. Partilha connosco os teus através do email <a href="mailto:nei@aauav.pt">nei@aauav.pt</a>. Contamos com o teu apoio!
                 </p>
             </div>
         </div>
