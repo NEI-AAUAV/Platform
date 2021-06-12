@@ -44,7 +44,7 @@ a { color: #147a26!important }
 }
 .btn-outline-primary:hover {
     color: #fff;
-    background-color: #147a26;
+    background-color: #147a26!important;
     border-color: #147a26;
 }
 

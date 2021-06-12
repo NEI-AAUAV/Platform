@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Typist from 'react-typist';
 import { Form, Button, Alert } from 'react-bootstrap';
 
+
 const FeedbackForm = () => {
 
     const [form, setForm] = useState({
