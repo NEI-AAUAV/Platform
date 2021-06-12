@@ -43,7 +43,7 @@ const Team = () => {
 
                 setPeople(resp.team.map(person => 
                     <Person
-                        img = {process.env.REACT_APP_UPLOADS + person.header} 
+                        img = {process.env.REACT_APP_STATIC + person.header} 
                         name = {person.name} 
                         description = {person.role} linke={person.linkedIn} 
                     />

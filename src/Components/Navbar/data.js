@@ -59,7 +59,8 @@ const data = [
             },
             {
                 'name': 'Código de Faina',
-                'link': 'https://nei.web.ua.pt/upload/faina/CodigoFaina.pdf'
+                'link': process.env.REACT_APP_STATIC + '/faina/CodigoFaina.pdf',
+                'external': true
             }
         ]
     },

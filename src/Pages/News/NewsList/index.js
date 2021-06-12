@@ -31,7 +31,7 @@ const NewsList = (props) => {
                 return(
                     <Col lg={4} md={6} sm={12} key={key++}>
                         <ImageCard
-                            image={process.env.REACT_APP_UPLOADS + article.header}
+                            image={process.env.REACT_APP_STATIC + article.header}
                             title={article.title}
                             preTitle={article.category}
                             text={article.created_at}

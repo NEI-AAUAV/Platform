@@ -40,7 +40,7 @@ const SeniorsLEI = () => {
         .then((response) => {
             console.log(response)
             setPeople(response.data.students.map((person) => <TextList colSize={12} text={person.name} />))
-            setImg(<Image style={{"marginBottom":50}} src={response.data.image} rounded fluid />);
+            setImg(<Image style={{"marginBottom":50}} src={process.env.REACT_APP_STATIC + response.data.image} rounded fluid />);
             console.log(selectedYear);
             console.log(people);
         })
