@@ -113,7 +113,7 @@ const Apontamentos = () => {
             extraCategory += "category[]=" + filters.filter(f => f['filter'] == activeFilters[i])[0]['db'] + "&";
         }
 
-        if (activeFilters.length==0) {
+        if (activeFilters.length == 0) {
             setData([]);
             setSelPage(1);
             setPageNumber(1);
@@ -295,45 +295,49 @@ const Apontamentos = () => {
                         setSelPage={setSelPage}
                     />
 
-                    <h4 className="">Filtros</h4>
+                    <div className="filtros">
 
-                    <Select
-                        id="teste"
-                        className="react-select"
-                        options={years}
-                        onChange={(e) => { if (e == null) { setSelYear(""); setShownYear("") } else setSelYear(e.value); }}
-                        placeholder="Ano Letivo..."
-                        isClearable={true}
-                        value={shownYear}
+                        <h4 className="">Filtros</h4>
 
-                    />
+                        <Select
+                            id="teste"
+                            className="react-select"
+                            options={years}
+                            onChange={(e) => { if (e == null) { setSelYear(""); setShownYear("") } else setSelYear(e.value); }}
+                            placeholder="Ano Letivo..."
+                            isClearable={true}
+                            value={shownYear}
 
-                    <Select
-                        className="react-select"
-                        options={subjects}
-                        onChange={(e) => { if (e == null) { setSelectedSubject(""); setShownSubj("") } else setSelectedSubject(e.value) }}
-                        placeholder="Cadeira..."
-                        isClearable={true}
-                        value={shownSubj}
-                    />
+                        />
 
-                    <Select
-                        className="react-select"
-                        options={student}
-                        onChange={(e) => { if (e == null) { setSelStudent(""); setShownAuth("") } else setSelStudent(e.value) }}
-                        placeholder="Autor..."
-                        isClearable={true}
-                        value={shownAuth}
-                    />
+                        <Select
+                            className="react-select"
+                            options={subjects}
+                            onChange={(e) => { if (e == null) { setSelectedSubject(""); setShownSubj("") } else setSelectedSubject(e.value) }}
+                            placeholder="Cadeira..."
+                            isClearable={true}
+                            value={shownSubj}
+                        />
 
-                    <Select
-                        className="react-select"
-                        options={teachers}
-                        onChange={(e) => { if (e == null) { setSelTeacher(""); setShownTeacher("") } else setSelTeacher(e.value) }}
-                        placeholder="Professor..."
-                        isClearable={true}
-                        value={shownTeacher}
-                    />
+                        <Select
+                            className="react-select"
+                            options={student}
+                            onChange={(e) => { if (e == null) { setSelStudent(""); setShownAuth("") } else setSelStudent(e.value) }}
+                            placeholder="Autor..."
+                            isClearable={true}
+                            value={shownAuth}
+                        />
+
+                        <Select
+                            className="react-select"
+                            options={teachers}
+                            onChange={(e) => { if (e == null) { setSelTeacher(""); setShownTeacher("") } else setSelTeacher(e.value) }}
+                            placeholder="Professor..."
+                            isClearable={true}
+                            value={shownTeacher}
+                        />
+                    </div>
+
 
                     <h4 className="mt-3">Categorias</h4>
                     <Filters
@@ -364,9 +368,9 @@ const Apontamentos = () => {
                                 <FontAwesomeIcon icon={faThList} />
                                 <span className="ml-3">List</span>
                             </Nav.Link></Nav.Item>
-                            <PageNav 
-                                page={selPage} 
-                                total={pageNumber} 
+                            <PageNav
+                                page={selPage}
+                                total={pageNumber}
                                 handler={fetchPage}
                                 className="mx-auto mx-lg-0 ml-lg-auto"
                             ></PageNav>
