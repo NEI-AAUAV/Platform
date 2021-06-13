@@ -18,7 +18,7 @@ const Footer = () => {
                 </a>
             </div>
             <div className="ml-auto">
-                <p>&copy; 2021, NEI</p>
+                <p>&copy; 2021, NEI-AAUAV</p>
             </div>
         </div>
     );

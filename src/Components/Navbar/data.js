@@ -24,7 +24,7 @@ const data = [
             },
             {
                 'name': 'Novos alunos',
-                'link': 'http://deti-cdn.clients.ua.pt/lei/',
+                'link': 'https://www.ua.pt/pt/deti',
                 'external': true
             },
         ]
@@ -59,7 +59,8 @@ const data = [
             },
             {
                 'name': 'Código de Faina',
-                'link': 'https://nei.web.ua.pt/upload/faina/CodigoFaina.pdf'
+                'link': process.env.REACT_APP_STATIC + '/faina/CodigoFaina.pdf',
+                'external': true
             }
         ]
     },

@@ -30,7 +30,7 @@ const App = () => {
                 {
                     !top &&
                     <button
-                        className="btn bg-white btn-outline-primary rounded-circle mt-1"
+                        className="btn bg-white btn-outline-primary btn-outline-primary-force rounded-circle mt-1 animation"
                         title="Voltar ao topo"
                         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                     >
@@ -41,7 +41,7 @@ const App = () => {
                     window.location.href.indexOf("/forms/feedback") < 0
                     &&
                     <button
-                        className="btn bg-white btn-outline-primary rounded-circle mt-1"
+                        className="btn bg-white btn-outline-primary btn-outline-primary-force rounded-circle mt-1 animation"
                         title="Dá-nos o teu feedback!"
                         onClick={() => window.location.replace("/forms/feedback")}
                     >

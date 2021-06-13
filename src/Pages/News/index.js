@@ -3,6 +3,7 @@ import NewsList from "./NewsList";
 import PageNav from "../../Components/PageNav";
 import FilterSelect from "../../Components/Filters/FilterSelect";
 import Typist from 'react-typist';
+import {Spinner} from 'react-bootstrap';
 
 const News = () => {
 
@@ -68,7 +69,7 @@ const News = () => {
     }, []);
 
     return (
-        <div>
+        <div className="d-flex flex-column flex-wrap">
             <h2 className="text-center"><Typist>Notícias</Typist></h2>
 
             <FilterSelect 
@@ -79,10 +80,16 @@ const News = () => {
                 className="mb-3"
                 btnClass="mr-2"
             >
-                <PageNav page={currPage} total={totalPages} handler={fetchPage}></PageNav>
+                <PageNav className="col-12 col-lg ml-auto p-0" page={currPage} total={totalPages} handler={fetchPage}></PageNav>
             </FilterSelect>
 
-            <NewsList news={news} loading={isLoading}></NewsList>
+            {
+                isLoading
+                ?
+                <Spinner animation="grow" variant="primary" className="mx-auto" title="A carregar..." />
+                :
+                <NewsList news={news} loading={isLoading}></NewsList>
+            }
 
         </div>
     );

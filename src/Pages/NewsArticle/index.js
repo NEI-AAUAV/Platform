@@ -26,25 +26,10 @@ const NewsArticle = () => {
     }, []);
 
     return(
-        isLoading ?
-        <div>
-            <h3 className="text-center">
-                A carregar notícia...
-            </h3>
-        </div>
-
-        :
-        article == undefined ?
-        <div>
-            <h3 className="text-center">
-                Notícia não encontrada...
-            </h3>
-        </div>
-
-        :
+        !isLoading && article != undefined &&
         <div id="article-body">
             <Row>
-                <Image src={process.env.REACT_APP_UPLOADS + article.header} alt="header" className="w-100" rounded />
+                <Image src={process.env.REACT_APP_STATIC + article.header} alt="header" className="w-100" rounded />
             </Row>
 
             <Row className="mt-5">
