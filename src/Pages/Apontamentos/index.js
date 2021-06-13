@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Tab, Nav, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTh, faThList } from '@fortawesome/free-solid-svg-icons';
+import { faTh, faThList, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ListView from './ListView';
 import GridView from './GridView';
 import "./index.css";
@@ -297,7 +297,27 @@ const Apontamentos = () => {
 
                     <div className="filtros">
 
-                        <h4 className="">Filtros</h4>
+                        <div className="d-flex flex-row flex-wrap">
+                            <h4>Filtros</h4>
+                            {
+                                (selectedSubject || selStudent || selTeacher || selYear) &&
+                                <FontAwesomeIcon 
+                                    className="ml-auto my-auto link text-primary animation" 
+                                    title="Remover filtros"
+                                    icon={faTimes} 
+                                    onClick={() => {
+                                        setSelectedSubject("");
+                                        setSelStudent("");
+                                        setSelTeacher("");
+                                        setSelYear("");
+                                        setShownYear("");
+                                        setShownSubj("");
+                                        setShownAuth("");
+                                        setShownTeacher("");
+                                    }}
+                                />
+                            }
+                        </div>
 
                         <Select
                             id="teste"
