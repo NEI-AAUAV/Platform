@@ -21,6 +21,11 @@ const validCategories = {
     }
 };
 
+// Animation
+const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
+const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
+
+
 /**
  * This component renders RGM page for a given document category
  * The category is passed on the URL (/rgm/<category>) and the valid options are summed up on variable validCategories
@@ -92,7 +97,10 @@ const RGM = () => {
                                 description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandato}
                                 link={process.env.REACT_APP_STATIC + doc.file}
                                 blank={true}
-                                className="col-lg-6 col-xl-3"
+                                className="col-lg-6 col-xl-3 slideUpFade"
+                                style={{
+                                    animationDelay: animationBase + animationIncrement*index + "s",
+                                }}
                             />
                         )
                     }
