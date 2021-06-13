@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
-    Row
+    Row, Spinner
 } from "react-bootstrap";
 import Document from "../../Components/Document";
 import Tabs from "../../Components/Tabs";
@@ -20,6 +20,11 @@ const validCategories = {
         'plural': 'Atas da RGM'
     }
 };
+
+// Animation
+const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
+const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
+
 
 /**
  * This component renders RGM page for a given document category
@@ -62,8 +67,12 @@ const RGM = () => {
     }, []);
 
     return (
-        <div>
+        <div className="d-flex flex-column flex-wrap">
             <h2 className="text-center mb-5">{title}</h2>
+            {
+                loading &&
+                <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
+            }
             {
                 // Only show tabs to ATAS category
                 !loading && id.toUpperCase()=="ATAS" &&
@@ -92,7 +101,10 @@ const RGM = () => {
                                 description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandato}
                                 link={process.env.REACT_APP_STATIC + doc.file}
                                 blank={true}
-                                className="col-lg-6 col-xl-3"
+                                className="col-lg-6 col-xl-3 slideUpFade"
+                                style={{
+                                    animationDelay: animationBase + animationIncrement*index + "s",
+                                }}
                             />
                         )
                     }

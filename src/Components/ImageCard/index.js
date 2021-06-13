@@ -20,7 +20,7 @@ const ImageCard = (props) => {
 
     return(
         <Card
-            className={"text-center mb-5 image-card slideUpFade" + color_class}
+            className={"text-center mb-5 image-card animation" + color_class}
             style={{animationDelay: props.animKey ? props.animKey*0.2+"s" : "0"}}
         >
             <a href={props.anchor}>

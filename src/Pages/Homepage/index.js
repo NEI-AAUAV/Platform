@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Row, Col } from "react-bootstrap";
+import { Button, Row, Col, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb, faFutbol } from "@fortawesome/free-regular-svg-icons";
 import { faHistory, faUsers } from "@fortawesome/free-solid-svg-icons";
@@ -9,6 +9,10 @@ import { ReactTerminal } from "react-terminal-component";
 import terminalstate from "./terminalconf";
 
 import Typist from 'react-typist';
+
+// Animation
+const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
+const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
 
 const Homepage = () => {
 
@@ -22,8 +26,8 @@ const Homepage = () => {
             .then((response) => {
                 if('data' in response) {
                     setNews(response['data']);
-                    setIsLoading(false);
                 }
+                setIsLoading(false);
             });
     }, []);
 
@@ -52,7 +56,10 @@ const Homepage = () => {
                                 </Typist>
                             </h3>
                         </Col>
-                        <Col className="px-xl-0 pt-xl-0 pt-3">
+                        <Col 
+                            className="px-xl-0 pt-xl-0 pt-3 slideUpFade"
+                            style={{animationDelay: animationBase+1*animationIncrement}}
+                        >
                             <div
                                 style={{
                                     height:"34px",
@@ -113,12 +120,18 @@ const Homepage = () => {
             </div>
 
             <div className="section-dark">
-                <Col xs={11} sm={10} className="mx-auto col-xxl-9 text-center">
+                <Col xs={11} sm={10} className="d-flex flex-column flex-wrap mx-auto col-xxl-9 text-center">
                     <h2 className="header-dark mb-4">Notícias</h2>
-                    <NewsList news={news} loading={isLoading}></NewsList>
+                    {
+                        isLoading 
+                        ?
+                        <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
+                        :
+                        <NewsList news={news}></NewsList>
+                    }
                     <Button
                         variant="outline-dark"
-                        className="rounded-pill"
+                        className="rounded-pill mx-auto"
                         size="lg"
                         href="/noticias"
                         >Ver Todas
@@ -129,7 +142,7 @@ const Homepage = () => {
             <div className="section">
                 <Col xs={11} sm={10} className="mx-auto col-xxl-9 text-center">
                     <h2 className="mb-3">NEI</h2>
-                    <h4 className="text-secondary px-5 mb-5">
+                    <h4 className="text-secondary px-lg-5 mb-5">
                         Criado a 24 de janeiro de 2013, o Núcleo de Estudantes de Informática da Associação Académica da Universidade de Aveiro (NEI-AAUAv), surgiu com o intuito de ajudar, incentivar e apoiar em diversas áreas os alunos do curso de Engenharia Informática, que havia sido recentemente criado. Desde então, têm sido inúmeras as atividades proporcionadas por este, envolvendo não só os alunos do respetivo curso, mas também toda a comunidade académica, contribuindo, desta forma, para uma melhor formação e desenvolvimento pessoal dos seus estudantes.
                     </h4>
 
