@@ -34,7 +34,7 @@ const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT)
 const RGM = () => {
     // Document category is passed as parameter in URL
     let { id } = useParams();
-    
+
     // Component state
     const [title, setTitle] = useState("");
     const [docs, setDocs] = useState([]);
@@ -43,6 +43,8 @@ const RGM = () => {
 
     // On component render...
     useEffect(() => {
+        setLoading(true);
+
         // Validate document category
         if (Object.keys(validCategories).findIndex(item => id.toLowerCase() === item.toLowerCase()) < 0) {
             window.location.href = "/404";
@@ -56,9 +58,9 @@ const RGM = () => {
                 if ('data' in json) {
                     setDocs(json['data']);
                     // Set tab to maximum year
-                    json['data'].forEach(doc => setTab(oldTab => oldTab<doc['mandato'] ? doc['mandato'] : oldTab));
+                    json['data'].forEach(doc => setTab(oldTab => oldTab < doc['mandato'] ? doc['mandato'] : oldTab));
                 } else {
-                    window.location.href = "/404";    
+                    window.location.href = "/404";
                 }
                 setLoading(false);
             }).catch((error) => {
@@ -66,46 +68,55 @@ const RGM = () => {
             });
     }, []);
 
+    const changeTab = (t) => {
+        // Change tab and simulate loading from API
+        setLoading(true);
+        setTab(t);
+        setTimeout(function () {
+            setLoading(false);
+        }, 300);
+    }
+
     return (
         <div className="d-flex flex-column flex-wrap">
             <h2 className="text-center mb-5">{title}</h2>
             {
-                loading &&
-                <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
-            }
-            {
                 // Only show tabs to ATAS category
-                !loading && id.toUpperCase()=="ATAS" &&
+                id.toUpperCase() == "ATAS" &&
                 <Tabs
                     tabs={[...new Set(docs.map(doc => doc.mandato))]}
                     _default={tab}
-                    onChange={setTab}
+                    onChange={changeTab}
                 >
                 </Tabs>
+            }
+            {
+                loading &&
+                <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
             }
             {
                 !loading &&
                 <Row>
                     {
                         // On ATAS category, show only those which mandato match tab
-                        docs.filter(doc => id.toUpperCase()!="ATAS" || doc.mandato==tab).map(
-                            (doc, index, arr) => 
-                            <Document 
-                                name={
-                                    id.toUpperCase()!="ATAS"
-                                    ?
-                                    id.toUpperCase() + ' ' + doc.mandato
-                                    :
-                                    "ATA" + ' ' + (arr.length - index) + ' '
-                                }
-                                description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandato}
-                                link={process.env.REACT_APP_STATIC + doc.file}
-                                blank={true}
-                                className="col-lg-6 col-xl-3 slideUpFade"
-                                style={{
-                                    animationDelay: animationBase + animationIncrement*index + "s",
-                                }}
-                            />
+                        docs.filter(doc => id.toUpperCase() != "ATAS" || doc.mandato == tab).map(
+                            (doc, index, arr) =>
+                                <Document
+                                    name={
+                                        id.toUpperCase() != "ATAS"
+                                            ?
+                                            id.toUpperCase() + ' ' + doc.mandato
+                                            :
+                                            "ATA" + ' ' + (arr.length - index) + ' '
+                                    }
+                                    description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandato}
+                                    link={process.env.REACT_APP_STATIC + doc.file}
+                                    blank={true}
+                                    className="col-lg-6 col-xl-3 slideUpFade"
+                                    style={{
+                                        animationDelay: animationBase + animationIncrement * index + "s",
+                                    }}
+                                />
                         )
                     }
                 </Row>
