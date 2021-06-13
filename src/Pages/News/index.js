@@ -80,7 +80,7 @@ const News = () => {
                 className="mb-3"
                 btnClass="mr-2"
             >
-                <PageNav page={currPage} total={totalPages} handler={fetchPage}></PageNav>
+                <PageNav className="col-12 col-lg ml-auto p-0" page={currPage} total={totalPages} handler={fetchPage}></PageNav>
             </FilterSelect>
 
             {

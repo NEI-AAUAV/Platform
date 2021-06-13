@@ -65,7 +65,7 @@ const PageNav = ({className, ...props}) => {
     
     return(
         <Nav className={className}>
-            <Pagination>
+            <Pagination className="mx-auto mx-lg-0 ml-lg-auto mr-0">
                 <Pagination.First onClick={handlePage} value={1} disabled={props.page == 1} />
                 <Pagination.Prev  onClick={handlePage} value="prev" disabled={props.page == 1} />
 
