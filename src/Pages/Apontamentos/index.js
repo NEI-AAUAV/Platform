@@ -113,6 +113,14 @@ const Apontamentos = () => {
             extraCategory += "category[]=" + filters.filter(f => f['filter'] == activeFilters[i])[0]['db'] + "&";
         }
 
+        if (activeFilters.length==0) {
+            setData([]);
+            setSelPage(1);
+            setPageNumber(1);
+            setLoading(false);
+            return;
+        }
+
 
         // fullVarName --> sum of optionals of every fetch
         var fullTeacher = "";
