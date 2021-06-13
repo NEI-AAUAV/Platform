@@ -36,43 +36,63 @@ const Merchandising = () => {
             },
         ];
 
-       setImgs(arr.map((img,idx) => 
-            <div>
-                {idx%2 == 0 ?
-                <div style={{textAlign:"right"}} className="impar">
-                    <Row>
-                        <Image className="img" col={6} src={img.url}  style={{width: 200}}/>
-                        <Col col={6}>
-                            <h2>{img.name}</h2>
-                            <h5>Preço: {img.preco}€ Portes: {img.portes}€</h5>
-                            <h3 style={{paddingTop: '2em'}}>
-                                {
-                                    img.disponivel ? "Disponível" : "Indisponível"
-                                }
-                            </h3> 
-                        </Col>
-                    </Row>
-                    
-                </div>
-                :
-                <div style={{textAlign:"left"}} className="par2">
-                    <Row>
-                        <Col col={6} >
-                            <h2>{img.name}</h2>
-                            <h5>Preço: {img.preco}€ Portes: {img.portes}€</h5>
-                            <h3 style={{paddingTop: '2em'}}>
-                                {
-                                    img.disponivel ? "Disponível" : "Indisponível"
-                                }
-                            </h3> 
-                        </Col>
-                        <Image className="img" col={6} src={img.url}  style={{width: 200}}/>
-                    </Row>
-                </div>
-                }
-            </div>
-           
-       ));
+        fetch(process.env.REACT_APP_API + "/merch")
+        .then(response => response.json())
+        .then((response) => {
+
+            if ('data' in response) {
+                setImgs(response.data.map((img,idx) => 
+                    <div>
+                        {idx%2 == 0 ?
+                        <div className="impar text-center">
+                            <Row>
+                                <Col lg={4} md={6} sm={12}>
+                                    <Image className="img justify-content-center"  src={img.image}  style={{width: 200}}/>
+                                </Col>
+                                <Col lg={8} md={6} sm={12}>
+                                    <h2>{img.name}</h2>
+                                    <h5>Preço: {img.price}€</h5>
+                                    {/*
+                                        <h3 style={{paddingTop: '2em'}}>
+                                        {
+                                            img.disponivel ? "Disponível" : "Indisponível"
+                                        }
+                                    </h3> 
+                                    */
+                                    }
+                                    
+                                </Col>
+                            </Row>
+                            
+                        </div>
+                        :
+                        <div style={{/*textAlign:"left"*/}} className="par2 text-center">
+                            <Row>
+                                <Col lg={4} md={6} sm={12} >
+                                    <h2>{img.name}</h2>
+                                    <h5>Preço: {img.price}€</h5>
+                                    {/*
+                                        <h3 style={{paddingTop: '2em'}}>
+                                        {
+                                            img.disponivel ? "Disponível" : "Indisponível"
+                                        }
+                                    </h3> 
+                                    */
+                                    }    
+                                </Col>
+                                <Col lg={8} md={6} sm={12}>
+                                    <Image className="img" src={img.image}  style={{width: 200}}/>
+                                </Col>
+                                
+                            </Row>
+                        </div>
+                        }
+                    </div>
+                ));
+            }
+        })
+
+        
 
 
     }, [])
@@ -82,14 +102,16 @@ const Merchandising = () => {
             <h2 style={{position:"relative"}} className="mb-5 text-center">Merchandising</h2>
 
            {imgs}
-
-           <Button      style={{position: "relative"}}
-                        variant="outline-dark"
-                        className="rounded-pill mx-auto"
-                        size="lg"
-                        href="https://aauav.pt/nucleos/"
-                        >Ver Todas
-            </Button>
+            <Row className="text-center" style={{position: "relative"}}>
+                <Button     style={{color: 'black'}}
+                            variant="outline-secondary"
+                            className="rounded-pill mx-auto"
+                            size="lg"
+                            href="https://aauav.pt/nucleos/"
+                            >Ver Todas
+                </Button>
+            </Row>
+            
 
         </div>
     ); 

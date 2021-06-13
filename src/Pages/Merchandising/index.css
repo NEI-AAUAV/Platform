@@ -11,8 +11,6 @@
 .par2 {
     padding-top: 4em;
     padding-bottom: 4em;
-    padding-left: 12em;
-    padding-right: 12em;
     background-color: #222222;
     position: relative;
     color: white;
@@ -20,10 +18,7 @@
 
 .impar {
         padding-top: 4em;
-        padding-bottom: 4em;
-        padding-left: 12em;
-        padding-right: 12em;
-        
+        padding-bottom: 4em;        
         color: black;
         position: relative;
 
