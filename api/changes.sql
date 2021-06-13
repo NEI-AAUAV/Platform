@@ -389,6 +389,18 @@ UPDATE users SET linkedin="https://www.linkedin.com/in/goncalofmatos/" WHERE id=
 
 UPDATE users SET uu_email="dl.carvalho@ua.pt" WHERE id=2127;
 
+-- Merchandiging
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 1; 
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 3;
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 4;
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 5;
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 6;
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 7;
+INSERT INTO merchandisings (name, image, price, number_of_items) VALUES
+    ("Cachecol de curso", NULL, 3.5, 0),
+    ("Casaco de curso", "/merch/casaco.png", 16.5, 0),
+    ("Sweat de curso", "/merch/sweat.png", 18, 0),
+    ("Emblema NEI", "/merch/emblemanei.png", 2.25, 0);
 
 -- Static files url change
 UPDATE news SET header = REPLACE(header, 'upload/NEI/', '/news/');
@@ -400,3 +412,4 @@ UPDATE rgm SET file = REPLACE(file, '/RGM_ATAS/', '/ATAS/');
 UPDATE faina SET imagem = REPLACE(imagem, '/upload/', '/');
 UPDATE seniors SET image = REPLACE(image, '/images/', '/');
 UPDATE partners SET header = REPLACE(header, 'upload/patrocinadores/', '/partners/');
+UPDATE merchandisings SET image = REPLACE(image, '/upload/', '/');
