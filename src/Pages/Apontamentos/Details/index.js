@@ -33,7 +33,7 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
     return (
         note &&
         <div className="notesDetails bg-white p-3 mb-4">
-            <h4 className="">Resumos FP 2018/2019 (zip)</h4>
+            <h4 className="break-all mr-3">{note.name}</h4>
             <button
                 type="button"
                 className="close"
