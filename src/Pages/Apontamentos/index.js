@@ -356,15 +356,20 @@ const Apontamentos = () => {
 
                     <Tab.Container defaultActiveKey="grid">
                         <Nav onSelect={() => setSelectedNote(null)}>
-                            <Nav.Item><Nav.Link eventKey="grid" className="h5">
+                            <Nav.Item className="mx-auto mx-lg-0 ml-lg-0"><Nav.Link eventKey="grid" className="h5">
                                 <FontAwesomeIcon icon={faTh} />
                                 <span className="ml-3">Grid</span>
                             </Nav.Link></Nav.Item>
-                            <Nav.Item className="mr-auto"><Nav.Link eventKey="list" className="h5">
+                            <Nav.Item className="mx-auto mx-lg-0 mr-lg-auto"><Nav.Link eventKey="list" className="h5">
                                 <FontAwesomeIcon icon={faThList} />
                                 <span className="ml-3">List</span>
                             </Nav.Link></Nav.Item>
-                            <PageNav page={selPage} total={pageNumber} handler={fetchPage}></PageNav>
+                            <PageNav 
+                                page={selPage} 
+                                total={pageNumber} 
+                                handler={fetchPage}
+                                className="mx-auto mx-lg-0 ml-lg-auto"
+                            ></PageNav>
                         </Nav>
 
                         <Tab.Content>

@@ -9,7 +9,7 @@ import "./index.css";
 ** - total: total number of pages
 ** - handler: function to call with onClick
 */
-const PageNav = (props) => {
+const PageNav = ({className, ...props}) => {
 
     // pass correct number to handler function
     const handlePage = (e) => {
@@ -64,7 +64,7 @@ const PageNav = (props) => {
     }, [props.total, props.page]);
     
     return(
-        <Nav>
+        <Nav className={className}>
             <Pagination>
                 <Pagination.First onClick={handlePage} value={1} disabled={props.page == 1} />
                 <Pagination.Prev  onClick={handlePage} value="prev" disabled={props.page == 1} />

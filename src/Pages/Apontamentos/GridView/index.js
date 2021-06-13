@@ -21,7 +21,7 @@ const GridView = ({data, setSelected}) => {
 
     
     return(
-        <div className="d-flex flex-row flex-wrap col-12">
+        <div className="d-flex flex-row flex-wrap col-12 mx-0 p-0">
             {
                 data.map(
                     (apontamento, i) => 
