@@ -12,6 +12,10 @@ a { color: #147a26!important }
 
 .tab-container {max-width: none!important;}
 
+.btn-group-vertical > .btn.active, .btn-group-vertical > .btn:active, .btn-group-vertical > .btn:focus, .btn-group > .btn.active, .btn-group > .btn:active, .btn-group > .btn:focus {
+    z-index: 0;
+}
+
 /* .btn */
 .btn {
     font-size: inherit;
@@ -49,6 +53,7 @@ a { color: #147a26!important }
 }
 .btn-outline-primary-force:hover {
     background-color: #147a26!important;
+    color: #fff!important;
 }
 
 /* cols from Bootstrap 5 */

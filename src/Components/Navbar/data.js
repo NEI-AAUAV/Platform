@@ -48,7 +48,7 @@ const data = [
     },
     {
         'name': 'Merchandising',
-        'link': '#'
+        'link': '/merch'
     },
     {
         'name': 'Faina',

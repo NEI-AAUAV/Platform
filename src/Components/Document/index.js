@@ -22,7 +22,9 @@ import "./index.css";
  *  style (Optional)
  */
 const Document = ({name, description, link, blank, className, icon, size, onClick, title, tags, style}) => {
-    console.log(tags);
+    
+    
+
     return (
         <a 
             href={link && link} 
@@ -40,7 +42,7 @@ const Document = ({name, description, link, blank, className, icon, size, onClic
                 <p className="small text-secondary mb-0">{description}</p>
                 <div className="row mx-0 mt-1">
                     {
-                        tags.map(
+                        tags && tags.map(
                             tag =>
                             <span 
                                 className={"ml-0 mb-1 mr-1 badge badge-pill " + tag.className}  

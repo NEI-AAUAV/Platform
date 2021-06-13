@@ -15,6 +15,7 @@ import NewsArticle from "./Pages/NewsArticle";
 import RGM from "./Pages/RGM";
 import Calendar from "./Pages/Calendar";
 import History from "./Pages/History";
+import Merchandising from "./Pages/Merchandising";
 import CleanLayout from "./Layouts/CleanLayout";
 import Apontamentos from "./Pages/Apontamentos";
 import FeedbackForm from './Pages/Forms/FeedbackForm';
@@ -26,6 +27,7 @@ const routes = [
 		element: <CleanLayout />,
 		children: [
 			{ path: "/", element: <Homepage /> },
+			{ path: "/merch", element: <Merchandising/> }
 		]
 	},
 	{
