@@ -103,13 +103,18 @@ const Merchandising = () => {
 
            {imgs}
             <Row className="text-center mx-0" style={{position: "relative"}}>
-                <Button     style={{color: 'black'}}
-                            variant="outline-secondary"
-                            className="rounded-pill mx-auto"
-                            size="lg"
-                            href="https://aauav.pt/nucleos/"
-                            >Comprar
-                </Button>
+                <a 
+                    href="https://aauav.pt/nucleos/"
+                    target="_blank"
+                    className="mx-auto"
+                >
+                    <Button     style={{color: 'black'}}
+                                variant="outline-primary"
+                                className="rounded-pill btn-outline-primary-force"
+                                size="lg"
+                                >Comprar
+                    </Button>
+                </a>
             </Row>
             
 

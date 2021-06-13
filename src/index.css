@@ -53,6 +53,7 @@ a { color: #147a26!important }
 }
 .btn-outline-primary-force:hover {
     background-color: #147a26!important;
+    color: #fff!important;
 }
 
 /* cols from Bootstrap 5 */
