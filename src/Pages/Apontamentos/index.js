@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Tab, Nav } from 'react-bootstrap';
+import { Row, Col, Tab, Nav, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTh, faThList } from '@fortawesome/free-solid-svg-icons';
 import ListView from './ListView';
@@ -7,7 +7,6 @@ import GridView from './GridView';
 import "./index.css";
 import PageNav from '../../Components/PageNav';
 import Filters from "../../Components/Filters";
-import FilterSelect from "../../Components/Filters/FilterSelect";
 import Details from "./Details";
 import Select from "react-select";
 import Typist from 'react-typist';
@@ -42,6 +41,8 @@ const Apontamentos = () => {
     const [shownSubj, setShownSubj] = useState();
     const [shownAuth, setShownAuth] = useState();
     const [shownTeacher, setShownTeacher] = useState();
+
+    const [loading, setLoading] = useState(true);
 
 
     const fetchPage = (p_num) => {
@@ -94,6 +95,8 @@ const Apontamentos = () => {
 
 
     useEffect(() => {
+
+        setLoading(true);
 
         // Every time a new call is made to the API, close details
         setSelectedNote(null);
@@ -172,8 +175,11 @@ const Apontamentos = () => {
                     if ('data' in response) {
                         setData(response.data)
                         setPageNumber(response.page.pagesNumber);
+                    } else {
+                        setData([]);
+                        setPageNumber(1);
                     }
-
+                    setLoading(false);
                 })
         }
 
@@ -264,7 +270,7 @@ const Apontamentos = () => {
             <h2 className="text-center mb-5">
                 <Typist>Apontamentos</Typist>
             </h2>
-            
+
             <Row className="mt-4">
                 <Col lg="3">
                     <Details
@@ -335,6 +341,7 @@ const Apontamentos = () => {
                  ** the views, which are specified in each Tab.Pane element.
                 */}
                 <Col lg="9">
+
                     <Tab.Container defaultActiveKey="grid">
                         <Nav onSelect={() => setSelectedNote(null)}>
                             <Nav.Item><Nav.Link eventKey="grid" className="h5">
@@ -350,16 +357,33 @@ const Apontamentos = () => {
 
                         <Tab.Content>
                             <Tab.Pane eventKey="grid">
-                                <GridView data={data} setSelected={setSelectedNote}></GridView>
+                                <div className="d-flex">
+                                    {
+                                        loading ?
+                                            <Spinner animation="grow" variant="primary" className="mx-auto mt-3" title="A carregar..." />
+                                            :
+                                            <GridView
+                                                data={data}
+                                                setSelected={setSelectedNote}
+                                            ></GridView>
+                                    }
+                                </div>
                             </Tab.Pane>
-                            <Tab.Pane eventKey="list">
-                                <ListView
-                                    data={data}
-                                    setSelYear={setSelYear}
-                                    setSelectedSubject={setSelectedSubject}
-                                    setSelStudent={setSelStudent}
-                                    setSelTeacher={setSelTeacher}
-                                ></ListView>
+                            <Tab.Pane eventKey="list" >
+                                <div className="d-flex flex-column">
+                                    {
+                                        loading ?
+                                            <Spinner animation="grow" variant="primary" className="mx-auto mt-3" title="A carregar..." />
+                                            :
+                                            <ListView
+                                                data={data}
+                                                setSelYear={setSelYear}
+                                                setSelectedSubject={setSelectedSubject}
+                                                setSelStudent={setSelStudent}
+                                                setSelTeacher={setSelTeacher}
+                                            ></ListView>
+                                    }
+                                </div>
                             </Tab.Pane>
                         </Tab.Content>
                     </Tab.Container>
