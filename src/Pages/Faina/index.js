@@ -65,6 +65,8 @@ const Faina = () => {
                             "marginBottom": 50
                         }}
                     />);
+                } else {
+                    setImg(null);
                 }
                 setLoading(false);
             })
