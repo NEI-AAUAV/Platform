@@ -182,18 +182,17 @@ INSERT INTO faina (mandato, imagem) VALUES
 
 ALTER TABLE faina ADD anoLetivo VARCHAR(9);
 
-UPDATE faina SET anoLetivo="2011/2012" WHERE mandato=2012;
-UPDATE faina SET anoLetivo="2012/2013" WHERE mandato=2013;
-UPDATE faina SET anoLetivo="2013/2014" WHERE mandato=2014;
-UPDATE faina SET anoLetivo="2014/2015" WHERE mandato=2015;
-UPDATE faina SET anoLetivo="2015/2016" WHERE mandato=2016;
-UPDATE faina SET anoLetivo="2016/2017" WHERE mandato=2017;
-UPDATE faina SET anoLetivo="2017/2018" WHERE mandato=2018;
-UPDATE faina SET anoLetivo="2018/2019" WHERE mandato=2019;
+UPDATE faina SET anoLetivo="2012/2013" WHERE mandato=2012;
+UPDATE faina SET anoLetivo="2013/2014" WHERE mandato=2013;
+UPDATE faina SET anoLetivo="2014/2015" WHERE mandato=2014;
+UPDATE faina SET anoLetivo="2015/2016" WHERE mandato=2015;
+UPDATE faina SET anoLetivo="2016/2017" WHERE mandato=2016;
+UPDATE faina SET anoLetivo="2017/2018" WHERE mandato=2017;
+UPDATE faina SET anoLetivo="2018/2019" WHERE mandato=2018;
+UPDATE faina SET anoLetivo="2019/2020" WHERE mandato=2019;
 
 INSERT INTO faina (mandato, imagem, anoLetivo) VALUES
-    (2020, NULL, "2019/2020"),
-    (2021, NULL, "2020/2021")
+    (2020, NULL, "2020/2021")
 ;
 
 CREATE TABLE faina_roles (
@@ -328,6 +327,26 @@ INSERT INTO faina_member(year, role, member) VALUES
     (2019, 1, 1716) -- Junco Pedro Bastos
 ;
 
+
+INSERT INTO faina_member(year, role, member) VALUES
+    -- 2020
+    (2020, 10, 1512), -- Mestre de Curso João Magalhães
+    (2020, 7, 1419), -- Mestre João Ferreira
+    (2020, 7, 1485), -- Mestre José Moreira
+    (2020, 6, 1002), -- Salineira Carina Neves
+    (2020, 5, 1548), -- Marnoto Luís Silva
+    (2020, 3, 1200), -- Moço Eduardo Santos
+    (2020, 3, 1716), -- Moço Pedro Bastos
+    (2020, 3, 1821), -- Moço Rui Fernandes
+    (2020, 3, 2026), -- Junco Artur Romão
+    (2020, 3, 2047), -- Junco João Reis
+    (2020, 3, 2059) -- Junco Pedro Sobral
+;
+
+
+
+
+    
 -- Team tables
 
 CREATE TABLE team_roles (
@@ -389,6 +408,18 @@ UPDATE users SET linkedin="https://www.linkedin.com/in/goncalofmatos/" WHERE id=
 
 UPDATE users SET uu_email="dl.carvalho@ua.pt" WHERE id=2127;
 
+-- Merchandiging
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 1; 
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 3;
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 4;
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 5;
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 6;
+DELETE FROM `merchandisings` WHERE `merchandisings`.`id` = 7;
+INSERT INTO merchandisings (name, image, price, number_of_items) VALUES
+    ("Cachecol de curso", NULL, 3.5, 0),
+    ("Casaco de curso", "/merch/casaco.png", 16.5, 0),
+    ("Sweat de curso", "/merch/sweat.png", 18, 0),
+    ("Emblema NEI", "/merch/emblemanei.png", 2.25, 0);
 
 -- Static files url change
 UPDATE news SET header = REPLACE(header, 'upload/NEI/', '/news/');
@@ -400,3 +431,4 @@ UPDATE rgm SET file = REPLACE(file, '/RGM_ATAS/', '/ATAS/');
 UPDATE faina SET imagem = REPLACE(imagem, '/upload/', '/');
 UPDATE seniors SET image = REPLACE(image, '/images/', '/');
 UPDATE partners SET header = REPLACE(header, 'upload/patrocinadores/', '/partners/');
+UPDATE merchandisings SET image = REPLACE(image, '/upload/', '/');

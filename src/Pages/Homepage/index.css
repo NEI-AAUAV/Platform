@@ -56,10 +56,6 @@
     align-content: center;
 }
 
-.home-info-col p {
-    flex-grow: 1;
-}
-
 .home-info-col svg {
     display: inline-block !important;
     width: 100% !important;

@@ -284,8 +284,9 @@ const Apontamentos = () => {
             </h2>
 
             <Row className="mt-4">
-                <Col lg="3">
+                <Col className="d-flex flex-column" lg="4" xl="3">
                     <Details
+                        className="order-2 order-lg-0"
                         note={selectedNote}
                         close={() => setSelectedNote(null)}
                         setSelYear={setSelYear}
@@ -295,7 +296,7 @@ const Apontamentos = () => {
                         setSelPage={setSelPage}
                     />
 
-                    <div className="filtros">
+                    <div className="filtros order-0 order-lg-1">
 
                         <div className="d-flex flex-row flex-wrap">
                             <h4>Filtros</h4>
@@ -358,25 +359,26 @@ const Apontamentos = () => {
                         />
                     </div>
 
-
-                    <h4 className="mt-3">Categorias</h4>
-                    <Filters
-                        accordion={true}
-                        filterList={filters}
-                        activeFilters={activeFilters}
-                        setActiveFilters={setActiveFilters}
-                        className="mb-5"
-                        btnClass="btn-sm"
-                        listClass="d-flex flex-column"
-                        allBtnClass="mb-2 p-0 col-12"
-                    />
+                    <div className="order-1 order-lg-3">
+                        <h4 className="mt-3">Categorias</h4>
+                        <Filters
+                            accordion={true}
+                            filterList={filters}
+                            activeFilters={activeFilters}
+                            setActiveFilters={setActiveFilters}
+                            className="mb-5"
+                            btnClass="btn-sm"
+                            listClass="d-flex flex-column"
+                            allBtnClass="mb-2 p-0 col-12"
+                        />
+                    </div>
                 </Col>
 
                 {/* The two views are controlled by a bootstrap tabs component,
                  ** using a custom layout. The Nav element contains the buttons that switch
                  ** the views, which are specified in each Tab.Pane element.
                 */}
-                <Col lg="9">
+                <Col lg="8" xl="9">
 
                     <Tab.Container defaultActiveKey="grid">
                         <Nav onSelect={() => setSelectedNote(null)}>
