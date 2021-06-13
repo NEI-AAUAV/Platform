@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Row, Col } from "react-bootstrap";
+import { Button, Row, Col, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb, faFutbol } from "@fortawesome/free-regular-svg-icons";
 import { faHistory, faUsers } from "@fortawesome/free-solid-svg-icons";
@@ -26,8 +26,8 @@ const Homepage = () => {
             .then((response) => {
                 if('data' in response) {
                     setNews(response['data']);
-                    setIsLoading(false);
                 }
+                setIsLoading(false);
             });
     }, []);
 
@@ -120,12 +120,18 @@ const Homepage = () => {
             </div>
 
             <div className="section-dark">
-                <Col xs={11} sm={10} className="mx-auto col-xxl-9 text-center">
+                <Col xs={11} sm={10} className="d-flex flex-column flex-wrap mx-auto col-xxl-9 text-center">
                     <h2 className="header-dark mb-4">Notícias</h2>
-                    <NewsList news={news} loading={isLoading}></NewsList>
+                    {
+                        isLoading 
+                        ?
+                        <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
+                        :
+                        <NewsList news={news}></NewsList>
+                    }
                     <Button
                         variant="outline-dark"
-                        className="rounded-pill"
+                        className="rounded-pill mx-auto"
                         size="lg"
                         href="/noticias"
                         >Ver Todas
