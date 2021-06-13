@@ -16,33 +16,6 @@ const Merchandising = () => {
     const [imgs, setImgs] = useState([]);
 
     useEffect(() => {
-        // Obter as imagens através da API (que ainda não temos)
-
-        let arr = [
-            {
-                'name': 'Brasão',
-                //'url': './public/images/merch/brasao.png',
-                'url': "https://melmagazine.com/wp-content/uploads/2021/01/66f-1.jpg",
-                'preco': 20.00,
-                'portes': 2,
-                'disponivel': true
-            },
-            {
-                'name': 'Nei',
-                'url': 'https://pop.inquirer.net/files/2021/05/834.png',
-                'preco': 15.00,
-                'portes': 3,
-                'disponivel': true
-            },
-            {
-                'name': 'Brasão2',
-                'url': "https://pbs.twimg.com/media/EjUax6KXkAIWoN4.png",
-                'preco': 19.99,
-                'portes': 5,
-                'disponivel': false
-            },
-        ];
-
         fetch(process.env.REACT_APP_API + "/merch")
             .then(response => response.json())
             .then((response) => {
