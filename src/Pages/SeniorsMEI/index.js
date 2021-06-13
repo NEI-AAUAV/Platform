@@ -7,6 +7,9 @@ import Tabs from "../../Components/Tabs/index.js";
 import TextList from "../../Components/TextList";
 import Typist from 'react-typist';
 
+// Animation
+const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
+const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
 
 
 const SeniorsLEI = () => {  
@@ -39,8 +42,27 @@ const SeniorsLEI = () => {
         .then((response) => response.json())
         .then((response) => {
             console.log(response)
-            setPeople(response.data.students.map((person) => <TextList colSize={12} text={person.name} />))
-            setImg(<Image style={{"marginBottom":50}} src={process.env.REACT_APP_STATIC + response.data.image} rounded fluid />);
+            
+            setPeople(response.data.students.map(
+                (person, i) => 
+                <TextList 
+                    colSize={12} 
+                    text={person.name} 
+                    className="slideUpFade"
+                    style={{
+                        animationDelay: animationBase + animationIncrement*0 + "s"                    }}
+                />
+            ))
+            setImg(
+                <Image 
+                    src={process.env.REACT_APP_STATIC + response.data.image} rounded fluid 
+                    className="slideUpFade"
+                    style={{
+                        animationDelay: animationBase + animationIncrement*0 + "s",
+                        "marginBottom":50
+                    }}
+                />
+            );
             console.log(selectedYear);
             console.log(people);
         })
