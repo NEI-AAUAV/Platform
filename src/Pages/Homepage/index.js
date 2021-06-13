@@ -104,8 +104,9 @@ const Homepage = () => {
                                 autoFocus={true}
                                 theme={{
                                     height:"320px",
+                                    width:"100%",
                                     fontFamily:"monospace",
-                                    fontSize:"1.1rem",
+                                    fontSize:"1em",
                                     promptSymbolColor:"rgb(0, 255, 0)",
                                     commandColor:"#fcfcfc",
                                     outputColor:"#fcfcfc",
@@ -150,7 +151,7 @@ const Homepage = () => {
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
                             <FontAwesomeIcon icon={ faHistory } size="4x" className="text-primary mb-4" />
                             <h3>História do NEI</h3>
-                            <p className="text-secondary">
+                            <p className="text-secondary flex-grow-1">
                                 Apesar de ser relativamente recente o NEI já conta com alguns feitos de relevância que vão desde bons resultados na Taça UA nas diversas modalidades que participou como a participação e candidaturas ao ENEI.
                             </p>
                             <a className="font-weight-bold" href="/historia">Ver história</a>
@@ -158,7 +159,7 @@ const Homepage = () => {
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
                             <FontAwesomeIcon icon={ faUsers } size="4x" className="text-primary mb-4" />
                             <h3>Comissões de Faina</h3>
-                            <p className="text-secondary">
+                            <p className="text-secondary flex-grow-1">
                                 Responsáveis por guiar a Faina do nosso curso, uma importante faceta do percurso académico com o intuito de dinamizar e integrar os novos estudantes. Encarregam-se também de organizar certos eventos lúdicos como Jantares e Festas de Curso.
                             </p>
                             <a className="font-weight-bold" href="/faina">Ver comissões</a>
@@ -166,7 +167,7 @@ const Homepage = () => {
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
                             <FontAwesomeIcon icon={ faLightbulb } size="4x" className="text-primary mb-4" />
                             <h3>Novos Alunos</h3>
-                            <p className="text-secondary">
+                            <p className="text-secondary flex-grow-1">
                                 Estás interessado no curso? Precisas de ajuda? Temos aqui tudo o que tu precisas, todas as informações do curso. Se tiveres dúvidas, podes entrar em contacto connosco via facebook ou email!
                             </p>
                             <a className="font-weight-bold" href="http://deti-cdn.clients.ua.pt/lei/">Mais informações</a>
@@ -174,10 +175,10 @@ const Homepage = () => {
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
                             <FontAwesomeIcon icon={ faFutbol } size="4x" className="text-primary mb-4" />
                             <h3>Taça UA</h3>
-                            <p className="text-secondary">
+                            <p className="text-secondary flex-grow-1">
                                 Sabemos que por vezes é dificil acompanhar a Taça UA sem te perderes, como não queremos que estejas fora do acontecimento, temos uma nova plataforma para acompanhares tudo o que se passa!
                             </p>
-                            <a className="font-weight-bold" href="https://taca-ua-nei-pt/">Mais informações</a> { /* TODO */ }
+                            <p className="font-weight-bold text-secondary mb-0">Brevemente disponível</p>
                         </Col>
                     </Row>
                 </Col>

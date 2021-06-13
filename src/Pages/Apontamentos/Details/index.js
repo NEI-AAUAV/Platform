@@ -17,7 +17,7 @@ function titleCase(str) {
     return splitStr.join(' ');
 }
 
-const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, setSelTeacher, setSelPage }) => {
+const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, setSelTeacher, setSelPage, className }) => {
 
     var tags = [];
     if (note) {
@@ -32,17 +32,19 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
 
     return (
         note &&
-        <div className="notesDetails bg-white p-3 mb-4">
-            <h4 className="break-all mr-3">{note.name}</h4>
-            <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-                onClick={close}
-            >
-                <span aria-hidden="true">×</span>
-            </button>
+        <div className={"notesDetails bg-white p-3 mb-4 animation " + className}>
+            <div className="d-flex flex-row">
+                <h4 className="break-all mr-auto">{note.name}</h4>
+                <button
+                    type="button"
+                    className="close mb-auto ml-auto"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                    onClick={close}
+                >
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
             <div className="row mx-0 my-3">
                 {
                     tags.map(

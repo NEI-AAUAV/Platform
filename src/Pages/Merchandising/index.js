@@ -22,61 +22,30 @@ const Merchandising = () => {
 
                 if ('data' in response) {
                     setImgs(response.data.map((img, idx) =>
-                        <div>
-                            {idx % 2 == 0 ?
-                                <div 
-                                    className="impar text-center slideUpFade"
-                                    style={{
-                                        animationDelay: animationBase + animationIncrement*idx + "s",
-                                    }}
-                                >
-                                    <Row className="mx-0">
-                                        <Col lg={4} md={6} sm={12}>
-                                            <Image className="img justify-content-center" src={img.image} style={{ width: 200 }} />
-                                        </Col>
-                                        <Col lg={8} md={6} sm={12}>
-                                            <h2>{img.name}</h2>
-                                            <h5>Preço: {img.price}€</h5>
-                                            {/*
-                                        <h3 style={{paddingTop: '2em'}}>
-                                        {
-                                            img.disponivel ? "Disponível" : "Indisponível"
-                                        }
-                                    </h3> 
-                                    */
-                                            }
-
-                                        </Col>
-                                    </Row>
-
-                                </div>
-                                :
-                                <div
-                                    className="par2 text-center slideUpFade"
-                                    style={{
-                                        animationDelay: animationBase + animationIncrement*idx + "s",
-                                    }}
-                                >
-                                    <Row className="mx-0">
-                                        <Col lg={4} md={6} sm={12} >
-                                            <h2>{img.name}</h2>
-                                            <h5>Preço: {img.price}€</h5>
-                                            {/*
-                                        <h3 style={{paddingTop: '2em'}}>
-                                        {
-                                            img.disponivel ? "Disponível" : "Indisponível"
-                                        }
-                                    </h3> 
-                                    */
-                                            }
-                                        </Col>
-                                        <Col lg={8} md={6} sm={12}>
-                                            <Image className="img" src={img.image} style={{ width: 200 }} />
-                                        </Col>
-
-                                    </Row>
-                                </div>
+                        <div
+                            className={
+                                idx % 2 == 0 
+                                ? "impar text-center slideUpFade"
+                                : "par2 text-center slideUpFade"
                             }
+                            style={{
+                                animationDelay: animationBase + animationIncrement * idx + "s",
+                            }}
+                        >
+                            <Row className="mx-0">
+                                <Col lg={idx % 2 == 0 ? 4 : 8} md={6} sm={12} className={idx % 2 == 0 ? "order-0 d-flex" : "order-1 d-flex"}>
+                                    {
+                                        img.image 
+                                        ? <Image className="img my-auto mx-auto" src={process.env.REACT_APP_STATIC + img.image} style={{ width: 200 }} />
+                                        : <p className="text-center mx-auto my-auto small">Imagem disponível em breve.</p>
+                                    }
+                                </Col>
+                                <Col lg={idx % 2 == 0 ? 8 : 4} md={6} sm={12} className={idx % 2 == 0 ? "order-1" : "order-0"}>
+                                    <h2>{img.name}</h2>
+                                    <h5>Preço: {img.price}€</h5>
+                                </Col>
+                            </Row>
+
                         </div>
                     ));
                 }
@@ -87,32 +56,32 @@ const Merchandising = () => {
 
     }, [])
 
-    return (
-        <div className="py-5">
-            <h2 style={{ position: "relative" }} className="mb-5 text-center">
-                <Typist>Merchandising</Typist>
-            </h2>
+return (
+    <div className="py-5">
+        <h2 style={{ position: "relative" }} className="mb-5 text-center">
+            <Typist>Merchandising</Typist>
+        </h2>
 
-            {imgs}
+        {imgs}
 
-            <Row className="text-center mx-0" style={{ position: "relative" }}>
-                <a
-                    href="https://aauav.pt/nucleos/"
-                    target="_blank"
-                    className="mx-auto"
-                >
-                    <Button style={{ color: 'black' }}
-                        variant="outline-primary"
-                        className="rounded-pill btn-outline-primary-force"
-                        size="lg"
-                    >Comprar
+        <Row className="text-center mx-0" style={{ position: "relative" }}>
+            <a
+                href="https://aauav.pt/nucleos/"
+                target="_blank"
+                className="mx-auto"
+            >
+                <Button style={{ color: 'black' }}
+                    variant="outline-primary"
+                    className="rounded-pill btn-outline-primary-force"
+                    size="lg"
+                >Comprar
                     </Button>
-                </a>
-            </Row>
+            </a>
+        </Row>
 
 
-        </div>
-    );
+    </div>
+);
 }
 
 export default Merchandising;
