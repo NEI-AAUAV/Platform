@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
-    Row
+    Row, Spinner
 } from "react-bootstrap";
 import Document from "../../Components/Document";
 import Tabs from "../../Components/Tabs";
@@ -67,8 +67,12 @@ const RGM = () => {
     }, []);
 
     return (
-        <div>
+        <div className="d-flex flex-column flex-wrap">
             <h2 className="text-center mb-5">{title}</h2>
+            {
+                loading &&
+                <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
+            }
             {
                 // Only show tabs to ATAS category
                 !loading && id.toUpperCase()=="ATAS" &&
