@@ -265,6 +265,10 @@ const Apontamentos = () => {
         setActiveFilters(filters.map(content => content.filter));
     }, [filters])
 
+    useEffect(() => {
+        setSelPage(1);
+    }, [activeFilters, selectedSubject, selStudent, selYear, selTeacher])
+
     return (
         <div>
             <h2 className="text-center mb-5">
