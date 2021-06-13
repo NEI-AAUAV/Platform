@@ -26,5 +26,10 @@
 }
 
 .react-select {
-    padding-bottom: 1em;
+    margin-bottom: 1em;
+    
+}
+
+.filtros {
+    z-index:4
 }
