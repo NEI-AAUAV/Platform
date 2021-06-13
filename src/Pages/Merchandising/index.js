@@ -108,7 +108,7 @@ const Merchandising = () => {
                             className="rounded-pill mx-auto"
                             size="lg"
                             href="https://aauav.pt/nucleos/"
-                            >Ver Todas
+                            >Comprar
                 </Button>
             </Row>
             
