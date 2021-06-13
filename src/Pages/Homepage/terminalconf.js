@@ -1,34 +1,18 @@
-import { CommandMapping, EmulatorState, FileSystem, OutputFactory, defaultCommandMapping } from "javascript-terminal";
+import { CommandMapping, EmulatorState, FileSystem, OutputFactory, defaultCommandMapping, Outputs } from "javascript-terminal";
 
-/*
-const commands = {
-    whoami: "nei-os",
-    cd: (args) => `changed path to ${args}`,
-    help: "list of commands: \n whoami \n cd \n help",
-    rm: (args) => {
-        if (args == "")
-            return "usage: rm <name>"
-        if (args == "/") {
-            alert("YOU SHOULDN'T HAVE DONE THAT")
-            window.open("https://cdn.discordapp.com/attachments/822074448961077260/848594704357392414/IMG_20210530_171126.jpg");
-        }
-        return "removed " + args;
-    },
-    ls: (args) => {
-        return "";
-    },
-    cat: (args) => {
-        return "";
-        // dict, {filename, content}
-    },
-    mkdir: (args) => {
-        return "";
-    },
-    echo: (args) => args,
-    pwd: (args) => {
-        return "";
-    }
-  }; */
+// TODO: update prompt with current working directory,
+//       more easter eggs
+
+
+const defaultState = EmulatorState.createEmpty();
+    const defaultOutputs = defaultState.getOutputs();
+
+    const newOutputs = Outputs.addRecord(
+      defaultOutputs, OutputFactory.makeTextOutput(
+        "Welcome to the hacker zone! "
+      )
+    );
+
 
 const terminalstate = EmulatorState.create(
     {
@@ -52,6 +36,7 @@ const terminalstate = EmulatorState.create(
                     },
                     'optDef': {}
                 },
+                /*
                 "rm": {
                     'function': (state, inpt) => {
                         console.log(state)
@@ -65,8 +50,9 @@ const terminalstate = EmulatorState.create(
                             defaultCommandMapping.rm.function(state, inpt);
                     },
                     'optDef': {}
-                },
-
+                },*/
+                "rm": defaultCommandMapping.rm,
+                /*
                 "comm": {
                     'function': (state, inpt) => {
                         
@@ -80,50 +66,25 @@ const terminalstate = EmulatorState.create(
                         '-t, --test': "",
                         '-l': ""
                     }
-                }
+                }*/
             }
         ),
 
         'fs': FileSystem.create(
             {
-                '/home': {},
-                '/home/README.md': {content: "blah blah"},
-                '/home/public/file1': {content: "easter egg"},
-                '/home/public/dir': {},
-                '/home/.hidden/.secrets': {content: "Excel is a database"}
+                '/': {},
+                '/README.md': {content: "Welcome to the NEI website!\nCheck back in the future for some hidden secrets!"},
+                '/public/file1': {content: "easter egg"},
+                '/public/file2': {content: "christmas egg"},
+                '/public/important': {content: "01010010 01101001 01100011 01101011\n00100000 01010010 01101111 01101100\n01101100 00111010 00100000 01101000\n01110100 01110100 01110000 01110011\n00111010 00101111 00101111 01110111\n01110111 01110111 00101110 01111001\n01101111 01110101 01110100 01110101\n01100010 01100101 00101110 01100011\n01101111 01101101 00101111 01110111\n01100001 01110100 01100011 01101000\n00111111 01110110 00111101 01111001\n01010000 01011001 01011010 01110000\n01110111 01010011 01110000 01001011\n01101101 01000001"},
+                '/public/programs/README.md': {content: "Work in progress, check back later!"},
+                '/.hidden/.secrets': {content: "Excel is a database"},
+                '/.hidden/.confidential': {content: "Access Denied\nThe authorities have been notified."}
             }
-        )
+        ),
+
+        'outputs': newOutputs
     }
 )
-
-
-/* 
-
-/: 
-    .hidden
-        file1
-        file2
-        dir2
-            file
-        .secrets
-
-    public
-        file1 (vazio)
-        file2 (vazio)
-        file3 (vazio)
-
-    README.md
-
-*/
-
-/* 
-TODO 
-autocomplete
-descobrir how to use \n
-(optional)
-criar ficheiros (touch ou echo com >)
-piping
-*/
-
 
 export default terminalstate;

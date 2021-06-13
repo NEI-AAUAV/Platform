@@ -104,8 +104,9 @@ const Homepage = () => {
                                 autoFocus={true}
                                 theme={{
                                     height:"320px",
+                                    width:"100%",
                                     fontFamily:"monospace",
-                                    fontSize:"1.1rem",
+                                    fontSize:"1em",
                                     promptSymbolColor:"rgb(0, 255, 0)",
                                     commandColor:"#fcfcfc",
                                     outputColor:"#fcfcfc",
