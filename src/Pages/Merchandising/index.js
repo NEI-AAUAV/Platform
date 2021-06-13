@@ -45,7 +45,7 @@ const Merchandising = () => {
                     <div>
                         {idx%2 == 0 ?
                         <div className="impar text-center">
-                            <Row>
+                            <Row className="mx-0">
                                 <Col lg={4} md={6} sm={12}>
                                     <Image className="img justify-content-center"  src={img.image}  style={{width: 200}}/>
                                 </Col>
@@ -67,7 +67,7 @@ const Merchandising = () => {
                         </div>
                         :
                         <div style={{/*textAlign:"left"*/}} className="par2 text-center">
-                            <Row>
+                            <Row className="mx-0">
                                 <Col lg={4} md={6} sm={12} >
                                     <h2>{img.name}</h2>
                                     <h5>Preço: {img.price}€</h5>
@@ -102,7 +102,7 @@ const Merchandising = () => {
             <h2 style={{position:"relative"}} className="mb-5 text-center">Merchandising</h2>
 
            {imgs}
-            <Row className="text-center" style={{position: "relative"}}>
+            <Row className="text-center mx-0" style={{position: "relative"}}>
                 <Button     style={{color: 'black'}}
                             variant="outline-secondary"
                             className="rounded-pill mx-auto"
