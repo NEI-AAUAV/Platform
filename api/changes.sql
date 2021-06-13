@@ -19,8 +19,8 @@ INSERT INTO history (moment, title, image, body) VALUES
 ;
 
 INSERT INTO history (moment, title, image, body) VALUES 
-    ("2019-03-09", "1ª Edição ThinkTwice", "/images/history/20190309.png", "A primeira edição do evento, realizada em 2019, teve lugar no Auditório Mestre Hélder Castanheira da Universidade de Aveiro e contou com uma duração de 24 horas para a resolução de 30 desafios colocados, que continham diferentes graus de dificuldade. O evento contou com a participação de 34 estudantes, perfazendo um total de 12 equipas."),
-    ("2020-03-06", "2ª Edição ThinkTwice", "/images/history/20200306.png", "A edição de 2020 contou com a participação de 57 participantes divididos em 19 equipas, com 40 desafios de algoritmia de várias dificuldades para serem resolvidos em 40 horas, tendo lugar nas instalações da Casa do Estudante da Universidade de Aveiro. Esta edição contou ainda com 2 workshops e um momento de networking com as empresas patrocinadoras do evento."),
+    ("2019-03-09", "1ª Edição ThinkTwice", "/images/history/20190309.jpg", "A primeira edição do evento, realizada em 2019, teve lugar no Auditório Mestre Hélder Castanheira da Universidade de Aveiro e contou com uma duração de 24 horas para a resolução de 30 desafios colocados, que continham diferentes graus de dificuldade. O evento contou com a participação de 34 estudantes, perfazendo um total de 12 equipas."),
+    ("2020-03-06", "2ª Edição ThinkTwice", "/images/history/20200306.jpg", "A edição de 2020 contou com a participação de 57 participantes divididos em 19 equipas, com 40 desafios de algoritmia de várias dificuldades para serem resolvidos em 40 horas, tendo lugar nas instalações da Casa do Estudante da Universidade de Aveiro. Esta edição contou ainda com 2 workshops e um momento de networking com as empresas patrocinadoras do evento."),
     ("2021-05-07", "3ª Edição ThinkTwice", "/images/history/20210507.png", "Devido ao contexto pandémico que se vivia a 3ª edição foi 100% online através de plataformas como o Discord e a Twitch, de 7 a 9 de maio. Nesta edição as 11 equipas participantes puderam escolher participar em uma de três tipos de competição: desafios de algoritmia, projeto de gamificação e projeto de cibersegurança. O evento contou ainda com 4 workshops e uma sessão de networking com as empresas patrocinadoras.")
 ;
 
@@ -33,8 +33,8 @@ CREATE TABLE seniors (
 )
 
 INSERT INTO seniors (year, course, image) VALUES
-    (2020, "LEI", "/images/seniors/LEI/2020.jpg"),
-    (2020, "MEI", "/images/seniors/MEI/2020.jpg")
+    (2020, "LEI", "/images/seniors/lei/2020.jpg"),
+    (2020, "MEI", "/images/seniors/mei/2020.jpg")
 ;
 
 CREATE TABLE seniors_students (
@@ -388,3 +388,15 @@ UPDATE users SET linkedin="https://www.linkedin.com/in/goncalofmatos/" WHERE id=
 
 
 UPDATE users SET uu_email="dl.carvalho@ua.pt" WHERE id=2127;
+
+
+-- Static files url change
+UPDATE news SET header = REPLACE(header, 'upload/NEI/', '/news/');
+UPDATE history SET image = REPLACE(image, '/images/', '/');
+UPDATE team SET header = REPLACE(header, 'upload/NEI/', '/');
+UPDATE team SET header = REPLACE(header, 'upload/NESI/', '/');
+UPDATE rgm SET file = REPLACE(file, '/upload/documents/', '/rgm/');
+UPDATE rgm SET file = REPLACE(file, '/RGM_ATAS/', '/ATAS/');
+UPDATE faina SET imagem = REPLACE(imagem, '/upload/', '/');
+UPDATE seniors SET image = REPLACE(image, '/images/', '/');
+UPDATE partners SET header = REPLACE(header, 'upload/patrocinadores/', '/partners/');

@@ -25,13 +25,13 @@ const Calendar = () => {
                         animationDelay: animationBase + animationIncrement*0 + "s",
                     }}
                 >
-                    <p className="animation col-12 text-primary mb-3 my-md-auto ml-auto pr-3 text-center text-md-right">Categorias</p>
+                    <p className="slideUpFade col-12 text-primary mb-3 my-md-auto ml-auto pr-3 text-center text-md-right">Categorias</p>
                 </div>
                 <Filters 
                     filterList={filters}
                     activeFilters={selection}
                     setActiveFilters={setSelection}
-                    className="animation mr-auto col-12 col-md-8 d-flex flex-row flex-wrap"
+                    className="slideUpFade mr-auto col-12 col-md-8 d-flex flex-row flex-wrap"
                     btnClass="mx-auto mr-md-2 ml-md-0 mb-2"
                     style={{
                         animationDelay: animationBase + animationIncrement*1 + "s",
@@ -45,7 +45,7 @@ const Calendar = () => {
                     setFilters(fs);
                     setSelection(fs.map(f => f['filter']));
                 }}
-                className="animation"
+                className="slideUpFade"
                 style={{
                     animationDelay: animationBase + animationIncrement*2 + "s",
                 }}

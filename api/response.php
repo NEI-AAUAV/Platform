@@ -43,4 +43,13 @@
         exit();
     }
 
+    function successResponse($message) {
+        $object = (object) ['success' => $message];
+        echo json_encode($object);
+        // Set HTTP status
+        http_response_code(200);
+        // Terminate script
+        exit();
+    }
+
 ?>

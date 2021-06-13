@@ -18,7 +18,7 @@ import History from "./Pages/History";
 import Merchandising from "./Pages/Merchandising";
 import CleanLayout from "./Layouts/CleanLayout";
 import Apontamentos from "./Pages/Apontamentos";
-
+import FeedbackForm from './Pages/Forms/FeedbackForm';
 
 
 const routes = [
@@ -45,6 +45,9 @@ const routes = [
 			{ path: "/seniorsLEI", element: <SeniorsLEI /> },
 			{ path: "/seniorsMEI", element: <SeniorsMEI /> },
 			{ path: "/faina", element: <Faina/> },
+			// Forms
+			{ path: "/forms/feedback", element: <FeedbackForm/> },
+			// Everything else is 404
 			{ path: "/:id", element: <Error404 /> }
 		],
 	}

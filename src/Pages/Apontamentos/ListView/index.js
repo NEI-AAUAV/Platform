@@ -25,6 +25,8 @@ function titleCase(str) {
  */
 const ListView = (props) => {
     
+    var animKey = 0;
+
     return(
         <div className="mx-3">
             <Row className="list-view-header">
@@ -43,7 +45,10 @@ const ListView = (props) => {
             {
             props.data.map( item => {
                 return(
-                    <Card className="list-view-item mx-n3 px-3">
+                    <Card
+                        className="list-view-item mx-n3 px-3 slideUpFade"
+                        style={{animationDelay: animKey++*0.1+"s"}}
+                    >
                         <Accordion.Toggle as={Card.Header} eventKey={item.id}>
                             <Row>
                                 <Col md="5" className="list-view-name">
@@ -57,13 +62,13 @@ const ListView = (props) => {
                                 </Col>
                             </Row>
                             <Row className="pl-2 mt-1">
-                                {item.summary     ==="1" && <span className="badge badge-pill tag-summary"  >resumos</span>}
-                                {item.tests       ==="1" && <span className="badge badge-pill tag-tests"    >testes</span>}
-                                {item.bibliography==="1" && <span className="badge badge-pill tag-biblio"   >bibliografia</span>}
-                                {item.slides      ==="1" && <span className="badge badge-pill tag-slides"   >slides</span>}
-                                {item.exercises   ==="1" && <span className="badge badge-pill tag-exercises">exercícios</span>}
-                                {item.projects    ==="1" && <span className="badge badge-pill tag-projects" >projetos</span>}
-                                {item.notebook    ==="1" && <span className="badge badge-pill tag-notebook" >caderno</span>}
+                                {item.summary     ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-summary"  >Resumos</span>}
+                                {item.tests       ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-tests"    >Testes e exames</span>}
+                                {item.bibliography==="1" && <span className="badge mr-0 ml-1 badge-pill tag-biblio"   >Bibliografia</span>}
+                                {item.slides      ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-slides"   >Slides</span>}
+                                {item.exercises   ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-exercises">Exercícios</span>}
+                                {item.projects    ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-projects" >Projetos</span>}
+                                {item.notebook    ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-notebook" >Caderno</span>}
                             </Row>
                         </Accordion.Toggle>
 
@@ -141,7 +146,7 @@ const ListView = (props) => {
                                         </dl>
                                     </Col>
                                     <Col sm="12" lg="4">
-                                        <a href={process.env.REACT_APP_UPLOADS_UNLOCK + item.location} target="_blank" rel="noreferrer">
+                                        <a href={process.env.REACT_APP_STATIC + item.location} target="_blank" rel="noreferrer">
                                             <button className="btn btn-sm btn-outline-primary mb-3 ml-0">
                                                 <FontAwesomeIcon icon={faCloudDownloadAlt} size={"1x"}/>
                                                 <span className="ml-1">Descarregar</span>

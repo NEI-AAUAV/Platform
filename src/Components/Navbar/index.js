@@ -54,7 +54,7 @@ const Navbar = () => {
                         <span></span>
                     </div>
                 </BNavbar.Toggle>
-                <BNavbar.Collapse id="basic-BNavbar-nav" className="bg-white">
+                <BNavbar.Collapse id="basic-BNavbar-nav" className="bg-white small font-weight-bold">
                     <Nav className="mr-auto">
                         {
                             data.map(
@@ -64,8 +64,10 @@ const Navbar = () => {
                                         <Nav.Link
                                             href={navEl.link}
                                             className={
-                                                window.location.pathname == navEl.link ? "active mr-3" : "mr-3"
+                                                window.location.pathname == navEl.link ? "active" : ""
                                             }
+                                            target={navEl.external && "_blank"}
+                                            rel={navEl.external && "noreferrer"}
                                         >
                                             {navEl.name}
                                         </Nav.Link>
@@ -74,7 +76,11 @@ const Navbar = () => {
                                             {
                                                 navEl.dropdown.map(
                                                     dropdown =>
-                                                        <NavDropdown.Item href={dropdown.link}>{dropdown.name}</NavDropdown.Item>
+                                                        <NavDropdown.Item 
+                                                            href={dropdown.link} 
+                                                            target={dropdown.external && "_blank"}
+                                                            rel={dropdown.external && "noreferrer"}
+                                                        >{dropdown.name}</NavDropdown.Item>
                                                 )
                                             }
                                         </NavDropdown>

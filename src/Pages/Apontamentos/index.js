@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Tab, Nav, Accordion, Form } from 'react-bootstrap';
+import { Row, Col, Tab, Nav, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTh, faThList } from '@fortawesome/free-solid-svg-icons';
+import { faTh, faThList, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ListView from './ListView';
 import GridView from './GridView';
 import "./index.css";
 import PageNav from '../../Components/PageNav';
 import Filters from "../../Components/Filters";
-import FilterSelect from "../../Components/Filters/FilterSelect";
 import Details from "./Details";
 import Select from "react-select";
+import Typist from 'react-typist';
 
 const Apontamentos = () => {
 
@@ -21,11 +21,7 @@ const Apontamentos = () => {
     const [data, setData] = useState([]);
     const [filters, setFilters] = useState([]);
     const [activeFilters, setActiveFilters] = useState([]);
-    const [selection, setSelection] = useState([]);  
-
-    // varName, setVarname --> used to save the group
-    // selVarName, setVarName --> used to save the selected element of the group
-    // shownVarName --> used to change the value on the ReactSelect to the choosen map
+    const [selection, setSelection] = useState([]);
 
     const [subjects, setSubjects] = useState([]); // todos os subjects
     const [selectedSubject, setSelectedSubject] = useState("");
@@ -40,11 +36,13 @@ const Apontamentos = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [selPage, setSelPage] = useState(1);
 
-    
+
     const [shownYear, setShownYear] = useState();
     const [shownSubj, setShownSubj] = useState();
     const [shownAuth, setShownAuth] = useState();
     const [shownTeacher, setShownTeacher] = useState();
+
+    const [loading, setLoading] = useState(true);
 
 
     const fetchPage = (p_num) => {
@@ -53,28 +51,57 @@ const Apontamentos = () => {
         setSelPage(p_num);
     }
 
-    useEffect( () => {
+    useEffect(() => {
         setFilters(
             [
-                {'filter': 'Bibliography'},
-                {'filter': 'Exercises'},
-                {'filter': 'Notebook'},
-                {'filter': 'Projects'},
-                {'filter': 'Slides'},
-                {'filter':'Summary'}, 
-                {'filter': 'Tests'}
+                {
+                    'db': 'bibliography',
+                    'filter': 'Bibliografia',
+                    'color': 'rgb(1, 202, 228)'
+                },
+                {
+                    'db': 'slides',
+                    'filter': 'Slides teóricos',
+                    'color': 'rgb(1, 90, 101)'
+                },
+                {
+                    'db': 'projects',
+                    'filter': 'Projetos',
+                    'color': 'rgb(101, 230, 125)'
+                },
+                {
+                    'db': 'exercises',
+                    'filter': 'Guiões práticos e exercícios',
+                    'color': 'rgb(32, 197, 62)'
+                },
+                {
+                    'db': 'tests',
+                    'filter': 'Testes e exames',
+                    'color': 'rgb(20, 122, 38)'
+                },
+                {
+                    'db': 'notebook',
+                    'filter': 'Caderno',
+                    'color': 'rgb(211, 17, 21)'
+                },
+                {
+                    'db': 'summary',
+                    'filter': 'Resumos',
+                    'color': 'rgb(255, 162, 0)'
+                },
             ]
         )
     }, [])
 
 
-    useEffect( () => {
+    useEffect(() => {
+
+        setLoading(true);
 
         // Every time a new call is made to the API, close details
         setSelectedNote(null);
-        
-        //console.log("mh")
-        
+
+
         // extraVarName --> base used to concatenate and compare the optionals of every fetch
         var extraYear = selYear == "" ? "" : "schoolYear=" + selYear + "&";
         var extraSubj = selectedSubject == "" ? "" : "subject=" + selectedSubject + "&";
@@ -82,10 +109,18 @@ const Apontamentos = () => {
         var extraTeacher = selTeacher == "" ? "" : "teacher=" + selTeacher + "&";
         var extraCategory = "";
 
-        for (var i=0; i<activeFilters.length; i++) {
-            extraCategory += "category[]=" + activeFilters[i].toLowerCase() + "&";
+        for (var i = 0; i < activeFilters.length; i++) {
+            extraCategory += "category[]=" + filters.filter(f => f['filter'] == activeFilters[i])[0]['db'] + "&";
         }
-        
+
+        if (activeFilters.length == 0) {
+            setData([]);
+            setSelPage(1);
+            setPageNumber(1);
+            setLoading(false);
+            return;
+        }
+
 
         // fullVarName --> sum of optionals of every fetch
         var fullTeacher = "";
@@ -95,7 +130,7 @@ const Apontamentos = () => {
             fullTeacher += extraYear;
             fullTeacher += extraSubj;
             fullTeacher += extraStud;
-            fullTeacher = fullTeacher.substring(0,fullTeacher.length-1); // ignore the last '&'
+            fullTeacher = fullTeacher.substring(0, fullTeacher.length - 1); // ignore the last '&'
         }
 
         var fullYear = "";
@@ -105,7 +140,7 @@ const Apontamentos = () => {
             fullYear += extraTeacher;
             fullYear += extraSubj;
             fullYear += extraStud;
-            fullYear = fullYear.substring(0,fullYear.length-1); // ignore the last '&'
+            fullYear = fullYear.substring(0, fullYear.length - 1); // ignore the last '&'
         }
 
         var fullSubj = "";
@@ -115,141 +150,142 @@ const Apontamentos = () => {
             fullSubj += extraYear;
             fullSubj += extraStud;
             fullSubj += extraTeacher;
-            fullSubj = fullSubj.substring(0,fullSubj.length-1); // ignore the last '&'
+            fullSubj = fullSubj.substring(0, fullSubj.length - 1); // ignore the last '&'
         }
 
         var fullStud = "";
 
-        if (extraTeacher != "" || extraSubj != "" || extraYear != "" ) {
+        if (extraTeacher != "" || extraSubj != "" || extraYear != "") {
             fullStud = "?";
             fullStud += extraTeacher;
             fullStud += extraSubj;
             fullStud += extraYear;
-            fullStud = fullStud.substring(0,fullStud.length-1); // ignore the last '&'
+            fullStud = fullStud.substring(0, fullStud.length - 1); // ignore the last '&'
         }
 
         if (extraCategory.length == 0) {
             setData([]);
         }
         else {
-            var fullNotes = "?page="+selPage+"&";
+            var fullNotes = "?page=" + selPage + "&";
 
             fullNotes += extraTeacher;
             fullNotes += extraSubj;
             fullNotes += extraStud;
             fullNotes += extraCategory;
             fullNotes += extraYear;
-            fullNotes = fullNotes.substring(0,fullNotes.length-1); // ignore the last '&'
+            fullNotes = fullNotes.substring(0, fullNotes.length - 1); // ignore the last '&'
 
             //console.log(fullNotes)
             fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
-            .then((response) => response.json())
-            .then((response) => {       
-                setData(response.data)
-                setPageNumber(response.page.pagesNumber);
-
-            })
+                .then((response) => response.json())
+                .then((response) => {
+                    if ('data' in response) {
+                        setData(response.data)
+                        setPageNumber(response.page.pagesNumber);
+                    } else {
+                        setData([]);
+                        setPageNumber(1);
+                    }
+                    setLoading(false);
+                })
         }
 
-        //console.log("extra: "+ extra);
-
         fetch(process.env.REACT_APP_API + "/notes/years" + fullYear)
-        .then((response) => response.json())
-        .then((response) => {
-            /*setYears(response.data.map( (year) => 
-                <option value={year.id} selected={year.id == selYear}>{year.yearBegin + "-" + year.yearEnd}</option>
-            ))
-            */
-            if ('data' in response) {
-                var arr = response.data.map(year => {
+            .then((response) => response.json())
+            .then((response) => {
+                /*setYears(response.data.map( (year) => 
+                    <option value={year.id} selected={year.id == selYear}>{year.yearBegin + "-" + year.yearEnd}</option>
+                ))
+                */
+                if ('data' in response) {
+                    var arr = response.data.map(year => {
 
-                    const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd};
-                    if (x.value == selYear) 
-                        setShownYear(x)
-                    return x;
-                })
+                        const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd };
+                        if (x.value == selYear)
+                            setShownYear(x)
+                        return x;
+                    })
 
-                setYears(arr)
-            }
+                    setYears(arr)
+                }
 
 
-        })
-        
+            })
+
         fetch(process.env.REACT_APP_API + "/notes/subjects" + fullSubj)
-        .then((response) => response.json())
-        .then((response) => {
+            .then((response) => response.json())
+            .then((response) => {
 
-            //var subjs = response.data.map(s => <option value={s.paco_code} selected={s.paco_code == selectedSubject}>{s.short}</option>)
-            //setSubjects(subjs);
+                if ('data' in response) {
 
-            if ('data' in response) {
 
-            
-                var arr = response.data.map(subj => {
+                    var arr = response.data.map(subj => {
 
-                    const x = { value: subj.paco_code, label: subj.short };
-                    if (x.value == selectedSubject) 
-                        setShownSubj(x)
-                    return x;
-                })
+                        const x = { value: subj.paco_code, label: subj.short };
+                        if (x.value == selectedSubject)
+                            setShownSubj(x)
+                        return x;
+                    })
 
-                setSubjects(arr)
-            }
-        })
+                    setSubjects(arr)
+                }
+            })
 
-        //console.log("subjects: "+subjects)
-        //console.log("extra: "+extraSubj)
         fetch(process.env.REACT_APP_API + "/notes/students" + fullStud)
-        .then((response) => response.json())
-        .then((response) => {            
-            //setStudents(response.data.map(s => <option value={s.id} selected={s.id == selStudent}>{s.name}</option>))
+            .then((response) => response.json())
+            .then((response) => {
 
-            if ('data' in response) {
-                var arr = response.data.map(t => {
-                    const x = { value: t.id, label: t.name };
-                    if (x.value == selStudent) 
-                        setShownAuth(x)
+                if ('data' in response) {
+                    var arr = response.data.map(t => {
+                        const x = { value: t.id, label: t.name };
+                        if (x.value == selStudent)
+                            setShownAuth(x)
 
-                    return x;
-                })
+                        return x;
+                    })
 
-                setStudents(arr)
-            }
-        })
+                    setStudents(arr)
+                }
+            })
 
 
         fetch(process.env.REACT_APP_API + "/notes/teachers" + fullTeacher)
-        .then((response) => response.json())
-        .then((response) => {            
-            //setTeachers(response.data.map(s => <option value={s.id} selected={s.id == selTeacher}>{s.name}</option>));
-            if ('data' in response) {
-                var arr = response.data.map(t => {
-                    const x = { value: t.id, label: t.name };
-                    if (x.value == selTeacher) 
-                        setShownTeacher(x)
+            .then((response) => response.json())
+            .then((response) => {
+                if ('data' in response) {
+                    var arr = response.data.map(t => {
+                        const x = { value: t.id, label: t.name };
+                        if (x.value == selTeacher)
+                            setShownTeacher(x)
 
-                    return x;
-                })
+                        return x;
+                    })
 
-                //console.log(arr)
-                setTeachers(arr)
-            }
-        })
+                    setTeachers(arr)
+                }
+            })
 
     }, [activeFilters, selectedSubject, selStudent, selYear, selPage, selTeacher]);
-    
 
-    useEffect( () => {
+
+    useEffect(() => {
         setActiveFilters(filters.map(content => content.filter));
     }, [filters])
-    
+
+    useEffect(() => {
+        setSelPage(1);
+    }, [activeFilters, selectedSubject, selStudent, selYear, selTeacher])
+
     return (
         <div>
-            <h2 className="text-center">Apontamentos</h2>
-            
+            <h2 className="text-center mb-5">
+                <Typist>Apontamentos</Typist>
+            </h2>
+
             <Row className="mt-4">
                 <Col lg="3">
-                    <Details 
+                    <Details
                         note={selectedNote}
                         close={() => setSelectedNote(null)}
                         setSelYear={setSelYear}
@@ -259,124 +295,72 @@ const Apontamentos = () => {
                         setSelPage={setSelPage}
                     />
 
-                        <Select 
+                    <div className="filtros">
+
+                        <div className="d-flex flex-row flex-wrap">
+                            <h4>Filtros</h4>
+                            {
+                                (selectedSubject || selStudent || selTeacher || selYear) &&
+                                <FontAwesomeIcon 
+                                    className="ml-auto my-auto link text-primary animation" 
+                                    title="Remover filtros"
+                                    icon={faTimes} 
+                                    onClick={() => {
+                                        setSelectedSubject("");
+                                        setSelStudent("");
+                                        setSelTeacher("");
+                                        setSelYear("");
+                                        setShownYear("");
+                                        setShownSubj("");
+                                        setShownAuth("");
+                                        setShownTeacher("");
+                                    }}
+                                />
+                            }
+                        </div>
+
+                        <Select
                             id="teste"
                             className="react-select"
                             options={years}
-                            onChange={ (e) => { if (e == null){ setSelYear(""); setShownYear("")} else setSelYear(e.value);}}
-                            placeholder="Ano Letivo..."                            
+                            onChange={(e) => { if (e == null) { setSelYear(""); setShownYear("") } else setSelYear(e.value); }}
+                            placeholder="Ano Letivo..."
                             isClearable={true}
                             value={shownYear}
-                            
+
                         />
 
-                        <Select 
+                        <Select
                             className="react-select"
                             options={subjects}
-                            onChange={ (e) =>{ if (e == null){ setSelectedSubject(""); setShownSubj("")} else setSelectedSubject(e.value)}}
+                            onChange={(e) => { if (e == null) { setSelectedSubject(""); setShownSubj("") } else setSelectedSubject(e.value) }}
                             placeholder="Cadeira..."
                             isClearable={true}
                             value={shownSubj}
                         />
 
-                        <Select 
+                        <Select
                             className="react-select"
                             options={student}
-                            onChange={ (e) =>{ if (e == null){ setSelStudent(""); setShownAuth("")} else setSelStudent(e.value)}}
+                            onChange={(e) => { if (e == null) { setSelStudent(""); setShownAuth("") } else setSelStudent(e.value) }}
                             placeholder="Autor..."
                             isClearable={true}
                             value={shownAuth}
                         />
 
-                        <Select 
+                        <Select
                             className="react-select"
                             options={teachers}
-                            onChange={ (e) =>{ if (e == null){ setSelTeacher(""); setShownTeacher("")} else setSelTeacher(e.value)}}
+                            onChange={(e) => { if (e == null) { setSelTeacher(""); setShownTeacher("") } else setSelTeacher(e.value) }}
                             placeholder="Professor..."
                             isClearable={true}
                             value={shownTeacher}
                         />
-                    {/*
-                    <Form>
-                        
-                            <Form.Group>
-                            <Form.Control 
-                                type="text" 
-                                placeholder="Name"
-                                onChange={ (e) => setSubjectName(e.target.value)}
-                            />
-                            </Form.Group>
-                        
-                        
-                        <Form.Group>
-                            <Form.Control 
-                                as="select" 
-                                onChange={ (e) => setSelYear(e.target.value)}
-                            >
-                                <option value="">Ano Letivo...</option>
-                                {years}
-                            </Form.Control>
-                        </Form.Group>
-                        {/*
-                            <Form.Group>
-                            <Form.Control 
-                                as="select" 
-                                onChange={ (e) => setSelSemester(e.target.value)}
-                            >
-                                <option>Semester...</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                            </Form.Control>
-                        </Form.Group>
-                        
-                        
+                    </div>
 
-                        <Form.Group>
-                            <Form.Control 
-                                as="select" 
-                                onChange={ (e) => setSelectedSubject(e.target.value)}
-                                defaultValue={selectedSubject}
-                            >
-                                <option value="">Cadeira...</option>
-                                {subjects}
-                            </Form.Control>
-                        </Form.Group>
 
-                        
-
-                        {/*
-                            <Form.Group>
-                            <Form.Control 
-                                as="select" 
-                                onChange={ (e) => setSelStudent(e.target.value)}
-                                defaultValue={selStudent}
-                            >
-                                <option value="">Autor...</option>
-                                {student}
-                            </Form.Control>
-                        </Form.Group>
-                        }
-                        
-
-                        
-
-                        {/*
-                            <Form.Group>
-                            <Form.Control 
-                                as="select" 
-                                onChange={ (e) => setSelTeacher(e.target.value)}
-                            >
-                                <option value="">Professor...</option>
-                                {teachers}
-                            </Form.Control>
-                        </Form.Group>
-                        
-                        
-                    </Form>
-                    */
-                }
-                    
-                    <FilterSelect
+                    <h4 className="mt-3">Categorias</h4>
+                    <Filters
                         accordion={true}
                         filterList={filters}
                         activeFilters={activeFilters}
@@ -384,7 +368,7 @@ const Apontamentos = () => {
                         className="mb-5"
                         btnClass="btn-sm"
                         listClass="d-flex flex-column"
-                        allBtnClass="mx-2 py-2 mb-2"
+                        allBtnClass="mb-2 p-0 col-12"
                     />
                 </Col>
 
@@ -393,36 +377,78 @@ const Apontamentos = () => {
                  ** the views, which are specified in each Tab.Pane element.
                 */}
                 <Col lg="9">
+
                     <Tab.Container defaultActiveKey="grid">
                         <Nav onSelect={() => setSelectedNote(null)}>
-                            <Nav.Item><Nav.Link eventKey="grid" className="h5">
-                                <FontAwesomeIcon icon={ faTh } />
+                            <Nav.Item className="mx-auto mx-lg-0 ml-lg-0"><Nav.Link eventKey="grid" className="h5">
+                                <FontAwesomeIcon icon={faTh} />
                                 <span className="ml-3">Grid</span>
                             </Nav.Link></Nav.Item>
-                            <Nav.Item className="mr-auto"><Nav.Link eventKey="list" className="h5">
-                                <FontAwesomeIcon icon={ faThList } />
+                            <Nav.Item className="mx-auto mx-lg-0 mr-lg-auto"><Nav.Link eventKey="list" className="h5">
+                                <FontAwesomeIcon icon={faThList} />
                                 <span className="ml-3">List</span>
                             </Nav.Link></Nav.Item>
-                            <PageNav page={selPage} total={pageNumber} handler={fetchPage}></PageNav>
+                            <PageNav
+                                page={selPage}
+                                total={pageNumber}
+                                handler={fetchPage}
+                                className="mx-auto mx-lg-0 ml-lg-auto"
+                            ></PageNav>
                         </Nav>
 
                         <Tab.Content>
                             <Tab.Pane eventKey="grid">
-                                <GridView data={data} setSelected={setSelectedNote}></GridView>
+                                <div className="d-flex">
+                                    {
+                                        loading ?
+                                            <Spinner animation="grow" variant="primary" className="mx-auto mt-3" title="A carregar..." />
+                                            :
+                                            data.length == 0 ?
+                                                <Col sm={12}>
+                                                    <h3 className="text-center mt-3">Nenhum apontamento encontrado</h3>
+                                                    <h4 className="text-center">Tente definir filtros menos restritivos</h4>
+                                                </Col>
+                                                :
+                                                <GridView
+                                                    data={data}
+                                                    setSelected={setSelectedNote}
+                                                ></GridView>
+                                    }
+                                </div>
                             </Tab.Pane>
-                            <Tab.Pane eventKey="list">
-                                <ListView
-                                    data={data}
-                                    setSelYear={setSelYear}
-                                    setSelectedSubject={setSelectedSubject}
-                                    setSelStudent={setSelStudent}
-                                    setSelTeacher={setSelTeacher}
-                                ></ListView>
+                            <Tab.Pane eventKey="list" >
+                                <div className="d-flex flex-column">
+                                    {
+                                        loading ?
+                                            <Spinner animation="grow" variant="primary" className="mx-auto mt-3" title="A carregar..." />
+                                            :
+                                            data.length == 0 ?
+                                                <Col sm={12}>
+                                                    <h3 className="text-center mt-3">Nenhum apontamento encontrado</h3>
+                                                    <h4 className="text-center">Tente definir filtros menos restritivos</h4>
+                                                </Col>
+                                                :
+                                                <ListView
+                                                    data={data}
+                                                    setSelYear={setSelYear}
+                                                    setSelectedSubject={setSelectedSubject}
+                                                    setSelStudent={setSelStudent}
+                                                    setSelTeacher={setSelTeacher}
+                                                ></ListView>
+                                    }
+                                </div>
                             </Tab.Pane>
                         </Tab.Content>
                     </Tab.Container>
                 </Col>
             </Row>
+
+            <div className="text-center mt-5">
+                <h3>É a tua vez!</h3>
+                <p>
+                    Ajuda-nos a manter este repositório atualizado com os conteúdos mais recentes. Partilha connosco os teus através do email <a href="mailto:nei@aauav.pt">nei@aauav.pt</a>. Contamos com o teu apoio!
+                </p>
+            </div>
         </div>
     );
 }

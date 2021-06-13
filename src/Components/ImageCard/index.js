@@ -10,6 +10,7 @@ const ImageCard = (props) => {
     **  image: card image
     **  anchor: link associated with image and title
     **  darkMode (optional): set to a non-false value (e.g. "on" or True) to use a dark color scheme
+    **  animKey (optional): integer that increases delay on entrance animation
     */
 
     var color_class = "";
@@ -18,7 +19,10 @@ const ImageCard = (props) => {
     }
 
     return(
-        <Card className={"text-center mb-5 image-card" + color_class}>
+        <Card
+            className={"text-center mb-5 image-card animation" + color_class}
+            style={{animationDelay: props.animKey ? props.animKey*0.2+"s" : "0"}}
+        >
             <a href={props.anchor}>
             <Card.Img variant="top img-fluid" src={props.image} />
             </a>

@@ -11,11 +11,11 @@ import { faLinkedin } from '@fortawesome/free-brands-svg-icons'
 const Logo = process.env.PUBLIC_URL + "/linkedingLogo.png";
 
 
-const Person = ({img,name,description,linke}) => {
+const Person = ({img,name,description,linke, className, style}) => {
     return (
         <div>
             { 
-            <Container>
+            <Container className={className} style={style}>
                 <Col className="mx-auto" style={{textAlign: "center", marginBottom: 40}}>
                     <Image src={img} roundedCircle style={{width: 200, marginBottom: 20}}/>
                     <h3>{name}</h3>

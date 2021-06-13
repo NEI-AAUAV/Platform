@@ -12,6 +12,10 @@ a { color: #147a26!important }
 
 .tab-container {max-width: none!important;}
 
+.btn-group-vertical > .btn.active, .btn-group-vertical > .btn:active, .btn-group-vertical > .btn:focus, .btn-group > .btn.active, .btn-group > .btn:active, .btn-group > .btn:focus {
+    z-index: 0;
+}
+
 /* .btn */
 .btn {
     font-size: inherit;
@@ -47,6 +51,9 @@ a { color: #147a26!important }
     background-color: #147a26;
     border-color: #147a26;
 }
+.btn-outline-primary-force:hover {
+    background-color: #147a26!important;
+}
 
 /* cols from Bootstrap 5 */
 .col-xxl-9 {
@@ -63,6 +70,9 @@ body { font-size: 1rem!important; }
 small, .small, .btn-sm { font-size: .75rem!important; }
 h1 { font-size: 3.6rem!important; }
 h2 { font-size: 2.8rem!important; }
+@media only screen and (max-width: 777px){
+    h2 { font-size: 2rem!important; word-break: break-all; }
+}
 h3 { font-size: 1.75rem!important; }
 h4 { font-size: 1.25rem!important; }
 h5, .h5 { font-size: 1.15rem!important; }
@@ -71,6 +81,14 @@ h5, .h5 { font-size: 1.15rem!important; }
 /* extra Bootstrap */
 .link:hover {
     cursor: pointer!important;
+}
+
+.mhvh-100 {
+    min-height: 100vh;
+}
+
+.break-all {
+    word-break: break-all;
 }
 
 /* removing marker from li with ul inside */
@@ -85,6 +103,7 @@ li.sub {
     animation-duration: 1s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
+    transition: .3s ease all;
 }
 @keyframes fadeIn {
     from {
@@ -93,4 +112,21 @@ li.sub {
     to {
         opacity: 1;
     }
+}
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.slideUpFade {
+    transform: translateY(20px);
+    opacity: 0;
+    animation-name: slideUp, fadeIn;
+    animation-duration: 0.7s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
 }
