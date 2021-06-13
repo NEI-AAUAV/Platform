@@ -18,7 +18,7 @@ const NewsList = (props) => {
                 props.news.length == 0 &&
                 <Col sm={12}>
                     <h3 className="text-center mt-3">Nenhuma notícia encontrada</h3>
-                    <h4 className="text-center">Tente definir filtros menos restritivos</h4>
+                    <h4 className="text-center">Tenta definir filtros menos restritivos</h4>
                 </Col>
             }
             {

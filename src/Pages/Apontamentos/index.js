@@ -366,10 +366,16 @@ const Apontamentos = () => {
                                         loading ?
                                             <Spinner animation="grow" variant="primary" className="mx-auto mt-3" title="A carregar..." />
                                             :
-                                            <GridView
-                                                data={data}
-                                                setSelected={setSelectedNote}
-                                            ></GridView>
+                                            data.length == 0 ?
+                                                <Col sm={12}>
+                                                    <h3 className="text-center mt-3">Nenhum apontamento encontrado</h3>
+                                                    <h4 className="text-center">Tente definir filtros menos restritivos</h4>
+                                                </Col>
+                                                :
+                                                <GridView
+                                                    data={data}
+                                                    setSelected={setSelectedNote}
+                                                ></GridView>
                                     }
                                 </div>
                             </Tab.Pane>
@@ -379,13 +385,19 @@ const Apontamentos = () => {
                                         loading ?
                                             <Spinner animation="grow" variant="primary" className="mx-auto mt-3" title="A carregar..." />
                                             :
-                                            <ListView
-                                                data={data}
-                                                setSelYear={setSelYear}
-                                                setSelectedSubject={setSelectedSubject}
-                                                setSelStudent={setSelStudent}
-                                                setSelTeacher={setSelTeacher}
-                                            ></ListView>
+                                            data.length == 0 ?
+                                                <Col sm={12}>
+                                                    <h3 className="text-center mt-3">Nenhum apontamento encontrado</h3>
+                                                    <h4 className="text-center">Tente definir filtros menos restritivos</h4>
+                                                </Col>
+                                                :
+                                                <ListView
+                                                    data={data}
+                                                    setSelYear={setSelYear}
+                                                    setSelectedSubject={setSelectedSubject}
+                                                    setSelStudent={setSelStudent}
+                                                    setSelTeacher={setSelTeacher}
+                                                ></ListView>
                                     }
                                 </div>
                             </Tab.Pane>
