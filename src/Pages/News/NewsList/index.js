@@ -15,32 +15,27 @@ const NewsList = (props) => {
     return (
         <Row>
             {
-            props.loading ?     
-                <Col sm={12}>
-                    <h3 className="text-center">A carregar notícias...</h3>
-                </Col>
-            :
-            props.news.length == 0 &&     
+                props.news.length == 0 &&
                 <Col sm={12}>
                     <h3 className="text-center mt-3">Nenhuma notícia encontrada</h3>
                     <h4 className="text-center">Tente definir filtros menos restritivos</h4>
                 </Col>
             }
             {
-            props.news.map( article => {    
-                return(
-                    <Col lg={4} md={6} sm={12} key={key++}>
-                        <ImageCard
-                            image={process.env.REACT_APP_STATIC + article.header}
-                            title={article.title}
-                            preTitle={article.category}
-                            text={article.created_at}
-                            anchor={"/noticia/" + article.id}
-                            animKey={animKey++}
-                        ></ImageCard>
-                    </Col>
-                );
-            })}
+                props.news.map(article => {
+                    return (
+                        <Col lg={4} md={6} sm={12} key={key++}>
+                            <ImageCard
+                                image={process.env.REACT_APP_STATIC + article.header}
+                                title={article.title}
+                                preTitle={article.category}
+                                text={article.created_at}
+                                anchor={"/noticia/" + article.id}
+                                animKey={animKey++}
+                            ></ImageCard>
+                        </Col>
+                    );
+                })}
         </Row>
     );
 }
