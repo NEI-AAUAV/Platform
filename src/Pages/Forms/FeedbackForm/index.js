@@ -26,7 +26,7 @@ const FeedbackForm = () => {
         event.preventDefault();
 
         // POST form
-        return fetch(process.env.REACT_APP_API + '/forms/feedback', {
+        return fetch(process.env.REACT_APP_APIPOST + '/forms/feedback', {
             method: 'POST',
             body: JSON.stringify(form),
             headers: {
