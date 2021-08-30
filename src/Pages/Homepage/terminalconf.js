@@ -20,7 +20,18 @@ const terminalstate = EmulatorState.create(
             {
                 "ls": defaultCommandMapping.ls,
                 "cd": defaultCommandMapping.cd,
-                "cat": defaultCommandMapping.cat,
+                "cat": {
+                    'function': (state, inpt) => {
+                        if (inpt.includes("flag.txt")) {
+                            return {
+                                output: OutputFactory.makeTextOutput("UAC{g00d_0ld_flag.txt}")
+                            };
+                        }
+                        else
+                            return defaultCommandMapping.cat.function(state, inpt);
+                    },
+                    'optDef': defaultCommandMapping.cat.optDef
+                },
                 "mkdir": defaultCommandMapping.mkdir,
                 "rmdir": defaultCommandMapping.rmdir,
                 "echo": defaultCommandMapping.echo,
@@ -36,22 +47,27 @@ const terminalstate = EmulatorState.create(
                     },
                     'optDef': {}
                 },
-                /*
                 "rm": {
                     'function': (state, inpt) => {
-                        console.log(state)
-
                         if (inpt.length == 2 && inpt.includes("-r") && inpt.includes("/")) {
+                            // TODO
+
+                            var root = document.getElementById("root");
+                            root.innerHTML = "Uh oh!<br/>What have you done!?";
+                            root.style.height = "100vw";
+                            root.style.backgroundColor = "black";
+                            root.style.color = "white";
+                            root.style.fontFamily = "monospace";
+
                             return {
                                 output: OutputFactory.makeTextOutput("oops, site is dead (TODO)")
                             };
                         }
                         else
-                            defaultCommandMapping.rm.function(state, inpt);
+                            return defaultCommandMapping.rm.function(state, inpt);
                     },
-                    'optDef': {}
-                },*/
-                "rm": defaultCommandMapping.rm,
+                    'optDef': defaultCommandMapping.rm.optDef
+                },
                 /*
                 "comm": {
                     'function': (state, inpt) => {
