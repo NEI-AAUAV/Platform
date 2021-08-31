@@ -18,6 +18,8 @@ const Seniors = () => {
     // get course from URL parameters
     let {id} = useParams();
 
+    let animKey = 0; // index for delaying animations
+
     const [people, setPeople] = useState([]);
     const [selectedYear, setSelectedYear] = useState();
     const [anos, setAnos] = useState([]);
@@ -134,7 +136,7 @@ const Seniors = () => {
                                                 colSizeXl="3"
                                                 className="slideUpFade"
                                                 style={{
-                                                    animationDelay: animationBase + animationIncrement * 0 + "s"
+                                                    animationDelay: animationBase + animationIncrement * animKey++ + "s"
                                                 }}
                                             />
                                     )
@@ -143,7 +145,6 @@ const Seniors = () => {
                         </Row>
                     </>
             }
-
 
         </div>
     )
