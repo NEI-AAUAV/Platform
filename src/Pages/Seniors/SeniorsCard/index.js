@@ -2,22 +2,27 @@ import React from 'react';
 import { Col, Image } from 'react-bootstrap';
 import './index.css';
 
-const SeniorsCard = ({name, quote, image, colSizeXs, colSizeMd, colSizeSm}) => {
+const SeniorsCard = ({name, quote, image, colSizeXs, colSizeMd, colSizeSm, colSizeLg, colSizeXl}) => {
 
     // default colSizes
     if (!colSizeXs) colSizeXs = 12;
     if (!colSizeSm) colSizeSm = 12;
     if (!colSizeMd) colSizeMd = 4;
+    if (!colSizeLg) colSizeLg = 4;
+    if (!colSizeXl) colSizeXl = 3;
 
     return(
-        <Col sm={colSizeSm} md={colSizeMd}>
+        <Col sm={colSizeSm} md={colSizeMd} lg={colSizeLg} xl={colSizeXl}>
             <Image
-                //src={process.env.REACT_APP_STATIC + image}
-                src={"../../public" + image}
+                className="w-100"
+                src={image}
             />
 
             <h4 className="text-bold">{name}</h4>
-            <p className="seniors-quote">"{quote}"</p>
+            {
+                quote &&
+                <p className="seniors-quote">"{quote}"</p>
+            }
         </Col>
     );
 }

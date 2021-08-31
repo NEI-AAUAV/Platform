@@ -127,10 +127,11 @@ const Seniors = () => {
                                             <SeniorsCard
                                                 name={person.name}
                                                 quote={person.quote}
-                                                image={person.image}
+                                                image={process.env.REACT_APP_STATIC + person.image}
                                                 colSizeXs="12"
                                                 colSizeSm="6"
-                                                colSizeMd="4"
+                                                colSizeLg="4"
+                                                colSizeXl="3"
                                                 className="slideUpFade"
                                                 style={{
                                                     animationDelay: animationBase + animationIncrement * 0 + "s"
