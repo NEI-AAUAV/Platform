@@ -32,7 +32,7 @@
 
     // Make query to the database
     $query_getContent = "SELECT image FROM seniors WHERE course=:course AND year=:year";
-    $query2_getContent = "SELECT users.name FROM seniors_students INNER JOIN users ON users.id=seniors_students.userId WHERE seniors_students.course=:course AND seniors_students.year=:year ORDER BY users.name";
+    $query2_getContent = "SELECT users.name, seniors_students.quote, seniors_students.image FROM seniors_students INNER JOIN users ON users.id=seniors_students.userId WHERE seniors_students.course=:course AND seniors_students.year=:year ORDER BY users.name";
 
     try{
         // Query 1
