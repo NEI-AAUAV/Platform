@@ -69,11 +69,11 @@ const data = [
         'dropdown': [
             {
                 'name': 'Licenciatura',
-                'link': '/seniorsLEI'
+                'link': '/seniors/LEI'
             },
             {
                 'name': 'Mestrado',
-                'link': '/seniorsMEI'
+                'link': '/seniors/MEI'
             }
         ]
     },
