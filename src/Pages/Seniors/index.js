@@ -90,7 +90,7 @@ const Seniors = () => {
 
 
     return (
-        <div className="d-flex flex-column flex-wrap">
+        <div className="d-flex flex-column flex-wrap pb-5 mb-5">
             <h2 className="mb-5 text-center"><Typist>{"Finalistas de " + id}</Typist></h2>
 
             {anos}
