@@ -1,5 +1,6 @@
 {
-  "name": "website",
+  "name": "neiwebsite",
+  "homepage": "https://nei.web.ua.pt/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
