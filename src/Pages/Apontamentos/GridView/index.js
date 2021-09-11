@@ -6,6 +6,8 @@ import {
     faFolder
 } from '@fortawesome/free-solid-svg-icons';
 
+import authorNameProcessing from '../utils';
+
 const getIcon = (url) => {
     if (url.indexOf(".zip")>=0) {
         return faFolder;
@@ -27,7 +29,13 @@ const GridView = ({data, setSelected}) => {
                     (apontamento, i) => 
                     <Document
                         name={apontamento.name}
-                        description={apontamento.subjectName}
+                        description={
+                            apontamento.authorName 
+                                ? 
+                                apontamento.subjectName + "<br/>por " + authorNameProcessing(apontamento.authorName)
+                                : 
+                                apontamento.subjectName
+                        }
                         className="col-xl-4 link slideUpFade"
                         style={{animationDelay: (animationBase + (i*animationIncrement)) + "s"}}
                         size="2x"
