@@ -56,6 +56,19 @@ a { color: #147a26!important }
     color: #fff!important;
 }
 
+/* bgs */
+.bg-outline-primary {
+    background: none;
+    border: 1px solid #147a26;
+    border-radius: .25rem;
+}
+
+.bg-outline-danger {
+    background: none;
+    border: 1px solid #dc3545;
+    border-radius: .25rem;
+}
+
 /* cols from Bootstrap 5 */
 .col-xxl-9 {
     flex: 0 0 auto;

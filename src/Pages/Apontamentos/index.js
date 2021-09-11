@@ -7,6 +7,7 @@ import GridView from './GridView';
 import "./index.css";
 import PageNav from '../../Components/PageNav';
 import Filters from "../../Components/Filters";
+import Alert from '../../Components/Alert';
 import Details from "./Details";
 import Select from "react-select";
 import Typist from 'react-typist';
@@ -44,6 +45,11 @@ const Apontamentos = () => {
     const [shownTeacher, setShownTeacher] = useState();
 
     const [loading, setLoading] = useState(true);
+
+    const [alert, setAlert] = useState({
+        'type': null,
+        'text': ""
+    })
 
 
     const fetchPage = (p_num) => {
@@ -180,8 +186,11 @@ const Apontamentos = () => {
                     setLoading(false);
                 })
                 .catch((error) => {
-                    console.log("Invalid parameters (no \"notes\" matching)!");
-                    resetFilters();
+                    console.log("Error getting notes!");
+                    setAlert({
+                        'type': 'alert',
+                        'text': 'Ocorreu um erro ao processar o teu pedido. Por favor recarrega a página.'
+                    });
                 });
         }
 
@@ -210,6 +219,10 @@ const Apontamentos = () => {
             .catch((error) => {
                 console.log("Invalid parameters (no \"years\" matching)!");
                 resetFilters();
+                setAlert({
+                    'type': 'alert',
+                    'text': 'Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.'
+                });
             });
 
         fetch(process.env.REACT_APP_API + "/notes/subjects" + fullSubj)
@@ -236,6 +249,10 @@ const Apontamentos = () => {
             .catch((error) => {
                 console.log("Invalid parameters (no \"subjects\" matching)!");
                 resetFilters();
+                setAlert({
+                    'type': 'alert',
+                    'text': 'Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.'
+                });
             });
 
         fetch(process.env.REACT_APP_API + "/notes/students" + fullStud)
@@ -260,6 +277,10 @@ const Apontamentos = () => {
             .catch((error) => {
                 console.log("Invalid parameters (no \"students\" matching)!");
                 resetFilters();
+                setAlert({
+                    'type': 'alert',
+                    'text': 'Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.'
+                });
             });
 
 
@@ -284,6 +305,10 @@ const Apontamentos = () => {
             .catch((error) => {
                 console.log("Invalid parameters (no \"teachers\" matching)!");
                 resetFilters();
+                setAlert({
+                    'type': 'alert',
+                    'text': 'Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.'
+                });
             });
 
     }, [activeFilters, selectedSubject, selStudent, selYear, selPage, selTeacher]);
@@ -309,7 +334,10 @@ const Apontamentos = () => {
         }
         // Copy to user's clipboard
         navigator.clipboard.writeText(url.slice(0, -1)); // Remove last char (? if no filters or extra &)
-        alert("O URL foi copiado para a área de transferência! :)");
+        setAlert({
+            'type': 'info',
+            'text': "O URL foi copiado para a área de transferência! :)"
+        });
     }
 
     let resetFilters = () => {
@@ -325,9 +353,15 @@ const Apontamentos = () => {
 
     return (
         <div>
-            <h2 className="text-center mb-5">
-                <Typist>Apontamentos</Typist>
-            </h2>
+            <div class="d-flex flex-column mb-5">
+                <h2 className="text-center mb-2">
+                    <Typist>Apontamentos</Typist>
+                </h2>
+                <Alert 
+                    alert={alert}
+                    setAlert={setAlert}
+                />
+            </div>
 
             <Row className="mt-4">
                 <Col className="d-flex flex-column" lg="4" xl="3">
