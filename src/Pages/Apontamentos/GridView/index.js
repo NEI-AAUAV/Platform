@@ -31,7 +31,7 @@ const GridView = ({data, setSelected}) => {
                         className="col-xl-4 link slideUpFade"
                         style={{animationDelay: (animationBase + (i*animationIncrement)) + "s"}}
                         size="2x"
-                        icon={getIcon(apontamento.location)}
+                        icon={apontamento.type_icon_display.split(" ")}
                         onClick={() => setSelected(apontamento)}
                         title="Detalhes"
                         tags={(() => {

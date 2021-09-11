@@ -4,12 +4,20 @@ import FloatingBtns from './Components/FloatingBtns';
 import { useRoutes } from 'react-router-dom';
 import routes from './routes';
 
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faChevronUp, faFilePdf, faFolder, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons'
+
+// Register Fontawesome icons
+// https://fontawesome.com/v5.15/how-to-use/on-the-web/using-with/react (Using Icons via Global Use)
+library.add(fab, faFilePdf, faFolder, faCloudDownloadAlt);
 
 const App = () => {
     const routing = useRoutes(routes);
 
+
+    // Back to top button
     const [top, setTop] = useState(true);
     useEffect(() => {
         window.addEventListener('scroll', scrollHandler);

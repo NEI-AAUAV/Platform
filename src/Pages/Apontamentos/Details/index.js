@@ -55,13 +55,16 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                     )
                 }
             </div>
-            <a href={process.env.REACT_APP_STATIC + note.location} target="_blank" rel="noreferrer">
+            <a 
+                href={note.type_external ? note.location : process.env.REACT_APP_STATIC + note.location} 
+                target="_blank" rel="noreferrer"
+                >
                 <button className="btn btn-sm btn-outline-primary mb-3 ml-0">
                     <FontAwesomeIcon
-                        icon={faCloudDownloadAlt}
+                        icon={note.type_icon_download.split(" ")}
                         size={"1x"}
                     />
-                    <span className="ml-1">Descarregar</span>
+                    <span className="ml-1">{note.type_download_caption}</span>
                 </button>
             </a>
 

@@ -146,10 +146,13 @@ const ListView = (props) => {
                                         </dl>
                                     </Col>
                                     <Col sm="12" lg="4">
-                                        <a href={process.env.REACT_APP_STATIC + item.location} target="_blank" rel="noreferrer">
+                                        <a 
+                                            href={item.type_external ? item.location : process.env.REACT_APP_STATIC + item.location} 
+                                            target="_blank" rel="noreferrer"
+                                        >
                                             <button className="btn btn-sm btn-outline-primary mb-3 ml-0">
-                                                <FontAwesomeIcon icon={faCloudDownloadAlt} size={"1x"}/>
-                                                <span className="ml-1">Descarregar</span>
+                                                <FontAwesomeIcon icon={item.type_icon_download.split(" ")} size={"1x"}/>
+                                                <span className="ml-1">{item.type_download_caption}</span>
                                             </button>
                                         </a>
                                     </Col>
