@@ -2,6 +2,7 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
+// Reduce number of names in big ones
 var authorNameProcessing = (name) => {
     if (!name)
         return ""
@@ -13,4 +14,17 @@ var authorNameProcessing = (name) => {
     return capitalizeFirstLetter(namesp[0]) + " " + capitalizeFirstLetter(namesp[namesp.length-1]);
 }
 
-export default authorNameProcessing;
+// Difference between dates
+let today = new Date();
+
+var monthsPassed = (d) => {
+    console.log("----");
+    console.log("today", today);
+    console.log("d", d);
+    let months = (today.getFullYear() - d.getFullYear()) * 12;
+    months -= d.getMonth();
+    months += today.getMonth();
+    console.log(months);
+    return months;
+}
+export {authorNameProcessing, monthsPassed};

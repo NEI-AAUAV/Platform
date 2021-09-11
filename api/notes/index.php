@@ -53,6 +53,7 @@
             notes.notebook,
             notes.location,
             notes.content,
+            notes.createdAt,
             notes_schoolyear.yearBegin,
             notes_schoolyear.yearEnd,
             notes_schoolyear.id AS yearId,

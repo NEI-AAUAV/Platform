@@ -25,6 +25,11 @@
     background-color: #d31115;
 }
 
+.tag-new {
+    color: #147a26;
+    border: 1px solid #147a26;
+}
+
 .react-select {
     margin-bottom: 1em;
     

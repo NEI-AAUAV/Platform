@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faFilter, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
 import "./index.css";
 
-import authorNameProcessing from '../utils';
+import {authorNameProcessing, monthsPassed} from '../utils';
 
 function titleCase(str) {
     var splitStr = str.toLowerCase().split(' ');
@@ -70,6 +70,7 @@ const ListView = (props) => {
                                 </Col>
                             </Row>
                             <Row className="pl-2 mt-1">
+                                {monthsPassed(new Date(item.createdAt)) < 3 && <span className="badge mr-0 ml-1 badge-pill tag-new"  >Novo!</span>}
                                 {item.summary     ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-summary"  >Resumos</span>}
                                 {item.tests       ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-tests"    >Testes e exames</span>}
                                 {item.bibliography==="1" && <span className="badge mr-0 ml-1 badge-pill tag-biblio"   >Bibliografia</span>}
