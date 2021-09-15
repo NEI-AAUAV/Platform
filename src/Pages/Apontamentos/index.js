@@ -378,26 +378,34 @@ const Apontamentos = () => {
 
                     <div className="filtros order-0 order-lg-1">
 
-                        <div className="d-flex flex-row flex-wrap">
-                            <h4>Filtros</h4>
-                            {
-                                (selectedSubject || selStudent || selTeacher || selYear) &&
-                                    <>
+                        <h4>Filtros</h4>
+                        {
+                            (selectedSubject || selStudent || selTeacher || selYear) &&
+                                <div className="d-flex flex-row flex-wrap mb-2">
+                                    <button 
+                                        className="rounded-pill btn btn-outline-primary btn-sm pill animation mr-2"
+                                        onClick={() => linkShare()}    
+                                        title="Copiar link com filtros"
+                                    >
+                                        <span className="mr-1">Partilhar</span>
                                         <FontAwesomeIcon
-                                            className="ml-auto my-auto link text-primary animation"
-                                            title="Copiar link com filtros"
+                                            className="my-auto link"
                                             icon={faShareAlt}
-                                            onClick={() => linkShare()}
                                         />
+                                    </button>
+                                    <button 
+                                        className="rounded-pill btn btn-outline-primary btn-sm pill animation mr-2"
+                                        onClick={() => resetFilters()}    
+                                        title="Remover filtros"
+                                    >
+                                        <span className="mr-1">Limpar</span>
                                         <FontAwesomeIcon 
-                                            className="ml-2 my-auto link text-primary animation" 
-                                            title="Remover filtros"
+                                            className="my-auto link" 
                                             icon={faTimes} 
-                                            onClick={() => resetFilters()}
                                         />
-                                    </>
-                            }
-                        </div>
+                                    </button>
+                                </div>
+                        }
 
                         <Select
                             id="teste"
