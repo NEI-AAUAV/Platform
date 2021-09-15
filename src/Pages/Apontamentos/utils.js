@@ -18,13 +18,9 @@ var authorNameProcessing = (name) => {
 let today = new Date();
 
 var monthsPassed = (d) => {
-    console.log("----");
-    console.log("today", today);
-    console.log("d", d);
     let months = (today.getFullYear() - d.getFullYear()) * 12;
     months -= d.getMonth();
     months += today.getMonth();
-    console.log(months);
     return months;
 }
 export {authorNameProcessing, monthsPassed};
