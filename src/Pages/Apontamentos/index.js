@@ -467,23 +467,25 @@ const Apontamentos = () => {
                 */}
                 <Col lg="8" xl="9">
 
-                    <Tab.Container defaultActiveKey="grid">
-                        <Nav onSelect={() => setSelectedNote(null)}>
-                            <Nav.Item className="mx-auto mx-lg-0 ml-lg-0"><Nav.Link eventKey="grid" className="h5">
-                                <FontAwesomeIcon icon={faTh} />
-                                <span className="ml-3">Grid</span>
-                            </Nav.Link></Nav.Item>
-                            <Nav.Item className="mx-auto mx-lg-0 mr-lg-auto"><Nav.Link eventKey="list" className="h5">
-                                <FontAwesomeIcon icon={faThList} />
-                                <span className="ml-3">List</span>
-                            </Nav.Link></Nav.Item>
-                            <PageNav
-                                page={selPage}
-                                total={pageNumber}
-                                handler={fetchPage}
-                                className="mx-auto mx-lg-0 ml-lg-auto"
-                            ></PageNav>
-                        </Nav>
+                    <Tab.Container defaultActiveKey={window.innerWidth>=992 ? "grid" : "list"}>
+                        <div className="d-none d-lg-block">
+                            <Nav onSelect={() => setSelectedNote(null)}>
+                                <Nav.Item className="mx-auto mx-lg-0 ml-lg-0"><Nav.Link eventKey="grid" className="h5">
+                                    <FontAwesomeIcon icon={faTh} />
+                                    <span className="ml-3">Grid</span>
+                                </Nav.Link></Nav.Item>
+                                <Nav.Item className="mx-auto mx-lg-0 mr-lg-auto"><Nav.Link eventKey="list" className="h5">
+                                    <FontAwesomeIcon icon={faThList} />
+                                    <span className="ml-3">List</span>
+                                </Nav.Link></Nav.Item>
+                                <PageNav
+                                    page={selPage}
+                                    total={pageNumber}
+                                    handler={fetchPage}
+                                    className="mx-auto mx-lg-0 ml-lg-auto"
+                                ></PageNav>
+                            </Nav>
+                        </div>
 
                         <Tab.Content>
                             <Tab.Pane eventKey="grid">
