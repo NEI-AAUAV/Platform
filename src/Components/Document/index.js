@@ -39,7 +39,7 @@ const Document = ({name, description, link, blank, className, icon, size, onClic
             <FontAwesomeIcon className="text-primary mr-3" icon={ icon ? icon : faFilePdf } size={size ? size : "3x"}/>
             <div>
                 <h4 className="mb-0 text-dark break-all">{name}</h4>
-                <p className="small text-secondary mb-0">{description}</p>
+                <p className="small text-secondary mb-0" dangerouslySetInnerHTML={{__html: description}}></p>
                 <div className="row mx-0 mt-1">
                     {
                         tags && tags.map(

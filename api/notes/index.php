@@ -53,6 +53,7 @@
             notes.notebook,
             notes.location,
             notes.content,
+            notes.createdAt,
             notes_schoolyear.yearBegin,
             notes_schoolyear.yearEnd,
             notes_schoolyear.id AS yearId,
@@ -60,12 +61,17 @@
             notes_teachers.personalPage AS teacherPage,
             notes_teachers.id AS teacherId,
             users.full_name AS authorName,
-            users.id AS authorId
+            users.id AS authorId,
+            notes_types.download_caption AS type_download_caption,
+            notes_types.icon_display AS type_icon_display,
+            notes_types.icon_download AS type_icon_download,
+            notes_types.external AS type_external
         FROM notes 
             LEFT JOIN notes_subjects ON notes.subject=notes_subjects.paco_code 
             LEFT JOIN notes_schoolyear ON notes.schoolYear=notes_schoolyear.id
             LEFT JOIN notes_teachers ON notes.teacher=notes_teachers.id 
             LEFT JOIN users ON users.id=notes.author 
+            LEFT JOIN notes_types ON notes.type=notes_types.id
         ";
 
     $query_getContent.= " WHERE";

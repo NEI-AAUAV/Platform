@@ -6,6 +6,8 @@ import {
     faFolder
 } from '@fortawesome/free-solid-svg-icons';
 
+import {authorNameProcessing, monthsPassed} from '../utils';
+
 const getIcon = (url) => {
     if (url.indexOf(".zip")>=0) {
         return faFolder;
@@ -18,7 +20,6 @@ const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
 const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
 
 const GridView = ({data, setSelected}) => {
-
     
     return(
         <div className="d-flex flex-row flex-wrap col-12 mx-0 p-0">
@@ -27,15 +28,22 @@ const GridView = ({data, setSelected}) => {
                     (apontamento, i) => 
                     <Document
                         name={apontamento.name}
-                        description={apontamento.subjectName}
+                        description={
+                            apontamento.authorName 
+                                ? 
+                                apontamento.subjectName + "<br/>por " + authorNameProcessing(apontamento.authorName)
+                                : 
+                                apontamento.subjectName
+                        }
                         className="col-xl-4 link slideUpFade"
                         style={{animationDelay: (animationBase + (i*animationIncrement)) + "s"}}
                         size="2x"
-                        icon={getIcon(apontamento.location)}
+                        icon={apontamento.type_icon_display.split(" ")}
                         onClick={() => setSelected(apontamento)}
                         title="Detalhes"
                         tags={(() => {
                             var tags = [];
+                            monthsPassed(new Date(apontamento.createdAt)) < 3 && tags.push({"name": "Novo!", "className": "tag-new"});
                             apontamento.summary=="1" && tags.push({"name": "Resumos", "className": "tag-summary"});
                             apontamento.tests=="1" && tags.push({"name": "Testes e exames", "className": "tag-tests"});
                             apontamento.bibliography=="1" && tags.push({"name": "Bibliografia", "className": "tag-biblio"});
