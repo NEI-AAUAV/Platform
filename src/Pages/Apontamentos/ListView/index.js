@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faFilter, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
 import "./index.css";
 
+import {authorNameProcessing, monthsPassed} from '../utils';
+
 function titleCase(str) {
     var splitStr = str.toLowerCase().split(' ');
     for (var i = 0; i < splitStr.length; i++) {
@@ -30,14 +32,17 @@ const ListView = (props) => {
     return(
         <div className="mx-3">
             <Row className="list-view-header">
-                <Col md="5" className="list-view-name">
+                <Col md="4" className="list-view-name">
                     Ficheiro
                 </Col>
-                <Col md="5" className="list-view-subject-name">
+                <Col md="4" className="list-view-subject-name">
                     Cadeira
                 </Col>
-                <Col md="2" className="list-view-subject-short">
+                <Col md="1" className="list-view-subject-short">
                     Sigla
+                </Col>
+                <Col md="3" className="list-view-subject-name">
+                    Autor
                 </Col>
             </Row>
 
@@ -51,17 +56,21 @@ const ListView = (props) => {
                     >
                         <Accordion.Toggle as={Card.Header} eventKey={item.id}>
                             <Row>
-                                <Col md="5" className="list-view-name">
+                                <Col md="4" className="list-view-name">
                                     {item.name}
                                 </Col>
-                                <Col md="5" className="list-view-subject-name">
+                                <Col md="4" className="list-view-subject-name">
                                     {item.subjectName}
                                 </Col>
-                                <Col md="2" className="list-view-subject-short">
+                                <Col md="1" className="list-view-subject-short">
                                     {item.subjectShort}
+                                </Col>
+                                <Col md="3" className="list-view-subject-name">
+                                    {authorNameProcessing(item.authorName)}
                                 </Col>
                             </Row>
                             <Row className="pl-2 mt-1">
+                                {monthsPassed(new Date(item.createdAt)) < 3 && <span className="badge mr-0 ml-1 badge-pill tag-new"  >Novo!</span>}
                                 {item.summary     ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-summary"  >Resumos</span>}
                                 {item.tests       ==="1" && <span className="badge mr-0 ml-1 badge-pill tag-tests"    >Testes e exames</span>}
                                 {item.bibliography==="1" && <span className="badge mr-0 ml-1 badge-pill tag-biblio"   >Bibliografia</span>}
@@ -146,10 +155,13 @@ const ListView = (props) => {
                                         </dl>
                                     </Col>
                                     <Col sm="12" lg="4">
-                                        <a href={process.env.REACT_APP_STATIC + item.location} target="_blank" rel="noreferrer">
+                                        <a 
+                                            href={item.type_external ? item.location : process.env.REACT_APP_STATIC + item.location} 
+                                            target="_blank" rel="noreferrer"
+                                        >
                                             <button className="btn btn-sm btn-outline-primary mb-3 ml-0">
-                                                <FontAwesomeIcon icon={faCloudDownloadAlt} size={"1x"}/>
-                                                <span className="ml-1">Descarregar</span>
+                                                <FontAwesomeIcon icon={item.type_icon_download.split(" ")} size={"1x"}/>
+                                                <span className="ml-1">{item.type_download_caption}</span>
                                             </button>
                                         </a>
                                     </Col>

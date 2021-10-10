@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Tab, Nav, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTh, faThList, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTh, faThList, faTimes, faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import ListView from './ListView';
 import GridView from './GridView';
 import "./index.css";
 import PageNav from '../../Components/PageNav';
 import Filters from "../../Components/Filters";
+import Alert from '../../Components/Alert';
 import Details from "./Details";
 import Select from "react-select";
 import Typist from 'react-typist';
+import categoryFilters from './filters';
 
 const Apontamentos = () => {
 
@@ -44,6 +46,11 @@ const Apontamentos = () => {
 
     const [loading, setLoading] = useState(true);
 
+    const [alert, setAlert] = useState({
+        'type': null,
+        'text': ""
+    })
+
 
     const fetchPage = (p_num) => {
         console.log("currPage: " + selPage + ", new_page: " + p_num);
@@ -51,48 +58,35 @@ const Apontamentos = () => {
         setSelPage(p_num);
     }
 
+    // When page loads
     useEffect(() => {
-        setFilters(
-            [
-                {
-                    'db': 'bibliography',
-                    'filter': 'Bibliografia',
-                    'color': 'rgb(1, 202, 228)'
-                },
-                {
-                    'db': 'slides',
-                    'filter': 'Slides teóricos',
-                    'color': 'rgb(1, 90, 101)'
-                },
-                {
-                    'db': 'projects',
-                    'filter': 'Projetos',
-                    'color': 'rgb(101, 230, 125)'
-                },
-                {
-                    'db': 'exercises',
-                    'filter': 'Guiões práticos e exercícios',
-                    'color': 'rgb(32, 197, 62)'
-                },
-                {
-                    'db': 'tests',
-                    'filter': 'Testes e exames',
-                    'color': 'rgb(20, 122, 38)'
-                },
-                {
-                    'db': 'notebook',
-                    'filter': 'Caderno',
-                    'color': 'rgb(211, 17, 21)'
-                },
-                {
-                    'db': 'summary',
-                    'filter': 'Resumos',
-                    'color': 'rgb(255, 162, 0)'
-                },
-            ]
-        )
-    }, [])
-
+        // 1. Load category filters (static)
+        setFilters(categoryFilters);
+        setActiveFilters(categoryFilters.map(content => content.filter));
+        // 2. Check if there are filtering parameters on URL
+        // Get parameters and apply to filters
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('year'))
+            setSelYear(urlParams.get('year'));
+        if(urlParams.get('subject'))
+            setSelectedSubject(urlParams.get('subject'));
+        if(urlParams.get('author'))
+            setSelStudent(urlParams.get('author'));
+        if(urlParams.get('teacher'))
+            setSelTeacher(urlParams.get('teacher'));
+        let active = [];
+        urlParams.getAll('category').forEach((categoryParam) => {
+            let find = categoryFilters.find(f => f.db==categoryParam);
+            if (find) 
+                active.push(find.filter);
+        });
+        if (active.length>0) {
+            setActiveFilters(active);
+        }
+        // Remove data from URL
+        var url = document.location.href;
+        window.history.pushState({}, "", url.split("?")[0]);
+    }, []);
 
     useEffect(() => {
 
@@ -176,9 +170,11 @@ const Apontamentos = () => {
             fullNotes += extraYear;
             fullNotes = fullNotes.substring(0, fullNotes.length - 1); // ignore the last '&'
 
-            //console.log(fullNotes)
             fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
-                .then((response) => response.json())
+                .then((response) => {
+                    if (!response.ok) {throw new Error(response.status)}
+                    return response.json()
+                })
                 .then((response) => {
                     if ('data' in response) {
                         setData(response.data)
@@ -189,10 +185,20 @@ const Apontamentos = () => {
                     }
                     setLoading(false);
                 })
+                .catch((error) => {
+                    console.log("Error getting notes!");
+                    setAlert({
+                        'type': 'alert',
+                        'text': 'Ocorreu um erro ao processar o teu pedido. Por favor recarrega a página.'
+                    });
+                });
         }
 
         fetch(process.env.REACT_APP_API + "/notes/years" + fullYear)
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {throw new Error(response.status)}
+                return response.json()
+            })
             .then((response) => {
                 /*setYears(response.data.map( (year) => 
                     <option value={year.id} selected={year.id == selYear}>{year.yearBegin + "-" + year.yearEnd}</option>
@@ -209,12 +215,21 @@ const Apontamentos = () => {
 
                     setYears(arr)
                 }
-
-
             })
+            .catch((error) => {
+                console.log("Invalid parameters (no \"years\" matching)!");
+                resetFilters();
+                setAlert({
+                    'type': 'alert',
+                    'text': 'Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.'
+                });
+            });
 
         fetch(process.env.REACT_APP_API + "/notes/subjects" + fullSubj)
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {throw new Error(response.status)}
+                return response.json()
+            })
             .then((response) => {
 
                 if ('data' in response) {
@@ -231,9 +246,20 @@ const Apontamentos = () => {
                     setSubjects(arr)
                 }
             })
+            .catch((error) => {
+                console.log("Invalid parameters (no \"subjects\" matching)!");
+                resetFilters();
+                setAlert({
+                    'type': 'alert',
+                    'text': 'Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.'
+                });
+            });
 
         fetch(process.env.REACT_APP_API + "/notes/students" + fullStud)
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {throw new Error(response.status)}
+                return response.json()
+            })
             .then((response) => {
 
                 if ('data' in response) {
@@ -248,10 +274,21 @@ const Apontamentos = () => {
                     setStudents(arr)
                 }
             })
+            .catch((error) => {
+                console.log("Invalid parameters (no \"students\" matching)!");
+                resetFilters();
+                setAlert({
+                    'type': 'alert',
+                    'text': 'Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.'
+                });
+            });
 
 
         fetch(process.env.REACT_APP_API + "/notes/teachers" + fullTeacher)
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {throw new Error(response.status)}
+                return response.json()
+            })
             .then((response) => {
                 if ('data' in response) {
                     var arr = response.data.map(t => {
@@ -265,23 +302,66 @@ const Apontamentos = () => {
                     setTeachers(arr)
                 }
             })
+            .catch((error) => {
+                console.log("Invalid parameters (no \"teachers\" matching)!");
+                resetFilters();
+                setAlert({
+                    'type': 'alert',
+                    'text': 'Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.'
+                });
+            });
 
     }, [activeFilters, selectedSubject, selStudent, selYear, selPage, selTeacher]);
-
-
-    useEffect(() => {
-        setActiveFilters(filters.map(content => content.filter));
-    }, [filters])
 
     useEffect(() => {
         setSelPage(1);
     }, [activeFilters, selectedSubject, selStudent, selYear, selTeacher])
 
+    // This method allows user to share the filtering parameters through a parameterized URL
+    let linkShare = () => {
+        // Build URL
+        let url = window.location.origin + window.location.pathname + '?';
+        if (selYear)
+            url += `year=${selYear}&`;
+        if (selectedSubject)
+            url += `subject=${selectedSubject}&`;
+        if (selStudent)
+            url += `author=${selStudent}&`;
+        if (selTeacher)
+            url += `teacher=${selTeacher}&`;
+        for (var i = 0; i < activeFilters.length; i++) {
+            url += "category=" + filters.filter(f => f['filter'] == activeFilters[i])[0]['db'] + "&";
+        }
+        // Copy to user's clipboard
+        navigator.clipboard.writeText(url.slice(0, -1)); // Remove last char (? if no filters or extra &)
+        setAlert({
+            'type': 'info',
+            'text': "O URL foi copiado para a área de transferência! :)"
+        });
+    }
+
+    let resetFilters = () => {
+        setSelectedSubject("");
+        setSelStudent("");
+        setSelTeacher("");
+        setSelYear("");
+        setShownYear("");
+        setShownSubj("");
+        setShownAuth("");
+        setShownTeacher("");
+    }
+
     return (
         <div>
-            <h2 className="text-center mb-5">
-                <Typist>Apontamentos</Typist>
-            </h2>
+            <div class="d-flex flex-column mb-5">
+                <h2 className="text-center mb-2">
+                    <Typist>Apontamentos</Typist>
+                </h2>
+                <Alert 
+                    alert={alert}
+                    setAlert={setAlert}
+                />
+            </div>
 
             <Row className="mt-4">
                 <Col className="d-flex flex-column" lg="4" xl="3">
@@ -298,27 +378,34 @@ const Apontamentos = () => {
 
                     <div className="filtros order-0 order-lg-1">
 
-                        <div className="d-flex flex-row flex-wrap">
-                            <h4>Filtros</h4>
-                            {
-                                (selectedSubject || selStudent || selTeacher || selYear) &&
-                                <FontAwesomeIcon 
-                                    className="ml-auto my-auto link text-primary animation" 
-                                    title="Remover filtros"
-                                    icon={faTimes} 
-                                    onClick={() => {
-                                        setSelectedSubject("");
-                                        setSelStudent("");
-                                        setSelTeacher("");
-                                        setSelYear("");
-                                        setShownYear("");
-                                        setShownSubj("");
-                                        setShownAuth("");
-                                        setShownTeacher("");
-                                    }}
-                                />
-                            }
-                        </div>
+                        <h4>Filtros</h4>
+                        {
+                            (selectedSubject || selStudent || selTeacher || selYear) &&
+                                <div className="d-flex flex-row flex-wrap mb-2">
+                                    <button 
+                                        className="rounded-pill btn btn-outline-primary btn-sm pill animation mr-2"
+                                        onClick={() => linkShare()}    
+                                        title="Copiar link com filtros"
+                                    >
+                                        <span className="mr-1">Partilhar</span>
+                                        <FontAwesomeIcon
+                                            className="my-auto link"
+                                            icon={faShareAlt}
+                                        />
+                                    </button>
+                                    <button 
+                                        className="rounded-pill btn btn-outline-primary btn-sm pill animation mr-2"
+                                        onClick={() => resetFilters()}    
+                                        title="Remover filtros"
+                                    >
+                                        <span className="mr-1">Limpar</span>
+                                        <FontAwesomeIcon 
+                                            className="my-auto link" 
+                                            icon={faTimes} 
+                                        />
+                                    </button>
+                                </div>
+                        }
 
                         <Select
                             id="teste"
@@ -380,23 +467,25 @@ const Apontamentos = () => {
                 */}
                 <Col lg="8" xl="9">
 
-                    <Tab.Container defaultActiveKey="grid">
-                        <Nav onSelect={() => setSelectedNote(null)}>
-                            <Nav.Item className="mx-auto mx-lg-0 ml-lg-0"><Nav.Link eventKey="grid" className="h5">
-                                <FontAwesomeIcon icon={faTh} />
-                                <span className="ml-3">Grid</span>
-                            </Nav.Link></Nav.Item>
-                            <Nav.Item className="mx-auto mx-lg-0 mr-lg-auto"><Nav.Link eventKey="list" className="h5">
-                                <FontAwesomeIcon icon={faThList} />
-                                <span className="ml-3">List</span>
-                            </Nav.Link></Nav.Item>
-                            <PageNav
-                                page={selPage}
-                                total={pageNumber}
-                                handler={fetchPage}
-                                className="mx-auto mx-lg-0 ml-lg-auto"
-                            ></PageNav>
-                        </Nav>
+                    <Tab.Container defaultActiveKey={window.innerWidth>=992 ? "grid" : "list"}>
+                        <div className="d-none d-lg-block">
+                            <Nav onSelect={() => setSelectedNote(null)}>
+                                <Nav.Item className="mx-auto mx-lg-0 ml-lg-0"><Nav.Link eventKey="grid" className="h5">
+                                    <FontAwesomeIcon icon={faTh} />
+                                    <span className="ml-3">Grid</span>
+                                </Nav.Link></Nav.Item>
+                                <Nav.Item className="mx-auto mx-lg-0 mr-lg-auto"><Nav.Link eventKey="list" className="h5">
+                                    <FontAwesomeIcon icon={faThList} />
+                                    <span className="ml-3">List</span>
+                                </Nav.Link></Nav.Item>
+                                <PageNav
+                                    page={selPage}
+                                    total={pageNumber}
+                                    handler={fetchPage}
+                                    className="mx-auto mx-lg-0 ml-lg-auto"
+                                ></PageNav>
+                            </Nav>
+                        </div>
 
                         <Tab.Content>
                             <Tab.Pane eventKey="grid">
