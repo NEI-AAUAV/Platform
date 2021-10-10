@@ -105,6 +105,10 @@ h5, .h5 { font-size: 1.15rem!important; }
     word-break: break-all;
 }
 
+.word-break {
+    word-break: break-word;
+}
+
 /* removing marker from li with ul inside */
 li.sub {
     list-style-type: none;

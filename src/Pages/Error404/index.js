@@ -36,7 +36,7 @@ const Error404 = () => {
     // On redirect set, redirect to page
     useEffect(() => {
         if (redirect) {
-            window.location.href = redirect;
+            // window.location.href = redirect;
         }
     }, [redirect])
 
@@ -49,13 +49,13 @@ const Error404 = () => {
                     ? 
                         <div className="mx-auto text-center">
                             <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
-                            <h1>A redirecionar</h1>
+                            <h1 className="word-break">A redirecionar</h1>
                             <p>para <a href={redirect}>{redirect}</a>.</p>
                             <p className="small">Se o redirecionamento não ocorrer nos próximos 5 segundos, clica <a href={redirect}>aqui</a>.</p>
                         </div>
                     :   
                         <div>
-                            <h1>Error 404</h1>
+                            <h1 className="word-break">Error 404</h1>
                             <p>Ups! Parece que a página que procuras não existe. &#128517;</p>
                             <p>Se foste redirecionado desde uma ligação no nosso site ou redes sociais, por favor entra em contacto conosco para podermos averiguar o que se passou.</p>
                             <p>Entretanto, convidamos-te a conhecer o nosso site. Descobre apontamentos, os próximos eventos ou as últimas novidades de EI! &#128521;</p>
