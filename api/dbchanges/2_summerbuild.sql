@@ -63,3 +63,14 @@ INSERT INTO notes_schoolyear (id, yearBegin, yearEnd) VALUES
 
 
 INSERT INTO `notes` (`id`, `name`, `location`, `subject`, `author`, `schoolYear`, `teacher`, `summary`, `tests`, `bibliography`, `slides`, `exercises`, `projects`, `notebook`, `content`, `createdAt`, `type`) VALUES ('197', 'StoreGo (Projeto TQS)', 'https://github.com/gmatosferreira/IES_Project_G31', '45426', '1275', '8', '13', NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, current_timestamp(), '3'); 
+
+
+-- ISSUE 60 https://github.com/NEI-AAUAV/Website/issues/60
+
+CREATE TABLE redirects (
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    alias VARCHAR(255),
+    redirect VARCHAR(255)
+);
+
+ALTER TABLE redirects ADD CONSTRAINT alias_unique UNIQUE(alias);
