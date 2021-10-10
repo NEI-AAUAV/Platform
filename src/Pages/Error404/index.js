@@ -36,7 +36,7 @@ const Error404 = () => {
     // On redirect set, redirect to page
     useEffect(() => {
         if (redirect) {
-            // window.location.href = redirect;
+            window.location.href = redirect;
         }
     }, [redirect])
 
