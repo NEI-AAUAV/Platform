@@ -4,6 +4,7 @@ import os
 from zipfile import ZipFile
 import json
 import math
+import mysql.connector
 
 
 # SCRIPT DESCRIPTION
@@ -43,6 +44,9 @@ Its content is registered in a compressed way, following the criteria below (exa
         Folder2 (Level 3)
             3 files
             2 folders com X subfolders and Y files
+
+Running in development environment: 
+$ python3 listfiles.py true "uploads/primeiro_ano/**/**" "gmatos.pt" "aauav-nei" "aauavnei_admin" "Eqa8w16&"
 """
 
 
@@ -50,15 +54,24 @@ Its content is registered in a compressed way, following the criteria below (exa
 """
 Get the execution parameteres.
 """
-if len(sys.argv)<3:
-    print("ERROR! Not enough arguments provided.")
-    print("Expected: $ python3 listfiles.py <ask for input? [true|false]> <folderToAnalyse1> <folderToAnalyse2> ...")
+if len(sys.argv) not in [3, 7]:
+    print("ERROR! Number of arguments provided is not valid!")
+    print("\nExpected (Option 1, only analyse):\n$ python3 listfiles.py <ask for input? [true|false]> <folder to analyse>")
     print("Example: $ python3 listfiles.py false \"uploads/primeiro_ano/**/**\"")
+    print("\nExpected (Option 2, analyse and update notes table on db):\n$ python3 listfiles.py <ask for input? [true|false]> <folder to analyse> <dbhost> <dbname> <dbuser> <dbpassword>")
+    print("Example: $ python3 listfiles.py false \"uploads/primeiro_ano/**/**\" localhost dbname root password")
     exit()
 
 ASK_FOR_INPUT = (sys.argv[1]=='true')  # For development only, asks for user to press ENTER for very file shown
-FOLDERS = sys.argv[2:]
-
+FOLDER = sys.argv[2]
+DB_DATA = None
+if len(sys.argv)==7:
+    DB_DATA = {
+        'host': sys.argv[3],
+        'table': sys.argv[4],
+        'user': sys.argv[5],
+        'password': sys.argv[6]
+    } 
 
 # UTILS
 """
@@ -167,47 +180,110 @@ def zip(filename):
     print(json.dumps(structure, sort_keys=True, indent=4))
 
     print('-- my dict')
-    print(structureDict(structure))
+    structureStr = structureDict(structure)
+    print(structureStr)
+    return structureStr
 
 
 # MAIN()
+"""
+Connect to the database (if arguments provided)
+"""
+connection = None
+if DB_DATA:
+    print('DB data provided in arguments, connecting...')
+    try:
+        connection = mysql.connector.connect(host=DB_DATA['host'],database=DB_DATA['table'],user=DB_DATA['user'],password=DB_DATA['password'])
+        if connection.is_connected():
+            db_Info = connection.get_server_info()
+            print("Connected to MySQL Server version ", db_Info)
+            cursor = connection.cursor()
+            cursor.execute("select database();")
+            record = cursor.fetchone()
+            print("You're connected to database: ", record)
+    except Exception as err:
+        print("ERROR connecting to the database!")
+        print("Error while connecting to MySQL", err)
+        exit()
+
+if ASK_FOR_INPUT:
+    input('\nPress ENTER to continue...')
+
 """
 Iterates through the folder subhierarchy to find and analyse its files
 """
 counter = 0
 counterValid = 0
 counterInvalid = 0
-# For each folder
-for FOLDER in FOLDERS:
-    # For every file inside FOLDER
-    for filename in glob.iglob(FOLDER, recursive=True):
-        counter += 1
+counterDB = 0
+dbDuplicates = []
+# For every file inside FOLDER
+for filename in glob.iglob(FOLDER, recursive=True):
+    counter += 1
 
-        # Check if is file (if not, continue)
-        if os.path.isdir(filename):
-            print(f"DIRE: {filename}")
-            continue
-        elif os.path.isfile(filename):
-            counterValid += 1
-            print(f"FILE: {filename}")
+    # Check if is file (if not, continue)
+    if os.path.isdir(filename):
+        print(f"DIRE: {filename}")
+        continue
+    elif os.path.isfile(filename):
+        counterValid += 1
+        print(f"FILE: {filename}")
+    else:
+        counterInvalid += 1
+        print(f"!UNK: {filename}")
+        continue
+
+    # This code is only reached if is file
+    zipStructure = None
+    if '.zip' in filename:
+        zipStructure = zip(filename)
+
+    size = os.path.getsize(filename) # Returns bytes
+    size = math.ceil(size*0.000001) # Convert to mb
+    print(f'File size is {size}mb')
+
+    # If db connection, update statement
+    if connection and cursor:
+        print('Searching db for matching row...')
+        cursor.execute(f'SELECT id, name, content, size FROM notes WHERE location="{filename.replace("uploads/", "/notes/")}"')
+        myresult = cursor.fetchall()
+        if len(myresult)==1:
+            counterDB += 1
         else:
-            counterInvalid += 1
-            print(f"!UNK: {filename}")
-            continue
+            print(f'ERROR DB! Got {len(myresult)} results matching this file location in the notes table!')
+            dbDuplicates.append([row[0] for row in myresult])
+        # Update values
+        row = myresult[0]
+        print(row)
+        if zipStructure and not row[2]:
+            print('Updating content...')
+            cursor.execute(f'UPDATE notes SET content="{zipStructure}" WHERE ID={row[0]}')
+            connection.commit()
+        if not row[3]:
+            print('Updating size...')
+            cursor.execute(f'UPDATE notes SET size={size} WHERE ID={row[0]}')
+            connection.commit()
 
-        # This code is only reached if is file
-        if '.zip' in filename:
-            zip(filename)
+    if ASK_FOR_INPUT:
+        input('\nPress ENTER to continue...')
 
-        size = os.path.getsize(filename)
+    print()
 
-        print(f'File size is {math.ceil(size*0.000001)}mb')
 
-        if ASK_FOR_INPUT:
-            input()
-        
+"""
+Close connection to the db
+"""
+if connection and connection.is_connected():
+    cursor.close()
+    connection.close()
+    print("MySQL connection is closed")
 
-        print()
-
-print(f'\n\nFinished analisis of {len(FOLDERS)} folders, with {int(round((counterValid/counter)*100))}% success ({counterValid} valid files, out of {counter})!')
-print(f'The error rate was {(int(round((counterInvalid/counter)*100)))} ({counterInvalid} unknown files, out of {counter}).')
+print(f'\n\nFinished analisis of folder, with {int(round((counterValid/counter)*100))}% success ({counterValid} valid files, out of {counter})!')
+print(f'\nThe success rate updating the db was {(int(round((counterDB/counter)*100)))} ({counterDB} success updates, out of {counter}).')
+if len(dbDuplicates):
+    print(f'\nThere were {len(dbDuplicates)} duplicate entries found:')
+    for entry in dbDuplicates:
+        print(entry)
+else:
+    print('\nThere were no duplicate entries found! :)')
+print(f'\nThe error rate was {(int(round((counterInvalid/counter)*100)))} ({counterInvalid} unknown files, out of {counter}).')
