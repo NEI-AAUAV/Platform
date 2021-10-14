@@ -52,7 +52,6 @@
             notes.projects, 
             notes.notebook,
             notes.location,
-            notes.content,
             notes.createdAt,
             notes_schoolyear.yearBegin,
             notes_schoolyear.yearEnd,
@@ -87,31 +86,38 @@
     if(!empty($note)) {
         $query_getContent = "SELECT 
                 notes.name, 
-                notes.location, 
                 notes_subjects.paco_code AS subjectId,
                 notes_subjects.short AS subjectShort, 
                 notes_subjects.name AS subjectName,	
-                users.name AS student,
-                users.id AS studentId,
-                notes_schoolyear.id AS schoolYearId,
-                notes_schoolyear.yearBegin AS schoolYearBegin,
-                notes_schoolyear.yearEnd AS schoolYearEnd,
-                notes_teachers.id AS teacherId,
-                notes_teachers.name AS teacher,
-                notes_teachers.personalPage AS teacherPersonalPage,
-                notes.content,
                 notes.summary, 
                 notes.tests, 
                 notes.bibliography, 
                 notes.slides, 
                 notes.exercises, 
                 notes.projects, 
-                notes.notebook 
+                notes.notebook,
+                notes.location, 
+                notes.createdAt,
+                notes_schoolyear.yearBegin,
+                notes_schoolyear.yearEnd,
+                notes_schoolyear.id AS yearId,
+                notes_teachers.name AS teacherName,
+                notes_teachers.personalPage AS teacherPage,
+                notes_teachers.id AS teacherId,
+                users.full_name AS authorName,
+                users.id AS authorId,
+                notes_types.download_caption AS type_download_caption,
+                notes_types.icon_display AS type_icon_display,
+                notes_types.icon_download AS type_icon_download,
+                notes_types.external AS type_external,
+                notes.content,
+                notes.size
             FROM notes 
                 INNER JOIN notes_subjects ON notes.subject=notes_subjects.paco_code 
                 LEFT JOIN notes_schoolyear ON notes.schoolYear=notes_schoolyear.id 
-                LEFT JOIN users ON notes.author=users.id
                 LEFT JOIN notes_teachers ON notes.teacher=notes_teachers.id
+                LEFT JOIN users ON notes.author=users.id
+                LEFT JOIN notes_types ON notes.type=notes_types.id
             WHERE notes.id=:note
         ;";
     }
