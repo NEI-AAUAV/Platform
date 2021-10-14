@@ -1,7 +1,9 @@
+import sys
 import glob 
 import os
 from zipfile import ZipFile
 import json
+import math
 
 
 # SCRIPT DESCRIPTION
@@ -44,11 +46,18 @@ Its content is registered in a compressed way, following the criteria below (exa
 """
 
 
-# GLOBAL VARIABLES
+# PARAMETERS
 """
-Here are some variable that change the script behaviour.
+Get the execution parameteres.
 """
-FOLDER = 'uploads/primeiro_ano/**/**'
+if len(sys.argv)<3:
+    print("ERROR! Not enough arguments provided.")
+    print("Expected: $ python3 listfiles.py <ask for input? [true|false]> <folderToAnalyse1> <folderToAnalyse2> ...")
+    print("Example: $ python3 listfiles.py false \"uploads/primeiro_ano/**/**\"")
+    exit()
+
+ASK_FOR_INPUT = (sys.argv[1]=='true')  # For development only, asks for user to press ENTER for very file shown
+FOLDERS = sys.argv[2:]
 
 
 # UTILS
@@ -160,26 +169,45 @@ def zip(filename):
     print('-- my dict')
     print(structureDict(structure))
 
-    input()
-
 
 # MAIN()
 """
 Iterates through the folder subhierarchy to find and analyse its files
 """
-# For every file inside FOLDER
-for filename in glob.iglob(FOLDER, recursive=True):
+counter = 0
+counterValid = 0
+counterInvalid = 0
+# For each folder
+for FOLDER in FOLDERS:
+    # For every file inside FOLDER
+    for filename in glob.iglob(FOLDER, recursive=True):
+        counter += 1
 
-    # Analyse ZIP files
-    if os.path.isdir(filename):
-        print(f"DIRE: {filename}")
-    elif os.path.isfile(filename):
-        print(f"FILE: {filename}")
+        # Check if is file (if not, continue)
+        if os.path.isdir(filename):
+            print(f"DIRE: {filename}")
+            continue
+        elif os.path.isfile(filename):
+            counterValid += 1
+            print(f"FILE: {filename}")
+        else:
+            counterInvalid += 1
+            print(f"!UNK: {filename}")
+            continue
 
+        # This code is only reached if is file
         if '.zip' in filename:
             zip(filename)
-    else:
-        print(f"!UNK: {filename}")
 
-    print()
+        size = os.path.getsize(filename)
 
+        print(f'File size is {math.ceil(size*0.000001)}mb')
+
+        if ASK_FOR_INPUT:
+            input()
+        
+
+        print()
+
+print(f'\n\nFinished analisis of {len(FOLDERS)} folders, with {int(round((counterValid/counter)*100))}% success ({counterValid} valid files, out of {counter})!')
+print(f'The error rate was {(int(round((counterInvalid/counter)*100)))} ({counterInvalid} unknown files, out of {counter}).')
