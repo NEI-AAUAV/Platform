@@ -56,7 +56,7 @@ const Details = ({ note, close, setSelectedSubject, setSelYear, setSelStudent, s
                 }
             </div>
             <a 
-                href={note.type_external ? note.location : process.env.REACT_APP_STATIC + note.location} 
+                href={parseInt(note.type_external) ? note.location : process.env.REACT_APP_STATIC + note.location} 
                 target="_blank" rel="noreferrer"
                 >
                 <button className="btn btn-sm btn-outline-primary mb-3 ml-0">

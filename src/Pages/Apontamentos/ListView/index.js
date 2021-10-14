@@ -156,7 +156,7 @@ const ListView = (props) => {
                                     </Col>
                                     <Col sm="12" lg="4">
                                         <a 
-                                            href={item.type_external ? item.location : process.env.REACT_APP_STATIC + item.location} 
+                                            href={parseInt(item.type_external) ? item.location : process.env.REACT_APP_STATIC + item.location} 
                                             target="_blank" rel="noreferrer"
                                         >
                                             <button className="btn btn-sm btn-outline-primary mb-3 ml-0">
