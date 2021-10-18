@@ -352,7 +352,7 @@ const Apontamentos = () => {
     }
 
     return (
-        <div>
+        <div id="apontamentosPage">
             <div class="d-flex flex-column mb-5">
                 <h2 className="text-center mb-2">
                     <Typist>Apontamentos</Typist>
@@ -365,16 +365,20 @@ const Apontamentos = () => {
 
             <Row className="mt-4">
                 <Col className="d-flex flex-column" lg="4" xl="3">
-                    <Details
-                        className="order-2 order-lg-0"
-                        note={selectedNote}
-                        close={() => setSelectedNote(null)}
-                        setSelYear={setSelYear}
-                        setSelectedSubject={setSelectedSubject}
-                        setSelStudent={setSelStudent}
-                        setSelTeacher={setSelTeacher}
-                        setSelPage={setSelPage}
-                    />
+                    {
+                        selectedNote && selectedNote.id &&
+                        <Details
+                            className="order-2 order-lg-0"
+                            note_id={selectedNote.id}
+                            close={() => setSelectedNote(null)}
+                            setSelYear={setSelYear}
+                            setSelectedSubject={setSelectedSubject}
+                            setSelStudent={setSelStudent}
+                            setSelTeacher={setSelTeacher}
+                            setSelPage={setSelPage}
+                            setAlert={setAlert}
+                        />
+                    }
 
                     <div className="filtros order-0 order-lg-1">
 
