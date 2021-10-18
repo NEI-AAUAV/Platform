@@ -111,10 +111,10 @@ def structureDict(mydic, tabs=0, parent='', level=1):
                 mystr += mystr_add
                 mystrHTML += mystrHTML_add
             else:
-                mystr += '\t'*(tabs+1) + f"{countFolderKeys(val, 'dir')} directories\n"
-                mystr += '\t'*(tabs+1) + f"{countFolderKeys(val, 'file')} files\n"
-                mystrHTML += f"<dd>{countFolderKeys(val, 'dir')} directories</dd>"
-                mystrHTML += f"<dd>{countFolderKeys(val, 'file')} files</dd>"
+                mystr += '\t'*(tabs+1) + f"{countFolderKeys(val, 'dir')} pastas\n"
+                mystr += '\t'*(tabs+1) + f"{countFolderKeys(val, 'file')} ficheiros\n"
+                mystrHTML += f"<dd>{countFolderKeys(val, 'dir')} pastas</dd>"
+                mystrHTML += f"<dd>{countFolderKeys(val, 'file')} ficheiros</dd>"
 
         mystrHTML += '<dd></dl>'
     return mystr, mystrHTML
