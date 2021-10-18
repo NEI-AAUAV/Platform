@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Nav, Tab } from "react-bootstrap";
 import './index.css';
 
 import parse from 'html-react-parser';
@@ -108,6 +108,31 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
                         </button>
                     </a>
 
+                    {
+                        false &&
+                        <Tab.Container defaultActiveKey="first" id="uncontrolled-tab-example" className="mb-3">
+                            {
+                                note.content &&
+                                <Nav variant="pills" className="flex-row">
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="first">Detalhes</Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="second">Conteúdo</Nav.Link>
+                                    </Nav.Item>
+                                </Nav>
+                            }
+                            <Tab.Content>
+                                <Tab.Pane eventKey="first">
+                                    <h1>Tab1</h1>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="second">
+                                    <h1>Tab2</h1>
+                                </Tab.Pane>
+                            </Tab.Content>
+                        </Tab.Container>
+                    }
+
                     <div>
                         <dl>
                             {
@@ -193,11 +218,21 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
                                 </>
                             }
                             {
-                                note.content &&
+                                note.size &&
                                 <>
-                                    <dt className="small font-weight-bold">Ficheiros</dt>
-                                    <dd>{parse(note.content)}</dd>
+                                    <dt className="small font-weight-bold">Tamanho</dt>
+                                    <dd>{note.size} MB</dd>
                                 </>
+                            }
+                            {
+                                note.content &&
+                                <div class="file-content">
+                                    <dt className="small font-weight-bold">Conteúdo</dt>
+                                    {
+                                        // TODO! Add Shom more... to avoid behing so long!
+                                    }
+                                    <dd>{parse(`${note.content.replace('\n', '<br/>')}`)}</dd>
+                                </div>
                             }
                         </dl>
                     </div>

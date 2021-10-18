@@ -99,17 +99,25 @@ This method converts a ZIP folder dictionary to a compressed String representati
 """
 def structureDict(mydic, tabs=0, parent='', level=1):
     mystr = ''
+    mystrHTML = ''
     for entry, val in mydic.items():
         if entry=='type':
             continue        
         mystr += '\t'*tabs + f"{truncatefilename(entry)}\n"
+        mystrHTML += f'<dl><dt>{truncatefilename(entry)}</dt><dd>'
         if val['type'] == 'dir':
             if level+1<3:
-                mystr += structureDict(val, tabs=tabs+1, parent=f"{parent}{entry}/", level=level+1)
+                mystr_add, mystrHTML_add = structureDict(val, tabs=tabs+1, parent=f"{parent}{entry}/", level=level+1)
+                mystr += mystr_add
+                mystrHTML += mystrHTML_add
             else:
                 mystr += '\t'*(tabs+1) + f"{countFolderKeys(val, 'dir')} directories\n"
                 mystr += '\t'*(tabs+1) + f"{countFolderKeys(val, 'file')} files\n"
-    return mystr
+                mystrHTML += f"<dd>{countFolderKeys(val, 'dir')} directories</dd>"
+                mystrHTML += f"<dd>{countFolderKeys(val, 'file')} files</dd>"
+
+        mystrHTML += '<dd></dl>'
+    return mystr, mystrHTML
 
 
 """
@@ -180,9 +188,11 @@ def zip(filename):
     print(json.dumps(structure, sort_keys=True, indent=4))
 
     print('-- my dict')
-    structureStr = structureDict(structure)
+    structureStr, structureStrHTML = structureDict(structure)
     print(structureStr)
-    return structureStr
+    print("\nHTML")
+    print(structureStrHTML)
+    return structureStrHTML
 
 
 # MAIN()
@@ -255,7 +265,7 @@ for filename in glob.iglob(FOLDER, recursive=True):
         # Update values
         row = myresult[0]
         print(row)
-        if zipStructure and not row[2]:
+        if zipStructure and (not row[2] or row[2]!=zipStructure):
             print('Updating content...')
             cursor.execute(f'UPDATE notes SET content="{zipStructure}" WHERE ID={row[0]}')
             connection.commit()
