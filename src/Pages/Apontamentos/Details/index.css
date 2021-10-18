@@ -8,3 +8,7 @@
 .file-content dl, .file-content dl dd {
     margin-left: .5rem;
 }
+
+.file-content>dd>dl {
+    margin-left: 0;
+}

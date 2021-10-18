@@ -352,7 +352,7 @@ const Apontamentos = () => {
     }
 
     return (
-        <div>
+        <div id="apontamentosPage">
             <div class="d-flex flex-column mb-5">
                 <h2 className="text-center mb-2">
                     <Typist>Apontamentos</Typist>

@@ -35,7 +35,7 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
                 })
                 .then((response) => {
                     if ('data' in response && response['data']) {
-                        setNote(response.data)
+                        setNote(response.data);
                     } else {
                         throw new Error('Note not found!');
                     }
@@ -64,6 +64,11 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
             note.notebook == "1" && note_tags.push({ "name": "Caderno", "className": "tag-notebook" });
         }
         setTags(note_tags);
+
+        // Scroll to element
+        if(document.getElementById("apontamentosPage")!=null) {
+            document.getElementById("apontamentosPage").scrollIntoView({behavior: 'smooth'});
+        }
     }, [note]);
 
     return (
@@ -218,20 +223,16 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
                                 </>
                             }
                             {
-                                note.size &&
-                                <>
-                                    <dt className="small font-weight-bold">Tamanho</dt>
-                                    <dd>{note.size} MB</dd>
-                                </>
-                            }
-                            {
-                                note.content &&
+                                (note.content || note.size) &&
                                 <div class="file-content">
-                                    <dt className="small font-weight-bold">Conteúdo</dt>
+                                    <dt className="small font-weight-bold">
+                                        Conteúdo
+                                        {note.size && <small className="ml-1">({note.size} MB)</small>}
+                                    </dt>
                                     {
-                                        // TODO! Add Shom more... to avoid behing so long!
+                                        note.content &&
+                                        <dd>{parse(`${note.content.replace('\n', '<br/>')}`)}</dd>
                                     }
-                                    <dd>{parse(`${note.content.replace('\n', '<br/>')}`)}</dd>
                                 </div>
                             }
                         </dl>
