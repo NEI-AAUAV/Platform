@@ -46,7 +46,10 @@ Its content is registered in a compressed way, following the criteria below (exa
             2 folders com X subfolders and Y files
 
 Running in development environment: 
+# For development database
 $ python3 listfiles.py true "uploads/primeiro_ano/**/**" "gmatos.pt" "aauav-nei" "aauavnei_admin" "Eqa8w16&"
+# For LIVE database (USE WITH CARE!)
+$ python3 listfiles.py true "uploads/**/**/**" "mysql-hosting.ua.pt" "aauav-nei" "aauav-nei-dbo" "<PASSWORD>"
 """
 
 
@@ -201,7 +204,7 @@ Connect to the database (if arguments provided)
 """
 connection = None
 if DB_DATA:
-    print('DB data provided in arguments, connecting...')
+    print(f'DB data provided in arguments, connecting to {DB_DATA["host"]}...')
     try:
         connection = mysql.connector.connect(host=DB_DATA['host'],database=DB_DATA['table'],user=DB_DATA['user'],password=DB_DATA['password'])
         if connection.is_connected():
