@@ -74,3 +74,10 @@ CREATE TABLE redirects (
 );
 
 ALTER TABLE redirects ADD CONSTRAINT alias_unique UNIQUE(alias);
+
+-- ISSUE 64 https://github.com/NEI-AAUAV/Website/issues/64
+UPDATE `partners` SET `header` = '/partners/Lavandaria.png' WHERE `partners`.`id` = 1; 
+
+
+-- ISSUE 59 https://github.com/NEI-AAUAV/Website/issues/59
+ALTER TABLE notes ADD size INTEGER;

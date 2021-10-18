@@ -26,7 +26,7 @@ const Faina = () => {
         fetch(process.env.REACT_APP_API + "/faina/mandates")
             .then((response) => response.json())
             .then((response) => {
-                var anos = response.data.map((curso) => curso.mandato).sort((a, b) => b - a);
+                var anos = response.data.map((curso) => curso.mandato).sort((a, b) => parseInt(b.split('/')[0]) - parseInt(a.split('/')[0]));
                 if (anos.length > 0) {
                     setSelectedYear(anos[0])
                     setAnos(<Tabs tabs={anos} _default={anos[0]} onChange={setSelectedYear} />)
@@ -44,7 +44,6 @@ const Faina = () => {
         fetch(process.env.REACT_APP_API + "/faina?mandate=" + selectedYear)
             .then((response) => response.json())
             .then((response) => {
-                console.log(response)
                 setPeople(response.data.members.map(
                     (person, i) =>
                         <TextList
