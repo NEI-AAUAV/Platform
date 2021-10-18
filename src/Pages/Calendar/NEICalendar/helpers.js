@@ -28,7 +28,7 @@ const categories = {
         'color': 'rgb(211, 17, 21)'
     },
     'Calendário escolar': {
-        'filters': ["FERIADO", "Época de", "Férias", "Último dia"],
+        'filters': ["FERIADO", "Época de", "Férias", "Último dia", "Primeiro dia", "Integração"],
         'color': 'rgb(255, 162, 0)'
     },
 }
