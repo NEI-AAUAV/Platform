@@ -472,13 +472,13 @@ const Apontamentos = () => {
                 <Col lg="8" xl="9">
 
                     <Tab.Container defaultActiveKey={window.innerWidth>=992 ? "grid" : "list"}>
-                        <div className="d-none d-lg-block">
+                        <div>
                             <Nav onSelect={() => setSelectedNote(null)}>
-                                <Nav.Item className="mx-auto mx-lg-0 ml-lg-0"><Nav.Link eventKey="grid" className="h5">
+                                <Nav.Item className="mx-auto mx-lg-0 ml-lg-0 d-none d-lg-block"><Nav.Link eventKey="grid" className="h5">
                                     <FontAwesomeIcon icon={faTh} />
                                     <span className="ml-3">Grid</span>
                                 </Nav.Link></Nav.Item>
-                                <Nav.Item className="mx-auto mx-lg-0 mr-lg-auto"><Nav.Link eventKey="list" className="h5">
+                                <Nav.Item className="mx-auto mx-lg-0 mr-lg-auto d-none d-lg-block"><Nav.Link eventKey="list" className="h5">
                                     <FontAwesomeIcon icon={faThList} />
                                     <span className="ml-3">List</span>
                                 </Nav.Link></Nav.Item>
@@ -535,6 +535,17 @@ const Apontamentos = () => {
                             </Tab.Pane>
                         </Tab.Content>
                     </Tab.Container>
+
+                    {
+                        !loading &&
+                        <PageNav
+                            page={selPage}
+                            total={pageNumber}
+                            handler={fetchPage}
+                            className="mx-auto d-lg-none mt-3"
+                        ></PageNav>
+                    }
+
                 </Col>
             </Row>
 
