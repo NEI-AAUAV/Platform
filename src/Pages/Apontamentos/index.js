@@ -321,16 +321,19 @@ const Apontamentos = () => {
     let linkShare = () => {
         // Build URL
         let url = window.location.origin + window.location.pathname + '?';
-        if (selYear)
+        if (selYear!="")
             url += `year=${selYear}&`;
-        if (selectedSubject)
+        if (selectedSubject!="")
             url += `subject=${selectedSubject}&`;
-        if (selStudent)
+        if (selStudent!="")
             url += `author=${selStudent}&`;
-        if (selTeacher)
+        if (selTeacher!="")
             url += `teacher=${selTeacher}&`;
-        for (var i = 0; i < activeFilters.length; i++) {
-            url += "category=" + filters.filter(f => f['filter'] == activeFilters[i])[0]['db'] + "&";
+        // Only include filters tags if not all selected (because if missing from url, all will be selected by default)
+        if (activeFilters.length !== filters.length) {
+            for (var i = 0; i < activeFilters.length; i++) {
+                url += "category=" + filters.filter(f => f['filter'] == activeFilters[i])[0]['db'] + "&";
+            }
         }
         // Copy to user's clipboard
         navigator.clipboard.writeText(url.slice(0, -1)); // Remove last char (? if no filters or extra &)
