@@ -81,3 +81,31 @@ UPDATE `partners` SET `header` = '/partners/Lavandaria.png' WHERE `partners`.`id
 
 -- ISSUE 59 https://github.com/NEI-AAUAV/Website/issues/59
 ALTER TABLE notes ADD size INTEGER;
+
+
+-- ISSUE 54 https://github.com/NEI-AAUAV/Website/issues/54
+CREATE TABLE videos_tags (
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    name VARCHAR(255)
+);
+
+INSERT INTO videos_tags(id, name) VALUES 
+    (1, "1A"),
+    (2, "2A"),
+    (3, "3A"),
+    (4, "MEI"),
+    (5, "Workshops");
+
+CREATE TABLE videos (
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    tag INT,
+    ytId VARCHAR(255),
+    name VARCHAR(255),
+    image VARCHAR(255),
+    created DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE videos ADD CONSTRAINT FOREIGN KEY (tag) REFERENCES videos_tags(id);
+
+INSERT INTO videos (id, tag, ytId, name, image, created) VALUES
+    (1, 1, "PL0-X-dbGZUABPg-FWm3tT7rCVh6SESK2d", "Fundamentos de Programação", "/videos/fp2020.jpg", "2020-12-09 00:00:00");
