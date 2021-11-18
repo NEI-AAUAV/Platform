@@ -41,8 +41,12 @@ const Video = () => {
             {
                 !loading && video &&
                 <div className="d-flex flex-column">
+                    <p className="col-12 m-0 p-0 text-left small text-primary mb-3">
+                        <a className="" href="/videos">&#10094; Voltar aos vídeos</a>
+                    </p>
+
                     <h2 className="text-center">
-                        <Typist>{video.title}</Typist>
+                        {video.title}
                     </h2>
                     <h4 className="text-center w-100 text-secondary">
                         {video.subtitle}
@@ -54,7 +58,7 @@ const Video = () => {
                     <YoutubeEmbed 
                         embedId={video.ytId} 
                         playlist={video.playlist==="1"}
-                        className="my-4"
+                        className="my-4 slideUpFade"
                     />
 
                     {

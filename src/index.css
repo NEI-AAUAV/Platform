@@ -9,6 +9,7 @@ body {
 .text-primary { color: #147a26!important }
 
 a { color: #147a26!important }
+a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 
 .tab-container {max-width: none!important;}
 
