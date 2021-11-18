@@ -321,16 +321,19 @@ const Apontamentos = () => {
     let linkShare = () => {
         // Build URL
         let url = window.location.origin + window.location.pathname + '?';
-        if (selYear)
+        if (selYear!="")
             url += `year=${selYear}&`;
-        if (selectedSubject)
+        if (selectedSubject!="")
             url += `subject=${selectedSubject}&`;
-        if (selStudent)
+        if (selStudent!="")
             url += `author=${selStudent}&`;
-        if (selTeacher)
+        if (selTeacher!="")
             url += `teacher=${selTeacher}&`;
-        for (var i = 0; i < activeFilters.length; i++) {
-            url += "category=" + filters.filter(f => f['filter'] == activeFilters[i])[0]['db'] + "&";
+        // Only include filters tags if not all selected (because if missing from url, all will be selected by default)
+        if (activeFilters.length !== filters.length) {
+            for (var i = 0; i < activeFilters.length; i++) {
+                url += "category=" + filters.filter(f => f['filter'] == activeFilters[i])[0]['db'] + "&";
+            }
         }
         // Copy to user's clipboard
         navigator.clipboard.writeText(url.slice(0, -1)); // Remove last char (? if no filters or extra &)
@@ -472,13 +475,13 @@ const Apontamentos = () => {
                 <Col lg="8" xl="9">
 
                     <Tab.Container defaultActiveKey={window.innerWidth>=992 ? "grid" : "list"}>
-                        <div className="d-none d-lg-block">
+                        <div>
                             <Nav onSelect={() => setSelectedNote(null)}>
-                                <Nav.Item className="mx-auto mx-lg-0 ml-lg-0"><Nav.Link eventKey="grid" className="h5">
+                                <Nav.Item className="mx-auto mx-lg-0 ml-lg-0 d-none d-lg-block"><Nav.Link eventKey="grid" className="h5">
                                     <FontAwesomeIcon icon={faTh} />
                                     <span className="ml-3">Grid</span>
                                 </Nav.Link></Nav.Item>
-                                <Nav.Item className="mx-auto mx-lg-0 mr-lg-auto"><Nav.Link eventKey="list" className="h5">
+                                <Nav.Item className="mx-auto mx-lg-0 mr-lg-auto d-none d-lg-block"><Nav.Link eventKey="list" className="h5">
                                     <FontAwesomeIcon icon={faThList} />
                                     <span className="ml-3">List</span>
                                 </Nav.Link></Nav.Item>
@@ -535,6 +538,17 @@ const Apontamentos = () => {
                             </Tab.Pane>
                         </Tab.Content>
                     </Tab.Container>
+
+                    {
+                        !loading &&
+                        <PageNav
+                            page={selPage}
+                            total={pageNumber}
+                            handler={fetchPage}
+                            className="mx-auto d-lg-none mt-3"
+                        ></PageNav>
+                    }
+
                 </Col>
             </Row>
 

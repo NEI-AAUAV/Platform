@@ -165,37 +165,40 @@ def zip(filename):
     setKeysListValue(structure, ['type'], 'dir')
     setKeysListValue(structure, ['/', 'type'], 'dir')
 
-    # Get ZipFile object (https://docs.python.org/3/library/zipfile.html#zipfile-objects)
-    zipObj = ZipFile(filename, 'r')
+    try:
+        # Get ZipFile object (https://docs.python.org/3/library/zipfile.html#zipfile-objects)
+        zipObj = ZipFile(filename, 'r')
 
-    # For each item inside (ZipInfo - https://docs.python.org/3/library/zipfile.html#zipinfo-objects)
-    for i in zipObj.infolist():
-        # Ignore unknown folders
-        if not showFile(filename):
-            continue
-        # print('DIRE' if i.is_dir() else 'FILE', end="\t")
-        # print(i.filename)
+        # For each item inside (ZipInfo - https://docs.python.org/3/library/zipfile.html#zipinfo-objects)
+        for i in zipObj.infolist():
+            # Ignore unknown folders
+            if not showFile(filename):
+                continue
+            # print('DIRE' if i.is_dir() else 'FILE', end="\t")
+            # print(i.filename)
 
-        # Add to structure
-        current = list(filter(lambda e: e, i.filename.split('/')))
-        current.insert(0, '/')
-        
-        setKeysListValue(structure, current, {})
+            # Add to structure
+            current = list(filter(lambda e: e, i.filename.split('/')))
+            current.insert(0, '/')
+            
+            setKeysListValue(structure, current, {})
 
-        typetag = current
-        typetag.append('type')
+            typetag = current
+            typetag.append('type')
 
-        setKeysListValue(structure, typetag, 'dir' if i.is_dir() else 'file')
+            setKeysListValue(structure, typetag, 'dir' if i.is_dir() else 'file')
 
-    print('-- dict')
-    print(json.dumps(structure, sort_keys=True, indent=4))
+        print('-- dict')
+        print(json.dumps(structure, sort_keys=True, indent=4))
 
-    print('-- my dict')
-    structureStr, structureStrHTML = structureDict(structure)
-    print(structureStr)
-    print("\nHTML")
-    print(structureStrHTML)
-    return structureStrHTML
+        print('-- my dict')
+        structureStr, structureStrHTML = structureDict(structure)
+        print(structureStr)
+        print("\nHTML")
+        print(structureStrHTML)
+        return structureStrHTML
+    except Exception as e:
+        return None
 
 
 # MAIN()
@@ -251,6 +254,9 @@ for filename in glob.iglob(FOLDER, recursive=True):
     if '.zip' in filename:
         zipStructure = zip(filename)
 
+    if not zipStructure:
+        counterInvalid += 1
+
     size = os.path.getsize(filename) # Returns bytes
     size = math.ceil(size*0.000001) # Convert to mb
     print(f'File size is {size}mb')
@@ -262,20 +268,21 @@ for filename in glob.iglob(FOLDER, recursive=True):
         myresult = cursor.fetchall()
         if len(myresult)==1:
             counterDB += 1
+            # Update values
+            row = myresult[0]
+            print(row)
+            if zipStructure and (not row[2] or row[2]!=zipStructure):
+                print('Updating content...')
+                cursor.execute(f'UPDATE notes SET content="{zipStructure}" WHERE ID={row[0]}')
+                connection.commit()
+            if not row[3] and not (row[3] or row[3]!=size):
+                print('Updating size...')
+                cursor.execute(f'UPDATE notes SET size={size} WHERE ID={row[0]}')
+                connection.commit()
         else:
             print(f'ERROR DB! Got {len(myresult)} results matching this file location in the notes table!')
             dbDuplicates.append([row[0] for row in myresult])
-        # Update values
-        row = myresult[0]
-        print(row)
-        if zipStructure and (not row[2] or row[2]!=zipStructure):
-            print('Updating content...')
-            cursor.execute(f'UPDATE notes SET content="{zipStructure}" WHERE ID={row[0]}')
-            connection.commit()
-        if not row[3]:
-            print('Updating size...')
-            cursor.execute(f'UPDATE notes SET size={size} WHERE ID={row[0]}')
-            connection.commit()
+        
 
     if ASK_FOR_INPUT:
         input('\nPress ENTER to continue...')
