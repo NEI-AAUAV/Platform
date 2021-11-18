@@ -43,7 +43,7 @@
     }
 
     // Get videos list (with or without category filtering)
-    $query_getContent = "SELECT id, tag, name, image, created FROM videos WHERE 1";
+    $query_getContent = "SELECT id, tag, title, subtitle, image, created FROM videos WHERE 1";
 
     if(count($categories)>0) {
         $query_getContent.=" AND (";
@@ -58,11 +58,11 @@
         $query_getContent.=")";
     }
 
-    $query_getContent.= " ORDER BY created DESC, name DESC";
+    $query_getContent.= " ORDER BY created DESC, title DESC";
 
     // Get video by ID 
     if(!empty($video)) {
-        $query_getContent = "SELECT id, tag, name, image, created, ytId FROM videos WHERE id=:id";
+        $query_getContent = "SELECT id, tag, title, subtitle, image, created, ytId, playlist FROM videos WHERE id=:id";
     }
 
     // Make query to database
