@@ -13,7 +13,12 @@
     transition: .25s;
 }
 
-a.document, a.document:hover {
+a.document-container, a.document-container:hover {
     text-transform: none;
     text-decoration: none!important;
+}
+
+.document img {
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
 }

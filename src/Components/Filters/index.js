@@ -6,7 +6,10 @@ import FilterButton from "./FilterButton";
  * Filter pills
  * 
  * Parameters:
- * - filterList                 str[]   List of available filters
+ * - filterList                 obj[]   List of available filters
+ *                              { 'filter': key:str, 'color': colorCodeDefault:str, 'hover': colorCodeHover:str }
+ *                                          filter: Filter name (required)
+ *                                          color: Normal color (optional, if missing .primary will be applied)
  * - className                  str     class text for parent element
  * - style                      obj     styles for parent element
  * - activeFilters                      see FilterButton doc 
@@ -37,9 +40,12 @@ const Filters = ({activeFilters, setActiveFilters, filterList, className, btnCla
             className={className}
             style={style}
         >
-            <Button variant={"outline-primary " + btnClass} className={allBtnClass + " p-2"} onClick={toggleAll}>
-                {toggleText}
-            </Button>
+            {
+                filterList.length > 1 &&
+                <Button variant={"outline-primary " + btnClass} className={allBtnClass + " p-2"} onClick={toggleAll}>
+                    {toggleText}
+                </Button>
+            }
 
             {
                 filterList.map( f => 

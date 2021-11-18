@@ -16,6 +16,10 @@ a { color: #147a26!important }
     z-index: 0;
 }
 
+.extra-sm {
+    font-size: .5rem!important;
+}
+
 /* .btn */
 .btn {
     font-size: inherit;
