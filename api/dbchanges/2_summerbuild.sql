@@ -113,10 +113,10 @@ CREATE TABLE videos (
 ALTER TABLE videos ADD CONSTRAINT FOREIGN KEY (tag) REFERENCES videos_tags(id);
 
 INSERT INTO videos (id, tag, ytId, title, subtitle, image, created, playlist) VALUES
-    (1, 1, "PL0-X-dbGZUABPg-FWm3tT7rCVh6SESK2d", "FP", "Fundamentos de Programação", "/videos/fp2020.jpg", "2020-12-09 00:00:00", TRUE),
-    (2, 1, "PL0-X-dbGZUAA8rQm4klslEksHCrb3EIDG", "IAC", "Introdução à Arquitetura de Computadores", "/videos/fp2020.jpg", "2020-06-10 00:00:00", TRUE),
-    (3, 1, "PL0-X-dbGZUABp2uATg_-lqfT4FTFlyNir", "ITW", "Introdução às Tecnologias Web", "/videos/fp2020.jpg", "2020-12-17 00:00:00", TRUE),
-    (4, 1, "PL0-X-dbGZUACS3EkepgT7DOf287MiTzp0", "POO", "Programação Orientada a Objetos", "/videos/fp2020.jpg", "2020-11-16 00:00:00", TRUE),
-    (5, 5, "ips-tkEr_pM", "Discord Bot", "Workshop", "/videos/fp2020.jpg", "2021-07-14 00:00:00", FALSE),
-    (6, 6, "3hjRgoIItYk", "Anchorage", "Palestra", "/videos/fp2020.jpg", "2021-04-01 00:00:00", FALSE)
+    (1, 1, "PL0-X-dbGZUABPg-FWm3tT7rCVh6SESK2d", "FP", "Fundamentos de Programação", "/videos/FP_2020.jpg", "2020-12-09 00:00:00", TRUE),
+    (2, 1, "PL0-X-dbGZUAA8rQm4klslEksHCrb3EIDG", "IAC", "Introdução à Arquitetura de Computadores", "/videos/IAC_2020.jpg", "2020-06-10 00:00:00", TRUE),
+    (3, 1, "PL0-X-dbGZUABp2uATg_-lqfT4FTFlyNir", "ITW", "Introdução às Tecnologias Web", "/videos/ITW_2020.jpg", "2020-12-17 00:00:00", TRUE),
+    (4, 1, "PL0-X-dbGZUACS3EkepgT7DOf287MiTzp0", "POO", "Programação Orientada a Objetos", "/videos/POO_2020.jpg", "2020-11-16 00:00:00", TRUE),
+    (5, 5, "ips-tkEr_pM", "Discord Bot", "Workshop", "/videos/discord.jpg", "2021-07-14 00:00:00", FALSE),
+    (6, 6, "3hjRgoIItYk", "Anchorage", "Palestra", "/videos/anchorage.jpg", "2021-04-01 00:00:00", FALSE)
 ;
