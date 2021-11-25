@@ -17,6 +17,8 @@ import Merchandising from "./Pages/Merchandising";
 import CleanLayout from "./Layouts/CleanLayout";
 import Apontamentos from "./Pages/Apontamentos";
 import FeedbackForm from './Pages/Forms/FeedbackForm';
+import Videos from "./Pages/Videos";
+import Video from "./Pages/Video";
 
 
 const routes = [
@@ -42,6 +44,8 @@ const routes = [
 			{ path: "/historia", element: <History /> },
 			{ path: "/seniors/:id", element: <Seniors /> },
 			{ path: "/faina", element: <Faina/> },
+			{ path: "/videos", element: <Videos/> },
+			{ path: "/videos/:id", element: <Video/> },
 			// Forms
 			{ path: "/forms/feedback", element: <FeedbackForm/> },
 			// Everything else is 404

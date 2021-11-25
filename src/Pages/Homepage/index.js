@@ -59,6 +59,7 @@ const Homepage = () => {
                         <Col 
                             className="px-xl-0 pt-xl-0 pt-3 slideUpFade"
                             style={{animationDelay: animationBase+1*animationIncrement}}
+                            lg={5}
                         >
                             <div
                                 style={{

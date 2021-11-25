@@ -4,10 +4,12 @@ import "./index.css";
 
 /* A pagination bar, as seen in https://react-bootstrap.github.io/components/pagination/
 ** 
+** ATTENTION! This component is 1-based index (first index is 1)!
+**
 ** Props:
 ** - page: current active page
 ** - total: total number of pages
-** - handler: function to call with onClick
+** - handler: function to call with onClick, argument given is new page number
 */
 const PageNav = ({className, ...props}) => {
 

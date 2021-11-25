@@ -4,8 +4,17 @@ const data = [
         'link': '/noticias'
     },
     {
-        'name': 'Apontamentos',
-        'link': '/apontamentos'
+        'name': 'Estudo',
+        'dropdown': [
+            {
+                'name': 'Apontamentos',
+                'link': '/apontamentos'
+            },
+            {
+                'name': 'Vídeos',
+                'link': '/videos'
+            }
+        ]
     },
     {
         'name': 'Calendário',

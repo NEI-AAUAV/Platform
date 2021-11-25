@@ -20,18 +20,7 @@ const terminalstate = EmulatorState.create(
             {
                 "ls": defaultCommandMapping.ls,
                 "cd": defaultCommandMapping.cd,
-                "cat": {
-                    'function': (state, inpt) => {
-                        if (inpt.includes("flag.txt")) {
-                            return {
-                                output: OutputFactory.makeTextOutput("UAC{g00d_0ld_flag.txt}")
-                            };
-                        }
-                        else
-                            return defaultCommandMapping.cat.function(state, inpt);
-                    },
-                    'optDef': defaultCommandMapping.cat.optDef
-                },
+                "cat": defaultCommandMapping.cat,
                 "mkdir": defaultCommandMapping.mkdir,
                 "rmdir": defaultCommandMapping.rmdir,
                 "echo": defaultCommandMapping.echo,
