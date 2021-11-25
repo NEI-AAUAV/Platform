@@ -28,6 +28,10 @@ const NewsArticle = () => {
     return(
         !isLoading && article != undefined &&
         <div id="article-body">
+            <Row className="text-left small text-primary mb-3">
+                <a className="" href="/noticias">&#10094; Voltar às notícias</a>
+            </Row>
+            
             <Row>
                 <Image src={process.env.REACT_APP_STATIC + article.header} alt="header" className="w-100" rounded />
             </Row>

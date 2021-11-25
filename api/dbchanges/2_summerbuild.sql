@@ -81,3 +81,42 @@ UPDATE `partners` SET `header` = '/partners/Lavandaria.png' WHERE `partners`.`id
 
 -- ISSUE 59 https://github.com/NEI-AAUAV/Website/issues/59
 ALTER TABLE notes ADD size INTEGER;
+
+
+-- ISSUE 54 https://github.com/NEI-AAUAV/Website/issues/54
+CREATE TABLE videos_tags (
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    name VARCHAR(255), 
+    color VARCHAR(18) --RGB
+);
+
+
+INSERT INTO videos_tags(id, name, color) VALUES 
+    (1, "1A", "rgb(1, 202, 228)"),
+    (2, "2A", "rgb(1, 171, 192)"),
+    (3, "3A", "rgb(1, 135, 152)"),
+    (4, "MEI", "rgb(1, 90, 101)"),
+    (5, "Workshops", "rgb(11, 66, 21)"),
+    (6, "Palestras", "rgb(20, 122, 38)");
+
+CREATE TABLE videos (
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    tag INT,
+    ytId VARCHAR(255),
+    title VARCHAR(255),
+    subtitle VARCHAR(255),
+    image VARCHAR(255),
+    created DATETIME DEFAULT CURRENT_TIMESTAMP,
+    playlist BOOLEAN DEFAULT FALSE
+);
+
+ALTER TABLE videos ADD CONSTRAINT FOREIGN KEY (tag) REFERENCES videos_tags(id);
+
+INSERT INTO videos (id, tag, ytId, title, subtitle, image, created, playlist) VALUES
+    (1, 1, "PL0-X-dbGZUABPg-FWm3tT7rCVh6SESK2d", "FP", "Fundamentos de Programação", "/videos/FP_2020.jpg", "2020-12-09 00:00:00", TRUE),
+    (2, 1, "PL0-X-dbGZUAA8rQm4klslEksHCrb3EIDG", "IAC", "Introdução à Arquitetura de Computadores", "/videos/IAC_2020.jpg", "2020-06-10 00:00:00", TRUE),
+    (3, 1, "PL0-X-dbGZUABp2uATg_-lqfT4FTFlyNir", "ITW", "Introdução às Tecnologias Web", "/videos/ITW_2020.jpg", "2020-12-17 00:00:00", TRUE),
+    (4, 1, "PL0-X-dbGZUACS3EkepgT7DOf287MiTzp0", "POO", "Programação Orientada a Objetos", "/videos/POO_2020.jpg", "2020-11-16 00:00:00", TRUE),
+    (5, 5, "ips-tkEr_pM", "Discord Bot", "Workshop", "/videos/discord.jpg", "2021-07-14 00:00:00", FALSE),
+    (6, 6, "3hjRgoIItYk", "Anchorage", "Palestra", "/videos/anchorage.jpg", "2021-04-01 00:00:00", FALSE)
+;

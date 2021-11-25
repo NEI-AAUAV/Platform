@@ -9,11 +9,16 @@ body {
 .text-primary { color: #147a26!important }
 
 a { color: #147a26!important }
+a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 
 .tab-container {max-width: none!important;}
 
 .btn-group-vertical > .btn.active, .btn-group-vertical > .btn:active, .btn-group-vertical > .btn:focus, .btn-group > .btn.active, .btn-group > .btn:active, .btn-group > .btn:focus {
     z-index: 0;
+}
+
+.extra-sm {
+    font-size: .5rem!important;
 }
 
 /* .btn */
