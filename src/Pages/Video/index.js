@@ -52,7 +52,7 @@ const Video = () => {
                         {video.subtitle}
                     </h4>
                     <p className="text-secondary w-100 text-center small">
-                        Atualizado a {new Date(video.created).toLocaleDateString('pt-PT', {day: 'numeric', month: 'long', year: 'numeric'})}
+                        Atualizado a {new Date(video.created.replace(/-/g, "/")).toLocaleDateString('pt-PT', {day: 'numeric', month: 'long', year: 'numeric'})}
                     </p>
 
                     <YoutubeEmbed 
