@@ -120,3 +120,20 @@ INSERT INTO videos (id, tag, ytId, title, subtitle, image, created, playlist) VA
     (5, 5, "ips-tkEr_pM", "Discord Bot", "Workshop", "/videos/discord.jpg", "2021-07-14 00:00:00", FALSE),
     (6, 6, "3hjRgoIItYk", "Anchorage", "Palestra", "/videos/anchorage.jpg", "2021-04-01 00:00:00", FALSE)
 ;
+
+
+-- NOTES IMPROVEMENTS
+-- Adicionar cadeiras em falta
+INSERT INTO `notes_subjects` (`paco_code`, `name`, `year`, `semester`, `short`) VALUES ('14817', 'Modelação de Sistemas Físicos', '1', '1', 'MSF'); 
+INSERT INTO `notes_subjects` (`paco_code`, `name`, `year`, `semester`, `short`, `discontinued`, `optional`) VALUES ('9270', 'Arquitectura e Gestão de Redes', '3', '3', 'AGR', '0', '1'); 
+INSERT INTO `notes_subjects` (`paco_code`, `name`, `year`, `semester`, `short`, `discontinued`, `optional`) VALUES ('12830', 'Complementos Sobre Linguagens de Programação', '3', '3', 'CSLP', '0', '1'); 
+INSERT INTO `notes_subjects` (`paco_code`, `name`, `year`, `semester`, `short`, `discontinued`, `optional`) VALUES ('2373', 'Empreendedorismo', '3', '3', 'E', '0', '1'); 
+INSERT INTO `notes_subjects` (`paco_code`, `name`, `year`, `semester`, `short`, `discontinued`, `optional`) VALUES ('12271', 'Aspetos Profissionais e Sociais da Engenharia Informática', '3', '3', 'APSEI', '0', '0'); 
+-- Adicionar colunas para melhorar classificação de cadeiras
+ALTER TABLE `notes_subjects` ADD discontinued BOOL DEFAULT False;
+ALTER TABLE `notes_subjects` ADD optional BOOL DEFAULT False;
+-- Atualização das tags das cadeiras
+UPDATE `notes_subjects` SET `discontinued` = '1' WHERE `notes_subjects`.`paco_code` = 41791;  -- Elementos de Física foi descontinuada
+UPDATE `notes_subjects` SET `semester` = '3' WHERE `notes_subjects`.`paco_code` = 2450; 
+-- Consulta para obter número de apontamentos por cadeira
+SELECT notes_subjects.year, notes_subjects.semester,notes_subjects.short, notes_subjects.name, COUNT(notes.id) FROM notes_subjects JOIN notes ON notes.subject=notes_subjects.paco_code WHERE notes_subjects.discontinued=False GROUP BY 1, 2, 3, 4 ORDER BY notes_subjects.year, notes_subjects.semester, notes_subjects.short; 
