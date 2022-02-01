@@ -147,3 +147,12 @@ INSERT INTO `notes` (`id`, `name`, `location`, `subject`, `author`, `schoolYear`
 (221, 'Guiões práticos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Ps.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
 (220, 'Slides teóricos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_TPs.zip', 14817, 2125, 8, 29, 0, 0, 0, 1, 0, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
 (219, 'Formulário MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Form.pdf', 14817, 2125, 8, 29, 1, 0, 0, 0, 0, 0, 0, NULL, '2022-01-31 20:37:14', 1, NULL);~
+
+CREATE TABLE notes_thanks ( -- Rows at this table are shown in the bottom of the notes page to tyhank people that have contributed a lot to ir
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    author INT,
+    notesPersonalPage VARCHAR(255), -- If has its own notes website 
+    FOREIGN KEY (author) REFERENCES users(id)
+);
+
+INSERT INTO `notes_thanks` (`id`, `author`, `notesPersonalPage`) VALUES (NULL, '1161', 'https://resumosdeinformatica.netlify.app/'); 
