@@ -19,8 +19,10 @@ const Homepage = () => {
     const [news, setNews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Get first 3 news articles from API when page loads
+    const [banner, setBanner] = useState(undefined);
+
     useEffect(() => {
+        // Get first 3 news articles from API when page loads
         fetch(process.env.REACT_APP_API + "/news?itemsPerPage=3")
             .then(response => response.json())
             .then((response) => {
@@ -28,6 +30,15 @@ const Homepage = () => {
                     setNews(response['data']);
                 }
                 setIsLoading(false);
+            });
+
+        // Get partner banner
+        fetch(process.env.REACT_APP_API + "/partners/banner")
+            .then(response => response.json())
+            .then((response) => {
+                if('data' in response && response.data.length) {
+                    setBanner(response['data'][0]);
+                }
             });
     }, []);
 
@@ -120,6 +131,19 @@ const Homepage = () => {
                     </Row>
                 </Col>
             </div>
+
+            {
+                banner && 
+                <Col xs={11} sm={10} className="mx-auto col-xxl-9 my-3">
+                    <a href={banner.bannerUrl} target="_blank">
+                        <img 
+                            src={process.env.REACT_APP_STATIC + banner.bannerImage}
+                            className="w-100"
+                        />
+                        <p className="mb-0 text-primary text-center small">O NEI é apoiado pela {banner.company}</p>
+                    </a>
+                </Col>
+            }
 
             <div className="section-dark">
                 <Col xs={11} sm={10} className="d-flex flex-column flex-wrap mx-auto col-xxl-9 text-center">

@@ -120,3 +120,48 @@ INSERT INTO videos (id, tag, ytId, title, subtitle, image, created, playlist) VA
     (5, 5, "ips-tkEr_pM", "Discord Bot", "Workshop", "/videos/discord.jpg", "2021-07-14 00:00:00", FALSE),
     (6, 6, "3hjRgoIItYk", "Anchorage", "Palestra", "/videos/anchorage.jpg", "2021-04-01 00:00:00", FALSE)
 ;
+
+
+-- NOTES IMPROVEMENTS
+-- Adicionar cadeiras em falta
+INSERT INTO `notes_subjects` (`paco_code`, `name`, `year`, `semester`, `short`) VALUES ('14817', 'Modelação de Sistemas Físicos', '1', '1', 'MSF'); 
+INSERT INTO `notes_subjects` (`paco_code`, `name`, `year`, `semester`, `short`, `discontinued`, `optional`) VALUES ('9270', 'Arquitectura e Gestão de Redes', '3', '3', 'AGR', '0', '1'); 
+INSERT INTO `notes_subjects` (`paco_code`, `name`, `year`, `semester`, `short`, `discontinued`, `optional`) VALUES ('12830', 'Complementos Sobre Linguagens de Programação', '3', '3', 'CSLP', '0', '1'); 
+INSERT INTO `notes_subjects` (`paco_code`, `name`, `year`, `semester`, `short`, `discontinued`, `optional`) VALUES ('2373', 'Empreendedorismo', '3', '3', 'E', '0', '1'); 
+INSERT INTO `notes_subjects` (`paco_code`, `name`, `year`, `semester`, `short`, `discontinued`, `optional`) VALUES ('12271', 'Aspetos Profissionais e Sociais da Engenharia Informática', '3', '3', 'APSEI', '0', '0'); 
+-- Adicionar colunas para melhorar classificação de cadeiras
+ALTER TABLE `notes_subjects` ADD discontinued BOOL DEFAULT False;
+ALTER TABLE `notes_subjects` ADD optional BOOL DEFAULT False;
+-- Atualização das tags das cadeiras
+UPDATE `notes_subjects` SET `discontinued` = '1' WHERE `notes_subjects`.`paco_code` = 41791;  -- Elementos de Física foi descontinuada
+UPDATE `notes_subjects` SET `semester` = '3' WHERE `notes_subjects`.`paco_code` = 2450; 
+-- Consulta para obter número de apontamentos por cadeira
+SELECT notes_subjects.year, notes_subjects.semester,notes_subjects.short, notes_subjects.name, COUNT(notes.id) FROM notes_subjects JOIN notes ON notes.subject=notes_subjects.paco_code WHERE notes_subjects.discontinued=False GROUP BY 1, 2, 3, 4 ORDER BY notes_subjects.year, notes_subjects.semester, notes_subjects.short; 
+
+-- JANUARY 2022 NEW DATA
+
+INSERT INTO `notes` (`id`, `name`, `location`, `subject`, `author`, `schoolYear`, `teacher`, `summary`, `tests`, `bibliography`, `slides`, `exercises`, `projects`, `notebook`, `content`, `createdAt`, `type`, `size`) VALUES
+(224, 'Programas MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Programas.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(223, 'Exercícios resolvidos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_ExsResolvidos.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(222, 'Exercícios MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Exercicios.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(221, 'Guiões práticos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Ps.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(220, 'Slides teóricos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_TPs.zip', 14817, 2125, 8, 29, 0, 0, 0, 1, 0, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(219, 'Formulário MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Form.pdf', 14817, 2125, 8, 29, 1, 0, 0, 0, 0, 0, 0, NULL, '2022-01-31 20:37:14', 1, NULL);~
+
+CREATE TABLE notes_thanks ( -- Rows at this table are shown in the bottom of the notes page to tyhank people that have contributed a lot to ir
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    author INT,
+    notesPersonalPage VARCHAR(255), -- If has its own notes website 
+    FOREIGN KEY (author) REFERENCES users(id)
+);
+
+INSERT INTO `notes_thanks` (`id`, `author`, `notesPersonalPage`) VALUES (NULL, '1161', 'https://resumosdeinformatica.netlify.app/'); 
+
+ALTER TABLE partners ADD bannerUrl VARCHAR(255);
+ALTER TABLE partners ADD bannerImage VARCHAR(255);
+ALTER TABLE partners ADD bannerUntil DATETIME; -- When expired, won't be shown anymore
+INSERT INTO `partners` (`id`, `header`, `company`, `description`, `content`, `link`, `bannerUrl`, `bannerUntil`, `bannerImage`) VALUES
+(NULL, NULL, 'Olisipo', 'Loren ipsum...', NULL, 'https://bit.ly/3KVT8zs', 'https://bit.ly/3KVT8zs', '2023-01-31 23:59:59', '/partners/banners/Olisipo.png');
+
+INSERT INTO `rgm` (`id`, `categoria`, `mandato`, `file`) VALUES (NULL, 'RAC', '2021', '/rgm/RAC/2021/RAC_NEI2021.pdf'); 
+UPDATE rgm SET mandato=2021, file="/rgm/ATAS/2021/1.pdf" WHERE id=140;

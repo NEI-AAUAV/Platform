@@ -23,12 +23,15 @@ const ImageCard = (props) => {
             className={"text-center mb-5 image-card animation" + color_class}
             style={{animationDelay: props.animKey ? props.animKey*0.2+"s" : "0"}}
         >
-            <a href={props.anchor}>
-            <Card.Img variant="top img-fluid" src={props.image} />
-            </a>
+            {
+                props.image &&
+                <a href={props.anchor}>
+                    <Card.Img variant="top img-fluid" src={props.image} />
+                </a>
+            }
 
             <div className={"plus-button" + color_class}>
-                <span><a href={props.anchor}>+</a></span>
+                <span><a href={props.anchor} target="_blank">+</a></span>
             </div>
 
             <Card.Body className={color_class}>

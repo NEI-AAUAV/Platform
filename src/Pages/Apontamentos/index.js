@@ -44,6 +44,8 @@ const Apontamentos = () => {
     const [shownAuth, setShownAuth] = useState();
     const [shownTeacher, setShownTeacher] = useState();
 
+    const [thanks, setThanks] = useState([]);
+
     const [loading, setLoading] = useState(true);
 
     const [alert, setAlert] = useState({
@@ -86,6 +88,20 @@ const Apontamentos = () => {
         // Remove data from URL
         var url = document.location.href;
         window.history.pushState({}, "", url.split("?")[0]);
+        // Load thanks
+        fetch(process.env.REACT_APP_API + "/notes/thanks")
+            .then((response) => {
+                if (!response.ok) {throw new Error(response.status)}
+                return response.json()
+            })
+            .then((response) => {
+                if ('data' in response) {
+                    setThanks(response['data']);
+                }
+            })
+            .catch((error) => {
+                console.log("Error getting thanks", error);
+            });
     }, []);
 
     useEffect(() => {
@@ -553,9 +569,32 @@ const Apontamentos = () => {
             </Row>
 
             <div className="text-center mt-5">
-                <h3>É a tua vez!</h3>
+                <h3>Foi graças a pessoas como tu que esta página se tornou possível!</h3>
+                {
+                    thanks.length &&
+                    <div>
+                        <p className="m-0">O nosso agradecimento aos que mais contribuiram.</p>
+
+                        <Row>
+                            {
+                                thanks.map(t => 
+                                    <div className="mx-auto my-3">
+                                        <h4 className="">{t.author}</h4>
+                                        <div className="small">
+                                            <a href={'/apontamentos?author=' + t.authorId}>Os seus apontamentos no site do NEI</a>
+                                            <br/>
+                                            {
+                                                t.personalPage && <a href={t.personalPage} target="_blank">Website de apontamentos</a>
+                                            }
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        </Row>
+                    </div>
+                }
                 <p>
-                    Ajuda-nos a manter este repositório atualizado com os conteúdos mais recentes. Partilha connosco os teus através do email <a href="mailto:nei@aauav.pt">nei@aauav.pt</a>. Contamos com o teu apoio!
+                    Junta-te a elas e ajuda-nos a manter este repositório atualizado com os conteúdos mais recentes. Partilha connosco os teus através do email <a href="mailto:nei@aauav.pt">nei@aauav.pt</a>. Contamos com o teu apoio!
                 </p>
             </div>
         </div>
