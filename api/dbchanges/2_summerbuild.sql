@@ -156,3 +156,9 @@ CREATE TABLE notes_thanks ( -- Rows at this table are shown in the bottom of the
 );
 
 INSERT INTO `notes_thanks` (`id`, `author`, `notesPersonalPage`) VALUES (NULL, '1161', 'https://resumosdeinformatica.netlify.app/'); 
+
+ALTER TABLE partners ADD bannerUrl VARCHAR(255);
+ALTER TABLE partners ADD bannerImage VARCHAR(255);
+ALTER TABLE partners ADD bannerUntil DATETIME; -- When expired, won't be shown anymore
+INSERT INTO `partners` (`id`, `header`, `company`, `description`, `content`, `link`, `bannerUrl`, `bannerUntil`, `bannerImage`) VALUES
+(NULL, NULL, 'Olisipo', 'Loren ipsum...', NULL, 'https://bit.ly/3KVT8zs', 'https://bit.ly/3KVT8zs', '2023-01-31 23:59:59', '/partners/banners/Olisipo.png');
