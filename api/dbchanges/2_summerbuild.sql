@@ -137,3 +137,13 @@ UPDATE `notes_subjects` SET `discontinued` = '1' WHERE `notes_subjects`.`paco_co
 UPDATE `notes_subjects` SET `semester` = '3' WHERE `notes_subjects`.`paco_code` = 2450; 
 -- Consulta para obter número de apontamentos por cadeira
 SELECT notes_subjects.year, notes_subjects.semester,notes_subjects.short, notes_subjects.name, COUNT(notes.id) FROM notes_subjects JOIN notes ON notes.subject=notes_subjects.paco_code WHERE notes_subjects.discontinued=False GROUP BY 1, 2, 3, 4 ORDER BY notes_subjects.year, notes_subjects.semester, notes_subjects.short; 
+
+-- JANUARY 2022 NEW DATA
+
+INSERT INTO `notes` (`id`, `name`, `location`, `subject`, `author`, `schoolYear`, `teacher`, `summary`, `tests`, `bibliography`, `slides`, `exercises`, `projects`, `notebook`, `content`, `createdAt`, `type`, `size`) VALUES
+(224, 'Programas MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Programas.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(223, 'Exercícios resolvidos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_ExsResolvidos.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(222, 'Exercícios MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Exercicios.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(221, 'Guiões práticos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Ps.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(220, 'Slides teóricos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_TPs.zip', 14817, 2125, 8, 29, 0, 0, 0, 1, 0, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(219, 'Formulário MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Form.pdf', 14817, 2125, 8, 29, 1, 0, 0, 0, 0, 0, 0, NULL, '2022-01-31 20:37:14', 1, NULL);~
