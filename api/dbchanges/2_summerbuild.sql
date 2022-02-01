@@ -162,3 +162,6 @@ ALTER TABLE partners ADD bannerImage VARCHAR(255);
 ALTER TABLE partners ADD bannerUntil DATETIME; -- When expired, won't be shown anymore
 INSERT INTO `partners` (`id`, `header`, `company`, `description`, `content`, `link`, `bannerUrl`, `bannerUntil`, `bannerImage`) VALUES
 (NULL, NULL, 'Olisipo', 'Loren ipsum...', NULL, 'https://bit.ly/3KVT8zs', 'https://bit.ly/3KVT8zs', '2023-01-31 23:59:59', '/partners/banners/Olisipo.png');
+
+INSERT INTO `rgm` (`id`, `categoria`, `mandato`, `file`) VALUES (NULL, 'RAC', '2021', '/rgm/RAC/2021/RAC_NEI2021.pdf'); 
+UPDATE rgm SET mandato=2021, file="/rgm/ATAS/2021/1.pdf" WHERE id=140;
