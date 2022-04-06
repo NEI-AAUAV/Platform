@@ -19,6 +19,7 @@ import Apontamentos from "./Pages/Apontamentos";
 import FeedbackForm from './Pages/Forms/FeedbackForm';
 import Videos from "./Pages/Videos";
 import Video from "./Pages/Video";
+import Sports from "./Pages/Sports";
 
 
 const routes = [
@@ -44,6 +45,7 @@ const routes = [
 			{ path: "/historia", element: <History /> },
 			{ path: "/seniors/:id", element: <Seniors /> },
 			{ path: "/faina", element: <Faina/> },
+			{ path: "/desporto", element: <Sports/>},
 			{ path: "/videos", element: <Videos/> },
 			{ path: "/videos/:id", element: <Video/> },
 			// Forms

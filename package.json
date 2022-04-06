@@ -19,7 +19,7 @@
     "node-ical": "*",
     "react": "^17.0.2",
     "react-big-calendar": "^0.33.3",
-    "react-bootstrap": "^1.5.2",
+    "react-bootstrap": "^1.6.4",
     "react-dom": "^17.0.2",
     "react-router": "^6.0.0-beta.0",
     "react-router-dom": "^6.0.0-beta.0",
@@ -54,6 +54,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {}
+  }
 }
