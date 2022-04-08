@@ -1,0 +1,41 @@
+.lista {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+
+ul {
+    list-style-type: none;
+    display: flex;
+    width: 40vw;
+    justify-content: space-between;
+}
+
+ul li{
+    cursor: pointer;
+    position: relative;
+    text-align: center;
+}
+
+li.act::after {
+    position: absolute;
+    content: "";
+    height: 3px;
+    width: 65%;
+    background-color: green;
+    left:12px;
+    bottom: -5px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    animation: appear 0.3s linear;
+}
+@keyframes appear {
+    from {
+        width: 0;
+    }
+    to {
+        width: 65%;
+    }
+}

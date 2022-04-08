@@ -10,12 +10,15 @@ import Tabs from "../../Components/Tabs/index.js";
 
 import Typist from 'react-typist';
 
+import "./index.css";
+
 const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
 const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
 
 const Sports = () => {
 
     const [anos, setAnos] = useState([]);
+
 
 
     return (
@@ -25,7 +28,7 @@ const Sports = () => {
             </div>
             <div className='slideUpFade' style={{animationDelay: animationBase + animationIncrement}}>
             <Carousel fade>
-                <Carousel.Item interval={500}>
+                <Carousel.Item interval={2000}>
                     <div style={{height: "500px"}}>
                         <img
                             className="d-block w-100"
@@ -35,7 +38,7 @@ const Sports = () => {
                         />
                     </div>
                 </Carousel.Item>
-                <Carousel.Item interval={500}>
+                <Carousel.Item interval={2000}>
                     <div style={{height: "500px"}}>
                         <img
                             className="d-block w-100"
@@ -45,7 +48,7 @@ const Sports = () => {
                         />
                     </div>
                 </Carousel.Item>
-                <Carousel.Item interval={500}>
+                <Carousel.Item interval={2000}>
                     <div style={{height: "500px"}}>
                         <img
                             className="d-block w-100"
@@ -56,6 +59,18 @@ const Sports = () => {
                     </div>
                 </Carousel.Item>
             </Carousel>
+            </div>
+            <div style={{marginTop: "50px"}}>
+                <h3 className='mb-5 text-center slideUpFade'>Modalidades</h3>
+            </div>
+            <div class='lista'>
+                <ul>
+                    <li class="act">Andebol</li>
+                    <li>Futebol</li>
+                    <li>Futsal</li>
+                    <li>Basquetebol</li>
+                    <li>Voleibol</li>
+                </ul>
             </div>
         </>
     )
