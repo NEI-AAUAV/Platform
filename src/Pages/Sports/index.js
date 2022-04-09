@@ -17,9 +17,11 @@ const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT)
 
 const Sports = () => {
 
-    const [anos, setAnos] = useState([]);
+    const [tabIndicator, setTabIndicator] = useState("Andebol");
 
-
+    function changeTab(value) {
+        setTabIndicator(value);
+    }
 
     return (
         <>
@@ -64,12 +66,12 @@ const Sports = () => {
                 <h3 className='mb-5 text-center slideUpFade'>Modalidades</h3>
             </div>
             <div class='lista'>
-                <ul>
-                    <li class="act">Andebol</li>
-                    <li>Futebol</li>
-                    <li>Futsal</li>
-                    <li>Basquetebol</li>
-                    <li>Voleibol</li>
+                <ul className='slideUpFade'>
+                    {tabIndicator=="Andebol" ? <li class="act">Andebol</li> : <li onClick={() => changeTab("Andebol")}>Andebol</li>}
+                    {tabIndicator=="Futebol" ? <li class="act">Futebol</li> : <li onClick={() => changeTab("Futebol")}>Futebol</li>}
+                    {tabIndicator=="Voleibol" ? <li class="act">Voleibol</li> : <li onClick={() => changeTab("Voleibol")}>Voleibol</li>}
+                    {tabIndicator=="Futsal" ? <li class="act">Futsal</li> : <li onClick={() => changeTab("Futsal")}>Futsal</li>}
+                    {tabIndicator=="Basquetebol" ? <li class="act">Basquetebol</li> : <li onClick={() => changeTab("Basquetebol")}>Basquetebol</li>}
                 </ul>
             </div>
         </>
