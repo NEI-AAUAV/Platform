@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import Carousel from "react-bootstrap/Carousel";
-import { Row } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
-import TextList from "../../Components/TextList"
-import img1 from "./unknown.png";
-import img2 from "./unknown2.png";
-import img3 from "./unknown3.png";
-import equipa from "./equipa.jpg";
+import TextList from "../../Components/TextList";
+import Game from './Game/Game';
+import img1 from "./img/unknown.png";
+import img2 from "./img/unknown2.png";
+import img3 from "./img/unknown3.png";
+import equipa from "./img/equipa.jpg";
 
 import Typist from "react-typist";
 
@@ -112,59 +113,67 @@ const Sports = () => {
         </Row>
         <Row>
           <TextList
-            colSize={6}
+            colSize={4}
             text="Pedro Monteiro"
             className="slideUpFade"
             style={{
-              animationDelay:
-                animationBase + animationIncrement * 0 + "s",
+              animationDelay: animationBase + animationIncrement * 0 + "s",
             }}
           />
           <TextList
-            colSize={6}
+            colSize={4}
             text="Pedro Monteiro"
             className="slideUpFade"
             style={{
-              animationDelay:
-                animationBase + animationIncrement * 0 + "s",
+              animationDelay: animationBase + animationIncrement * 0 + "s",
             }}
           />
           <TextList
-            colSize={6}
+            colSize={4}
             text="Pedro Monteiro"
             className="slideUpFade"
             style={{
-              animationDelay:
-                animationBase + animationIncrement * 0 + "s",
+              animationDelay: animationBase + animationIncrement * 0 + "s",
             }}
           />
           <TextList
-            colSize={6}
+            colSize={4}
             text="Pedro Monteiro"
             className="slideUpFade"
             style={{
-              animationDelay:
-                animationBase + animationIncrement * 0 + "s",
+              animationDelay: animationBase + animationIncrement * 0 + "s",
             }}
           />
           <TextList
-            colSize={6}
+            colSize={4}
             text="Pedro Monteiro"
             className="slideUpFade"
             style={{
-              animationDelay:
-                animationBase + animationIncrement * 0 + "s",
+              animationDelay: animationBase + animationIncrement * 0 + "s",
             }}
           />
           <TextList
-            colSize={6}
+            colSize={4}
             text="Pedro Monteiro"
             className="slideUpFade"
             style={{
-              animationDelay:
-                animationBase + animationIncrement * 0 + "s",
+              animationDelay: animationBase + animationIncrement * 0 + "s",
             }}
           />
+        </Row>
+
+        <Row className="games-section">
+          <Col className="column" lg={6}>
+            <h3 className="column-header">Resultados</h3>
+            <Game></Game>
+            <Game></Game>
+            <Game></Game>
+          </Col>
+          <Col className="column" lg={6}>
+            <h3 className="column-header">Próximos Jogos</h3>
+            <Game></Game>
+            <Game></Game>
+          </Col>
         </Row>
       </div>
     </>
