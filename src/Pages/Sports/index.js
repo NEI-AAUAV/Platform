@@ -31,32 +31,29 @@ const Sports = () => {
             <div className='slideUpFade' style={{animationDelay: animationBase + animationIncrement}}>
             <Carousel fade>
                 <Carousel.Item interval={2000}>
-                    <div style={{height: "500px"}}>
+                    <div className='image-wrapper'>
                         <img
                             className="d-block w-100"
                             src={img1}
                             alt="Image One"
-                            style={{height: "100%", objectFit: "cover"}}
                         />
                     </div>
                 </Carousel.Item>
                 <Carousel.Item interval={2000}>
-                    <div style={{height: "500px"}}>
+                    <div className='image-wrapper'>
                         <img
                             className="d-block w-100"
                             src={img2}
                             alt="Image One"
-                            style={{height: "100%", objectFit: "cover"}}
                         />
                     </div>
                 </Carousel.Item>
                 <Carousel.Item interval={2000}>
-                    <div style={{height: "500px"}}>
+                    <div className='image-wrapper'>
                         <img
                             className="d-block w-100"
                             src={img3}
                             alt="Image One"
-                            style={{height: "100%", objectFit: "cover"}}
                         />
                     </div>
                 </Carousel.Item>
@@ -67,11 +64,11 @@ const Sports = () => {
             </div>
             <div class='lista'>
                 <ul className='slideUpFade'>
-                    {tabIndicator=="Andebol" ? <li class="act">Andebol</li> : <li onClick={() => changeTab("Andebol")}>Andebol</li>}
-                    {tabIndicator=="Futebol" ? <li class="act">Futebol</li> : <li onClick={() => changeTab("Futebol")}>Futebol</li>}
-                    {tabIndicator=="Voleibol" ? <li class="act">Voleibol</li> : <li onClick={() => changeTab("Voleibol")}>Voleibol</li>}
-                    {tabIndicator=="Futsal" ? <li class="act">Futsal</li> : <li onClick={() => changeTab("Futsal")}>Futsal</li>}
-                    {tabIndicator=="Basquetebol" ? <li class="act">Basquetebol</li> : <li onClick={() => changeTab("Basquetebol")}>Basquetebol</li>}
+                    {tabIndicator==="Andebol" ? <li class="act">Andebol</li> : <li onClick={() => changeTab("Andebol")}>Andebol</li>}
+                    {tabIndicator==="Futebol" ? <li class="act">Futebol</li> : <li onClick={() => changeTab("Futebol")}>Futebol</li>}
+                    {tabIndicator==="Voleibol" ? <li class="act">Voleibol</li> : <li onClick={() => changeTab("Voleibol")}>Voleibol</li>}
+                    {tabIndicator==="Futsal" ? <li class="act">Futsal</li> : <li onClick={() => changeTab("Futsal")}>Futsal</li>}
+                    {tabIndicator==="Basquetebol" ? <li class="act">Basquetebol</li> : <li onClick={() => changeTab("Basquetebol")}>Basquetebol</li>}
                 </ul>
             </div>
         </>

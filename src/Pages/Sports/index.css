@@ -4,6 +4,15 @@
     justify-content: center;
 }
 
+.image-wrapper {
+    height: 500px;
+}
+
+.image-wrapper img {
+    height: 100%;
+    object-fit: "cover";
+}
+
 ul {
     list-style-type: none;
     display: flex;
@@ -12,9 +21,12 @@ ul {
 }
 
 ul li{
-    cursor: pointer;
     position: relative;
     text-align: center;
+}
+
+ul li:hover {
+    cursor: pointer;
 }
 
 li.act::after {
