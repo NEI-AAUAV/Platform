@@ -112,7 +112,52 @@ const Sports = () => {
         </Row>
         <Row>
           <TextList
-            colSize={12}
+            colSize={6}
+            text="Pedro Monteiro"
+            className="slideUpFade"
+            style={{
+              animationDelay:
+                animationBase + animationIncrement * 0 + "s",
+            }}
+          />
+          <TextList
+            colSize={6}
+            text="Pedro Monteiro"
+            className="slideUpFade"
+            style={{
+              animationDelay:
+                animationBase + animationIncrement * 0 + "s",
+            }}
+          />
+          <TextList
+            colSize={6}
+            text="Pedro Monteiro"
+            className="slideUpFade"
+            style={{
+              animationDelay:
+                animationBase + animationIncrement * 0 + "s",
+            }}
+          />
+          <TextList
+            colSize={6}
+            text="Pedro Monteiro"
+            className="slideUpFade"
+            style={{
+              animationDelay:
+                animationBase + animationIncrement * 0 + "s",
+            }}
+          />
+          <TextList
+            colSize={6}
+            text="Pedro Monteiro"
+            className="slideUpFade"
+            style={{
+              animationDelay:
+                animationBase + animationIncrement * 0 + "s",
+            }}
+          />
+          <TextList
+            colSize={6}
             text="Pedro Monteiro"
             className="slideUpFade"
             style={{
