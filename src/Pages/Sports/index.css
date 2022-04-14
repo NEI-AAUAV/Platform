@@ -8,11 +8,6 @@
     height: 500px;
 }
 
-.image-wrapper img {
-    height: 100%;
-    object-fit: "cover";
-}
-
 .games-section {
     margin-top: 3rem;
 }
@@ -24,28 +19,6 @@
 .column-header {
     margin-bottom: 2rem;
 }
-
-.game {
-    margin-top: 1rem;
-}
-
-.game-date {
-    margin-bottom: 0.5rem;
-    margin-top: 1rem;
-}
-
-.logo {
-    height: 5rem;
-    width: 5rem;
-}
-
-.game-result {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-}
-
 
 ul {
     list-style-type: none;

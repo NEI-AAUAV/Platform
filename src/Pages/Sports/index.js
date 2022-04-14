@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Carousel from "react-bootstrap/Carousel";
 import { Row, Col } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 import TextList from "../../Components/TextList";
+import Tabs from "../../Components/Tabs/index.js";
 import Game from './Game/Game';
 import img1 from "./img/unknown.png";
 import img2 from "./img/unknown2.png";
@@ -21,6 +22,24 @@ const animationIncrement = parseFloat(
 const Sports = () => {
   const [tabIndicator, setTabIndicator] = useState("Andebol");
   const [img, setImg] = useState(null);
+  const [anos, setAnos] = useState([]);
+  const [selectedYear, setSelectedYear] = useState();
+
+  useEffect(() => {
+    // pegar o número de anos
+    fetch(process.env.REACT_APP_API + "/faina/mandates")
+        .then((response) => response.json())
+        .then((response) => {
+            var anos = response.data.map((curso) => curso.mandato).sort((a, b) => parseInt(b.split('/')[0]) - parseInt(a.split('/')[0]));
+            if (anos.length > 0) {
+                setSelectedYear(anos[0])
+                setAnos(<Tabs tabs={anos} _default={anos[0]} onChange={setSelectedYear} />)
+            }
+            else
+                setAnos("");
+        })
+
+}, [])
 
   /*setImg(<Image
         src={equipa} rounded fluid
@@ -46,25 +65,41 @@ const Sports = () => {
         className="slideUpFade"
         style={{ animationDelay: animationBase + animationIncrement }}
       >
-        <Carousel fade>
+        <Carousel fade style={{ marginBottom: "3rem" }}>
           <Carousel.Item interval={2000}>
-            <div className="image-wrapper">
-              <img className="d-block w-100" src={img1} alt="Carousel Item" />
-            </div>
+          <div style={{height: "500px"}}>
+                        <img
+                            className="d-block w-100"
+                            src={img1}
+                            alt="Carousel One"
+                            style={{height: "100%", objectFit: "cover"}}
+                        />
+                    </div>
           </Carousel.Item>
           <Carousel.Item interval={2000}>
-            <div className="image-wrapper">
-              <img className="d-block w-100" src={img2} alt="Carousel Item" />
-            </div>
+          <div style={{height: "500px"}}>
+                        <img
+                            className="d-block w-100"
+                            src={img2}
+                            alt="Carousel One"
+                            style={{height: "100%", objectFit: "cover"}}
+                        />
+                    </div>
           </Carousel.Item>
           <Carousel.Item interval={2000}>
-            <div className="image-wrapper">
-              <img className="d-block w-100" src={img3} alt="Carousel Item" />
-            </div>
+          <div style={{height: "500px"}}>
+                        <img
+                            className="d-block w-100"
+                            src={img3}
+                            alt="Carousel One"
+                            style={{height: "100%", objectFit: "cover"}}
+                        />
+                    </div>
           </Carousel.Item>
         </Carousel>
       </div>
-      <div style={{ marginTop: "50px" }}>
+      {anos}
+      <div style={{ marginTop: "1rem" }}>
         <h3 className="mb-5 text-center slideUpFade">Modalidades</h3>
       </div>
       <div class="lista">
