@@ -10,7 +10,7 @@ const Partners = () => {
 
     // Get API data when component renders
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/partners")
+        fetch(process.env.REACT_APP_API + "/partners/")
             .then(response => response.json())
             .then((response) => {
                 if('data' in response) {
@@ -18,7 +18,7 @@ const Partners = () => {
                 }
             });
         // Get partner banner
-        fetch(process.env.REACT_APP_API + "/partners/banner")
+        fetch(process.env.REACT_APP_API + "/partners/banner/")
             .then(response => response.json())
             .then((response) => {
                 if('data' in response && response.data.length) {

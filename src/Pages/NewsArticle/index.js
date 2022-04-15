@@ -15,7 +15,7 @@ const NewsArticle = () => {
         if (!id.match("[0-9]+"))
             window.location.href = "/404";
 
-        fetch(process.env.REACT_APP_API + "/news?article=" + id)
+        fetch(process.env.REACT_APP_API + "/news/?article=" + id)
             .then(response => response.json())
             .then((response) => {
                 if('data' in response) {

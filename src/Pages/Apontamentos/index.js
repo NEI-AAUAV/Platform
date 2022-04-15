@@ -89,7 +89,7 @@ const Apontamentos = () => {
         var url = document.location.href;
         window.history.pushState({}, "", url.split("?")[0]);
         // Load thanks
-        fetch(process.env.REACT_APP_API + "/notes/thanks")
+        fetch(process.env.REACT_APP_API + "/notes/thanks/")
             .then((response) => {
                 if (!response.ok) {throw new Error(response.status)}
                 return response.json()
@@ -186,7 +186,7 @@ const Apontamentos = () => {
             fullNotes += extraYear;
             fullNotes = fullNotes.substring(0, fullNotes.length - 1); // ignore the last '&'
 
-            fetch(process.env.REACT_APP_API + "/notes" + fullNotes)
+            fetch(process.env.REACT_APP_API + "/notes/" + fullNotes)
                 .then((response) => {
                     if (!response.ok) {throw new Error(response.status)}
                     return response.json()
@@ -210,7 +210,7 @@ const Apontamentos = () => {
                 });
         }
 
-        fetch(process.env.REACT_APP_API + "/notes/years" + fullYear)
+        fetch(process.env.REACT_APP_API + "/notes/years/" + fullYear)
             .then((response) => {
                 if (!response.ok) {throw new Error(response.status)}
                 return response.json()
@@ -241,7 +241,7 @@ const Apontamentos = () => {
                 });
             });
 
-        fetch(process.env.REACT_APP_API + "/notes/subjects" + fullSubj)
+        fetch(process.env.REACT_APP_API + "/notes/subjects/" + fullSubj)
             .then((response) => {
                 if (!response.ok) {throw new Error(response.status)}
                 return response.json()
@@ -271,7 +271,7 @@ const Apontamentos = () => {
                 });
             });
 
-        fetch(process.env.REACT_APP_API + "/notes/students" + fullStud)
+        fetch(process.env.REACT_APP_API + "/notes/students/" + fullStud)
             .then((response) => {
                 if (!response.ok) {throw new Error(response.status)}
                 return response.json()
@@ -300,7 +300,7 @@ const Apontamentos = () => {
             });
 
 
-        fetch(process.env.REACT_APP_API + "/notes/teachers" + fullTeacher)
+        fetch(process.env.REACT_APP_API + "/notes/teachers/" + fullTeacher)
             .then((response) => {
                 if (!response.ok) {throw new Error(response.status)}
                 return response.json()

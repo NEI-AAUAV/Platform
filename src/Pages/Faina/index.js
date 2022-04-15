@@ -23,7 +23,7 @@ const Faina = () => {
 
     useEffect(() => {
         // pegar o número de anos
-        fetch(process.env.REACT_APP_API + "/faina/mandates")
+        fetch(process.env.REACT_APP_API + "/faina/mandates/")
             .then((response) => response.json())
             .then((response) => {
                 var anos = response.data.map((curso) => curso.mandato).sort((a, b) => parseInt(b.split('/')[0]) - parseInt(a.split('/')[0]));
@@ -41,7 +41,7 @@ const Faina = () => {
         setLoading(true);
         if (selectedYear == undefined) return;
 
-        fetch(process.env.REACT_APP_API + "/faina?mandate=" + selectedYear)
+        fetch(process.env.REACT_APP_API + "/faina/?mandate=" + selectedYear)
             .then((response) => response.json())
             .then((response) => {
                 setPeople(response.data.members.map(
