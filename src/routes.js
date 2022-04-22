@@ -19,6 +19,7 @@ import Apontamentos from "./Pages/Apontamentos";
 import FeedbackForm from './Pages/Forms/FeedbackForm';
 import Videos from "./Pages/Videos";
 import Video from "./Pages/Video";
+import FainaTree from "./Pages/FainaTree";
 
 
 const routes = [
@@ -27,7 +28,8 @@ const routes = [
 		element: <CleanLayout />,
 		children: [
 			{ path: "/", element: <Homepage /> },
-			{ path: "/merch", element: <Merchandising/> }
+			{ path: "/merch", element: <Merchandising/> },
+			{ path: "/familias", element: <FainaTree/> },
 		]
 	},
 	{
@@ -49,7 +51,7 @@ const routes = [
 			// Forms
 			{ path: "/forms/feedback", element: <FeedbackForm/> },
 			// Everything else is 404
-			{ path: "/:id", element: <Error404 /> }
+			{ path: "/:id", element: <Error404 /> },
 		],
 	}
 ];

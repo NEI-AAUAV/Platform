@@ -1,0 +1,51 @@
+#lixo::after {
+    content: '';
+    box-shadow: inset 0 0 1rem white;
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+svg.treeei {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: radial-gradient(circle at center, white, white, transparent);
+}
+
+svg.treeei path {
+    fill: none;
+}
+
+svg.treeei text {
+    font-size: 0.625em;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+svg.treeei circle.profile-border, 
+svg.treeei rect.insignia { 
+    filter: drop-shadow(1px 2px 2px darkgray);
+}
+
+
+
+/* text.name-tooltip {
+    display: none;
+    position: absolute;
+} */
+
+
+/* g.label:hover text {
+    display: block !important;
+} */
