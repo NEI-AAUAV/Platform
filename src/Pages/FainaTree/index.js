@@ -28,39 +28,6 @@ const zoomThreshold = 1;
 let lastScale = 2;
 
 
-var id = 0;
-const addNodeBetween = (parent, child) => {
-
-  var newNode = {
-    data: { name: id, matricula: parent.data.matricula - 1, patrao: parent.data.name },
-    children: []
-  };
-  // Creates a Node from newNode object using d3.hierarchy(.)
-  var newNode = d3.hierarchy(newNode);
-
-  child.parent = newNode;
-
-  // Later added some properties to Node like child,parent,depth
-  newNode.depth = parent.depth + 1;
-  newNode.height = parent.height - 1;
-  newNode.parent = parent;
-  newNode.id = Date.now();
-
-  // Selected is a node, to which we are adding the new node as a child
-  // If no child array, create an empty array
-
-  // Push it to parent.children array  
-  const index = parent.children.indexOf(child);
-  if (index > -1) {
-    parent.children.splice(index, 1);
-  }
-  parent.children.push(newNode);
-
-  // Update tree
-  // update(parent);
-  id++;
-}
-
 
 function buildTree() {
   const separateName = (name) => {
@@ -108,7 +75,12 @@ function buildTree() {
   // TODO: .nodeSize([100,200]) changes the size between nodes
   // check if this can be adjusted for subtrees with lots of nodes
 
-  const treeStructure = d3.tree().size(view).nodeSize([100, 150]).separation(function (a, b) { return (a.parent == b.parent ? 1 : 1); });
+  const treeStructure = d3.tree()
+    // .size(view)
+    .nodeSize([100, 150])
+    .separation(function (a, b) {
+      return (a.parent == b.parent ? 1 : 1);
+    });
 
   const root = treeStructure(dataStructure);
 
@@ -118,7 +90,6 @@ function buildTree() {
 
   const zoom = d3.zoom()
     .scaleExtent([0.2, 2])
-    .translateExtent([[0, 0], view])
     .on("zoom", ({ transform }) => zoomed(transform));
 
   svg = d3.select("svg.treeei")
@@ -128,13 +99,9 @@ function buildTree() {
     .append("g");
 
   function zoomed(transform) {
-    // console.log(svg.node().transform)
+    console.log(transform)
     const n = transform.k > zoomThreshold;
     const o = lastScale > zoomThreshold;
-    // if(transform.k == d3.zoomTransform(svg.node()).k)
-    //   console.log("igual")
-    // else
-    // console.log("dif")
     if (n !== o) {
       if (n) {
         // Replace with photos
@@ -146,7 +113,6 @@ function buildTree() {
         updateImages(false);
       }
     }
-    //console.log(svg.attr("transform"), transform, d3.zoomTransform(svg.node()))
     svg.attr("transform", transform);
 
     lastScale = transform.k;
@@ -242,7 +208,6 @@ function buildTree() {
       .selectAll("circle.profile-grad")
       .attr("opacity", d => show ? (d.data.image ? 0 : 0.3) : 0.3)
   }
-
 
   nodesImages.enter()
     .append("pattern")
@@ -403,6 +368,17 @@ function buildTree() {
     .attr("y", function () {
       return this.nextSibling.getBBox().y;
     })
+
+  const { width, height, x, y } = svg.node().getBBox();
+  // console.log(width, height, x, y)
+
+
+  const pad = 25;
+  zoom.translateExtent([[x - pad, y - pad], [x + width + pad, y + height + pad]]);
+  
+  const trans = d3.zoomIdentity;
+  trans.x = view[0] / 2;
+  zoomed(trans);
 }
 
 

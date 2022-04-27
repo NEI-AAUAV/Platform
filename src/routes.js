@@ -29,7 +29,7 @@ const routes = [
 		children: [
 			{ path: "/", element: <Homepage /> },
 			{ path: "/merch", element: <Merchandising/> },
-			{ path: "/familias", element: <FainaTree/> },
+			{ path: "/familias", element: localStorage.getItem("tester") ? <FainaTree/> : <></>},
 		]
 	},
 	{
