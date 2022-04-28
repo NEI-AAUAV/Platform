@@ -1,9 +1,12 @@
 // example from https://bl.ocks.org/mbostock/3885705
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCompress, faExpand } from "@fortawesome/free-solid-svg-icons";
 import * as d3 from 'd3';
-import data from "Assets/treeei.json";
+import classNames from "classname";
 
+import data from "Assets/treeei.json";
 import femalePic from "Assets/default_profile/female.svg";
 import malePic from "Assets/default_profile/male.svg";
 import nei from "Assets/icons/nei.svg";
@@ -99,17 +102,14 @@ function buildTree() {
     .append("g");
 
   function zoomed(transform) {
-    console.log(transform)
     const n = transform.k > zoomThreshold;
     const o = lastScale > zoomThreshold;
     if (n !== o) {
       if (n) {
         // Replace with photos
-        console.log("replace");
         updateImages(true);
       } else {
         // Remove images
-        console.log("remove")
         updateImages(false);
       }
     }
@@ -125,7 +125,7 @@ function buildTree() {
 
   links.enter()
     .append("path")
-    .style("stroke", "lightgray")
+    .style("stroke", "silver")
     .attr('marker-start', 'url(#dot)')
     .attr("d", function (d) {
       const sx = d.source.x,
@@ -198,7 +198,6 @@ function buildTree() {
     // Change circle image
     svg.select("g.nodes").selectAll("circle.profile-pic")
       .style("fill", (d) => {
-        // console.log(d);
         return show ? `url(#${d.data.name.replaceAll(" ", "_")})` :
           d.data.sex === "M" ? "url(#default_male)" : "url(#default_female)"
       });
@@ -370,33 +369,33 @@ function buildTree() {
     })
 
   const { width, height, x, y } = svg.node().getBBox();
-  // console.log(width, height, x, y)
-
 
   const pad = 25;
   zoom.translateExtent([[x - pad, y - pad], [x + width + pad, y + height + pad]]);
-  
-  const trans = d3.zoomIdentity;
-  trans.x = view[0] / 2;
-  zoomed(trans);
+
+  const t = d3.zoomTransform(svg.node());
+
+  zoomed(t)
 }
 
 
 
 function FainaTree() {
-
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     buildTree();
   }, [])
 
-
   return (
-    <div id="lixo" className="d-flex flex-grow-1 position-relative">
+    <div id="treeei" className={classNames("d-flex flex-grow-1 position-relative", {"expand": expanded})}>
+      <div className="open-expand" onClick={() => setExpanded(!expanded)}>
+        <FontAwesomeIcon icon={expanded ? faCompress : faExpand} size="lg" />
+      </div>
       <svg className="treeei" width="100%" height="100%" preserveAspectRatio="none" viewTarget={`0 0 ${view[0]} ${view[1]}`}>
         <defs>
           <marker id="dot" viewBox="0,0,20,20" refX="10" refY="10" markerWidth="10" markerHeight="10">
-            <circle cx="10" cy="10" r="4" fill="lightgray"></circle>
+            <circle cx="10" cy="10" r="4" fill="silver"></circle>
           </marker>
           <filter id="drop-shadow2" height="130%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur"></feGaussianBlur>

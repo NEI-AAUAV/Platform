@@ -57,7 +57,7 @@ const Navbar = () => {
                 <BNavbar.Collapse id="basic-BNavbar-nav" className="bg-white small font-weight-bold">
                     <Nav className="mr-auto">
                         {
-                            data.map(
+                            data.filter(d => d).map(
                                 navEl =>
                                     !navEl.dropdown
                                         ?
@@ -74,7 +74,7 @@ const Navbar = () => {
                                         :
                                         <NavDropdown title={navEl.name} id={"dropdown-" + navEl.name.replace(" ", "")}>
                                             {
-                                                navEl.dropdown.map(
+                                                navEl.dropdown.filter(d => d).map(
                                                     dropdown =>
                                                         <NavDropdown.Item 
                                                             href={dropdown.link} 

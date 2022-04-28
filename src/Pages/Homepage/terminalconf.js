@@ -18,6 +18,15 @@ const terminalstate = EmulatorState.create(
     {
         'commandMapping': CommandMapping.create(
             {
+                "tester": {
+                    'function': (state, inpt) => {
+                        localStorage.setItem("tester", 1);
+                        return {
+                            output: OutputFactory.makeTextOutput("")
+                        };
+                    },
+                    'optDef': {}
+                },
                 "ls": defaultCommandMapping.ls,
                 "cd": defaultCommandMapping.cd,
                 "cat": defaultCommandMapping.cat,

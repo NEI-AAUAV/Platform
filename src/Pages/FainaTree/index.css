@@ -1,4 +1,4 @@
-#lixo::after {
+#treeei::after {
     content: '';
     box-shadow: inset 0 0 1rem white;
     position: absolute;
@@ -9,7 +9,7 @@
     pointer-events: none;
 }
 
-svg.treeei {
+#treeei>svg {
     position: absolute;
     top: 0;
     left: 0;
@@ -18,11 +18,38 @@ svg.treeei {
     background: radial-gradient(circle at center, white, white, transparent);
 }
 
-svg.treeei path {
+#treeei>.open-expand {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: rgba(89, 161, 79, 0.8);
+    z-index: 10;
+    cursor: pointer;
+}
+
+#treeei>.open-expand:hover {
+    color: rgb(89, 161, 79);
+}
+
+#treeei.expand {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 10;
+    background: white;
+}
+
+#treeei.expand>svg {
+    background: white;
+}
+
+#treeei>svg path {
     fill: none;
 }
 
-svg.treeei text {
+#treeei>svg text {
     font-size: 0.625em;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -33,8 +60,8 @@ svg.treeei text {
     user-select: none;
 }
 
-svg.treeei circle.profile-border, 
-svg.treeei rect.insignia { 
+#treeei>svg circle.profile-border, 
+#treeei>svg rect.insignia { 
     filter: drop-shadow(1px 2px 2px darkgray);
 }
 

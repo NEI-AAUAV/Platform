@@ -74,7 +74,7 @@ const data = [
             localStorage.getItem("tester") ? {
                 'name': 'Famílias de Faina',
                 'link': '/familias'
-            } : {},
+            } : null,
         ]
     },
     {
