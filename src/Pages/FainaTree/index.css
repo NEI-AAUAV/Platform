@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap');
+
 #treeei {
     position: relative;
     overflow: hidden;
@@ -56,7 +58,7 @@
 }
 
 #treeei svg.treeei text {
-    font-size: 0.625em;
+    font-size: 1em;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -64,6 +66,15 @@
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+#treeei svg.treeei text.small {
+    font-size: 0.75em !important;
+    -webkit-transition: font-size 0.3s;
+    -moz-transition: font-size 0.3s;
+    -o-transition: font-size 0.3s;
+    transition: font-size 0.3s;
 }
 
 #treeei svg.treeei circle.profile-border, 

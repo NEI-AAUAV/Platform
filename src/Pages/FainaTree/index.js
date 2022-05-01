@@ -104,10 +104,10 @@ function buildTree() {
     if (n !== o) {
       if (n) {
         // Replace with photos
-        updateImages(true);
+        updateNodes(true);
       } else {
         // Remove images
-        updateImages(false);
+        updateNodes(false);
       }
     }
     svg.attr("transform", transform);
@@ -125,7 +125,7 @@ function buildTree() {
     .attr('marker-start', 'url(#dot)')
     .attr("d", function (d) {
       const sx = d.source.x,
-        sy = d.source.y + 60,
+        sy = d.source.y + 68,
         tx = d.target.x,
         ty = d.target.y,
         hy = 0.5 * (ty - sy),
@@ -160,49 +160,52 @@ function buildTree() {
 
   const nodes = svg.append("g")
     .attr("class", "nodes")
-    .selectAll("g.node")
+    .selectAll("g")
     .data(root.descendants().splice(1).filter(d => d.data.name != '.'))
     .enter()
     .append("g")
-    .attr("class", "node")
     .attr("transform", (d) => `translate(${d.x},${d.y})`);
 
   const nodesImages = d3.select("defs")
     .selectAll("pattern")
     .data(root.descendants().splice(1).filter(d => d.data.name != '.'));
 
-  function updateImages(show) {
-
-    /*
-    // Loads image
-    d3.select("defs")
-    .selectAll("pattern")
-      .attr("id", (d) => (d.data.name.replaceAll(" ", "_")))
-      .attr('width', 1)
-      .attr('height', 1)
-      .attr('patternContentUnits', 'objectBoundingBox')
-      .append("image")
-      .attr("xlink:xlink:href", function (d) {
-        return d.data.image && show ? d.data.image :
-          d.data.sex === "M" ? malePic : femalePic;
-      })
-      .attr("height", 1)
-      .attr("width", 1)
-      .attr("preserveAspectRatio", "xMinYMin slice");
-    */
-
+  function updateNodes(close) {
     // Change circle image
-    svg.select("g.nodes").selectAll("circle.profile-pic")
-      .style("fill", (d) => {
-        return show ? `url(#${d.data.name.replaceAll(" ", "_")})` :
-          d.data.sex === "M" ? "url(#default_male)" : "url(#default_female)"
-      });
+    svg.select("g.nodes")
+      .selectAll("circle.profile-pic")
+      .style("fill", d => close ? `url(#${d.data.name.replaceAll(" ", "_")})` : "none")
+      .transition().duration(300)
+      .attr("r", close ? 18 : 10)
 
     // Add year filter to default image 
     svg.select("g.nodes")
       .selectAll("circle.profile-grad")
-      .attr("opacity", d => show ? (d.data.image ? 0 : 0.3) : 0.3)
+      .attr("opacity", d => close ? (d.data.image ? 0 : 0.3) : 1)
+      .transition().duration(300)
+      .attr("r", close ? 18 : 10)
+
+    svg.select("g.nodes")
+      .selectAll("circle.profile-border")
+      .style("stroke", close ? d => d3.schemeTableau10[(d.data.matricula + 2) % 8] : "silver")
+      .transition().duration(300)
+      .attr("r", close ? 20 : 12)
+
+    svg.select("g.labels")
+      .selectAll("g")
+      .transition().duration(300)
+      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 14)})`)
+      .select("text")
+      .attr("class", close ? "small" : "")
+
+    svg.select("g.labels-tooltips")
+      .selectAll("g")
+      .transition().duration(300)
+      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 14)})`)
+      .select("text")
+      .attr("class", close ? "small" : "")
   }
+
 
   nodesImages.enter()
     .append("pattern")
@@ -290,7 +293,7 @@ function buildTree() {
     .style("stroke", d => d3.schemeTableau10[(d.data.matricula + 2) % 8])
     .style("stroke-width", 1.5)
 
-  updateImages(true);
+  updateNodes(true);
 
   const labels = svg.append("g")
     .attr("class", "labels")
@@ -363,7 +366,7 @@ function buildTree() {
     .attr("y", function () {
       return this.nextSibling.getBBox().y;
     })
-  
+
   // constrain tree
   const { width, height, x, y } = svg.node().getBBox();
 
