@@ -1,3 +1,18 @@
+#treeei {
+    position: relative;
+    overflow: hidden;
+}
+
+#treeei.expand {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 10;
+    background: white;
+}
+
 #treeei::after {
     content: '';
     box-shadow: inset 0 0 1rem white;
@@ -9,13 +24,18 @@
     pointer-events: none;
 }
 
-#treeei>svg {
+#treeei svg.treeei {
     position: absolute;
-    top: 0;
+    top: -6rem;
     left: 0;
-    height: 100%;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
     background: radial-gradient(circle at center, white, white, transparent);
+}
+
+#treeei.expand svg.treeei {
+    top: 0;
+    background: white;
 }
 
 #treeei>.open-expand {
@@ -31,25 +51,11 @@
     color: rgb(89, 161, 79);
 }
 
-#treeei.expand {
-    position: absolute !important;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-    z-index: 10;
-    background: white;
-}
-
-#treeei.expand>svg {
-    background: white;
-}
-
-#treeei>svg path {
+#treeei svg.treeei path {
     fill: none;
 }
 
-#treeei>svg text {
+#treeei svg.treeei text {
     font-size: 0.625em;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -60,8 +66,8 @@
     user-select: none;
 }
 
-#treeei>svg circle.profile-border, 
-#treeei>svg rect.insignia { 
+#treeei svg.treeei circle.profile-border, 
+#treeei svg.treeei rect.insignia { 
     filter: drop-shadow(1px 2px 2px darkgray);
 }
 

@@ -1,6 +1,6 @@
 // example from https://bl.ocks.org/mbostock/3885705
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCompress, faExpand } from "@fortawesome/free-solid-svg-icons";
 import * as d3 from 'd3';
@@ -28,9 +28,8 @@ const dims = [ // Adjusted dimensions [width, height]
 
 // Threshold to show photos
 const zoomThreshold = 1;
-let lastScale = 2;
-
-
+let lastTransform = d3.zoomIdentity;
+let svg, zoom;
 
 function buildTree() {
   const separateName = (name) => {
@@ -89,9 +88,7 @@ function buildTree() {
 
   d3.select("svg.treeei").selectAll("*:not(defs, defs *)").remove();
 
-  let svg;
-
-  const zoom = d3.zoom()
+  zoom = d3.zoom()
     .scaleExtent([0.2, 2])
     .on("zoom", ({ transform }) => zoomed(transform));
 
@@ -99,11 +96,11 @@ function buildTree() {
     // .attr("width", view[0] + 100)
     // .attr("height", view[1] + 100)
     .call(zoom)
-    .append("g");
+    .append("g")
 
   function zoomed(transform) {
     const n = transform.k > zoomThreshold;
-    const o = lastScale > zoomThreshold;
+    const o = lastTransform.k > zoomThreshold;
     if (n !== o) {
       if (n) {
         // Replace with photos
@@ -114,8 +111,7 @@ function buildTree() {
       }
     }
     svg.attr("transform", transform);
-
-    lastScale = transform.k;
+    lastTransform = transform;
   }
 
   const links = svg.append("g")
@@ -367,32 +363,49 @@ function buildTree() {
     .attr("y", function () {
       return this.nextSibling.getBBox().y;
     })
-
+  
+  // constrain tree
   const { width, height, x, y } = svg.node().getBBox();
 
-  const pad = 25;
-  zoom.translateExtent([[x - pad, y - pad], [x + width + pad, y + height + pad]]);
+  const pad = 96;
+  const x0 = x - pad,
+    y0 = y - pad,
+    x1 = x + width + pad,
+    y1 = y + height + pad;
 
-  const t = d3.zoomTransform(svg.node());
-
-  zoomed(t)
+  zoom.translateExtent([[x0, y0], [x1, y1]]);
 }
 
+
+function centerTree() {
+  const rect = d3.select("svg.treeei").node().getBoundingClientRect();
+  const { x, y, width, height } = svg.node().getBBox();
+
+  let offsetY = (rect.height - height * lastTransform.k) / 2 - y;
+  let offsetX = (rect.width - width * lastTransform.k) / 2 - x;
+
+  d3.select("svg.treeei").call(zoom.transform, d3.zoomIdentity.translate(offsetX, offsetY));
+}
 
 
 function FainaTree() {
   const [expanded, setExpanded] = useState(false);
 
+  const toggleExpand = () => {
+    setExpanded(!expanded);
+  }
+
   useEffect(() => {
     buildTree();
+    centerTree();
   }, [])
 
   return (
-    <div id="treeei" className={classNames("d-flex flex-grow-1 position-relative", {"expand": expanded})}>
-      <div className="open-expand" onClick={() => setExpanded(!expanded)}>
+    <div id="treeei" className={classNames("d-flex flex-grow-1", { "expand": expanded })}>
+      <div className="open-expand" onClick={toggleExpand}>
         <FontAwesomeIcon icon={expanded ? faCompress : faExpand} size="lg" />
       </div>
-      <svg className="treeei" width="100%" height="100%" preserveAspectRatio="none" viewTarget={`0 0 ${view[0]} ${view[1]}`}>
+      <svg className="treeei">
         <defs>
           <marker id="dot" viewBox="0,0,20,20" refX="10" refY="10" markerWidth="10" markerHeight="10">
             <circle cx="10" cy="10" r="4" fill="silver"></circle>
