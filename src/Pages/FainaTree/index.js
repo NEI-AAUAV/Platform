@@ -31,6 +31,27 @@ const zoomThreshold = 1;
 let lastTransform = d3.zoomIdentity;
 let svg, zoom;
 
+
+function labelFamilies(node) {
+  if (node.parent) {
+    if (node.parent.id === "000") {
+      node.family = node.id;      // head of the family
+    } else {
+      node.family = node.parent.family;
+    }
+  }
+
+  if (node.children) {
+    node.family_depth = 0;
+    for (const n of node.children) {
+      labelFamilies(n);
+      node.family_depth = Math.max(node.family_depth, n.family_depth);
+    }
+  } else {
+    node.family_depth = node.depth;
+  }
+}
+
 function buildTree() {
   const separateName = (name) => {
     const maxChars = 15,
@@ -78,16 +99,22 @@ function buildTree() {
     .parentId(d => d.parent)
     (data.users);
 
-  console.log(dataStructure)
+  // label all nodes with their family id and depth
+  labelFamilies(dataStructure);
 
-  // TODO: .nodeSize([100,200]) changes the size between nodes
-  // check if this can be adjusted for subtrees with lots of nodes
+  // sort head families according to the family depth
+  // sort like a normal distribution
+  dataStructure.children = dataStructure.children.slice()
+    .sort((a, b) => a.family_depth - b.family_depth)
+    .reduceRight((acc, val, i) => {
+      return i % 2 === 0 ? [...acc, val] : [val, ...acc];
+    }, []);
 
   const treeStructure = d3.tree()
     // .size(view)
     .nodeSize([100, 150])
     .separation(function (a, b) {
-      return (a.parent == b.parent ? 1 : 1);
+      return a.family === b.family ? 1 : 3;
     });
 
   const root = treeStructure(dataStructure);
@@ -123,7 +150,7 @@ function buildTree() {
   const links = svg.append("g")
     .attr("class", "links")
     .selectAll("path")
-    .data(root.links().filter(d => d.source.data.parent));// TODO: só tira a root
+    .data(root.links().filter(d => d.source.data.parent != null));// TODO: só tira a root
 
   links.enter()
     .append("path")
@@ -167,55 +194,19 @@ function buildTree() {
   const nodes = svg.append("g")
     .attr("class", "nodes")
     .selectAll("g")
-    .data(root.descendants().splice(1).filter(d => d.data.id != '000')) // TODO: só retira a root
+    .data(root.descendants().slice(1))
     .enter()
     .append("g")
-    .attr("transform", (d) => `translate(${d.x},${d.y})`);
+    .attr("transform", d => `translate(${d.x},${d.y})`);
 
   const nodesImages = d3.select("defs")
-    .selectAll("pattern")
-    .data(root.descendants().splice(1).filter(d => d.data.id != '000')); // TODO: só retira a root
-
-  function updateNodes(close) {
-    // Change circle image
-    svg.select("g.nodes")
-      .selectAll("circle.profile-pic")
-      .style("fill", d => close ? `url(#${d.data.id})` : "none")
-      .transition().duration(300)
-      .attr("r", close ? 18 : 10)
-
-    // Add year filter to default image 
-    svg.select("g.nodes")
-      .selectAll("circle.profile-grad")
-      .attr("opacity", d => close ? (d.data.image ? 0 : 0.3) : 1)
-      .transition().duration(300)
-      .attr("r", close ? 18 : 10)
-
-    svg.select("g.nodes")
-      .selectAll("circle.profile-border")
-      .style("stroke", close ? d => d3.schemeTableau10[(d.data.start_year - 4) % 10] : "silver")
-      .transition().duration(300)
-      .attr("r", close ? 20 : 12)
-
-    svg.select("g.labels")
-      .selectAll("g")
-      .transition().duration(300)
-      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
-      .select("text")
-      .attr("class", close ? "small" : "")
-
-    svg.select("g.labels-tooltips")
-      .selectAll("g")
-      .transition().duration(300)
-      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
-      .select("text")
-      .attr("class", close ? "small" : "")
-  }
-
+    .selectAll("pattern.image")
+    .data(root.descendants().slice(1));
 
   nodesImages.enter()
     .append("pattern")
-    .attr("id", (d) => (d.data.id))
+    .attr("id", d => d.data.id)
+    .attr("class", "image")
     .attr('width', 1)
     .attr('height', 1)
     .attr('patternContentUnits', 'objectBoundingBox')
@@ -235,13 +226,13 @@ function buildTree() {
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", 10)
-    .style("fill", (d) => `url(#${d.data.id})`);
+    .style("fill", d => `url(#${d.data.id})`);
 
   // Insignias
   nodes.insert("g", "circle.profile-pic")
     .attr("class", "insignias")
     .selectAll("rect")
-    .data((d) => d.data.insignias)
+    .data(d => d.data.insignias)
     .enter().append("rect")
     .attr("class", "insignia")
     .attr("x", -5)
@@ -249,7 +240,7 @@ function buildTree() {
     .style("opacity", 0)
     .attr("width", 10)
     .attr("height", 10)
-    .style("fill", (d) => `url(#${d})`);
+    .style("fill", d => `url(#${d})`);
 
   // Year filter color for default pics
   nodes
@@ -288,7 +279,6 @@ function buildTree() {
         .ease(d3.easeBackOut.overshoot(2))
     })
 
-
   // Year border color
   nodes.insert("circle", "circle")
     .attr("class", "profile-border")
@@ -302,7 +292,7 @@ function buildTree() {
   const labels = svg.append("g")
     .attr("class", "labels")
     .selectAll("g")
-    .data(root.descendants().splice(1));
+    .data(root.descendants().slice(1));
 
   const labelsGroups = labels.enter()
     .append("g")
@@ -324,7 +314,7 @@ function buildTree() {
   const labelsTooltipsGroups = svg.append("g")
     .attr("class", "labels-tooltips")
     .selectAll("g")
-    .data(root.descendants().splice(1))
+    .data(root.descendants().slice(1))
     .enter()
     .filter(d => d.data.names.isTruncated)
     .append("g")
@@ -370,6 +360,42 @@ function buildTree() {
     .attr("y", function () {
       return this.nextSibling.getBBox().y;
     })
+
+  function updateNodes(close) {
+    // Change circle image
+    svg.select("g.nodes")
+      .selectAll("circle.profile-pic")
+      .style("fill", d => close ? `url(#${d.data.id})` : "none")
+      .transition().duration(300)
+      .attr("r", close ? 18 : 10)
+
+    // Add year filter to default image 
+    svg.select("g.nodes")
+      .selectAll("circle.profile-grad")
+      .attr("opacity", d => close ? (d.data.image ? 0 : 0.3) : 1)
+      .transition().duration(300)
+      .attr("r", close ? 18 : 10)
+
+    svg.select("g.nodes")
+      .selectAll("circle.profile-border")
+      .style("stroke", close ? d => d3.schemeTableau10[(d.data.start_year - 4) % 10] : "silver")
+      .transition().duration(300)
+      .attr("r", close ? 20 : 12)
+
+    svg.select("g.labels")
+      .selectAll("g")
+      .transition().duration(300)
+      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
+      .select("text")
+      .attr("class", close ? "small" : "")
+
+    svg.select("g.labels-tooltips")
+      .selectAll("g")
+      .transition().duration(300)
+      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
+      .select("text")
+      .attr("class", close ? "small" : "")
+  }
 
   updateNodes(false);
 
