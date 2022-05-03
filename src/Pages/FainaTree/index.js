@@ -193,7 +193,7 @@ function buildTree() {
 
     svg.select("g.nodes")
       .selectAll("circle.profile-border")
-      .style("stroke", close ? d => d3.schemeTableau10[(d.data.start_year + 2) % 8] : "silver")
+      .style("stroke", close ? d => d3.schemeTableau10[(d.data.start_year - 4) % 10] : "silver")
       .transition().duration(300)
       .attr("r", close ? 20 : 12)
 
@@ -261,7 +261,7 @@ function buildTree() {
     .attr("r", 10)
     .attr("opacity", 1)
     .style("cursor", d => d.data.insignias?.length > 0 ? "pointer" : "default")
-    .style("fill", d => d3.schemeTableau10[(d.data.start_year + 2) % 8])
+    .style("fill", d => d3.schemeTableau10[(d.data.start_year - 4) % 10])
     .on("click", function (event) {
       let parent = this.parentElement;
       let active = parent.classList.contains("active");

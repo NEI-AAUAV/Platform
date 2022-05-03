@@ -1,16 +1,24 @@
 {
     "users": [
-        {"id": "000", "nmec": null, "start_year": 12, "end_year": null, "sex": "M", "parent": null, "name": "Alex Santos", "image": "https://randomuser.me/api/portraits/men/0.jpg"},
+        {"id": "000", "nmec": null, "start_year": null, "end_year": null, "sex": null, "parent": null, "name": ""},
+        
+        {"id": "A03", "nmec": null, "start_year": 11, "end_year": null, "sex": "M", "parent": "000", "name": "Emanuel Laranjo", "image": ""},
+        
         {"id": "002", "nmec": null, "start_year": 12, "end_year": null, "sex": "M", "parent": "000", "name": "Alex Santos", "image": "https://randomuser.me/api/portraits/men/2.jpg"},
-
-        {"id": "003", "nmec": null, "start_year": 13, "end_year": null, "sex": "M", "parent": "000", "name": "Bruno Barbosa", "image": "https://randomuser.me/api/portraits/men/3.jpg"},
+        {"id": "A01", "nmec": null, "start_year": 12, "end_year": null, "sex": "M", "parent": "000", "name": "Rafael Martins", "image": ""},
+        
+        {"id": "003", "nmec": null, "start_year": 13, "end_year": null, "sex": "M", "parent": "A01", "name": "Bruno Barbosa", "image": "https://randomuser.me/api/portraits/men/3.jpg"},
+        {"id": "A04", "nmec": null, "start_year": 13, "end_year": null, "sex": "M", "parent": "000", "name": "David Oliveira", "image": ""},
+        
+        {"id": "A02", "nmec": null, "start_year": 14, "end_year": null, "sex": "M", "parent": "A01", "name": "Paulo Seixas", "image": ""},
 
         {"id": "004", "nmec": null, "start_year": 15, "end_year": null, "sex": "F", "parent": "003", "name": "Andreia Patrocínio", "image": "https://randomuser.me/api/portraits/women/4.jpg"},
         {"id": "005", "nmec": null, "start_year": 15, "end_year": null, "sex": "F", "parent": "003", "name": "Carolina Albuquerque", "image": "https://randomuser.me/api/portraits/women/5.jpg"},
         {"id": "006", "nmec": null, "start_year": 15, "end_year": null, "sex": "M", "parent": "002", "name": "João Artur Costa", "image": "https://randomuser.me/api/portraits/men/6.jpg"},
-        {"id": "007", "nmec": null, "start_year": 15, "end_year": null, "sex": "M", "parent": "000", "name": "João Ferreira", "image": "https://randomuser.me/api/portraits/men/7.jpg"},
-        {"id": "008", "nmec": null, "start_year": 15, "end_year": null, "sex": "M", "parent": "000", "name": "João Magalhães", "image": "https://randomuser.me/api/portraits/men/8.jpg"},
-        {"id": "009", "nmec": null, "start_year": 15, "end_year": null, "sex": "M", "parent": "000", "name": "José Moreira", "image": "https://randomuser.me/api/portraits/men/9.jpg"},
+        {"id": "007", "nmec": null, "start_year": 15, "end_year": null, "sex": "M", "parent": "A03", "name": "João Ferreira", "image": "https://randomuser.me/api/portraits/men/7.jpg"},
+        {"id": "008", "nmec": null, "start_year": 15, "end_year": null, "sex": "M", "parent": "A03", "name": "João Magalhães", "image": "https://randomuser.me/api/portraits/men/8.jpg"},
+        {"id": "009", "nmec": null, "start_year": 15, "end_year": null, "sex": "M", "parent": "A03", "name": "José Moreira", "image": "https://randomuser.me/api/portraits/men/9.jpg"},
+        {"id": "A05", "nmec": null, "start_year": 15, "end_year": null, "sex": "M", "parent": "A04", "name": "Daniel Gonçalves", "image": ""},
 
         {"id": "010", "nmec": null, "start_year": 16, "end_year": null, "sex": "M", "parent": "000", "name": "Francisco Silveira", "image": "https://randomuser.me/api/portraits/men/10.jpg"},
         {"id": "011", "nmec": null, "start_year": 16, "end_year": null, "sex": "F", "parent": "004", "name": "Sandra Andrade" , "image": "https://randomuser.me/api/portraits/women/11.jpg"},
@@ -46,11 +54,15 @@
         {"id": "038", "nmec": null, "start_year": 19, "end_year": null, "sex": "F", "parent": "019", "name": "Marta Fradique", "image": "https://randomuser.me/api/portraits/women/38.jpg"},
         {"id": "039", "nmec": null, "start_year": 19, "end_year": null, "sex": "M", "parent": "005", "name": "Vicente Costa", "image": "https://randomuser.me/api/portraits/men/39.jpg"},
 
+        {"id": "082", "nmec": null, "start_year": 19, "end_year": null, "sex": "F", "parent": "000", "name": "Eva Bartolomeu", "image": "https://randomuser.me/api/portraits/women/40.jpg"},
+
+        {"id": "083", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "Vicente Barros", "image": "https://randomuser.me/api/portraits/women/40.jpg"},
+
         {"id": "075", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "Guilherme Antunes", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "sobral"},
-        {"id": "076", "nmec": null, "start_year": 20, "end_year": null, "sex": "F", "parent": "000", "name": "Catarina Costa", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "vicente barros"},
+        {"id": "076", "nmec": null, "start_year": 20, "end_year": null, "sex": "F", "parent": "083", "name": "Catarina Costa", "image": "https://randomuser.me/api/portraits/women/40.jpg"},
         {"id": "077", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "João Sousa", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "fabio martins"},
         {"id": "077", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "João Morais", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "paulo"},
-        {"id": "078", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "João Matos", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "eva"},
+        {"id": "078", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "082", "name": "João Matos", "image": "https://randomuser.me/api/portraits/men/40.jpg"},
         {"id": "079", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "João Almeida Matos", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "paulo"},
         {"id": "080", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "033", "name": "Rafael Gonçalves", "image": "https://randomuser.me/api/portraits/men/40.jpg"},
         {"id": "081", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "Tiago Carvalho", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "paulo"},
@@ -68,19 +80,19 @@
         {"id": "050", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Gonçalo Sousa", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "rosa"},
         {"id": "051", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Gonçalo Ferreira", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "trigo"},
         {"id": "052", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Hugo Correia", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "filipe seabra"},
-        {"id": "053", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Joana Gomes", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "gonçalo leal"},
+        {"id": "053", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Joana Gomes", "image": "https://randomuser.me/api/portraits/women/40.jpg", "patrao": "gonçalo leal"},
         {"id": "054", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "036", "name": "João Luís", "image": "https://randomuser.me/api/portraits/men/40.jpg"},
         {"id": "055", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Joaquim Rosa", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "filipe"},
         {"id": "056", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "030", "name": "José Gameiro", "image": "https://randomuser.me/api/portraits/men/40.jpg"},
-        {"id": "057", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "027", "name": "Liliana Ribeiro", "image": "https://randomuser.me/api/portraits/men/40.jpg"},
-        {"id": "058", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Maria Abrunhosa", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "gonçalo leal"},
-        {"id": "059", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Mariana Perna", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "reis"},
-        {"id": "060", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Marta Inácio", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "rosa"},
-        {"id": "061", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Matilde Teixeira", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "rosa"},
+        {"id": "057", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "027", "name": "Liliana Ribeiro", "image": "https://randomuser.me/api/portraits/women/40.jpg"},
+        {"id": "058", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Maria Abrunhosa", "image": "https://randomuser.me/api/portraits/women/40.jpg", "patrao": "gonçalo leal"},
+        {"id": "059", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Mariana Perna", "image": "https://randomuser.me/api/portraits/women/40.jpg", "patrao": "reis"},
+        {"id": "060", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Marta Inácio", "image": "https://randomuser.me/api/portraits/women/40.jpg", "patrao": "rosa"},
+        {"id": "061", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Matilde Teixeira", "image": "https://randomuser.me/api/portraits/women/40.jpg", "patrao": "rosa"},
         {"id": "062", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Pedro Rodrigues", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "fahla"},
         {"id": "063", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "008", "name": "Rafael Vilaça", "image": "https://randomuser.me/api/portraits/men/40.jpg"},
         {"id": "064", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "027", "name": "Rafael Kauati", "image": "https://randomuser.me/api/portraits/men/40.jpg"},
-        {"id": "065", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Rafaela Dias", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "reis"},
+        {"id": "065", "nmec": null, "start_year": 21, "end_year": null, "sex": "F", "parent": "000", "name": "Rafaela Dias", "image": "https://randomuser.me/api/portraits/women/40.jpg", "patrao": "reis"},
         {"id": "066", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Rodrigo Azevedo", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "raquel"},
         {"id": "067", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Rodrigo Graça", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "rodriguez"},
         {"id": "068", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Rodrigo Aguiar", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "luis martins"},
@@ -88,7 +100,7 @@
         {"id": "070", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Tomás Victal", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "fahla"},
         {"id": "071", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Tomás Matos", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "trigo"},
         {"id": "072", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "027", "name": "Vasco Vouzela", "image": "https://randomuser.me/api/portraits/men/40.jpg"},
-        {"id": "073", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Vasco Faria", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "eva"},
+        {"id": "073", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "082", "name": "Vasco Faria", "image": "https://randomuser.me/api/portraits/men/40.jpg"},
         {"id": "074", "nmec": null, "start_year": 21, "end_year": null, "sex": "M", "parent": "033", "name": "Vitor Santos", "image": "https://randomuser.me/api/portraits/men/40.jpg"}
     ],
     "organizations": [

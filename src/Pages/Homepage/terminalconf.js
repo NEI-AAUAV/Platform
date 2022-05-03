@@ -22,7 +22,7 @@ const terminalstate = EmulatorState.create(
                     'function': (state, inpt) => {
                         localStorage.setItem("tester", 1);
                         return {
-                            output: OutputFactory.makeTextOutput("")
+                            output: OutputFactory.makeTextOutput("refresh the page and check the new features")
                         };
                     },
                     'optDef': {}
