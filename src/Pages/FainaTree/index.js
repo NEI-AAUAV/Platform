@@ -6,7 +6,7 @@ import { faCompress, faExpand } from "@fortawesome/free-solid-svg-icons";
 import * as d3 from 'd3';
 import classNames from "classname";
 
-import data from "Assets/treeei.json";
+import data from "Assets/db.json";
 import femalePic from "Assets/default_profile/female.svg";
 import malePic from "Assets/default_profile/male.svg";
 import nei from "Assets/icons/nei.svg";
@@ -64,15 +64,21 @@ function buildTree() {
 
     return { name1, name2, isTruncated, tname1, tname2 };
   }
+  const assignInsignias = () => {
+    return ["cf", "nei", "aettua"];
+  }
 
-  for (const elem of data) {
+  for (const elem of data.users) {
     elem.names = separateName(elem.name);
+    elem.insignias = assignInsignias();
   }
 
   const dataStructure = d3.stratify()
-    .id(d => d.name)
-    .parentId(d => d.patrao)
-    (data);
+    .id(d => d.id)
+    .parentId(d => d.parent)
+    (data.users);
+
+  console.log(dataStructure)
 
   // TODO: .nodeSize([100,200]) changes the size between nodes
   // check if this can be adjusted for subtrees with lots of nodes
@@ -117,7 +123,7 @@ function buildTree() {
   const links = svg.append("g")
     .attr("class", "links")
     .selectAll("path")
-    .data(root.links().filter(d => d.source.data.patrao != ""));
+    .data(root.links().filter(d => d.source.data.parent));// TODO: só tira a root
 
   links.enter()
     .append("path")
@@ -161,20 +167,20 @@ function buildTree() {
   const nodes = svg.append("g")
     .attr("class", "nodes")
     .selectAll("g")
-    .data(root.descendants().splice(1).filter(d => d.data.name != '.'))
+    .data(root.descendants().splice(1).filter(d => d.data.id != '000')) // TODO: só retira a root
     .enter()
     .append("g")
     .attr("transform", (d) => `translate(${d.x},${d.y})`);
 
   const nodesImages = d3.select("defs")
     .selectAll("pattern")
-    .data(root.descendants().splice(1).filter(d => d.data.name != '.'));
+    .data(root.descendants().splice(1).filter(d => d.data.id != '000')); // TODO: só retira a root
 
   function updateNodes(close) {
     // Change circle image
     svg.select("g.nodes")
       .selectAll("circle.profile-pic")
-      .style("fill", d => close ? `url(#${d.data.name.replaceAll(" ", "_")})` : "none")
+      .style("fill", d => close ? `url(#${d.data.id})` : "none")
       .transition().duration(300)
       .attr("r", close ? 18 : 10)
 
@@ -187,7 +193,7 @@ function buildTree() {
 
     svg.select("g.nodes")
       .selectAll("circle.profile-border")
-      .style("stroke", close ? d => d3.schemeTableau10[(d.data.matricula + 2) % 8] : "silver")
+      .style("stroke", close ? d => d3.schemeTableau10[(d.data.start_year + 2) % 8] : "silver")
       .transition().duration(300)
       .attr("r", close ? 20 : 12)
 
@@ -209,7 +215,7 @@ function buildTree() {
 
   nodesImages.enter()
     .append("pattern")
-    .attr("id", (d) => (d.data.name.replaceAll(" ", "_")))
+    .attr("id", (d) => (d.data.id))
     .attr('width', 1)
     .attr('height', 1)
     .attr('patternContentUnits', 'objectBoundingBox')
@@ -228,8 +234,8 @@ function buildTree() {
     .attr("class", "profile-pic")
     .attr("cx", 0)
     .attr("cy", 0)
-    .attr("r", 18)
-    .style("fill", (d) => `url(#${d.data.name.replaceAll(" ", "_")})`);
+    .attr("r", 10)
+    .style("fill", (d) => `url(#${d.data.id})`);
 
   // Insignias
   nodes.insert("g", "circle.profile-pic")
@@ -252,10 +258,10 @@ function buildTree() {
     .attr("class", "profile-grad")
     .attr("cx", 0)
     .attr("cy", 0)
-    .attr("r", 18)
-    .attr("opacity", d => d.data.image ? 0.3 : 0)
+    .attr("r", 10)
+    .attr("opacity", 1)
     .style("cursor", d => d.data.insignias?.length > 0 ? "pointer" : "default")
-    .style("fill", d => d3.schemeTableau10[(d.data.matricula + 2) % 8])
+    .style("fill", d => d3.schemeTableau10[(d.data.start_year + 2) % 8])
     .on("click", function (event) {
       let parent = this.parentElement;
       let active = parent.classList.contains("active");
@@ -288,12 +294,10 @@ function buildTree() {
     .attr("class", "profile-border")
     .attr("cx", 0)
     .attr("cy", 0)
-    .attr("r", 20)
+    .attr("r", 12)
     .style("fill", "white")
-    .style("stroke", d => d3.schemeTableau10[(d.data.matricula + 2) % 8])
+    .style("stroke", "silver")
     .style("stroke-width", 1.5)
-
-  updateNodes(true);
 
   const labels = svg.append("g")
     .attr("class", "labels")
@@ -302,7 +306,7 @@ function buildTree() {
 
   const labelsGroups = labels.enter()
     .append("g")
-    .attr("transform", d => `translate(${d.x},${d.y + 26})`)
+    .attr("transform", d => `translate(${d.x},${d.y + 14})`)
 
   labelsGroups.append("text")
     .attr("x", 0)
@@ -324,7 +328,7 @@ function buildTree() {
     .enter()
     .filter(d => d.data.names.isTruncated)
     .append("g")
-    .attr("transform", d => `translate(${d.x},${d.y + 26})`)
+    .attr("transform", d => `translate(${d.x},${d.y + 14})`)
     .attr("opacity", "0")
     .on('mouseover', function () {
       d3.select(this).transition()
@@ -366,6 +370,8 @@ function buildTree() {
     .attr("y", function () {
       return this.nextSibling.getBBox().y;
     })
+
+  updateNodes(false);
 
   // constrain tree
   const { width, height, x, y } = svg.node().getBBox();
