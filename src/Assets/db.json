@@ -48,10 +48,10 @@
 
         {"id": "075", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "Guilherme Antunes", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "sobral"},
         {"id": "076", "nmec": null, "start_year": 20, "end_year": null, "sex": "F", "parent": "000", "name": "Catarina Costa", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "vicente barros"},
-        {"id": "077", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "Jõao Sousa", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "fabio martins"},
-        {"id": "077", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "Jõao Morais", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "paulo"},
-        {"id": "078", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "Jõao Matos", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "eva"},
-        {"id": "079", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "Jõao Almeida Matos", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "paulo"},
+        {"id": "077", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "João Sousa", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "fabio martins"},
+        {"id": "077", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "João Morais", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "paulo"},
+        {"id": "078", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "João Matos", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "eva"},
+        {"id": "079", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "João Almeida Matos", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "paulo"},
         {"id": "080", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "033", "name": "Rafael Gonçalves", "image": "https://randomuser.me/api/portraits/men/40.jpg"},
         {"id": "081", "nmec": null, "start_year": 20, "end_year": null, "sex": "M", "parent": "000", "name": "Tiago Carvalho", "image": "https://randomuser.me/api/portraits/men/40.jpg", "patrao": "paulo"},
         

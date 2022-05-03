@@ -200,14 +200,14 @@ function buildTree() {
     svg.select("g.labels")
       .selectAll("g")
       .transition().duration(300)
-      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 14)})`)
+      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
       .select("text")
       .attr("class", close ? "small" : "")
 
     svg.select("g.labels-tooltips")
       .selectAll("g")
       .transition().duration(300)
-      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 14)})`)
+      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
       .select("text")
       .attr("class", close ? "small" : "")
   }
@@ -306,7 +306,7 @@ function buildTree() {
 
   const labelsGroups = labels.enter()
     .append("g")
-    .attr("transform", d => `translate(${d.x},${d.y + 14})`)
+    .attr("transform", d => `translate(${d.x},${d.y + 18})`)
 
   labelsGroups.append("text")
     .attr("x", 0)
@@ -328,7 +328,7 @@ function buildTree() {
     .enter()
     .filter(d => d.data.names.isTruncated)
     .append("g")
-    .attr("transform", d => `translate(${d.x},${d.y + 14})`)
+    .attr("transform", d => `translate(${d.x},${d.y + 18})`)
     .attr("opacity", "0")
     .on('mouseover', function () {
       d3.select(this).transition()

@@ -58,7 +58,6 @@
 }
 
 #treeei svg.treeei text {
-    font-size: 1em;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -67,6 +66,11 @@
     -o-user-select: none;
     user-select: none;
     font-family: 'Source Sans Pro', sans-serif;
+    font-size: 1em;
+    -webkit-transition: font-size 0.3s;
+    -moz-transition: font-size 0.3s;
+    -o-transition: font-size 0.3s;
+    transition: font-size 0.3s;
 }
 
 #treeei svg.treeei text.small {
