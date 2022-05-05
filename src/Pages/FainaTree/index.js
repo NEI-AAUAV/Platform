@@ -114,7 +114,7 @@ function buildTree() {
     // .size(view)
     .nodeSize([100, 150])
     .separation(function (a, b) {
-      return a.family === b.family ? 1 : 3;
+      return a.family != b.family ? 4 : a.parent != b.parent ? 1.25 : 1;
     });
 
   const root = treeStructure(dataStructure);
