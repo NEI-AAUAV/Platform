@@ -21,25 +21,10 @@ const animationIncrement = parseFloat(
 
 const Sports = () => {
   const [tabIndicator, setTabIndicator] = useState("Andebol");
+  const [tabIndicatorSex, setTabIndicatorSex] = useState("Masculino");
   const [img, setImg] = useState(null);
   const [anos, setAnos] = useState([]);
   const [selectedYear, setSelectedYear] = useState();
-
-  useEffect(() => {
-    // pegar o número de anos
-    fetch(process.env.REACT_APP_API + "/faina/mandates")
-        .then((response) => response.json())
-        .then((response) => {
-            var anos = response.data.map((curso) => curso.mandato).sort((a, b) => parseInt(b.split('/')[0]) - parseInt(a.split('/')[0]));
-            if (anos.length > 0) {
-                setSelectedYear(anos[0])
-                setAnos(<Tabs tabs={anos} _default={anos[0]} onChange={setSelectedYear} />)
-            }
-            else
-                setAnos("");
-        })
-
-}, [])
 
   /*setImg(<Image
         src={equipa} rounded fluid
@@ -128,6 +113,21 @@ const Sports = () => {
             <li class="act">Basquetebol</li>
           ) : (
             <li onClick={() => changeTab("Basquetebol")}>Basquetebol</li>
+          )}
+        </ul>
+      </div>
+
+      <div class="gender-list">
+        <ul className="slideUpFade">
+          {tabIndicatorSex === "Masculino" ? (
+            <li class="act">Masculino</li>
+          ) : (
+            <li onClick={() => setTabIndicatorSex("Masculino")}>Masculino</li>
+          )}
+          {tabIndicatorSex === "Feminino" ? (
+            <li class="act">Feminino</li>
+          ) : (
+            <li onClick={() => setTabIndicatorSex("Feminino")}>Feminino</li>
           )}
         </ul>
       </div>

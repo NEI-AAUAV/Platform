@@ -4,6 +4,16 @@
     justify-content: center;
 }
 
+.gender-list {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 22%;
+    margin-left: 39%;
+    margin-right: 39%;
+}
+
 .image-wrapper {
     height: 500px;
 }
