@@ -8,9 +8,16 @@ import MiniInternshipCard from './MiniIntershipCard';
 import MediumInternshipCard from './MediumInternshipCard';
 import BigInternshipCard from './BigInternshipCard';
 
+const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
+const animationIncrement = parseFloat(
+  process.env.REACT_APP_ANIMATION_INCREMENT
+);
+
 const Internship = () => {
     return (
-        <div d-flex flex-column flex-wrap>
+        <div d-flex flex-column flex-wrap
+        className="slideUpFade"
+        style={{ animationDelay: animationBase + animationIncrement }}>
             <h2 className="mb-5 text-center"><Typist>Oportunidades de Estágio</Typist></h2>
             <Row>
                 <Col>
