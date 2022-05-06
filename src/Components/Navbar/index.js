@@ -6,6 +6,8 @@ import {
     NavDropdown
 } from "react-bootstrap";
 
+import { Link } from "react-router-dom";
+
 import data from "./data";
 import logo from './logo.png';
 import "./index.css";
@@ -62,7 +64,8 @@ const Navbar = () => {
                                     !navEl.dropdown
                                         ?
                                         <Nav.Link
-                                            href={navEl.link}
+                                            as={Link}
+                                            to={navEl.link}
                                             className={
                                                 window.location.pathname == navEl.link ? "active" : ""
                                             }
@@ -77,7 +80,8 @@ const Navbar = () => {
                                                 navEl.dropdown.filter(d => d).map(
                                                     dropdown =>
                                                         <NavDropdown.Item 
-                                                            href={dropdown.link} 
+                                                            as={Link}
+                                                            to={dropdown.link} 
                                                             target={dropdown.external && "_blank"}
                                                             rel={dropdown.external && "noreferrer"}
                                                         >{dropdown.name}</NavDropdown.Item>
