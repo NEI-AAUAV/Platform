@@ -30,7 +30,7 @@ const Internship = () => {
                     quality3='Aplicação para coleção de dados - estilo formulário ligado a base de dados'
                     quality4='IoT de sondas e sensores'
                     quality5='Oferecemos: subsídio de alimentação'
-                    link='https://trackonperformance.com/'
+                    link='https://tecmafoods.com/'
                 />
                 </Col>
                 <Col>
@@ -45,7 +45,7 @@ const Internship = () => {
                     quality5='Benefícios oferecidos: contrato de trabalho, subsídio refeição, vales de refeição na EatTasty,
                     horário flexível, trabalho na sexta-feira até às 15h, dias de folga oferecidos nos dias de anos e dos
                     filhos, seguro de saúde e plano de benefícios Coverflex'
-                    link='https://www.decisioneyes.com/'
+                    link='https://eattasty.pt/home'
                 />
                 </Col>
             </Row>
@@ -59,7 +59,7 @@ const Internship = () => {
                     quality2='Tecnologia'
                     quality3='Design de produto (UX/UI)'
                     quality4='Oferecemos: deslocação (caso se aplique) e subsídio de alimentação'
-                    link='https://trackonperformance.com/'
+                    link='https://www.checkfirstapp.com/pt'
                 />
                 </Col>
                 <Col>
@@ -86,7 +86,7 @@ const Internship = () => {
                     quality2='Conhecimentos para programar em firmware, C, C++'
                     quality3='Familiaridade com ML, Python, Golang, ELK'
                     quality4='Oferecemos: subsídio de alimentação e, caso se aplique, deslocação'
-                    link='https://trackonperformance.com/'
+                    link='https://www.sensefinity.com/'
                 />
                 </Col>
                 <Col>
@@ -98,7 +98,7 @@ const Internship = () => {
                     quality2='Conhecimentos para programar em firmware, C, C++'
                     quality3='Familiaridade com ML, Python, Golang, ELK'
                     quality4='Oferecemos: subsídio de alimentação e, caso se aplique, deslocação'
-                    link='https://trackonperformance.com/'
+                    link='https://www.sensefinity.com/'
                 />
                 </Col>
             </Row>
@@ -179,7 +179,7 @@ const Internship = () => {
                     position='Frontend Developer'
                     duration='Contrato Full Time (Leiria e Híbrido)'
                     quality="Conhecimentos de JavaScript, Angular e Docker"
-                    link='https://www.hapi.pt/'
+                    link='https://olisipo.pt/'
                 />
                 </Col>
                 <Col>
