@@ -28,7 +28,7 @@ const dims = [ // Adjusted dimensions [width, height]
 
 // Threshold to show photos
 const zoomThreshold = 1;
-let lastTransform = d3.zoomIdentity;
+let lastTransform = d3.zoomIdentity.scale(0.5);
 let svg, zoom;
 
 
@@ -416,10 +416,10 @@ function centerTree() {
   const rect = d3.select("svg.treeei").node().getBoundingClientRect();
   const { x, y, width, height } = svg.node().getBBox();
 
-  let offsetY = (rect.height - height * lastTransform.k) / 2 - y;
-  let offsetX = (rect.width - width * lastTransform.k) / 2 - x;
+  let offsetY = (rect.height - height * lastTransform.k) / 2 - y * lastTransform.k;
+  let offsetX = (rect.width - width * lastTransform.k) / 2 - x * lastTransform.k;
 
-  d3.select("svg.treeei").call(zoom.transform, d3.zoomIdentity.translate(offsetX, offsetY));
+  d3.select("svg.treeei").call(zoom.transform, d3.zoomIdentity.translate(offsetX, offsetY).scale(0.5));
 }
 
 
