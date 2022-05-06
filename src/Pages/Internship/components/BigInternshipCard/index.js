@@ -1,11 +1,9 @@
 import Card from 'react-bootstrap/Card';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
-import { useState } from 'react';
 import './index.css';
 
 const BigInternshipCard = (props) => {
-    const [nullValue, setNullValue] = useState("");
 
     return (
         <div d-flex flex-column flex-wrap>

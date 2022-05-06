@@ -1,12 +1,11 @@
 import './index.css';
-import Card from 'react-bootstrap/Card';
-import InternshipCard from './InternshipCard';
-import SmallInternshipCard from './SmallInternshipCard';
+import InternshipCard from './components/InternshipCard';
+import SmallInternshipCard from './components/SmallInternshipCard';
 import { Col, Row } from 'react-bootstrap';
 import Typist from 'react-typist';
-import MiniInternshipCard from './MiniIntershipCard';
-import MediumInternshipCard from './MediumInternshipCard';
-import BigInternshipCard from './BigInternshipCard';
+import MiniInternshipCard from './components/MiniIntershipCard';
+import MediumInternshipCard from './components/MediumInternshipCard';
+import BigInternshipCard from './components/BigInternshipCard';
 
 const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
 const animationIncrement = parseFloat(

@@ -1,15 +1,13 @@
 import Card from 'react-bootstrap/Card';
-import { useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import './index.css';
 
-const MiniInternshipCard = (props) => {
-    const [nullValue, setNullValue] = useState("");
+const InternshipCard = (props) => {
 
     return (
         <div d-flex flex-column flex-wrap>
-            <Card className='mini-internship-card'>
+            <Card className='internship-card'>
                 <Card.Body>
                     <Card.Title className='card-title'>{props.title}</Card.Title>
                     <span classname='card-link'><a href={props.link}><FontAwesomeIcon className='icon' icon={faExternalLinkAlt} /></a></span>
@@ -18,6 +16,9 @@ const MiniInternshipCard = (props) => {
                     <Card.Text> 
                     <ul className='qualities-list'>
                         <li>{props.quality}</li>
+                        <li>{props.quality2}</li>
+                        <li>{props.quality3}</li>
+                        <li>{props.quality4}</li>
                     </ul>
                     </Card.Text>
                 </Card.Body>
@@ -26,4 +27,4 @@ const MiniInternshipCard = (props) => {
     )
 }
 
-export default MiniInternshipCard;
+export default InternshipCard;
