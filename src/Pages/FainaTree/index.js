@@ -150,7 +150,7 @@ function buildTree() {
   const links = svg.append("g")
     .attr("class", "links")
     .selectAll("path")
-    .data(root.links().filter(d => d.source.data.parent != null));// TODO: só tira a root
+    .data(root.links().filter(d => d.source.data.parent != null));
 
   links.enter()
     .append("path")
@@ -219,16 +219,14 @@ function buildTree() {
     .attr("width", 1)
     .attr("preserveAspectRatio", "xMinYMin slice");
 
-
-  // Circle with the person
-  nodes.append("circle")
+  // circle with the person image
+  const nodesProfilePic = nodes.append("circle")
     .attr("class", "profile-pic")
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", 10)
     .style("fill", d => `url(#${d.data.id})`);
 
-  // Insignias
   nodes.insert("g", "circle.profile-pic")
     .attr("class", "insignias")
     .selectAll("rect")
@@ -241,11 +239,9 @@ function buildTree() {
     .attr("width", 10)
     .attr("height", 10)
     .style("fill", d => `url(#${d})`);
-
-  // Year filter color for default pics
-  nodes
-    // .filter(d => !d.data.image)
-    .append("circle")
+  
+  // circle with the gradient year color
+  const nodesProfileGrad = nodes.append("circle")
     .attr("class", "profile-grad")
     .attr("cx", 0)
     .attr("cy", 0)
@@ -278,9 +274,9 @@ function buildTree() {
         .style("opacity", o)
         .ease(d3.easeBackOut.overshoot(2))
     })
-
-  // Year border color
-  nodes.insert("circle", "circle")
+  
+  // border with the year color 
+  const nodesProfileBorder = nodes.insert("circle", "circle")
     .attr("class", "profile-border")
     .attr("cx", 0)
     .attr("cy", 0)
@@ -362,35 +358,28 @@ function buildTree() {
     })
 
   function updateNodes(close) {
-    // Change circle image
-    svg.select("g.nodes")
-      .selectAll("circle.profile-pic")
+    nodesProfilePic
       .style("fill", d => close ? `url(#${d.data.id})` : "none")
       .transition().duration(300)
       .attr("r", close ? 18 : 10)
 
-    // Add year filter to default image 
-    svg.select("g.nodes")
-      .selectAll("circle.profile-grad")
+    nodesProfileGrad
       .attr("opacity", d => close ? (d.data.image ? 0 : 0.3) : 1)
       .transition().duration(300)
       .attr("r", close ? 18 : 10)
 
-    svg.select("g.nodes")
-      .selectAll("circle.profile-border")
+    nodesProfileBorder
       .style("stroke", close ? d => d3.schemeTableau10[(d.data.start_year - 4) % 10] : "silver")
       .transition().duration(300)
       .attr("r", close ? 20 : 12)
 
-    svg.select("g.labels")
-      .selectAll("g")
+    labelsGroups
       .transition().duration(300)
       .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
       .select("text")
       .attr("class", close ? "small" : "")
 
-    svg.select("g.labels-tooltips")
-      .selectAll("g")
+    labelsTooltipsGroups
       .transition().duration(300)
       .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
       .select("text")
