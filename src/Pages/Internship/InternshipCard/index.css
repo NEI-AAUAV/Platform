@@ -17,7 +17,7 @@
     display: inline-block;
     margin-bottom: 0 !important;
     padding-bottom: 0!important;
-    width: 85%;
+    width: 92%;
 }
 
 .link-wrapper {
@@ -30,4 +30,15 @@
 .card-link a{
     background-color: yellow !important;
     color: blue;
+}
+
+@media screen and (max-width: 960px) {
+    .internship-card {
+        height: auto;
+        width: 100%;
+    }
+
+    .card-title {
+        width: 85%;
+    }
 }

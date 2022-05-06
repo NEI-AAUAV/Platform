@@ -59,7 +59,7 @@ const Internship = () => {
                 <InternshipCard 
                     title='Decision Eyes'
                     duration='Estágio de Verão (com oportunidade para integrar equipa no final)'
-                    position='Developer (2º ou 3º ano da licanciatura)'
+                    position='Developer (2º ou 3º ano da licenciatura)'
                     quality='Conhecimentos de ASP.Net e SQL Server'
                     quality2='JavaScript, JQuery, html e bootstrap'
                     quality3='Oferecemos: subsídio de alimentação'

@@ -1,0 +1,12 @@
+.small-internship-card {
+    margin-bottom: 2rem;
+    width: 33rem;
+    height: 16rem;
+}
+
+@media screen and (max-width: 960px) {
+    .small-internship-card {
+        height: auto;
+        width: 100%;
+    }
+}
