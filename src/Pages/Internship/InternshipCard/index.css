@@ -1,0 +1,33 @@
+.qualities-list li::before{
+    color: #147a26!important;
+    font-weight: bold;
+}
+
+.quality-list-null {
+    list-style-type: none;
+}
+
+.internship-card {
+    margin-bottom: 2rem;
+    width: 33rem;
+    height: 20rem;
+}
+
+.card-title {
+    display: inline-block;
+    margin-bottom: 0 !important;
+    padding-bottom: 0!important;
+    width: 85%;
+}
+
+.link-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.card-link a{
+    background-color: yellow !important;
+    color: blue;
+}
