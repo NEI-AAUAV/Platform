@@ -20,6 +20,7 @@ import FeedbackForm from './Pages/Forms/FeedbackForm';
 import Videos from "./Pages/Videos";
 import Video from "./Pages/Video";
 import FainaTree from "./Pages/FainaTree";
+import Internship from "./Pages/Internship";
 
 
 const routes = [
@@ -45,6 +46,7 @@ const routes = [
 			{ path: "/rgm/:id", element: <RGM /> },
 			{ path: "/historia", element: <History /> },
 			{ path: "/seniors/:id", element: <Seniors /> },
+			{ path: "/estagios", element: <Internship/> },
 			{ path: "/faina", element: <Faina/> },
 			{ path: "/videos", element: <Videos/> },
 			{ path: "/videos/:id", element: <Video/> },
