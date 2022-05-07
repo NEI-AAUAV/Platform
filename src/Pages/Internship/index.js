@@ -17,7 +17,16 @@ const Internship = () => {
         <div d-flex flex-column flex-wrap
         className="slideUpFade"
         style={{ animationDelay: animationBase + animationIncrement }}>
-            <h2 className="mb-5 text-center"><Typist>Oportunidades de Estágio</Typist></h2>
+            <h2 className="mb-5 text-center"><Typist>Oportunidades Olisipo Way</Typist></h2>
+            <div className="text-center mt-5">
+                <p>
+                Se tens interesse nestas oportunidades, envia o teu CV
+                atualizado e/ou portfolio de projetos para <a href="mailto:eder.alves@olisipo.pt">eder.alves@olisipo.pt</a>, e
+                indica a referência das oportunidades que gostavas de integrar.
+                Caso tenhas alguma dúvida, contacta-nos pelo email (<a href="mailto:nei@aauav.pt">nei@aauav.pt</a>) 
+                ou pelas redes sociais para te podermos ajudar.
+                </p>
+            </div>
             <Row>
                 <Col>
                 <BigInternshipCard 
