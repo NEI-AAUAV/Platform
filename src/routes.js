@@ -29,8 +29,8 @@ const routes = [
 		element: <CleanLayout />,
 		children: [
 			{ path: "/", element: <Homepage /> },
-			{ path: "/merch", element: <Merchandising/> },
-			{ path: "/familias", element: localStorage.getItem("tester") ? <FainaTree/> : <></>},
+			{ path: "/merch", element: <Merchandising /> },
+			{ path: "/familias", element: localStorage.getItem("tester") ? <FainaTree /> : <Error404 /> },
 		]
 	},
 	{
@@ -39,19 +39,19 @@ const routes = [
 		children: [
 			{ path: "/noticias", element: <News /> },
 			{ path: "/noticia/:id", element: <NewsArticle /> },
-			{ path: "/apontamentos", element: <Apontamentos />},
+			{ path: "/apontamentos", element: <Apontamentos /> },
 			{ path: "/equipa", element: <Team /> },
 			{ path: "/parceiros", element: <Partners /> },
 			{ path: "/calendario", element: <Calendar /> },
 			{ path: "/rgm/:id", element: <RGM /> },
 			{ path: "/historia", element: <History /> },
 			{ path: "/seniors/:id", element: <Seniors /> },
-			{ path: "/estagios", element: <Internship/> },
-			{ path: "/faina", element: <Faina/> },
-			{ path: "/videos", element: <Videos/> },
-			{ path: "/videos/:id", element: <Video/> },
+			{ path: "/estagios", element: localStorage.getItem("tester") ? <Internship /> : <Error404 /> },
+			{ path: "/faina", element: <Faina /> },
+			{ path: "/videos", element: <Videos /> },
+			{ path: "/videos/:id", element: <Video /> },
 			// Forms
-			{ path: "/forms/feedback", element: <FeedbackForm/> },
+			{ path: "/forms/feedback", element: <FeedbackForm /> },
 			// Everything else is 404
 			{ path: "/:id", element: <Error404 /> },
 		],
