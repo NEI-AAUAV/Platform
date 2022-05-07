@@ -70,7 +70,11 @@ const data = [
                 'name': 'Código de Faina',
                 'link': process.env.REACT_APP_STATIC + '/faina/CodigoFaina.pdf',
                 'external': true
-            }
+            },
+            localStorage.getItem("tester") ? {
+                'name': 'Famílias de Faina',
+                'link': '/familias'
+            } : null,
         ]
     },
     {

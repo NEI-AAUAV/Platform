@@ -21,7 +21,7 @@ const CleanLayout = () => {
                 options={config}
                 className="position-absolute"
             />
-            <div className="pt-10">
+            <div className="pt-10 mhvh-100 d-flex flex-column justify-content-between">
                 <Navbar />
                 <Outlet />
                 <Footer />

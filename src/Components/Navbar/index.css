@@ -62,6 +62,15 @@
     }
 }
 
+.navbardiv.bg-transparent {
+    padding-bottom: 0.8rem !important;
+    padding-top: 0.8rem !important;
+}
+
+.navbar-brand {
+    padding: 0 !important;
+}
+
 /* Mobile */
 .navbar-toggler {
     border: none!important;
@@ -77,6 +86,22 @@
     }
 }
 
+@media 
+    only screen and (max-width: 420px),
+    only screen and (max-height: 420px) 
+{
+    .navbar-brand>img {
+        width: 60px;
+        height: 60px;
+    }
+
+    :root {
+        --burguer-size: 25px;
+        --burguer-gap: 9px;
+        --burguer-stroke: 3px;
+    }
+}
+
 /* Custom styling */
 .navbardiv {
     z-index: 5;
@@ -86,17 +111,14 @@
 .navbardiv.bg-white {
     box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);
 }
-.navbardiv.bg-transparent {
-    padding-bottom: 1rem !important;
-    padding-top: 1rem !important;
-}
+
 
 /* Hamburguer */
 /* From https://codepen.io/designcouch/pen/Atyop */
 
 .hamburguer {
-    width: 35px;
-    height: 30px;
+    width: var(--burguer-size, 35px);
+    height: var(--burguer-size, 35px);
     position: relative;
     margin: auto;
     -webkit-transform: rotate(0deg);
@@ -113,10 +135,10 @@
 .hamburguer span {
     display: block;
     position: absolute;
-    height: 4px;
+    height: var(--burguer-stroke, 4px);
     width: 100%;
     background: #147a26;
-    border-radius: 4px;
+    border-radius: var(--burguer-stroke, 4px);
     opacity: 1;
     left: 0;
     -webkit-transform: rotate(0deg);
@@ -134,15 +156,15 @@
 }
 
 .hamburguer span:nth-child(2),.hamburguer span:nth-child(3) {
-    top: 12.5px;
+    top: var(--burguer-gap, 12.5px);
 }
 
 .hamburguer span:nth-child(4) {
-    top: 25px;
+    top: calc(var(--burguer-gap, 12.5px)*2);
 }
 
 .hamburguer.open span:nth-child(1) {
-    top: 15px;
+    top: var(--burguer-gap, 12.5px);
     width: 0%;
     left: 50%;
 }
@@ -162,7 +184,7 @@
 }
 
 .hamburguer.open span:nth-child(4) {
-    top: 15px;
+    top: var(--burguer-gap, 12.5px);
     width: 0%;
     left: 50%;
 }
