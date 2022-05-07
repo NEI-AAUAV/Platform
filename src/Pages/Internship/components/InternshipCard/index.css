@@ -27,11 +27,6 @@
     align-items: flex-end;
 }
 
-.card-link a{
-    background-color: yellow !important;
-    color: blue;
-}
-
 @media screen and (max-width: 960px) {
     .internship-card {
         height: auto;
