@@ -86,7 +86,9 @@ function buildTree() {
     return { name1, name2, isTruncated, tname1, tname2 };
   }
   const assignInsignias = () => {
-    return ["cf", "nei", "aettua"];
+    const insignias = ["cf", "nei", "aettua"];
+    const i = Math.floor(Math.random() * insignias.length*3);
+    return insignias.slice(i);
   }
 
   for (const elem of data.users) {
@@ -119,15 +121,16 @@ function buildTree() {
 
   const root = treeStructure(dataStructure);
 
-  d3.select("svg.treeei").selectAll("*:not(defs, defs *)").remove();
+  // clean svg
+  d3.select("svg.treeei")
+    .selectAll("*:not(defs, defs *)")
+    .remove();
 
   zoom = d3.zoom()
     .scaleExtent([0.2, 2])
     .on("zoom", ({ transform }) => zoomed(transform));
 
   svg = d3.select("svg.treeei")
-    // .attr("width", view[0] + 100)
-    // .attr("height", view[1] + 100)
     .call(zoom)
     .append("g")
 
@@ -147,20 +150,25 @@ function buildTree() {
     lastTransform = transform;
   }
 
-  const links = svg.append("g")
-    .attr("class", "links")
-    .selectAll("path")
-    .data(root.links().filter(d => d.source.data.parent != null));
+  const groups = svg
+    .append("g")
+    .attr("class", "nodes")
+    .selectAll("g")
+    .data(root.descendants().slice(1))
+    .enter()
+    .append("g");
 
-  links.enter()
+  // links
+  groups
+    .filter(d => d.parent != root)
     .append("path")
     .style("stroke", "silver")
     .attr('marker-start', 'url(#dot)')
     .attr("d", function (d) {
-      const sx = d.source.x,
-        sy = d.source.y + 68,
-        tx = d.target.x,
-        ty = d.target.y,
+      const sx = d.parent.x,
+        sy = d.parent.y + 68,
+        tx = d.x,
+        ty = d.y,
         hy = 0.5 * (ty - sy),
         off = 5;
 
@@ -187,23 +195,20 @@ function buildTree() {
       return d3.select(this).node().getTotalLength();
     })
     .transition()
-    .duration(4000)
+    .duration(3000)
     .ease(d3.easeLinear)
-    .attr("stroke-dashoffset", 0)
+    .attr("stroke-dashoffset", 0);
 
-  const nodes = svg.append("g")
-    .attr("class", "nodes")
-    .selectAll("g")
-    .data(root.descendants().slice(1))
-    .enter()
+  const nodes = groups
     .append("g")
+    .attr("class", "node")
     .attr("transform", d => `translate(${d.x},${d.y})`);
 
-  const nodesImages = d3.select("defs")
+  // node images
+  d3.select("defs")
     .selectAll("pattern.image")
-    .data(root.descendants().slice(1));
-
-  nodesImages.enter()
+    .data(root.descendants().slice(1))
+    .enter()
     .append("pattern")
     .attr("id", d => d.data.id)
     .attr("class", "image")
@@ -220,14 +225,16 @@ function buildTree() {
     .attr("preserveAspectRatio", "xMinYMin slice");
 
   // circle with the person image
-  const nodesProfilePic = nodes.append("circle")
+  const nodesProfilePic = nodes
+    .append("circle")
     .attr("class", "profile-pic")
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", 10)
     .style("fill", d => `url(#${d.data.id})`);
 
-  nodes.insert("g", "circle.profile-pic")
+  nodes
+    .insert("g", "circle.profile-pic")
     .attr("class", "insignias")
     .selectAll("rect")
     .data(d => d.data.insignias)
@@ -239,16 +246,17 @@ function buildTree() {
     .attr("width", 10)
     .attr("height", 10)
     .style("fill", d => `url(#${d})`);
-  
+
   // circle with the gradient year color
-  const nodesProfileGrad = nodes.append("circle")
+  const nodesProfileGrad = nodes
+    .append("circle")
     .attr("class", "profile-grad")
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", 10)
     .attr("opacity", 1)
     .style("cursor", d => d.data.insignias?.length > 0 ? "pointer" : "default")
-    .style("fill", d => d3.schemeTableau10[(d.data.start_year - 4) % 10])
+    .style("fill", d => d3.schemeTableau10[(d.data.start_year + 6) % 10])
     .on("click", function (event) {
       let parent = this.parentElement;
       let active = parent.classList.contains("active");
@@ -274,9 +282,10 @@ function buildTree() {
         .style("opacity", o)
         .ease(d3.easeBackOut.overshoot(2))
     })
-  
+
   // border with the year color 
-  const nodesProfileBorder = nodes.insert("circle", "circle")
+  const nodesProfileBorder = nodes
+    .insert("circle", "circle")
     .attr("class", "profile-border")
     .attr("cx", 0)
     .attr("cy", 0)
@@ -285,16 +294,12 @@ function buildTree() {
     .style("stroke", "silver")
     .style("stroke-width", 1.5)
 
-  const labels = svg.append("g")
-    .attr("class", "labels")
-    .selectAll("g")
-    .data(root.descendants().slice(1));
-
-  const labelsGroups = labels.enter()
+  const labels = groups
     .append("g")
-    .attr("transform", d => `translate(${d.x},${d.y + 18})`)
+    .attr("transform", d => `translate(${d.x},${d.y + 18})`);
 
-  labelsGroups.append("text")
+  labels
+    .append("text")
     .attr("x", 0)
     .attr("y", 0)
     .attr("text-anchor", "middle")
@@ -307,11 +312,7 @@ function buildTree() {
     .attr('dy', '1.2em')
     .text(d => d.data.names.tname2);
 
-  const labelsTooltipsGroups = svg.append("g")
-    .attr("class", "labels-tooltips")
-    .selectAll("g")
-    .data(root.descendants().slice(1))
-    .enter()
+  const labelsTooltips = groups
     .filter(d => d.data.names.isTruncated)
     .append("g")
     .attr("transform", d => `translate(${d.x},${d.y + 18})`)
@@ -328,7 +329,8 @@ function buildTree() {
         .attr('opacity', 0);
     });
 
-  labelsTooltipsGroups.append("text")
+  labelsTooltips
+    .append("text")
     .attr("x", 0)
     .attr("y", 0)
     .attr("text-anchor", "middle")
@@ -341,7 +343,7 @@ function buildTree() {
     .attr('dy', '1.2em')
     .text(d => d.data.names.name2);
 
-  labelsTooltipsGroups
+  labelsTooltips
     .insert("rect", "text")
     .attr("fill", "white")
     .attr("width", function () {
@@ -355,35 +357,35 @@ function buildTree() {
     })
     .attr("y", function () {
       return this.nextSibling.getBBox().y;
-    })
+    });
 
   function updateNodes(close) {
     nodesProfilePic
       .style("fill", d => close ? `url(#${d.data.id})` : "none")
       .transition().duration(300)
-      .attr("r", close ? 18 : 10)
+      .attr("r", close ? 18 : 10);
 
     nodesProfileGrad
       .attr("opacity", d => close ? (d.data.image ? 0 : 0.3) : 1)
       .transition().duration(300)
-      .attr("r", close ? 18 : 10)
+      .attr("r", close ? 18 : 10);
 
     nodesProfileBorder
-      .style("stroke", close ? d => d3.schemeTableau10[(d.data.start_year - 4) % 10] : "silver")
+      .style("stroke", close ? d => d3.schemeTableau10[(d.data.start_year + 6) % 10] : "silver")
       .transition().duration(300)
-      .attr("r", close ? 20 : 12)
+      .attr("r", close ? 20 : 12);
 
-    labelsGroups
+    labels
       .transition().duration(300)
       .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
       .select("text")
-      .attr("class", close ? "small" : "")
+      .attr("class", close ? "small" : "");
 
-    labelsTooltipsGroups
+    labelsTooltips
       .transition().duration(300)
       .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
       .select("text")
-      .attr("class", close ? "small" : "")
+      .attr("class", close ? "small" : "");
   }
 
   updateNodes(false);
@@ -412,6 +414,27 @@ function centerTree() {
 }
 
 
+const organizations = {
+  nei: {
+    insignia: nei,
+    roles: ["Direção", "Sec. Académica", "Sec. Administrativa"]
+  },
+  aettua: {
+    insignia: aettua,
+    roles: ["Mestre de Curso / Arrais / Varina"]
+  },
+  cf: {
+    insignia: anzol,
+    roles: ["Presidente"]
+  },
+}
+
+
+function filterOrganization(name) {
+
+}
+
+
 function FainaTree() {
   const [expanded, setExpanded] = useState(false);
 
@@ -426,8 +449,41 @@ function FainaTree() {
 
   return (
     <div id="treeei" className={classNames("d-flex flex-grow-1", { "expand": expanded })}>
-      <div className="open-expand" onClick={toggleExpand}>
-        <FontAwesomeIcon icon={expanded ? faCompress : faExpand} size="lg" />
+      <div className="side-bar">
+        <div>
+          <FontAwesomeIcon
+            onClick={toggleExpand}
+            className="open-expand"
+            icon={expanded ? faCompress : faExpand}
+            size="lg" />
+        </div>
+        <div>
+          {
+            [...Array(10).keys()].map(i => (
+              <>
+                <div>
+                  <div className="color-legend"
+                    style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
+                  20X{i}
+                </div>
+              </>
+            ))
+          }
+        </div>
+        <div>
+          {
+            Object.entries(organizations).map(([name, org]) => (
+              <>
+                <div style={{cursor: "pointer"}} onClick={() => filterOrganization(name)}>
+                  <img style={{width: 25, height: 25}} src={org.insignia} />
+                </div>
+                <div>
+                  {org.roles?.map(n => <div>{n}</div>)}
+                </div>
+              </>
+            ))
+          }
+        </div>
       </div>
       <svg className="treeei">
         <defs>
