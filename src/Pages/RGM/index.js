@@ -52,7 +52,7 @@ const RGM = () => {
         id = id.toUpperCase();
         setTitle(validCategories[id]['plural']);
         // Fetch API if valid
-        fetch(process.env.REACT_APP_API + "/rgm?category=" + id)
+        fetch(process.env.REACT_APP_API + "/rgm/?category=" + id)
             .then(res => res.json())
             .then(json => {
                 if ('data' in json) {

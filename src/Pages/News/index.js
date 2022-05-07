@@ -26,9 +26,9 @@ const News = () => {
 
         // build string for api request
         if (window.location.search)
-            var api = "/news" + window.location.search + "&";
+            var api = "/news/" + window.location.search + "&";
         else
-            var api = "/news?";
+            var api = "/news/?";
             
         if (whitelist != newsTypes) {
             whitelist.forEach( v => {
@@ -56,7 +56,7 @@ const News = () => {
 
     // Get categories from API when component renders
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/news/categories")
+        fetch(process.env.REACT_APP_API + "/news/categories/")
             .then(response => response.json())
             .then((response) => {
                 if('data' in response) {

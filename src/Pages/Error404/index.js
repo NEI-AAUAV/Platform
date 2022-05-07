@@ -20,7 +20,7 @@ const Error404 = () => {
 
         // Call /redirects API to check if it is an alias
         // Fetch API if valid
-        fetch(process.env.REACT_APP_API + "/redirects?alias=" + id)
+        fetch(process.env.REACT_APP_API + "/redirects/?alias=" + id)
             .then(res => res.json())
             .then(json => {
                 setLoading(false);
