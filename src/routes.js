@@ -46,7 +46,7 @@ const routes = [
 			{ path: "/rgm/:id", element: <RGM /> },
 			{ path: "/historia", element: <History /> },
 			{ path: "/seniors/:id", element: <Seniors /> },
-			{ path: "/estagios", element: localStorage.getItem("tester") ? <Internship /> : <Error404 /> },
+			{ path: "/estagios", element: <Internship /> },
 			{ path: "/faina", element: <Faina /> },
 			{ path: "/videos", element: <Videos /> },
 			{ path: "/videos/:id", element: <Video /> },

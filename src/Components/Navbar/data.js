@@ -90,10 +90,10 @@ const data = [
             }
         ]
     },
-    localStorage.getItem("tester") ? {
+    {
         'name': 'Estágios',
         'link': '/estagios'
-    } : null,
+    },
     {
         'name': 'Parceiros',
         'link': '/parceiros'
