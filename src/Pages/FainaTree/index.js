@@ -1,8 +1,13 @@
 // example from https://bl.ocks.org/mbostock/3885705
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCompress, faExpand } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCompress, faExpand,
+  faSitemap, faGripHorizontal,
+  faChevronDown, faChevronUp
+} from "@fortawesome/free-solid-svg-icons";
+
 import * as d3 from 'd3';
 import classNames from "classname";
 
@@ -12,24 +17,40 @@ import malePic from "Assets/default_profile/male.svg";
 import nei from "Assets/icons/nei.svg";
 import aettua from "Assets/icons/aettua.svg";
 import anzol from "Assets/icons/anzol.svg";
+import sal from "Assets/icons/sal.svg";
 
 import './index.css';
 
-// **************************************************
-//  SVG Layout
-// **************************************************
-const view = [1800, 600]        // [width, height]
-const trbl = [10, 10, 30, 10]   // [top, right, bottom, left] margins
 
-const dims = [ // Adjusted dimensions [width, height]
-  view[0] - trbl[1] - trbl[3],
-  view[1] - trbl[0] - trbl[2],
-];
+const organizations = {
+  nei: {
+    name: "NEI",
+    insignia: nei,
+  },
+  aettua: {
+    name: "AETTUA",
+    insignia: aettua,
+  },
+  cf: {
+    name: "Comissão de Faina",
+    insignia: anzol,
+  },
+  cs: {
+    name: "Conselho do Salgado",
+    insignia: sal,
+  },
+}
 
-// Threshold to show photos
+const Modes = {
+  TREE: 1,
+  YEAR: 2
+}
+
+
+// threshold to show photos
 const zoomThreshold = 1;
 let lastTransform = d3.zoomIdentity.scale(0.5);
-let svg, zoom;
+let svg, zoom, groups;
 
 
 function labelFamilies(node) {
@@ -51,6 +72,7 @@ function labelFamilies(node) {
     node.family_depth = node.depth;
   }
 }
+
 
 function buildTree() {
   const separateName = (name) => {
@@ -85,9 +107,10 @@ function buildTree() {
 
     return { name1, name2, isTruncated, tname1, tname2 };
   }
+
   const assignInsignias = () => {
-    const insignias = ["cf", "nei", "aettua"];
-    const i = Math.floor(Math.random() * insignias.length*3);
+    const insignias = ["cf", "nei", "aettua", "cs"];
+    const i = Math.floor(Math.random() * insignias.length * 2);
     return insignias.slice(i);
   }
 
@@ -138,19 +161,13 @@ function buildTree() {
     const n = transform.k > zoomThreshold;
     const o = lastTransform.k > zoomThreshold;
     if (n !== o) {
-      if (n) {
-        // Replace with photos
-        updateNodes(true);
-      } else {
-        // Remove images
-        updateNodes(false);
-      }
+      updateNodes(n);
     }
     svg.attr("transform", transform);
     lastTransform = transform;
   }
 
-  const groups = svg
+  groups = svg
     .append("g")
     .attr("class", "nodes")
     .selectAll("g")
@@ -239,7 +256,7 @@ function buildTree() {
     .selectAll("rect")
     .data(d => d.data.insignias)
     .enter().append("rect")
-    .attr("class", "insignia")
+    .attr("class", d => `insignia ${d}`)
     .attr("x", -5)
     .attr("y", -5)
     .style("opacity", 0)
@@ -296,6 +313,7 @@ function buildTree() {
 
   const labels = groups
     .append("g")
+    .attr("class", "label")
     .attr("transform", d => `translate(${d.x},${d.y + 18})`);
 
   labels
@@ -414,32 +432,49 @@ function centerTree() {
 }
 
 
-const organizations = {
-  nei: {
-    insignia: nei,
-    roles: ["Direção", "Sec. Académica", "Sec. Administrativa"]
-  },
-  aettua: {
-    insignia: aettua,
-    roles: ["Mestre de Curso / Arrais / Varina"]
-  },
-  cf: {
-    insignia: anzol,
-    roles: ["Presidente"]
-  },
-}
-
-
-function filterOrganization(name) {
-
+function filterOrganization(names) {
+  groups
+    .attr("opacity", d => names.length === 0 ? 1 : names.every(n => d.data.insignias.includes(n)) ? 1 : 0.2);
 }
 
 
 function FainaTree() {
+  const [showInfo, setShowInfo] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [mode, setMode] = useState(Modes.TREE);
+  const [insignias, setInsignias] = useState([]);
+  const [fainaNames, setFainaNames] = useState(false);
+
+  const toggleShowInfo = () => {
+    setShowInfo(!showInfo);
+  }
 
   const toggleExpand = () => {
     setExpanded(!expanded);
+  }
+
+  const toggleMode = () => {
+    setMode(mode === Modes.TREE ? Modes.FAINA : Modes.TREE);
+  }
+ 
+  const toggeFainaNames = () => {
+    setFainaNames(!fainaNames);
+  }
+
+  const toggleInsignias = (name) => {
+    const i = insignias.indexOf(name);
+
+    console.log(name, JSON.stringify(insignias))
+
+    if (i !== -1)
+      insignias.splice(i, 1);
+    else
+      insignias.push(name);
+
+    console.log(insignias)
+
+    filterOrganization(insignias);
+    setInsignias([...insignias]);
   }
 
   useEffect(() => {
@@ -450,39 +485,66 @@ function FainaTree() {
   return (
     <div id="treeei" className={classNames("d-flex flex-grow-1", { "expand": expanded })}>
       <div className="side-bar">
-        <div>
+        <div className="d-flex align-items-center justify-content-between" style={{ minHeight: 32 }}>
+          <FontAwesomeIcon
+            onClick={toggleShowInfo}
+            className="menu-icon"
+            icon={showInfo ? faChevronUp : faChevronDown}
+            size={"lg"} />
           <FontAwesomeIcon
             onClick={toggleExpand}
-            className="open-expand"
+            className="menu-icon"
             icon={expanded ? faCompress : faExpand}
             size="lg" />
+          <FontAwesomeIcon
+            style={{ cursor: "not-allowed" }}
+            onClick={toggleMode}
+            className="menu-icon"
+            icon={mode === Modes.TREE ? faGripHorizontal : faSitemap}
+            size={mode === Modes.TREE ? "2x" : "lg"} />
         </div>
-        <div>
-          {
-            [...Array(10).keys()].map(i => (
-              <>
-                <div>
-                  <div className="color-legend"
-                    style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
-                  20X{i}
+        <div className={classNames('side-bar-body', { "hide": !showInfo })}>
+          <div className='d-flex justify-content-between my-3'>
+            <div className='mr-3'>
+              {
+                [...Array(5).keys()].map(i => (
+                  <div className="color-legend">
+                    <div className="color-bullet"
+                      style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
+                    20X{i}
+                  </div>
+                ))
+              }
+            </div>
+            <div className='mr-3'>
+              {
+                [...Array(5).keys()].map(i => (
+                  <div className="color-legend">
+                    <div className="color-bullet"
+                      style={{ backgroundColor: d3.schemeTableau10[(i + 11) % 10] }}></div>
+                    20X{i + 5}
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+          <div className="mr-auto mt-3">
+            {
+              Object.entries(organizations).map(([key, org]) => (
+                <div className={classNames("insignia", { "inactive": insignias.includes(key) })}
+                  onClick={() => toggleInsignias(key)}>
+                  <img src={org.insignia} />
+                  <div>{org.name}</div>
                 </div>
-              </>
-            ))
-          }
-        </div>
-        <div>
-          {
-            Object.entries(organizations).map(([name, org]) => (
-              <>
-                <div style={{cursor: "pointer"}} onClick={() => filterOrganization(name)}>
-                  <img style={{width: 25, height: 25}} src={org.insignia} />
-                </div>
-                <div>
-                  {org.roles?.map(n => <div>{n}</div>)}
-                </div>
-              </>
-            ))
-          }
+              ))
+            }
+          </div>
+          <div className="mt-4 text-center"
+            style={{ fontWeight: fainaNames ? 400 : 300, cursor: "pointer" }}
+            onClick={toggeFainaNames}
+          >
+            Mostrar nomes de faina
+          </div>
         </div>
       </div>
       <svg className="treeei">
@@ -519,6 +581,9 @@ function FainaTree() {
           </pattern>
           <pattern id="cf" width="1" height="1" patternContentUnits="objectBoundingBox">
             <image xlinkHref={anzol} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+          </pattern>
+          <pattern id="cs" width="1" height="1" patternContentUnits="objectBoundingBox">
+            <image xlinkHref={sal} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
           </pattern>
         </defs>
       </svg>

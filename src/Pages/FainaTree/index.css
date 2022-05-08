@@ -1,8 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap');
 
 .color-legend {
-    width: 10px;
-    height: 10px;
+    margin-bottom: 0.2em;
+}
+
+.color-bullet {
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     display: inline-block;
     margin-right: 10px;
@@ -53,23 +57,77 @@
     top: 0;
     right: 0;
     z-index: 10;
-    padding: 10px;
-    /* background-color: red;
-    padding: 0.5rem;
-    font-size: 1rem;
-    line-height: 1rem;
-    border-radius: 50%; */
-    background-color: rgba(255, 255, 255, 0.8);
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px 0 0 10px;
+    border: 1px solid rgba(89, 161, 79, 0.8);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
-.side-bar .open-expand {
+#treeei.expand>.side-bar {
+    border-radius: 0 0 0 10px;
+}
+
+.side-bar-body {
+    width: 13rem;
+    max-height: 23rem;
+    -webkit-transition: max-height 0.4s ease-in;
+    -moz-transition: max-height 0.4s ease-in;
+    -o-transition: max-height 0.4s ease-in;
+    transition: max-height 0.4s ease-in;
+    overflow: hidden;
+}
+
+.side-bar-body.hide {
+    max-height: 0;
+}
+
+.side-bar .menu-icon {
     color: rgba(89, 161, 79, 0.8);
     cursor: pointer;
+    margin: 0 1rem;
 }
 
-.side-bar .open-expand:hover {
+.side-bar .menu-icon:hover {
     color: rgb(89, 161, 79);
 }
+
+.side-bar .insignia {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 0.5em;
+    font-weight: 400;
+}
+
+.side-bar .insignia.inactive {
+    font-weight: 300;
+}
+
+.side-bar .insignia img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.8;
+    margin-right: 0.5em;
+}
+
+.side-bar .insignia:hover img {
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+.side-bar .insignia.inactive img {
+    filter: grayscale(1);
+    opacity: 0.5;
+}
+
 
 #treeei svg.treeei path {
     fill: none;
@@ -103,15 +161,3 @@
 #treeei svg.treeei rect.insignia { 
     filter: drop-shadow(1px 2px 2px darkgray);
 }
-
-
-
-/* text.name-tooltip {
-    display: none;
-    position: absolute;
-} */
-
-
-/* g.label:hover text {
-    display: block !important;
-} */
