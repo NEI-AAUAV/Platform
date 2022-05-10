@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCompress, faExpand,
   faSitemap, faGripHorizontal,
-  faChevronDown, faChevronUp
+  faChevronDown, faChevronUp,
+  faArrowUp, faArrowDown
 } from "@fortawesome/free-solid-svg-icons";
 
 import * as d3 from 'd3';
@@ -21,6 +22,8 @@ import sal from "Assets/icons/sal.svg";
 
 import './index.css';
 
+
+const MIN_YEAR = 10, MAX_YEAR = 21;
 
 const organizations = {
   nei: {
@@ -50,7 +53,50 @@ const Modes = {
 // threshold to show photos
 const zoomThreshold = 1;
 let lastTransform = d3.zoomIdentity.scale(0.5);
-let svg, zoom, groups;
+let svg, zoom, groups, labels;
+
+
+function separateName(name) {
+  const maxChars = 15,
+    middleIndex = Math.ceil(name.length / 2);
+
+  let name1 = name.slice(0, middleIndex).split(" "),
+    name2 = name.slice(middleIndex).split(" "),
+    nameMid = name1.slice(-1)[0] + name2.slice(0, 1)[0];
+
+  name1 = name1.slice(0, -1).join(" ");
+  name2 = name2.slice(1).join(" ");
+
+  if (name1.length >= name2.length) {
+    name2 = (nameMid + " " + name2).trim();
+  } else {
+    name1 = (name1 + " " + nameMid).trim();
+  }
+
+  let isTruncated = false,
+    tname1 = name1,
+    tname2 = name2;
+
+  if (name1.length > maxChars) {
+    isTruncated = true;
+    tname1 = name1.slice(0, maxChars - 3) + "...";
+  }
+  if (name2.length > maxChars) {
+    isTruncated = true;
+    tname2 = name2.slice(0, maxChars - 3) + "...";
+  }
+
+  return { name1, name2, isTruncated, tname1, tname2 };
+}
+
+
+function getFainaHierarchy(sex, year, end_year) {
+  const maleHierarchies = ["Junco", "Moço", "Marnoto", "Mestre"];
+  const femaleHierarchies = ["Caniça", "Moça", "Salineira", "Mestre"];
+
+  const index = end_year - year - 1;
+  return (sex === "M") ? maleHierarchies[index] : femaleHierarchies[index];
+}
 
 
 function labelFamilies(node) {
@@ -75,39 +121,6 @@ function labelFamilies(node) {
 
 
 function buildTree() {
-  const separateName = (name) => {
-    const maxChars = 15,
-      middleIndex = Math.ceil(name.length / 2);
-
-    let name1 = name.slice(0, middleIndex).split(" "),
-      name2 = name.slice(middleIndex).split(" "),
-      nameMid = name1.slice(-1)[0] + name2.slice(0, 1)[0];
-
-    name1 = name1.slice(0, -1).join(" ");
-    name2 = name2.slice(1).join(" ");
-
-    if (name1.length >= name2.length) {
-      name2 = (nameMid + " " + name2).trim();
-    } else {
-      name1 = (name1 + " " + nameMid).trim();
-    }
-
-    let isTruncated = false,
-      tname1 = name1,
-      tname2 = name2;
-
-    if (name1.length > maxChars) {
-      isTruncated = true;
-      tname1 = name1.slice(0, maxChars - 3) + "...";
-    }
-    if (name2.length > maxChars) {
-      isTruncated = true;
-      tname2 = name2.slice(0, maxChars - 3) + "...";
-    }
-
-    return { name1, name2, isTruncated, tname1, tname2 };
-  }
-
   const assignInsignias = () => {
     const insignias = ["cf", "nei", "aettua", "cs"];
     const i = Math.floor(Math.random() * insignias.length * 2);
@@ -116,7 +129,11 @@ function buildTree() {
 
   for (const elem of data.users) {
     elem.names = separateName(elem.name);
-    elem.insignias = assignInsignias();
+    if (elem.faina) {
+      elem.fainaNames = separateName(
+        getFainaHierarchy(elem.sex, elem.start_year, MAX_YEAR) + " " + elem.faina?.[0].name);
+    }
+    elem.insignias = elem.organizations?.map(o => o.name) || assignInsignias();
   }
 
   const dataStructure = d3.stratify()
@@ -311,28 +328,33 @@ function buildTree() {
     .style("stroke", "silver")
     .style("stroke-width", 1.5)
 
-  const labels = groups
+  labels = groups
     .append("g")
     .attr("class", "label")
     .attr("transform", d => `translate(${d.x},${d.y + 18})`);
 
-  labels
-    .append("text")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("text-anchor", "middle")
-    .append("tspan")
-    .attr('x', 0)
-    .attr('dy', '1.2em')
-    .text(d => d.data.names.tname1)
-    .append("tspan")
-    .attr('x', 0)
-    .attr('dy', '1.2em')
-    .text(d => d.data.names.tname2);
+  // nodes names and faina names
+  for (const key of ["names", "fainaNames"])
+    labels
+      .filter(d => d.data[key])
+      .append("text")
+      .attr("data-name", key)
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("text-anchor", "middle")
+      .append("tspan")
+      .attr('x', 0)
+      .attr('dy', '1.2em')
+      .text(d => d.data[key].tname1)
+      .append("tspan")
+      .attr('x', 0)
+      .attr('dy', '1.2em')
+      .text(d => d.data[key].tname2);
 
   const labelsTooltips = groups
     .filter(d => d.data.names.isTruncated)
     .append("g")
+    .attr("class", "label label-tooltip")
     .attr("transform", d => `translate(${d.x},${d.y + 18})`)
     .attr("opacity", "0")
     .on('mouseover', function () {
@@ -394,16 +416,14 @@ function buildTree() {
       .attr("r", close ? 20 : 12);
 
     labels
+      .classed('label-small', close)
       .transition().duration(300)
-      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
-      .select("text")
-      .attr("class", close ? "small" : "");
+      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`);
 
     labelsTooltips
+      .classed('label-small', close)
       .transition().duration(300)
-      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`)
-      .select("text")
-      .attr("class", close ? "small" : "");
+      .attr("transform", d => `translate(${d.x},${d.y + (close ? 26 : 18)})`);
   }
 
   updateNodes(false);
@@ -432,9 +452,41 @@ function centerTree() {
 }
 
 
-function filterOrganization(names) {
+function filterTree(names, end_year) {
   groups
-    .attr("opacity", d => names.length === 0 ? 1 : names.every(n => d.data.insignias.includes(n)) ? 1 : 0.2);
+    .attr("opacity", d => {
+      if (d.data.start_year > end_year)
+        return 0.2;
+      if (names.length === 0)
+        return 1;
+      if (names.every(n => d.data.insignias.includes(n)))
+        return 1;
+      return 0.2;
+    });
+
+  labels
+    .filter(d => {
+      if (d.data.fainaNames && d.data.start_year <= end_year) {
+        d.data.fainaNames = separateName(
+          getFainaHierarchy(d.data.sex, d.data.start_year, end_year) + " " + d.data.faina?.[0].name)
+        return true;
+      }
+      return false;
+    })
+    .select('text[data-name="fainaNames"]')
+    .select("tspan")
+    .text(d => d.data.fainaNames.tname1)
+    .append("tspan")
+    .attr('x', 0)
+    .attr('dy', '1.2em')
+    .text(d => d.data.fainaNames.tname2);
+}
+
+
+function changeLabels(showFainaNames) {
+  labels
+    .filter(d => d.data.fainaNames)
+    .classed("label-faina", showFainaNames);
 }
 
 
@@ -442,7 +494,9 @@ function FainaTree() {
   const [showInfo, setShowInfo] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [mode, setMode] = useState(Modes.TREE);
+  const [endYear, setEndYear] = useState(MAX_YEAR);
   const [insignias, setInsignias] = useState([]);
+  const [year, setYear] = useState(MAX_YEAR);
   const [fainaNames, setFainaNames] = useState(false);
 
   const toggleShowInfo = () => {
@@ -456,8 +510,9 @@ function FainaTree() {
   const toggleMode = () => {
     setMode(mode === Modes.TREE ? Modes.FAINA : Modes.TREE);
   }
- 
+
   const toggeFainaNames = () => {
+    changeLabels(!fainaNames);
     setFainaNames(!fainaNames);
   }
 
@@ -473,7 +528,6 @@ function FainaTree() {
 
     console.log(insignias)
 
-    filterOrganization(insignias);
     setInsignias([...insignias]);
   }
 
@@ -481,6 +535,10 @@ function FainaTree() {
     buildTree();
     centerTree();
   }, [])
+
+  useEffect(() => {
+    filterTree(insignias, year);
+  }, [insignias, year])
 
   return (
     <div id="treeei" className={classNames("d-flex flex-grow-1", { "expand": expanded })}>
@@ -506,32 +564,51 @@ function FainaTree() {
         <div className={classNames('side-bar-body', { "hide": !showInfo })}>
           <div className='d-flex justify-content-between my-3'>
             <div className='mr-3'>
+              <div style={{ marginBottom: "0.2em" }}>
+                <FontAwesomeIcon
+                  onClick={() => setEndYear((endYear) => Math.max(--endYear, MIN_YEAR + 9))}
+                  style={endYear === MIN_YEAR + 9 ? { opacity: 0.5 } : { cursor: "pointer" }}
+                  icon={faArrowUp}
+                  size="sm" />
+              </div>
               {
-                [...Array(5).keys()].map(i => (
-                  <div className="color-legend">
+                [...Array(5).keys()].map(i => endYear - 9 + i).map(i => (
+                  <div key={i} className={classNames("color-legend", { "inactive": i > year })}
+                    onClick={() => setYear(i)}
+                  >
                     <div className="color-bullet"
                       style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
-                    20X{i}
+                    {2000 + i}
                   </div>
                 ))
               }
             </div>
             <div className='mr-3'>
               {
-                [...Array(5).keys()].map(i => (
-                  <div className="color-legend">
+                [...Array(5).keys()].map(i => endYear - 4 + i).map(i => (
+                  <div key={i} className={classNames("color-legend", { "inactive": i > year })}
+                    onClick={() => setYear(i)}
+                  >
                     <div className="color-bullet"
-                      style={{ backgroundColor: d3.schemeTableau10[(i + 11) % 10] }}></div>
-                    20X{i + 5}
+                      style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
+                    {2000 + i}
                   </div>
                 ))
               }
+              <div style={{ marginBottom: "0.2em" }}>
+                <FontAwesomeIcon
+                  onClick={() => setEndYear((endYear) => Math.min(++endYear, MAX_YEAR))}
+                  style={endYear === MAX_YEAR ? { opacity: 0.5 } : { cursor: "pointer" }}
+                  icon={faArrowDown}
+                  size="sm" />
+              </div>
             </div>
+
           </div>
           <div className="mr-auto mt-3">
             {
               Object.entries(organizations).map(([key, org]) => (
-                <div className={classNames("insignia", { "inactive": insignias.includes(key) })}
+                <div key={key} className={classNames("insignia", { "inactive": insignias.includes(key) })}
                   onClick={() => toggleInsignias(key)}>
                   <img src={org.insignia} />
                   <div>{org.name}</div>
