@@ -19,6 +19,9 @@ import nei from "Assets/icons/nei.svg";
 import aettua from "Assets/icons/aettua.svg";
 import anzol from "Assets/icons/anzol.svg";
 import sal from "Assets/icons/sal.svg";
+import rol from "Assets/icons/rol.svg";
+import lenco from "Assets/icons/lenco.svg";
+import pa from "Assets/icons/pa.svg";
 
 import './index.css';
 
@@ -41,6 +44,18 @@ const organizations = {
   cs: {
     name: "Conselho do Salgado",
     insignia: sal,
+  },
+  escrivao: {
+    name: "Mestre Escrivão",
+    insignia: rol,
+  },
+  pescador: {
+    name: "Mestre Pescador",
+    insignia: lenco,
+  },
+  salgado: {
+    name: "Mestre do Salgado",
+    insignia: pa,
   },
 }
 
@@ -122,7 +137,7 @@ function labelFamilies(node) {
 
 function buildTree() {
   const assignInsignias = () => {
-    const insignias = ["cf", "nei", "aettua", "cs"];
+    const insignias = ["nei", "aettua", "cs", "escrivao", "salgado", "pescador"];
     const i = Math.floor(Math.random() * insignias.length * 2);
     return insignias.slice(i);
   }
@@ -133,7 +148,7 @@ function buildTree() {
       elem.fainaNames = separateName(
         getFainaHierarchy(elem.sex, elem.start_year, MAX_YEAR) + " " + elem.faina?.[0].name);
     }
-    elem.insignias = elem.organizations?.map(o => o.name) || assignInsignias();
+    elem.insignias = elem.organizations?.map(o => o.name).filter((v, i, a) => a.indexOf(v) === i) || assignInsignias();
   }
 
   const dataStructure = d3.stratify()

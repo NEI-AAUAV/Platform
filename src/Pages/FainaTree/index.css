@@ -89,7 +89,7 @@
 
 .side-bar-body {
     width: 13rem;
-    max-height: 23rem;
+    max-height: 26rem;
     -webkit-transition: max-height 0.4s ease-in;
     -moz-transition: max-height 0.4s ease-in;
     -o-transition: max-height 0.4s ease-in;
