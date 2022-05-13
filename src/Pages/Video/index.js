@@ -21,7 +21,7 @@ const Video = () => {
     useEffect(() => {
         setLoading(true);
 
-        fetch(process.env.REACT_APP_API + "/videos?video=" + id)
+        fetch(process.env.REACT_APP_API + "/videos/?video=" + id)
             .then((response) => response.json())
             .then((response) => {
                 console.log("GOT RESPONSE", response);

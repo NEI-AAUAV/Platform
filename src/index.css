@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 
 body {
     font-family: Montserrat, Helvetica,Arial,sans-serif;
@@ -75,9 +75,11 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 }
 
 /* cols from Bootstrap 5 */
-.col-xxl-9 {
-    flex: 0 0 auto;
-    width: 75%;
+@media only screen and (max-width: 1320px){
+    .col-xxl-9 {
+        flex: 0 0 auto;
+        width: 75%;
+    }
 }
 
 .pt-10 {

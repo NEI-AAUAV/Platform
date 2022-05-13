@@ -16,8 +16,6 @@ const MainLayout = () => {
         <>
             <Particles
                 id="tsparticles"
-                init={() => console.log("INIT")}
-                loaded={() => console.log("LOADED")}
                 options={config}
                 className="position-absolute"
             />

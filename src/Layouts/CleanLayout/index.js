@@ -16,12 +16,10 @@ const CleanLayout = () => {
         <>
             <Particles
                 id="tsparticles"
-                init={() => console.log("INIT")}
-                loaded={() => console.log("LOADED")}
                 options={config}
                 className="position-absolute"
             />
-            <div className="pt-10">
+            <div className="pt-10 mhvh-100 d-flex flex-column justify-content-between">
                 <Navbar />
                 <Outlet />
                 <Footer />

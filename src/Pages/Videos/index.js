@@ -25,7 +25,7 @@ const Videos = () => {
 
     // Get categories from API
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/videos/categories")
+        fetch(process.env.REACT_APP_API + "/videos/categories/")
             .then(response => response.json())
             .then((response) => {
                 if ('data' in response) {
@@ -56,7 +56,7 @@ const Videos = () => {
         setLoading(true);
         if (selection.length) {
             // Compute url with categories ids selected
-            let url = process.env.REACT_APP_API + "/videos?";
+            let url = process.env.REACT_APP_API + "/videos/?";
             selection.forEach(s => {
                 const candidates = categories.filter(c => c.name == s);
                 if (candidates.length > 0) {

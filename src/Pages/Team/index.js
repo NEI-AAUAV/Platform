@@ -26,7 +26,7 @@ const Team = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/team/mandates")
+        fetch(process.env.REACT_APP_API + "/team/mandates/")
             .then(response => response.json())
             .then((response) => {
                 var anos = response.data.map(year =>
@@ -43,7 +43,7 @@ const Team = () => {
         setLoading(true);
         
         if (selectedYear != null) {
-            fetch(process.env.REACT_APP_API + "/team?mandate=" + selectedYear)
+            fetch(process.env.REACT_APP_API + "/team/?mandate=" + selectedYear)
                 .then(response => response.json())
                 .then(
                     (response) => {

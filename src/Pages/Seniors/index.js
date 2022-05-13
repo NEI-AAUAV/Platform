@@ -30,7 +30,7 @@ const Seniors = () => {
 
     useEffect(() => {
         // get list of courses to check if 'id' is valid
-        fetch(process.env.REACT_APP_API + "/seniors/courses")
+        fetch(process.env.REACT_APP_API + "/seniors/courses/")
             .then((response) => response.json())
             .then((response) => {
                 let courses = response["data"].map( el => el["course"] );
@@ -43,7 +43,7 @@ const Seniors = () => {
 
 
         // pegar o número de anos
-        fetch(process.env.REACT_APP_API + "/seniors/courses/years?course=" + id)
+        fetch(process.env.REACT_APP_API + "/seniors/courses/years/?course=" + id)
             .then((response) => response.json())
             .then((response) => {
                 var anos = response.data.map((curso) => curso.year).sort((a, b) => b - a);
@@ -63,7 +63,7 @@ const Seniors = () => {
         if (selectedYear == undefined) return;
         setLoading(true);
 
-        fetch(process.env.REACT_APP_API + "/seniors?course=" + id +"&year=" + selectedYear)
+        fetch(process.env.REACT_APP_API + "/seniors/?course=" + id +"&year=" + selectedYear)
             .then((response) => response.json())
             .then((response) => {
                 setNamesOnly( response.data.students[0]["quote"] == null &&

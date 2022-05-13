@@ -16,7 +16,7 @@ const Merchandising = () => {
     const [imgs, setImgs] = useState([]);
 
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/merch")
+        fetch(process.env.REACT_APP_API + "/merch/")
             .then(response => response.json())
             .then((response) => {
 

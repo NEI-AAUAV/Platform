@@ -28,7 +28,7 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
         setLoading(true);
 
         // Get note data from API when component loads
-        fetch(process.env.REACT_APP_API + "/notes?note=" + note_id)
+        fetch(process.env.REACT_APP_API + "/notes/?note=" + note_id)
                 .then((response) => {
                     if (!response.ok) {throw new Error(response.status)}
                     return response.json();

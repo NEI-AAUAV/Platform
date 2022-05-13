@@ -6,6 +6,8 @@ import {
     NavDropdown
 } from "react-bootstrap";
 
+import { Link } from "react-router-dom";
+
 import data from "./data";
 import logo from './logo.png';
 import "./index.css";
@@ -57,12 +59,13 @@ const Navbar = () => {
                 <BNavbar.Collapse id="basic-BNavbar-nav" className="bg-white small font-weight-bold">
                     <Nav className="mr-auto">
                         {
-                            data.map(
+                            data.filter(d => d).map(
                                 navEl =>
                                     !navEl.dropdown
                                         ?
                                         <Nav.Link
-                                            href={navEl.link}
+                                            as={Link}
+                                            to={navEl.link}
                                             className={
                                                 window.location.pathname == navEl.link ? "active" : ""
                                             }
@@ -74,10 +77,11 @@ const Navbar = () => {
                                         :
                                         <NavDropdown title={navEl.name} id={"dropdown-" + navEl.name.replace(" ", "")}>
                                             {
-                                                navEl.dropdown.map(
+                                                navEl.dropdown.filter(d => d).map(
                                                     dropdown =>
                                                         <NavDropdown.Item 
-                                                            href={dropdown.link} 
+                                                            as={Link}
+                                                            to={dropdown.link} 
                                                             target={dropdown.external && "_blank"}
                                                             rel={dropdown.external && "noreferrer"}
                                                         >{dropdown.name}</NavDropdown.Item>

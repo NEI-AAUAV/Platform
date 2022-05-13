@@ -23,7 +23,7 @@ const Homepage = () => {
 
     useEffect(() => {
         // Get first 3 news articles from API when page loads
-        fetch(process.env.REACT_APP_API + "/news?itemsPerPage=3")
+        fetch(process.env.REACT_APP_API + "/news/?itemsPerPage=3")
             .then(response => response.json())
             .then((response) => {
                 if('data' in response) {
@@ -33,7 +33,7 @@ const Homepage = () => {
             });
 
         // Get partner banner
-        fetch(process.env.REACT_APP_API + "/partners/banner")
+        fetch(process.env.REACT_APP_API + "/partners/banner/")
             .then(response => response.json())
             .then((response) => {
                 if('data' in response && response.data.length) {
