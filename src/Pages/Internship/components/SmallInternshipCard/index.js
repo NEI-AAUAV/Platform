@@ -10,7 +10,7 @@ const SmallInternshipCard = (props) => {
             <Card className='small-internship-card'>
                 <Card.Body>
                     <Card.Title className='card-title'>{props.title}</Card.Title>
-                    <span className='card-link'><a href={props.link}><FontAwesomeIcon className='icon' icon={faExternalLinkAlt} /></a></span>
+                    <span classname='card-link'><a href={props.link} target="_blank" rel="noreferrer"><FontAwesomeIcon className='icon' icon={faExternalLinkAlt}/></a></span>
                     <p className='position'>{props.position}</p>
                     <Card.Subtitle className="mb-2 text-muted">{props.duration}</Card.Subtitle>
                     <Card.Text> 
