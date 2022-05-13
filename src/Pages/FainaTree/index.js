@@ -68,7 +68,7 @@ const Modes = {
 // threshold to show photos
 const zoomThreshold = 1;
 let lastTransform = d3.zoomIdentity.scale(0.5);
-let svg, zoom, groups, labels;
+let svg, zoom, groups, labels, fainaLabels;
 
 
 function separateName(name) {
@@ -105,12 +105,25 @@ function separateName(name) {
 }
 
 
-function getFainaHierarchy(sex, year, end_year) {
+function getFainaHierarchy({ sex, start_year, organizations }, end_year) {
+  for (const o of organizations) {
+    if (o.name === "cf" && o.year === end_year && o.role) return o.role;
+    if (o.name === "st" && o.year === end_year) return o.role;
+  }
+
   const maleHierarchies = ["Junco", "Moço", "Marnoto", "Mestre"];
   const femaleHierarchies = ["Caniça", "Moça", "Salineira", "Mestre"];
 
-  const index = end_year - year - 1;
+  const index = Math.min(end_year - start_year - 1, 3);
   return (sex === "M") ? maleHierarchies[index] : femaleHierarchies[index];
+}
+
+
+function showLabelFaina({ fainaNames, start_year }, end_year) {
+  if (fainaNames && start_year + 1 <= end_year) {
+    return true;
+  }
+  return false;
 }
 
 
@@ -137,7 +150,7 @@ function labelFamilies(node) {
 
 function buildTree() {
   const assignInsignias = () => {
-    const insignias = ["nei", "aettua", "cs", "escrivao", "salgado", "pescador"];
+    const insignias = ["nei", "aettua"];
     const i = Math.floor(Math.random() * insignias.length * 2);
     return insignias.slice(i);
   }
@@ -146,9 +159,17 @@ function buildTree() {
     elem.names = separateName(elem.name);
     if (elem.faina) {
       elem.fainaNames = separateName(
-        getFainaHierarchy(elem.sex, elem.start_year, MAX_YEAR) + " " + elem.faina?.[0].name);
+        getFainaHierarchy(elem, MAX_YEAR) + " " + elem.faina?.[0].name);
     }
-    elem.insignias = elem.organizations?.map(o => o.name).filter((v, i, a) => a.indexOf(v) === i) || assignInsignias();
+    elem.insignias = elem.organizations?.map(o => {
+      if (o.name !== "st")
+        return o.name;
+      return {
+        "Mestre Escrivão": "escrivao",
+        "Mestre Pescador": "pescador",
+        "Mestre do Salgado": "salgado"
+      }[o.role];
+    }).filter((v, i, a) => a.indexOf(v) === i) || assignInsignias();
   }
 
   const dataStructure = d3.stratify()
@@ -348,23 +369,40 @@ function buildTree() {
     .attr("class", "label")
     .attr("transform", d => `translate(${d.x},${d.y + 18})`);
 
-  // nodes names and faina names
-  for (const key of ["names", "fainaNames"])
-    labels
-      .filter(d => d.data[key])
-      .append("text")
-      .attr("data-name", key)
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("text-anchor", "middle")
-      .append("tspan")
-      .attr('x', 0)
-      .attr('dy', '1.2em')
-      .text(d => d.data[key].tname1)
-      .append("tspan")
-      .attr('x', 0)
-      .attr('dy', '1.2em')
-      .text(d => d.data[key].tname2);
+  fainaLabels = labels
+    .filter(d => d.data.fainaNames)
+    .classed("label-faina", true)
+
+  // nodes' names
+  labels
+    .append("text")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("text-anchor", "middle")
+    .append("tspan")
+    .attr('x', 0)
+    .attr('dy', '1.2em')
+    .text(d => d.data.names.tname1)
+    .append("tspan")
+    .attr('x', 0)
+    .attr('dy', '1.2em')
+    .text(d => d.data.names.tname2);
+
+  // nodes' faina names
+  fainaLabels
+    .append("text")
+    .classed("text-faina", true)
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("text-anchor", "middle")
+    .append("tspan")
+    .attr('x', 0)
+    .attr('dy', '1.2em')
+    .text(d => d.data.fainaNames.tname1)
+    .append("tspan")
+    .attr('x', 0)
+    .attr('dy', '1.2em')
+    .text(d => d.data.fainaNames.tname2);
 
   const labelsTooltips = groups
     .filter(d => d.data.names.isTruncated)
@@ -474,21 +512,25 @@ function filterTree(names, end_year) {
         return 0.2;
       if (names.length === 0)
         return 1;
-      if (names.every(n => d.data.insignias.includes(n)))
+      if (d.data.insignias.some(n => names.includes(n)))
         return 1;
       return 0.2;
     });
 
-  labels
-    .filter(d => {
-      if (d.data.fainaNames && d.data.start_year <= end_year) {
+  fainaLabels
+    .filter(function (d) {
+      const n = d3.select(this);
+      if (showLabelFaina(d.data, end_year)) {
+        const hierarchy = getFainaHierarchy(d.data, end_year);
         d.data.fainaNames = separateName(
-          getFainaHierarchy(d.data.sex, d.data.start_year, end_year) + " " + d.data.faina?.[0].name)
+          hierarchy + " " + d.data.faina?.[0].name)
+        n.classed("label-faina", true);
         return true;
       }
+      n.classed("label-faina", false);
       return false;
     })
-    .select('text[data-name="fainaNames"]')
+    .select('text.text-faina')
     .select("tspan")
     .text(d => d.data.fainaNames.tname1)
     .append("tspan")
@@ -498,10 +540,10 @@ function filterTree(names, end_year) {
 }
 
 
+
 function changeLabels(showFainaNames) {
-  labels
-    .filter(d => d.data.fainaNames)
-    .classed("label-faina", showFainaNames);
+  fainaLabels
+    .classed("show", showFainaNames);
 }
 
 
@@ -534,14 +576,10 @@ function FainaTree() {
   const toggleInsignias = (name) => {
     const i = insignias.indexOf(name);
 
-    console.log(name, JSON.stringify(insignias))
-
     if (i !== -1)
       insignias.splice(i, 1);
     else
       insignias.push(name);
-
-    console.log(insignias)
 
     setInsignias([...insignias]);
   }
@@ -623,7 +661,7 @@ function FainaTree() {
           <div className="mr-auto mt-3">
             {
               Object.entries(organizations).map(([key, org]) => (
-                <div key={key} className={classNames("insignia", { "inactive": insignias.includes(key) })}
+                <div key={key} className={classNames("insignia", { "inactive": insignias.length !== 0 && !insignias.includes(key) })}
                   onClick={() => toggleInsignias(key)}>
                   <img src={org.insignia} />
                   <div>{org.name}</div>
@@ -676,6 +714,15 @@ function FainaTree() {
           </pattern>
           <pattern id="cs" width="1" height="1" patternContentUnits="objectBoundingBox">
             <image xlinkHref={sal} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+          </pattern>
+          <pattern id="escrivao" width="1" height="1" patternContentUnits="objectBoundingBox">
+            <image xlinkHref={rol} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+          </pattern>
+          <pattern id="pescador" width="1" height="1" patternContentUnits="objectBoundingBox">
+            <image xlinkHref={lenco} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+          </pattern>
+          <pattern id="salgado" width="1" height="1" patternContentUnits="objectBoundingBox">
+            <image xlinkHref={pa} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
           </pattern>
         </defs>
       </svg>
