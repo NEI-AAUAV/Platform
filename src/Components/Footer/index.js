@@ -7,7 +7,7 @@ import "./index.css";
 
 const Footer = () => {
     return (
-        <div className="d-flex flew-row col-11 col-sm-10 col-xxl-9 mx-auto mt-4 mb-2 text-secondary">
+        <div id="footer" className="d-flex flew-row col-11 col-sm-10 col-xxl-9 mx-auto text-secondary">
             <div className="footer-links">
                 <a href="https://www.facebook.com/nei.aauav" target="_blank" className="text-secondary">
                     <FontAwesomeIcon icon={ faFacebookSquare } size="lg"/>
@@ -19,8 +19,8 @@ const Footer = () => {
                     <FontAwesomeIcon icon={ faYoutube } size="lg"/>
                 </a>
             </div>
-            <div className="footer-copyright ml-auto">
-                <p>&copy; 2021, NEI-AAUAV</p>
+            <div className="footer-copyright">
+                &copy; 2021, NEI-AAUAV
             </div>
         </div>
     );

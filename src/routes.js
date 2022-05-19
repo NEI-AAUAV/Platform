@@ -30,7 +30,7 @@ const routes = [
 		children: [
 			{ path: "/", element: <Homepage /> },
 			{ path: "/merch", element: <Merchandising /> },
-			{ path: "/familias", element: localStorage.getItem("tester") ? <FainaTree /> : <Error404 /> },
+			{ path: "/familias", element: <FainaTree /> },
 		]
 	},
 	{

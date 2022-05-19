@@ -31,9 +31,9 @@ const Navbar = () => {
 
     return (
         <div className={transparent ? "navbardiv col-12 p-0 position-fixed bg-transparent" : "navbardiv col-12 p-0 position-fixed bg-white"}>
-            <BNavbar 
-                bg="transparent" 
-                expand="lg" 
+            <BNavbar
+                bg="transparent"
+                expand="lg"
                 className="px-0 col-11 col-sm-10 col-xxl-9 mx-auto"
                 onToggle={(col) => setCollapsed(col)}
             >
@@ -79,12 +79,12 @@ const Navbar = () => {
                                             {
                                                 navEl.dropdown.filter(d => d).map(
                                                     dropdown =>
-                                                        <NavDropdown.Item 
-                                                            as={Link}
-                                                            to={dropdown.link} 
+                                                        <NavDropdown.Item
+                                                            {...(dropdown.external ? { href: dropdown.link } : { as: Link, to: dropdown.link })}
                                                             target={dropdown.external && "_blank"}
                                                             rel={dropdown.external && "noreferrer"}
-                                                        >{dropdown.name}</NavDropdown.Item>
+                                                        >{dropdown.name}
+                                                        </NavDropdown.Item>
                                                 )
                                             }
                                         </NavDropdown>

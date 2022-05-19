@@ -6,7 +6,8 @@ import {
   faCompress, faExpand,
   faSitemap, faGripHorizontal,
   faChevronDown, faChevronUp,
-  faArrowUp, faArrowDown
+  faArrowUp, faArrowDown,
+  faAngleLeft, faAngleRight
 } from "@fortawesome/free-solid-svg-icons";
 
 import * as d3 from 'd3';
@@ -484,8 +485,8 @@ function buildTree() {
   // constrain tree
   const { width, height, x, y } = svg.node().getBBox();
 
-  const pad = 96;
-  const x0 = x - pad,
+  const pad = 256;
+  const x0 = x - 1.5*pad,
     y0 = y - pad,
     x1 = x + width + pad,
     y1 = y + height + pad;
@@ -595,85 +596,101 @@ function FainaTree() {
 
   return (
     <div id="treeei" className={classNames("d-flex flex-grow-1", { "expand": expanded })}>
-      <div className="side-bar">
-        <div className="d-flex align-items-center justify-content-between" style={{ minHeight: 32 }}>
-          <FontAwesomeIcon
-            onClick={toggleShowInfo}
-            className="menu-icon"
-            icon={showInfo ? faChevronUp : faChevronDown}
-            size={"lg"} />
-          <FontAwesomeIcon
-            onClick={toggleExpand}
-            className="menu-icon"
-            icon={expanded ? faCompress : faExpand}
-            size="lg" />
-          <FontAwesomeIcon
-            style={{ cursor: "not-allowed" }}
-            onClick={toggleMode}
-            className="menu-icon"
-            icon={mode === Modes.TREE ? faGripHorizontal : faSitemap}
-            size={mode === Modes.TREE ? "2x" : "lg"} />
-        </div>
-        <div className={classNames('side-bar-body', { "hide": !showInfo })}>
-          <div className='d-flex justify-content-between my-3'>
-            <div className='mr-3'>
-              <div style={{ marginBottom: "0.2em" }}>
+      <div className='side-bar'>
+        <button className='side-bar-button' onClick={toggleShowInfo}>
+          <span>
+            <FontAwesomeIcon
+              icon={showInfo ? faAngleLeft : faAngleRight}
+              size={"sm"} />
+          </span>
+        </button>
+        <div className={classNames("side-bar-body", { "hide": showInfo })}>
+          <div className='side-bar-content'>
+            <div className='mb-3'>
+              <div className="d-flex align-items-center justify-content-around" style={{ minHeight: 32 }}>
                 <FontAwesomeIcon
-                  onClick={() => setEndYear((endYear) => Math.max(--endYear, MIN_YEAR + 9))}
-                  style={endYear === MIN_YEAR + 9 ? { opacity: 0.5 } : { cursor: "pointer" }}
-                  icon={faArrowUp}
-                  size="sm" />
-              </div>
-              {
-                [...Array(5).keys()].map(i => endYear - 9 + i).map(i => (
-                  <div key={i} className={classNames("color-legend", { "inactive": i > year })}
-                    onClick={() => setYear(i)}
-                  >
-                    <div className="color-bullet"
-                      style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
-                    {2000 + i}
-                  </div>
-                ))
-              }
-            </div>
-            <div className='mr-3'>
-              {
-                [...Array(5).keys()].map(i => endYear - 4 + i).map(i => (
-                  <div key={i} className={classNames("color-legend", { "inactive": i > year })}
-                    onClick={() => setYear(i)}
-                  >
-                    <div className="color-bullet"
-                      style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
-                    {2000 + i}
-                  </div>
-                ))
-              }
-              <div style={{ marginBottom: "0.2em" }}>
+                  onClick={toggleExpand}
+                  className="menu-icon"
+                  icon={expanded ? faCompress : faExpand}
+                  size="lg" />
                 <FontAwesomeIcon
-                  onClick={() => setEndYear((endYear) => Math.min(++endYear, MAX_YEAR))}
-                  style={endYear === MAX_YEAR ? { opacity: 0.5 } : { cursor: "pointer" }}
-                  icon={faArrowDown}
-                  size="sm" />
+                  style={{ cursor: "not-allowed" }}
+                  onClick={toggleMode}
+                  className="menu-icon"
+                  icon={mode === Modes.TREE ? faGripHorizontal : faSitemap}
+                  size={mode === Modes.TREE ? "2x" : "lg"} />
               </div>
             </div>
-
-          </div>
-          <div className="mr-auto mt-3">
-            {
-              Object.entries(organizations).map(([key, org]) => (
-                <div key={key} className={classNames("insignia", { "inactive": insignias.length !== 0 && !insignias.includes(key) })}
-                  onClick={() => toggleInsignias(key)}>
-                  <img src={org.insignia} />
-                  <div>{org.name}</div>
+            <h4>Matrículas</h4>
+            <div className='d-flex justify-content-between my-3'>
+              <div className='mr-3'>
+                <div style={{ marginBottom: "0.2em" }}>
+                  <FontAwesomeIcon
+                    onClick={() => setEndYear((endYear) => Math.max(--endYear, MIN_YEAR + 9))}
+                    style={endYear === MIN_YEAR + 9 ? { opacity: 0.5 } : { cursor: "pointer" }}
+                    icon={faArrowUp}
+                    size="sm" />
                 </div>
-              ))
-            }
-          </div>
-          <div className="mt-4 text-center"
-            style={{ fontWeight: fainaNames ? 400 : 300, cursor: "pointer" }}
-            onClick={toggeFainaNames}
-          >
-            Mostrar nomes de faina
+                {
+                  [...Array(5).keys()].map(i => endYear - 9 + i).map(i => (
+                    <div key={i} className={classNames("color-legend", { "inactive": i > year })}
+                      onClick={() => setYear(i)}
+                    >
+                      <div className="color-bullet"
+                        style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
+                      {2000 + i}
+                    </div>
+                  ))
+                }
+              </div>
+              <div className='mr-3'>
+                {
+                  [...Array(5).keys()].map(i => endYear - 4 + i).map(i => (
+                    <div key={i} className={classNames("color-legend", { "inactive": i > year })}
+                      onClick={() => setYear(i)}
+                    >
+                      <div className="color-bullet"
+                        style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
+                      {2000 + i}
+                    </div>
+                  ))
+                }
+                <div style={{ marginBottom: "0.2em" }}>
+                  <FontAwesomeIcon
+                    onClick={() => setEndYear((endYear) => Math.min(++endYear, MAX_YEAR))}
+                    style={endYear === MAX_YEAR ? { opacity: 0.5 } : { cursor: "pointer" }}
+                    icon={faArrowDown}
+                    size="sm" />
+                </div>
+              </div>
+
+            </div>
+            <h4>Insígnias</h4>
+            <div className="mr-auto mt-3">
+              {
+                Object.entries(organizations).map(([key, org]) => (
+                  <div key={key} className={classNames("insignia", { "inactive": insignias.length !== 0 && !insignias.includes(key) })}
+                    onClick={() => toggleInsignias(key)}>
+                    <img src={org.insignia} />
+                    <div>{org.name}</div>
+                  </div>
+                ))
+              }
+            </div>
+            <h4>Nomes</h4>
+            <div className="mt-3">
+              <div className="mb-2"
+                style={{ fontWeight: 300, opacity: 0.7, textDecoration: "line-through", cursor: "default" }}
+              >
+                Mostrar apelidos
+              </div>
+              <div className="mb-2"
+                style={{ fontWeight: fainaNames ? 400 : 300, opacity: fainaNames ? 1 : 0.7, cursor: "pointer" }}
+                onClick={toggeFainaNames}
+              >
+                Mostrar nomes de faina
+              </div>
+            </div>
           </div>
         </div>
       </div>

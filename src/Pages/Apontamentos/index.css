@@ -1,3 +1,11 @@
+
+@media screen and (max-width: 425px) {
+    #apontamentosPage .nav .page-link {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+    }
+}
+
 .badge {
     color: white;
     margin-left: 6px;
