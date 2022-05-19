@@ -170,7 +170,7 @@ function buildTree() {
         "Mestre Pescador": "pescador",
         "Mestre do Salgado": "salgado"
       }[o.role];
-    }).filter((v, i, a) => a.indexOf(v) === i) || assignInsignias();
+    }).filter((v, i, a) => a.indexOf(v) === i) || [];
   }
 
   const dataStructure = d3.stratify()
