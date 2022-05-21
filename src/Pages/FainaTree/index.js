@@ -139,12 +139,15 @@ function labelFamilies(node) {
 
   if (node.children) {
     node.family_depth = 0;
+    node.family_count = 0;
     for (const n of node.children) {
       labelFamilies(n);
       node.family_depth = Math.max(node.family_depth, n.family_depth);
+      node.family_count += n.family_count;
     }
   } else {
     node.family_depth = node.depth;
+    node.family_count = 1;
   }
 }
 
@@ -184,7 +187,7 @@ function buildTree() {
   // sort head families according to the family depth
   // sort like a normal distribution
   dataStructure.children = dataStructure.children.slice()
-    .sort((a, b) => a.family_depth - b.family_depth)
+    .sort((a, b) => a.family_depth - b.family_depth || a.family_count - b.family_count)
     .reduceRight((acc, val, i) => {
       return i % 2 === 0 ? [...acc, val] : [val, ...acc];
     }, []);
@@ -485,11 +488,12 @@ function buildTree() {
   // constrain tree
   const { width, height, x, y } = svg.node().getBBox();
 
-  const pad = 256;
-  const x0 = x - 1.5*pad,
-    y0 = y - pad,
-    x1 = x + width + pad,
-    y1 = y + height + pad;
+  const padY = 256,
+    padX = 768,
+    x0 = x - 1.5*padX,
+    y0 = y - padY,
+    x1 = x + width + padX,
+    y1 = y + height + padY;
 
   zoom.translateExtent([[x0, y0], [x1, y1]]);
 }
@@ -604,7 +608,7 @@ function FainaTree() {
               size={"sm"} />
           </span>
         </button>
-        <div className={classNames("side-bar-body", { "hide": showInfo })}>
+        <div className={classNames("side-bar-body", { "hide": !showInfo })}>
           <div className='side-bar-content'>
             <div className='mb-3'>
               <div className="d-flex align-items-center justify-content-around" style={{ minHeight: 32 }}>
@@ -614,7 +618,7 @@ function FainaTree() {
                   icon={expanded ? faCompress : faExpand}
                   size="lg" />
                 <FontAwesomeIcon
-                  style={{ cursor: "not-allowed" }}
+                  style={{ cursor: "not-allowed", opacity: 0.25 }}
                   onClick={toggleMode}
                   className="menu-icon"
                   icon={mode === Modes.TREE ? faGripHorizontal : faSitemap}
