@@ -25,6 +25,7 @@ const Sports = () => {
   const [img, setImg] = useState(null);
   const [anos, setAnos] = useState([]);
   const [selectedYear, setSelectedYear] = useState();
+  const [data, setData] = useState([]);
 
   /*setImg(<Image
         src={equipa} rounded fluid
@@ -35,8 +36,94 @@ const Sports = () => {
         }}
     />);*/
 
+    useEffect(() => {
+      fetch(process.env.REACT_APP_API + "/sports/modalities")
+          .then(response => response.json())
+          .then((response) => {
+              if('data' in response) {
+                  setData(response["data"]);
+                  //console.log(data);
+              }
+          });
+  }, []);
+
+  /*
+
+  useEffect(() => {
+
+    setImg(<Image
+      src={equipa}
+      rounded
+      fluid
+      className="slideUpFade"
+      style={{
+        animationDelay: animationBase + animationIncrement * 0 + "s",
+        marginBottom: 50,
+        marginTop: 50,
+      }}
+    ></Image>)
+  }, [tabIndicator, tabIndicatorSex]);*/
+
   function changeTab(value) {
     setTabIndicator(value);
+  }
+
+  function loadTab(){
+    let result1 = [];
+    let result2 = [];
+    let bothGenders = false;
+    let arr = [];
+    let info = new Map;
+
+    for(let i=0; i<data.length; i++){
+      const map = new Map(Object.entries(data[i]));
+      if (arr.includes(map.get("name"))){
+        bothGenders=true;
+        info.set(map.get("name"), true);
+      }
+      else{
+        arr.push(map.get("name"));
+        bothGenders=false;
+      }
+      if(!bothGenders){
+        if (tabIndicator === map.get("name"))
+          result1.push(<li class="act">{map.get("name")}</li>);
+        else
+          result1.push(<li onClick={() => changeTab(map.get("name"))}>{map.get("name")}</li>);
+      }
+    }
+
+    window.info = info;
+
+    return (
+      <>
+        {result1}
+      </>
+    );
+  }
+
+  function loadGenderTab(){
+    let result = [];
+
+    window.info.forEach((value, key) => {
+        if (value && key==tabIndicator){
+          if (tabIndicatorSex==="Masculino"){
+            result.push(<li class="act">Masculino</li>);
+            result.push(<li onClick={() => setTabIndicatorSex("Feminino")}>Feminino</li>);
+          }
+          else{
+            result.push(<li onClick={() => setTabIndicatorSex("Masculino")}>Masculino</li>);
+            result.push(<li class="act">Feminino</li>);
+          }
+        }
+    });
+
+    return (
+      <>
+        {result}
+      </>
+    )
+
   }
 
   return (
@@ -89,46 +176,13 @@ const Sports = () => {
       </div>
       <div class="lista">
         <ul className="slideUpFade">
-          {tabIndicator === "Andebol" ? (
-            <li class="act">Andebol</li>
-          ) : (
-            <li onClick={() => changeTab("Andebol")}>Andebol</li>
-          )}
-          {tabIndicator === "Futebol" ? (
-            <li class="act">Futebol</li>
-          ) : (
-            <li onClick={() => changeTab("Futebol")}>Futebol</li>
-          )}
-          {tabIndicator === "Voleibol" ? (
-            <li class="act">Voleibol</li>
-          ) : (
-            <li onClick={() => changeTab("Voleibol")}>Voleibol</li>
-          )}
-          {tabIndicator === "Futsal" ? (
-            <li class="act">Futsal</li>
-          ) : (
-            <li onClick={() => changeTab("Futsal")}>Futsal</li>
-          )}
-          {tabIndicator === "Basquetebol" ? (
-            <li class="act">Basquetebol</li>
-          ) : (
-            <li onClick={() => changeTab("Basquetebol")}>Basquetebol</li>
-          )}
+          {loadTab()}
         </ul>
       </div>
 
       <div class="gender-list">
         <ul className="slideUpFade">
-          {tabIndicatorSex === "Masculino" ? (
-            <li class="act">Masculino</li>
-          ) : (
-            <li onClick={() => setTabIndicatorSex("Masculino")}>Masculino</li>
-          )}
-          {tabIndicatorSex === "Feminino" ? (
-            <li class="act">Feminino</li>
-          ) : (
-            <li onClick={() => setTabIndicatorSex("Feminino")}>Feminino</li>
-          )}
+          {loadGenderTab()}
         </ul>
       </div>
 
