@@ -139,7 +139,7 @@ const Sports = () => {
       >
         <Carousel fade style={{ marginBottom: "3rem" }}>
           <Carousel.Item interval={2000}>
-          <div style={{height: "500px"}}>
+          <div className="carousel-image-wrapper">
                         <img
                             className="d-block w-100"
                             src={img1}
@@ -149,7 +149,7 @@ const Sports = () => {
                     </div>
           </Carousel.Item>
           <Carousel.Item interval={2000}>
-          <div style={{height: "500px"}}>
+          <div className="carousel-image-wrapper">
                         <img
                             className="d-block w-100"
                             src={img2}
@@ -159,7 +159,7 @@ const Sports = () => {
                     </div>
           </Carousel.Item>
           <Carousel.Item interval={2000}>
-          <div style={{height: "500px"}}>
+          <div className="carousel-image-wrapper">
                         <img
                             className="d-block w-100"
                             src={img3}
@@ -254,14 +254,14 @@ const Sports = () => {
         <Row className="games-section">
           <Col className="column" lg={6}>
             <h3 className="column-header">Resultados</h3>
-            <Game></Game>
-            <Game></Game>
-            <Game></Game>
+            <Game data="31/02"></Game>
+            <Game data="31/02"></Game>
+            <Game data="31/02"></Game>
           </Col>
           <Col className="column" lg={6}>
             <h3 className="column-header">Próximos Jogos</h3>
-            <Game></Game>
-            <Game></Game>
+            <Game data="31/02"></Game>
+            <Game data="31/02"></Game>
           </Col>
         </Row>
       </div>

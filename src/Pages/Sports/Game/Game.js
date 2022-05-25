@@ -9,11 +9,11 @@ const animationIncrement = parseFloat(
   process.env.REACT_APP_ANIMATION_INCREMENT
 );
 
-const Game = () => {
+const Game = props => {
     return <>
         <Row className="game">
               <Col className="game-data" lg={12}>
-                <h3>31/02</h3>
+                <h3>{props.data}</h3>
               </Col>
               <Col lg={5}>
                 <Image
