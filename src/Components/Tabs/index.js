@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Button} from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import { Container, Row, Col } from 'react-bootstrap';
 import Tab from './Tab/index.js'
 
@@ -15,17 +15,21 @@ onChange -> função setState que altera o valor de um state.
 
 */
 
-const Tabs = ({tabs, _default, onChange}) => {
+const Tabs = ({ tabs, _default, onChange }) => {
 
     const [selectedElement, setSelectedElement] = useState(null);
 
-    const tab = tabs.map(tab => <Tab func={onChange} val={tab} 
-        selectedElement={selectedElement} update={setSelectedElement}/>)
-    
+    const tab = tabs.map((tab, index) => (
+        <div key={index}>
+            <Tab func={onChange} val={tab}
+                selectedElement={selectedElement} update={setSelectedElement} />
+        </div>
+    ));
+
     useEffect(() => {
         setSelectedElement(_default)
     }, [_default])
-    
+
 
     return (
         <Container className="tab-container">

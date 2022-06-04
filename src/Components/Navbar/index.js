@@ -13,7 +13,6 @@ import logo from './logo.png';
 import "./index.css";
 
 const Navbar = () => {
-
     const [transparent, setTransparent] = useState(true);
     const [collapsed, setCollapsed] = useState(false);
 
