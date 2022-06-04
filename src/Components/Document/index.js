@@ -33,7 +33,6 @@ const Document = ({name, description, link, blank, className, icon, size, onClic
             href={link && link} 
             target={blank ? "_blank" : "_self"}
             rel={blank ? "noreferrer" : ""}
-            title="Descarregar ficheiro"
             onClick={onClick}
             title={title ? title : ""}
             style={style}

@@ -66,7 +66,7 @@ const RGM = () => {
             }).catch((error) => {
                 window.location.href = "/404";
             });
-    }, []);
+    }, [id]);
 
     const changeTab = (t) => {
         // Change tab and simulate loading from API
@@ -87,8 +87,7 @@ const RGM = () => {
                     tabs={[...new Set(docs.map(doc => doc.mandato))]}
                     _default={tab}
                     onChange={changeTab}
-                >
-                </Tabs>
+                />
             }
             {
                 loading &&
@@ -101,22 +100,24 @@ const RGM = () => {
                         // On ATAS category, show only those which mandato match tab
                         docs.filter(doc => id.toUpperCase() != "ATAS" || doc.mandato == tab).map(
                             (doc, index, arr) =>
-                                <Document
-                                    name={
-                                        id.toUpperCase() != "ATAS"
-                                            ?
-                                            id.toUpperCase() + ' ' + doc.mandato
-                                            :
-                                            "ATA" + ' ' + (arr.length - index) + ' '
-                                    }
-                                    description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandato}
-                                    link={process.env.REACT_APP_STATIC + doc.file}
-                                    blank={true}
-                                    className="col-lg-6 col-xl-3 slideUpFade"
-                                    style={{
-                                        animationDelay: animationBase + animationIncrement * index + "s",
-                                    }}
-                                />
+                                <div key={index}>
+                                    <Document
+                                        name={
+                                            id.toUpperCase() != "ATAS"
+                                                ?
+                                                id.toUpperCase() + ' ' + doc.mandato
+                                                :
+                                                "ATA" + ' ' + (arr.length - index) + ' '
+                                        }
+                                        description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandato}
+                                        link={process.env.REACT_APP_STATIC + doc.file}
+                                        blank={true}
+                                        className="col-lg-6 col-xl-3 slideUpFade"
+                                        style={{
+                                            animationDelay: animationBase + animationIncrement * index + "s",
+                                        }}
+                                    />
+                                </div>
                         )
                     }
                 </Row>
