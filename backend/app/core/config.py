@@ -12,9 +12,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
-    # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
-    # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
@@ -24,8 +22,17 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    SQLALCHEMY_DATABASE_URI: Optional[str] = "sqlite:///example.db"
-    FIRST_SUPERUSER: EmailStr = "admin@recipeapi.com"
+    # PostgreSQL Db
+    SCHEMA_NAME: str = "auaav_nei"
+    POSTGRES_SERVICE_NAME: str = os.getenv('POSTGRES_SERVICE_NAME', 'localhost')
+    POSTGRES_USER: str = os.getenv('POSTGRES_USER', "postgres")
+    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "1234")
+    POSTGRES_DB: str = os.getenv('POSTGRES_DB', "postgres")
+    SQLALCHEMY_DATABASE_URI: Optional[
+        PostgresDsn
+    ] = f"postgresql://{POSTGRES_USER}" \
+        f":{POSTGRES_PASSWORD}@{POSTGRES_SERVICE_NAME}" \
+        f":5432/{POSTGRES_DB}"
 
     class Config:
         case_sensitive = True

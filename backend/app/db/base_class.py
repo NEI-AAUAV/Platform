@@ -1,17 +1,19 @@
-import typing as t
+from typing import Any
 
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from app.core.config import settings
 
 
-class_registry: t.Dict = {}
-
-
-@as_declarative(class_registry=class_registry)
+@as_declarative()
 class Base:
-    id: t.Any
+    id: Any
     __name__: str
 
     # Generate __tablename__ automatically
     @declared_attr
     def __tablename__(cls) -> str:
         return cls.__name__.lower()
+
+    @declared_attr
+    def __table_args__(cls) -> dict:
+        return {"schema": settings.SCHEMA_NAME}
