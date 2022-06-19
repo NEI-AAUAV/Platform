@@ -1,19 +1,34 @@
-from sqlalchemy import event
-from sqlalchemy.schema import CreateSchema
+from requests import Session
 
-from .base import Base, TacaUAGame
-from .session import engine
-from app.core.config import settings
+from app import crud, schemas
+from datetime import datetime
 
+
+TACAUA_TEAMS = [
+    {
+        "name": "Eng. de Computadores e Informática",
+        "image_url": "https://nei.web.ua.pt/nei.png",
+    },
+    {
+        "name": "Eng. Informática",
+        "image_url": "https://nei.web.ua.pt/nei.png",
+    },
+]
 
 TACAUA_GAMES = [
     {
-        "name": 1,
-        "image": "Chicken Vesuvio",
+        "team1_id": 1,
+        "team2_id": 2,
+        "goals1": 0,
+        "goals2": 10,
+        "date": datetime(2022, 6, 19)
     },
     {
-        "name": 1,
-        "image": "Chicken Vesuvio",
+        "team1_id": 2,
+        "team2_id": 1,
+        "goals1": 11,
+        "goals2": 1,
+        "date": datetime(2022, 7, 19)
     },
 ]
 
@@ -23,22 +38,19 @@ TACAUA_GAMES = [
 # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
 
 
-@event.listens_for(TacaUAGame.__table__, "after_create")
-def insert_tags(target, conn, **kwargs):
-    for vals in TACAUA_GAMES:
-        conn.execute(target.insert().values(vals))
-
-
-def init_db() -> None:
+def init_db(db: Session) -> None:
     # Tables should be created with Alembic migrations
     # But if you don't want to use migrations, create
     # the tables un-commenting the next line
     # Base.metadata.create_all(bind=engine)
 
-    # Check Database Schema Creation
-    if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
-        event.listen(Base.metadata, "before_create", CreateSchema(settings.SCHEMA_NAME))
+    loaded = crud.tacaua_game.get(db=db, id=1)
 
-    Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
-    Base.metadata.create_all(engine, checkfirst=True)
+    if not loaded:
+        for vals in TACAUA_TEAMS:
+            team_in = schemas.TacaUATeamCreate(**vals)
+            crud.tacaua_team.create(db=db, obj_in=team_in)
 
+        for vals in TACAUA_GAMES:
+            game_in = schemas.TacaUAGameCreate(**vals)
+            crud.tacaua_game.create(db=db, obj_in=game_in)

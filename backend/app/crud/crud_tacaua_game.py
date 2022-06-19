@@ -16,7 +16,7 @@ class CRUDTacaUAGame(CRUDBase[TacaUAGame, TacaUAGameCreate, TacaUAGameUpdate]):
         Return previous `limit` games according to current datetime.
         """
         return db.query(TacaUAGame).filter(TacaUAGame.date <= datetime.now()) \
-            .order_by(TacaUAGame.date.desc()).limit(limit)
+            .order_by(TacaUAGame.date.desc()).limit(limit).all()
 
 
 tacaua_game = CRUDTacaUAGame(TacaUAGame)
