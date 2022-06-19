@@ -1,7 +1,7 @@
 from sqlalchemy import event
-from sqlalchemy.orm import Session
+from sqlalchemy.schema import CreateSchema
 
-from app.db import Base, TacaUAGame
+from .base import Base, TacaUAGame
 from .session import engine
 from app.core.config import settings
 
@@ -29,7 +29,7 @@ def insert_tags(target, conn, **kwargs):
         conn.execute(target.insert().values(vals))
 
 
-def init_db(db: Session) -> None:
+def init_db() -> None:
     # Tables should be created with Alembic migrations
     # But if you don't want to use migrations, create
     # the tables un-commenting the next line

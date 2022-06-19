@@ -1,6 +1,7 @@
+import os
 import pathlib
 
-from pydantic import AnyHttpUrl, BaseSettings, EmailStr, validator
+from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
 from typing import List, Optional, Union
 
 
@@ -10,6 +11,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
+    PRODUCTION = False
     API_V1_STR: str = "/api/v1"
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
@@ -23,7 +25,7 @@ class Settings(BaseSettings):
         raise ValueError(v)
 
     # PostgreSQL Db
-    SCHEMA_NAME: str = "auaav_nei"
+    SCHEMA_NAME: str = "aauav_nei"
     POSTGRES_SERVICE_NAME: str = os.getenv('POSTGRES_SERVICE_NAME', 'localhost')
     POSTGRES_USER: str = os.getenv('POSTGRES_USER', "postgres")
     POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "1234")
