@@ -1,17 +1,18 @@
 [tool.poetry]
 name = "app"
-version = "0.0.1"
-description = "Ultimate FastAPI Tutorial"
-authors = ["ChristopherGS"]
+version = "0.1.0"
+description = "NEI API"
+authors = []
 
 [tool.poetry.dependencies]
 python = "^3.8"
 uvicorn = "~0.11.3"
 fastapi = "~0.68.0"
-python-multipart = "~0.0.5"
 pydantic = {extras = ["email"], version = "~1.8.1"}
 SQLAlchemy = "^1.4.22"
 alembic = "^1.6.5"
-tenacity = "^8.0.1"
-greenlet = "^1.1.2"
 typing-extensions = "^4.2.0"
+aiofiles = "^0.8.0"
+requests = "^2.28.0"
+psycopg2 = "^2.9.3"
+loguru = "^0.6.0"

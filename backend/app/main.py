@@ -3,7 +3,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.init_db import init_db
-from app.db.session import SessionLocal
 from app.api.api_v1.api import api_router
 from app.core.logging import init_logging
 from app.core.config import settings
@@ -16,8 +15,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-db = SessionLocal()
-init_db(db)
+init_db()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_event_handler("startup", init_logging)
 app.include_router(api_router, prefix=settings.API_V1_STR)

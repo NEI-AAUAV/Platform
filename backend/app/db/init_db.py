@@ -1,7 +1,10 @@
-from requests import Session
-
-from app import crud, schemas
+from sqlalchemy.schema import CreateSchema, DropSchema
+from sqlalchemy import event
 from datetime import datetime
+
+from app.core.config import settings
+from .base import Base, TacaUATeam, TacaUAGame
+from .session import engine
 
 
 TACAUA_TEAMS = [
@@ -33,24 +36,30 @@ TACAUA_GAMES = [
 ]
 
 
+@event.listens_for(TacaUATeam.__table__, "after_create")
+def insert_tacaua_teams(target, conn, **kwargs):
+    for vals in TACAUA_TEAMS:
+        conn.execute(target.insert().values(**vals))
+
+
+@event.listens_for(TacaUAGame.__table__, "after_create")
+def insert_tacaua_games(target, conn, **kwargs):
+    for vals in TACAUA_GAMES:
+        conn.execute(target.insert().values(**vals))
+
+
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly
 # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
 
 
-def init_db(db: Session) -> None:
+def init_db() -> None:
     # Tables should be created with Alembic migrations
     # But if you don't want to use migrations, create
-    # the tables un-commenting the next line
-    # Base.metadata.create_all(bind=engine)
+    # the tables with Base.metadata.create_all(bind=engine)
 
-    loaded = crud.tacaua_game.get(db=db, id=1)
+    if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
+        event.listen(Base.metadata, "before_create", CreateSchema(settings.SCHEMA_NAME))
 
-    if not loaded:
-        for vals in TACAUA_TEAMS:
-            team_in = schemas.TacaUATeamCreate(**vals)
-            crud.tacaua_team.create(db=db, obj_in=team_in)
-
-        for vals in TACAUA_GAMES:
-            game_in = schemas.TacaUAGameCreate(**vals)
-            crud.tacaua_game.create(db=db, obj_in=game_in)
+    Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
+    Base.metadata.create_all(bind=engine, checkfirst=True)
