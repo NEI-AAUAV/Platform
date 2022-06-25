@@ -17,7 +17,7 @@ A clear and concise description of what the problem is and/or what needs to be d
 <!--
 If applicable, divide this task in smaller issues that are independent of each other.
 -->
-[ ] (Add child issue here.)
+- [ ] (Add child issue here.)
 
 **Attachments:**
 <!--
