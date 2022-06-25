@@ -2,7 +2,7 @@
 name: Feature request
 about: Feature request template
 title: ''
-labels: enhancement
+labels: feature
 assignees: ''
 
 ---
