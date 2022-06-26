@@ -8,7 +8,7 @@ const History = () => {
 
     // fetch timeline data from API
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/history")
+        fetch(process.env.REACT_APP_API + "/history/")
             .then(response => response.json())
             .then((response) => {
                 if('data' in response) {
