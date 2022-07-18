@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, Field
 
 from enum import Enum
@@ -24,9 +25,9 @@ class TacaUAModalityDetailsBase(BaseModel):
 class TacaUAModalityDetailsInDB(TacaUAModalityDetailsBase):
     """Properties properties stored in DB."""
     id: int
-    pts_victory: int = Field(default=0)
-    pts_draw: int = Field(default=0)
-    pts_defeat: int = Field(default=0)
+    pts_victory: Optional[int]
+    pts_draw: Optional[int]
+    pts_defeat: Optional[int]
 
     class Config:
         orm_mode = True
