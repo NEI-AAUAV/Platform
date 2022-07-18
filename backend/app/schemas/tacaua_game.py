@@ -6,23 +6,23 @@ from .tacaua_team import TacaUATeamInDB
 
 
 class TacaUAGameBase(BaseModel):
-    team1_id: Optional[int]
-    team2_id: Optional[int]
+    team1_id: int
+    team2_id: int
     goals1: Optional[int]
     goals2: Optional[int]
-    date: Optional[datetime]
+    date: datetime
 
 
 class TacaUAGameCreate(TacaUAGameBase):
     """Properties to receive via API on creation."""
-    team1_id: int
-    team2_id: int
-    date: datetime
+    pass
 
 
 class TacaUAGameUpdate(TacaUAGameBase):
     """Properties to receive via API on update."""
-    pass
+    team1_id: Optional[int]
+    team2_id: Optional[int]
+    date: Optional[datetime]
 
 
 class TacaUAGameInDB(TacaUAGameBase):
