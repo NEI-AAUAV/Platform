@@ -60,11 +60,3 @@ The **feature/issue branch** should be used when enhancing or creating a new fea
 The name shows that the branch applies to the task of adding a testing module, which is associated to the issue with the tracking ID 12. It is recommended to create these branches on the issue itself.
 
 The **hotfix branch** come from the need to act immediately upon an undesired state of a live production version.
-
-
-
-## External packages
-
-- [React Router](https://www.npmjs.com/package/react-router/v/6.0.0-beta.0), [React Router Dom](https://www.npmjs.com/package/react-router-dom/v/6.0.0-beta.0) and [History](https://www.npmjs.com/package/history) for routing;
-- [React Bootstrap](https://react-bootstrap.github.io/getting-started/introduction) for styling; 
-
