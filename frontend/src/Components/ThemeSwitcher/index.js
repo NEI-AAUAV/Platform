@@ -31,7 +31,7 @@ const ThemeSwitcherStyles = styled.div`
         }
         svg{
             width: 75%;
-            color: var(--text-secundary);
+            color: var(--text-secondary);
         }
     }
 

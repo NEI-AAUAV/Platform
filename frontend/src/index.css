@@ -3,13 +3,15 @@
 :root {
     --background: white;
     --text-primary: black;
-    --text-secundary: #363636;
+    --text-secondary: #363636;
+    --card-shadow: rgba(0, 0, 0, 0.3);
 }
 
 [data-theme='dark'] {
     --background: black;
     --text-primary: white;
-    --text-secundary: #D3D3D3;
+    --text-secondary: #D3D3D3;
+    --card-shadow: rgba(250, 250, 250, 0.8);
 }
 
 body {
@@ -38,7 +40,7 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
     font-size: inherit;
     border-width: 2px;
     background-color: var(--background)!important ; 
-    color: var(--text-secundary)!important ; 
+    color: var(--text-secondary)!important ; 
 }
 
 .btn-primary {
@@ -104,8 +106,8 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 /* text size */
 body { font-size: 1rem!important; }
 small, .small, .btn-sm { font-size: .75rem!important; }
-h1 { font-size: 3.6rem!important; color: var(--text-secundary)!important ; }
-h2 { font-size: 2.8rem!important; color: var(--text-secundary)!important ;}
+h1 { font-size: 3.6rem!important; color: var(--text-secondary)!important ; }
+h2 { font-size: 2.8rem!important; color: var(--text-secondary)!important ;}
 @media only screen and (max-width: 777px){
     h2 { font-size: 2rem!important; word-break: break-all; }
 }
