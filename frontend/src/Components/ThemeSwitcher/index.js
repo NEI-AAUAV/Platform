@@ -1,14 +1,16 @@
 
-import React from "react";
-import {FiSun, FiMoon} from "react-icons/fi"
+import React, { useState } from "react";
+import { FiSun, FiMoon } from "react-icons/fi"
 import styled from "styled-components";
+
+import { useTheme } from "Stores/useTheme";
 
 const ThemeSwitcherStyles = styled.div`
     label{
         --gap: 5px;
-        --size:20px;
-        height:30px;
-        width: 55px;
+        --size:25px;
+        height:40px;
+        width: 60px;
         margin-top:5px;
         padding: 0 5px;
         display: flex;
@@ -16,9 +18,9 @@ const ThemeSwitcherStyles = styled.div`
         justify-content: space-between;
         position: relative;
         cursor: pointer;
-        background-color: white;
+        background-color: var(--background);
         border: 2px solid green;
-        border-radius: 50px;
+        border-radius: 45px;
         z-index: 1;
         .icon{
             height: var(--size);
@@ -29,7 +31,7 @@ const ThemeSwitcherStyles = styled.div`
         }
         svg{
             width: 75%;
-            color: var(--green);
+            color: var(--text-secundary);
         }
     }
 
@@ -49,7 +51,7 @@ const ThemeSwitcherStyles = styled.div`
         left:var(--gap);
         height: var(--size);
         width: var(--size);
-        background-color: lightgreen;
+        background-color: #228B22;
         z-index:-1;
         transition: 0.5s ease left;
     }
@@ -60,10 +62,17 @@ const ThemeSwitcherStyles = styled.div`
 
 `;
 
-function ThemeSwitcher(){
-    return(
+function ThemeSwitcher() {
+
+    const theme = useTheme(state => state.theme);
+
+    const toggleTheme = () => {
+        useTheme.getState().setTheme(theme === "light" ? "dark" : "light");
+    }
+
+    return (
         <ThemeSwitcherStyles>
-            <input type="checkbox" id="switcher"/>
+            <input value={theme} onChange={toggleTheme} type="checkbox" id="switcher" />
             <label htmlFor="switcher">
                 <div className="icon">
                     <FiSun></FiSun>
@@ -71,7 +80,7 @@ function ThemeSwitcher(){
                 <div className="icon">
                     <FiMoon></FiMoon>
                 </div>
-                
+
             </label>
         </ThemeSwitcherStyles>
     );

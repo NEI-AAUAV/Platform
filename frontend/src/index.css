@@ -1,5 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 
+:root {
+    --background: white;
+    --text-primary: black;
+    --text-secundary: #363636;
+}
+
+[data-theme='dark'] {
+    --background: black;
+    --text-primary: white;
+    --text-secundary: #D3D3D3;
+}
+
 body {
     font-family: Montserrat, Helvetica,Arial,sans-serif;
     font-weight: 300;
@@ -25,6 +37,8 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 .btn {
     font-size: inherit;
     border-width: 2px;
+    background-color: var(--background)!important ; 
+    color: var(--text-secundary)!important ; 
 }
 
 .btn-primary {
@@ -50,6 +64,7 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 }
 .btn-outline-primary:not(:disabled):not(.disabled).active:focus, .btn-outline-primary:not(:disabled):not(.disabled):active:focus, .show > .btn-outline-primary.dropdown-toggle:focus, .btn-outline-primary.focus, .btn-outline-primary:focus {
     box-shadow: none;
+    
 }
 .btn-outline-primary:hover {
     color: #fff;
@@ -89,8 +104,8 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 /* text size */
 body { font-size: 1rem!important; }
 small, .small, .btn-sm { font-size: .75rem!important; }
-h1 { font-size: 3.6rem!important; }
-h2 { font-size: 2.8rem!important; }
+h1 { font-size: 3.6rem!important; color: var(--text-secundary)!important ; }
+h2 { font-size: 2.8rem!important; color: var(--text-secundary)!important ;}
 @media only screen and (max-width: 777px){
     h2 { font-size: 2rem!important; word-break: break-all; }
 }

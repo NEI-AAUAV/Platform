@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faChevronUp, faFilePdf, faFolder, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
 
+import {useTheme} from 'Stores/useTheme';
 
 // Register Fontawesome icons
 // https://fontawesome.com/v5.15/how-to-use/on-the-web/using-with/react (Using Icons via Global Use)
@@ -33,9 +34,10 @@ const App = () => {
         }
     }
 
+    const theme = useTheme(state => state.theme);
 
     return (
-        <>
+        <div data-theme={theme}>
             <FloatingBtns location="bottomRight">
                 {
                     !top &&
@@ -60,7 +62,7 @@ const App = () => {
                 }
             </FloatingBtns>
             {routing}
-        </>
+        </div>
     );
 }
 

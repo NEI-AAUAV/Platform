@@ -7,11 +7,16 @@
     padding: 10px 15px;
     opacity: .8;
     text-transform: uppercase;
-    color: #000!important;
+    color: var(--text-primary)!important ;
 }
 
 .navbar .navbar-nav {
     flex-wrap: wrap;
+}
+
+.navBar{
+    background-color: var(--background)!important ;
+    color: var(--text-primary)!important ;
 }
 
 .navbar .navbar-nav .nav-link:hover {
@@ -107,6 +112,7 @@
     z-index: 5;
     top: 0;
     transition: .25s ease;
+    background-color: var(--background)!important ;
 }
 .navbardiv.bg-white {
     box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);
