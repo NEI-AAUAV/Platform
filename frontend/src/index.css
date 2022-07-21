@@ -2,16 +2,20 @@
 
 :root {
     --background: white;
+    --background-secondary: rgba(228, 227, 227, 0.902);
+    --background-third: #eeeeee;
     --text-primary: black;
     --text-secondary: #363636;
-    --card-shadow: rgba(0, 0, 0, 0.3);
+    --card-shadow: rgba(0, 0, 0, 0.187);
 }
 
 [data-theme='dark'] {
     --background: black;
+    --background-secondary: #212121;
+    --background-third: #050505;
     --text-primary: white;
-    --text-secondary: #D3D3D3;
-    --card-shadow: rgba(250, 250, 250, 0.8);
+    --text-secondary: #dbdbdb;
+    --card-shadow: rgba(255, 255, 255, 0.499);
 }
 
 body {
@@ -104,18 +108,17 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 }
 
 /* text size */
-body { font-size: 1rem!important; }
+body { font-size: 1rem!important; color: var(--text-secondary)!important ;}
 small, .small, .btn-sm { font-size: .75rem!important; }
 h1 { font-size: 3.6rem!important; color: var(--text-secondary)!important ; }
 h2 { font-size: 2.8rem!important; color: var(--text-secondary)!important ;}
 @media only screen and (max-width: 777px){
-    h2 { font-size: 2rem!important; word-break: break-all; }
+    h2 { font-size: 2rem!important; word-break: break-all; color: var(--text-secondary)!important ;}
 }
-h3 { font-size: 1.75rem!important; }
-h4 { font-size: 1.25rem!important; }
-h5, .h5 { font-size: 1.15rem!important; }
-
-
+h3 { font-size: 1.75rem!important;color: var(--text-secondary)!important ;}
+h4 { font-size: 1.25rem!important;color: var(--text-secondary)!important ; }
+h5, .h5 { font-size: 1.15rem!important; color: var(--text-secondary)!important ;}
+p{}
 /* extra Bootstrap */
 .link:hover {
     cursor: pointer!important;
