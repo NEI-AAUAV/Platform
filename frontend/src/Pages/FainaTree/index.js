@@ -41,22 +41,27 @@ const organizations = {
   cf: {
     name: "Comissão de Faina",
     insignia: anzol,
+    changeColor: true,
   },
   cs: {
     name: "Conselho do Salgado",
     insignia: sal,
+    changeColor: true,
   },
   escrivao: {
     name: "Mestre Escrivão",
     insignia: rol,
+    changeColor: true,
   },
   pescador: {
     name: "Mestre Pescador",
     insignia: lenco,
+    changeColor: true,
   },
   salgado: {
     name: "Mestre do Salgado",
     insignia: pa,
+    changeColor: true,
   },
 }
 
@@ -675,7 +680,7 @@ function FainaTree() {
                 Object.entries(organizations).map(([key, org]) => (
                   <div key={key} className={classNames("insignia", { "inactive": insignias.length !== 0 && !insignias.includes(key) })}
                     onClick={() => toggleInsignias(key)}>
-                    <img src={org.insignia} />
+                    <img src={org.insignia} style= {org.changeColor ? {filter: "invert(1)"} : {}}/>
                     <div>{org.name}</div>
                   </div>
                 ))

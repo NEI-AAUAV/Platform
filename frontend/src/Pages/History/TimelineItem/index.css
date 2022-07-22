@@ -9,6 +9,10 @@
     background-color: var(--background-third)!important;
 }
 
+.timeline-date {
+    color: var(--text-primary)!important;
+}
+
 .timeline-marker img {
     width: 60px;
     height: 60px;
@@ -43,6 +47,3 @@
     animation: bounce-in 0.8 ease forwards;
 }
 
-span{
-    color: var(--text-secondary)!important ;
-}

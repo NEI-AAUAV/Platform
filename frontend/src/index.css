@@ -15,12 +15,13 @@
     --background-third: #050505;
     --text-primary: white;
     --text-secondary: #dbdbdb;
-    --card-shadow: rgba(255, 255, 255, 0.499);
+    --card-shadow: rgba(255, 255, 255, 0.187);
 }
 
 body {
     font-family: Montserrat, Helvetica,Arial,sans-serif;
     font-weight: 300;
+    
 }
 
 /* Bootstrap corrections */
