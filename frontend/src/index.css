@@ -7,6 +7,7 @@
     --text-primary: black;
     --text-secondary: #363636;
     --card-shadow: rgba(0, 0, 0, 0.187);
+    --treeEi-shadow: rgba(255, 255, 255, 0.538);
 }
 
 [data-theme='dark'] {
@@ -16,6 +17,7 @@
     --text-primary: white;
     --text-secondary: #dbdbdb;
     --card-shadow: rgba(255, 255, 255, 0.187);
+    --treeEi-shadow: rgba(0, 0, 0, 0.538);
 }
 
 body {
