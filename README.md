@@ -2,6 +2,12 @@
 
 The following is a set of guidelines for contributing to the NEI website.
 
+
+### General
+
+Code and name everything in English. Only use Portuguese for terms that are more easily understood in Portuguese than in English.
+
+
 ### Branching
 
 These are some branching name conventions to keep the consistency and improve team production. For starters, the branch names are all separeted by hyphens.
