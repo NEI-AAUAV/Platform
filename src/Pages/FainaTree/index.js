@@ -107,6 +107,7 @@ function separateName(name) {
 
 
 function getFainaHierarchy({ sex, start_year, organizations }, end_year) {
+  if (organizations)
   for (const o of organizations) {
     if (o.name === "cf" && o.year === end_year && o.role) return o.role;
     if (o.name === "st" && o.year === end_year) return o.role;
