@@ -13,6 +13,8 @@ import {
 import * as d3 from 'd3';
 import classNames from "classname";
 
+import { useTheme } from "Stores/useTheme";
+
 import data from "Assets/db.json";
 import femalePic from "Assets/default_profile/female.svg";
 import malePic from "Assets/default_profile/male.svg";
@@ -368,10 +370,7 @@ function buildTree() {
     .attr("class", "profile-border")
     .attr("cx", 0)
     .attr("cy", 0)
-    .attr("r", 12)
-    .style("fill", "white")
-    .style("stroke", "silver")
-    .style("stroke-width", 1.5)
+    .attr("r", 12);
 
   labels = groups
     .append("g")
@@ -468,7 +467,7 @@ function buildTree() {
       .attr("r", close ? 18 : 10);
 
     nodesProfileGrad
-      .attr("opacity", d => close ? (d.data.image ? 0 : 0.3) : 1)
+      .attr("opacity", d => close ? (d.data.image ? 0 : 0.4) : 1)
       .transition().duration(300)
       .attr("r", close ? 18 : 10);
 
@@ -565,6 +564,7 @@ function FainaTree() {
   const [insignias, setInsignias] = useState([]);
   const [year, setYear] = useState(MAX_YEAR);
   const [fainaNames, setFainaNames] = useState(false);
+  const theme = useTheme(state => state.theme);
 
   const toggleShowInfo = () => {
     setShowInfo(!showInfo);
@@ -680,7 +680,7 @@ function FainaTree() {
                 Object.entries(organizations).map(([key, org]) => (
                   <div key={key} className={classNames("insignia", { "inactive": insignias.length !== 0 && !insignias.includes(key) })}
                     onClick={() => toggleInsignias(key)}>
-                    <img src={org.insignia} style= {org.changeColor ? {filter: "invert(1)"} : {}}/>
+                    <img src={org.insignia} style= {org.changeColor && theme === "dark" ? {filter: "invert(1)"} : {}}/>
                     <div>{org.name}</div>
                   </div>
                 ))
@@ -751,6 +751,7 @@ function FainaTree() {
             <image xlinkHref={pa} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
           </pattern>
         </defs>
+        <text x="100" y="100" style={{ font: "bold 300px sans-serif"}}>djfldsk</text>
       </svg>
     </div>
   )
