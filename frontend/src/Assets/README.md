@@ -1,52 +1,84 @@
 
 ## Mongo schemas
 
+Problems found on the schemas creation:
+- there are people who did not do LEI, only Masters
+- there are people who have not done faina
+- there are people who started LEI/TSI with at least 1 year of faina done
+- there are people who have different faina names during the years
+- there are people who dropped out of LEI/TSI <span style="color:#ECB22E">**[still needs some thought]**</span>
+- there are organizations with variable start and duration periods
+
+
 ### User
+
+The most top level object with basic user information.
 
 ```json
 {
     "id": "objectId",           // automatic generated ID
     "name": "string",
-    "nickname": "string|null",
+    "nickname": "string|null",  // useful and only provided for people who are more easily recognized by their nickname
     "email": "string|null",
-    "nmec": "int|null",              
-    "sex": "string",
-    "image": "string|null",
-    "start_year": "int",        // matriculation year in LEI
-    "end_year": "int|null",     // 
-    "parent": "int|null",       // the ID of the 
-    "organizations": "array",
-    "faina": "array"
+    "nmec": "int|null",  
+    "sex": "string",            // gender: "M"ale or "F"emale
+    "image": "string|null",     // profile image URL
+
+    "parent": "int|null",       // patrão/patroa ID
+
+    "matriculations": "array[Matriculation]",
+    "insignias": "array[Insignia]",
+    "faina": "Faina|null",      // null if did not do/complete the faina
 }
 ```
 
-master
 
-name:
-baptism_name:
+### Matriculation
 
-### Organizations
+Only people with TSI or LEI are meant to appear on the website. The color of their nodes will be defined by the first year of TSI or LEI.
 
 ```json
 {
-    "year": "int",
-    "name": "string",
-    "role": "string"
+    "course": "string",         // one of: TSI, LEI, MEI, MRSI, MCD, MC, MAPi, ...
+    "start_year": "int",        // first matriculation year
+    "end_year": "int|null",     // last matriculation year (inclusive)
 }
 ```
+
+
+### Insignia
+
+An emblem representing an organization, faina position or taça UA modality.
+
+```json
+{
+    "year": "int",      // matriculation year
+    "name": "string",   // one of the following: NEI, AETTUA, ST, CS, CF, Handball, Athletics, Badminton, Basketball, Futsal, Natation, Voleibol, Football, TableTennis, Chess, ...
+    "role": "string"    // variable, depending on the `name`
+}
+```
+
 
 ### Faina
 
+The faina informations required for people who completed the faina.
+
 ```json
 {
-    "year": "int",          // 
-    "name": "string",       // Faina name
+    "eqv_years": "int",     // number of faina equivalence years in other courses before entering LEI/TSI
+    "names": "array[FainaName]",
+    "baptism_name": "string",
 }
 ```
 
 
-há pessoas q nao fizeram LEI
-há pessoas q nao fizeram Faina
-há pessoas q comecaram LEI com pelo menos 1 ano de faina feito
-há organizacoes com mandatos de início e duração variáveis
-há pessoas que têm nomes de faina diferentes noutros anos
+### FainaName
+
+This object is so that it can deal with name changes during the years.
+
+```json
+{
+    "year": "int",      // last matriculation year when the name was defined/changed
+    "name": "string",   // faina name
+}
+```

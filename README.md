@@ -1,6 +1,6 @@
 ## Code of Conduct
 
-The following is a set of guidelines for contributing to the NEI website.
+The following is a set of guidelines and standards for contributing to the NEI website.
 
 
 ### General
