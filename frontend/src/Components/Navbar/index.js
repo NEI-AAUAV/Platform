@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import data from "./data";
 import logo from './logo.png';
 import "./index.css";
+import { link } from "d3";
 
 const Navbar = () => {
     const [transparent, setTransparent] = useState(true);
@@ -36,7 +37,7 @@ const Navbar = () => {
                 className="px-0 col-11 col-sm-10 col-xxl-9 mx-auto"
                 onToggle={(col) => setCollapsed(col)}
             >
-                <BNavbar.Brand href="/">
+                <BNavbar.Brand as={Link} to="/">
                     <img
                         src={logo}
                         width="75"
