@@ -14,7 +14,7 @@ Problems found on the schemas creation:
 
 The most top level object with basic user information.
 
-```json
+```jsonc
 {
     "id": "objectId",           // automatic generated ID
     "name": "string",
@@ -37,7 +37,7 @@ The most top level object with basic user information.
 
 Only people with TSI or LEI are meant to appear on the website. The color of their nodes will be defined by the first year of TSI or LEI.
 
-```json
+```jsonc
 {
     "course": "string",         // one of: TSI, LEI, MEI, MRSI, MCD, MC, MAPi, ...
     "start_year": "int",        // first matriculation year
@@ -50,7 +50,7 @@ Only people with TSI or LEI are meant to appear on the website. The color of the
 
 An emblem representing an organization, faina position or taça UA modality.
 
-```json
+```jsonc
 {
     "year": "int",      // matriculation year
     "name": "string",   // one of the following: NEI, AETTUA, ST, CS, CF, Handball, Athletics, Badminton, Basketball, Futsal, Natation, Voleibol, Football, TableTennis, Chess, ...
@@ -63,7 +63,7 @@ An emblem representing an organization, faina position or taça UA modality.
 
 The faina informations required for people who completed the faina.
 
-```json
+```jsonc
 {
     "eqv_years": "int",     // number of faina equivalence years in other courses before entering LEI/TSI
     "names": "array[FainaName]",
@@ -76,7 +76,7 @@ The faina informations required for people who completed the faina.
 
 This object is so that it can deal with name changes during the years.
 
-```json
+```jsonc
 {
     "year": "int",      // last matriculation year when the name was defined/changed
     "name": "string",   // faina name
