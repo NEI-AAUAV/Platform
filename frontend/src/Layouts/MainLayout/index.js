@@ -15,7 +15,8 @@ import { useTheme } from "Stores/useTheme";
 
 const MainLayout = () => {
 
-    const theme = useTheme(state => state.theme);
+    //const theme = useTheme(state => state.theme);
+    const theme = localStorage.getItem('theme', useTheme(state => state.theme));
 
     return (
         <>

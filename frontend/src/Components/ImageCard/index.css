@@ -14,17 +14,20 @@
     border-radius: 0% !important;
 }
 
+.card-body{
+    background-color: var(--background-card)!important;
+}
 .image-card img {
     height: 200px;
     /* object-fit: contain;  not sure which is better, cover is as it is in current site */
     object-fit: cover;
-    background-color: white;
 }
 
 .image-card .card-body {
     min-height: 198px;
     display: flex;
     flex-direction: column;
+    background-color: var(--background-card)!important;
 }
 
 /*
@@ -50,7 +53,7 @@
     -webkit-transform: rotate(45deg);
     width: 40px;
     height: 40px;
-    background-color: white;
+    background-color: var(--background-card)!important;
     display: flex;
 }
 

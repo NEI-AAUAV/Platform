@@ -7,6 +7,7 @@
     --background-alpha: rgba(255, 255, 255, .9);
     --background-secondary: rgba(228, 227, 227, 0.902);
     --background-third: #eeeeee;
+    --background-card: white;
     --text-primary: black;
     --text-secondary: #363636;
     --card-shadow: rgba(0, 0, 0, 0.187);
@@ -19,6 +20,7 @@
     --background: black;
     --background-secondary: #212121;
     --background-third: #050505;
+    --background-card: black;
     --text-primary: white;
     --text-secondary: #dbdbdb;
     --card-shadow: rgba(255, 255, 255, 0.187);
@@ -29,6 +31,11 @@ body {
     font-family: Montserrat, Helvetica,Arial,sans-serif;
     font-weight: 300;
     
+}
+
+.form-control{
+    background-color: var(--background) ; 
+    color: var(--text-secondary) ; 
 }
 
 /* Bootstrap corrections */
@@ -51,8 +58,8 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 .btn {
     font-size: inherit;
     border-width: 2px;
-    background-color: var(--background)!important ; 
-    color: var(--text-secondary)!important ; 
+    background-color: var(--background) ; 
+    color: var(--text-secondary) ; 
 }
 
 .btn-primary {
@@ -116,7 +123,7 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 }
 
 /* text size */
-body { font-size: 1rem!important; color: var(--text-secondary)!important ;}
+body { font-size: 1rem!important;}
 small, .small, .btn-sm { font-size: .75rem!important; }
 h1 { font-size: 3.6rem!important; color: var(--text-secondary)!important ; }
 h2 { font-size: 2.8rem!important; color: var(--text-secondary)!important ;}
@@ -126,7 +133,8 @@ h2 { font-size: 2.8rem!important; color: var(--text-secondary)!important ;}
 h3 { font-size: 1.75rem!important;color: var(--text-secondary)!important ;}
 h4 { font-size: 1.25rem!important;color: var(--text-secondary)!important ; }
 h5, .h5 { font-size: 1.15rem!important; color: var(--text-secondary)!important ;}
-p{}
+p{color: var(--text-secondary)!important}
+label {color: var(--text-secondary)}
 /* extra Bootstrap */
 .link:hover {
     cursor: pointer!important;

@@ -64,11 +64,14 @@ const ThemeSwitcherStyles = styled.div`
 
 function ThemeSwitcher() {
 
-    const theme = useTheme(state => state.theme);
+    const theme = localStorage.getItem('theme', useTheme(state => state.theme));
 
     const toggleTheme = () => {
         useTheme.getState().setTheme(theme === "light" ? "dark" : "light");
+        localStorage.setItem('theme', (theme === "light" ? "dark" : "light"))
     }
+
+    console.log(localStorage)
 
     return (
         <ThemeSwitcherStyles>
