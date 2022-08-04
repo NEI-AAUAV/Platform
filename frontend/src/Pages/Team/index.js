@@ -7,6 +7,9 @@ import TextList from "../../Components/TextList/index.js"
 import { Container, Row, Spinner } from 'react-bootstrap';
 import Typist from 'react-typist';
 
+import YearTabs from "Components/YearTabs";
+import Box from '@mui/material/Box';
+
 
 // Animation
 const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
@@ -32,16 +35,15 @@ const Team = () => {
                 var anos = response.data.map(year =>
                     year.mandato
                 ).sort((a, b) => b - a);
-                setYears(anos)
-                setSelectedYear(anos[0])
+                setYears(anos);
+                setSelectedYear(anos[0]);
             })
-
     }, [])
 
 
     useEffect(() => {
         setLoading(true);
-        
+
         if (selectedYear != null) {
             fetch(process.env.REACT_APP_API + "/team/?mandate=" + selectedYear)
                 .then(response => response.json())
@@ -70,17 +72,17 @@ const Team = () => {
         }
     }, [selectedYear])
 
-
-
-
-
     return (
         <div className="d-flex flex-column flex-wrap">
             <h2 className="mb-5 text-center"><Typist>Equipa do NEI</Typist></h2>
 
-            <Tabs tabs={years} _default={selectedYear} onChange={setSelectedYear} />
-
-
+            <Box sx={{ maxWidth: { xs: "100%", md: "700px" }, margin: "auto", marginBottom: "50px" }}>
+                <YearTabs
+                    years={years}
+                    value={selectedYear}
+                    onChange={setSelectedYear}
+                />
+            </Box>
             {
                 loading
                     ?
@@ -106,9 +108,6 @@ const Team = () => {
                         </Container>
                     </>
             }
-
-
-
         </div>
     );
 }
