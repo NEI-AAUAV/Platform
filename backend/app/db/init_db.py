@@ -1,9 +1,9 @@
 from sqlalchemy.schema import CreateSchema, DropSchema
 from sqlalchemy import event
-from datetime import datetime
+from datetime import date, datetime
 
 from app.core.config import settings
-from .base import Base, TacaUATeam, TacaUAGame
+from .base import Base, TacaUATeam, TacaUAGame, History, Rgm, Merchandisings, Partners
 from .session import engine
 
 
@@ -35,6 +35,53 @@ TACAUA_GAMES = [
     },
 ]
 
+HISTORY = [
+    {
+        "moment": date(2022,1,2),
+        "title": "TituloHistory1",
+        "body": "Texto muito interessante",
+        "image": "https://nei.web.ua.pt/nei.png"
+    },
+    {
+        "moment": date(1993,1,2),
+        "title": "TituloHistory2",
+        "body": "Texto muito pouco interessante",
+        "image": "https://nei.web.ua.pt/nei.png"
+    },
+]
+
+RGM = [
+    {
+        "id": 1,
+        "categoria": "Cat123456",
+        "mandato": 4,
+        "file": "https://nei.web.ua.pt/nei.png"
+    }
+]
+
+MERCHANDISINGS = [
+    {
+        "id": 1,
+        "name": "Cat123456",
+        "image": "https://nei.web.ua.pt/nei.png",
+        "price": 4,
+        "number_of_items": 5
+    }
+]
+
+PARTNERS = [
+    {
+        "id": 1,
+        "header": "Cat123456",
+        "company": "Cat123456",
+        "description": "Cat123456",
+        "content": "Cat123456",
+        "link": "https://nei.web.ua.pt/nei.png",
+        "bannerUrl": "https://nei.web.ua.pt/nei.png",
+        "bannerImage": "https://nei.web.ua.pt/nei.png", 
+        "bannerUntil": datetime(2022, 7, 19)
+    }
+]
 
 @event.listens_for(TacaUATeam.__table__, "after_create")
 def insert_tacaua_teams(target, conn, **kwargs):
@@ -45,6 +92,27 @@ def insert_tacaua_teams(target, conn, **kwargs):
 @event.listens_for(TacaUAGame.__table__, "after_create")
 def insert_tacaua_games(target, conn, **kwargs):
     for vals in TACAUA_GAMES:
+        conn.execute(target.insert().values(**vals))
+
+
+@event.listens_for(History.__table__, "after_create")
+def insert_history(target, conn, **kwargs):
+    for vals in HISTORY:
+        conn.execute(target.insert().values(**vals))
+
+@event.listens_for(Rgm.__table__, "after_create")
+def insert_rgm(target, conn, **kwargs):
+    for vals in RGM:
+        conn.execute(target.insert().values(**vals))
+
+@event.listens_for(Merchandisings.__table__, "after_create")
+def insert_merchandisings(target, conn, **kwargs):
+    for vals in MERCHANDISINGS:
+        conn.execute(target.insert().values(**vals))
+
+@event.listens_for(Partners.__table__, "after_create")
+def insert_partners(target, conn, **kwargs):
+    for vals in PARTNERS:
         conn.execute(target.insert().values(**vals))
 
 
