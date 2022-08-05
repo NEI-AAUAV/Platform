@@ -7,3 +7,11 @@ from .video_tag import VideoTag
 from .video import Video
 from .redirect import Redirect
 from .news import News
+from .faina import Faina
+from .faina_roles import FainaRoles
+from .faina_member import FainaMember
+from .seniors import Seniors
+from .seniors_students import SeniorsStudents
+from .team import Team
+from .team_colaborators import TeamColaborators
+from .team_roles import TeamRoles
