@@ -13,3 +13,7 @@ from app.models.notes_teachers import NotesTeachers
 from app.models.notes_thanks import NotesThanks
 from app.models.notes_types import NotesTypes
 from app.models.users import Users
+from app.models.history import History
+from app.models.rgm import Rgm
+from app.models.partners import Partners
+from app.models.merchandisings import Merchandisings
