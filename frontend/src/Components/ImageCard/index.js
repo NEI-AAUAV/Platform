@@ -18,28 +18,37 @@ const ImageCard = (props) => {
         color_class = " dark"
     }
 
-    return(
-        <Card
-            className={"text-center mb-5 image-card animation" + color_class}
-            style={{animationDelay: props.animKey ? props.animKey*0.2+"s" : "0"}}
-        >
-            {
-                props.image &&
-                <a href={props.anchor}>
-                    <Card.Img variant="top img-fluid" src={props.image} />
-                </a>
-            }
+    return (
+      <Card
+        className={"text-center mb-5 image-card animation" + color_class}
+        style={{
+          animationDelay: props.animKey ? props.animKey * 0.2 + "s" : "0",
+        }}
+      >
+        {props.image && (
+          <a href={props.anchor} target="_blank" rel="noreferrer noopener">
+            <Card.Img variant="top img-fluid" src={props.image} />
+          </a>
+        )}
 
-            <div className={"plus-button" + color_class}>
-                <span><a href={props.anchor} target="_blank">+</a></span>
-            </div>
+        <div className={"plus-button" + color_class}>
+          <span>
+            <a href={props.anchor} target="_blank" rel="noreferrer noopener">
+              +
+            </a>
+          </span>
+        </div>
 
-            <Card.Body className={color_class}>
-                {props.preTitle && <p className="mb-4">{props.preTitle}</p> }
-                <Card.Title><a href={props.anchor}>{props.title}</a></Card.Title>
-                <Card.Text><small>{props.text}</small></Card.Text>
-            </Card.Body>
-        </Card>
+        <Card.Body className={color_class}>
+          {props.preTitle && <p className="mb-4">{props.preTitle}</p>}
+          <Card.Title>
+            <a href={props.anchor} target="_blank" rel="noreferrer noopener">{props.title}</a>
+          </Card.Title>
+          <Card.Text>
+            <small>{props.text}</small>
+          </Card.Text>
+        </Card.Body>
+      </Card>
     );
 }
 
