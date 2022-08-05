@@ -3,3 +3,11 @@ from .tacaua_game import TacaUAGame
 from .tacaua_modality_details import TacaUAModalityDetails
 from .tacaua_modality import TacaUAModality
 from .tacaua_team import TacaUATeam
+from .faina import Faina
+from .faina_roles import FainaRoles
+from .faina_member import FainaMember
+from .seniors import Seniors
+from .seniors_students import SeniorsStudents
+from .team import Team
+from .team_colaborators import TeamColaborators
+from .team_roles import TeamRoles
