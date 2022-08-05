@@ -21,6 +21,6 @@ class News(Base):
     changed_by: Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id", name="fk_editor_id"), index=True)
     author_id: Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id", name="fk_author_id"), index=True)
 
-    publisher: relationship("users", foreign_keys=[id])
-    editor: relationship("users", foreign_keys=[id])
-    author: relationship("users", foreign_keys=[id])
+    publisher: relationship("Users", foreign_keys=[id])
+    editor: relationship("Users", foreign_keys=[id])
+    author: relationship("Users", foreign_keys=[id])
