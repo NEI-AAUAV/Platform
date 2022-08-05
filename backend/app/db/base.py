@@ -9,3 +9,4 @@ from app.models.tacaua_team import TacaUATeam
 from app.models.redirect import Redirect
 from app.models.video import Video
 from app.models.video_tag import VideoTag
+from app.models.news import News

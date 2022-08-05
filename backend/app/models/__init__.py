@@ -6,3 +6,4 @@ from .tacaua_team import TacaUATeam
 from .video_tag import VideoTag
 from .video import Video
 from .redirect import Redirect
+from .news import News
