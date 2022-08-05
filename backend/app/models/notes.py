@@ -26,9 +26,9 @@ class Notes(Base):
     createdAt = Column(DateTime, index=True)
     type_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".notes_types.id", name="fk_type_id"), index=True)
     size = Column(Integer)
-    
+
     subject = relationship("NotesSubject", foreign_keys=[subject_id])
-    author = relationship("NotesAuthor", foreign_keys=[author_id])
+    author = relationship("Users", foreign_keys=[author_id])
     school_year = relationship("NotesSchoolYear", foreign_keys=[school_year_id])
-    teacher = relationship("NotesTeacher", foreign_keys=[teacher_id])
-    type = relationship("NotesType", foreign_keys=[type_id])
+    teacher = relationship("NotesTeachers", foreign_keys=[teacher_id])
+    type = relationship("NotesTypes", foreign_keys=[type_id])
