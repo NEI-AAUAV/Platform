@@ -5,6 +5,7 @@ import {
 } from "react-bootstrap";
 import Document from "../../Components/Document";
 import Tabs from "../../Components/Tabs";
+import Typist from "react-typist";
 
 const validCategories = {
     'PAO': {
@@ -79,7 +80,11 @@ const RGM = () => {
 
     return (
         <div className="d-flex flex-column flex-wrap">
-            <h2 className="text-center mb-5">{title}</h2>
+            <div style={{whiteSpace: 'pre', overflowWrap: 'break-word'}}>
+                <h2 className="text-center mb-5">
+                    {title}
+                </h2>
+            </div>
             {
                 // Only show tabs to ATAS category
                 id.toUpperCase() == "ATAS" &&
