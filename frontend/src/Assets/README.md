@@ -53,7 +53,7 @@ An emblem representing an organization, faina position or taça UA modality.
 ```jsonc
 {
     "year": "int",      // matriculation year
-    "name": "string",   // one of the following: NEI, AETTUA, ST, CS, CF, Handball, Athletics, Badminton, Basketball, Futsal, Natation, Voleibol, Football, TableTennis, Chess, ...
+    "name": "string",   // one of the following: NEI, AETTUA, ST, CS, CF, Handball, Athletics, Badminton, Basketball, Futsal, Swimming, Voleyball, Football, TableTennis, Chess, ...
     "role": "string"    // variable, depending on the `name`
 }
 ```
