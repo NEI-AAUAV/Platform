@@ -18,7 +18,6 @@ The most top level object with basic user information.
 {
     "id": "objectId",           // automatic generated ID
     "name": "string",
-    "nickname": "string|null",  // useful and only provided for people who are more easily recognized by their nickname
     "email": "string|null",
     "nmec": "int|null",  
     "sex": "string",            // gender: "M"ale or "F"emale
