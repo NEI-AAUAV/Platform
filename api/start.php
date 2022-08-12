@@ -20,7 +20,7 @@
     // Connect to database
     try{
         // Create connection
-        $conn = new PDO("mysql:host=$servername;dbname=aauav-nei;charset=utf8",$username, $password);
+        $conn = new PDO("mysql:host=$servername;dbname=$db;charset=utf8",$username, $password);
         // Set the PDO error mode to exception
         // This captures errors and saves them to log file instead of printing them on the screen
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

@@ -1,0 +1,48 @@
+[
+    {"matricula": 11, "sex": "M", "name": ".", "patrao": "", "image": "https://randomuser.me/api/portraits/med/men/11.jpg", "insignias": []},
+    {"matricula": 12, "sex": "M", "name": "Alex Santos", "patrao": ".", "image": "https://randomuser.me/api/portraits/med/men/12.jpg", "insignias": []},
+
+    {"matricula": 13, "sex": "M", "name": "Bruno Barbosa", "patrao": ".", "image": "https://randomuser.me/api/portraits/med/men/13.jpg", "insignias": ["cf"]},
+
+    {"matricula": 15, "sex": "F", "name": "Andreia Patrocínio", "patrao": "Bruno Barbosa", "image": "https://randomuser.me/api/portraits/med/men/14.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 15, "sex": "F", "name": "Carolina Albuquerque", "patrao": "Bruno Barbosa", "image": "https://randomuser.me/api/portraits/med/men/15.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 15, "sex": "M", "name": "João Artur Costa", "patrao": "Alex Santos", "image": "https://randomuser.me/api/portraits/med/men/16.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 15, "sex": "M", "name": "João Ferreira", "patrao": ".", "image": "https://randomuser.me/api/portraits/med/men/17.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 15, "sex": "M", "name": "João Magalhães", "patrao": ".", "image": "https://randomuser.me/api/portraits/med/men/18.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 15, "sex": "M", "name": "José Moreira", "patrao": ".", "image": "https://randomuser.me/api/portraits/med/men/19.jpg", "insignias": ["cf", "nei", "aettua"]},
+
+    {"matricula": 16, "sex": "M", "name": "Francisco Silveira", "patrao": ".", "image": "https://randomuser.me/api/portraits/med/men/20.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 16, "sex": "F", "name": "Sandra Andrade", "patrao": "Andreia Patrocínio" , "insignias": ["cf", "nei", "aettua"]},
+
+    {"matricula": 17, "sex": "M", "name": "André Alves", "patrao": "Carolina Albuquerque", "image": "https://randomuser.me/api/portraits/med/men/22.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 17, "sex": "M", "name": "André Gual", "patrao": "Andreia Patrocínio" , "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 17, "sex": "M", "name": "Carina Neves", "patrao": "Carolina Albuquerque", "image": "https://randomuser.me/api/portraits/med/men/24.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 17, "sex": "M", "name": "João Abílio Rodrigues", "patrao": "Bruno Barbosa", "image": "https://randomuser.me/api/portraits/med/men/25.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 17, "sex": "F", "name": "Mariana Gameiro", "patrao": "Andreia Patrocínio" , "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 17, "sex": "M", "name": "Pedro Escaleira", "patrao": "Andreia Patrocínio" , "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 17, "sex": "M", "name": "Tiago Mendes", "patrao": ".", "image": "https://randomuser.me/api/portraits/med/men/28.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 17, "sex": "M", "name": "Tomás Costa", "patrao": "Bruno Barbosa", "image": "https://randomuser.me/api/portraits/med/men/29.jpg", "insignias": ["cf", "nei", "aettua"]},
+
+    {"matricula": 18, "sex": "M", "name": "Abel Rodrigues", "patrao": "Andreia Patrocínio" , "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Afonso Silva", "patrao": "Tiago Mendes", "image": "https://randomuser.me/api/portraits/med/men/31.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Bruno Bastos", "patrao": "João Ferreira", "image": "https://randomuser.me/api/portraits/med/men/32.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "F", "name": "Carolina Araújo", "patrao": "João Magalhães", "image": "https://randomuser.me/api/portraits/med/men/33.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Daniel Gomes", "patrao": "João Abílio Rodrigues", "image": "https://randomuser.me/api/portraits/med/men/34.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Diogo Guimarães Silva", "patrao": "José Moreira", "image": "https://randomuser.me/api/portraits/med/men/35.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Duarte Mortágua", "patrao": "Carina Neves", "image": "https://randomuser.me/api/portraits/med/men/36.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Eduardo Santos", "patrao": "Andreia Patrocínio" , "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Gonçalo Matos", "patrao": "Carolina Albuquerque", "image": "https://randomuser.me/api/portraits/med/men/38.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Hugo Paiva", "patrao": "João Abílio Rodrigues", "image": "https://randomuser.me/api/portraits/med/men/39.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Leandro Silva", "patrao": "Andreia Patrocínio" , "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Luís Valentim", "patrao": "João Artur Costa", "image": "https://randomuser.me/api/portraits/med/men/41.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Mário Silva", "patrao": "André Alves", "image": "https://randomuser.me/api/portraits/med/men/42.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Pedro Bastos", "patrao": "Francisco Silveira", "image": "https://randomuser.me/api/portraits/med/men/43.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Pedro Tavares", "patrao": "Carolina Albuquerque", "image": "https://randomuser.me/api/portraits/med/men/44.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Ricardo Cruz Cruz da Rokeapfwjfwefewrfe", "patrao": "João Magalhães", "image": "https://randomuser.me/api/portraits/med/men/45.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 18, "sex": "M", "name": "Rui Filipe", "patrao": "João Artur Costa", "image": "https://randomuser.me/api/portraits/med/men/46.jpg", "insignias": ["cf", "nei", "aettua"]},
+
+    {"matricula": 19, "sex": "M", "name": "Artur Romão", "patrao": "João Artur Costa", "image": "https://randomuser.me/api/portraits/med/men/47.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 19, "sex": "F", "name": "Marta Fradique", "patrao": "Tomás Costa", "image": "https://randomuser.me/api/portraits/med/men/48.jpg", "insignias": ["cf", "nei", "aettua"]},
+    {"matricula": 19, "sex": "M", "name": "Vicente Costa", "patrao": "Carolina Albuquerque", "image": "https://picsum.photos/1200", "insignias": ["cf"]},
+    {"matricula": 19, "sex": "M", "name": "Miguel Oliveira Silva", "patrao": "Mário Silva", "image": "https://picsum.photos/1200", "insignias": ["cf"]}
+]

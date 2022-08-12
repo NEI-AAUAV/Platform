@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
+
+body {
+    font-family: Montserrat, Helvetica,Arial,sans-serif;
+    font-weight: 300;
+}
+
+/* Bootstrap corrections */
+.text-primary { color: #147a26!important }
+
+a { color: #147a26!important }
+a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
+
+.tab-container {max-width: none!important;}
+
+.btn-group-vertical > .btn.active, .btn-group-vertical > .btn:active, .btn-group-vertical > .btn:focus, .btn-group > .btn.active, .btn-group > .btn:active, .btn-group > .btn:focus {
+    z-index: 0;
+}
+
+.extra-sm {
+    font-size: .5rem!important;
+}
+
+/* .btn */
+.btn {
+    font-size: inherit;
+    border-width: 2px;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #147a26;
+    border-color: #147a26;
+}
+.btn-primary:hover, .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show > .btn-primary.dropdown-toggle, .btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show > .btn-primary.dropdown-toggle:focus, .btn-primary.focus, .btn-primary:focus {
+    color: #fff;
+    background-color: #0e581c;
+    border-color: #0e581c;
+    box-shadow: none;
+}
+
+.btn-outline-primary {
+    color: #147a26;
+    border-color: #147a26;
+}
+.btn-outline-primary:not(:disabled):not(.disabled).active, .btn-outline-primary:not(:disabled):not(.disabled):active, .show > .btn-outline-primary.dropdown-toggle {
+    color: #fff;
+    background-color: #147a26;
+    border-color: #147a26;
+}
+.btn-outline-primary:not(:disabled):not(.disabled).active:focus, .btn-outline-primary:not(:disabled):not(.disabled):active:focus, .show > .btn-outline-primary.dropdown-toggle:focus, .btn-outline-primary.focus, .btn-outline-primary:focus {
+    box-shadow: none;
+}
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #147a26;
+    border-color: #147a26;
+}
+.btn-outline-primary-force:hover {
+    background-color: #147a26!important;
+    color: #fff!important;
+}
+
+/* bgs */
+.bg-outline-primary {
+    background: none;
+    border: 1px solid #147a26;
+    border-radius: .25rem;
+}
+
+.bg-outline-danger {
+    background: none;
+    border: 1px solid #dc3545;
+    border-radius: .25rem;
+}
+
+/* cols from Bootstrap 5 */
+@media only screen and (max-width: 1320px){
+    .col-xxl-9 {
+        flex: 0 0 auto;
+        width: 75%;
+    }
+}
+
+.pt-10 {
+    padding-top: 6rem !important;
+}
+
+/* text size */
+body { font-size: 1rem!important; }
+small, .small, .btn-sm { font-size: .75rem!important; }
+h1 { font-size: 3.6rem!important; }
+h2 { font-size: 2.8rem!important; }
+@media only screen and (max-width: 777px){
+    h2 { font-size: 2rem!important; word-break: break-all; }
+}
+h3 { font-size: 1.75rem!important; }
+h4 { font-size: 1.25rem!important; }
+h5, .h5 { font-size: 1.15rem!important; }
+
+
+/* extra Bootstrap */
+.link:hover {
+    cursor: pointer!important;
+}
+
+.mhvh-100 {
+    min-height: 100vh;
+}
+
+.break-all {
+    word-break: break-all;
+}
+
+.word-break {
+    word-break: break-word;
+}
+
+/* removing marker from li with ul inside */
+li.sub {
+    list-style-type: none;
+}
+
+/* animations */
+.animation {
+    opacity: 0;
+    animation-name: fadeIn;
+    animation-duration: 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    transition: .3s ease all;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.slideUpFade {
+    transform: translateY(20px);
+    opacity: 0;
+    animation-name: slideUp, fadeIn;
+    animation-duration: 0.7s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}

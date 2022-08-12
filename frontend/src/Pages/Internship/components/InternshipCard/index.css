@@ -1,0 +1,55 @@
+.qualities-list li::before {
+  color: #147a26 !important;
+  font-weight: bold;
+}
+
+.quality-list-null {
+  list-style-type: none;
+}
+
+.internship-card {
+  margin-bottom: 2rem;
+  width: 33rem;
+  height: 28rem;
+}
+
+.resize-1 {
+  height: 12rem;
+}
+
+.resize-2 {
+  height: 16rem;
+}
+
+.resize-3 {
+  height: 20rem;
+}
+
+.resize-4 {
+  height: 28rem;
+}
+
+.card-title {
+  display: inline-block;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  width: 92%;
+}
+
+.link-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+@media screen and (max-width: 960px) {
+  .internship-card {
+    height: auto;
+    width: 100%;
+  }
+
+  .card-title {
+    width: 85%;
+  }
+}
