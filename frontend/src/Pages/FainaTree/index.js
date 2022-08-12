@@ -28,7 +28,9 @@ import './index.css';
 
 
 const MIN_YEAR = 10, MAX_YEAR = 21;
-
+const colors = [
+  "linha 336 susbstituir d3.schemeCategory10 pelo array de cores que eu quiser",
+]
 const organizations = {
   nei: {
     name: "NEI",
@@ -108,10 +110,10 @@ function separateName(name) {
 
 function getFainaHierarchy({ sex, start_year, organizations }, end_year) {
   if (organizations)
-  for (const o of organizations) {
-    if (o.name === "cf" && o.year === end_year && o.role) return o.role;
-    if (o.name === "st" && o.year === end_year) return o.role;
-  }
+    for (const o of organizations) {
+      if (o.name === "cf" && o.year === end_year && o.role) return o.role;
+      if (o.name === "st" && o.year === end_year) return o.role;
+    }
 
   const maleHierarchies = ["Junco", "Moço", "Marnoto", "Mestre"];
   const femaleHierarchies = ["Caniça", "Moça", "Salineira", "Mestre"];
@@ -162,7 +164,7 @@ function buildTree() {
 
   for (const elem of data.users) {
     elem.names = separateName(elem.name);
-    if (elem.faina) {
+    if (elem.faina && elem.faina[0]?.name) {
       elem.fainaNames = separateName(
         getFainaHierarchy(elem, MAX_YEAR) + " " + elem.faina?.[0].name);
     }
@@ -491,7 +493,7 @@ function buildTree() {
 
   const padY = 256,
     padX = 768,
-    x0 = x - 1.5*padX,
+    x0 = x - 1.5 * padX,
     y0 = y - padY,
     x1 = x + width + padX,
     y1 = y + height + padY;
