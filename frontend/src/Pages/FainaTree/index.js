@@ -27,10 +27,10 @@ import pa from "Assets/icons/pa.svg";
 import './index.css';
 
 
-const MIN_YEAR = 10, MAX_YEAR = 21;
+const MIN_YEAR = 8, MAX_YEAR = 21;
 const colors = [
-  '#1ba3c6','#2cb5c0','#30bcad','#21b087','#33a65c','#57a337','#a2b627','#d5bb21','#f8b620','#f89217',
-  '#f06719','#e03426','#f64971','#fc719e','#ce69be','#a26dc2','#7873c0','#4f7ba'  
+  '#006600','#00ace6','#D44566','#ffd11a','#3DD674','#FFBD50','#a2b627','#BAA424','#eead2d','#19829D',
+  '#808080','#BB526B','#ff0000','#fc719e','#8142A8','#e67300','#0000e6', '#938ED8' 
 ]
 const organizations = {
   nei: {
@@ -334,7 +334,7 @@ function buildTree() {
     .attr("r", 10)
     .attr("opacity", 1)
     .style("cursor", d => d.data.insignias?.length > 0 ? "pointer" : "default")
-    .style("fill", d => colors)
+    .style("fill", d =>  colors[d.data.start_year % colors.length])
     .on("click", function (event) {
       let parent = this.parentElement;
       let active = parent.classList.contains("active");
@@ -472,7 +472,7 @@ function buildTree() {
       .attr("r", close ? 18 : 10);
 
     nodesProfileBorder
-      .style("stroke", close ? colors: "silver")
+      .style("stroke", d => close ? colors[d.data.start_year % colors.length] : "silver")
       .transition().duration(300)
       .attr("r", close ? 20 : 12);
 
@@ -645,7 +645,7 @@ function FainaTree() {
                       onClick={() => setYear(i)}
                     >
                       <div className="color-bullet"
-                        style={{ backgroundColor: colors }}></div>
+                        style={{ backgroundColor:  colors[(i) % colors.length]}}></div>
                       {2000 + i}
                     </div>
                   ))
@@ -658,7 +658,7 @@ function FainaTree() {
                       onClick={() => setYear(i)}
                     >
                       <div className="color-bullet"
-                        style={{ backgroundColor: colors }}></div>
+                        style={{ backgroundColor:  colors[(i) % colors.length] }}></div>
                       {2000 + i}
                     </div>
                   ))
