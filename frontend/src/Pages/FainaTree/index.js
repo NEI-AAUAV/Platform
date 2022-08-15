@@ -29,7 +29,8 @@ import './index.css';
 
 const MIN_YEAR = 10, MAX_YEAR = 21;
 const colors = [
-  "linha 336 susbstituir d3.schemeCategory10 pelo array de cores que eu quiser",
+  '#1ba3c6','#2cb5c0','#30bcad','#21b087','#33a65c','#57a337','#a2b627','#d5bb21','#f8b620','#f89217',
+  '#f06719','#e03426','#f64971','#fc719e','#ce69be','#a26dc2','#7873c0','#4f7ba'  
 ]
 const organizations = {
   nei: {
@@ -333,7 +334,7 @@ function buildTree() {
     .attr("r", 10)
     .attr("opacity", 1)
     .style("cursor", d => d.data.insignias?.length > 0 ? "pointer" : "default")
-    .style("fill", d => d3.schemeTableau10[(d.data.start_year + 6) % 10])
+    .style("fill", d => colors)
     .on("click", function (event) {
       let parent = this.parentElement;
       let active = parent.classList.contains("active");
@@ -471,7 +472,7 @@ function buildTree() {
       .attr("r", close ? 18 : 10);
 
     nodesProfileBorder
-      .style("stroke", close ? d => d3.schemeTableau10[(d.data.start_year + 6) % 10] : "silver")
+      .style("stroke", close ? colors: "silver")
       .transition().duration(300)
       .attr("r", close ? 20 : 12);
 
@@ -644,7 +645,7 @@ function FainaTree() {
                       onClick={() => setYear(i)}
                     >
                       <div className="color-bullet"
-                        style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
+                        style={{ backgroundColor: colors }}></div>
                       {2000 + i}
                     </div>
                   ))
@@ -657,7 +658,7 @@ function FainaTree() {
                       onClick={() => setYear(i)}
                     >
                       <div className="color-bullet"
-                        style={{ backgroundColor: d3.schemeTableau10[(i + 6) % 10] }}></div>
+                        style={{ backgroundColor: colors }}></div>
                       {2000 + i}
                     </div>
                   ))
