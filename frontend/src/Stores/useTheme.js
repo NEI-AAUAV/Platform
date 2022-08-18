@@ -1,8 +1,12 @@
 import create from 'zustand';
 
-const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const defaultTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
+
 
 export const useTheme = create((set) => ({
-    theme: defaultDark ? 'light' : 'dark',
-    setTheme: (theme) => set(() => ({ theme })),
+    theme: defaultTheme,
+    setTheme: (theme) => {
+        localStorage.setItem('theme', theme);
+        set(() => ({ theme }))
+    },
 }))

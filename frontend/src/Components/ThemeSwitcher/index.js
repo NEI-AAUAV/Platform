@@ -64,18 +64,15 @@ const ThemeSwitcherStyles = styled.div`
 
 function ThemeSwitcher() {
 
-    const theme = localStorage.getItem('theme', useTheme(state => state.theme));
+    const theme = useTheme(state => state.theme);
 
     const toggleTheme = () => {
         useTheme.getState().setTheme(theme === "light" ? "dark" : "light");
-        localStorage.setItem('theme', (theme === "light" ? "dark" : "light"))
     }
-
-    console.log(localStorage)
 
     return (
         <ThemeSwitcherStyles>
-            <input value={theme} onChange={toggleTheme} type="checkbox" id="switcher" />
+            <input checked={theme === 'dark'} onChange={toggleTheme} type="checkbox" id="switcher" />
             <label htmlFor="switcher">
                 <div className="icon">
                     <FiSun></FiSun>
@@ -83,7 +80,6 @@ function ThemeSwitcher() {
                 <div className="icon">
                     <FiMoon></FiMoon>
                 </div>
-
             </label>
         </ThemeSwitcherStyles>
     );

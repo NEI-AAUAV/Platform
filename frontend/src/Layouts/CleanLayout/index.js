@@ -14,9 +14,8 @@ import { useTheme } from "Stores/useTheme";
 
 const CleanLayout = () => {
 
-    //const theme = useTheme(state => state.theme);
-    const theme = localStorage.getItem('theme', useTheme(state => state.theme));
-    console.log(theme)
+    const theme = useTheme(state => state.theme);
+
 
     return (
         <>
