@@ -9,7 +9,7 @@ import PageNav from '../../Components/PageNav';
 import Filters from "../../Components/Filters";
 import Alert from '../../Components/Alert';
 import Details from "./Details";
-import Select from "react-select";
+import Select from "Components/Select";
 import Typist from 'react-typist';
 import categoryFilters from './filters';
 
