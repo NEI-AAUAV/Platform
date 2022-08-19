@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import {
     Row, Spinner
@@ -80,9 +80,9 @@ const RGM = () => {
 
     return (
         <div className="d-flex flex-column flex-wrap">
-            <div style={{whiteSpace: 'pre', overflowWrap: 'break-word'}}>
+            <div style={{ whiteSpace: 'pre', overflowWrap: 'break-word' }}>
                 <h2 className="text-center mb-5">
-                    {title}
+                    {!loading && <Typist>{title}</Typist>}
                 </h2>
             </div>
             {
