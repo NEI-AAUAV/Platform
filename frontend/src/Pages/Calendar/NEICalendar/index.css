@@ -18,6 +18,7 @@
     margin-bottom: 1rem;
     margin-right: auto;
     text-align: left!important;
+    color: var(--text-primary)
 }
 
 /* Days */
@@ -93,7 +94,7 @@
     color: #b3b3b3!important;
 }
 .rbc-off-range-bg {
-    background-color: rgba(242, 242, 242, 0.4);
+    background-color: var(--background-calendar);
 }
 .rbc-month-view .rbc-event-content {
     color: #fff!important;
@@ -135,7 +136,7 @@
 }
 
 .rbc-today {
-    background-color: var(--background-secondary)!important ;
+    background-color: var(--background-calendar-Today);
 }
 
 /* Responsiveness */

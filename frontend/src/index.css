@@ -8,6 +8,8 @@
     --background-secondary: rgba(228, 227, 227, 0.902);
     --background-third: #eeeeee;
     --background-card: white;
+    --background-calendar-Today: rgba(228, 227, 227, 0.902);
+    --background-calendar:#FAFBFB;
     --text-primary: black;
     --text-secondary: #363636;
     --card-shadow: rgba(0, 0, 0, 0.187);
@@ -21,6 +23,8 @@
     --background-secondary: #212121;
     --background-third: #050505;
     --background-card: black;
+    --background-calendar-Today: rgba(242, 242, 242, 0.4);
+    --background-calendar: #212121;
     --text-primary: white;
     --text-secondary: #dbdbdb;
     --card-shadow: rgba(255, 255, 255, 0.187);

@@ -13,6 +13,45 @@ import Select from "react-select";
 import Typist from 'react-typist';
 import categoryFilters from './filters';
 
+
+const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+        backgroundColor: "var(--background)",
+        color:"var(--text-primary)"
+    }),
+  
+    control: (provided) => ({
+    //   width: width
+    ...provided,
+        backgroundColor: "var(--background)",
+        color:"var(--text-primary)"
+    }),
+
+    placeholder: (provided, state) => ({
+        ...provided,
+        opacity: 1,
+        color: "var(--text-primary)",
+      }),
+
+    option: (provided, state) => ({
+        ...provided,
+        // borderBottom: '1px dotted pink',
+        //color: state.isSelected ? 'red' : 'blue',
+        // padding: 20,
+        backgroundColor: "var(--background)",
+        color:"var(--text-primary)"
+      }),
+
+    singleValue: (provided, state) => {
+        const opacity = state.isDisabled ? 0.5 : 1;
+        const transition = 'opacity 300ms';
+        const color = "var(--text-primary)";
+        return { ...provided, opacity, transition, color };
+    },
+ 
+  }
+
 const Apontamentos = () => {
 
     // Grid view selected note
@@ -370,6 +409,8 @@ const Apontamentos = () => {
         setShownTeacher("");
     }
 
+    
+
     return (
         <div id="apontamentosPage">
             <div class="d-flex flex-column mb-5">
@@ -432,6 +473,7 @@ const Apontamentos = () => {
 
                         <Select
                             id="teste"
+                            styles={customStyles}
                             className="react-select"
                             options={years}
                             onChange={(e) => { if (e == null) { setSelYear(""); setShownYear("") } else setSelYear(e.value); }}
@@ -443,6 +485,7 @@ const Apontamentos = () => {
 
                         <Select
                             className="react-select"
+                            styles={customStyles}
                             options={subjects}
                             onChange={(e) => { if (e == null) { setSelectedSubject(""); setShownSubj("") } else setSelectedSubject(e.value) }}
                             placeholder="Cadeira..."
@@ -452,6 +495,7 @@ const Apontamentos = () => {
 
                         <Select
                             className="react-select"
+                            styles={customStyles}
                             options={student}
                             onChange={(e) => { if (e == null) { setSelStudent(""); setShownAuth("") } else setSelStudent(e.value) }}
                             placeholder="Autor..."
@@ -461,6 +505,7 @@ const Apontamentos = () => {
 
                         <Select
                             className="react-select"
+                            styles={customStyles}
                             options={teachers}
                             onChange={(e) => { if (e == null) { setSelTeacher(""); setShownTeacher("") } else setSelTeacher(e.value) }}
                             placeholder="Professor..."
