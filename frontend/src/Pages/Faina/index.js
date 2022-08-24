@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Row, Spinner } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
-
-import Tabs from "../../Components/Tabs/index.js";
-
 import TextList from "../../Components/TextList"
+
 import Typist from 'react-typist';
+
+import YearTabs from "Components/YearTabs";
+import Box from '@mui/material/Box';
 
 
 // Animation
@@ -29,7 +30,15 @@ const Faina = () => {
                 var anos = response.data.map((curso) => curso.mandato).sort((a, b) => parseInt(b.split('/')[0]) - parseInt(a.split('/')[0]));
                 if (anos.length > 0) {
                     setSelectedYear(anos[0])
-                    setAnos(<Tabs tabs={anos} _default={anos[0]} onChange={setSelectedYear} />)
+                    setAnos(
+                    <Box sx={{ maxWidth: { xs: "100%", md: "900px" }, margin: "auto", marginBottom: "50px" }}>
+                        <YearTabs
+                            years={anos}
+                            value={anos[0]}
+                            onChange={setSelectedYear}
+                        />
+                    </Box>
+                    )
                 }
                 else
                     setAnos("");
