@@ -2,8 +2,6 @@ import Select from 'react-select';
 
 
 const colourStyles = {
-    color: "blue",
-
     singleValue: (styles) => ({
         ...styles,
         color: 'var(--text-primary)',
@@ -20,16 +18,16 @@ const colourStyles = {
     option: (styles, { isFocused, isSelected }) => ({
         ...styles,
         backgroundColor: isSelected
-            ? "blue"
+            ? "#147a26"
             : isFocused
-                ? "green"
+                ? "#147a2666"
                 : "var(--background)",
 
-        color: 'var(--text-primary)',
+        color: isSelected ? '#fff': 'var(--text-primary)',
 
         ':active': {
             ...styles[':active'],
-            backgroundColor: isSelected ? undefined : "red",
+            backgroundColor: isSelected ? undefined : "#147a2699",
         },
     }),
 };
