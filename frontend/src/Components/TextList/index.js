@@ -13,7 +13,7 @@ text -> nome
 
 const TextList = ({colSize,text}) => {
     return (
-        <Col lg={colSize} className="text-center" style={{textAlign: "center"}}>
+        <Col lg={colSize} className="text-center " style={{textAlign: "center"}}>
             <div className="colName">
                 {text.toUpperCase()}
             </div>

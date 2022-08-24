@@ -1,9 +1,11 @@
 .floatingbtns {
     position: fixed;
     z-index: 5;
+    
 }
 
 .floatingbtns.bottomRight {
     bottom: 1rem;
     right: 1rem;
+    
 }

@@ -56,7 +56,6 @@ const Seniors = () => {
             }).catch((error) => {
                 window.location.href = "/404";
             });
-        console.log(id)
     }, [id])
 
     useEffect(() => {

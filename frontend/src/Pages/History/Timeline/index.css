@@ -6,7 +6,9 @@
     background: #66615b;
     margin-top: -20px;
     margin-left: -2px;
+    
 }
+
 
 /* for large screens only (992px is bootstrap's LG breakpoint) */
 @media only screen and (min-width: 992px) {

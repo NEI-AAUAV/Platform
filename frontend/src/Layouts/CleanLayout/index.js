@@ -10,13 +10,24 @@ import Navbar from "../../Components/Navbar";
 import Footer from "../../Components/Footer";
 import config from "../backgroundconfig";
 
+import { useTheme } from "Stores/useTheme";
+
 const CleanLayout = () => {
+
+    const theme = useTheme(state => state.theme);
+
 
     return (
         <>
             <Particles
                 id="tsparticles"
-                options={config}
+                options={{
+                    ...config, "background": {
+                        "color": {
+                            "value": theme === 'light' ? "#fff" : "#010409"
+                        }
+                    }
+                }}
                 className="position-absolute"
             />
             <div className="pt-10 mhvh-100 d-flex flex-column justify-content-between">
