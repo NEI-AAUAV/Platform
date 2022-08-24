@@ -56,8 +56,8 @@ const Seniors = () => {
             }).catch((error) => {
                 window.location.href = "/404";
             });
-
-    }, [])
+        console.log(id)
+    }, [id])
 
     useEffect(() => {
         if (selectedYear == undefined) return;
@@ -85,30 +85,25 @@ const Seniors = () => {
             }).catch((error) => {
                 window.location.href = "/404";
             });
-    }, [selectedYear])
+    }, [selectedYear, id])
 
 
 
     return (
         <div className="d-flex flex-column flex-wrap pb-5 mb-5">
-            <h2 className="mb-5 text-center"><Typist>{"Finalistas de " + id}</Typist></h2>
-
+            <h2 className="mb-5 text-center"> {!loading && <Typist>{"Finalistas de " + id}</Typist>}</h2>
             {anos}
-
             {
                 loading
                     ?
                     <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
                     :
                     <>
-                        {
-                            namesOnly &&
+                        {namesOnly &&
                             <Row>
                                 {img}
                             </Row>
                         }
-                        
-
                         <Row>
                             {
                                 namesOnly ?
