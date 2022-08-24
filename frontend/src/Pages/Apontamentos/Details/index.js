@@ -72,7 +72,7 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
     }, [note]);
 
     return (
-        <div className={"notesDetails bg-white p-3 mb-4 animation d-flex flex-column " + className}>
+        <div className={"notesDetails p-3 mb-4 animation d-flex flex-column " + className}>
             {
                 loading
                 ? <Spinner animation="grow" variant="primary" className="mx-auto mt-3" title="A carregar..." />

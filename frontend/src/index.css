@@ -14,6 +14,7 @@
     --text-secondary: #363636;
     --card-shadow: rgba(0, 0, 0, 0.187);
     --border: rgb(0 0 0 / 13%);
+    --hover: #ebebeb;
 }
 
 [data-theme='dark'],
@@ -29,6 +30,7 @@
     --text-secondary: #dbdbdb;
     --card-shadow: rgba(255, 255, 255, 0.187);
     --border: rgb(255 255 255 / 39%);
+    --hover: #383838;
 }
 
 body {
@@ -129,15 +131,15 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 /* text size */
 body { font-size: 1rem!important;}
 small, .small, .btn-sm { font-size: .75rem!important; }
-h1 { font-size: 3.6rem!important; color: var(--text-secondary)!important ; }
-h2 { font-size: 2.8rem!important; color: var(--text-secondary)!important ;}
+h1 { font-size: 3.6rem!important; color: var(--text-secondary) ; }
+h2 { font-size: 2.8rem!important; color: var(--text-secondary) ;}
 @media only screen and (max-width: 777px){
-    h2 { font-size: 2rem!important; word-break: break-all; color: var(--text-secondary)!important ;}
+    h2 { font-size: 2rem!important; word-break: break-all; color: var(--text-secondary) ;}
 }
-h3 { font-size: 1.75rem!important;color: var(--text-secondary)!important ;}
-h4 { font-size: 1.25rem!important;color: var(--text-secondary)!important ; }
-h5, .h5 { font-size: 1.15rem!important; color: var(--text-secondary)!important ;}
-p{color: var(--text-secondary)!important}
+h3 { font-size: 1.75rem!important;color: var(--text-secondary) ;}
+h4 { font-size: 1.25rem!important;color: var(--text-secondary) ; }
+h5, .h5 { font-size: 1.15rem!important; color: var(--text-secondary);}
+p{color: var(--text-secondary)}
 label {color: var(--text-secondary)}
 /* extra Bootstrap */
 .link:hover {
