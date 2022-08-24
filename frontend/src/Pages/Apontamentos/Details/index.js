@@ -41,7 +41,7 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
                     }
                 })
                 .catch((error) => {
-                    console.log("Error getting note:", note_id, error);
+                    console.error("Error getting note:", note_id, error);
                     setAlert({
                         'type': 'alert',
                         'text': 'Ocorreu um erro ao obter os dados do apontamento que selecionaste. Por favor tenta novamente.'

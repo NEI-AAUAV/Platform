@@ -94,8 +94,6 @@ const Apontamentos = () => {
 
 
     const fetchPage = (p_num) => {
-        console.log("currPage: " + selPage + ", new_page: " + p_num);
-
         setSelPage(p_num);
     }
 
@@ -139,7 +137,7 @@ const Apontamentos = () => {
                 }
             })
             .catch((error) => {
-                console.log("Error getting thanks", error);
+                console.error("Error getting thanks", error);
             });
     }, []);
 
@@ -241,7 +239,7 @@ const Apontamentos = () => {
                     setLoading(false);
                 })
                 .catch((error) => {
-                    console.log("Error getting notes!");
+                    console.error("Error getting notes!");
                     setAlert({
                         'type': 'alert',
                         'text': 'Ocorreu um erro ao processar o teu pedido. Por favor recarrega a página.'
@@ -272,7 +270,7 @@ const Apontamentos = () => {
                 }
             })
             .catch((error) => {
-                console.log("Invalid parameters (no \"years\" matching)!");
+                console.error("Invalid parameters (no \"years\" matching)!");
                 resetFilters();
                 setAlert({
                     'type': 'alert',
@@ -302,7 +300,7 @@ const Apontamentos = () => {
                 }
             })
             .catch((error) => {
-                console.log("Invalid parameters (no \"subjects\" matching)!");
+                console.error("Invalid parameters (no \"subjects\" matching)!");
                 resetFilters();
                 setAlert({
                     'type': 'alert',
@@ -330,7 +328,7 @@ const Apontamentos = () => {
                 }
             })
             .catch((error) => {
-                console.log("Invalid parameters (no \"students\" matching)!");
+                console.error("Invalid parameters (no \"students\" matching)!");
                 resetFilters();
                 setAlert({
                     'type': 'alert',
@@ -358,7 +356,7 @@ const Apontamentos = () => {
                 }
             })
             .catch((error) => {
-                console.log("Invalid parameters (no \"teachers\" matching)!");
+                console.error("Invalid parameters (no \"teachers\" matching)!");
                 resetFilters();
                 setAlert({
                     'type': 'alert',
