@@ -55,8 +55,12 @@
     -webkit-transform: rotate(45deg);
     width: 40px;
     height: 40px;
-    background-color: white;
+    background-color: var(--background);
     display: flex;
+}
+
+.image-card.dark .plus-button {
+    background-color: #4a4946;
 }
 
 .image-card .plus-button span {
@@ -87,8 +91,7 @@
     color: white !important;
 }
 
-.image-card.dark,
-.image-card .dark {
+.image-card.dark {
     color: white !important;
-    background-color: #4a4946;
+    background-color: #4a4946 !important;
 }
