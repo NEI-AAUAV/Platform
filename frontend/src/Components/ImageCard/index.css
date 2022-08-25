@@ -2,7 +2,7 @@
     border-radius: 0% !important;
     border: none !important;
     box-shadow: 0 6px 10px -4px var(--card-shadow);
-    transition: transform .3s cubic-bezier(.34,2,.6,1), box-shadow .2s ease,-webkit-transform .3s cubic-bezier(.34,2,.6,1);
+    transition: transform .3s cubic-bezier(.34, 2, .6, 1), box-shadow .2s ease, -webkit-transform .3s cubic-bezier(.34, 2, .6, 1);
 }
 
 .image-card:hover {
@@ -14,20 +14,17 @@
     border-radius: 0% !important;
 }
 
-.card-body{
-    background-color: var(--background-card)!important;
-}
 .image-card img {
     height: 200px;
     /* object-fit: contain;  not sure which is better, cover is as it is in current site */
     object-fit: cover;
+    background-color: white;
 }
 
 .image-card .card-body {
     min-height: 198px;
     display: flex;
     flex-direction: column;
-    background-color: var(--background-card)!important;
 }
 
 /*
@@ -38,6 +35,11 @@
 .image-card .card-text {
     flex-grow: 1 !important;
     display: flex;
+}
+
+.image-card.dark .card-text,
+.image-card .dark .card-text {
+    color: white !important;
 }
 
 .image-card .card-text * {
@@ -53,7 +55,7 @@
     -webkit-transform: rotate(45deg);
     width: 40px;
     height: 40px;
-    background-color: var(--background-card)!important;
+    background-color: white;
     display: flex;
 }
 
@@ -64,10 +66,11 @@
     font-family: Roboto, sans-serif;
     font-size: 26px;
     font-weight: 100;
-    
 }
 
-.image-card a:link, .image-card a:visited, .image-card a:active {
+.image-card a:link,
+.image-card a:visited,
+.image-card a:active {
     text-decoration: none;
     color: #147a26;
 }
@@ -77,13 +80,15 @@
     color: #1db939;
 }
 
-.image-card.dark a:link, .image-card.dark a:visited, .image-card.dark a:hover, .image-card.dark a:active {
+.image-card.dark a:link,
+.image-card.dark a:visited,
+.image-card.dark a:hover,
+.image-card.dark a:active {
     color: white !important;
 }
 
-
-.image-card.dark, .image-card .dark {
-    color: white;
+.image-card.dark,
+.image-card .dark {
+    color: white !important;
     background-color: #4a4946;
 }
-
