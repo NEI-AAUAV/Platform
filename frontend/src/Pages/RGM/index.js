@@ -37,7 +37,7 @@ const RGM = () => {
     let { id } = useParams();
 
     // Component state
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState();
     const [docs, setDocs] = useState([]);
     const [tab, setTab] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -45,7 +45,8 @@ const RGM = () => {
     // On component render...
     useEffect(() => {
         setLoading(true);
-
+        setDocs([]);
+        
         // Validate document category
         if (Object.keys(validCategories).findIndex(item => id.toLowerCase() === item.toLowerCase()) < 0) {
             window.location.href = "/404";
@@ -82,7 +83,7 @@ const RGM = () => {
         <div className="d-flex flex-column flex-wrap">
             <div style={{ whiteSpace: 'pre', overflowWrap: 'break-word' }}>
                 <h2 className="text-center mb-5">
-                    {!loading && <Typist>{title}</Typist>}
+                    {docs.length > 0 && <Typist>{title}</Typist>}
                 </h2>
             </div>
             {

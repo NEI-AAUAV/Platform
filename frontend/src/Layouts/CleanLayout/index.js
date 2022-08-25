@@ -2,10 +2,6 @@ import React from "react";
 import { Outlet } from 'react-router-dom';
 import Particles from "react-tsparticles";
 
-import {
-    Col
-} from "react-bootstrap";
-
 import Navbar from "../../Components/Navbar";
 import Footer from "../../Components/Footer";
 import config from "../backgroundconfig";
@@ -15,7 +11,6 @@ import { useTheme } from "Stores/useTheme";
 const CleanLayout = () => {
 
     const theme = useTheme(state => state.theme);
-
 
     return (
         <>
