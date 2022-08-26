@@ -115,7 +115,7 @@
     z-index: 5;
     top: 0;
     transition: .25s ease;
-    background-color: var(--background)!important ;
+    background-color: var(--background) ;
 }
 .navbardiv.bg-white {
     box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);

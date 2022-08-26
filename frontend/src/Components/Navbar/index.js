@@ -30,7 +30,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <div className={transparent ? "navbardiv col-12 p-0 position-fixed bg-transparent" : "navbardiv col-12 p-0 position-fixed"}>
+        <div className={transparent ? "navbardiv col-12 p-0 position-fixed" : "navbardiv col-12 p-0 position-fixed"}>
             <BNavbar
                 bg="transparent"
                 expand="lg"
