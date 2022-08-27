@@ -41,8 +41,8 @@ const Merchandising = () => {
                                     }
                                 </Col>
                                 <Col lg={idx % 2 == 0 ? 8 : 4} md={6} sm={12} className={idx % 2 == 0 ? "order-1" : "order-0"}>
-                                    <h2>{img.name}</h2>
-                                    <h5>Preço: {img.price}€</h5>
+                                    <h22>{img.name}</h22>
+                                    <h55>Preço: {img.price}€</h55>
                                 </Col>
                             </Row>
 
@@ -58,7 +58,7 @@ const Merchandising = () => {
 
 return (
     <div className="py-5">
-        <h2 style={{ position: "relative" }} className="mb-5 text-center">
+        <h2 style={{ position: "relative"}} className="mb-5 text-center">
             <Typist>Merchandising</Typist>
         </h2>
 
@@ -70,7 +70,7 @@ return (
                 target="_blank"
                 className="mx-auto"
             >
-                <Button style={{ color: 'black' }}
+                <Button 
                     variant="outline-primary"
                     className="rounded-pill btn-outline-primary-force"
                     size="lg"
