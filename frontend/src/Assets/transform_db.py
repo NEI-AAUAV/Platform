@@ -9,9 +9,9 @@ f = open('db.json')
 data = json.load(f)["users"]
 f.close()
 
-data2 = []
+data2 = "[\n\t"
 
-for row in data:
+for i, row in enumerate(data):
     if row["id"] == "000":
         continue
 
@@ -59,9 +59,24 @@ for row in data:
         "faina": faina
     }
 
-    data2.append(user)
+    # beautify output
+    user_str = json.dumps(user, ensure_ascii=False) \
+        .replace('"id"', '\n\t\t"id"') \
+            .replace('"matriculations"', '\n\t\t"matriculations"') \
+                .replace('"insignias"', '\n\t\t"insignias"') \
+                    .replace('"faina"', '\n\t\t"faina"')
+
+    data2 += user_str[:-1] + '\n\t}'
+
+    if i < len(data) - 1:
+        if data[i]["start_year"] == data[i + 1]["start_year"]:
+            data2 += ', '
+        else:
+            data2 += ',\n\n\n\t'
+
+data2 += '\n]'
 
 
 f = open('db2.json', 'w')
-f.write(json.dumps(data2))
+f.write(data2)
 f.close()
