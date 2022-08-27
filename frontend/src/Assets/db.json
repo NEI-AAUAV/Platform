@@ -434,7 +434,7 @@
             "organizations": [{"year": 18, "name": "NEI", "role": "Vogal da Secção Pedagócica e Social"},{"year": 18, "name": "AEETUA", "role": "Vogal"},
                 {"year": 19, "name": "AEETUA", "role": "Presidente da Mesa da AGM"}],
             "faina": [{"year": 19, "name": "Paiva"}]},
-        {"id": "030", "nmec": 93446, "start_year": 18, "end_year": null, "sex": "M", "parent": "004", "name": "Leandro Silva" , "image": "",
+        {"id": "030", "nmec": 93446, "start_year": 18, "end_year": null, "sex": "M", "parent": "004", "name": "Leandro Silva" , "image": "030.jpg",
             "organizations": [{"year": 21, "name": "NEI", "role": "Vogal da Secção Administrativa"},
                 {"year": 22, "name": "NEI", "role": "Vogal da Secção Administrativa"}],
             "faina": [{"year": 19, "name": "Lionel"}, {"year": 21, "name": "Leonardo"}]},
