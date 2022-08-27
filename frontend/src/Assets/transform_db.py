@@ -1,5 +1,7 @@
 
 import json
+import csv
+
 
 # Opening JSON file
 f = open('db.json')
@@ -9,9 +11,41 @@ f = open('db.json')
 data = json.load(f)["users"]
 f.close()
 
-data2 = "[\n\t"
 
+form_users = {}
+with open("form.csv", 'r') as file:
+    csvreader = csv.reader(file)
+    header = next(csvreader)
+    for row in csvreader:
+        date, name, nmec, email, sex, years, master, image, parent, name_baptism, name_faina, organizations, _ = row
+
+        translate_course = {
+            "Tecnologias e Sistemas de Informação": "TSI",
+            "Licenciatura em Engenharia Informática": "LEI",
+            "Mestrado em Engenharia Infomática": "MEI",
+            "Mestrado em Cibersegurança": "MC",
+            "Mestrado em Robótica e Sistemas Inteligentes": "MRSI",
+            "Mestrado em Ciência de Dados": "MCD",
+            "Mestrado em Desenvolvimento de Jogos Digitais": "MDJD",
+            "Programa Doutoral em Informática": "MAPi"
+        }
+
+        for user in data:
+            if str(user["nmec"]) == nmec:
+                form_users[nmec] = {
+                    'email': email,
+                    'years': years,
+                    'master': translate_course.get(master, "MEI?"),
+                    'name_baptism': name_baptism
+                }
+
+
+data2 = "[\n\t"
 for i, row in enumerate(data):
+    fuser = form_users.get(str(row["nmec"]), None)
+    if fuser:
+        print(fuser)
+
     if row["id"] == "000":
         continue
 
@@ -27,7 +61,7 @@ for i, row in enumerate(data):
 
     if was_probably_in_master:
         matriculations.append({
-            "course": "MEI?",
+            "course": fuser["master"] if fuser else "MEI?",
             "start_year": row["start_year"] + 3,
             "end_year": row["end_year"],
         })
@@ -41,13 +75,13 @@ for i, row in enumerate(data):
         faina = {
             "eqv_years": 0,
             "names": row["faina"],
-            "baptism_name": None
+            "baptism_name": fuser["name_baptism"] if fuser else None
         }
 
     user = {
         "id": row["id"],
         "name": row["name"],
-        "email": None,
+        "email": fuser["email"] if fuser else None,
         "nmec": row["nmec"],
         "sex": row["sex"],
         "image": row["image"],

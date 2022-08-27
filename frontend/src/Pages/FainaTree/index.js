@@ -35,20 +35,20 @@ const colors = [
   '#808080','#BB526B','#ff0000','#fc719e','#8142A8','#e67300','#0000e6', '#938ED8' 
 ]
 const organizations = {
-  nei: {
+  NEI: {
     name: "NEI",
     insignia: nei,
   },
-  aettua: {
+  AETTUA: {
     name: "AETTUA",
     insignia: aettua,
   },
-  cf: {
+  CF: {
     name: "Comissão de Faina",
     insignia: anzol,
     changeColor: true,
   },
-  cs: {
+  CS: {
     name: "Conselho do Salgado",
     insignia: sal,
     changeColor: true,
@@ -177,7 +177,7 @@ function buildTree() {
         getFainaHierarchy(elem, MAX_YEAR) + " " + elem.faina?.[0].name);
     }
     elem.insignias = elem.organizations?.map(o => {
-      if (o.name !== "st")
+      if (o.name !== "ST")
         return o.name;
       return {
         "Mestre Escrivão": "escrivao",
@@ -218,7 +218,7 @@ function buildTree() {
     .remove();
 
   zoom = d3.zoom()
-    .scaleExtent([0.2, 2])
+    .scaleExtent([0.3, 3])
     .on("zoom", ({ transform }) => zoomed(transform));
 
   svg = d3.select("svg.treeei")
@@ -307,7 +307,7 @@ function buildTree() {
     })
     .attr("height", 1)
     .attr("width", 1)
-    .attr("preserveAspectRatio", "xMinYMin slice");
+    .attr("preserveAspectRatio", "xMidYMid slice");
 
   // circle with the person image
   const nodesProfilePic = nodes
@@ -684,7 +684,7 @@ function FainaTree() {
                 Object.entries(organizations).map(([key, org]) => (
                   <div key={key} className={classNames("insignia", { "inactive": insignias.length !== 0 && !insignias.includes(key) })}
                     onClick={() => toggleInsignias(key)}>
-                    <img src={org.insignia} style= {org.changeColor && theme === "dark" ? {filter: "invert(1)"} : {}}/>
+                    <img src={org.insignia} style={org.changeColor && theme === "dark" ? {filter: "invert(1)"} : {}}/>
                     <div>{org.name}</div>
                   </div>
                 ))
@@ -733,16 +733,16 @@ function FainaTree() {
           <pattern id="default_female" width="1" height="1" patternContentUnits="objectBoundingBox">
             <image xlinkHref={femalePic} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
           </pattern>
-          <pattern id="nei" width="1" height="1" patternContentUnits="objectBoundingBox">
+          <pattern id="NEI" width="1" height="1" patternContentUnits="objectBoundingBox">
             <image xlinkHref={nei} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
           </pattern>
-          <pattern id="aettua" width="1" height="1" patternContentUnits="objectBoundingBox">
+          <pattern id="AETTUA" width="1" height="1" patternContentUnits="objectBoundingBox">
             <image xlinkHref={aettua} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
           </pattern>
-          <pattern id="cf" width="1" height="1" patternContentUnits="objectBoundingBox">
+          <pattern id="CF" width="1" height="1" patternContentUnits="objectBoundingBox">
             <image xlinkHref={anzol} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
           </pattern>
-          <pattern id="cs" width="1" height="1" patternContentUnits="objectBoundingBox">
+          <pattern id="CS" width="1" height="1" patternContentUnits="objectBoundingBox">
             <image xlinkHref={sal} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
           </pattern>
           <pattern id="escrivao" width="1" height="1" patternContentUnits="objectBoundingBox">

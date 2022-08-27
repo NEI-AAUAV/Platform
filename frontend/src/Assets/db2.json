@@ -1,0 +1,1337 @@
+[
+	{
+		"id": "J19", "name": "Diogo Paiva", "email": null, "nmec": null, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 8, "end_year": 10}, {"course": "MEI?", "start_year": 11, "end_year": 12}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 9, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J20", "name": "Marco Miranda", "email": null, "nmec": null, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 8, "end_year": 10}, {"course": "MEI?", "start_year": 11, "end_year": 12}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 9, "name": null}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "J12", "name": "Joana Silva", "email": null, "nmec": null, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 9, "end_year": 11}, {"course": "MEI?", "start_year": 12, "end_year": 13}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 10, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J13", "name": "Rita Jesus", "email": null, "nmec": null, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 9, "end_year": 11}, {"course": "MEI?", "start_year": 12, "end_year": 13}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 10, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J15", "name": "Joana Coelho", "email": null, "nmec": null, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 9, "end_year": 11}, {"course": "MEI?", "start_year": 12, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 10, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J16", "name": "João Costa", "email": null, "nmec": null, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 9, "end_year": 11}, {"course": "MEI?", "start_year": 12, "end_year": 13}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 10, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J17", "name": "Filipe Silva", "email": null, "nmec": null, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 9, "end_year": 11}, {"course": "MEI?", "start_year": 12, "end_year": 13}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 10, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J18", "name": "Daniel Rodrigues", "email": null, "nmec": null, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 9, "end_year": 11}, {"course": "MEI?", "start_year": 12, "end_year": 13}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 10, "name": null}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "A41", "name": "Pedro Neves", "email": null, "nmec": 59791, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 10, "end_year": 12}, {"course": "MEI?", "start_year": 13, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 11, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J05", "name": "Fábio Almeida", "email": null, "nmec": 60151, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 10, "end_year": 12}, {"course": "MEI?", "start_year": 13, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 11, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J06", "name": "Carlos Pacheco", "email": null, "nmec": 60890, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 10, "end_year": 12}, {"course": "MEI?", "start_year": 13, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 11, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J07", "name": "Sérgio Martins", "email": null, "nmec": 60729, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 10, "end_year": 12}, {"course": "MEI?", "start_year": 13, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 11, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J09", "name": "Marcos Silva", "email": null, "nmec": null, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 10, "end_year": 12}, {"course": "MEI?", "start_year": 13, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 11, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J14", "name": "Diogo Ramos", "email": null, "nmec": null, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 10, "end_year": 12}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 11, "name": null}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "A03", "name": "Emanuel Laranjo", "email": null, "nmec": 65726, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 11, "end_year": 13}, {"course": "MEI?", "start_year": 14, "end_year": 15}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 12, "name": "Emanuel"}], "baptism_name": null}
+	}, {
+		"id": "A26", "name": "Guilherme Moura", "email": null, "nmec": 64770, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 11, "end_year": 13}, {"course": "MEI?", "start_year": 14, "end_year": 16}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 12, "name": "Moura"}], "baptism_name": null}
+	}, {
+		"id": "A57", "name": "Luís Filipe Santos", "email": null, "nmec": 65256, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 11, "end_year": 13}, {"course": "MEI?", "start_year": 14, "end_year": 15}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 12, "name": "Luís"}], "baptism_name": null}
+	}, {
+		"id": "J04", "name": "Ana Ortega", "email": null, "nmec": 67448, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 11, "end_year": 13}, {"course": "MEI?", "start_year": 14, "end_year": 15}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 12, "name": "Ortega"}], "baptism_name": null}
+	}, {
+		"id": "J10", "name": "Andreia Ferreira", "email": null, "nmec": 65791, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 11, "end_year": 13}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 12, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J11", "name": "José Ribeiro", "email": null, "nmec": 81963, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 11, "end_year": 13}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 12, "name": null}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "002", "name": "Alex Santos", "email": null, "nmec": 69988, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}, {"course": "MEI?", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": "Alex"}], "baptism_name": null}
+	}, {
+		"id": "A01", "name": "Rafael Martins", "email": null, "nmec": 67840, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}, {"course": "MEI?", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": "Rafa"}], "baptism_name": null}
+	}, {
+		"id": "A36", "name": "João Alegria", "email": null, "nmec": 68661, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}, {"course": "MEI?", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": "Alegria"}], "baptism_name": null}
+	}, {
+		"id": "A47", "name": "João Cristóvão Freitas", "email": null, "nmec": 70066, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}, {"course": "MEI?", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": "Madeira"}], "baptism_name": null}
+	}, {
+		"id": "A50", "name": "Luís Oliveira", "email": null, "nmec": 72978, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": "Luís"}], "baptism_name": null}
+	}, {
+		"id": "A52", "name": "Gonçalo Macário", "email": null, "nmec": 68761, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A53", "name": "Sara Furão", "email": null, "nmec": 68304, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A54", "name": "Filipa Carvalho", "email": null, "nmec": 72757, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": "Filipa"}], "baptism_name": null}
+	}, {
+		"id": "A55", "name": "Rita Portas", "email": null, "nmec": 68729, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": "Rita"}], "baptism_name": null}
+	}, {
+		"id": "C02", "name": "Maxlaine Moreira", "email": null, "nmec": 68281, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J02", "name": "Bruno Pinto", "email": null, "nmec": 73156, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}, {"course": "MEI?", "start_year": 15, "end_year": 16}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": "Sir 'Marnoto' Pinto"}], "baptism_name": null}
+	}, {
+		"id": "J03", "name": "Miguel Antunes", "email": null, "nmec": 68484, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": "Miguel"}], "baptism_name": null}
+	}, {
+		"id": "J08", "name": "Catarina Vinagre", "email": null, "nmec": 67828, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 12, "end_year": 14}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 13, "name": null}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "003", "name": "Bruno Barbosa", "email": null, "nmec": 72059, "sex": "M", "image": "", "parent": "A01", 
+		"matriculations": [{"course": "TSI", "start_year": 13, "end_year": 15}, {"course": "MEI?", "start_year": 16, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 14, "name": "Barbosa"}], "baptism_name": null}
+	}, {
+		"id": "A04", "name": "David Oliveira", "email": null, "nmec": 72982, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 13, "end_year": 15}, {"course": "MEI?", "start_year": 16, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 14, "name": "David"}], "baptism_name": null}
+	}, {
+		"id": "A09", "name": "Mimi Cunha", "email": null, "nmec": 72403, "sex": "F", "image": "", "parent": "C02", 
+		"matriculations": [{"course": "TSI", "start_year": 13, "end_year": 15}, {"course": "MEI?", "start_year": 16, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 14, "name": "Mimi"}], "baptism_name": null}
+	}, {
+		"id": "A19", "name": "Pedro Matos", "email": null, "nmec": 73941, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 13, "end_year": 15}, {"course": "MEI?", "start_year": 16, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 14, "name": "Matos"}], "baptism_name": null}
+	}, {
+		"id": "A32", "name": "David Ferreira", "email": null, "nmec": 72219, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 13, "end_year": 15}, {"course": "MEI?", "start_year": 16, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 14, "name": "Mamas"}], "baptism_name": null}
+	}, {
+		"id": "A38", "name": "Bárbara Jael", "email": null, "nmec": 73241, "sex": "F", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 13, "end_year": 15}, {"course": "MEI?", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 14, "name": "Bárbara"}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "A02", "name": "Paulo Seixas", "email": null, "nmec": 76724, "sex": "M", "image": "", "parent": "A01", 
+		"matriculations": [{"course": "TSI", "start_year": 14, "end_year": 16}, {"course": "MEI?", "start_year": 17, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 15, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A37", "name": "Pedro Rodrigues", "email": null, "nmec": 76747, "sex": "M", "image": "", "parent": "A36", 
+		"matriculations": [{"course": "TSI", "start_year": 14, "end_year": 16}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 15, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A42", "name": "João Paúl", "email": null, "nmec": 76368, "sex": "M", "image": "", "parent": "A41", 
+		"matriculations": [{"course": "TSI", "start_year": 14, "end_year": 16}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 15, "name": "Paúl"}], "baptism_name": null}
+	}, {
+		"id": "A43", "name": "Inês Correia", "email": null, "nmec": 76604, "sex": "F", "image": "", "parent": "A41", 
+		"matriculations": [{"course": "TSI", "start_year": 14, "end_year": 16}, {"course": "MEI?", "start_year": 17, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 15, "name": "Inês"}], "baptism_name": null}
+	}, {
+		"id": "A48", "name": "Andreia Machado", "email": null, "nmec": 76501, "sex": "F", "image": "", "parent": "A47", 
+		"matriculations": [{"course": "TSI", "start_year": 14, "end_year": 16}, {"course": "MEI?", "start_year": 17, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 15, "name": "Andreia"}], "baptism_name": null}
+	}, {
+		"id": "A49", "name": "Daniel Silva", "email": null, "nmec": 76341, "sex": "M", "image": "", "parent": "A47", 
+		"matriculations": [{"course": "TSI", "start_year": 14, "end_year": 16}, {"course": "MEI?", "start_year": 17, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 15, "name": "Daniel"}], "baptism_name": null}
+	}, {
+		"id": "A91", "name": "André Moleirinho", "email": null, "nmec": 76609, "sex": "M", "image": "", "parent": "A52", 
+		"matriculations": [{"course": "TSI", "start_year": 14, "end_year": 16}, {"course": "MEI?", "start_year": 17, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 15, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A92", "name": "Francisco Oliveira", "email": null, "nmec": 77091, "sex": "M", "image": "", "parent": "A53", 
+		"matriculations": [{"course": "TSI", "start_year": 14, "end_year": 16}, {"course": "MEI?", "start_year": 17, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 15, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A93", "name": "Hugo Pintor", "email": null, "nmec": 76610, "sex": "M", "image": "", "parent": "A53", 
+		"matriculations": [{"course": "TSI", "start_year": 14, "end_year": 16}, {"course": "MEI?", "start_year": 17, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 15, "name": null}], "baptism_name": null}
+	}, {
+		"id": "J01", "name": "Marco Ventura", "email": null, "nmec": 76667, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "TSI", "start_year": 14, "end_year": 16}, {"course": "MEI?", "start_year": 17, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 15, "name": "Ventura"}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "004", "name": "Andreia Patrocínio", "email": null, "nmec": 79663, "sex": "F", "image": "", "parent": "003", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}, {"course": "MEI?", "start_year": 18, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Andreia"}], "baptism_name": null}
+	}, {
+		"id": "005", "name": "Carolina Albuquerque", "email": null, "nmec": 80038, "sex": "F", "image": "", "parent": "003", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}, {"course": "MEI?", "start_year": 18, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Carolina"}], "baptism_name": null}
+	}, {
+		"id": "006", "name": "João Artur Costa", "email": null, "nmec": 80390, "sex": "M", "image": "", "parent": "002", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}, {"course": "MEI?", "start_year": 18, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Artur"}], "baptism_name": null}
+	}, {
+		"id": "007", "name": "João Ferreira", "email": null, "nmec": 80041, "sex": "M", "image": "", "parent": "A03", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}, {"course": "MEI?", "start_year": 18, "end_year": 21}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Ferreira"}], "baptism_name": null}
+	}, {
+		"id": "008", "name": "João Magalhães", "email": null, "nmec": 79923, "sex": "M", "image": "", "parent": "A03", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Magalhães"}], "baptism_name": null}
+	}, {
+		"id": "009", "name": "José Moreira", "email": null, "nmec": 79901, "sex": "M", "image": "", "parent": "A03", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Moreira"}], "baptism_name": null}
+	}, {
+		"id": "A05", "name": "Daniel Gonçalves", "email": null, "nmec": 80069, "sex": "M", "image": "", "parent": "A04", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Daniel"}], "baptism_name": null}
+	}, {
+		"id": "A06", "name": "António Castanheira", "email": null, "nmec": 80870, "sex": "M", "image": "", "parent": "003", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Castanheira"}], "baptism_name": null}
+	}, {
+		"id": "A10", "name": "Fred Avó", "email": null, "nmec": 79900, "sex": "M", "image": "", "parent": "A09", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Fred"}], "baptism_name": null}
+	}, {
+		"id": "A11", "name": "Nuno Silva", "email": null, "nmec": 79958, "sex": "M", "image": "", "parent": "A09", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Nuno"}], "baptism_name": null}
+	}, {
+		"id": "A15", "name": "Diogo Jorge Ferreira", "email": null, "nmec": 80246, "sex": "M", "image": "", "parent": "002", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Diogo"}], "baptism_name": null}
+	}, {
+		"id": "A16", "name": "João Soares", "email": null, "nmec": 79930, "sex": "M", "image": "", "parent": "002", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Soares"}], "baptism_name": null}
+	}, {
+		"id": "A20", "name": "Carlos Soares", "email": null, "nmec": 79962, "sex": "M", "image": "", "parent": "A19", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}, {"course": "MEI?", "start_year": 18, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Carlos"}], "baptism_name": null}
+	}, {
+		"id": "A27", "name": "Tiago Cardoso", "email": null, "nmec": 79997, "sex": "M", "image": "", "parent": "A26", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}, {"course": "MEI?", "start_year": 18, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Tiago"}], "baptism_name": null}
+	}, {
+		"id": "A28", "name": "Saveliy Ivanov", "email": null, "nmec": 80298, "sex": "M", "image": "", "parent": "A26", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}, {"course": "MEI?", "start_year": 18, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Saveliy"}], "baptism_name": null}
+	}, {
+		"id": "A29", "name": "Miguel Simões", "email": null, "nmec": 79957, "sex": "M", "image": "", "parent": "A26", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Simões"}], "baptism_name": null}
+	}, {
+		"id": "A33", "name": "Daniel Lopes", "email": null, "nmec": 80149, "sex": "M", "image": "", "parent": "A32", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Daniel"}], "baptism_name": null}
+	}, {
+		"id": "A34", "name": "David Fernandes", "email": null, "nmec": 81882, "sex": "M", "image": "", "parent": "A32", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "David"}], "baptism_name": null}
+	}, {
+		"id": "A35", "name": "Manuel Felizardo", "email": null, "nmec": 80308, "sex": "M", "image": "", "parent": "A32", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A39", "name": "Ana Filipa Almeida", "email": null, "nmec": 80049, "sex": "F", "image": "", "parent": "A38", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A44", "name": "Dimitri Silva", "email": null, "nmec": 80013, "sex": "M", "image": "", "parent": "A42", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Dimitri"}], "baptism_name": null}
+	}, {
+		"id": "A51", "name": "Salomé Lopes", "email": null, "nmec": 80050, "sex": "F", "image": "", "parent": "A50", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A56", "name": "Diego Trovisco", "email": null, "nmec": 80228, "sex": "M", "image": "", "parent": "A55", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 17}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Diego"}], "baptism_name": null}
+	}, {
+		"id": "A58", "name": "Nuno Matamba", "email": null, "nmec": 78444, "sex": "M", "image": "", "parent": "A57", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Matamba"}], "baptism_name": null}
+	}, {
+		"id": "A59", "name": "Gonçalo Almeida", "email": null, "nmec": 79994, "sex": "M", "image": "", "parent": "A57", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 16, "name": "Gonçalo"}], "baptism_name": null}
+	}, {
+		"id": "A60", "name": "Bruno Alves", "email": null, "nmec": 81859, "sex": "M", "image": "", "parent": "A57", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 15}], 
+		"insignias": [], 
+		"faina": null
+	}, {
+		"id": "A94", "name": "Rita Oliveira", "email": null, "nmec": 80365, "sex": "F", "image": "", "parent": "A54", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 15}], 
+		"insignias": [], 
+		"faina": null
+	}, {
+		"id": "A95", "name": "Fábio Rogão", "email": null, "nmec": 80081, "sex": "M", "image": "", "parent": "A91", 
+		"matriculations": [{"course": "LEI", "start_year": 15, "end_year": 15}], 
+		"insignias": [], 
+		"faina": null
+	},
+
+
+	{
+		"id": "B52", "name": "Isaac dos Anjos", "email": null, "nmec": 78191, "sex": "M", "image": "", "parent": "A27", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}, {"course": "MEI?", "start_year": 19, "end_year": 21}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": null}], "baptism_name": null}
+	}, {
+		"id": "010", "name": "Francisco Silveira", "email": null, "nmec": 84802, "sex": "M", "image": "", "parent": "A49", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Francisco"}], "baptism_name": null}
+	}, {
+		"id": "011", "name": "Sandra Andrade", "email": null, "nmec": 84904, "sex": "F", "image": "", "parent": "004", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Sandra"}], "baptism_name": null}
+	}, {
+		"id": "015", "name": "João Abílio Rodrigues", "email": null, "nmec": 84732, "sex": "M", "image": "", "parent": "003", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Abílio"}], "baptism_name": null}
+	}, {
+		"id": "A07", "name": "Simão Arrais", "email": null, "nmec": 85132, "sex": "M", "image": "", "parent": "003", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Arrais"}], "baptism_name": null}
+	}, {
+		"id": "A08", "name": "Mariana Sequeira", "email": null, "nmec": 84781, "sex": "F", "image": "", "parent": "003", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Mariana"}], "baptism_name": null}
+	}, {
+		"id": "A12", "name": "Rafaela Vieira", "email": null, "nmec": 86044, "sex": "F", "image": "", "parent": "A09", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Rafaela"}], "baptism_name": null}
+	}, {
+		"id": "A13", "name": "Carolina Marques", "email": null, "nmec": 85084, "sex": "F", "image": "", "parent": "A09", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Carolina"}], "baptism_name": null}
+	}, {
+		"id": "A14", "name": "Daniel Nunes", "email": null, "nmec": 84793, "sex": "M", "image": "", "parent": "A09", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Daniel"}], "baptism_name": null}
+	}, {
+		"id": "A17", "name": "Pedro Ferreira", "email": null, "nmec": 84735, "sex": "M", "image": "", "parent": "002", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Robocop"}], "baptism_name": null}
+	}, {
+		"id": "A18", "name": "Filipe Pires", "email": null, "nmec": 85122, "sex": "M", "image": "", "parent": "002", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A21", "name": "Catarina Xavier", "email": null, "nmec": 84711, "sex": "F", "image": "", "parent": "A19", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Catarina"}], "baptism_name": null}
+	}, {
+		"id": "A22", "name": "Pedro Fajardo", "email": null, "nmec": 84798, "sex": "M", "image": "", "parent": "A19", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Pedro"}], "baptism_name": null}
+	}, {
+		"id": "A23", "name": "Vitor Fajardo", "email": null, "nmec": 84796, "sex": "M", "image": "", "parent": "A19", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Vitor"}], "baptism_name": null}
+	}, {
+		"id": "A24", "name": "Rafael Batista", "email": null, "nmec": 84759, "sex": "M", "image": "", "parent": "A19", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A25", "name": "Pedro Matos", "email": null, "nmec": 84986, "sex": "M", "image": "", "parent": "A19", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A30", "name": "André Gomes", "email": null, "nmec": 84811, "sex": "M", "image": "", "parent": "A26", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "André"}], "baptism_name": null}
+	}, {
+		"id": "A31", "name": "Luís Cardoso", "email": null, "nmec": 85002, "sex": "M", "image": "", "parent": "A26", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A40", "name": "Rafael Direito", "email": null, "nmec": 84921, "sex": "M", "image": "", "parent": "A38", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Direito"}], "baptism_name": null}
+	}, {
+		"id": "A45", "name": "Luís Costa", "email": null, "nmec": 85044, "sex": "M", "image": "", "parent": "A42", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Luís"}], "baptism_name": null}
+	}, {
+		"id": "A46", "name": "Luís Pais Alves", "email": null, "nmec": 84702, "sex": "M", "image": "", "parent": "A42", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Luís"}], "baptism_name": null}
+	}, {
+		"id": "B26", "name": "Ricardo Castor", "email": null, "nmec": 84899, "sex": "M", "image": "", "parent": "A27", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Castor"}], "baptism_name": null}
+	}, {
+		"id": "B47", "name": "Cláudio Costa", "email": null, "nmec": 85113, "sex": "M", "image": "", "parent": "A20", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Cláudio"}], "baptism_name": null}
+	}, {
+		"id": "B48", "name": "Rafael Teixeira", "email": null, "nmec": 84746, "sex": "M", "image": "", "parent": "A17", 
+		"matriculations": [{"course": "LEI", "start_year": 16, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 17, "name": "Teixeira"}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "012", "name": "André Alves", "email": null, "nmec": 89334, "sex": "M", "image": "", "parent": "005", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Baião"}], "baptism_name": null}
+	}, {
+		"id": "013", "name": "André Gual", "email": null, "nmec": 88751, "sex": "M", "image": "", "parent": "004", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Gual"}], "baptism_name": null}
+	}, {
+		"id": "014", "name": "Carina Neves", "email": null, "nmec": 90451, "sex": "F", "image": "", "parent": "005", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}, {"course": "MEI?", "start_year": 20, "end_year": 21}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Carina"}], "baptism_name": null}
+	}, {
+		"id": "016", "name": "Mariana Gameiro", "email": null, "nmec": 88837, "sex": "F", "image": "", "parent": "004", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 18}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Mariana"}], "baptism_name": null}
+	}, {
+		"id": "017", "name": "Pedro Escaleira", "email": null, "nmec": 88821, "sex": "M", "image": "", "parent": "004", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Escaleira"}], "baptism_name": null}
+	}, {
+		"id": "018", "name": "Tiago Mendes", "email": null, "nmec": 88886, "sex": "M", "image": "", "parent": "A20", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Mendes"}], "baptism_name": null}
+	}, {
+		"id": "019", "name": "Tomás Costa", "email": null, "nmec": 89016, "sex": "M", "image": "", "parent": "003", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Tomás"}], "baptism_name": null}
+	}, {
+		"id": "A63", "name": "Luís Silva", "email": null, "nmec": 88888, "sex": "M", "image": "", "parent": "A09", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}, {"course": "MEI?", "start_year": 20, "end_year": 21}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Black"}], "baptism_name": null}
+	}, {
+		"id": "A64", "name": "Diogo Andrade", "email": null, "nmec": 89265, "sex": "M", "image": "", "parent": "A09", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Andrade"}], "baptism_name": null}
+	}, {
+		"id": "A83", "name": "Tomás Batista", "email": null, "nmec": 89296, "sex": "M", "image": "", "parent": "A19", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Trinca-espinhas"}], "baptism_name": null}
+	}, {
+		"id": "A84", "name": "João Dias", "email": null, "nmec": 89236, "sex": "M", "image": "", "parent": "A19", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Trinca-gordas"}], "baptism_name": null}
+	}, {
+		"id": "A85", "name": "Marta Ferreira", "email": null, "nmec": 88830, "sex": "F", "image": "", "parent": "A20", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Marta"}], "baptism_name": null}
+	}, {
+		"id": "B07", "name": "João Carvalho", "email": null, "nmec": 89059, "sex": "M", "image": "", "parent": "A38", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Carvalho"}], "baptism_name": null}
+	}, {
+		"id": "B08", "name": "Diogo Silva", "email": null, "nmec": 89348, "sex": "M", "image": "", "parent": "A38", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "DS"}], "baptism_name": null}
+	}, {
+		"id": "B12", "name": "Rui Melo", "email": null, "nmec": 88889, "sex": "M", "image": "", "parent": "A36", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B13", "name": "Flávia Figueiredo", "email": null, "nmec": 88887, "sex": "F", "image": "", "parent": "A43", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Flávia"}], "baptism_name": null}
+	}, {
+		"id": "B19", "name": "Daniel Pinto", "email": null, "nmec": 89341, "sex": "M", "image": "", "parent": "A59", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Daniel"}], "baptism_name": null}
+	}, {
+		"id": "B20", "name": "João Vasconcelos", "email": null, "nmec": 88808, "sex": "M", "image": "", "parent": "A59", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B22", "name": "Pedro Oliveira", "email": null, "nmec": 89156, "sex": "M", "image": "", "parent": "A34", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Fagote"}], "baptism_name": null}
+	}, {
+		"id": "B23", "name": "José Vaz", "email": null, "nmec": 88903, "sex": "M", "image": "", "parent": "A34", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Dom Sebastião"}], "baptism_name": null}
+	}, {
+		"id": "B24", "name": "José Frias", "email": null, "nmec": 89206, "sex": "M", "image": "", "parent": "A34", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B25", "name": "Pedro Miguel Marques", "email": null, "nmec": 89069, "sex": "M", "image": "", "parent": "B24", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Marques"}], "baptism_name": null}
+	}, {
+		"id": "B27", "name": "Alina Yanchuk", "email": null, "nmec": 89093, "sex": "F", "image": "", "parent": "A20", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}, {"course": "MEI?", "start_year": 20, "end_year": 21}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Alina"}], "baptism_name": null}
+	}, {
+		"id": "B34", "name": "Edgar Morais", "email": null, "nmec": 89323, "sex": "M", "image": "", "parent": "005", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Edgar"}], "baptism_name": null}
+	}, {
+		"id": "B38", "name": "Vasco Ramos", "email": null, "nmec": 88931, "sex": "M", "image": "", "parent": "A06", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Vasco"}], "baptism_name": null}
+	}, {
+		"id": "B43", "name": "André Catarino", "email": null, "nmec": 89337, "sex": "M", "image": "", "parent": "006", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B44", "name": "Miguel Mota", "email": null, "nmec": 89331, "sex": "M", "image": "", "parent": "006", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Mota"}], "baptism_name": null}
+	}, {
+		"id": "B45", "name": "Luís Fonseca", "email": null, "nmec": 89066, "sex": "M", "image": "", "parent": "006", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": "Fonseca"}], "baptism_name": null}
+	}, {
+		"id": "D01", "name": "João Pedro Vasconcelos", "email": null, "nmec": 89022, "sex": "M", "image": "", "parent": "A07", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": null}], "baptism_name": null}
+	}, {
+		"id": "D02", "name": "André Amorim", "email": null, "nmec": 88831, "sex": "M", "image": "", "parent": "A92", 
+		"matriculations": [{"course": "LEI", "start_year": 17, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 18, "name": null}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "020", "name": "Abel Rodrigues", "email": null, "nmec": 91268, "sex": "M", "image": "", "parent": "004", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": 19}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "021", "name": "Afonso Silva", "email": null, "nmec": 93333, "sex": "M", "image": "", "parent": "018", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Salgueiro"}], "baptism_name": null}
+	}, {
+		"id": "022", "name": "Bruno Bastos", "email": null, "nmec": 93302, "sex": "M", "image": "", "parent": "007", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Bruno"}], "baptism_name": null}
+	}, {
+		"id": "023", "name": "Carolina Araújo", "email": null, "nmec": 93248, "sex": "F", "image": "", "parent": "008", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": 20}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Carolina"}], "baptism_name": null}
+	}, {
+		"id": "024", "name": "Daniel Gomes", "email": null, "nmec": 93015, "sex": "M", "image": "", "parent": "015", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Daniel"}], "baptism_name": null}
+	}, {
+		"id": "025", "name": "Diogo Guimarães Silva", "email": null, "nmec": 93200, "sex": "M", "image": "", "parent": "009", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Guimarães"}], "baptism_name": null}
+	}, {
+		"id": "026", "name": "Duarte Mortágua", "email": null, "nmec": 92963, "sex": "M", "image": "", "parent": "014", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Mortágua"}], "baptism_name": null}
+	}, {
+		"id": "027", "name": "Eduardo Santos", "email": "", "nmec": 93107, "sex": "M", "image": "027.jpeg", "parent": "004", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Edu"}], "baptism_name": "Ruca, o pequeno rey"}
+	}, {
+		"id": "028", "name": "Gonçalo Matos", "email": null, "nmec": 92972, "sex": "M", "image": "", "parent": "005", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": 20}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "029", "name": "Hugo Paiva", "email": null, "nmec": 93195, "sex": "M", "image": "", "parent": "015", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": 20}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Paiva"}], "baptism_name": null}
+	}, {
+		"id": "030", "name": "Leandro Silva", "email": null, "nmec": 93446, "sex": "M", "image": "", "parent": "004", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Lionel"}, {"year": 21, "name": "Leonardo"}], "baptism_name": null}
+	}, {
+		"id": "031", "name": "Luís Valentim", "email": null, "nmec": 93989, "sex": "M", "image": "", "parent": "006", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Valentim"}], "baptism_name": null}
+	}, {
+		"id": "032", "name": "Mário Silva", "email": null, "nmec": 93430, "sex": "M", "image": "", "parent": "012", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Chico com CH"}], "baptism_name": null}
+	}, {
+		"id": "033", "name": "Pedro Bastos", "email": null, "nmec": 93150, "sex": "M", "image": "", "parent": "010", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Bastos"}], "baptism_name": null}
+	}, {
+		"id": "034", "name": "Pedro Tavares", "email": null, "nmec": 93103, "sex": "M", "image": "", "parent": "005", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "035", "name": "Ricardo Cruz", "email": null, "nmec": 93118, "sex": "M", "image": "", "parent": "008", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "036", "name": "Rui Filipe Fernandes", "email": "rfmf@ua.pt", "nmec": 92952, "sex": "M", "image": "036.jpg", "parent": "006", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Rui"}], "baptism_name": "Sir DarTeACão"}
+	}, {
+		"id": "A65", "name": "Isadora Loredo", "email": null, "nmec": 91322, "sex": "F", "image": "", "parent": "A12", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "World Wide Web"}], "baptism_name": null}
+	}, {
+		"id": "B01", "name": "Afonso Rodrigues", "email": null, "nmec": 93124, "sex": "M", "image": "", "parent": "008", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B02", "name": "Diogo Carvalho", "email": null, "nmec": 92969, "sex": "M", "image": "", "parent": "008", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Carvalho"}], "baptism_name": null}
+	}, {
+		"id": "B04", "name": "Lucas Botto", "email": "", "nmec": 93019, "sex": "M", "image": "", "parent": "A40", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Botto"}], "baptism_name": "AquaTechMan Pacifier"}
+	}, {
+		"id": "B05", "name": "Tiago Oliveira", "email": null, "nmec": 93456, "sex": "M", "image": "", "parent": "A40", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B06", "name": "Margarida Martins", "email": "", "nmec": 93169, "sex": "F", "image": "B06.jpg", "parent": "A40", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Guida"}], "baptism_name": "Chilled Square Alfa"}
+	}, {
+		"id": "B09", "name": "Renan Ferreira", "email": "", "nmec": 93168, "sex": "M", "image": "", "parent": "A38", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Renan"}], "baptism_name": ""}
+	}, {
+		"id": "B14", "name": "Orlando Macedo", "email": null, "nmec": 94521, "sex": "M", "image": "", "parent": "B13", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": 20}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B15", "name": "Diogo Cunha", "email": null, "nmec": 95278, "sex": "M", "image": "", "parent": "A45", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B16", "name": "Maria Inês Rocha", "email": null, "nmec": 93320, "sex": "F", "image": "", "parent": "A45", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Rocha"}], "baptism_name": null}
+	}, {
+		"id": "B17", "name": "Mariana Santos", "email": null, "nmec": 93257, "sex": "F", "image": "", "parent": "A45", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": 20}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Mariana"}], "baptism_name": null}
+	}, {
+		"id": "B18", "name": "Anthony Pereira", "email": null, "nmec": 93016, "sex": "M", "image": "", "parent": "A45", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B21", "name": "Gonçalo Pereira", "email": null, "nmec": 93310, "sex": "M", "image": "", "parent": "A59", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B40", "name": "Diogo Moreira", "email": null, "nmec": 93127, "sex": "M", "image": "", "parent": "A14", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Moreira"}], "baptism_name": null}
+	}, {
+		"id": "B49", "name": "Alexandra Carvalho", "email": null, "nmec": 93346, "sex": "M", "image": "", "parent": "B47", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B50", "name": "João Soares", "email": null, "nmec": 93078, "sex": "M", "image": "", "parent": "B47", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B51", "name": "Dinis Cruz", "email": null, "nmec": 93080, "sex": "M", "image": "", "parent": "B47", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": "Dinis"}], "baptism_name": null}
+	}, {
+		"id": "D03", "name": "Rafael Batista", "email": null, "nmec": 93367, "sex": "M", "image": "", "parent": "010", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	}, {
+		"id": "D04", "name": "Pedro Santos", "email": null, "nmec": 93221, "sex": "M", "image": "", "parent": "010", 
+		"matriculations": [{"course": "LEI", "start_year": 18, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 19, "name": null}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "037", "name": "Artur Romão", "email": null, "nmec": 98470, "sex": "M", "image": "", "parent": "006", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Artur"}], "baptism_name": null}
+	}, {
+		"id": "038", "name": "Marta Fradique", "email": null, "nmec": 98629, "sex": "F", "image": "", "parent": "019", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Marta"}], "baptism_name": null}
+	}, {
+		"id": "039", "name": "Vicente Costa", "email": null, "nmec": 98515, "sex": "M", "image": "", "parent": "005", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": null}], "baptism_name": null}
+	}, {
+		"id": "082", "name": "Eva Bartolomeu", "email": null, "nmec": 98513, "sex": "F", "image": "", "parent": "A63", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Eva"}], "baptism_name": null}
+	}, {
+		"id": "A61", "name": "João Reis", "email": null, "nmec": 98474, "sex": "M", "image": "", "parent": "008", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Reis"}], "baptism_name": null}
+	}, {
+		"id": "A66", "name": "Raquel Ferreira", "email": "", "nmec": 98323, "sex": "F", "image": "A66.jpg", "parent": "A12", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Raquel"}], "baptism_name": "Stitch estudiosa artística de patinagem em nutella omnis satanica potestus dejack da benedita"}
+	}, {
+		"id": "A67", "name": "Andreia Portela", "email": null, "nmec": 97953, "sex": "F", "image": "", "parent": "A12", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": 21}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Portela"}], "baptism_name": null}
+	}, {
+		"id": "A68", "name": "Patrícia Dias", "email": null, "nmec": 98546, "sex": "F", "image": "", "parent": "A12", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Patrícia"}], "baptism_name": null}
+	}, {
+		"id": "A69", "name": "Dani Figueiredo", "email": null, "nmec": 98498, "sex": "M", "image": "", "parent": "033", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Dani"}], "baptism_name": null}
+	}, {
+		"id": "A70", "name": "Luís Martins", "email": null, "nmec": 98521, "sex": "M", "image": "", "parent": "027", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Lulu"}], "baptism_name": null}
+	}, {
+		"id": "A71", "name": "Gonçalo Leal Silva", "email": "goncalolealsilva@ua.pt", "nmec": 98008, "sex": "M", "image": "", "parent": "014", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Leal"}], "baptism_name": "Charmander"}
+	}, {
+		"id": "A72", "name": "Pedro Monteiro", "email": "", "nmec": 97484, "sex": "M", "image": "A72.JPG", "parent": "014", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Monteiro"}], "baptism_name": "Benji"}
+	}, {
+		"id": "A73", "name": "Vitor Francisco Dias", "email": null, "nmec": 98396, "sex": "M", "image": "", "parent": "A44", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": 21}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Bitocas"}], "baptism_name": null}
+	}, {
+		"id": "A75", "name": "Mariana Rosa", "email": null, "nmec": 98390, "sex": "F", "image": "", "parent": "A20", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Rosa"}], "baptism_name": null}
+	}, {
+		"id": "A76", "name": "André Freixo", "email": null, "nmec": 98495, "sex": "M", "image": "", "parent": "014", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "André"}], "baptism_name": null}
+	}, {
+		"id": "A77", "name": "Daniela Dias", "email": null, "nmec": 98039, "sex": "F", "image": "", "parent": "006", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Dias"}], "baptism_name": null}
+	}, {
+		"id": "A78", "name": "Nuno Fahla", "email": null, "nmec": 97631, "sex": "M", "image": "", "parent": "006", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Fahla"}], "baptism_name": null}
+	}, {
+		"id": "A79", "name": "Dinis Lei", "email": null, "nmec": 98452, "sex": "M", "image": "", "parent": "006", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Lei"}], "baptism_name": null}
+	}, {
+		"id": "A80", "name": "Paulo Pereira", "email": null, "nmec": 98430, "sex": "M", "image": "", "parent": "006", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Pylance"}], "baptism_name": null}
+	}, {
+		"id": "A81", "name": "Fábio Martins", "email": null, "nmec": 98119, "sex": "M", "image": "", "parent": "A83", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": 21}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Trincamisto"}], "baptism_name": null}
+	}, {
+		"id": "A82", "name": "Luca Pereira", "email": null, "nmec": 97689, "sex": "M", "image": "", "parent": "A83", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Trincona"}], "baptism_name": null}
+	}, {
+		"id": "A86", "name": "Pedro Sobral", "email": null, "nmec": 98491, "sex": "M", "image": "", "parent": "A85", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Sobral"}], "baptism_name": null}
+	}, {
+		"id": "A87", "name": "Ricardo Rodriguez", "email": null, "nmec": 98388, "sex": "M", "image": "", "parent": "A85", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Rodriguez"}], "baptism_name": null}
+	}, {
+		"id": "A89", "name": "Zé Pedro Trigo", "email": null, "nmec": 98597, "sex": "M", "image": "", "parent": "018", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Trigor"}], "baptism_name": null}
+	}, {
+		"id": "A96", "name": "Filipe Seabra Gonçalves", "email": "", "nmec": 98083, "sex": "M", "image": "", "parent": "A34", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Filipino"}], "baptism_name": "Contra do Senhor"}
+	}, {
+		"id": "A97", "name": "Vasco Regal Sousa", "email": null, "nmec": 97636, "sex": "M", "image": "", "parent": "A34", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Bolastro"}], "baptism_name": null}
+	}, {
+		"id": "A98", "name": "João Borges", "email": null, "nmec": 98155, "sex": "M", "image": "", "parent": "A34", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Borges"}], "baptism_name": null}
+	}, {
+		"id": "A99", "name": "Pedro Duarte", "email": null, "nmec": 97673, "sex": "M", "image": "", "parent": "A34", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Pedrófilo"}], "baptism_name": null}
+	}, {
+		"id": "B10", "name": "Camila Fonseca", "email": null, "nmec": 97880, "sex": "F", "image": "", "parent": "B08", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Hydreigon Prime (Max)"}], "baptism_name": null}
+	}, {
+		"id": "B11", "name": "Catarina Oliveira", "email": null, "nmec": 98292, "sex": "F", "image": "", "parent": "B08", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B28", "name": "Diana Siso", "email": null, "nmec": 98607, "sex": "F", "image": "", "parent": "018", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Sisor"}], "baptism_name": null}
+	}, {
+		"id": "B30", "name": "Miguel Ferreira", "email": "", "nmec": 98599, "sex": "M", "image": "B30.jpg", "parent": "B27", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Miguel"}], "baptism_name": "Miguel Stormborn of the House Targaryen, First of His Name, The Unburnt, King of The Andals and the First Men, Khal of the Great Grass Sea, Breaker of Chains and Father of Dragons"}
+	}, {
+		"id": "B29", "name": "Isabel Rosário", "email": null, "nmec": 93343, "sex": "F", "image": "", "parent": "018", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Rosarion"}], "baptism_name": null}
+	}, {
+		"id": "B39", "name": "Renato Dias", "email": null, "nmec": 98380, "sex": "M", "image": "", "parent": "B38", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Renato"}], "baptism_name": null}
+	}, {
+		"id": "B41", "name": "João Bernardo", "email": "joaobernardo0@ua.pt", "nmec": 98679, "sex": "M", "image": "B41.jpeg", "parent": "A63", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Bernas"}], "baptism_name": "scotch brite baljeet"}
+	}, {
+		"id": "B42", "name": "Diogo Cruz", "email": null, "nmec": 98595, "sex": "M", "image": "", "parent": "A63", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": "Dão rey el leitono dil papi"}], "baptism_name": null}
+	}, {
+		"id": "083", "name": "Vicente Barros", "email": null, "nmec": 97787, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "LEI", "start_year": 19, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 20, "name": null}], "baptism_name": null}
+	},
+
+
+	{
+		"id": "075", "name": "Guilherme Antunes", "email": null, "nmec": 103600, "sex": "M", "image": "", "parent": "A86", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "076", "name": "Catarina Costa", "email": null, "nmec": 103696, "sex": "F", "image": "", "parent": "083", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "077", "name": "João Sousa", "email": null, "nmec": 103415, "sex": "M", "image": "", "parent": "A81", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "Z77", "name": "João Morais", "email": null, "nmec": 103730, "sex": "M", "image": "", "parent": "A80", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "078", "name": "João Matos", "email": null, "nmec": 103182, "sex": "M", "image": "", "parent": "082", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "079", "name": "João Almeida Matos", "email": null, "nmec": 103341, "sex": "M", "image": "", "parent": "A80", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "080", "name": "Rafael Gonçalves", "email": null, "nmec": 102534, "sex": "M", "image": "", "parent": "033", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "081", "name": "Tiago Sora", "email": "", "nmec": 104142, "sex": "M", "image": "", "parent": "A80", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Mumbly canem index"}
+	}, {
+		"id": "B31", "name": "João Campos", "email": null, "nmec": 103426, "sex": "M", "image": "", "parent": "027", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": 20}], 
+		"insignias": [], 
+		"faina": null
+	}, {
+		"id": "B32", "name": "Tomás Almeida", "email": null, "nmec": 103300, "sex": "M", "image": "", "parent": "027", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 21, "name": "Tomás"}], "baptism_name": null}
+	}, {
+		"id": "B33", "name": "Paulo Pinto", "email": "", "nmec": 103234, "sex": "M", "image": "", "parent": "027", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 21, "name": "Pinto"}], "baptism_name": "Rey Jiraya I wanna be your slave by Maneskin"}
+	}, {
+		"id": "B35", "name": "Raquel Paradinha", "email": null, "nmec": 102491, "sex": "F", "image": "", "parent": "014", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 21, "name": "Paradinha"}], "baptism_name": null}
+	}, {
+		"id": "B36", "name": "Vânia Morais", "email": null, "nmec": 102383, "sex": "F", "image": "", "parent": "014", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 21, "name": "Vânia"}], "baptism_name": null}
+	}, {
+		"id": "B37", "name": "André Francisco", "email": null, "nmec": 104333, "sex": "M", "image": "", "parent": "014", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": 20}], 
+		"insignias": [], 
+		"faina": null
+	}, {
+		"id": "B46", "name": "José Lopes", "email": null, "nmec": 103935, "sex": "M", "image": "", "parent": "036", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 21, "name": "Lopes"}], "baptism_name": null}
+	}, {
+		"id": "062", "name": "Pedro Rodrigues", "email": "pedrorlr@ua.pt", "nmec": 102432, "sex": "M", "image": "", "parent": "A78", 
+		"matriculations": [{"course": "LEI", "start_year": 20, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": ""}
+	},
+
+
+	{
+		"id": "040", "name": "Alexandre Cotorobai", "email": null, "nmec": 107489, "sex": "M", "image": "040.png", "parent": "A72", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "041", "name": "Bárbara Galiza", "email": "barbara.galiza@ua.pt", "nmec": 105937, "sex": "F", "image": "", "parent": "A77", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Ninetales"}
+	}, {
+		"id": "042", "name": "Cristiano Nicolau", "email": "cristianonicolau@ua.pt", "nmec": 108536, "sex": "M", "image": "", "parent": "A76", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Cr7 das Cabeçadas "}
+	}, {
+		"id": "043", "name": "Daniel Madureira", "email": "daniel.madureira@ua.pt", "nmec": 107603, "sex": "M", "image": "", "parent": "027", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Rey Nezuko, Lenhador nos tempos ocupados"}
+	}, {
+		"id": "044", "name": "David Sanches", "email": "davidgomessanches5@ua.pt", "nmec": 110183, "sex": "M", "image": "", "parent": "A63", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": ""}
+	}, {
+		"id": "045", "name": "Diana Miranda", "email": "", "nmec": 107457, "sex": "F", "image": "045.JPG", "parent": "030", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": null
+	}, {
+		"id": "046", "name": "Diogo Falcão", "email": "falcao.diogo@ua.pt", "nmec": 108712, "sex": "M", "image": "046.jpg", "parent": "038", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Toby das Elisas"}
+	}, {
+		"id": "047", "name": "Diogo Almeida", "email": null, "nmec": 108902, "sex": "M", "image": "", "parent": "A69", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "C01", "name": "Diogo Silva", "email": null, "nmec": 107647, "sex": "M", "image": "", "parent": "008", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "048", "name": "Duarte Cruz", "email": null, "nmec": 107359, "sex": "M", "image": "", "parent": "A61", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "049", "name": "Gabriel Teixeira", "email": "gabrielm.teixeira@ua.pt", "nmec": 107876, "sex": "M", "image": "", "parent": "038", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Oliver dos skates"}
+	}, {
+		"id": "050", "name": "Gonçalo Sousa", "email": null, "nmec": 108133, "sex": "M", "image": "", "parent": "A75", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "051", "name": "Gonçalo Ferreira", "email": null, "nmec": 107853, "sex": "M", "image": "", "parent": "A89", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "052", "name": "Hugo Correia", "email": null, "nmec": 108215, "sex": "M", "image": "", "parent": "A96", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "053", "name": "Joana Gomes", "email": "joanaagomes@ua.pt", "nmec": 104429, "sex": "F", "image": "", "parent": "A71", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Prof Joana"}
+	}, {
+		"id": "054", "name": "João Luís", "email": null, "nmec": 107403, "sex": "M", "image": "", "parent": "036", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": "Zé Luís"}], "baptism_name": null}
+	}, {
+		"id": "055", "name": "Joaquim Rosa", "email": null, "nmec": 109089, "sex": "M", "image": "", "parent": "A96", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "056", "name": "José Gameiro", "email": "", "nmec": 108840, "sex": "M", "image": "", "parent": "030", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": "Gameiro"}], "baptism_name": "Foorier, o Último Mática"}
+	}, {
+		"id": "A74", "name": "José Pedro Mendes", "email": null, "nmec": 107188, "sex": "M", "image": "", "parent": "A73", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "057", "name": "Liliana Ribeiro", "email": null, "nmec": 108713, "sex": "F", "image": "", "parent": "027", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "058", "name": "Maria Abrunhosa", "email": "maria.abrunhosa@ua.pt", "nmec": 107658, "sex": "F", "image": "058.JPG", "parent": "A71", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Mulher do robe"}
+	}, {
+		"id": "059", "name": "Mariana Perna", "email": "marianaperna@ua.pt", "nmec": 108067, "sex": "F", "image": "059.jpg", "parent": "A61", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Queen Brain"}
+	}, {
+		"id": "060", "name": "Marta Inácio", "email": "marta.oliveira.inacio@ua.pt", "nmec": 107826, "sex": "F", "image": "060.jpeg", "parent": "A75", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Caslick do Nordeste "}
+	}, {
+		"id": "061", "name": "Matilde Teixeira", "email": null, "nmec": 108193, "sex": "F", "image": "", "parent": "A75", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "A90", "name": "Pedro Rei", "email": null, "nmec": 107463, "sex": "M", "image": "", "parent": "A89", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "063", "name": "Rafael Vilaça", "email": null, "nmec": 107476, "sex": "M", "image": "", "parent": "008", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "064", "name": "Rafael Kauati", "email": "rafaelkauati@ua.pt", "nmec": 105925, "sex": "M", "image": "", "parent": "027", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Rey do Pitu "}
+	}, {
+		"id": "A88", "name": "Rafael Ferreira", "email": null, "nmec": 107340, "sex": "M", "image": "", "parent": "A87", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "065", "name": "Rafaela Dias", "email": null, "nmec": 108782, "sex": "F", "image": "", "parent": "A61", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "066", "name": "Rodrigo Azevedo", "email": null, "nmec": 107298, "sex": "M", "image": "", "parent": "000", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "067", "name": "Rodrigo Graça", "email": null, "nmec": 107634, "sex": "M", "image": "", "parent": "A87", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "068", "name": "Rodrigo Aguiar", "email": "rodrigoaguiar96@ua.pt", "nmec": 108969, "sex": "M", "image": "", "parent": "A70", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "El Rey Ruru sempre aguiar no JS"}
+	}, {
+		"id": "069", "name": "Tiago Gomes", "email": null, "nmec": 108307, "sex": "M", "image": "", "parent": "A71", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": "Caridade"}], "baptism_name": null}
+	}, {
+		"id": "070", "name": "Tomás Victal", "email": null, "nmec": 109018, "sex": "M", "image": "", "parent": "A78", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "071", "name": "Tomás Matos", "email": "tomas.matos@ua.pt", "nmec": 108624, "sex": "M", "image": "071.jpg", "parent": "A89", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": "Sir Marmeladas 1o de sua linhagem "}
+	}, {
+		"id": "072", "name": "Vasco Vouzela", "email": null, "nmec": 108130, "sex": "M", "image": "", "parent": "027", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "073", "name": "Vasco Faria", "email": null, "nmec": 107323, "sex": "M", "image": "", "parent": "082", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "074", "name": "Vitor Santos", "email": null, "nmec": 107186, "sex": "M", "image": "", "parent": "033", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}, {
+		"id": "B03", "name": "Sara Almeida", "email": null, "nmec": 108796, "sex": "F", "image": "", "parent": "A96", 
+		"matriculations": [{"course": "LEI", "start_year": 21, "end_year": null}], 
+		"insignias": [], 
+		"faina": {"eqv_years": 0, "names": [{"year": 22, "name": null}], "baptism_name": null}
+	}
+]
