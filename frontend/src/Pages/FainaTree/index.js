@@ -302,7 +302,7 @@ function buildTree() {
     .attr('patternContentUnits', 'objectBoundingBox')
     .append("image")
     .attr("xlink:xlink:href", function (d) {
-      return d.data.image ? d.data.image :
+      return d.data.image ? process.env.PUBLIC_URL  + '/FainaTree/' + d.data.image :
         d.data.sex === "M" ? malePic : femalePic;
     })
     .attr("height", 1)
