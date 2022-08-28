@@ -1,0 +1,45 @@
+.list-view-header {
+    font-weight: bold;
+    border-bottom: 2px solid lightgrey;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    color: var(--text-primary);
+}
+
+.list-view-item {
+    padding: 0;
+    border: none !important;
+    border-bottom: 1px solid #dfdfdf !important;
+    border-radius: 0 !important;
+}
+
+.list-view-item .card-header {
+    padding: 8px 15px;
+    background-color: var(--background);
+    border-radius: 0;
+    margin-left: -15px;
+    margin-right: -15px;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+.list-view-item .card-body {
+    padding-top: 10px;
+    padding-bottom: 8px;
+    color: var(--text-primary);
+    
+}
+
+.list-view-item .card-header:hover {
+    background-color: var(--hover);
+}
+
+.list-view-name, .list-view-subject-name, .list-view-subject-short {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card{
+    background-color: var(--background)!important;
+}

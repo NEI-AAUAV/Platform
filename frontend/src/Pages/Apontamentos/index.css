@@ -1,0 +1,72 @@
+
+@media screen and (max-width: 425px) {
+    #apontamentosPage .nav .page-link {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+    }
+}
+
+.badge {
+    color: white;
+    margin-left: 6px;
+}
+
+.tag-summary {
+    background-color: #ffa200;
+}
+.tag-tests {
+    background-color: #147a26;
+}
+.tag-biblio {
+    background-color: #01cae4;
+}
+.tag-slides {
+    background-color: #015a65;
+}
+.tag-exercises {
+    background-color: #20c53e;
+}
+.tag-projects {
+    background-color: #65e67d;
+}
+.tag-notebook {
+    background-color: #d31115;
+}
+
+.tag-new {
+    color: #147a26;
+    border: 1px solid #147a26;
+}
+
+.react-select {
+    margin-bottom: 1em;
+    
+}
+/*
+.css-yk16xz-control{
+    background-color: var(--background)!important;
+}
+
+.css-yk16xz-control:focus{
+    background-color: var(--background)!important;
+}
+
+.css-1pahdxg-control{
+    background-color: var(--background)!important;
+}
+
+.css-26l3qy-menu{
+    background-color: var(--background)!important;
+    color: var(--text-primary);
+}
+
+.css-26l3qy-menu:{
+    color: var(--text-primary);
+}
+*/
+
+
+
+.filtros {
+    z-index:4;
+}
