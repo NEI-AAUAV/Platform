@@ -4,8 +4,11 @@ import {
     Row, Spinner
 } from "react-bootstrap";
 import Document from "../../Components/Document";
-import Tabs from "../../Components/Tabs";
+
+import YearTabs from "Components/YearTabs";
+import Box from '@mui/material/Box';
 import Typist from "react-typist";
+
 
 const validCategories = {
     'PAO': {
@@ -89,11 +92,13 @@ const RGM = () => {
             {
                 // Only show tabs to ATAS category
                 id.toUpperCase() == "ATAS" &&
-                <Tabs
-                    tabs={[...new Set(docs.map(doc => doc.mandato))]}
-                    _default={tab}
-                    onChange={changeTab}
-                />
+                <Box sx={{ maxWidth: { xs: "100%", md: "700px" }, margin: "auto", marginBottom: "50px" }}>
+                    <YearTabs
+                        years={[...new Set(docs.map(doc => doc.mandato))]}
+                        value={tab}
+                        onChange={changeTab}
+                    />
+                </Box>
             }
             {
                 loading &&
