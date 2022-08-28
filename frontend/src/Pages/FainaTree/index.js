@@ -292,22 +292,23 @@ function buildTree() {
   // node images
   d3.select("defs")
     .selectAll("pattern.image")
-    .data(root.descendants().slice(1))
+    .data(root.descendants().slice(1).filter(d => !!d.data.image))
     .enter()
     .append("pattern")
     .attr("id", d => d.data.id)
-    .attr("class", "image")
     .attr('width', 1)
     .attr('height', 1)
     .attr('patternContentUnits', 'objectBoundingBox')
     .append("image")
-    .attr("xlink:xlink:href", function (d) {
-      return d.data.image ? process.env.PUBLIC_URL  + '/FainaTree/' + d.data.image :
-        d.data.sex === "M" ? malePic : femalePic;
-    })
+    .attr("xlink:xlink:href", d => process.env.PUBLIC_URL  + '/FainaTree/' + d.data.image)
     .attr("height", 1)
     .attr("width", 1)
     .attr("preserveAspectRatio", "xMidYMid slice");
+
+  const getNodeImageId = (d) => {
+    return d.data.image ? d.data.id :
+      d.data.sex === "M" ? "default_male" : "default_female";
+  }
 
   // circle with the person image
   const nodesProfilePic = nodes
@@ -316,7 +317,7 @@ function buildTree() {
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", 10)
-    .style("fill", d => `url(#${d.data.id})`);
+    .style("fill", d => `url(#${getNodeImageId(d)})`);
 
   nodes
     .insert("g", "circle.profile-pic")
@@ -466,7 +467,7 @@ function buildTree() {
 
   function updateNodes(close) {
     nodesProfilePic
-      .style("fill", d => close ? `url(#${d.data.id})` : "none")
+      .style("fill", d => close ? `url(#${getNodeImageId(d)})` : "none")
       .transition().duration(300)
       .attr("r", close ? 18 : 10);
 
