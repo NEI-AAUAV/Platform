@@ -24,7 +24,6 @@ const Video = () => {
         fetch(process.env.REACT_APP_API + "/videos/?video=" + id)
             .then((response) => response.json())
             .then((response) => {
-                console.log("GOT RESPONSE", response);
                 if ('data' in response) {
                     setVideo(response['data']);
                 } else {

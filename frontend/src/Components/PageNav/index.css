@@ -1,10 +1,10 @@
 .page-link {
-    color: #28a745 !important;
+    color: var(--text-primary)!important ;
+    background-color: var(--background)!important ;
 }
 
 .page-item.active .page-link {
-    color: white !important;
-    background-color: #28a745 !important;
+    color: var(--text-primary)!important ;
+    background-color: var(--background)!important ;
     border-color: #28a745 !important;
-    z-index: 0 !important;
 }

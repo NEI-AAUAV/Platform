@@ -9,9 +9,48 @@ import PageNav from '../../Components/PageNav';
 import Filters from "../../Components/Filters";
 import Alert from '../../Components/Alert';
 import Details from "./Details";
-import Select from "react-select";
+import Select from "Components/Select";
 import Typist from 'react-typist';
 import categoryFilters from './filters';
+
+
+const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+        backgroundColor: "var(--background)",
+        color:"var(--text-primary)"
+    }),
+  
+    control: (provided) => ({
+    //   width: width
+    ...provided,
+        backgroundColor: "var(--background)",
+        color:"var(--text-primary)"
+    }),
+
+    placeholder: (provided, state) => ({
+        ...provided,
+        opacity: 1,
+        color: "var(--text-primary)",
+      }),
+
+    option: (provided, state) => ({
+        ...provided,
+        // borderBottom: '1px dotted pink',
+        //color: state.isSelected ? 'red' : 'blue',
+        // padding: 20,
+        backgroundColor: "var(--background)",
+        color:"var(--text-primary)"
+      }),
+
+    singleValue: (provided, state) => {
+        const opacity = state.isDisabled ? 0.5 : 1;
+        const transition = 'opacity 300ms';
+        const color = "var(--text-primary)";
+        return { ...provided, opacity, transition, color };
+    },
+ 
+  }
 
 const Apontamentos = () => {
 
@@ -55,8 +94,6 @@ const Apontamentos = () => {
 
 
     const fetchPage = (p_num) => {
-        console.log("currPage: " + selPage + ", new_page: " + p_num);
-
         setSelPage(p_num);
     }
 
@@ -100,7 +137,7 @@ const Apontamentos = () => {
                 }
             })
             .catch((error) => {
-                console.log("Error getting thanks", error);
+                console.error("Error getting thanks", error);
             });
     }, []);
 
@@ -202,7 +239,7 @@ const Apontamentos = () => {
                     setLoading(false);
                 })
                 .catch((error) => {
-                    console.log("Error getting notes!");
+                    console.error("Error getting notes!");
                     setAlert({
                         'type': 'alert',
                         'text': 'Ocorreu um erro ao processar o teu pedido. Por favor recarrega a página.'
@@ -233,7 +270,7 @@ const Apontamentos = () => {
                 }
             })
             .catch((error) => {
-                console.log("Invalid parameters (no \"years\" matching)!");
+                console.error("Invalid parameters (no \"years\" matching)!");
                 resetFilters();
                 setAlert({
                     'type': 'alert',
@@ -263,7 +300,7 @@ const Apontamentos = () => {
                 }
             })
             .catch((error) => {
-                console.log("Invalid parameters (no \"subjects\" matching)!");
+                console.error("Invalid parameters (no \"subjects\" matching)!");
                 resetFilters();
                 setAlert({
                     'type': 'alert',
@@ -291,7 +328,7 @@ const Apontamentos = () => {
                 }
             })
             .catch((error) => {
-                console.log("Invalid parameters (no \"students\" matching)!");
+                console.error("Invalid parameters (no \"students\" matching)!");
                 resetFilters();
                 setAlert({
                     'type': 'alert',
@@ -319,7 +356,7 @@ const Apontamentos = () => {
                 }
             })
             .catch((error) => {
-                console.log("Invalid parameters (no \"teachers\" matching)!");
+                console.error("Invalid parameters (no \"teachers\" matching)!");
                 resetFilters();
                 setAlert({
                     'type': 'alert',
@@ -369,6 +406,8 @@ const Apontamentos = () => {
         setShownAuth("");
         setShownTeacher("");
     }
+
+    
 
     return (
         <div id="apontamentosPage">
@@ -432,6 +471,7 @@ const Apontamentos = () => {
 
                         <Select
                             id="teste"
+                            styles={customStyles}
                             className="react-select"
                             options={years}
                             onChange={(e) => { if (e == null) { setSelYear(""); setShownYear("") } else setSelYear(e.value); }}
@@ -443,6 +483,7 @@ const Apontamentos = () => {
 
                         <Select
                             className="react-select"
+                            styles={customStyles}
                             options={subjects}
                             onChange={(e) => { if (e == null) { setSelectedSubject(""); setShownSubj("") } else setSelectedSubject(e.value) }}
                             placeholder="Cadeira..."
@@ -452,6 +493,7 @@ const Apontamentos = () => {
 
                         <Select
                             className="react-select"
+                            styles={customStyles}
                             options={student}
                             onChange={(e) => { if (e == null) { setSelStudent(""); setShownAuth("") } else setSelStudent(e.value) }}
                             placeholder="Autor..."
@@ -461,6 +503,7 @@ const Apontamentos = () => {
 
                         <Select
                             className="react-select"
+                            styles={customStyles}
                             options={teachers}
                             onChange={(e) => { if (e == null) { setSelTeacher(""); setShownTeacher("") } else setSelTeacher(e.value) }}
                             placeholder="Professor..."

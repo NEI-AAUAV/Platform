@@ -5,7 +5,12 @@
 .timeline-card {
     border: 1px solid grey;
     border-radius: 0.30em;
-    box-shadow: 0 3px 0 #ddd;
+    box-shadow: 0 3px 0 var(--card-shadow)!important;
+    background-color: var(--background-third)!important;
+}
+
+.timeline-date {
+    color: var(--text-primary)!important;
 }
 
 .timeline-marker img {
@@ -20,6 +25,7 @@
 
 .timeline-item:nth-child(2n) .timeline-date {
     text-align: right;
+    
 }
 
 /* For smaller screens (992px is bootstrap's LG breakpoint) */
@@ -40,3 +46,4 @@
     transform: translateX(500px);
     animation: bounce-in 0.8 ease forwards;
 }
+
