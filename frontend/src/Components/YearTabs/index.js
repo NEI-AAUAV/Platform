@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -9,13 +8,14 @@ const YearTab = styled((props) => <Tab disableRipple {...props} />)({
     fontFamily: "inherit",
     fontWeight: "inherit",
     fontSize: "inherit",
-    color: 'inherit',
+    color: "var(--text-primary)",
+
     '&:hover': {
         color: 'rgb(78, 156, 54)',
         fontWeight: "400",
     },
     '&.Mui-selected': {
-        color: 'inherit',
+        color: "var(--text-primary)",
         fontWeight: "400",
     },
     '&.Mui-focusVisible': {
@@ -31,14 +31,14 @@ const YearTab = styled((props) => <Tab disableRipple {...props} />)({
 
 const YearTabs = styled(({ years, value, onChange, ...props }) => (
     <Tabs
-        value={years?.indexOf(value)}
+        value={years?.indexOf(value || years[0])}
         onChange={(e, v) => onChange(years[v])}
         variant="scrollable"
         scrollButtons
         TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
         {...props}
     >
-        {years?.map((value) => <YearTab label={value} />)}
+        {years?.map((value) => <YearTab key={value} label={value} />)}
     </Tabs>
 ))({
     '& .MuiTabs-scrollButtons': {
@@ -46,7 +46,7 @@ const YearTabs = styled(({ years, value, onChange, ...props }) => (
         color: "#363636",
         alignSelf: "center",
         height: "40px",
-        borderRadius: "50%"
+        borderRadius: "50%",
     },
     '& .MuiTabs-indicator': {
         display: 'flex',
@@ -57,7 +57,7 @@ const YearTabs = styled(({ years, value, onChange, ...props }) => (
         width: "10px",
         height: "10px",
         transform: "rotate(45deg)",
-        backgroundColor: "white",
+        backgroundColor: "var(--background)",
         display: "inline-block",
         position: "absolute",
         borderTop: "rgb(180, 178, 178) 1px solid",

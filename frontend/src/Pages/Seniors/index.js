@@ -24,15 +24,15 @@ const Seniors = () => {
     let animKey = 0; // index for delaying animations
 
     const [people, setPeople] = useState([]);
+    const [years, setYears] = useState([]);
     const [selectedYear, setSelectedYear] = useState();
-    const [anos, setAnos] = useState();
     const [img, setImg] = useState();
 
     const [namesOnly, setNamesOnly] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setAnos(null); // hack to update typist title
+        setYears(null); // hack to update typist title
 
         // get list of courses to check if 'id' is valid
         fetch(process.env.REACT_APP_API + "/seniors/courses/")
@@ -53,16 +53,8 @@ const Seniors = () => {
             .then((response) => {
                 var anos = response.data.map((curso) => curso.year).sort((a, b) => b - a);
                 if (anos.length > 0) {
-                    setSelectedYear(anos[0])
-                    setAnos(
-                        <Box sx={{ maxWidth: { xs: "100%", md: "900px" }, margin: "auto", marginBottom: "50px" }}>
-                            <YearTabs
-                                years={anos}
-                                value={anos[0]}
-                                onChange={setSelectedYear}
-                            />
-                        </Box>
-                    )
+                    setYears(anos);
+                    setSelectedYear(anos[0]);
                 }
                 else {
                     throw new Error("Not available");
@@ -103,9 +95,15 @@ const Seniors = () => {
     return (
         <div className="d-flex flex-column flex-wrap pb-5 mb-5">
             <h2 className="mb-5 text-center">
-                {anos && <Typist>{"Finalistas de " + id}</Typist>}
+                {years && <Typist>{"Finalistas de " + id}</Typist>}
             </h2>
-            {anos}
+            <Box sx={{ maxWidth: { xs: "100%", md: "900px" }, margin: "auto", marginBottom: "50px" }}>
+                <YearTabs
+                    years={years}
+                    value={selectedYear}
+                    onChange={setSelectedYear}
+                />
+            </Box>
             {
                 loading
                     ?

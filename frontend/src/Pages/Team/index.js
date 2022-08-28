@@ -24,8 +24,6 @@ const Team = () => {
     const [people, setPeople] = useState();
     const [colaborators, setColaborators] = useState();
 
-    const yearsC = years.map((el, index) => <Tabs year={years[index]} func={setSelectedYear} />)
-
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-//import { fs } from "fs";
 import { Button, Row, Col, Container } from "react-bootstrap";
 import Image from 'react-bootstrap/Image';
 import "./index.css";
@@ -24,9 +23,9 @@ const Merchandising = () => {
                     setImgs(response.data.map((img, idx) =>
                         <div
                             className={
-                                idx % 2 == 0 
-                                ? "impar text-center slideUpFade"
-                                : "par2 text-center slideUpFade"
+                                idx % 2 == 0
+                                    ? "impar text-center slideUpFade"
+                                    : "par2 text-center slideUpFade"
                             }
                             style={{
                                 animationDelay: animationBase + animationIncrement * idx + "s",
@@ -35,9 +34,9 @@ const Merchandising = () => {
                             <Row className="mx-0">
                                 <Col lg={idx % 2 == 0 ? 4 : 8} md={6} sm={12} className={idx % 2 == 0 ? "order-0 d-flex" : "order-1 d-flex"}>
                                     {
-                                        img.image 
-                                        ? <Image className="img my-auto mx-auto" src={process.env.REACT_APP_STATIC + img.image} style={{ width: 200 }} />
-                                        : <p className="text-center mx-auto my-auto small">Imagem disponível em breve.</p>
+                                        img.image
+                                            ? <Image className="img my-auto mx-auto" src={process.env.REACT_APP_STATIC + img.image} style={{ width: 200 }} />
+                                            : <p className="text-center mx-auto my-auto small">Imagem disponível em breve.</p>
                                     }
                                 </Col>
                                 <Col lg={idx % 2 == 0 ? 8 : 4} md={6} sm={12} className={idx % 2 == 0 ? "order-1" : "order-0"}>
@@ -50,38 +49,32 @@ const Merchandising = () => {
                     ));
                 }
             })
-
-
-
-
     }, [])
 
-return (
-    <div className="py-5">
-        <h2 style={{ position: "relative"}} className="mb-5 text-center">
-            <Typist>Merchandising</Typist>
-        </h2>
+    return (
+        <div className="py-5">
+            <h2 style={{ position: "relative" }} className="mb-5 text-center">
+                <Typist>Merchandising</Typist>
+            </h2>
 
-        {imgs}
+            {imgs}
 
-        <Row className="text-center mx-0" style={{ position: "relative" }}>
-            <a
-                href="https://aauav.pt/nucleos/"
-                target="_blank"
-                className="mx-auto"
-            >
-                <Button 
-                    variant="outline-primary"
-                    className="rounded-pill btn-outline-primary-force"
-                    size="lg"
-                >Comprar
+            <Row className="text-center mx-0" style={{ position: "relative" }}>
+                <a
+                    href="https://aauav.pt/nucleos/"
+                    target="_blank"
+                    className="mx-auto"
+                >
+                    <Button
+                        variant="outline-primary"
+                        className="rounded-pill btn-outline-primary-force"
+                        size="lg"
+                    >Comprar
                     </Button>
-            </a>
-        </Row>
-
-
-    </div>
-);
+                </a>
+            </Row>
+        </div>
+    );
 }
 
 export default Merchandising;

@@ -16,8 +16,8 @@ const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT)
 const Faina = () => {
 
     const [people, setPeople] = useState([]);
+    const [years, setYears] = useState([]);
     const [selectedYear, setSelectedYear] = useState();
-    const [anos, setAnos] = useState([]);
     const [img, setImg] = useState(null);
 
     const [loading, setLoading] = useState(true);
@@ -27,23 +27,12 @@ const Faina = () => {
         fetch(process.env.REACT_APP_API + "/faina/mandates/")
             .then((response) => response.json())
             .then((response) => {
-                var anos = response.data.map((curso) => curso.mandato).sort((a, b) => parseInt(b.split('/')[0]) - parseInt(a.split('/')[0]));
+                let anos = response.data.map((curso) => curso.mandato).sort((a, b) => parseInt(b.split('/')[0]) - parseInt(a.split('/')[0]));
                 if (anos.length > 0) {
-                    setSelectedYear(anos[0])
-                    setAnos(
-                    <Box sx={{ maxWidth: { xs: "100%", md: "900px" }, margin: "auto", marginBottom: "50px" }}>
-                        <YearTabs
-                            years={anos}
-                            value={anos[0]}
-                            onChange={setSelectedYear}
-                        />
-                    </Box>
-                    )
+                    setYears(anos);
+                    setSelectedYear(anos[0]);
                 }
-                else
-                    setAnos("");
-            })
-
+            });
     }, [])
 
     useEffect(() => {
@@ -56,6 +45,7 @@ const Faina = () => {
                 setPeople(response.data.members.map(
                     (person, i) =>
                         <TextList
+                            key={i}
                             colSize={12}
                             text={person.role + " " + person.name}
                             className="slideUpFade"
@@ -80,35 +70,32 @@ const Faina = () => {
             })
     }, [selectedYear])
 
-
-
     return (
         <div className="d-flex flex-column flex-wrap">
 
-            <div style={{whiteSpace: 'pre', overflowWrap: 'break-word'}}>
+            <div style={{ whiteSpace: 'pre', overflowWrap: 'break-word' }}>
                 <h2 className="mb-5 text-center">
                     <Typist>Comissão de Faina</Typist>
                 </h2>
             </div>
 
-            {anos}
-
+            <Box sx={{ maxWidth: { xs: "100%", md: "900px" }, margin: "auto", marginBottom: "50px" }}>
+                <YearTabs
+                    years={years}
+                    value={selectedYear}
+                    onChange={setSelectedYear}
+                />
+            </Box>
             {
                 loading
                     ?
                     <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
                     :
                     <>
-                        <Row>
-                            {img}
-                        </Row>
-
-                        <Row>
-                            {people}
-                        </Row>
+                        <Row>{img}</Row>
+                        <Row>{people}</Row>
                     </>
             }
-
         </div>
     )
 }
