@@ -25,7 +25,6 @@ const Error404 = () => {
             .then(json => {
                 setLoading(false);
                 if ('data' in json && json['data'].length) {
-                    console.log('redirect', json['data'][0]['redirect']);
                     setRedirect(json['data'][0]['redirect']);
                 }
             }).catch((error) => {

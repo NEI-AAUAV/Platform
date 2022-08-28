@@ -30,11 +30,11 @@ const Navbar = () => {
     }, []);
 
     return (
-        <div className={transparent ? "navbardiv col-12 p-0 position-fixed bg-transparent" : "navbardiv col-12 p-0 position-fixed bg-white"}>
+        <div className={transparent ? "navbardiv col-12 p-0 position-fixed" : "navbardiv col-12 p-0 position-fixed"}>
             <BNavbar
                 bg="transparent"
                 expand="lg"
-                className="px-0 col-11 col-sm-10 col-xxl-9 mx-auto"
+                className="px-0 col-11 col-sm-10 col-xxl-9 mx-auto navBar"
                 onToggle={(col) => setCollapsed(col)}
             >
                 <BNavbar.Brand as={Link} to="/">
@@ -56,7 +56,7 @@ const Navbar = () => {
                         <span></span>
                     </div>
                 </BNavbar.Toggle>
-                <BNavbar.Collapse id="basic-BNavbar-nav" className="bg-white small font-weight-bold">
+                <BNavbar.Collapse id="basic-BNavbar-nav" className=" small font-weight-bold">
                     <Nav className="mr-auto">
                         {
                             data.filter(d => d).map(

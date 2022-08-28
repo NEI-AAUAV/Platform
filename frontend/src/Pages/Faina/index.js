@@ -84,9 +84,12 @@ const Faina = () => {
 
     return (
         <div className="d-flex flex-column flex-wrap">
-            <h2 className="mb-5 text-center">
-                <Typist>Comissão de Faina</Typist>
-            </h2>
+
+            <div style={{whiteSpace: 'pre', overflowWrap: 'break-word'}}>
+                <h2 className="mb-5 text-center">
+                    <Typist>Comissão de Faina</Typist>
+                </h2>
+            </div>
 
             {anos}
 
@@ -105,8 +108,6 @@ const Faina = () => {
                         </Row>
                     </>
             }
-
-
 
         </div>
     )

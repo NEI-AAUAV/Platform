@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import { useParams } from 'react-router';
 import { Row, Spinner } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
@@ -19,26 +19,28 @@ const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT)
 const Seniors = () => {
 
     // get course from URL parameters
-    let {id} = useParams();
+    let { id } = useParams();
 
     let animKey = 0; // index for delaying animations
 
     const [people, setPeople] = useState([]);
     const [selectedYear, setSelectedYear] = useState();
-    const [anos, setAnos] = useState([]);
-    const [img, setImg] = useState("");
+    const [anos, setAnos] = useState();
+    const [img, setImg] = useState();
 
     const [namesOnly, setNamesOnly] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setAnos(null); // hack to update typist title
+
         // get list of courses to check if 'id' is valid
         fetch(process.env.REACT_APP_API + "/seniors/courses/")
             .then((response) => response.json())
             .then((response) => {
-                let courses = response["data"].map( el => el["course"] );
+                let courses = response["data"].map(el => el["course"]);
                 if (!courses.includes(id)) {
-                    window.location.href = "/404";
+                    throw new Error("Not available");
                 }
             }).catch((error) => {
                 window.location.href = "/404";
@@ -62,23 +64,23 @@ const Seniors = () => {
                         </Box>
                     )
                 }
-                else
-                    setAnos("");
+                else {
+                    throw new Error("Not available");
+                }
             }).catch((error) => {
                 window.location.href = "/404";
             });
-
-    }, [])
+    }, [id])
 
     useEffect(() => {
-        if (selectedYear == undefined) return;
+        if (selectedYear === undefined) return;
         setLoading(true);
 
-        fetch(process.env.REACT_APP_API + "/seniors/?course=" + id +"&year=" + selectedYear)
+        fetch(process.env.REACT_APP_API + "/seniors/?course=" + id + "&year=" + selectedYear)
             .then((response) => response.json())
             .then((response) => {
-                setNamesOnly( response.data.students[0]["quote"] == null &&
-                              response.data.students[0]["image"] == null );
+                setNamesOnly(response.data.students[0]["quote"] == null &&
+                    response.data.students[0]["image"] == null);
                 setPeople(response.data.students);
                 setImg(
                     <Image
@@ -96,16 +98,14 @@ const Seniors = () => {
             }).catch((error) => {
                 window.location.href = "/404";
             });
-    }, [selectedYear])
-
-
+    }, [selectedYear, id])
 
     return (
         <div className="d-flex flex-column flex-wrap pb-5 mb-5">
-            <h2 className="mb-5 text-center"><Typist>{"Finalistas de " + id}</Typist></h2>
-
+            <h2 className="mb-5 text-center">
+                {anos && <Typist>{"Finalistas de " + id}</Typist>}
+            </h2>
             {anos}
-
             {
                 loading
                     ?
@@ -114,17 +114,13 @@ const Seniors = () => {
                     <>
                         {
                             namesOnly &&
-                            <Row>
-                                {img}
-                            </Row>
+                            <Row>{img}</Row>
                         }
-                        
-
                         <Row>
                             {
                                 namesOnly ?
-                                    people.map(
-                                        (person, i) =>
+                                    people.map((person, index) =>
+                                        <Fragment key={index}>
                                             <TextList
                                                 colSize={3}
                                                 text={person.name}
@@ -133,10 +129,11 @@ const Seniors = () => {
                                                     animationDelay: animationBase + animationIncrement * 0 + "s"
                                                 }}
                                             />
+                                        </Fragment>
                                     )
-                                :
-                                    people.map(
-                                        (person, i) =>
+                                    :
+                                    people.map((person, index) =>
+                                        <Fragment key={index}>
                                             <SeniorsCard
                                                 name={person.name}
                                                 quote={person.quote}
@@ -150,13 +147,12 @@ const Seniors = () => {
                                                     animationDelay: animationBase + animationIncrement * animKey++ + "s"
                                                 }}
                                             />
+                                        </Fragment>
                                     )
                             }
-                            
                         </Row>
                     </>
             }
-
         </div>
     )
 }

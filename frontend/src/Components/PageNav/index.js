@@ -15,14 +15,15 @@ const PageNav = ({className, ...props}) => {
 
     // pass correct number to handler function
     const handlePage = (e) => {
-        if (e.target.attributes.value == undefined)
-            var val = e.target.parentElement.attributes.value.value;
+        let val;
+        if (e.target.attributes.value === undefined)
+            val = e.target.parentElement.attributes.value.value;
         else
-            var val = e.target.attributes.value.value;
+            val = e.target.attributes.value.value;
 
-        if (val == "prev")
+        if (val === "prev")
             props.handler(props.page-1);
-        else if (val == "next")
+        else if (val === "next")
             props.handler(props.page/1 +1);
         else
             props.handler(val);
@@ -68,8 +69,8 @@ const PageNav = ({className, ...props}) => {
     return(
         <Nav className={className}>
             <Pagination className="mx-auto mx-lg-0 ml-lg-auto mr-0">
-                <Pagination.First onClick={handlePage} value={1} disabled={props.page == 1} />
-                <Pagination.Prev  onClick={handlePage} value="prev" disabled={props.page == 1} />
+                <Pagination.First onClick={handlePage} value={1} disabled={props.page === 1} />
+                <Pagination.Prev  onClick={handlePage} value="prev" disabled={props.page === 1} />
 
                 {
                 // Not sure how to render this yet, so keeping the condition false for now
@@ -82,7 +83,7 @@ const PageNav = ({className, ...props}) => {
                         page =>
                         page>=1 
                         ?
-                        <Pagination.Item onClick={handlePage} active={page == props.page} value={page} key={page}>
+                        <Pagination.Item onClick={handlePage} active={page === props.page} value={page} key={page}>
                             {page}
                         </Pagination.Item>
                         :
@@ -96,8 +97,8 @@ const PageNav = ({className, ...props}) => {
                 <Pagination.Ellipsis />
                 }
 
-                <Pagination.Next onClick={handlePage} value="next" disabled={props.page == props.total}/>
-                <Pagination.Last onClick={handlePage} value={props.total} disabled={props.page == props.total}/>
+                <Pagination.Next onClick={handlePage} value="next" disabled={props.page === props.total}/>
+                <Pagination.Last onClick={handlePage} value={props.total} disabled={props.page === props.total}/>
             </Pagination>
         </Nav>
     );
