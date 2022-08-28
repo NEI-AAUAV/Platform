@@ -30,7 +30,7 @@
     margin-bottom: 2rem;
 }
 
-ul {
+ul.slideUpFade {
     list-style-type: none;
     display: flex;
     width: 40vw;
@@ -41,12 +41,12 @@ ul {
     height: 500px;
 }
 
-ul li{
+ul.slideUpFade li{
     position: relative;
     text-align: center;
 }
 
-ul li:hover {
+ul.slideUpFade li:hover {
     cursor: pointer;
 }
 
@@ -63,7 +63,7 @@ li.act::after {
 }
 
 @media screen and (max-width: 960px) { 
-    .lista ul {
+    .lista ul.slideUpFade {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -73,7 +73,7 @@ li.act::after {
         padding: 0;
     }
 
-    ul {
+    ul.slideUpFade {
         justify-content: center;
         align-items: center;
         width: 100%;
