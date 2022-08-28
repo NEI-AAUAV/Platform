@@ -19,6 +19,7 @@ import Apontamentos from "./Pages/Apontamentos";
 import FeedbackForm from './Pages/Forms/FeedbackForm';
 import Videos from "./Pages/Videos";
 import Video from "./Pages/Video";
+import Sports from "./Pages/Sports";
 import FainaTree from "./Pages/FainaTree";
 import Internship from "./Pages/Internship";
 
@@ -46,7 +47,11 @@ const routes = [
 			{ path: "/rgm/:id", element: <RGM /> },
 			{ path: "/historia", element: <History /> },
 			{ path: "/seniors/:id", element: <Seniors /> },
+			{ path: "/faina", element: <Faina/> },
+			{ path: "/videos", element: <Videos/> },
+			{ path: "/videos/:id", element: <Video/> },
 			{ path: "/estagios", element: <Internship /> },
+			{ path: "/desporto", element: <Sports/>},
 			{ path: "/faina", element: <Faina /> },
 			{ path: "/videos", element: <Videos /> },
 			{ path: "/videos/:id", element: <Video /> },

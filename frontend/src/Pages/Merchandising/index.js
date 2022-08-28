@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Row, Col, Container } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 import Image from 'react-bootstrap/Image';
 import "./index.css";
 import Typist from 'react-typist';
