@@ -4,7 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 import TextList from "../../Components/TextList";
 import Tabs from "../../Components/Tabs/index.js";
-import Game from './Game/Game';
+import Game from './Game';
 import img1 from "./img/unknown.png";
 import img2 from "./img/unknown2.png";
 import img3 from "./img/unknown3.png";
@@ -37,15 +37,15 @@ const Sports = () => {
         }}
     />);*/
 
-    useEffect(() => {
-      fetch(process.env.REACT_APP_API + "/sports/modalities")
-          .then(response => response.json())
-          .then((response) => {
-              if('data' in response) {
-                  setData(response["data"]);
-                  //console.log(data);
-              }
-          });
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API + "/sports/modalities")
+      .then(response => response.json())
+      .then((response) => {
+        if ('data' in response) {
+          setData(response["data"]);
+          //console.log(data);
+        }
+      });
   }, []);
 
   /*
@@ -69,24 +69,24 @@ const Sports = () => {
     setTabIndicator(value);
   }
 
-  function loadTab(){
+  function loadTab() {
     let result1 = [];
     let result2 = [];
     let bothGenders = false;
     let arr = [];
     let info = new Map;
 
-    for(let i=0; i<data.length; i++){
+    for (let i = 0; i < data.length; i++) {
       const map = new Map(Object.entries(data[i]));
-      if (arr.includes(map.get("name"))){
-        bothGenders=true;
+      if (arr.includes(map.get("name"))) {
+        bothGenders = true;
         info.set(map.get("name"), true);
       }
-      else{
+      else {
         arr.push(map.get("name"));
-        bothGenders=false;
+        bothGenders = false;
       }
-      if(!bothGenders){
+      if (!bothGenders) {
         if (tabIndicator === map.get("name"))
           result1.push(<li class="act">{map.get("name")}</li>);
         else
@@ -103,20 +103,20 @@ const Sports = () => {
     );
   }
 
-  function loadGenderTab(){
+  function loadGenderTab() {
     let result = [];
 
     window.info.forEach((value, key) => {
-        if (value && key==tabIndicator){
-          if (tabIndicatorSex==="Masculino"){
-            result.push(<li class="act">Masculino</li>);
-            result.push(<li onClick={() => setTabIndicatorSex("Feminino")}>Feminino</li>);
-          }
-          else{
-            result.push(<li onClick={() => setTabIndicatorSex("Masculino")}>Masculino</li>);
-            result.push(<li class="act">Feminino</li>);
-          }
+      if (value && key == tabIndicator) {
+        if (tabIndicatorSex === "Masculino") {
+          result.push(<li class="act">Masculino</li>);
+          result.push(<li onClick={() => setTabIndicatorSex("Feminino")}>Feminino</li>);
         }
+        else {
+          result.push(<li onClick={() => setTabIndicatorSex("Masculino")}>Masculino</li>);
+          result.push(<li class="act">Feminino</li>);
+        }
+      }
     });
 
     return (
@@ -140,34 +140,34 @@ const Sports = () => {
       >
         <Carousel fade style={{ marginBottom: "3rem" }}>
           <Carousel.Item interval={2000}>
-          <div className="carousel-image-wrapper">
-                        <img
-                            className="d-block w-100"
-                            src={img1}
-                            alt="Carousel One"
-                            style={{height: "100%", objectFit: "cover"}}
-                        />
-                    </div>
+            <div className="carousel-image-wrapper">
+              <img
+                className="d-block w-100"
+                src={img1}
+                alt="Carousel One"
+                style={{ height: "100%", objectFit: "cover" }}
+              />
+            </div>
           </Carousel.Item>
           <Carousel.Item interval={2000}>
-          <div className="carousel-image-wrapper">
-                        <img
-                            className="d-block w-100"
-                            src={img2}
-                            alt="Carousel One"
-                            style={{height: "100%", objectFit: "cover"}}
-                        />
-                    </div>
+            <div className="carousel-image-wrapper">
+              <img
+                className="d-block w-100"
+                src={img2}
+                alt="Carousel One"
+                style={{ height: "100%", objectFit: "cover" }}
+              />
+            </div>
           </Carousel.Item>
           <Carousel.Item interval={2000}>
-          <div className="carousel-image-wrapper">
-                        <img
-                            className="d-block w-100"
-                            src={img3}
-                            alt="Carousel One"
-                            style={{height: "100%", objectFit: "cover"}}
-                        />
-                    </div>
+            <div className="carousel-image-wrapper">
+              <img
+                className="d-block w-100"
+                src={img3}
+                alt="Carousel One"
+                style={{ height: "100%", objectFit: "cover" }}
+              />
+            </div>
           </Carousel.Item>
         </Carousel>
       </div>
