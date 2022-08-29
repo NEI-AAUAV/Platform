@@ -300,7 +300,7 @@ function buildTree() {
     .attr('height', 1)
     .attr('patternContentUnits', 'objectBoundingBox')
     .append("image")
-    .attr("xlink:xlink:href", d => process.env.PUBLIC_URL  + '/FainaTree/' + d.data.image)
+    .attr("xlink:xlink:href", d => process.env.PUBLIC_URL + '/treeei/optimized/' + d.data.image)
     .attr("height", 1)
     .attr("width", 1)
     .attr("preserveAspectRatio", "xMidYMid slice");
