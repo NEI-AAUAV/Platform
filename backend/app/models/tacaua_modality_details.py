@@ -12,8 +12,9 @@ class TacaUAModalityDetails(Base):
     name = Column(String(30))
     type = Column(Enum(TypeEnum, name="type_enum", create_type=False))
     gender = Column(Enum(GenderEnum, name="gender_enum", create_type=False))
-    pts_victory = Column(SmallInteger, default=0)
+    pts_win = Column(SmallInteger, default=0)
     pts_draw = Column(SmallInteger, default=0)
-    pts_defeat = Column(SmallInteger, default=0)
-
-
+    pts_loss = Column(SmallInteger, default=0)
+    pts_forfeit = Column(SmallInteger, default=0)
+    ff_scored_for = Column(SmallInteger, default=0)
+    ff_scored_agst = Column(SmallInteger, default=0)
