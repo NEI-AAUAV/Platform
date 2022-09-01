@@ -15,9 +15,10 @@ class FainaCreate(FainaBase):
     anoLetivo: Annotated[str, Field(max_length=9)]
 
 
-#class TacaUATeamUpdate():
-    # Reject updates
-#    pass
+class FainaUpdate(FainaBase):
+    """Properties to receive via API on update."""
+    imagem: Annotated[str, Field(max_length=255)]
+    anoLetivo: Annotated[str, Field(max_length=9)]
 
 
 class FainaInDB(FainaBase):
