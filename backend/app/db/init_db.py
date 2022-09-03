@@ -271,11 +271,16 @@ VIDEO_TAG = [
         "id": 1,
         "name": "test",
         "color": "orange"
+    },
+    {
+        "id": 2,
+        "name": "test",
+        "color": "orange"
     }]
 
 VIDEO = [
     {
-        "tag_id": [1],
+        "tag_id": [1,2],
         "ytld": "tjmk0C64eJg",
         "title": "test1111",
         "subtitle": "tetst",

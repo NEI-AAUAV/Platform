@@ -9,7 +9,7 @@ from typing import List
 
 class CRUDVideo(CRUDBase[Video, VideoCreate, VideoUpdate]):
 
-    def get_video_by_id(self, db: Session, id: int) -> List[VideoInDB]:
+    def get_video_by_id(self, db: Session, id: int) -> VideoInDB:
         """
         Return video by id.
         """

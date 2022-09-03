@@ -29,6 +29,8 @@ class Video(Base):
         print(self)
         print(key)
         print(value)
+        if not value:
+            return
 
         all_ids = [r.id for r in db.query(VideoTag.id).all()]
         non_existent_ids = [id for id in value if id not in all_ids]

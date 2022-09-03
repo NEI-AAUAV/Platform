@@ -5,7 +5,7 @@ from datetime import datetime
 
 from enum import Enum
 from typing_extensions import Annotated
-
+#from .users import UserInDB
 class StatusEnum(int, Enum):
      ACTIVE : 1
      INACTIVE : 0
@@ -30,9 +30,9 @@ class NewsBase(BaseModel):
 
 class NewsInDB(NewsBase):
      id: int
-     #publisher: {UserSchema}
-     #author: {UserSchema}
-     #editor: Option[{UserSchema}]
+     #publisher: UserInDB
+     #author: UserInDB
+     #editor: Optional[UserInDB]
 
      class Config:
           orm_mode = True

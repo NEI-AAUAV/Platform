@@ -17,7 +17,7 @@ class VideoBase(BaseModel):
 
 class VideoInDB(VideoBase):
     id: int
-    #tag: VideoTagInDB
+    tag: VideoTagInDB
     class Config:
         orm_mode = True
 
