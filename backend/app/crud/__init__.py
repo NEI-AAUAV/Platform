@@ -5,3 +5,6 @@ from .crud_faina import faina
 from .crud_faina_member import faina_member
 from .crud_faina_roles import faina_roles
 from .crud_notes import notes
+from .crud_team_roles import team_roles
+from .crud_team import team
+from .crud_team_colaborators import team_colaborators
