@@ -266,6 +266,32 @@ PARTNERS = [
     }
 ]
 
+VIDEO_TAG = [
+    {
+        "id": 1,
+        "name": "test",
+        "color": "orange"
+    }]
+
+VIDEO = [
+    {
+        "tag_id": [1],
+        "ytld": "tjmk0C64eJg",
+        "title": "test1111",
+        "subtitle": "tetst",
+        "image": "http://www.example.com",
+        "created": datetime(2022, 6, 19),
+        "playlist": 2
+    },
+    {
+        "tag_id": [1],
+        "ytld": "ejGxijpPpsE",
+        "title": "test2222",
+        "subtitle": "",
+        "image": "",
+        "created": datetime(2002, 6, 10)
+    }]
+
 
 @event.listens_for(TacaUATeam.__table__, "after_create")
 def insert_tacaua_teams(target, conn, **kwargs):
@@ -377,6 +403,17 @@ def insert_partners(target, conn, **kwargs):
         conn.execute(target.insert().values(**vals))
 
 
+@event.listens_for(VideoTag.__table__, "after_create")
+def insert_tacaua_games(target, conn, **kwargs):
+    for vals in VIDEO_TAG:
+        conn.execute(target.insert().values(**vals))
+
+
+@event.listens_for(Video.__table__, "after_create")
+def insert_tacaua_games(target, conn, **kwargs):
+    for vals in VIDEO:
+        conn.execute(target.insert().values(**vals))
+        
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly
 # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
