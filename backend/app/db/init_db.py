@@ -10,7 +10,7 @@ from app.models.notes_teachers import NotesTeachers
 from app.models.notes_thanks import NotesThanks
 from app.models.notes_types import NotesTypes
 from app.models.users import Users
-from .base import Base, TacaUATeam, TacaUAGame, History, Rgm, Merchandisings, Partners, Faina, FainaRoles, FainaMember, Seniors, SeniorsStudents, Team, TeamColaborators, TeamRoles
+from .base import Base, TacaUATeam, TacaUAGame, History, Rgm, Merchandisings, Partners, Faina, FainaRoles, FainaMember, Seniors, SeniorsStudents, Team, TeamColaborators, TeamRoles, Video, VideoTag
 from .session import engine
 
 USERS = [
