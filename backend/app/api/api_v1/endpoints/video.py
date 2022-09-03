@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=Union[List[VideoInDB], VideoInDB])
 def get_video(
-    *, category = None,
+    *, category = None, # list[str] testar
     video: int = None,
     page: int = None,
     db: Session = Depends(deps.get_db)
