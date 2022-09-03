@@ -108,12 +108,10 @@ USERS = [
 
 FAINA = [
     {
-        "mandato" : 1,
         "imagem" : "imagem_url",
         "anoLetivo": "2020/2021"
     },
     {
-        "mandato" : 2,
         "imagem" : "imagem_url",
         "anoLetivo": "2021/2022"
     }
@@ -128,7 +126,8 @@ FAINA_ROLES = [
 
 FAINA_MEMBER = [
     {
-        "year_id" : 1,
+        #"member_id" : 1,
+        "mandato_id" : 1,
         "role_id" : 1
     }
 ]

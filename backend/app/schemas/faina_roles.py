@@ -11,13 +11,13 @@ class FainaRolesBase(BaseModel):
 
 class FainaRolesCreate(FainaRolesBase):
     """Properties to receive via API on creation."""
-    name: Annotated[str, Field(max_length=20)]
+    pass
+
+
+class FainaRolesUpdate(FainaRolesBase):
+    """Properties to receive via API on creation."""
+    name: Annotated[Optional[str], Field(max_length=20)]
     weight: Optional[int]
-
-
-#class TacaUATeamUpdate():
-    # Reject updates
-#    pass
 
 
 class FainaRolesInDB(FainaRolesBase):

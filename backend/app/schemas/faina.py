@@ -11,14 +11,13 @@ class FainaBase(BaseModel):
 
 class FainaCreate(FainaBase):
     """Properties to receive via API on creation."""
-    imagem: Annotated[str, Field(max_length=255)]
-    anoLetivo: Annotated[str, Field(max_length=9)]
+    pass
 
 
 class FainaUpdate(FainaBase):
     """Properties to receive via API on update."""
-    imagem: Annotated[str, Field(max_length=255)]
-    anoLetivo: Annotated[str, Field(max_length=9)]
+    imagem: Annotated[Optional[str], Field(max_length=255)]
+    anoLetivo: Annotated[Optional[str], Field(max_length=9)]
 
 
 class FainaInDB(FainaBase):

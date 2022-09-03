@@ -4,4 +4,5 @@ from .tacaua_modality import TacaUAModalityCreate, TacaUAModalityUpdate, TacaUAM
 from .tacaua_team import TacaUATeamCreate, TacaUATeamUpdate, TacaUATeamInDB
 from .notes import NotesCreate, NotesUpdate, NotesInDB
 from .faina import FainaBase, FainaCreate, FainaInDB, FainaUpdate
-from .faina_roles import FainaRolesBase, FainaRolesCreate, FainaRolesInDB
+from .faina_roles import FainaRolesBase, FainaRolesCreate, FainaRolesInDB, FainaRolesUpdate
+from .faina_member import FainaMemberBase, FainaMemberInDB, FainaMemberUpdate, FainaMemberCreate
