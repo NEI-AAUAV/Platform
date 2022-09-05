@@ -18,6 +18,7 @@
     margin-bottom: 1rem;
     margin-right: auto;
     text-align: left!important;
+    color: var(--text-primary)
 }
 
 /* Days */
@@ -87,13 +88,13 @@
     border-right: none!important;
 }
 .rbc-date-cell a {
-    color: #000!important;
+    color: var(--text-primary)!important ;
 }
 .rbc-off-range a {
     color: #b3b3b3!important;
 }
 .rbc-off-range-bg {
-    background-color: rgba(242, 242, 242, 0.4);
+    background-color: var(--background-calendar);
 }
 .rbc-month-view .rbc-event-content {
     color: #fff!important;
@@ -132,6 +133,10 @@
 .rbc-agenda-table .rbc-agenda-event-cell {
     color: #fff!important;
     font-weight: bold;
+}
+
+.rbc-today {
+    background-color: var(--background-calendar-Today);
 }
 
 /* Responsiveness */
