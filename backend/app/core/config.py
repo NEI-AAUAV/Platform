@@ -36,8 +36,6 @@ class Settings(BaseSettings):
         f":{POSTGRES_PASSWORD}@{POSTGRES_SERVICE_NAME}" \
         f":5432/{POSTGRES_DB}"
 
-    # Default Pagination settings
-    PAGESIZE = 9
     class Config:
         case_sensitive = True
 

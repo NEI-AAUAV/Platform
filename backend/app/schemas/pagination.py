@@ -59,6 +59,3 @@ class Page(GenericModel, Generic[T]):
             first=first, last=last,
             prev=prev, next=next
         )
-
-    class Config:
-        orm_mode = True
