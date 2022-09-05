@@ -23,7 +23,7 @@ class Notes(Base):
     projects = Column(SmallInteger)
     notebook = Column(SmallInteger)
     content = Column(Text)
-    createdAt = Column(DateTime, index=True)
+    created_at = Column(DateTime, index=True)
     type_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".notes_types.id", name="fk_type_id"), index=True)
     size = Column(Integer)
 

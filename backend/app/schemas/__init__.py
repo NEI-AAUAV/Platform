@@ -3,5 +3,11 @@ from .tacaua_game import TacaUAGameCreate, TacaUAGameUpdate, TacaUAGameInDB
 from .tacaua_modality import TacaUAModalityCreate, TacaUAModalityUpdate, TacaUAModalityInDB
 from .tacaua_team import TacaUATeamCreate, TacaUATeamUpdate, TacaUATeamInDB
 from .notes import NotesCreate, NotesUpdate, NotesInDB
+from .notes_thanks import NotesThanksCreate, NotesThanksUpdate, NotesThanksInDB
+from .notes_schoolyear import NotesSchoolyearCreate, NotesSchoolyearUpdate, NotesSchoolyearInDB
+from .notes_subject import NotesSubjectCreate, NotesSubjectUpdate, NotesSubjectInDB
+from .notes_types import NotesTypesCreate, NotesTypesUpdate, NotesTypesInDB
+from .notes_teachers import NotesTeachersCreate, NotesTeachersUpdate, NotesTeachersInDB
 from .faina import FainaBase, FainaCreate, FainaInDB
 from .faina_roles import FainaRolesBase, FainaRolesCreate, FainaRolesInDB
+from .users import UsersCreate, UsersUpdate, UsersInDB
