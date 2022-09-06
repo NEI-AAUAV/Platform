@@ -68,34 +68,6 @@ NOTES_TEACHERS = [
     }
 ]
 
-
-TACAUA_TEAMS = [
-    {
-        "name": "Eng. de Computadores e Informática",
-        "image_url": "https://nei.web.ua.pt/nei.png",
-    },
-    {
-        "name": "Eng. Informática",
-        "image_url": "https://nei.web.ua.pt/nei.png",
-    },
-]
-
-TACAUA_GAMES = [
-    {
-        "team1_id": 1,
-        "team2_id": 2,
-        "goals1": 0,
-        "goals2": 10,
-        "date": datetime(2022, 6, 19)
-    },
-    {
-        "team1_id": 2,
-        "team2_id": 1,
-        "goals1": 11,
-        "goals2": 1,
-        "date": datetime(2022, 7, 19)
-    },
-]
 '''
 USERS = [
     {
@@ -266,17 +238,6 @@ PARTNERS = [
     }
 ]
 
-
-@event.listens_for(TacaUATeam.__table__, "after_create")
-def insert_tacaua_teams(target, conn, **kwargs):
-    for vals in TACAUA_TEAMS:
-        conn.execute(target.insert().values(**vals))
-
-
-@event.listens_for(TacaUAGame.__table__, "after_create")
-def insert_tacaua_games(target, conn, **kwargs):
-    for vals in TACAUA_GAMES:
-        conn.execute(target.insert().values(**vals))
 
 @event.listens_for(Faina.__table__, "after_create")
 def insert_faina(target, conn, **kwargs):

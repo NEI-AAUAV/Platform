@@ -3,10 +3,10 @@ from typing import Generator, Any
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
 from sqlalchemy.engine import Connection
+from sqlalchemy.schema import CreateSchema
 
 from app.api.deps import get_db
 from app.api.api_v1.api import api_router
@@ -20,17 +20,9 @@ from app.db.base_class import Base
 import app.main
 
 
-# Create a SQLite database specifically for testing and
+# Create a PostgreSQL database specifically for testing and
 # keep the original database untouched.
-#
-# A in memory database is faster and more secure.
-# SQLITE_DB = "./test_db.db"
-SQLITE_DB = ":memory:"
-SQLALCHEMY_DATABASE_URI = "sqlite:///" + SQLITE_DB
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URI, connect_args={"check_same_thread": False},
-    poolclass=StaticPool
-)
+engine = create_engine(settings.TEST_SQLALCHEMY_DATABASE_URI)
 SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -41,13 +33,13 @@ def connection():
     This only executes once for all tests.
     """
     connection = engine.connect()
-    connection.execute(
-        f'ATTACH DATABASE \'{SQLITE_DB}\' AS {settings.SCHEMA_NAME};')
-    # Create the tables
+    if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
+        event.listen(Base.metadata, "before_create", CreateSchema(settings.SCHEMA_NAME))
+
+    Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)
     yield connection
     Base.metadata.drop_all(engine)
-    connection.execute(f'DETACH DATABASE \'{settings.SCHEMA_NAME}\';')
     connection.close()
 
 
