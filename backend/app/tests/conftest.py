@@ -13,6 +13,12 @@ from app.db.base_class import Base
 
 from typing import Generator, Any
 
+# since we import .main, the code in it will be executed,
+# including the definition of the table models
+# this hack will automatically register the tables in Base.metadata
+import app.main
+
+
 # create a SQLite database specifically for testing
 # keep the original database untouched
 # a in memory database is faster and more secure
@@ -28,7 +34,7 @@ SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 @pytest.fixture(scope="session")
 def connection():
     """
-    Create a new database with every table for the test session.
+    Create a new database for the test session.
     This only executes once for all tests.
     """
     connection = engine.connect()
