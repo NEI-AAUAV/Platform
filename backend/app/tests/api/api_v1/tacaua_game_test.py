@@ -1,4 +1,3 @@
-from app.tests.conftest import SessionTesting
 import pytest
 from typing import Any
 from datetime import datetime
@@ -7,6 +6,7 @@ from fastapi.testclient import TestClient
 
 from app.core.config import settings
 from app.models import TacaUAGame, TacaUATeam
+from app.tests.conftest import SessionTesting
 
 
 tacaua_teams = [
@@ -54,6 +54,8 @@ def test_get_prev_tacaua_games(client: TestClient) -> None:
     data = r.json()
     assert r.status_code == 200
     assert len(data) == 1
+    assert data[0].items() >= game.items()
+    assert "id" in data[0]
 
 
 def test_get_prev_tacaua_games_with_10_past_games(
@@ -78,16 +80,39 @@ def test_get_prev_tacaua_games_with_10_future_games(
     data = r.json()
     assert r.status_code == 200
     assert len(data) == 1
+    assert data[0]["date"] != future_game["date"]
 
 
 def test_create_tacaua_game(client: TestClient) -> None:
     r = client.post(f"{settings.API_V1_STR}/tacaua/games/", json=game)
-    print(r.json())
+    data = r.json()
     assert r.status_code == 201
+    assert data.items() >= game.items()
+    assert "id" in data
+
+
+def test_create_tacaua_game_with_missing_field(client: TestClient) -> None:
+    bad_game = dict(game)
+    del bad_game["team1_id"]
+    r = client.post(f"{settings.API_V1_STR}/tacaua/games/", json=bad_game)
+    data = r.json()
+    assert r.status_code == 422
+    assert data["detail"][0]["loc"] == ['body', 'team1_id']
+    assert data["detail"][0]["msg"] == "field required"
 
 
 def test_update_tacaua_game(client: TestClient) -> None:
     game_id = 0
     r = client.put(f"{settings.API_V1_STR}/tacaua/games/{game_id}", json=game)
+    data = r.json()
     assert r.status_code == 200
+    assert data.items() >= game.items()
+    assert data["id"] == game_id
 
+
+def test_update_inexistent_tacaua_game(client: TestClient) -> None:
+    game_id = 99
+    r = client.put(f"{settings.API_V1_STR}/tacaua/games/{game_id}", json=game)
+    data = r.json()
+    assert r.status_code == 404
+    assert data["detail"] == "Game Not Found"

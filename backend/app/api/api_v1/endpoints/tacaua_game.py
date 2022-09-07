@@ -41,5 +41,5 @@ def update_tacaua_game(
     """
     tacaua_game = crud.tacaua_game.get(db=db, id=id)
     if not tacaua_game:
-        raise HTTPException(status_code=404, detail="Game not found")
+        raise HTTPException(status_code=404, detail="Game Not Found")
     return crud.tacaua_game.update(db=db, db_obj=tacaua_game, obj_in=tacaua_game_in)

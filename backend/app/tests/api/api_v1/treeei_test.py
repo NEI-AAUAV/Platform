@@ -1,56 +1,107 @@
-# from fastapi import APIRouter, File, UploadFile, Form, HTTPException
-# from fastapi.responses import JSONResponse
-# from typing import Any, List
-# from PIL import Image, ImageOps
-# import io
+import pytest
+import os
+from io import BytesIO
+
+from fastapi.testclient import TestClient
+from PIL import Image
+
+from app.core.config import settings
 
 
-# router = APIRouter()
+test_image_id = "T0"
+test_original_image_dir = "static/treeei/original/"
+test_optimized_image_dir = "static/treeei/optimized/"
 
 
-# @router.post("/", status_code=201)
-# async def create_treeei_node(
-#     *, id: str = Form(...), image: UploadFile = File(...)
-# ) -> JSONResponse:
-#     img_data = await image.read()
-#     img = Image.open(io.BytesIO(img_data))
-#     ext = img.format
-#     if not ext in ('JPEG', 'PNG'):
-#         raise HTTPException(status_code=406, detail="Image format not acceptable")
+@pytest.fixture(autouse=True)
+def run_around_tests():
+    yield
+    # Remove optimized test image created
+    if os.path.exists(test_optimized_image_dir + test_image_id):
+        os.remove(test_optimized_image_dir + test_image_id)
 
-#     # handle EXIF orientation tag
-#     img = ImageOps.exif_transpose(img)
+    # Remove original test image saved
+    dir = os.listdir(test_original_image_dir)
+    for file in dir:
+        if file.startswith(test_image_id):
+            os.remove(os.path.join(test_original_image_dir, file))
 
-#     # save original image on static folder
-#     img.save(f"static/treeei/original/{id}.{ext.lower()}")
 
-#     width, height = img.size
+def test_create_treeei_node_with_png_image(client: TestClient) -> None:
+    # Create a PNG test image
+    image = Image.new('RGBA', size=(50, 50), color=(256, 0, 0))
+    image_file = BytesIO()
+    image.save(image_file, 'PNG')
+    image_file.seek(0)
 
-#     # crop image to fit 1:1 ratio
-#     margin = abs(width - height) / 2
-#     if width > height:
-#         print((margin, 0, height, height))
-#         img = img.crop((margin, 0, margin + height, height))
-#     else:
-#         img = img.crop((0, margin, width, margin + width))
+    data = {
+        "id": test_image_id,
+    }
+    files = {
+        "image": ('img.png', image_file, 'image/png'),
+    }
+    test_optimized_path = test_optimized_image_dir + test_image_id
+    test_original_path = test_original_image_dir + test_image_id + ".png"
 
-#     # convert image mode to RGB to allow JPEG conversion
-#     img = img.convert("RGB")
+    r = client.post(f"{settings.API_V1_STR}/treeei/", files=files, data=data)
+    data = r.json()
+    assert data["id"] == test_image_id
+    assert data["image"] == test_optimized_path
+    assert os.path.exists(test_optimized_path)
+    assert os.path.exists(test_original_path)
 
-#     # resize image to 150x150 with the best quality resampling filter
-#     img = img.resize((150, 150), Image.LANCZOS)
+    optimized = Image.open(test_optimized_path)
+    original = Image.open(test_original_path)
 
-#     # quality parameter explained here:
-#     # https://github.com/python-pillow/Pillow/blob/main/src/PIL/JpegPresets.py
+    assert optimized.width, optimized.height == (50, 50)
+    assert original.width, original.height == (50, 50)
 
-#     # optimize and progressive flags explained here:
-#     # https://engineeringblog.yelp.com/2017/06/making-photos-smaller.html
 
-#     # save optimized image on static folder
-#     img.save(f"static/treeei/optimized/{id}",
-#                 format="JPEG",
-#                 quality="web_high",
-#                 optimize=True,
-#                 progressive=True)
+def test_create_treeei_node_with_jpeg_uncroped_image(client: TestClient) -> None:
+    # Create a JPEG uncroped test image
+    image = Image.new('RGB', size=(50, 100), color=(256, 0, 0))
+    image_file = BytesIO()
+    image.save(image_file, 'JPEG')
+    image_file.seek(0)
 
-#     return {"filename": id}
+    data = {
+        "id": test_image_id,
+    }
+    files = {
+        "image": ('img.JPG', image_file, 'image/jpeg'),
+    }
+    test_optimized_path = test_optimized_image_dir + test_image_id
+    test_original_path = test_original_image_dir + test_image_id + ".jpeg"
+
+    r = client.post(f"{settings.API_V1_STR}/treeei/", files=files, data=data)
+    data = r.json()
+    assert data["id"] == test_image_id
+    assert data["image"] == test_optimized_path
+    assert os.path.exists(test_optimized_path)
+    assert os.path.exists(test_original_path)
+
+    optimized = Image.open(test_optimized_path)
+    original = Image.open(test_original_path)
+
+    assert optimized.width, optimized.height == (50, 50)
+    assert original.width, original.height == (50, 100)
+
+
+def test_create_treeei_node_with_wrong_image_format(client: TestClient) -> None:
+    # Create a TIFF test image
+    image = Image.new('RGB', size=(50, 50), color=(256, 0, 0))
+    image_file = BytesIO()
+    image.save(image_file, 'TIFF')
+    image_file.seek(0)
+
+    data = {
+        "id": test_image_id,
+    }
+    files = {
+        "image": ('img.TIF', image_file, 'image/tiff'),
+    }
+
+    r = client.post(f"{settings.API_V1_STR}/treeei/", files=files, data=data)
+    data = r.json()
+    assert r.status_code == 406
+    assert data["detail"] == "Image Format Not Acceptable"
