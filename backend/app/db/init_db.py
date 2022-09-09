@@ -15,9 +15,8 @@ from .session import engine
 
 USERS = [
     {
-        "id": 1,
         "name": 'Pedro Monteiro',
-        "fullname": 'Pedro Miguel Afonso de Pina Monteiro',
+        "full_name": 'Pedro Miguel Afonso de Pina Monteiro',
         "uu_email": 'pmapm@ua.pt',
         "uu_yupi": 'x1x1',
         "curriculo": 'pedro_cv',
@@ -27,9 +26,8 @@ USERS = [
         "created_at": datetime(2022, 8, 4)
     },
     {
-        "id": 2,
         "name": "Eduardo",
-        "fullname": "Eduardo Rocha Fernandes",
+        "full_name": "Eduardo Rocha Fernandes",
         "uu_email": "eduardofernandes@ua.pt",
         "uu_yupi": 'x2x2',
         "curriculo": 'eduardo_cv',
@@ -37,20 +35,41 @@ USERS = [
         "git": 'eduardo_git',
         "permission": 'COLABORATOR',
         "created_at": datetime(2022, 8, 4)
-    }
+    },
+        {
+        "name": 'Name Test',
+        "full_name": 'Full Name Test',
+        "uu_email": 'test@ua.pt',
+        "uu_yupi": 'x1x1',
+        "curriculo": '',
+        "linkedin": '',
+        "git": '',
+        "permission": 'COLABORATOR',
+        "created_at": datetime(2022, 8, 8)
+    },
 ]
 
 NOTES_SCHOOL_YEAR = [
     {
-        "id": 1,
+        "yearBegin": 2020,
+        "yearEnd": 2023
+    },
+        {
         "yearBegin": 2020,
         "yearEnd": 2023
     }
 ]
 
 NOTES_SUBJECT = [
+        {
+        "name": "random name 0",
+        "year": 2021,
+        "semester": 2,
+        "short": "short",
+        "discontinued": 1,
+        "optional": 1
+    },
     {
-        "paco_code": 1,
         "name": "random name",
         "year": 2021,
         "semester": 2,
@@ -62,9 +81,12 @@ NOTES_SUBJECT = [
 
 NOTES_TEACHERS = [
     {
-        'id': 1,
         'name': 'DG',
-        'personalPage': 'personalpage_dg'
+        'personal_page': 'personalpage_dg'
+    },
+        {
+        'name': 'TOS',
+        'personal_page': 'personalpage_tos'
     }
 ]
 
@@ -177,16 +199,25 @@ TEAM_COLABORATORS = [
 ]
 
 NOTES_THANKS = [
-    {
-        'id': 1,
+        {
         'author_id': 1,
-        "notesPersonalPage": "very much thanks"
+        "notes_personal_page": "very much thanks"
+    },
+    {
+        'author_id': 1,
+        "notes_personal_page": "very much thanks"
     }
 ]
 
 NOTES_TYPES = [
+        {
+        "name": "name note type 0",
+        "download_caption": "download_caption",
+        "icon_display": 'display',
+        "icon_download": 'download',
+        "external": 1
+    },
     {
-        'id': 1,
         "name": "name note type",
         "download_caption": "download_caption",
         "icon_display": 'display',
@@ -197,7 +228,26 @@ NOTES_TYPES = [
 
 NOTES = [
     {
-        'id': 1,
+        'name': 'note name 0',
+        'location': 'Aveiro',
+        "subject_id": 1,
+        "author_id": 1,
+        "school_year_id": 1,
+        "teacher_id": 1,
+        "summary": 1,
+        "tests": 1,
+        "bibliography": 1,
+        "slides": 1,
+        "exercises": 0,
+        "projects": 0,
+        "notebook": 1,
+        "content": "content text bla bla bla bla bla",
+        "created_at": datetime(2022, 8, 4),
+        "type_id": 1,
+        "size": 1,
+        "category": "xxxxxx"
+    },
+    {
         'name': 'note name',
         'location': 'Aveiro',
         "subject_id": 1,
@@ -212,9 +262,30 @@ NOTES = [
         "projects": 0,
         "notebook": 1,
         "content": "content text bla bla bla bla bla",
-        "createdAt": datetime(2022, 8, 4),
+        "created_at": datetime(2022, 8, 4),
         "type_id": 1,
-        "size": 1
+        "size": 1,
+        "category": "xxxxxx"
+    },
+        {
+        'name': 'note name',
+        'location': 'Aveiro',
+        "subject_id": 1,
+        "author_id": 1,
+        "school_year_id": 1,
+        "teacher_id": 1,
+        "summary": 1,
+        "tests": 1,
+        "bibliography": 1,
+        "slides": 1,
+        "exercises": 0,
+        "projects": 0,
+        "notebook": 1,
+        "content": "content text bla bla bla bla bla",
+        "created_at": datetime(2022, 8, 4),
+        "type_id": 1,
+        "size": 1,
+        "category": "aaaaaaaa"
     }
 ]
 
