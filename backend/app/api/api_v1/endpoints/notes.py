@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Any, List
+from app.schemas.pagination import Page, PageParams
 
 from app import crud
 from app.api import deps
@@ -19,14 +20,22 @@ from app.schemas import NotesTypesCreate, NotesTypesUpdate, NotesTypesInDB
 
 router = APIRouter()
 
-@router.get("/", status_code=200, response_model=List[NotesInDB])
+@router.get("/", status_code=200, response_model=Page[NotesInDB])
 def get_notes(
-    *, db: Session = Depends(deps.get_db),
+    *, page_params: PageParams = Depends(PageParams),
+    categories: List[str] = Query(
+        default=[], alias='category',
+        description="List of categories",
+    ), db: Session = Depends(deps.get_db),
 ) -> Any:
-    """
-    Colocar filtros aqui, verificar com ifs
-    """
-    return crud.notes.get_multi(db=db)
+    all_categories = set(crud.notes.get_notes_categories(db=db))
+    
+    if not all_categories.issuperset(set(categories)):
+        raise HTTPException(status_code=400, detail="Invalid category")
+    
+    items = crud.notes.get_notes_by_categories(db=db, categories=categories,
+                                            page=page_params.page, size=page_params.size)
+    return Page.create(items, page_params)
 
 @router.get("/{note_id}", status_code=200, response_model=NotesInDB)
 def get_note_by_id(

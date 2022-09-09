@@ -244,7 +244,8 @@ NOTES = [
         "content": "content text bla bla bla bla bla",
         "created_at": datetime(2022, 8, 4),
         "type_id": 1,
-        "size": 1
+        "size": 1,
+        "category": "xxxxxx"
     },
     {
         'name': 'note name',
@@ -263,7 +264,8 @@ NOTES = [
         "content": "content text bla bla bla bla bla",
         "created_at": datetime(2022, 8, 4),
         "type_id": 1,
-        "size": 1
+        "size": 1,
+        "category": "xxxxxx"
     },
         {
         'name': 'note name',
@@ -282,7 +284,8 @@ NOTES = [
         "content": "content text bla bla bla bla bla",
         "created_at": datetime(2022, 8, 4),
         "type_id": 1,
-        "size": 1
+        "size": 1,
+        "category": "aaaaaaaa"
     }
 ]
 
