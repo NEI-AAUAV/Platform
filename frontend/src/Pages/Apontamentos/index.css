@@ -42,7 +42,31 @@
     margin-bottom: 1em;
     
 }
+/*
+.css-yk16xz-control{
+    background-color: var(--background)!important;
+}
+
+.css-yk16xz-control:focus{
+    background-color: var(--background)!important;
+}
+
+.css-1pahdxg-control{
+    background-color: var(--background)!important;
+}
+
+.css-26l3qy-menu{
+    background-color: var(--background)!important;
+    color: var(--text-primary);
+}
+
+.css-26l3qy-menu:{
+    color: var(--text-primary);
+}
+*/
+
+
 
 .filtros {
-    z-index:4
+    z-index:4;
 }

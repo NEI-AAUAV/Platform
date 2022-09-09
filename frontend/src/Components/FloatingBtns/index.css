@@ -3,6 +3,11 @@
     z-index: 5;
 }
 
+.floatingbtns>button {
+    width: fit-content;
+    margin: auto;
+}
+
 .floatingbtns.bottomRight {
     bottom: 1rem;
     right: 1rem;

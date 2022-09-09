@@ -11,3 +11,7 @@ from .notes_teachers import NotesTeachersCreate, NotesTeachersUpdate, NotesTeach
 from .faina import FainaBase, FainaCreate, FainaInDB
 from .faina_roles import FainaRolesBase, FainaRolesCreate, FainaRolesInDB
 from .users import UsersCreate, UsersUpdate, UsersInDB
+from .video import VideoInDB, VideoCreate, VideoUpdate
+from .video_tag import VideoTagInDB
+from .redirect import RedirectInDB, RedirectCreate, RedirectUpdate
+from .news import NewsInDB, NewsCategories, NewsCreate, NewsUpdate

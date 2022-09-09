@@ -60,6 +60,15 @@ const data = [
         'link': '/merch'
     },
     {
+        'name': 'Desporto',
+        'dropdown': [
+            {
+                'name': 'Taça UA',
+                'link': '/desporto'
+            },
+        ]
+    },
+    {
         'name': 'Faina',
         'dropdown': [
             {

@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import {
     Row, Spinner
 } from "react-bootstrap";
 import Document from "../../Components/Document";
-import Tabs from "../../Components/Tabs";
+
+import YearTabs from "Components/YearTabs";
+import Box from '@mui/material/Box';
+import Typist from "react-typist";
+
 
 const validCategories = {
     'PAO': {
@@ -36,7 +40,7 @@ const RGM = () => {
     let { id } = useParams();
 
     // Component state
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState();
     const [docs, setDocs] = useState([]);
     const [tab, setTab] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -44,7 +48,8 @@ const RGM = () => {
     // On component render...
     useEffect(() => {
         setLoading(true);
-
+        setDocs([]);
+        
         // Validate document category
         if (Object.keys(validCategories).findIndex(item => id.toLowerCase() === item.toLowerCase()) < 0) {
             window.location.href = "/404";
@@ -79,15 +84,21 @@ const RGM = () => {
 
     return (
         <div className="d-flex flex-column flex-wrap">
-            <h2 className="text-center mb-5">{title}</h2>
+            <div style={{ whiteSpace: 'pre', overflowWrap: 'break-word' }}>
+                <h2 className="text-center mb-5">
+                    {docs.length > 0 && <Typist>{title}</Typist>}
+                </h2>
+            </div>
             {
                 // Only show tabs to ATAS category
                 id.toUpperCase() == "ATAS" &&
-                <Tabs
-                    tabs={[...new Set(docs.map(doc => doc.mandato))]}
-                    _default={tab}
-                    onChange={changeTab}
-                />
+                <Box sx={{ maxWidth: { xs: "100%", md: "700px" }, margin: "auto", marginBottom: "50px" }}>
+                    <YearTabs
+                        years={[...new Set(docs.map(doc => doc.mandato))]}
+                        value={tab}
+                        onChange={changeTab}
+                    />
+                </Box>
             }
             {
                 loading &&

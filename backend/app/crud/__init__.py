@@ -9,3 +9,7 @@ from .crud_notes_thanks import notes_thanks
 from .crud_notes_types import notes_types
 from .crud_notes_subject import notes_subject
 from .crud_users import users
+from .crud_video import video
+from .crud_video_tag import videotag
+from .crud_redirect import redirect
+from .crud_news import news
