@@ -25,7 +25,7 @@ class Settings(BaseSettings):
         raise ValueError(v)
 
     # PostgreSQL Db
-    SCHEMA_NAME: str = "aauav_nei"
+    SCHEMA_NAME: str = "tacaua"
     POSTGRES_SERVICE_NAME: str = os.getenv('POSTGRES_SERVICE_NAME', 'localhost')
     POSTGRES_USER: str = os.getenv('POSTGRES_USER', "postgres")
     POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "1234")

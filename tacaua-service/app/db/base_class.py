@@ -14,6 +14,6 @@ class Base:
     def __tablename__(cls) -> str:
         return cls.__name__.lower()
 
-    @declared_attr
-    def __table_args__(cls) -> dict:
-        return {"schema": settings.SCHEMA_NAME}
+    __table_args__ = (
+        {"schema": settings.SCHEMA_NAME}
+    )
