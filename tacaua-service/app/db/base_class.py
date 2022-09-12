@@ -15,5 +15,5 @@ class Base:
         return cls.__name__.lower()
 
     __table_args__ = (
-        {"schema": settings.SCHEMA_NAME}
+        {"schema": settings.SCHEMA_NAME},
     )

@@ -9,11 +9,18 @@ from app.db.base_class import Base
 
 class Competition(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
-    modality_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".modality.id"), primary_key=True)
-    name = Column(String(20))
-    type = Column(Enum(TypeEnum, name="type_enum", create_type=False))
-    rank_by = Column(Enum(RankByEnum, name="rank_by_enum", create_type=False))
-    tiebreaks = Column(ARRAY(Enum(TiebreakEnum, name="tiebreak_enum", create_type=False)))
+    modality_id = Column(
+        Integer, ForeignKey(settings.SCHEMA_NAME + ".modality.id"),
+        nullable=False, index=True)
+    name = Column(String(20), nullable=False)
+    type = Column(
+        Enum(TypeEnum, name="type_enum", inherit_schema=True),
+        nullable=False)
+    rank_by = Column(
+        Enum(RankByEnum, name="rank_by_enum", inherit_schema=True),
+        nullable=False)
+    tiebreaks = Column(ARRAY(
+        Enum(TiebreakEnum, name="tiebreak_enum", inherit_schema=True)))
     started = Column(Boolean, default=False)
     public = Column(Boolean, default=False)
     # pts_win = Column(SmallInteger, default=0)
@@ -25,4 +32,4 @@ class Competition(Base):
     # ff_scored_for = Column(SmallInteger, default=0)
     # ff_scored_agst = Column(SmallInteger, default=0)
     # bye
-    # 
+    #
