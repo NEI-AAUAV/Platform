@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import List
 
 from typing import Optional
 from typing_extensions import Annotated
@@ -15,4 +16,4 @@ class Standings(BaseModel):
     score_for: int
     score_agst: int
     score_diff: int
-    math_history: list[Match]
+    math_history: List[Match]

@@ -7,7 +7,7 @@ from app.api.api import api_v1_router
 from app.core.logging import init_logging
 from app.core.config import settings
 
-app = FastAPI(title="NEI API")
+app = FastAPI(title="Taça UA API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

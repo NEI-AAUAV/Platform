@@ -1,9 +1,10 @@
-from typing import Optional
-from pydantic import BaseModel, FilePath, List
+from typing import Optional, List
+from pydantic import BaseModel, FilePath
 from pathlib import Path
 
 from app.utils import EnumList
 from typing_extensions import Annotated
+from .competition import Competition
 
 
 class TypeEnum(str, EnumList):
@@ -48,15 +49,24 @@ class ModalityUpdate(ModalityBase):
     image: Optional[Path]
 
 
-class Modality(ModalityBase):
+class ModalityInDBBase(ModalityBase):
     id: int
-    image: FilePath
+    image: Path # Change to path
 
     class Config:
         orm_mode = True
 
+
+class Modality(ModalityInDBBase):
+    competitions: List[Competition]
+
+
+class ModalityInDB(ModalityInDBBase):
+    pass
+
+
 class ModalityList(BaseModel):
-    modalities: List[Modality]
+    modalities: List[ModalityInDB]
     types: List[TypeEnum] = TypeEnum.list()
     frames: List[FrameEnum] = FrameEnum.list()
     sports: List[SportEnum] = SportEnum.list()

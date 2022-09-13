@@ -8,14 +8,25 @@ from app.db.base_class import Base
 
 class Match(Base):
     id = Column(Integer, primary_key=True)
-    round_id = Column(Integer, ForeignKey(
-        settings.SCHEMA_NAME + ".round.id"), index=True)
-    team1_id = Column(Integer, ForeignKey(
-        settings.SCHEMA_NAME + ".team.id",
-        name="match_team1_id_fkey"), index=True)
-    team2_id = Column(Integer, ForeignKey(
-        settings.SCHEMA_NAME + ".team.id",
-        name="match_team2_id_fkey"), index=True)
+    round_id = Column(
+        Integer,
+        ForeignKey(settings.SCHEMA_NAME + ".round.id", ondelete='CASCADE'),
+        index=True
+    )
+    team1_id = Column(
+        Integer,
+        ForeignKey(settings.SCHEMA_NAME + ".team.id",
+                   ondelete='SET NULL',
+                   name="match_team1_id_fkey"),
+        index=True
+    )
+    team2_id = Column(
+        Integer,
+        ForeignKey(settings.SCHEMA_NAME + ".team.id",
+                   ondelete='SET NULL',
+                   name="match_team2_id_fkey"),
+        index=True
+    )
     score1 = Column(SmallInteger, default=0)
     score2 = Column(SmallInteger, default=0)
     games_scores1 = Column(ARRAY(SmallInteger), default=[])
@@ -24,12 +35,18 @@ class Match(Base):
     forfeiter = Column(SmallInteger)    # TODO:
     live = Column(Boolean, default=False)   # TODO:
     date = Column(DateTime, index=True)
-    team1_prereq_match_id = Column(Integer, ForeignKey(
-        settings.SCHEMA_NAME + ".team.id",
-        name="match_team1_prereq_match_id_fkey"), index=True)
-    team2_prereq_match_id = Column(Integer, ForeignKey(
-        settings.SCHEMA_NAME + ".team.id",
-        name="match_team2_prereq_match_id_fkey"), index=True)
+    team1_prereq_match_id = Column(
+        Integer,
+        ForeignKey(settings.SCHEMA_NAME + ".team.id",  # TODO: needs ondelete for when round deletes??
+                   name="match_team1_prereq_match_id_fkey"),
+        index=True
+    )
+    team2_prereq_match_id = Column(
+        Integer,
+        ForeignKey(settings.SCHEMA_NAME + ".team.id",
+                   name="match_team2_prereq_match_id_fkey"),
+        index=True
+    )
 
     team1 = relationship("Team", foreign_keys=[team1_id])
     team2 = relationship("Team", foreign_keys=[team2_id])

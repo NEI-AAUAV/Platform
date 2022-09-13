@@ -1,8 +1,7 @@
-from typing import Any, Optional
-from pydantic import BaseModel, List
+from typing import Any, Optional, List
+from pydantic import BaseModel
 
 from app.utils import EnumList
-from typing_extensions import Annotated
 
 
 class SystemEnum(str, EnumList):
@@ -113,7 +112,3 @@ class Competition(CompetitionBase):
 
     class Config:
         orm_mode = True
-
-
-class CompetitionList(BaseModel):
-    competitions: List[Competition]
