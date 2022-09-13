@@ -1,4 +1,4 @@
-from sqlalchemy import Column, SmallInteger, Integer, String, Text, ForeignKey, Enum
+from sqlalchemy import Column, Integer, String, Text
 
 from app.db.base_class import Base
 

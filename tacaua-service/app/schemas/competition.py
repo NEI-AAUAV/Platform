@@ -1,23 +1,24 @@
 from typing import Any, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, List
 
-from enum import Enum
+from app.utils import EnumList
 from typing_extensions import Annotated
 
 
-class TypeEnum(str, Enum):
-    COLECTIVE = 'Coletiva'
-    INDIVIDUAL = 'Individual'
+class SystemEnum(str, EnumList):
+    SINGLE_ELIMINATION = 'Eliminação Direta'
+    ROUND_ROBIN = 'Todos Contra Todos'
+    SWISS = 'Suiço'
 
 
-class RankByEnum(str, Enum):
+class RankByEnum(str, EnumList):
     WINS = 'Vitórias'
     SCORES = 'Golos/Jogos/Sets'
     GAMES_WINS = 'Vitórias dos Jogos/Sets'
     PTS_CUSTOM = 'Pontuação Costumizada'
 
 
-class TiebreakEnum(str, Enum):
+class TiebreakEnum(str, EnumList):
     FF = (
         'Faltas de Comparência',
         "A equipa que tiver menor número faltas de comparência.")
@@ -53,8 +54,66 @@ class TiebreakEnum(str, Enum):
         'Sorteio',
         "")
 
+    @classmethod
+    def list(cls):
+        return list(map(lambda c: (c.value, c.description), cls))
+    
     def __new__(cls, value, description):
         obj = str.__new__(cls)
         obj._value_ = value
         obj.description = description
         return obj
+
+
+# class Metadata(BaseModel):
+#     system: SystemEnum
+
+
+# class SingleEliminationMetadata(Metadata):
+#     system = SystemEnum.SINGLE_ELIMINATION
+
+
+# pts_win = Column(SmallInteger, default=0)
+# pts_win_tiebreak = Column(SmallInteger, default=0)
+# pts_tie = Column(SmallInteger, default=0)
+# pts_loss_tiebreak = Column(SmallInteger, default=0)
+# pts_loss = Column(SmallInteger, default=0)
+# pts_ff = Column(SmallInteger, default=0)
+# ff_scored_for = Column(SmallInteger, default=0)
+# ff_scored_agst = Column(SmallInteger, default=0)
+# bye
+#
+
+
+class CompetitionBase(BaseModel):
+    modality_id: int
+    name: str
+    system: SystemEnum
+    rank_by: RankByEnum
+    tiebreaks: List[TiebreakEnum] = []
+    started: bool = False
+    public: bool = False
+
+
+class CompetitionCreate(CompetitionBase):
+    pass
+
+
+class CompetitionUpdate(CompetitionBase):
+    name: Optional[str]
+    system: Optional[SystemEnum]
+    rank_by: Optional[RankByEnum]
+    tiebreaks: Optional[List[TiebreakEnum]]
+    started: Optional[bool] # TODO: será q ele mete none?
+    public: Optional[bool]
+
+
+class Competition(CompetitionBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
+class CompetitionList(BaseModel):
+    competitions: List[Competition]

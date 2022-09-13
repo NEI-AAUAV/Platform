@@ -14,3 +14,9 @@ class Round(Base):
     number = Column(SmallInteger, nullable=False)
     name = Column(String(20))
     win_criteria = Column(String)   # TODO:
+
+    matches = relationship(
+        "Match",
+        cascade="all, delete",
+        passive_deletes=True,
+    )

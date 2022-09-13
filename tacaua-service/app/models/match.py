@@ -34,14 +34,6 @@ class Match(Base):
     team1 = relationship("Team", foreign_keys=[team1_id])
     team2 = relationship("Team", foreign_keys=[team2_id])
 
-    # __table_args__ = (
-    #     ForeignKeyConstraint([team1_id, team2_id],
-    #                          [settings.SCHEMA_NAME + ".team.id"]*2),
-    #     ForeignKeyConstraint([team1_prereq_match_id, team2_prereq_match_id],
-    #                          [settings.SCHEMA_NAME + ".match.id"]*2),
-    #     *Base.__table_args__,
-    # )
-
 
 # TODO:
 #  Bank = relationship("Banks", uselist=False)
