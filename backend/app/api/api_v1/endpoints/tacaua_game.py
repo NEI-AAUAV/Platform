@@ -6,6 +6,8 @@ from app import crud
 from app.api import deps
 from app.schemas import TacaUAGameCreate, TacaUAGameUpdate, TacaUAGameInDB
 
+from fastapi.encoders import jsonable_encoder
+
 router = APIRouter()
 
 
@@ -26,14 +28,18 @@ def create_tacaua_game(
     """
     Create a new tacaUA game in the database.
     """
+    # tacaua_game_in = jsonable_encoder(tacaua_game_in)
     return crud.tacaua_game.create(db=db, obj_in=tacaua_game_in)
 
 
-@router.put("/{game_id}", status_code=200, response_model=TacaUAGameInDB)
+@router.put("/{id}", status_code=200, response_model=TacaUAGameInDB)
 def update_tacaua_game(
-    *, tacaua_game_in: TacaUAGameUpdate, db: Session = Depends(deps.get_db)
+    *, id: int, tacaua_game_in: TacaUAGameUpdate, db: Session = Depends(deps.get_db)
 ) -> dict:
     """
     Update a tacaUA game in the database.
     """
-    return crud.tacaua_game.update(db=db, obj_in=tacaua_game_in)
+    tacaua_game = crud.tacaua_game.get(db=db, id=id)
+    if not tacaua_game:
+        raise HTTPException(status_code=404, detail="Game Not Found")
+    return crud.tacaua_game.update(db=db, db_obj=tacaua_game, obj_in=tacaua_game_in)

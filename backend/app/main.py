@@ -17,9 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-init_db()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_event_handler("startup", init_logging)
+app.add_event_handler("startup", init_db)
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
