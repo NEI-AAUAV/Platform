@@ -20,5 +20,7 @@ class Modality(Base):
 
     competitions = relationship(
         "Competition",
-        cascade="all, delete",
+        cascade="all",
+        passive_deletes=True,
+        lazy='joined',
     )

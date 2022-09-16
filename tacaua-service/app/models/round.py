@@ -19,5 +19,7 @@ class Round(Base):
 
     matches = relationship(
         "Match",
-        cascade="all, delete",
+        cascade="all",
+        passive_deletes=True,
+        lazy='joined',
     )

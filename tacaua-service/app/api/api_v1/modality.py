@@ -9,12 +9,15 @@ from app.schemas.modality import Modality, ModalityCreate, ModalityUpdate, Modal
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=ModalityList)
+@router.get("/", status_code=200, response_model=ModalityList,
+            response_model_exclude={
+                'modalities': {'__all__': {'competitions'}}
+            })
 def get_multi_modality(
     db: Session = Depends(deps.get_db)
 ) -> Any:
     # get modalities without nested competition and teams
-    modalities = crud.modality.get_multi_noload(db=db)
+    modalities = crud.modality.get_multi(db=db)
     return ModalityList(modalities=modalities)
 
 

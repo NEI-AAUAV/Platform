@@ -13,7 +13,6 @@ class Match(BaseModel):
     date: datetime
 
 
-
 class MatchInDB(Match):
     """Properties properties stored in DB."""
     id: int

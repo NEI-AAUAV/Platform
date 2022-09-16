@@ -49,24 +49,17 @@ class ModalityUpdate(ModalityBase):
     image: Optional[Path]
 
 
-class ModalityInDBBase(ModalityBase):
+class Modality(ModalityBase):
     id: int
     image: Path # Change to path
+    competitions: List[Competition]
 
     class Config:
         orm_mode = True
 
 
-class Modality(ModalityInDBBase):
-    competitions: List[Competition]
-
-
-class ModalityInDB(ModalityInDBBase):
-    pass
-
-
 class ModalityList(BaseModel):
-    modalities: List[ModalityInDB]
+    modalities: List[Modality]
     types: List[TypeEnum] = TypeEnum.list()
     frames: List[FrameEnum] = FrameEnum.list()
     sports: List[SportEnum] = SportEnum.list()
