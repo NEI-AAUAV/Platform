@@ -1,6 +1,8 @@
+
 from .crud_tacaua_classification import tacaua_classification
 from .crud_tacaua_game import tacaua_game
 from .crud_tacaua_team import tacaua_team
+<<<<<<< HEAD
 from .crud_faina import faina
 from .crud_faina_member import faina_member
 from .crud_faina_roles import faina_roles
@@ -10,3 +12,16 @@ from .crud_team import team
 from .crud_team_colaborators import team_colaborators
 from .crud_seniors import seniors
 from .crud_seniors_students import seniors_students
+=======
+from .crud_notes import notes
+from .crud_notes_schoolyear import notes_schoolyear
+from .crud_notes_teachers import notes_teachers
+from .crud_notes_thanks import notes_thanks
+from .crud_notes_types import notes_types
+from .crud_notes_subject import notes_subject
+from .crud_users import users
+from .crud_video import video
+from .crud_video_tag import videotag
+from .crud_redirect import redirect
+from .crud_news import news
+>>>>>>> 97bcb54afc377c7b33dc7973688c7ea8f5ca5300

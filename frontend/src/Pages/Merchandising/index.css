@@ -1,3 +1,33 @@
+h55{
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-top: 0;
+    display: block;
+    margin-block-start: 1.67em;
+    margin-block-end: 1.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+h22 {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+    font-size: 2.8rem;
+    display: block;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    margin-top: 0;
+}
+
+@media only screen and (max-width: 777px){
+    h22 { font-size: 2rem!important; word-break: break-all}
+}
+
 .par {
     padding-top: 4em;
     padding-bottom: 4em;
@@ -5,7 +35,7 @@
     padding-right: 12em;
     background-color: rgb(78, 156, 54);
     position: relative;
-    color: white;
+    color: white!important;
 }
 
 .par2 {
@@ -13,13 +43,13 @@
     padding-bottom: 4em;
     background-color: #222222;
     position: relative;
-    color: white;
+    color: white!important;
 }
 
 .impar {
         padding-top: 4em;
         padding-bottom: 4em;        
-        color: black;
+        color: var(--text-secondary)!important;
         position: relative;
 
 }

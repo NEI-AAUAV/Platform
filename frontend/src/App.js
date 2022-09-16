@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faChevronUp, faFilePdf, faFolder, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
 
+import {useTheme} from 'Stores/useTheme';
+
 // Register Fontawesome icons
 // https://fontawesome.com/v5.15/how-to-use/on-the-web/using-with/react (Using Icons via Global Use)
 library.add(fab, faFilePdf, faFolder, faCloudDownloadAlt);
@@ -31,14 +33,15 @@ const App = () => {
             setTop(true);
         }
     }
-
+    
+    const theme = useTheme(state => state.theme);
     return (
-        <>
+        <div data-theme={theme}>
             <FloatingBtns location="bottomRight">
                 {
                     !top &&
                     <button
-                        className="btn bg-white btn-outline-primary btn-outline-primary-force rounded-circle mt-1 animation"
+                        className="btn btn-outline-primary btn-outline-primary-force rounded-circle mt-1 animation"
                         title="Voltar ao topo"
                         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                     >
@@ -49,7 +52,7 @@ const App = () => {
                     window.location.href.indexOf("/forms/feedback") < 0
                     &&
                     <button
-                        className="btn bg-white btn-outline-primary btn-outline-primary-force rounded-circle mt-1 animation"
+                        className="btn  btn-outline-primary btn-outline-primary-force rounded-circle mt-1 animation"
                         title="Dá-nos o teu feedback!"
                         onClick={() => window.location.replace("/forms/feedback")}
                     >
@@ -58,7 +61,7 @@ const App = () => {
                 }
             </FloatingBtns>
             {routing}
-        </>
+        </div>
     );
 }
 

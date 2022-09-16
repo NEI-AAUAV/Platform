@@ -10,6 +10,6 @@ class NotesThanks(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     author_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id", name="fk_author_id"), index=True)
-    notesPersonalPage = Column(String(255))
+    notes_personal_page = Column(String(255))
     
     author = relationship("Users", foreign_keys=[author_id])

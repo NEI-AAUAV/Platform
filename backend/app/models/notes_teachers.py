@@ -8,4 +8,4 @@ class NotesTeachers(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100))
-    personalPage = Column(String(255))
+    personal_page = Column(String(255))
