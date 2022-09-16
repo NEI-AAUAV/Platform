@@ -9,3 +9,5 @@ from .faina_member import FainaMemberBase, FainaMemberInDB, FainaMemberUpdate, F
 from .team import TeamBase, TeamCreate, TeamInDB, TeamUpdate
 from .team_colaborators import TeamColaboratorsBase, TeamColaboratorsCreate, TeamColaboratorsInDB, TeamColaboratorsUpdate
 from .team_roles import TeamRolesBase, TeamRolesCreate, TeamRolesInDB, TeamRolesUpdate
+from .seniors import SeniorsBase, SeniorsCreate, SeniorsInDB, SeniorsUpdate
+from .seniors_students import SeniorsStudentsBase, SeniorsStudentsCreate, SeniorsStudentsInDB, SeniorsStudentsUpdate

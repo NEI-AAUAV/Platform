@@ -8,3 +8,5 @@ from .crud_notes import notes
 from .crud_team_roles import team_roles
 from .crud_team import team
 from .crud_team_colaborators import team_colaborators
+from .crud_seniors import seniors
+from .crud_seniors_students import seniors_students

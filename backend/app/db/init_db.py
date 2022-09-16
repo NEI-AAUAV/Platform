@@ -137,14 +137,28 @@ SENIORS = [
         "year" : 2022,
         "course" : "LEI",
         "image" : "image_url"
+    },
+    {
+        "year" : 2022,
+        "course" : "MEI",
+        "image" : "image_url"
     }
 ]
 
 SENIORS_STUDENTS = [
     {
+        "year_id": 2022,
+        "course_name": "LEI",
         "user_id" : 2,
-        "quote" : "Sou alto morcao",
+        "quote" : "Sou mesmo fixe",
         "image" : "image_url"
+    },
+    {
+        "year_id": 2022,
+        "course_name": "MEI",
+        "user_id" : 1,
+        "quote" : "Olá",
+        "image" : "image_url2"
     }
 ]
 

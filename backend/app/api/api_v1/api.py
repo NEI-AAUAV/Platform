@@ -8,9 +8,13 @@ from app.api.api_v1.endpoints import faina_roles
 from app.api.api_v1.endpoints import team_roles
 from app.api.api_v1.endpoints import team
 from app.api.api_v1.endpoints import team_colaborators
+from app.api.api_v1.endpoints import seniors
+from app.api.api_v1.endpoints import seniors_students
 
 
 api_router = APIRouter()
+api_router.include_router(seniors_students.router, prefix="/seniors/students", tags=["Seniors Students"])
+api_router.include_router(seniors.router, prefix="/seniors", tags=["Seniors"])
 api_router.include_router(team.router, prefix="/team", tags=["Team"])
 api_router.include_router(team_colaborators.router, prefix="/team/colaborators", tags=["Team Colaborators"])
 api_router.include_router(team_roles.router, prefix="/team/roles", tags=["Team Roles"])
