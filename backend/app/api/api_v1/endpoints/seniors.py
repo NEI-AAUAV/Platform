@@ -28,6 +28,9 @@ def create_seniors(
     """
     Create a new seniors row in the database.
     """
+    seniors = crud.seniors.get(db=db, year=seniors_create_in.year, course=seniors_create_in.course)
+    if (seniors):
+        raise HTTPException(status_code=400, detail="Senior already exist!")
     return crud.seniors.create(db=db, obj_in=seniors_create_in)
 
 @router.put("/", status_code=200, response_model=SeniorsInDB)

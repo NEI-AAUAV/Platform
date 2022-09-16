@@ -28,6 +28,12 @@ def create_seniors_students(
     """
     Create a new seniors students row in the database.
     """
+    seniors = crud.seniors.get(db=db, year=seniors_students_create_in.year_id, course=seniors_students_create_in.course_name)
+    if not seniors:
+        raise HTTPException(status_code=404, detail="Senior not found")
+    user = crud.users.get(db=db, id=seniors_students_create_in.user_id)
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found!")
     return crud.seniors_students.create(db=db, obj_in=seniors_students_create_in)
 
 @router.put("/", status_code=200, response_model=SeniorsStudentsInDB)

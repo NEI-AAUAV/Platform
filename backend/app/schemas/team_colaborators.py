@@ -1,11 +1,14 @@
+from re import U
 from pydantic import BaseModel, Field, HttpUrl
 
 from typing import Optional
 from typing_extensions import Annotated
 
+from .users import UsersInDB
+
 
 class TeamColaboratorsBase(BaseModel):
-    #colaborator_id: int
+    colaborator_id: int
     mandato: int
 
 
@@ -22,7 +25,7 @@ class TeamColaboratorsUpdate(TeamColaboratorsBase):
 
 class TeamColaboratorsInDB(TeamColaboratorsBase):
     """Properties properties stored in DB."""
-    #colaborator: 
+    colaborator: UsersInDB
 
     class Config:
         orm_mode = True

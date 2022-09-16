@@ -23,6 +23,6 @@ class SeniorsStudents(Base):
     image = Column(String(255))    
 
     
-    year = relationship("Seniors", foreign_keys=[year_id])
-    course = relationship("Seniors", foreign_keys=[course_name])
+    #year = relationship("Seniors", foreign_keys=[year_id])
+    #course = relationship("Seniors", foreign_keys=[course_name])
     user = relationship("Users", foreign_keys=[user_id])

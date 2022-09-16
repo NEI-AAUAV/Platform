@@ -148,7 +148,7 @@ FAINA_ROLES = [
 
 FAINA_MEMBER = [
     {
-        #"member_id" : 1,
+        "member_id" : 1,
         "mandato_id" : 1,
         "role_id" : 1
     }
