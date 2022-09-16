@@ -78,6 +78,23 @@ def test_create_modality(client: TestClient) -> None:
     assert data.items() >= modality_data.items()
 
 
+def test_update_modality(db: SessionTesting, client: TestClient) -> None:
+    modality = db.query(Modality).first()
+    modality_partial_data = {
+        "year": 1,
+        "frame": "Feminino",
+    }
+    r = client.put(f"{URL_PREFIX}/{modality.id}",
+                   json=modality_partial_data)
+    assert r.status_code == 200
+    data = r.json()
+    assert 'id' in data
+    assert data['id'] == modality.id
+    assert 'competitions' in data
+    assert not data.items() >= modality_data.items()
+    assert data.items() >= modality_partial_data.items()
+
+
 def test_remove_modality(db: SessionTesting, client: TestClient) -> None:
     modality = db.query(Modality).first()
     r = client.delete(f"{URL_PREFIX}/{modality.id}")

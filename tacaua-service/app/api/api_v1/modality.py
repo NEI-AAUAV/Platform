@@ -4,7 +4,7 @@ from typing import Any
 
 from app import crud
 from app.api import deps
-from app.schemas.modality import Modality, ModalityCreate, ModalityList
+from app.schemas.modality import Modality, ModalityCreate, ModalityUpdate, ModalityList
 
 router = APIRouter()
 
@@ -34,6 +34,19 @@ def create_modality(
     modality_in: ModalityCreate, db: Session = Depends(deps.get_db)
 ) -> Any:
     return crud.modality.create(db=db, obj_in=modality_in)
+
+
+@router.put("/{id}", status_code=200, response_model=Modality)
+def update_modality(
+    id: int, modality_in: ModalityUpdate, db: Session = Depends(deps.get_db)
+) -> dict:
+    """
+    Update a tacaUA game in the database.
+    """
+    modality = crud.modality.get(db=db, id=id)
+    if not modality:
+        raise HTTPException(status_code=404, detail="Modality Not Found")
+    return crud.modality.update(db=db, db_obj=modality, obj_in=modality_in)
 
 
 @router.delete("/{id}", status_code=200, response_model=Modality)
