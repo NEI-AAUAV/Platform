@@ -26,15 +26,20 @@ class Settings(BaseSettings):
 
     # PostgreSQL Db
     SCHEMA_NAME: str = "tacaua"
-    POSTGRES_SERVICE_NAME: str = os.getenv('POSTGRES_SERVICE_NAME', 'localhost')
+    POSTGRES_SERVER: str = os.getenv('POSTGRES_SERVER', 'localhost')
     POSTGRES_USER: str = os.getenv('POSTGRES_USER', "postgres")
     POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "1234")
     POSTGRES_DB: str = os.getenv('POSTGRES_DB', "postgres")
     SQLALCHEMY_DATABASE_URI: Optional[
         PostgresDsn
     ] = f"postgresql://{POSTGRES_USER}" \
-        f":{POSTGRES_PASSWORD}@{POSTGRES_SERVICE_NAME}" \
+        f":{POSTGRES_PASSWORD}@{POSTGRES_SERVER}" \
         f":5432/{POSTGRES_DB}"
+    TEST_SQLALCHEMY_DATABASE_URI: Optional[
+        PostgresDsn
+    ] = f"postgresql://{POSTGRES_USER}" \
+        f":{POSTGRES_PASSWORD}@{POSTGRES_SERVER}" \
+        f":5432/{POSTGRES_DB}_test"
 
     class Config:
         case_sensitive = True

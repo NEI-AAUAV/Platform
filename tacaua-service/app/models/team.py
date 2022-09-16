@@ -21,5 +21,4 @@ class Team(Base):
     participants = relationship(
         "Participant",
         cascade="all, delete",
-        passive_deletes=True,
     )

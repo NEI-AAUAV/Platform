@@ -19,7 +19,6 @@ def init_db() -> None:
 
     if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
         engine.execute(CreateSchema(settings.SCHEMA_NAME))
-        # event.listen(Base.metadata, "before_create", CreateSchema(settings.SCHEMA_NAME))
 
     Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)

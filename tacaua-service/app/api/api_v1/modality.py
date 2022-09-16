@@ -29,7 +29,7 @@ def get_modality(
     return crud.modality.get(db=db, id=id)
 
 
-@router.post("/", status_code=200, response_model=Modality)
+@router.post("/", status_code=201, response_model=Modality)
 def create_modality(
     modality_in: ModalityCreate, db: Session = Depends(deps.get_db)
 ) -> Any:

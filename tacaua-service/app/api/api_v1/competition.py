@@ -9,7 +9,7 @@ from app.schemas.competition import Competition, CompetitionCreate
 router = APIRouter()
 
 
-@router.post("/", status_code=200, response_model=Competition)
+@router.post("/", status_code=201, response_model=Competition)
 def create_competition(
     competition_in: CompetitionCreate, db: Session = Depends(deps.get_db)
 ) -> Any:

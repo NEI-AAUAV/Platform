@@ -33,5 +33,4 @@ class Competition(Base):
     rounds = relationship(
         "Round",
         cascade="all, delete",
-        passive_deletes=True,
     )
