@@ -4,15 +4,15 @@ from typing import Any, List
 
 from app import crud
 from app.api import deps
-from app.schemas import NotesCreate, NotesUpdate, NotesInDB
+from app.schemas.history import HistoryCreate, HistoryUpdate, HistoryInDB
 
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=List[Any])
-def get_notes(
+@router.get("/", status_code=200, response_model=List[HistoryInDB])
+def get(
     *, db: Session = Depends(deps.get_db),
 ) -> Any:
-    """
-    """
-    return crud.notes.get(db=db, limit=5)
+
+    return crud.history.get_all(db=db)
+
