@@ -1,7 +1,10 @@
-from sqlalchemy import Column, Boolean, Integer, String, Text, ForeignKey, SmallInteger
+from pathlib import Path
+from pydantic import AnyHttpUrl
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, SmallInteger
 from sqlalchemy.orm import relationship
-from app.db.base_class import Base
+from sqlalchemy.ext.hybrid import hybrid_property
 
+from app.db.base_class import Base
 from app.core.config import settings
 
 
@@ -13,9 +16,7 @@ class Team(Base):
         index=True
     )
     name = Column(String(50))
-    division = Column(SmallInteger)
-    group = Column(String(1))
-    desclassified = Column(Boolean, default=False)
+    # desclassified = Column(Boolean, default=False)  # TODO: future feature
     image = Column(Text)
 
     participants = relationship(
@@ -24,3 +25,11 @@ class Team(Base):
         passive_deletes=True,
         lazy='joined',
     )
+
+    @hybrid_property
+    def image(self) -> AnyHttpUrl:
+        return settings.STATIC_URL + self._image
+
+    @image.setter
+    def image(self, value: Path):
+        self._image = value

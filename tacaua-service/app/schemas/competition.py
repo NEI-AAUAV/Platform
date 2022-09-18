@@ -1,7 +1,8 @@
-from typing import Any, Optional, List
-from pydantic import BaseModel
+from typing import Optional, List
+from pydantic import BaseModel, constr
 
 from app.utils import EnumList
+from .group import Group
 
 
 class SystemEnum(str, EnumList):
@@ -87,12 +88,13 @@ class TiebreakEnum(str, EnumList):
 class CompetitionBase(BaseModel):
     modality_id: int
     division: Optional[int]
-    name: str
+    name: constr(max_length=50)
     system: SystemEnum
     rank_by: RankByEnum
     # tiebreaks: List[TiebreakEnum] = []
     started: bool = False
     public: bool = False
+    # metadata: Dict[str, str] = Field(alias='metadata_')
 
 
 class CompetitionCreate(CompetitionBase):
@@ -100,7 +102,7 @@ class CompetitionCreate(CompetitionBase):
 
 
 class CompetitionUpdate(CompetitionBase):
-    name: Optional[str]
+    name: Optional[constr(max_length=50)]
     system: Optional[SystemEnum]
     rank_by: Optional[RankByEnum]
     tiebreaks: Optional[List[TiebreakEnum]]
@@ -110,6 +112,7 @@ class CompetitionUpdate(CompetitionBase):
 
 class Competition(CompetitionBase):
     id: int
+    groups: List[Group]
 
     class Config:
         orm_mode = True

@@ -1,10 +1,11 @@
-from typing import Optional, List
-from pydantic import BaseModel, FilePath
 from pathlib import Path
+from typing import Optional, List
+from pydantic import BaseModel
 
-from app.utils import EnumList
-from typing_extensions import Annotated
+from app.utils import EnumList, schema_as_form
+from app.core.logging import logger
 from .competition import Competition
+from .team import Team
 
 
 class TypeEnum(str, EnumList):
@@ -38,28 +39,40 @@ class ModalityBase(BaseModel):
     sport: SportEnum
 
 
+@schema_as_form
 class ModalityCreate(ModalityBase):
-    image: Path
+    pass
 
 
+@schema_as_form
 class ModalityUpdate(ModalityBase):
     year: Optional[int]
     frame: Optional[FrameEnum]
     sport: Optional[SportEnum]
-    image: Optional[Path]
+
+    class Config:
+        title= "shit"
 
 
-class Modality(ModalityBase):
+class ModalityInDBBase(ModalityBase):
     id: int
-    image: Path # Change to path
-    competitions: List[Competition]
+    image: Path
 
     class Config:
         orm_mode = True
 
 
-class ModalityList(BaseModel):
-    modalities: List[Modality]
+class Modality(ModalityInDBBase):
+    competitions: List[Competition]
+    teams: List[Team]
+
+
+class LazyModality(ModalityInDBBase):
+    pass
+
+
+class LazyModalityList(BaseModel):
+    modalities: List[LazyModality]
     types: List[TypeEnum] = TypeEnum.list()
     frames: List[FrameEnum] = FrameEnum.list()
     sports: List[SportEnum] = SportEnum.list()

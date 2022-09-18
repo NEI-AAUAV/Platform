@@ -6,7 +6,7 @@ from typing_extensions import Annotated
 from .match import Match
 
 
-class Standings(BaseModel):
+class StandingsRow(BaseModel):
     pts: int
     matches: int
     wins: int
@@ -17,3 +17,7 @@ class Standings(BaseModel):
     score_agst: int
     score_diff: int
     math_history: List[Match]
+
+
+class Standings(BaseModel):
+    standings: List[StandingsRow]

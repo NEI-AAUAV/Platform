@@ -1,3 +1,4 @@
+from operator import gt
 from sqlalchemy import Column, SmallInteger, Integer, String, Text, ForeignKey
 
 from app.db.base_class import Base

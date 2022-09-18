@@ -1,8 +1,13 @@
+from pathlib import Path
+from pydantic import AnyHttpUrl
 from sqlalchemy import Column, SmallInteger, Integer, Text, Enum
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.db.base_class import Base
 from app.schemas.modality import FrameEnum, SportEnum
+from app.core.config import settings
+from app.core.logging import logger
 
 
 class Modality(Base):
@@ -24,3 +29,17 @@ class Modality(Base):
         passive_deletes=True,
         lazy='joined',
     )
+    teams = relationship(
+        "Team",
+        cascade="all",
+        passive_deletes=True,
+        lazy='joined',
+    )
+
+    @hybrid_property
+    def image(self) -> AnyHttpUrl:
+        return settings.STATIC_URL + self._image
+
+    @image.setter
+    def image(self, value: Path):
+        self._image = value

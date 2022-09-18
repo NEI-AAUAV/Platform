@@ -1,23 +1,22 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, constr
 
 from typing import Optional
-from typing_extensions import Annotated
 
 
-class Round(BaseModel):
-    year: Optional[int]
-    division: Optional[int]
-    division_group: Annotated[Optional[str], Field(max_length=5)]
-    image_url: Optional[str]
+class RoundBase(BaseModel):
+    number: int
+    name: Optional[constr(max_length=20)]
 
 
-class RoundUpdate(Round):
-    """Properties to receive via API on update."""
+class RoundCreate():
     pass
 
 
-class RoundInDB(Round):
-    """Properties properties stored in DB."""
+class RoundUpdate():
+    pass
+
+
+class Round(RoundBase):
     id: int
 
     class Config:

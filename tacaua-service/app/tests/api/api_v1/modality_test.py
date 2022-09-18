@@ -14,7 +14,6 @@ modality_data = {
     "year": 0,
     "frame": "Misto",
     "sport": "Atletismo",
-    "image": "string"
 }
 
 competition_data = {

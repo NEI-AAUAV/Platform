@@ -1,38 +1,41 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from io import BytesIO
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import Any
 
 from app import crud
 from app.api import deps
-from app.schemas.modality import Modality, ModalityCreate, ModalityUpdate, ModalityList
+from app.core.logging import logger
+from app.schemas.modality import Modality, ModalityCreate, ModalityUpdate, LazyModalityList
 
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=ModalityList,
-            response_model_exclude={
-                'modalities': {'__all__': {'competitions'}}
-            })
+@router.get("/", status_code=200, response_model=LazyModalityList)
 def get_multi_modality(
     db: Session = Depends(deps.get_db)
 ) -> Any:
-    # get modalities without nested competition and teams
     modalities = crud.modality.get_multi(db=db)
-    return ModalityList(modalities=modalities)
+    return LazyModalityList(modalities=modalities)
 
 
 @router.post("/", status_code=201, response_model=Modality)
-def create_modality(
-    modality_in: ModalityCreate, db: Session = Depends(deps.get_db)
+async def create_modality(
+    modality_in: ModalityCreate = Depends(ModalityCreate.as_form),
+    image: UploadFile = File(...),
+    db: Session = Depends(deps.get_db)
 ) -> Any:
-    return crud.modality.create(db=db, obj_in=modality_in)
+    try:
+        return await crud.modality.create(db=db, obj_in=modality_in,
+                                          image=image)
+    except Exception as err:
+        raise HTTPException(status_code=400, detail=err)
 
 
 @router.get("/{id}", status_code=200, response_model=Modality)
 def get_modality(
     id: int, db: Session = Depends(deps.get_db)
 ) -> Any:
-    # get modalities with nested competition and teams
     modality = crud.modality.get(db=db, id=id)
     if not modality:
         raise HTTPException(status_code=404, detail="Modality Not Found")
@@ -40,8 +43,11 @@ def get_modality(
 
 
 @router.put("/{id}", status_code=200, response_model=Modality)
-def update_modality(
-    id: int, modality_in: ModalityUpdate, db: Session = Depends(deps.get_db)
+async def update_modality(
+    id: int,
+    modality_in: ModalityUpdate = Depends(ModalityUpdate.as_form),
+    image: UploadFile = File(...),
+    db: Session = Depends(deps.get_db)
 ) -> dict:
     """
     Update a tacaUA game in the database.
@@ -49,7 +55,11 @@ def update_modality(
     modality = crud.modality.get(db=db, id=id)
     if not modality:
         raise HTTPException(status_code=404, detail="Modality Not Found")
-    return crud.modality.update(db=db, db_obj=modality, obj_in=modality_in)
+    try:
+        return await crud.modality.update(db=db, db_obj=modality,
+                                          obj_in=modality_in, image=image)
+    except Exception as err:
+        raise HTTPException(status_code=400, detail=err)
 
 
 @router.delete("/{id}", status_code=200, response_model=Modality)

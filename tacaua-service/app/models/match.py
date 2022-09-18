@@ -27,8 +27,8 @@ class Match(Base):
                    name="match_team2_id_fkey"),
         index=True
     )
-    score1 = Column(SmallInteger, default=0)
-    score2 = Column(SmallInteger, default=0)
+    score1 = Column(SmallInteger)
+    score2 = Column(SmallInteger)
     games1 = Column(ARRAY(SmallInteger), default=[])
     games2 = Column(ARRAY(SmallInteger), default=[])
     winner = Column(SmallInteger)   # TODO:

@@ -1,27 +1,28 @@
-from pydantic import BaseModel, Field, HttpUrl
+from pathlib import Path
+from pydantic import BaseModel, constr
+from typing import List
 
-from typing import Optional
-from typing_extensions import Annotated
-
-
-class Team(BaseModel):
-    name: Annotated[Optional[str], Field(max_length=50)]
-    image_url: Optional[HttpUrl]
+from app.utils import schema_as_form
+from .participant import Participant
 
 
-class TeamCreate(Team):
-    """Properties to receive via API on creation."""
-    name: Annotated[str, Field(max_length=50)]
-    image_url: HttpUrl
+class TeamBase(BaseModel):
+    name: constr(max_length=50)
 
 
-class TeamUpdate(Team):
+@schema_as_form
+class TeamCreate(TeamBase):
     pass
 
+@schema_as_form
+class TeamUpdate(TeamBase):
+    name: constr(max_length=50)
 
-class TeamInDB(Team):
-    """Properties properties stored in DB."""
+
+class Team(TeamBase):
     id: int
+    image: Path
+    participants: List[Participant]
 
     class Config:
         orm_mode = True
