@@ -86,10 +86,11 @@ class TiebreakEnum(str, EnumList):
 
 class CompetitionBase(BaseModel):
     modality_id: int
+    division: Optional[int]
     name: str
     system: SystemEnum
     rank_by: RankByEnum
-    tiebreaks: List[TiebreakEnum] = []
+    # tiebreaks: List[TiebreakEnum] = []
     started: bool = False
     public: bool = False
 

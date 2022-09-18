@@ -15,6 +15,7 @@ class Competition(Base):
         nullable=False,
         index=True
     )
+    division = Column(SmallInteger)
     name = Column(String(20), nullable=False)
     system = Column(
         Enum(SystemEnum, name="system_enum", inherit_schema=True),
@@ -24,14 +25,14 @@ class Competition(Base):
         Enum(RankByEnum, name="rank_by_enum", inherit_schema=True),
         nullable=False
     )
-    tiebreaks = Column(
-        ARRAY(Enum(TiebreakEnum, name="tiebreak_enum", inherit_schema=True))
-    )
+    # tiebreaks = Column(
+    #     ARRAY(Enum(TiebreakEnum, name="tiebreak_enum", inherit_schema=True))
+    # ) # TODO: future feature (metadata?)
     started = Column(Boolean, default=False)
     public = Column(Boolean, default=False)
 
-    rounds = relationship(
-        "Round",
+    groups = relationship(
+        "Group",
         cascade="all",
         passive_deletes=True,
         lazy='joined',

@@ -29,8 +29,8 @@ class Match(Base):
     )
     score1 = Column(SmallInteger, default=0)
     score2 = Column(SmallInteger, default=0)
-    games_scores1 = Column(ARRAY(SmallInteger), default=[])
-    games_scores2 = Column(ARRAY(SmallInteger), default=[])
+    games1 = Column(ARRAY(SmallInteger), default=[])
+    games2 = Column(ARRAY(SmallInteger), default=[])
     winner = Column(SmallInteger)   # TODO:
     forfeiter = Column(SmallInteger)    # TODO:
     live = Column(Boolean, default=False)   # TODO:
@@ -47,6 +47,9 @@ class Match(Base):
                    name="match_team2_prereq_match_id_fkey"),
         index=True
     )
+    # team1_placeholder_text = Column(String) computed
+    team1_is_prereq_match_winner = Column(Boolean, default=True)
+    team2_is_prereq_match_winner = Column(Boolean, default=True)
 
     team1 = relationship("Team", foreign_keys=[team1_id])
     team2 = relationship("Team", foreign_keys=[team2_id])

@@ -8,4 +8,4 @@ class Course(Base):
     name = Column(String(60), nullable=False)
     initials = Column(String(16), nullable=False)
     color = Column(String(30), default="white")
-    image = Column(Text, default="/static/courses/default") # TODO:
+    image = Column(Text, default="/static/courses/$default") # TODO: create default image

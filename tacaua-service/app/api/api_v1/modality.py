@@ -21,6 +21,13 @@ def get_multi_modality(
     return ModalityList(modalities=modalities)
 
 
+@router.post("/", status_code=201, response_model=Modality)
+def create_modality(
+    modality_in: ModalityCreate, db: Session = Depends(deps.get_db)
+) -> Any:
+    return crud.modality.create(db=db, obj_in=modality_in)
+
+
 @router.get("/{id}", status_code=200, response_model=Modality)
 def get_modality(
     id: int, db: Session = Depends(deps.get_db)
@@ -30,13 +37,6 @@ def get_modality(
     if not modality:
         raise HTTPException(status_code=404, detail="Modality Not Found")
     return crud.modality.get(db=db, id=id)
-
-
-@router.post("/", status_code=201, response_model=Modality)
-def create_modality(
-    modality_in: ModalityCreate, db: Session = Depends(deps.get_db)
-) -> Any:
-    return crud.modality.create(db=db, obj_in=modality_in)
 
 
 @router.put("/{id}", status_code=200, response_model=Modality)

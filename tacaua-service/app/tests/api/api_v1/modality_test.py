@@ -21,7 +21,6 @@ competition_data = {
     "name": "string",
     "system": "Eliminação Direta",
     "rank_by": "Vitórias",
-    "tiebreaks": [],
     "started": False,
     "public": False
 }
