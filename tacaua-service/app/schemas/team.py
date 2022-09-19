@@ -21,7 +21,7 @@ class TeamUpdate(TeamBase):
 
 class Team(TeamBase):
     id: int
-    image: AnyHttpUrl
+    image: Optional[AnyHttpUrl]
     participants: List[Participant]
 
     class Config:

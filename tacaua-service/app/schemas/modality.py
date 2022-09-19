@@ -52,7 +52,7 @@ class ModalityUpdate(ModalityBase):
 
 class ModalityInDBBase(ModalityBase):
     id: int
-    image: AnyHttpUrl
+    image: Optional[AnyHttpUrl]
 
     class Config:
         orm_mode = True

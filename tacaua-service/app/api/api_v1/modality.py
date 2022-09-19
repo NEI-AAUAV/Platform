@@ -10,13 +10,11 @@ from app.schemas.modality import Modality, ModalityCreate, ModalityUpdate, LazyM
 
 router = APIRouter()
 
-
 @router.get("/", status_code=200, response_model=LazyModalityList)
 def get_multi_modality(
     db: Session = Depends(deps.get_db)
 ) -> Any:
     modalities = crud.modality.get_multi(db=db)
-    logger.debug([m.__dict__ for m in modalities])
     return LazyModalityList(modalities=modalities)
 
 

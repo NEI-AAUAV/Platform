@@ -1,5 +1,7 @@
 import pytest
 from typing import Any
+from io import BytesIO
+from PIL import Image
 
 from fastapi.testclient import TestClient
 
@@ -67,7 +69,16 @@ def test_get_inexistent_modality(client: TestClient) -> None:
 
 
 def test_create_modality(client: TestClient) -> None:
-    r = client.post(URL_PREFIX, json=modality_data, allow_redirects=True)
+    image = Image.new('RGB', size=(50, 50), color=(0, 0, 0))
+    image_file = BytesIO()
+    image.save(image_file, 'JPEG')
+    image_file.seek(0)
+
+    files = {
+        "image": ('img.JPG', image_file, 'image/jpeg'),
+    }
+    r = client.post(URL_PREFIX, data=modality_data,
+                    files=files, allow_redirects=True)
     assert r.status_code == 201
     data = r.json()
     assert 'id' in data
@@ -77,13 +88,21 @@ def test_create_modality(client: TestClient) -> None:
 
 
 def test_update_modality(db: SessionTesting, client: TestClient) -> None:
+    image = Image.new('RGB', size=(50, 50), color=(0, 0, 0))
+    image_file = BytesIO()
+    image.save(image_file, 'JPEG')
+    image_file.seek(0)
+
+    files = {
+        "image": ('img.JPG', image_file, 'image/jpeg'),
+    }
     modality = db.query(Modality).first()
     modality_partial_data = {
         "year": 1,
         "frame": "Feminino",
     }
     r = client.put(f"{URL_PREFIX}/{modality.id}",
-                   json=modality_partial_data)
+                   data=modality_partial_data, files=files)
     assert r.status_code == 200
     data = r.json()
     assert 'id' in data

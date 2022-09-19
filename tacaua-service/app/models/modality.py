@@ -1,4 +1,4 @@
-from pathlib import Path
+from typing import Optional
 from pydantic import AnyHttpUrl
 from sqlalchemy import Column, SmallInteger, Integer, Text, Enum
 from sqlalchemy.orm import relationship
@@ -37,9 +37,9 @@ class Modality(Base):
     )
 
     @hybrid_property
-    def image(self) -> AnyHttpUrl:
-        return settings.STATIC_URL + self._image
+    def image(self) -> Optional[AnyHttpUrl]:
+        return self._image and settings.STATIC_URL + self._image
 
     @image.setter
-    def image(self, image: Path):
+    def image(self, image: Optional[AnyHttpUrl]):
         self._image = image
