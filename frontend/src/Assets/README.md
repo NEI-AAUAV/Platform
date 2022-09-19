@@ -18,7 +18,6 @@ The most top level object with basic user information.
 {
     "id": "objectId",           // automatic generated ID
     "name": "string",
-    "nickname": "string|null",  // useful and only provided for people who are more easily recognized by their nickname
     "email": "string|null",
     "nmec": "int|null",  
     "sex": "string",            // gender: "M"ale or "F"emale
@@ -53,7 +52,7 @@ An emblem representing an organization, faina position or taça UA modality.
 ```jsonc
 {
     "year": "int",      // matriculation year
-    "name": "string",   // one of the following: NEI, AETTUA, ST, CS, CF, Handball, Athletics, Badminton, Basketball, Futsal, Natation, Voleibol, Football, TableTennis, Chess, ...
+    "name": "string",   // one of the following: AAUAV, NEI, AETTUA, ST, CS, CF, Handball, Athletics, Badminton, Basketball, Futsal, Swimming, Voleyball, Football, TableTennis, Chess, ...
     "role": "string"    // variable, depending on the `name`
 }
 ```

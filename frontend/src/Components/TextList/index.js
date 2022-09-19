@@ -1,5 +1,5 @@
 import React from "react"
-import { Container, Row, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import "./index.css"
 
 /*
@@ -13,7 +13,7 @@ text -> nome
 
 const TextList = ({colSize,text}) => {
     return (
-        <Col lg={colSize} className="text-center" style={{textAlign: "center"}}>
+        <Col lg={colSize} className="text-center " style={{textAlign: "center"}}>
             <div className="colName">
                 {text.toUpperCase()}
             </div>

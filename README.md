@@ -2,11 +2,9 @@
 
 The following is a set of guidelines and standards for contributing to the NEI website.
 
-
 ### General
 
 Code and name everything in English. Only use Portuguese for terms that are more easily understood in Portuguese than in English.
-
 
 ### Branching
 
