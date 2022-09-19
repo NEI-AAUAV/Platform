@@ -1,6 +1,5 @@
-from pathlib import Path
-from pydantic import BaseModel, constr
-from typing import List
+from pydantic import BaseModel, constr, AnyHttpUrl
+from typing import List, Optional
 
 from app.utils import schema_as_form
 from .participant import Participant
@@ -14,14 +13,15 @@ class TeamBase(BaseModel):
 class TeamCreate(TeamBase):
     pass
 
+
 @schema_as_form
 class TeamUpdate(TeamBase):
-    name: constr(max_length=50)
+    name: Optional[constr(max_length=50)]
 
 
 class Team(TeamBase):
     id: int
-    image: Path
+    image: AnyHttpUrl
     participants: List[Participant]
 
     class Config:

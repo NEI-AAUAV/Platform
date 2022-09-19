@@ -17,7 +17,7 @@ class Team(Base):
     )
     name = Column(String(50))
     # desclassified = Column(Boolean, default=False)  # TODO: future feature
-    image = Column(Text)
+    _image = Column("image", Text)
 
     participants = relationship(
         "Participant",
@@ -31,5 +31,5 @@ class Team(Base):
         return settings.STATIC_URL + self._image
 
     @image.setter
-    def image(self, value: Path):
-        self._image = value
+    def image(self, image: Path):
+        self._image = image

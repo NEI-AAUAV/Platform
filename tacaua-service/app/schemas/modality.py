@@ -1,6 +1,5 @@
-from pathlib import Path
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, AnyHttpUrl
 
 from app.utils import EnumList, schema_as_form
 from app.core.logging import logger
@@ -50,13 +49,10 @@ class ModalityUpdate(ModalityBase):
     frame: Optional[FrameEnum]
     sport: Optional[SportEnum]
 
-    class Config:
-        title= "shit"
-
 
 class ModalityInDBBase(ModalityBase):
     id: int
-    image: Path
+    image: AnyHttpUrl
 
     class Config:
         orm_mode = True

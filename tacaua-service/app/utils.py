@@ -43,7 +43,6 @@ def schema_as_form(cls: Type[BaseModel]):
     sig = sig.replace(parameters=new_parameters)
     as_form.__signature__ = sig  # type: ignore
     setattr(cls, 'as_form', as_form)
-    # cls.Config.
     return cls
 
 

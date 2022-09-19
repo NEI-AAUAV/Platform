@@ -21,7 +21,7 @@ class Modality(Base):
         Enum(SportEnum, name="sport_enum", inherit_schema=True),
         nullable=False
     )
-    image = Column(Text)
+    _image = Column("image", Text)
 
     competitions = relationship(
         "Competition",
@@ -41,5 +41,5 @@ class Modality(Base):
         return settings.STATIC_URL + self._image
 
     @image.setter
-    def image(self, value: Path):
-        self._image = value
+    def image(self, image: Path):
+        self._image = image
