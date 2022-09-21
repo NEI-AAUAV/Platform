@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import FloatingBtns from './Components/FloatingBtns';
+import FloatingBtns from './components/FloatingBtns';
 import { useRoutes } from 'react-router-dom';
 import routes from './routes';
 
@@ -8,8 +8,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faChevronUp, faFilePdf, faFolder, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
-
-import {useTheme} from 'Stores/useTheme';
 
 // Register Fontawesome icons
 // https://fontawesome.com/v5.15/how-to-use/on-the-web/using-with/react (Using Icons via Global Use)
@@ -33,10 +31,9 @@ const App = () => {
             setTop(true);
         }
     }
-    
-    const theme = useTheme(state => state.theme);
+
     return (
-        <div data-theme={theme}>
+        <div>
             <FloatingBtns location="bottomRight">
                 {
                     !top &&
@@ -48,7 +45,7 @@ const App = () => {
                         <FontAwesomeIcon icon={faChevronUp} />
                     </button>
                 }
-                {
+                {/*
                     window.location.href.indexOf("/forms/feedback") < 0
                     &&
                     <button
@@ -58,7 +55,7 @@ const App = () => {
                     >
                         <FontAwesomeIcon icon={faComment} />
                     </button>
-                }
+                */}
             </FloatingBtns>
             {routing}
         </div>
