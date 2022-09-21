@@ -34,6 +34,7 @@ import sal from "assets/icons/sal.svg";
 import rol from "assets/icons/rol.svg";
 import lenco from "assets/icons/lenco.svg";
 import pa from "assets/icons/pa.svg";
+import heartBorder from "assets/icons/heart_border.svg";
 
 import './index.css';
 
@@ -385,10 +386,17 @@ function buildTree() {
   // border with the year color 
   const nodesProfileBorder = nodes
     .insert("circle", "circle")
-    .attr("class", "profile-border")
+    .attr("class", d => "profile-border")
     .attr("cx", 0)
     .attr("cy", 0)
-    .attr("r", 12);
+    .attr("r", 12)
+
+  const nodesHeartBorder = nodes
+    .filter(d => d.data.nmec === 76368)
+    .insert("circle")
+    .attr("class", d => "heart-border")
+    .attr("r", 24)
+    .style("fill", `url(#heart_border)`);
 
   labels = groups
     .append("g")
@@ -506,6 +514,10 @@ function buildTree() {
       .style("stroke", d => close ? colors[d.data.start_year % colors.length] : "silver")
       .transition().duration(300)
       .attr("r", close ? 20 : 12);
+
+    nodesHeartBorder
+      .transition().duration(close ? 400 : 100)
+      .style("opacity", d => close ? 0.8 : 0)
 
     labels
       .classed('label-small', close)
@@ -789,6 +801,9 @@ function FainaTree() {
             <feOffset in="color-out" dx="-1" dy="-1" result="the-shadow"></feOffset>
             <feBlend in="SourceGraphic" in2="the-shadow" mode="normal"></feBlend>
           </filter>
+          <pattern id="heart_border" width="1" height="1" patternContentUnits="objectBoundingBox">
+            <image xlinkHref={heartBorder} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+          </pattern>
           <pattern id="default_male" width="1" height="1" patternContentUnits="objectBoundingBox">
             <image xlinkHref={malePic} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
           </pattern>

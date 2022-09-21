@@ -291,3 +291,11 @@
     stroke: silver;
     stroke-width: 1.5;
 }
+
+[data-theme="dark"] #treeei svg.treeei circle.heart-border {
+    filter: invert(1) contrast(0.5);
+}
+
+#treeei svg.treeei circle.heart-border {
+    filter: contrast(0.1);
+}
