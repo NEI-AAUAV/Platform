@@ -206,7 +206,7 @@ function buildTree() {
   // sort head families according to the family depth
   // sort like a normal distribution
   dataStructure.children = dataStructure.children.slice()
-    .filter((a) => a.children)  // TODO: do something
+    .filter((a) => a.children || a.data.start_year > 14)  // TODO: do something
     .sort((a, b) => a.family_depth - b.family_depth || a.family_count - b.family_count)
     .reduceRight((acc, val, i) => {
       return i % 2 === 0 ? [...acc, val] : [val, ...acc];
@@ -216,7 +216,7 @@ function buildTree() {
     // .size(view)
     .nodeSize([100, 150])
     .separation(function (a, b) {
-      return a.family != b.family ? 4 : a.parent != b.parent ? 1.25 : 1;
+      return a.family !== b.family ? 4 : a.parent !== b.parent ? 1.25 : 1;
     });
 
   const root = treeStructure(dataStructure);
@@ -254,7 +254,7 @@ function buildTree() {
 
   // links
   groups
-    .filter(d => d.parent != root)
+    .filter(d => d.parent !== root)
     .append("path")
     .style("stroke", "silver")
     .attr('marker-start', 'url(#dot)')
@@ -309,7 +309,7 @@ function buildTree() {
     .attr('height', 1)
     .attr('patternContentUnits', 'objectBoundingBox')
     .append("image")
-    .attr("xlink:xlink:href", d => process.env.PUBLIC_URL + '/treeei/optimized/' + d.data.image)
+    .attr("xlink:xlink:href", d => process.env.PUBLIC_URL + '/treeei/optimized/' + d.data.image + '.jpeg')
     .attr("height", 1)
     .attr("width", 1)
     .attr("preserveAspectRatio", "xMidYMid slice");
@@ -390,6 +390,7 @@ function buildTree() {
     .filter(d => d.data.nmec === 76368)
     .insert("circle")
     .attr("r", 24)
+    .style("filter", `brightness(1.3)`)
     .style("fill", `url(#heart_border)`);
 
   labels = groups
