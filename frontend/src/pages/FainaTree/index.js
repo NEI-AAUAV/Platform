@@ -8,16 +8,11 @@ import {
   faChevronDown, faChevronUp,
   faArrowUp, faArrowDown,
   faAngleLeft, faAngleRight,
-  faSearch
 } from "@fortawesome/free-solid-svg-icons";
 
 import * as d3 from 'd3';
 import classNames from "classname";
 
-import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -129,8 +124,8 @@ function separateName(name) {
 function getFainaHierarchy({ sex, start_year, organizations }, end_year) {
   if (organizations)
     for (const o of organizations) {
-      if (o.name === "cf" && o.year === end_year && o.role) return o.role;
-      if (o.name === "st" && o.year === end_year) return o.role;
+      if (o.name === "CF" && o.year === end_year && o.role) return o.role;
+      if (o.name === "ST" && o.year === end_year) return o.role;
     }
 
   const maleHierarchies = ["Junco", "Moço", "Marnoto", "Mestre"];
@@ -394,7 +389,6 @@ function buildTree() {
   const nodesHeartBorder = nodes
     .filter(d => d.data.nmec === 76368)
     .insert("circle")
-    .attr("class", d => "heart-border")
     .attr("r", 24)
     .style("fill", `url(#heart_border)`);
 
@@ -516,8 +510,11 @@ function buildTree() {
       .attr("r", close ? 20 : 12);
 
     nodesHeartBorder
-      .transition().duration(close ? 400 : 100)
-      .style("opacity", d => close ? 0.8 : 0)
+      .transition()
+      .delay(close ? 200 : 0)
+      .duration(close ? 400 : 0)
+      .ease(d3.easeCubicOut)
+      .style("opacity", d => close ? 1 : 0)
 
     labels
       .classed('label-small', close)
@@ -679,8 +676,9 @@ function FainaTree() {
                   size={mode === Modes.TREE ? "2x" : "lg"} />
               </div>
             </div>
-            <h4>Procurar</h4>
 
+
+            <h4>Procurar</h4>
             <Autocomplete
               id="country-select-demo"
               sx={{ width: 200 }}
@@ -704,6 +702,7 @@ function FainaTree() {
                     '& fieldset': { top: 0, borderColor: 'var(--border) !important' },
                     '& .MuiOutlinedInput-root': { padding: '4px', color: 'var(--text-primary)', },
                   }}
+                  placeholder="Nome..."
                   InputLabelProps={{ className: "autocompleteLabel" }}
                   inputProps={{
                     ...params.inputProps,
@@ -713,8 +712,18 @@ function FainaTree() {
               )}
             />
 
+            <h4>Nomes</h4>
+            <div className="mt-3">
+              <div className="mb-2"
+                style={{ fontWeight: fainaNames ? 400 : 300, opacity: fainaNames ? 1 : 0.7, cursor: "pointer" }}
+                onClick={toggeFainaNames}
+              >
+                Mostrar nomes de faina
+              </div>
+            </div>
+
             <h4>Matrículas</h4>
-            <div className='d-flex justify-content-between my-3'>
+            <div className='d-flex justify-content-between my-3 p-1'>
               <div className='mr-3'>
                 <div style={{ marginBottom: "0.2em" }}>
                   <FontAwesomeIcon
@@ -768,15 +777,6 @@ function FainaTree() {
                   </div>
                 ))
               }
-            </div>
-            <h4>Nomes</h4>
-            <div className="mt-3">
-              <div className="mb-2"
-                style={{ fontWeight: fainaNames ? 400 : 300, opacity: fainaNames ? 1 : 0.7, cursor: "pointer" }}
-                onClick={toggeFainaNames}
-              >
-                Mostrar nomes de faina
-              </div>
             </div>
           </div>
         </div>
