@@ -2,12 +2,12 @@ from pydantic import BaseModel
 from enum import Enum
 
 import inspect
-from typing import Callable, Type
+from typing import Callable, Optional, Type
 
 from fastapi import Form, FastAPI
 from fastapi.routing import APIRoute
 from pydantic.fields import ModelField
-
+from app.core.logging import logger
 
 class Ignore(BaseModel):
     pass

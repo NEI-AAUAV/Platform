@@ -1,7 +1,8 @@
 from io import BytesIO
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from urllib import request
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
 from sqlalchemy.orm import Session
-from typing import Any
+from typing import Any, Optional
 
 from app import crud
 from app.api import deps
@@ -41,22 +42,26 @@ def get_modality(
     return crud.modality.get(db=db, id=id)
 
 
+from fastapi import Form
 @router.put("/{id}", status_code=200, response_model=Modality)
 async def update_modality(
     id: int,
-    modality_in: ModalityUpdate = Depends(ModalityUpdate.as_form),
-    image: UploadFile = File(...),
+    request: Request,
+    modality_in: ModalityUpdate = Form(..., alias="modality"),
+    image: UploadFile = File(None),
     db: Session = Depends(deps.get_db)
-) -> dict:
-    """
-    Update a tacaUA game in the database.
-    """
+) -> Any:
+    form = await request.form()
+    logger.debug(form._dict)
+    modality_in = ModalityUpdate(**form._dict)
+    logger.debug(modality_in.dict(exclude_unset=True))
+
     modality = crud.modality.get(db=db, id=id)
     if not modality:
         raise HTTPException(status_code=404, detail="Modality Not Found")
     try:
         return await crud.modality.update(db=db, db_obj=modality,
-                                          obj_in=modality_in, image=image)
+                                          obj_in=modality_in)
     except Exception as err:
         raise HTTPException(status_code=400, detail=err)
 

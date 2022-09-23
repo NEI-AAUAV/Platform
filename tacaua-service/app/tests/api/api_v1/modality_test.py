@@ -102,7 +102,7 @@ def test_update_modality(db: SessionTesting, client: TestClient) -> None:
         "frame": "Feminino",
     }
     r = client.put(f"{URL_PREFIX}/{modality.id}",
-                   data=modality_partial_data, files=files)
+                   data=modality_partial_data, files=files, allow_redirects=True)
     assert r.status_code == 200
     data = r.json()
     assert 'id' in data

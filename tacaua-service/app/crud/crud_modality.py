@@ -1,6 +1,7 @@
 from io import BytesIO
 from typing import List, Union, Dict, Any
 from PIL import Image, ImageOps
+from fastapi import File
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session, noload
 
@@ -12,7 +13,7 @@ from app.core.logging import logger
 
 class CRUDModality(CRUDBase[Modality, ModalityCreate, ModalityUpdate]):
 
-    async def save_image(self, image: Image, name: str) -> str:
+    async def save_image(self, image: File, name: str) -> str:
         img_data = await image.read()
         img = Image.open(BytesIO(img_data))
         ext = img.format
@@ -56,13 +57,13 @@ class CRUDModality(CRUDBase[Modality, ModalityCreate, ModalityUpdate]):
         *,
         db_obj: Modality,
         obj_in: Union[ModalityUpdate, Dict[str, Any]],
-        image: Image = None
     ) -> Modality:
         db_obj = super().update(db=db, db_obj=db_obj, obj_in=obj_in)
-        img_url = await self.save_image(image, db_obj.id)
-        setattr(db_obj, 'image', img_url)
-        db.add(db_obj)
-        db.commit()
+        if isinstance(obj_in, dict) and 'image' in obj_in:
+            img_url = await self.save_image(obj_in['image'], db_obj.id)
+            setattr(db_obj, 'image', img_url)
+            db.add(db_obj)
+            db.commit()
         return db_obj
 
 
