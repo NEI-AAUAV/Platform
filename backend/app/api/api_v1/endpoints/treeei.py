@@ -1,8 +1,8 @@
+from io import BytesIO
+
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
-from typing import Any, List
 from PIL import Image, ImageOps
-import io
 
 
 router = APIRouter()
@@ -13,10 +13,10 @@ async def create_treeei_node(
     *, id: str = Form(...), image: UploadFile = File(...)
 ) -> JSONResponse:
     img_data = await image.read()
-    img = Image.open(io.BytesIO(img_data))
+    img = Image.open(BytesIO(img_data))
     ext = img.format
     if not ext in ('JPEG', 'PNG'):
-        raise HTTPException(status_code=406, detail="Image format not acceptable")
+        raise HTTPException(status_code=406, detail="Image Format Not Acceptable")
 
     # handle EXIF orientation tag
     img = ImageOps.exif_transpose(img)
@@ -38,7 +38,7 @@ async def create_treeei_node(
     img = img.convert("RGB")
 
     # resize image to 150x150 with the best quality resampling filter
-    img = img.resize((150, 150), Image.LANCZOS)
+    img = img.resize((150, 150), Image.Resampling.LANCZOS)
 
     # quality parameter explained here:
     # https://github.com/python-pillow/Pillow/blob/main/src/PIL/JpegPresets.py
@@ -53,4 +53,4 @@ async def create_treeei_node(
                 optimize=True,
                 progressive=True)
 
-    return {"filename": id}
+    return {"id": id, "image": f"static/treeei/optimized/{id}"}

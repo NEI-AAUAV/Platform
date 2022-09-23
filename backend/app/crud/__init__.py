@@ -11,6 +11,10 @@ from .crud_team import team
 from .crud_team_colaborators import team_colaborators
 from .crud_seniors import seniors
 from .crud_seniors_students import seniors_students
+from .crud_rgm import rgm
+from .crud_history import history
+from .crud_partners import partners
+from .crud_merchandisings import merchandisings
 from .crud_notes_schoolyear import notes_schoolyear
 from .crud_notes_teachers import notes_teachers
 from .crud_notes_thanks import notes_thanks
