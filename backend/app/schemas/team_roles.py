@@ -4,23 +4,23 @@ from typing import Optional
 from typing_extensions import Annotated
 
 
-class FainaRolesBase(BaseModel):
-    name: Annotated[str, Field(max_length=20)]
-    weight: Optional[int]
+class TeamRolesBase(BaseModel):
+    name: Annotated[str, Field(max_length=120)]
+    weight: int
 
 
-class FainaRolesCreate(FainaRolesBase):
+class TeamRolesCreate(TeamRolesBase):
     """Properties to receive via API on creation."""
     pass
 
 
-class FainaRolesUpdate(FainaRolesBase):
+class TeamRolesUpdate(TeamRolesBase):
     """Properties to receive via API on creation."""
-    name: Annotated[Optional[str], Field(max_length=20)]
+    name: Annotated[Optional[str], Field(max_length=120)]
     weight: Optional[int]
 
 
-class FainaRolesInDB(FainaRolesBase):
+class TeamRolesInDB(TeamRolesBase):
     """Properties properties stored in DB."""
     id: int
 

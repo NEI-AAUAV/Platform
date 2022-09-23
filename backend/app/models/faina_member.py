@@ -9,10 +9,10 @@ class FainaMember(Base):
     __tablename__ = "faina_member"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    #member_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id"), index=True)
-    year_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".faina.mandato"), index=True)
+    member_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id"), index=True)
+    mandato_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".faina.mandato"), index=True)
     role_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".faina_roles.id"), index=True)
 
-    #member = relationship("Users", foreign_keys=[member_id])
+    member = relationship("Users", foreign_keys=[member_id])
     role = relationship("FainaRoles", foreign_keys=[role_id])
-    mandato = relationship("Faina", foreign_keys=[year_id])
+    mandato = relationship("Faina", foreign_keys=[mandato_id])

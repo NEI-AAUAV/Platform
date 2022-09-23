@@ -102,12 +102,10 @@ USERS = [
 
 FAINA = [
     {
-        "mandato" : 1,
         "imagem" : "imagem_url",
         "anoLetivo": "2020/2021"
     },
     {
-        "mandato" : 2,
         "imagem" : "imagem_url",
         "anoLetivo": "2021/2022"
     }
@@ -122,7 +120,8 @@ FAINA_ROLES = [
 
 FAINA_MEMBER = [
     {
-        "year_id" : 1,
+        "member_id" : 1,
+        "mandato_id" : 1,
         "role_id" : 1
     }
 ]
@@ -132,14 +131,28 @@ SENIORS = [
         "year" : 2022,
         "course" : "LEI",
         "image" : "image_url"
+    },
+    {
+        "year" : 2022,
+        "course" : "MEI",
+        "image" : "image_url"
     }
 ]
 
 SENIORS_STUDENTS = [
     {
+        "year_id": 2022,
+        "course_name": "LEI",
         "user_id" : 2,
-        "quote" : "Sou alto morcao",
+        "quote" : "Sou mesmo fixe",
         "image" : "image_url"
+    },
+    {
+        "year_id": 2022,
+        "course_name": "MEI",
+        "user_id" : 1,
+        "quote" : "Olá",
+        "image" : "image_url2"
     }
 ]
 
