@@ -37,13 +37,13 @@ class Match(Base):
     date = Column(DateTime, index=True)
     team1_prereq_match_id = Column(
         Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".team.id",  # TODO: needs ondelete for when round deletes??
+        ForeignKey(settings.SCHEMA_NAME + ".match.id",  # TODO: needs ondelete for when round deletes??
                    name="match_team1_prereq_match_id_fkey"),
         index=True
     )
     team2_prereq_match_id = Column(
         Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".team.id",
+        ForeignKey(settings.SCHEMA_NAME + ".match.id",
                    name="match_team2_prereq_match_id_fkey"),
         index=True
     )

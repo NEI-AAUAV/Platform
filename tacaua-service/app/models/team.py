@@ -10,6 +10,11 @@ from app.core.config import settings
 
 class Team(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
+    course_id = Column(
+        Integer,
+        ForeignKey(settings.SCHEMA_NAME + ".course.id"),
+        index=True
+    )
     modality_id = Column(
         Integer,
         ForeignKey(settings.SCHEMA_NAME + ".modality.id", ondelete='CASCADE'),

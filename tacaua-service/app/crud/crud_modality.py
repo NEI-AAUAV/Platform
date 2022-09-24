@@ -1,14 +1,12 @@
 from io import BytesIO
-from typing import List, Optional, Union, Dict, Any
+from typing import List, Optional
 from PIL import Image, ImageOps
-from fastapi import File, UploadFile
-from fastapi.encoders import jsonable_encoder
+from fastapi import UploadFile
 from sqlalchemy.orm import Session, noload
 
 from app.crud.base import CRUDBase
 from app.schemas.modality import ModalityCreate, ModalityUpdate
 from app.models.modality import Modality
-from app.core.logging import logger
 
 
 class CRUDModality(CRUDBase[Modality, ModalityCreate, ModalityUpdate]):
@@ -27,6 +25,8 @@ class CRUDModality(CRUDBase[Modality, ModalityCreate, ModalityUpdate]):
             ext = img.format
             if not ext in ('JPEG', 'PNG'):
                 raise Exception("Invalid Image Format")
+
+            # TODO: rescale if necessary
 
             # handle EXIF orientation tag
             img = ImageOps.exif_transpose(img)

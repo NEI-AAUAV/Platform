@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from app.utils import validate_to_json
 from .participant import Participant
+from .course import Course
 
 
 class TeamBase(BaseModel):
@@ -21,6 +22,7 @@ class TeamUpdate(TeamBase):
 
 class Team(TeamBase):
     id: int
+    course_id: Course
     image: Optional[AnyHttpUrl]
     participants: List[Participant]
 

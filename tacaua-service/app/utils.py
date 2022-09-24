@@ -28,11 +28,12 @@ class LogStatsMiddleware(BaseHTTPMiddleware):
     async def dispatch(  # type: ignore
         self, request: Request, call_next: Callable[[Request], Awaitable[StreamingResponse]],
     ) -> Response:
-        logger.debug(request.url)
+        log = str(request.url).startswith("http://localhost:8000/api")
+        log and logger.debug(request.url)
         response = await call_next(request)
         response_body = [section async for section in response.body_iterator]
         response.body_iterator = iterate_in_threadpool(iter(response_body))
-        logger.debug(response_body[0].decode())
+        log and logger.debug(response_body[0].decode())
         return response
 
 
