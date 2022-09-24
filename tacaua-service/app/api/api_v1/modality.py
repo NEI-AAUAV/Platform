@@ -1,6 +1,4 @@
-from io import BytesIO
-from urllib import request
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request, Form
 from sqlalchemy.orm import Session
 from typing import Any, Optional
 
@@ -10,6 +8,7 @@ from app.core.logging import logger
 from app.schemas.modality import Modality, ModalityCreate, ModalityUpdate, LazyModalityList
 
 router = APIRouter()
+
 
 @router.get("/", status_code=200, response_model=LazyModalityList)
 def get_multi_modality(
@@ -21,15 +20,20 @@ def get_multi_modality(
 
 @router.post("/", status_code=201, response_model=Modality)
 async def create_modality(
-    modality_in: ModalityCreate = Depends(ModalityCreate.as_form),
-    image: UploadFile = File(...),
+    request: Request,
+    modality_in: ModalityCreate = Form(..., alias='modality'),
+    image: Optional[UploadFile] = File(None),
     db: Session = Depends(deps.get_db)
 ) -> Any:
+    modality = crud.modality.create(db=db, obj_in=modality_in)
     try:
-        return await crud.modality.create(db=db, obj_in=modality_in,
-                                          image=image)
+        form = await request.form()
+        if 'image' in form:
+            modality = await crud.modality.update_image(
+                db=db, db_obj=modality, image=image)
     except Exception as err:
         raise HTTPException(status_code=400, detail=err)
+    return modality
 
 
 @router.get("/{id}", status_code=200, response_model=Modality)
@@ -42,28 +46,26 @@ def get_modality(
     return crud.modality.get(db=db, id=id)
 
 
-from fastapi import Form
 @router.put("/{id}", status_code=200, response_model=Modality)
 async def update_modality(
     id: int,
     request: Request,
-    modality_in: ModalityUpdate = Form(..., alias="modality"),
-    image: UploadFile = File(None),
+    modality_in: ModalityUpdate = Form(..., alias='modality'),
+    image: Optional[UploadFile] = File(None),
     db: Session = Depends(deps.get_db)
 ) -> Any:
-    form = await request.form()
-    logger.debug(form._dict)
-    modality_in = ModalityUpdate(**form._dict)
-    logger.debug(modality_in.dict(exclude_unset=True))
-
     modality = crud.modality.get(db=db, id=id)
     if not modality:
         raise HTTPException(status_code=404, detail="Modality Not Found")
+    modality = crud.modality.update(db=db, db_obj=modality, obj_in=modality_in)
     try:
-        return await crud.modality.update(db=db, db_obj=modality,
-                                          obj_in=modality_in)
+        form = await request.form()
+        if 'image' in form:
+            modality = await crud.modality.update_image(
+                db=db, db_obj=modality, image=image)
     except Exception as err:
         raise HTTPException(status_code=400, detail=err)
+    return modality
 
 
 @router.delete("/{id}", status_code=200, response_model=Modality)

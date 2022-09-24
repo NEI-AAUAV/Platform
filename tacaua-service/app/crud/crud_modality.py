@@ -1,7 +1,7 @@
 from io import BytesIO
-from typing import List, Union, Dict, Any
+from typing import List, Optional, Union, Dict, Any
 from PIL import Image, ImageOps
-from fastapi import File
+from fastapi import File, UploadFile
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session, noload
 
@@ -13,58 +13,45 @@ from app.core.logging import logger
 
 class CRUDModality(CRUDBase[Modality, ModalityCreate, ModalityUpdate]):
 
-    async def save_image(self, image: File, name: str) -> str:
-        img_data = await image.read()
-        img = Image.open(BytesIO(img_data))
-        ext = img.format
-        if not ext in ('JPEG', 'PNG'):
-            raise Exception("Invalid Image Format")
+    async def update_image(
+        self,
+        db: Session,
+        *,
+        db_obj: Modality,
+        image: Optional[UploadFile],
+    ) -> Modality:
+        img_path = None
+        if image:
+            img_data = await image.read()
+            img = Image.open(BytesIO(img_data))
+            ext = img.format
+            if not ext in ('JPEG', 'PNG'):
+                raise Exception("Invalid Image Format")
 
-        # handle EXIF orientation tag
-        img = ImageOps.exif_transpose(img)
+            # handle EXIF orientation tag
+            img = ImageOps.exif_transpose(img)
 
-        # convert image mode to RGB to allow JPEG conversion
-        img = img.convert("RGB")
+            # convert image mode to RGB to allow JPEG conversion
+            img = img.convert("RGB")
 
-        # save optimized image on static folder
-        img_path = f"/modality/{name}"
-        img.save(f"static{img_path}",
-                 format="JPEG",
-                 quality="web_high",
-                 optimize=True,
-                 progressive=True)
-        return img_path
+            # save optimized image on static folder
+            img_path = f"/modality/{db_obj.id}"
+            img.save(f"static{img_path}",
+                    format="JPEG",
+                    quality="web_high",
+                    optimize=True,
+                    progressive=True)
+
+        setattr(db_obj, 'image', img_path)
+        db.add(db_obj)
+        db.commit()
+        return db_obj
 
     def get_multi(
         self, db: Session, *, skip: int = None, limit: int = None
     ) -> List[Modality]:
         return db.query(self.model).options(
             noload('*')).offset(skip).limit(limit).all()
-
-    async def create(
-        self, db: Session, *, obj_in: ModalityCreate, image: Image
-    ) -> Modality:
-        db_obj = super().create(db=db, obj_in=obj_in)
-        img_url = await self.save_image(image, db_obj.id)
-        setattr(db_obj, 'image', img_url)
-        db.add(db_obj)
-        db.commit()
-        return db_obj
-
-    async def update(
-        self,
-        db: Session,
-        *,
-        db_obj: Modality,
-        obj_in: Union[ModalityUpdate, Dict[str, Any]],
-    ) -> Modality:
-        db_obj = super().update(db=db, db_obj=db_obj, obj_in=obj_in)
-        if isinstance(obj_in, dict) and 'image' in obj_in:
-            img_url = await self.save_image(obj_in['image'], db_obj.id)
-            setattr(db_obj, 'image', img_url)
-            db.add(db_obj)
-            db.commit()
-        return db_obj
 
 
 modality = CRUDModality(Modality)
