@@ -1,3 +1,4 @@
+import json
 import pytest
 from typing import Any
 from io import BytesIO
@@ -77,7 +78,7 @@ def test_create_modality(client: TestClient) -> None:
     files = {
         "image": ('img.JPG', image_file, 'image/jpeg'),
     }
-    r = client.post(URL_PREFIX, data=modality_data,
+    r = client.post(URL_PREFIX, data={"modality": json.dumps(modality_data)},
                     files=files, allow_redirects=True)
     assert r.status_code == 201
     data = r.json()
@@ -100,9 +101,12 @@ def test_update_modality(db: SessionTesting, client: TestClient) -> None:
     modality_partial_data = {
         "year": 1,
         "frame": "Feminino",
+        "sport": "Andebol",
     }
     r = client.put(f"{URL_PREFIX}/{modality.id}",
-                   data=modality_partial_data, files=files, allow_redirects=True)
+                   data={"modality": json.dumps(modality_partial_data)},
+                   files=files, allow_redirects=True)
+    print(r.json())
     assert r.status_code == 200
     data = r.json()
     assert 'id' in data

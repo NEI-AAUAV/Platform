@@ -10,7 +10,6 @@ from app.schemas.team import Team, TeamCreate, TeamUpdate
 router = APIRouter()
 
 
-
 @router.post("/", status_code=201, response_model=Team)
 async def create_team(
     request: Request,
