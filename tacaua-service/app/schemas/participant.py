@@ -9,6 +9,7 @@ class ParticipantBase(BaseModel):
 
 
 class ParticipantCreate(ParticipantBase):
+    team_id: int
     pass
 
 

@@ -12,6 +12,7 @@ class CourseBase(BaseModel):
 
 @validate_to_json
 class CourseCreate(CourseBase):
+    course_id: int
     pass
 
 

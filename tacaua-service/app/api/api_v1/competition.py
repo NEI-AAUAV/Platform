@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Any
 
 from app import crud
 from app.api import deps
-from app.schemas.competition import Competition, CompetitionCreate
+from app.schemas.competition import Competition, CompetitionCreate, CompetitionUpdate
 
 router = APIRouter()
 
@@ -17,6 +17,16 @@ def create_competition(
     if not modality:
         raise HTTPException(status_code=404, detail="Modality Not Found")
     return crud.competition.create(db=db, obj_in=competition_in)
+
+
+@router.put("/{id}", status_code=200, response_model=Competition)
+def update_competition(
+    id: int, competition_in: CompetitionUpdate, db: Session = Depends(deps.get_db)
+) -> Any:
+    modality = crud.modality.get(db=db, id=id)
+    if not modality:
+        raise HTTPException(status_code=404, detail="Modality Not Found")
+    return crud.competition.update(db=db, db_obj=modality, obj_in=competition_in)
 
 
 @router.delete("/{id}", status_code=200, response_model=Competition)
