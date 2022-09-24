@@ -1,7 +1,7 @@
 from pydantic import BaseModel, constr, AnyHttpUrl
 from typing import List, Optional
 
-from app.utils import schema_as_form
+from app.utils import validate_to_json
 from .participant import Participant
 
 
@@ -9,12 +9,12 @@ class TeamBase(BaseModel):
     name: constr(max_length=50)
 
 
-@schema_as_form
+@validate_to_json
 class TeamCreate(TeamBase):
     pass
 
 
-@schema_as_form
+@validate_to_json
 class TeamUpdate(TeamBase):
     name: Optional[constr(max_length=50)]
 

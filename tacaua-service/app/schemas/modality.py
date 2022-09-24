@@ -1,10 +1,12 @@
+import json
 from typing import Optional, List
 from pydantic import BaseModel, AnyHttpUrl
 
-from app.utils import EnumList, schema_as_form
+from app.utils import EnumList, validate_to_json
 from app.core.logging import logger
 from .competition import Competition
 from .team import Team
+
 
 
 class TypeEnum(str, EnumList):
@@ -38,12 +40,12 @@ class ModalityBase(BaseModel):
     sport: SportEnum
 
 
-@schema_as_form
+@validate_to_json
 class ModalityCreate(ModalityBase):
     pass
 
 
-@schema_as_form
+@validate_to_json
 class ModalityUpdate(ModalityBase):
     year: Optional[int]
     frame: Optional[FrameEnum]

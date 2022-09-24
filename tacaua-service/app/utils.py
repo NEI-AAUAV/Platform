@@ -11,7 +11,9 @@ from starlette.concurrency import iterate_in_threadpool
 
 from app.core.logging import logger
 
+
 class Ignore(BaseModel):
+    # TODO: remove this maybe
     pass
 
 
@@ -33,26 +35,18 @@ class LogStatsMiddleware(BaseHTTPMiddleware):
         logger.debug(response_body[0].decode())
         return response
 
-    for field_name, model_field in cls.__fields__.items():
-        model_field: ModelField  # type: ignore
 
-        new_parameters.append(
-            inspect.Parameter(
-                model_field.alias,
-                inspect.Parameter.POSITIONAL_ONLY,
-                default=Form(...) if model_field.required else Form(
-                    model_field.default),
-                annotation=model_field.outer_type_,
-            )
-        )
+def validate_to_json(cls: Type[BaseModel]):
+    def __get_validators__(cls):
+        yield cls.validate_to_json
 
-    async def as_form(**data):
-        return cls(**data)
+    def validate_to_json(cls, value):
+        if isinstance(value, str):
+            return cls(**json.loads(value))
+        return value
 
-    sig = inspect.signature(as_form)
-    sig = sig.replace(parameters=new_parameters)
-    as_form.__signature__ = sig  # type: ignore
-    setattr(cls, 'as_form', as_form)
+    setattr(cls, '__get_validators__', classmethod(__get_validators__))
+    setattr(cls, 'validate_to_json', classmethod(validate_to_json))
     return cls
 
 
