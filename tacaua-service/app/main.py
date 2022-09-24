@@ -1,9 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.init_db import init_db
-from app.utils import update_schema_name
+from app.utils import update_schema_name, LogStatsMiddleware
 from app.api.api import api_v1_router
 from app.api.api_v1.modality import create_modality, update_modality
 from app.core.logging import init_logging
@@ -18,10 +18,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-init_db()
+app.add_middleware(LogStatsMiddleware)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_event_handler("startup", init_logging)
+app.add_event_handler("startup", init_db)
 app.include_router(api_v1_router, prefix=settings.API_V1_STR)
 
 update_schema_name(app, create_modality, "ModalityCreateForm")
