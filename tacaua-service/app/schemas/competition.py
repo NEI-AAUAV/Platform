@@ -1,8 +1,8 @@
-from typing import Optional, List
+from typing import Annotated, Literal, Optional, List, Union
 
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, Field, constr
 
-from app.utils import EnumList
+from app.utils import EnumList, validate_to_json
 from .group import Group
 
 
@@ -58,7 +58,7 @@ class TiebreakEnum(str, EnumList):
     @classmethod
     def list(cls):
         return list(map(lambda c: (c.value, c.description), cls))
-    
+
     def __new__(cls, value, description):
         obj = str.__new__(cls)
         obj._value_ = value
@@ -66,35 +66,48 @@ class TiebreakEnum(str, EnumList):
         return obj
 
 
-# class Metadata(BaseModel):
-#     system: SystemEnum
+@validate_to_json
+class SystemBase(BaseModel):
+    rank_by: RankByEnum
 
 
-# class SingleEliminationMetadata(Metadata):
-#     system = SystemEnum.SINGLE_ELIMINATION
+class SingleElimination(SystemBase):
+    system: Literal[SystemEnum.SINGLE_ELIMINATION]
+    third_place_match: bool = False
 
 
-# pts_win = Column(SmallInteger, default=0)
-# pts_win_tiebreak = Column(SmallInteger, default=0)
-# pts_tie = Column(SmallInteger, default=0)
-# pts_loss_tiebreak = Column(SmallInteger, default=0)
-# pts_loss = Column(SmallInteger, default=0)
-# pts_ff = Column(SmallInteger, default=0)
-# ff_scored_for = Column(SmallInteger, default=0)
-# ff_scored_agst = Column(SmallInteger, default=0)
-# bye
-#
+class RoundRobin(SystemBase):
+    system: Literal[SystemEnum.ROUND_ROBIN]
+    play_each_other_times: Literal[1, 2, 3]
+    pts_win: int = 0
+    pts_win_tiebreak: int = 0
+    pts_tie: int = 0
+    pts_loss_tiebreak: int = 0
+    pts_loss: int = 0
+    pts_ff: int = 0
+    ff_score_for: int = 0
+    ff_score_agst: int = 0
+    # tiebreaks: List[TiebreakEnum] = []
+
+
+class Swiss(SystemBase):
+    system: Literal[SystemEnum.SWISS]
+    rounds: int
+    pts_bye: int = 0
+
+
+Metadata = Annotated[
+    Union[SingleElimination, RoundRobin, Swiss],
+    Field(discriminator='system')
+]
 
 
 class CompetitionBase(BaseModel):
     division: Optional[int]
     name: constr(max_length=50)
-    system: SystemEnum
-    rank_by: RankByEnum
-    # tiebreaks: List[TiebreakEnum] = []
     started: bool = False
     public: bool = False
-    # metadata: Dict[str, str] = Field(alias='metadata_')
+    # metadata: Metadata  # Field(alias='metadata_')
 
 
 class CompetitionCreate(CompetitionBase):
@@ -104,10 +117,7 @@ class CompetitionCreate(CompetitionBase):
 
 class CompetitionUpdate(CompetitionBase):
     name: Optional[constr(max_length=50)]
-    system: Optional[SystemEnum]
-    rank_by: Optional[RankByEnum]
-    tiebreaks: Optional[List[TiebreakEnum]]
-    started: Optional[bool] # TODO: será q ele mete none?
+    started: Optional[bool]
     public: Optional[bool]
 
 

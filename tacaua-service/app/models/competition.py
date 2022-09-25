@@ -17,17 +17,6 @@ class Competition(Base):
     )
     division = Column(SmallInteger)
     name = Column(String(50), nullable=False)
-    system = Column(
-        Enum(SystemEnum, name="system_enum", inherit_schema=True),
-        nullable=False
-    )
-    rank_by = Column(
-        Enum(RankByEnum, name="rank_by_enum", inherit_schema=True),
-        nullable=False
-    )
-    # tiebreaks = Column(
-    #     ARRAY(Enum(TiebreakEnum, name="tiebreak_enum", inherit_schema=True))
-    # )  # TODO: future feature (metadata?)
     started = Column(Boolean, default=False)
     public = Column(Boolean, default=False)
     # metadata_ = Column('metadata', JSON)  # TODO: future feature

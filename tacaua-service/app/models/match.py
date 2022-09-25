@@ -32,9 +32,9 @@ class Match(Base):
     score2 = Column(SmallInteger)
     games1 = Column(ARRAY(SmallInteger), default=[])
     games2 = Column(ARRAY(SmallInteger), default=[])
-    winner = Column(SmallInteger)   # TODO:
-    forfeiter = Column(SmallInteger)    # TODO:
-    live = Column(Boolean, default=False)   # TODO:
+    winner = Column(SmallInteger)
+    forfeiter = Column(SmallInteger)
+    live = Column(Boolean, default=False)
     date = Column(DateTime, index=True)
     team1_prereq_match_id = Column(
         Integer,

@@ -32,8 +32,6 @@ class SportEnum(str, EnumList):
     ESPORTS_CSGO = 'E-Sports CS:GO'
 
 
-# TODO: test if optional need to assign none
-
 class ModalityBase(BaseModel):
     year: int
     frame: FrameEnum

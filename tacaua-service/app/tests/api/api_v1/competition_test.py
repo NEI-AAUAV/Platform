@@ -18,8 +18,6 @@ modality_data = {
 
 competition_data = {
     "name": "string",
-    "system": "Eliminação Direta",
-    "rank_by": "Vitórias",
     "started": False,
     "public": False
 }

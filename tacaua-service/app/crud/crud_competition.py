@@ -6,7 +6,7 @@ from app.models.competition import Competition
 from app.utils import Ignore
 
 
-class CRUDCompetition(CRUDBase[Competition, Ignore, Ignore]):  # TODO: ignore does work ig
+class CRUDCompetition(CRUDBase[Competition, Ignore, Ignore]):
 
     def create(self, db: Session, *, obj_in: CompetitionCreate) -> Competition:
         obj_in_data = jsonable_encoder(obj_in)
