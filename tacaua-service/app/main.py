@@ -3,13 +3,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.init_db import init_db
-from app.utils import update_schema_name, LogStatsMiddleware
+from app.middleware import LogStatsMiddleware
 from app.api.api import api_v1_router
-from app.api.api_v1.modality import create_modality, update_modality
-from app.api.api_v1.team import create_team, update_team
-from app.api.api_v1.course import create_course, update_course
 from app.core.logging import init_logging
 from app.core.config import settings
+from .openapi import custom_openapi
+
 
 app = FastAPI(title="Taça UA API")
 app.add_middleware(
@@ -26,12 +25,7 @@ app.add_event_handler("startup", init_logging)
 app.add_event_handler("startup", init_db)
 app.include_router(api_v1_router, prefix=settings.API_V1_STR)
 
-update_schema_name(app, create_modality, "ModalityCreateForm")
-update_schema_name(app, update_modality, "ModalityUpdateForm")
-update_schema_name(app, create_team, "TeamCreateForm")
-update_schema_name(app, update_team, "TeamUpdateForm")
-update_schema_name(app, create_course, "CourseCreateForm")
-update_schema_name(app, update_course, "CourseUpdateForm")
+custom_openapi(app)
 
 
 if __name__ == "__main__":

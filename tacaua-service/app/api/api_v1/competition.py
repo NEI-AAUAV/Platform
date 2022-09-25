@@ -23,10 +23,10 @@ def create_competition(
 def update_competition(
     id: int, competition_in: CompetitionUpdate, db: Session = Depends(deps.get_db)
 ) -> Any:
-    modality = crud.modality.get(db=db, id=id)
-    if not modality:
-        raise HTTPException(status_code=404, detail="Modality Not Found")
-    return crud.competition.update(db=db, db_obj=modality, obj_in=competition_in)
+    competition = crud.competition.get(db=db, id=id)
+    if not competition:
+        raise HTTPException(status_code=404, detail="Competition Not Found")
+    return crud.competition.update(db=db, db_obj=competition, obj_in=competition_in)
 
 
 @router.delete("/{id}", status_code=200, response_model=Competition)

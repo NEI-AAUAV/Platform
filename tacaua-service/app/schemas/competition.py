@@ -87,7 +87,6 @@ class TiebreakEnum(str, EnumList):
 
 
 class CompetitionBase(BaseModel):
-    modality_id: int
     division: Optional[int]
     name: constr(max_length=50)
     system: SystemEnum
@@ -99,6 +98,7 @@ class CompetitionBase(BaseModel):
 
 
 class CompetitionCreate(CompetitionBase):
+    modality_id: int
     pass
 
 
@@ -113,6 +113,7 @@ class CompetitionUpdate(CompetitionBase):
 
 class Competition(CompetitionBase):
     id: int
+    modality_id: int
     groups: List[Group]
 
     class Config:
