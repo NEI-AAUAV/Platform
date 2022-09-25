@@ -19,3 +19,6 @@ class Base:
     __table_args__ = (
         {"schema": settings.SCHEMA_NAME},
     )
+
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}

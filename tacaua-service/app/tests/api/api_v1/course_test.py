@@ -16,7 +16,7 @@ URL_PREFIX = f"{settings.API_V1_STR}/course"
 course_data = {
     "name": "Eng. Informática",
     "initials": "NEI",
-    "color": "rgb(0,0,0)",
+    "color": "rgb(0,0,0)"
 }
 
 
@@ -34,7 +34,7 @@ def test_get_multi_course(client: TestClient) -> None:
     assert r.status_code == 200
     data = r.json()
     assert 'courses' in data
-    assert len(data['courses'] == 1)
+    assert len(data['courses']) == 1
     assert 'id' in data['courses'][0]
 
 
@@ -45,7 +45,8 @@ def test_get_course(db: SessionTesting, client: TestClient) -> None:
     data = r.json()
     assert 'id' in data
     assert data['id'] == course.id
-    assert data.items() >= course.dict().items()
+    print(course.as_dict())
+    assert data.items() >= course.as_dict().items()
 
 
 def test_get_inexistent_course(client: TestClient) -> None:
@@ -85,9 +86,8 @@ def test_update_course(db: SessionTesting, client: TestClient) -> None:
     }
     course = db.query(Course).first()
     course_partial_data = {
-        "year": 1,
-        "frame": "Feminino",
-        "sport": "Andebol",
+        "initials": "NEEMec",
+        "color": "orange"
     }
     r = client.put(f"{URL_PREFIX}/{course.id}",
                    data={"course": json.dumps(course_partial_data)},
@@ -97,7 +97,6 @@ def test_update_course(db: SessionTesting, client: TestClient) -> None:
     assert 'id' in data
     assert data['id'] == course.id
     assert 'image' in data
-    assert 'competitions' in data
     assert not data.items() >= course_data.items()
     assert data.items() >= course_partial_data.items()
 
@@ -109,8 +108,3 @@ def test_remove_course(db: SessionTesting, client: TestClient) -> None:
     data = r.json()
     assert 'id' in data
     assert data['id'] == course.id
-    assert 'competitions' in data
-    assert len(data['competitions']) == 1
-    competitions = db.query(Competition).filter(
-        Competition.course_id == course.id).all()
-    assert len(competitions) == 0

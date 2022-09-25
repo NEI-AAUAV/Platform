@@ -28,17 +28,17 @@ class CRUDModality(CRUDBase[Modality, ModalityCreate, ModalityUpdate]):
 
             # TODO: rescale if necessary
 
-            # handle EXIF orientation tag
+            # Handle EXIF orientation tag
             img = ImageOps.exif_transpose(img)
 
-            # convert image mode to RGB to allow JPEG conversion
+            # Convert image mode to RGB to allow JPEG conversion
             img = img.convert("RGB")
 
-            # save optimized image on static folder
-            img_path = f"/modality/{db_obj.id}"
+            # Save optimized image on static folder
+            img_path = f"/modality/{db_obj.id}.{ext.lower()}"
             img.save(f"static{img_path}",
-                    format="JPEG",
-                    quality="web_high",
+                    format='JPEG',
+                    quality='web_high',
                     optimize=True,
                     progressive=True)
 

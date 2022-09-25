@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import AnyHttpUrl
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.db.base_class import Base
@@ -13,7 +13,7 @@ class Course(Base):
     name = Column(String(60), nullable=False)
     initials = Column(String(16), nullable=False)
     color = Column(String(30), default="white")
-    _image = Column("image", Text)
+    _image = Column("image", String(2048))
 
     @hybrid_property
     def image(self) -> Optional[AnyHttpUrl]:

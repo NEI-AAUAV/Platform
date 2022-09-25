@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import AnyHttpUrl
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -23,7 +23,7 @@ class Team(Base):
     )
     name = Column(String(50))
     # desclassified = Column(Boolean, default=False)  # TODO: future feature
-    _image = Column("image", Text)
+    _image = Column("image", String(2048))
 
     participants = relationship(
         "Participant",

@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import AnyHttpUrl
-from sqlalchemy import Column, SmallInteger, Integer, Text, Enum
+from sqlalchemy import Column, SmallInteger, Integer, String, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -21,7 +21,7 @@ class Modality(Base):
         Enum(SportEnum, name="sport_enum", inherit_schema=True),
         nullable=False
     )
-    _image = Column("image", Text)
+    _image = Column("image", String(2048))
 
     competitions = relationship(
         "Competition",
