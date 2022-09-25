@@ -8,6 +8,7 @@ from .course import Course
 
 class TeamBase(BaseModel):
     name: constr(max_length=50)
+    course_id: int
 
 
 @validate_to_json
@@ -18,13 +19,15 @@ class TeamCreate(TeamBase):
 @validate_to_json
 class TeamUpdate(TeamBase):
     name: Optional[constr(max_length=50)]
+    course_id: Optional[int]
+
 
 
 class Team(TeamBase):
     id: int
-    course_id: Course
     image: Optional[AnyHttpUrl]
-    participants: List[Participant]
+    course: Course
+    participants: list | List[Participant]
 
     class Config:
         orm_mode = True

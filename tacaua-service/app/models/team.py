@@ -30,6 +30,7 @@ class Team(Base):
         passive_deletes=True,
         lazy='joined',
     )
+    course = relationship("Course", lazy='joined')
 
     @hybrid_property
     def image(self) -> Optional[AnyHttpUrl]:

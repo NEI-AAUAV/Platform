@@ -20,6 +20,7 @@ class ParticipantUpdate(ParticipantBase):
 
 class Participant(ParticipantBase):
     id: int
+    team_id: int
 
     class Config:
         orm_mode = True

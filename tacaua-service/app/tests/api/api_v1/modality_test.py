@@ -35,6 +35,7 @@ def setup_database(db: SessionTesting):
     modality = Modality(**modality_data)
     db.add(modality)
     db.commit()
+    db.refresh(modality)
 
     db.add(Competition(modality_id=modality.id, **competition_data))
     db.commit()
@@ -70,7 +71,7 @@ def test_get_inexistent_modality(client: TestClient) -> None:
 
 
 def test_create_modality(client: TestClient) -> None:
-    image = Image.new('RGB', size=(50, 50), color=(0, 0, 0))
+    image = Image.new('RGB', size=(50, 50))
     image_file = BytesIO()
     image.save(image_file, 'JPEG')
     image_file.seek(0)
@@ -83,13 +84,14 @@ def test_create_modality(client: TestClient) -> None:
     assert r.status_code == 201
     data = r.json()
     assert 'id' in data
+    assert 'image' in data
     assert 'competitions' in data
     assert len(data['competitions']) == 0
     assert data.items() >= modality_data.items()
 
 
 def test_update_modality(db: SessionTesting, client: TestClient) -> None:
-    image = Image.new('RGB', size=(50, 50), color=(0, 0, 0))
+    image = Image.new('RGB', size=(50, 50))
     image_file = BytesIO()
     image.save(image_file, 'JPEG')
     image_file.seek(0)
@@ -106,11 +108,11 @@ def test_update_modality(db: SessionTesting, client: TestClient) -> None:
     r = client.put(f"{URL_PREFIX}/{modality.id}",
                    data={"modality": json.dumps(modality_partial_data)},
                    files=files, allow_redirects=True)
-    print(r.json())
     assert r.status_code == 200
     data = r.json()
     assert 'id' in data
     assert data['id'] == modality.id
+    assert 'image' in data
     assert 'competitions' in data
     assert not data.items() >= modality_data.items()
     assert data.items() >= modality_partial_data.items()

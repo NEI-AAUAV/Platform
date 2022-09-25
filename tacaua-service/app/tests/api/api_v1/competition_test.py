@@ -32,6 +32,7 @@ def setup_database(db: SessionTesting):
     modality = Modality(**modality_data)
     db.add(modality)
     db.commit()
+    db.refresh(modality)
 
     db.add(Competition(modality_id=modality.id, **competition_data))
     db.commit()
