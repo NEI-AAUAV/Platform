@@ -1,6 +1,6 @@
-import pytest
-from typing import Any
+import json
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
@@ -19,7 +19,11 @@ modality_data = {
 competition_data = {
     "name": "string",
     "started": False,
-    "public": False
+    "public": False,
+    "metadata_": {
+        "system": "Eliminação Direta",
+        "third_place_match": False
+    }
 }
 
 
@@ -40,6 +44,7 @@ def test_create_competition(db: SessionTesting, client: TestClient) -> None:
     id = db.query(Modality).first().id
     r = client.post(URL_PREFIX, json={"modality_id": id, **competition_data},
                     allow_redirects=True)
+    print(r.json())
     assert r.status_code == 201
     data = r.json()
     assert 'id' in data

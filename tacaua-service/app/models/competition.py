@@ -1,4 +1,4 @@
-from sqlalchemy import Column, SmallInteger, Integer, String, Text, Enum, ForeignKey, Boolean
+from sqlalchemy import Column, SmallInteger, Integer, String, JSON, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ARRAY
 
@@ -19,7 +19,7 @@ class Competition(Base):
     name = Column(String(50), nullable=False)
     started = Column(Boolean, default=False)
     public = Column(Boolean, default=False)
-    # metadata_ = Column('metadata', JSON)  # TODO: future feature
+    metadata_ = Column('metadata', JSON)
 
     groups = relationship(
         "Group",

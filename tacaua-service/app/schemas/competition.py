@@ -88,6 +88,9 @@ class RoundRobin(SystemBase):
     ff_score_for: int = 0
     ff_score_agst: int = 0
     # tiebreaks: List[TiebreakEnum] = []
+    #  participants compete in each group
+    #  participants advance from each group
+    
 
 
 class Swiss(SystemBase):
@@ -98,7 +101,7 @@ class Swiss(SystemBase):
 
 Metadata = Annotated[
     Union[SingleElimination, RoundRobin, Swiss],
-    Field(discriminator='system')
+    Field(discriminator='system', alias='metadata_')
 ]
 
 
@@ -107,11 +110,12 @@ class CompetitionBase(BaseModel):
     name: constr(max_length=50)
     started: bool = False
     public: bool = False
-    # metadata: Metadata  # Field(alias='metadata_')
+    metadata: Metadata
 
 
 class CompetitionCreate(CompetitionBase):
     modality_id: int
+    # TODO: how and where should groups be created
     pass
 
 

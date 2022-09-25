@@ -22,7 +22,11 @@ modality_data = {
 competition_data = {
     "name": "string",
     "started": False,
-    "public": False
+    "public": False,
+    "metadata_": {
+        "system": "Eliminação Direta",
+        "third_place_match": False
+    }
 }
 
 
