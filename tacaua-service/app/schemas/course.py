@@ -28,3 +28,7 @@ class Course(CourseBase):
 
     class Config:
         orm_mode = True
+
+
+class CourseList(BaseModel):
+    courses: List[Course]

@@ -1,6 +1,7 @@
 from typing import Optional
+
 from pydantic import AnyHttpUrl
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, SmallInteger
+from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 

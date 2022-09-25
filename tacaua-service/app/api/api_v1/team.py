@@ -12,17 +12,14 @@ router = APIRouter()
 
 @router.post("/", status_code=201, response_model=Team)
 async def create_team(
-    request: Request,
     team_in: TeamCreate = Form(..., alias='team'),
     image: Optional[UploadFile] = File(None),
     db: Session = Depends(deps.get_db)
 ) -> Any:
     team = crud.team.create(db=db, obj_in=team_in)
     try:
-        form = await request.form()
-        if 'image' in form:
-            team = await crud.team.update_image(
-                db=db, db_obj=team, image=image)
+        team = await crud.team.update_image(
+            db=db, db_obj=team, image=image)
     except Exception as err:
         raise HTTPException(status_code=400, detail=err)
     return team

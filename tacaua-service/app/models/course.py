@@ -1,6 +1,11 @@
+from typing import Optional
+
+from pydantic import AnyHttpUrl
 from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.db.base_class import Base
+from app.core.config import settings
 
 
 class Course(Base):
@@ -8,4 +13,12 @@ class Course(Base):
     name = Column(String(60), nullable=False)
     initials = Column(String(16), nullable=False)
     color = Column(String(30), default="white")
-    image = Column(Text)
+    _image = Column("image", Text)
+
+    @hybrid_property
+    def image(self) -> Optional[AnyHttpUrl]:
+        return self._image and settings.STATIC_URL + self._image
+
+    @image.setter
+    def image(self, image: Optional[AnyHttpUrl]):
+        self._image = image

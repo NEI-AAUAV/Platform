@@ -65,12 +65,12 @@ class Modality(ModalityInDBBase):
     teams: List[Team]
 
 
-class LazyModality(ModalityInDBBase):
+class ModalityLazy(ModalityInDBBase):
     pass
 
 
-class LazyModalityList(BaseModel):
-    modalities: List[LazyModality]
+class ModalityLazyList(BaseModel):
+    modalities: List[ModalityLazy]
     types: List[TypeEnum] = TypeEnum.list()
     frames: List[FrameEnum] = FrameEnum.list()
     sports: List[SportEnum] = SportEnum.list()
