@@ -1,4 +1,5 @@
 from typing import Optional, List
+
 from pydantic import BaseModel, constr
 
 from app.utils import EnumList

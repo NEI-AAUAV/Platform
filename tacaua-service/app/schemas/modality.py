@@ -1,5 +1,5 @@
-import json
 from typing import Optional, List
+
 from pydantic import BaseModel, AnyHttpUrl
 
 from app.utils import EnumList, validate_to_json

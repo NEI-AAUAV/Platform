@@ -1,5 +1,6 @@
-from pydantic import BaseModel, constr, AnyHttpUrl
 from typing import List, Optional
+
+from pydantic import BaseModel, constr, AnyHttpUrl
 
 from app.utils import validate_to_json
 

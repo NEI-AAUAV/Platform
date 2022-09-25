@@ -1,5 +1,6 @@
-from pydantic import BaseModel, constr, AnyHttpUrl
 from typing import List, Optional
+
+from pydantic import BaseModel, constr, AnyHttpUrl
 
 from app.utils import validate_to_json
 from .participant import Participant
@@ -32,3 +33,7 @@ class Team(TeamBase):
 
     class Config:
         orm_mode = True
+
+
+class TeamLazy(BaseModel):
+    id: int

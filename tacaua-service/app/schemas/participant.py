@@ -1,6 +1,6 @@
-from pydantic import BaseModel, constr, conint
 from typing import Optional
 
+from pydantic import BaseModel, constr, conint
 
 
 class ParticipantBase(BaseModel):

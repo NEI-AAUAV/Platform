@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import Literal, Optional, List
-from pydantic import BaseModel, conint
 
-from .team import Team
+from pydantic import BaseModel
 
 
 class MatchBase(BaseModel):
@@ -24,10 +23,7 @@ class MatchBase(BaseModel):
 
 
 class Match(MatchBase):
-    """Properties properties stored in DB."""
     id: int
-    team1: Team
-    team2: Team
 
     class Config:
         orm_mode = True

@@ -1,8 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List
 
-from typing import Optional
-from typing_extensions import Annotated
 from .match import Match
 
 

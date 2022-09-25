@@ -1,6 +1,8 @@
+from typing import Optional, List
+
 from pydantic import BaseModel, constr
 
-from typing import Optional
+from .match import Match
 
 
 class RoundBase(BaseModel):
@@ -18,6 +20,7 @@ class RoundUpdate():
 
 class Round(RoundBase):
     id: int
+    matches: List[Match]
 
     class Config:
         orm_mode = True

@@ -1,8 +1,9 @@
-from pydantic import BaseModel, constr
 from typing import List, Optional
 
+from pydantic import BaseModel, constr
+
 from .round import Round
-from .team import Team
+from .team import TeamLazy
 
 
 class GroupBase(BaseModel):
@@ -22,7 +23,7 @@ class Group(GroupBase):
     """Properties properties stored in DB."""
     id: int
     rounds: List[Round]
-    teams: List[Team]
+    teams: List[TeamLazy]
    
     class Config:
         orm_mode = True
