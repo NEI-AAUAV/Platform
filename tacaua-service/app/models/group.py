@@ -22,6 +22,7 @@ class Group(Base):
         Integer,
         ForeignKey(settings.SCHEMA_NAME +
                    ".competition.id", ondelete='CASCADE'),
+        nullable=False,
         index=True
     )
     number = Column(SmallInteger)

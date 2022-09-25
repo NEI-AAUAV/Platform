@@ -19,6 +19,7 @@ class Team(Base):
     modality_id = Column(
         Integer,
         ForeignKey(settings.SCHEMA_NAME + ".modality.id", ondelete='CASCADE'),
+        nullable=False,
         index=True
     )
     name = Column(String(50))

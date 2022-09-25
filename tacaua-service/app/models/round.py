@@ -10,6 +10,7 @@ class Round(Base):
     group_id = Column(
         Integer,
         ForeignKey(settings.SCHEMA_NAME + ".group.id", ondelete='CASCADE'),
+        nullable=False,
         index=True
     )
     number = Column(SmallInteger, nullable=False)

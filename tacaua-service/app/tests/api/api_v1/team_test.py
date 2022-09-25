@@ -30,7 +30,7 @@ team_data = {
 
 participant_data = {
     "name": "Name",
-    "number": 0,
+    "number": 1,
 }
 
 
@@ -48,7 +48,7 @@ def setup_database(db: SessionTesting):
     db.commit()
     db.refresh(course)
 
-    team = Team(course_id=course.id, **team_data)
+    team = Team(course_id=course.id, modality_id=modality.id, **team_data)
     db.add(team)
     db.commit()
     db.refresh(team)
@@ -67,12 +67,16 @@ def test_create_team(db: SessionTesting, client: TestClient) -> None:
         "image": ('img.JPG', image_file, 'image/jpeg'),
     }
     course = db.query(Course).first()
+    modality = db.query(Modality).first()
     data = {
         "team": json.dumps({
             "course_id": course.id,
+            "modality_id": modality.id,
             **team_data
         })
     }
+    print(data)
+
     r = client.post(URL_PREFIX, data=data,
                     files=files, allow_redirects=True)
     print(r.json())

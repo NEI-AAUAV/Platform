@@ -11,6 +11,7 @@ class Match(Base):
     round_id = Column(
         Integer,
         ForeignKey(settings.SCHEMA_NAME + ".round.id", ondelete='CASCADE'),
+        nullable=False,
         index=True
     )
     team1_id = Column(

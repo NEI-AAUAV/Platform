@@ -13,6 +13,7 @@ class TeamBase(BaseModel):
 
 @validate_to_json
 class TeamCreate(TeamBase):
+    modality_id: int
     pass
 
 
@@ -22,12 +23,12 @@ class TeamUpdate(TeamBase):
     course_id: Optional[int]
 
 
-
 class Team(TeamBase):
     id: int
+    modality_id: int
     image: Optional[AnyHttpUrl]
     course: Course
-    participants: list | List[Participant]
+    participants: List[Participant]
 
     class Config:
         orm_mode = True
