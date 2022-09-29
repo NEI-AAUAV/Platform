@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Literal, Optional, List
 
 from pydantic import BaseModel
+from .team import Team
 
 
 class MatchBase(BaseModel):
@@ -22,9 +23,13 @@ class MatchBase(BaseModel):
     team2_is_prereq_match_winner: bool = True
 
 
-class Match(MatchBase):
+class MatchLazy(MatchBase):
     id: int
 
     class Config:
         orm_mode = True
 
+
+class Match(MatchLazy):
+    team1: Team
+    team2: Team

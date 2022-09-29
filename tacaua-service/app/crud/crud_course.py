@@ -5,6 +5,7 @@ from PIL import Image, ImageOps
 from fastapi import UploadFile
 from sqlalchemy.orm import Session, noload
 
+from app.exception import ImageFormatException
 from app.crud.base import CRUDBase
 from app.schemas.course import CourseCreate, CourseUpdate
 from app.models.course import Course
@@ -38,7 +39,7 @@ class CRUDCourse(CRUDBase[Course, CourseCreate, CourseUpdate]):
                 img = Image.open(BytesIO(img_data))
                 ext = img.format
                 if not ext in ('JPEG', 'PNG'):
-                    raise Exception("Invalid Image Format")
+                    raise ImageFormatException()
 
                 # TODO: rescale if necessary
 

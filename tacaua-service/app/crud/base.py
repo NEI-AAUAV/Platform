@@ -3,6 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from app.exception import NotFoundException
 from app.db.base_class import Base
 from app.core.logging import logger
 
@@ -22,7 +23,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
 
     def get(self, db: Session, *, id: Any) -> Optional[ModelType]:
-        return db.query(self.model).filter(self.model.id == id).first()
+        obj = db.query(self.model).get(id)
+        if not obj:
+            raise NotFoundException(
+                detail=f"{self.model.__name__} Not Found")
+        return obj
 
     def get_multi(
         self, db: Session, *, skip: int = 0, limit: int = 100
@@ -41,9 +46,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self,
         db: Session,
         *,
-        db_obj: ModelType,
+        id: int,
         obj_in: Union[UpdateSchemaType, Dict[str, Any]]
     ) -> ModelType:
+        db_obj = self.get(db, id=id)
         obj_data = jsonable_encoder(db_obj)
         if isinstance(obj_in, dict):
             update_data = obj_in
@@ -58,7 +64,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     def remove(self, db: Session, *, id: int) -> ModelType:
-        obj = db.query(self.model).get(id)
-        db.delete(obj)
+        db_obj = self.get(db, id=id)
+        db.delete(db_obj)
         db.commit()
-        return obj
+        return db_obj

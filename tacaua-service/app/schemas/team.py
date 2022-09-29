@@ -24,16 +24,15 @@ class TeamUpdate(TeamBase):
     course_id: Optional[int]
 
 
-class Team(TeamBase):
+class TeamLazy(TeamBase):
     id: int
-    modality_id: int
-    image: Optional[AnyHttpUrl]
-    course: Course
-    participants: List[Participant]
 
     class Config:
         orm_mode = True
 
 
-class TeamLazy(BaseModel):
-    id: int
+class Team(TeamLazy):
+    modality_id: int
+    image: Optional[AnyHttpUrl]
+    course: Course
+    participants: List[Participant]

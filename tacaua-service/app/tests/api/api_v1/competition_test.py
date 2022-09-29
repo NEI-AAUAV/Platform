@@ -21,6 +21,7 @@ competition_data = {
     "started": False,
     "public": False,
     "metadata_": {
+        "rank_by": "Vitórias",
         "system": "Eliminação Direta",
         "third_place_match": False
     }
@@ -44,7 +45,6 @@ def test_create_competition(db: SessionTesting, client: TestClient) -> None:
     id = db.query(Modality).first().id
     r = client.post(URL_PREFIX, json={"modality_id": id, **competition_data},
                     allow_redirects=True)
-    print(r.json())
     assert r.status_code == 201
     data = r.json()
     assert 'id' in data

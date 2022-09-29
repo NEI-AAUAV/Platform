@@ -7,21 +7,21 @@ from .team import TeamLazy
 
 
 class GroupBase(BaseModel):
-    number: Optional[int]
     name: Optional[constr(max_length=20)]
 
 
-class GroupCreate():
-    pass
+class GroupCreate(BaseModel):
+    competition_id: int
 
 
-class GroupUpdate():
-    pass
+class GroupUpdate(BaseModel):
+    number: Optional[int]
+    teams_id: List[int] = []
 
 
 class Group(GroupBase):
-    """Properties properties stored in DB."""
     id: int
+    number: int
     rounds: List[Round]
     teams: List[TeamLazy]
    

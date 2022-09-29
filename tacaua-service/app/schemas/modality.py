@@ -8,7 +8,6 @@ from .competition import Competition
 from .team import Team
 
 
-
 class TypeEnum(str, EnumList):
     COLECTIVE = 'Coletiva'
     PAIRS = 'Pares'
@@ -50,7 +49,7 @@ class ModalityUpdate(ModalityBase):
     sport: Optional[SportEnum]
 
 
-class ModalityInDBBase(ModalityBase):
+class ModalityLazy(ModalityBase):
     id: int
     image: Optional[AnyHttpUrl]
 
@@ -58,13 +57,9 @@ class ModalityInDBBase(ModalityBase):
         orm_mode = True
 
 
-class Modality(ModalityInDBBase):
+class Modality(ModalityLazy):
     competitions: List[Competition]
     teams: List[Team]
-
-
-class ModalityLazy(ModalityInDBBase):
-    pass
 
 
 class ModalityLazyList(BaseModel):

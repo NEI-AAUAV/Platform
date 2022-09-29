@@ -1,15 +1,21 @@
 from io import BytesIO
-from PIL import Image, ImageOps
 from typing import Optional
+
+from PIL import Image, ImageOps
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
+from app.exception import ImageFormatException
 from app.crud.base import CRUDBase
 from app.schemas.team import TeamCreate, TeamUpdate
 from app.models.team import Team
 
 
 class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
+
+
+    # it would be nice to add a team to a modality and to a group at the same time
+
     
     async def update_image(
         self,
@@ -24,7 +30,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
             img = Image.open(BytesIO(img_data))
             ext = img.format
             if not ext in ('JPEG', 'PNG'):
-                raise Exception("Invalid Image Format")
+                raise ImageFormatException()
 
             # TODO: rescale if necessary
 

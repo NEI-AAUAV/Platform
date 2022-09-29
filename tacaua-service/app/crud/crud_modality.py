@@ -1,9 +1,11 @@
 from io import BytesIO
 from typing import List, Optional
+
 from PIL import Image, ImageOps
 from fastapi import UploadFile
 from sqlalchemy.orm import Session, noload
 
+from app.exception import ImageFormatException
 from app.crud.base import CRUDBase
 from app.schemas.modality import ModalityCreate, ModalityUpdate
 from app.models.modality import Modality
@@ -24,7 +26,7 @@ class CRUDModality(CRUDBase[Modality, ModalityCreate, ModalityUpdate]):
             img = Image.open(BytesIO(img_data))
             ext = img.format
             if not ext in ('JPEG', 'PNG'):
-                raise Exception("Invalid Image Format")
+                raise ImageFormatException()
 
             # TODO: rescale if necessary
 

@@ -1,9 +1,32 @@
-from typing import Annotated, Literal, Optional, List, Union
+import json
+from enum import Enum
+from typing import Literal, Optional, List, Union, Type
 
 from pydantic import BaseModel, Field, constr
 
 from app.utils import EnumList, validate_to_json
 from .group import Group
+
+
+class EnumList(Enum):
+
+    @classmethod
+    def list(cls):
+        return list(map(lambda c: c.value, cls))
+
+
+def validate_to_json(cls: Type[BaseModel]):
+    def __get_validators__(cls):
+        yield cls.validate_to_json
+
+    def validate_to_json(cls, value):
+        if isinstance(value, str):
+            return cls(**json.loads(value))
+        return value
+
+    setattr(cls, '__get_validators__', classmethod(__get_validators__))
+    setattr(cls, 'validate_to_json', classmethod(validate_to_json))
+    return cls
 
 
 class SystemEnum(str, EnumList):
@@ -66,7 +89,6 @@ class TiebreakEnum(str, EnumList):
         return obj
 
 
-@validate_to_json
 class SystemBase(BaseModel):
     rank_by: RankByEnum
 
@@ -90,7 +112,6 @@ class RoundRobin(SystemBase):
     # tiebreaks: List[TiebreakEnum] = []
     #  participants compete in each group
     #  participants advance from each group
-    
 
 
 class Swiss(SystemBase):
@@ -98,11 +119,13 @@ class Swiss(SystemBase):
     rounds: int
     pts_bye: int = 0
 
-
-Metadata = Annotated[
-    Union[SingleElimination, RoundRobin, Swiss],
-    Field(discriminator='system', alias='metadata_')
-]
+@validate_to_json
+class Metadata(BaseModel):
+    __root__: Union[
+        SingleElimination,
+        RoundRobin,
+        Swiss
+    ] = Field(..., discriminator='system')
 
 
 class CompetitionBase(BaseModel):
@@ -110,7 +133,7 @@ class CompetitionBase(BaseModel):
     name: constr(max_length=50)
     started: bool = False
     public: bool = False
-    metadata: Metadata
+    metadata: Metadata = Field(alias='metadata_')
 
 
 class CompetitionCreate(CompetitionBase):
