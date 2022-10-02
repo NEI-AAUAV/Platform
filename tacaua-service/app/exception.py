@@ -29,3 +29,8 @@ class NotFoundException(APIException):
 class ImageFormatException(APIException):
     status_code = 400
     detail = "Invalid Image Format"
+
+
+class RestrictionException(APIException):
+    status_code = 400
+    detail = "Restriction Not Respected"

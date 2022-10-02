@@ -23,22 +23,19 @@ async def create_group(
 
 
 @router.put("/{id}", status_code=200, response_model=Group,
-            responses=responses)
+            responses={404: {'description': "Group Not Found / "
+                             "Exchange Group Not Found / "
+                             "Team In Modality Not Found"}})
 async def update_group(
     id: int,
     group_in: GroupUpdate,
     db: Session = Depends(deps.get_db)
 ) -> Any:
-    group = crud.group.get(db, id=id)
-
-    teams = []
-    for tid in group_in.teams_id:
-        team = crud.team.get(db, id=tid)
-        teams.append(team)
-    return crud.group.update(db, db_obj=group, obj_in=group_in, teams=teams)
+    return crud.group.update(db, id=id, obj_in=group_in)
 
 
-@router.delete("/{id}", status_code=200, response_model=Group)
+@router.delete("/{id}", status_code=200, response_model=Group,
+               responses=responses)
 def remove_group(
     id: int, db: Session = Depends(deps.get_db)
 ) -> Any:

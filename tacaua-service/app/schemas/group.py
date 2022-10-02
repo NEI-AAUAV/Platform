@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from pydantic import BaseModel, constr
 
@@ -16,14 +16,15 @@ class GroupCreate(BaseModel):
 
 class GroupUpdate(BaseModel):
     number: Optional[int]
-    teams_id: List[int] = []
+    teams_id: Set[int] = []
 
 
 class Group(GroupBase):
     id: int
+    competition_id: int
     number: int
     rounds: List[Round]
-    teams: List[TeamLazy]
+    teams: List[TeamLazy] | list
    
     class Config:
         orm_mode = True

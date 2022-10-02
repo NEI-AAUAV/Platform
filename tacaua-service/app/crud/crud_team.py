@@ -13,9 +13,6 @@ from app.models.team import Team
 
 class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
 
-
-    # it would be nice to add a team to a modality and to a group at the same time
-
     
     async def update_image(
         self,
