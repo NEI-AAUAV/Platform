@@ -13,7 +13,6 @@ from app.models.team import Team
 
 class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
 
-    
     async def update_image(
         self,
         db: Session,

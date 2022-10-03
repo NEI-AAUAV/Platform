@@ -23,6 +23,10 @@ class MatchBase(BaseModel):
     team2_is_prereq_match_winner: bool = True
 
 
+class MatchCreate(MatchBase):
+    pass
+
+
 class MatchLazy(MatchBase):
     id: int
 

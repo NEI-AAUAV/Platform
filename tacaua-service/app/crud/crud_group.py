@@ -1,26 +1,113 @@
-from typing import Union, Dict, Any, Set
+import math
+from typing import Union, Dict, Any, Set, List
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 import app.crud as crud
 from app.exception import NotFoundException
 from app.crud.base import CRUDBase
+from app.schemas.competition import (
+    Metadata, SingleElimination, RoundRobin, Swiss)
 from app.schemas.group import GroupCreate, GroupUpdate
-from app.models import Group, Team, Competition
+from app.schemas.round import RoundCreate
+from app.schemas.match import MatchCreate
+from app.models import Group, Team, Round, Match
 from app.core.logging import logger
 
 
 class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
 
+    def get_matches_per_round(self, n_teams: int) -> List[int]:
+        if n_teams < 1:
+            return []
+        n = int(math.log2(n_teams))
+        matches_per_round = [2**i for i in reversed(range(n))]
+        matches_diff = n_teams - sum(matches_per_round) - 1
+        if matches_diff:
+            matches_per_round = [matches_diff] + matches_per_round
+        return matches_per_round
+
+    def update_single_elimination(
+        self, db: Session, group: Group, metadata: SingleElimination
+    ) -> None:
+        logger.debug(metadata.system)
+
+        matches_per_round = self.get_matches_per_round(len(group.teams))
+        n_rounds = len(matches_per_round)
+        matches = [[] for _ in range(n)]
+
+        rounds = db.query(Round).filter(Round.group_id == group.id).order_by(
+            Round.number).all()
+
+        n_rounds_diff = len(rounds) - n_rounds
+        if n_rounds_diff > 0:
+            # Delete rounds
+            for r in range(n_rounds_diff):
+                db.delete(rounds[r])
+            rounds = rounds[n_rounds_diff:]
+        elif n_rounds_diff < 0:
+            # Create rounds
+            rounds = [None]*abs(n_rounds_diff) + rounds
+
+        for r in range(n_rounds):
+            if n_rounds_diff != 0:
+                if not rounds[r]:
+                    # Create new round
+                    obj_in = RoundCreate(number=r + 1)
+                    rounds[r] = crud.round.create(db, obj_in=obj_in)
+                else:
+                    # Update existent round
+                    rounds[r] = crud.round.update(db, {"number": r + 1})
+
+            for m in range(matches_per_round[r]):
+                match1_id = match2_id = None
+
+                matches = db.query(Match).filter(
+                    Match.round_id == rounds[r].id)
+
+                if r > 0:
+                    match1_id = match2_id
+
+                obj_in = MatchCreate(round_id=round.id, team1_prereq_match_id=match1_id,
+                                     team2_prereq_match_id=match2_id)
+                match = crud.match.create(db, obj_in=obj_in)
+
+                matches[r].append(match)
+
+        ...
+
+    def create_round_robin(
+        self, db: Session, group: Group, metadata: RoundRobin
+    ) -> None:
+        logger.debug(metadata.system)
+        ...
+
+    def create_swiss(
+        self, db: Session, group: Group, metadata: Swiss
+    ) -> None:
+        logger.debug(metadata.system)
+        ...
+
     def create(self, db: Session, *, obj_in: GroupCreate) -> Group:
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = Group(**obj_in_data)
-        n = db.query(Group).filter(
+        count = db.query(Group).filter(
             Group.competition_id == db_obj.competition_id).count()
-        setattr(db_obj, 'number', n + 1)
+        setattr(db_obj, 'number', count + 1)
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
+
+        metadata = crud.competition.get(db_obj.competition_id).metadata_
+        metadata = Metadata.parse_obj(metadata).__root__
+
+        if isinstance(metadata, SingleElimination):
+            self.create_single_elimination(db, db_obj, metadata)
+        elif isinstance(metadata, RoundRobin):
+            self.create_round_robin(db, db_obj, metadata)
+        elif isinstance(metadata, Swiss):
+            self.create_swiss(db, db_obj, metadata)
+
         return db_obj
 
     def update_number(

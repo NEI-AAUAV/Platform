@@ -10,12 +10,12 @@ class RoundBase(BaseModel):
     name: Optional[constr(max_length=20)]
 
 
-class RoundCreate():
+class RoundCreate(RoundBase):
     pass
 
 
-class RoundUpdate():
-    pass
+# class RoundUpdate():
+#     pass
 
 
 class Round(RoundBase):
