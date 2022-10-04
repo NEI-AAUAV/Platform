@@ -381,7 +381,7 @@ function buildTree() {
   // border with the year color 
   const nodesProfileBorder = nodes
     .insert("circle", "circle")
-    .attr("class", d => "profile-border")
+    .attr("class", "profile-border")
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", 12)
@@ -596,6 +596,8 @@ function changeLabels(showFainaNames) {
 
 
 function FainaTree() {
+  const [auth, setAuth] = useState(!!localStorage.getItem('treeei'));
+  const [pass, setPass] = useState("");
   const [showInfo, setShowInfo] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [mode, setMode] = useState(Modes.TREE);
@@ -604,6 +606,13 @@ function FainaTree() {
   const [year, setYear] = useState(MAX_YEAR);
   const [fainaNames, setFainaNames] = useState(false);
   const theme = useTheme(state => state.theme);
+
+  const validatePass = () => {
+    if (pass.toLowerCase() === 'ei2022') {
+      localStorage.setItem('treeei', true);
+      setAuth(true);
+    }
+  }
 
   const toggleShowInfo = () => {
     setShowInfo(!showInfo);
@@ -642,199 +651,224 @@ function FainaTree() {
   }
 
   useEffect(() => {
-    buildTree();
-    centerTree();
-  }, [])
+    if (auth) {
+
+      buildTree();
+      centerTree();
+    }
+  }, [auth])
 
   useEffect(() => {
-    filterTree(insignias, year);
-  }, [insignias, year])
+    if (auth)
+      filterTree(insignias, year);
+  }, [insignias, year, auth])
 
-  return (
-    <div id="treeei" className={classNames("d-flex flex-grow-1", { "expand": expanded })}>
-      <div className='side-bar'>
-        <button className='side-bar-button' onClick={toggleShowInfo}>
-          <span>
-            <FontAwesomeIcon
-              icon={showInfo ? faAngleLeft : faAngleRight}
-              size={"sm"} />
-          </span>
-        </button>
-        <div className={classNames("side-bar-body", { "hide": !showInfo })}>
-          <div className='side-bar-content'>
-            <div className='mb-3'>
-              <div className="d-flex align-items-center justify-content-around" style={{ minHeight: 32 }}>
-                <FontAwesomeIcon
-                  onClick={toggleExpand}
-                  className="menu-icon"
-                  icon={expanded ? faCompress : faExpand}
-                  size="lg" />
-                <FontAwesomeIcon
-                  style={{ cursor: "not-allowed", opacity: 0.25 }}
-                  onClick={toggleMode}
-                  className="menu-icon"
-                  icon={mode === Modes.TREE ? faGripHorizontal : faSitemap}
-                  size={mode === Modes.TREE ? "2x" : "lg"} />
-              </div>
-            </div>
-
-
-            <h4>Procurar</h4>
-            <Autocomplete
-              id="country-select-demo"
-              sx={{ width: 200 }}
-              options={searchData}
-              onChange={handleSearchChange}
-              autoHighlight
-              freeSolo
-              getOptionLabel={(option) => `${option.name}`}
-              renderOption={(props, option) => (
-                <Box {...props} key={`${option.id}`} component="li">
-                  <div className="color-bullet" style={{ backgroundColor: option.color }}></div>
-                  {option.name}
-                </Box>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  sx={{
-                    mt: 1, flex: 1,
-                    '& legend': { display: 'none' },
-                    '& fieldset': { top: 0, borderColor: 'var(--border) !important' },
-                    '& .MuiOutlinedInput-root': { padding: '4px', color: 'var(--text-primary)', },
-                  }}
-                  placeholder="Nome..."
-                  InputLabelProps={{ className: "autocompleteLabel" }}
-                  inputProps={{
-                    ...params.inputProps,
-                    autoComplete: 'off', // disable autocomplete and autofill
-                  }}
-                />
-              )}
-            />
-
-            <h4>Nomes</h4>
-            <div className="mt-3">
-              <div className="mb-2"
-                style={{ fontWeight: fainaNames ? 400 : 300, opacity: fainaNames ? 1 : 0.7, cursor: "pointer" }}
-                onClick={toggeFainaNames}
-              >
-                Mostrar nomes de faina
-              </div>
-            </div>
-
-            <h4>Matrículas</h4>
-            <div className='d-flex justify-content-between my-3 p-1'>
-              <div className='mr-3'>
-                <div style={{ marginBottom: "0.2em" }}>
+  if (auth) {
+    return (
+      <div id="treeei" className={classNames("d-flex flex-grow-1", { "expand": expanded })}>
+        <div className='side-bar'>
+          <button className='side-bar-button' onClick={toggleShowInfo}>
+            <span>
+              <FontAwesomeIcon
+                icon={showInfo ? faAngleLeft : faAngleRight}
+                size={"sm"} />
+            </span>
+          </button>
+          <div className={classNames("side-bar-body", { "hide": !showInfo })}>
+            <div className='side-bar-content'>
+              <div className='mb-3'>
+                <div className="d-flex align-items-center justify-content-around" style={{ minHeight: 32 }}>
                   <FontAwesomeIcon
-                    onClick={() => setEndYear((endYear) => Math.max(--endYear, MIN_YEAR + 9))}
-                    style={endYear === MIN_YEAR + 9 ? { opacity: 0.5 } : { cursor: "pointer" }}
-                    icon={faArrowUp}
-                    size="sm" />
-                </div>
-                {
-                  [...Array(5).keys()].map(i => endYear - 9 + i).map(i => (
-                    <div key={i} className={classNames("color-legend", { "inactive": i > year })}
-                      onClick={() => setYear(i)}
-                    >
-                      <div className="color-bullet"
-                        style={{ backgroundColor: colors[(i) % colors.length] }}></div>
-                      {2000 + i}
-                    </div>
-                  ))
-                }
-              </div>
-              <div className='mr-3'>
-                {
-                  [...Array(5).keys()].map(i => endYear - 4 + i).map(i => (
-                    <div key={i} className={classNames("color-legend", { "inactive": i > year })}
-                      onClick={() => setYear(i)}
-                    >
-                      <div className="color-bullet"
-                        style={{ backgroundColor: colors[(i) % colors.length] }}></div>
-                      {2000 + i}
-                    </div>
-                  ))
-                }
-                <div style={{ marginBottom: "0.2em" }}>
+                    onClick={toggleExpand}
+                    className="menu-icon"
+                    icon={expanded ? faCompress : faExpand}
+                    size="lg" />
                   <FontAwesomeIcon
-                    onClick={() => setEndYear((endYear) => Math.min(++endYear, MAX_YEAR))}
-                    style={endYear === MAX_YEAR ? { opacity: 0.5 } : { cursor: "pointer" }}
-                    icon={faArrowDown}
-                    size="sm" />
+                    style={{ cursor: "not-allowed", opacity: 0.25 }}
+                    onClick={toggleMode}
+                    className="menu-icon"
+                    icon={mode === Modes.TREE ? faGripHorizontal : faSitemap}
+                    size={mode === Modes.TREE ? "2x" : "lg"} />
                 </div>
               </div>
 
-            </div>
-            <h4>Insígnias</h4>
-            <div className="mr-auto mt-3">
-              {
-                Object.entries(organizations).map(([key, org]) => (
-                  <div key={key} className={classNames("insignia", { "inactive": insignias.length !== 0 && !insignias.includes(key) })}
-                    onClick={() => toggleInsignias(key)}>
-                    <img src={org.insignia} style={org.changeColor && theme === "dark" ? { filter: "invert(1)" } : {}} />
-                    <div>{org.name}</div>
+
+              <h4>Procurar</h4>
+              <Autocomplete
+                id="country-select-demo"
+                sx={{ width: 200 }}
+                options={searchData}
+                onChange={handleSearchChange}
+                autoHighlight
+                freeSolo
+                getOptionLabel={(option) => `${option.name}`}
+                renderOption={(props, option) => (
+                  <Box {...props} key={`${option.id}`} component="li">
+                    <div className="color-bullet" style={{ backgroundColor: option.color }}></div>
+                    {option.name}
+                  </Box>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    sx={{
+                      mt: 1, flex: 1,
+                      '& legend': { display: 'none' },
+                      '& fieldset': { top: 0, borderColor: 'var(--border) !important' },
+                      '& .MuiOutlinedInput-root': { padding: '4px', color: 'var(--text-primary)' },
+                    }}
+                    placeholder="Nome..."
+                    InputLabelProps={{ className: "autocompleteLabel" }}
+                    inputProps={{
+                      ...params.inputProps,
+                      autoComplete: 'off', // disable autocomplete and autofill
+                    }}
+                  />
+                )}
+              />
+
+              <h4>Nomes</h4>
+              <div className="mt-3">
+                <div className="mb-2"
+                  style={{ fontWeight: fainaNames ? 400 : 300, opacity: fainaNames ? 1 : 0.7, cursor: "pointer" }}
+                  onClick={toggeFainaNames}
+                >
+                  Mostrar nomes de faina
+                </div>
+              </div>
+
+              <h4>Matrículas</h4>
+              <div className='d-flex justify-content-between my-3 p-1'>
+                <div className='mr-3'>
+                  <div style={{ marginBottom: "0.2em" }}>
+                    <FontAwesomeIcon
+                      onClick={() => setEndYear((endYear) => Math.max(--endYear, MIN_YEAR + 9))}
+                      style={endYear === MIN_YEAR + 9 ? { opacity: 0.5 } : { cursor: "pointer" }}
+                      icon={faArrowUp}
+                      size="sm" />
                   </div>
-                ))
-              }
+                  {
+                    [...Array(5).keys()].map(i => endYear - 9 + i).map(i => (
+                      <div key={i} className={classNames("color-legend", { "inactive": i > year })}
+                        onClick={() => setYear(i)}
+                      >
+                        <div className="color-bullet"
+                          style={{ backgroundColor: colors[(i) % colors.length] }}></div>
+                        {2000 + i}
+                      </div>
+                    ))
+                  }
+                </div>
+                <div className='mr-3'>
+                  {
+                    [...Array(5).keys()].map(i => endYear - 4 + i).map(i => (
+                      <div key={i} className={classNames("color-legend", { "inactive": i > year })}
+                        onClick={() => setYear(i)}
+                      >
+                        <div className="color-bullet"
+                          style={{ backgroundColor: colors[(i) % colors.length] }}></div>
+                        {2000 + i}
+                      </div>
+                    ))
+                  }
+                  <div style={{ marginBottom: "0.2em" }}>
+                    <FontAwesomeIcon
+                      onClick={() => setEndYear((endYear) => Math.min(++endYear, MAX_YEAR))}
+                      style={endYear === MAX_YEAR ? { opacity: 0.5 } : { cursor: "pointer" }}
+                      icon={faArrowDown}
+                      size="sm" />
+                  </div>
+                </div>
+
+              </div>
+              <h4>Insígnias</h4>
+              <div className="mr-auto mt-3">
+                {
+                  Object.entries(organizations).map(([key, org]) => (
+                    <div key={key} className={classNames("insignia", { "inactive": insignias.length !== 0 && !insignias.includes(key) })}
+                      onClick={() => toggleInsignias(key)}>
+                      <img src={org.insignia} style={org.changeColor && theme === "dark" ? { filter: "invert(1)" } : {}} />
+                      <div>{org.name}</div>
+                    </div>
+                  ))
+                }
+              </div>
             </div>
           </div>
         </div>
+        <svg className="treeei">
+          <defs>
+            <marker id="dot" viewBox="0,0,20,20" refX="10" refY="10" markerWidth="10" markerHeight="10">
+              <circle cx="10" cy="10" r="4" fill="silver"></circle>
+            </marker>
+            <filter id="drop-shadow2" height="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur"></feGaussianBlur>
+              <feOffset in="blur" dx="5" dy="5" result="offsetBlur"></feOffset>
+              <feMerge>
+                <feMergeNode in="offsetBlur"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+              </feMerge>
+            </filter>
+            <filter id="drop-shadow" filterUnits="userSpaceOnUse" width="250%" height="250%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur-out"></feGaussianBlur>
+              {/* <feColorMatrix in="blur-out" type="hueRotate" values="180" result="color-out"></feColorMatrix> */}
+              <feOffset in="color-out" dx="1" dy="1" result="the-shadow"></feOffset>
+              <feOffset in="color-out" dx="-1" dy="-1" result="the-shadow"></feOffset>
+              <feBlend in="SourceGraphic" in2="the-shadow" mode="normal"></feBlend>
+            </filter>
+            <pattern id="heart_border" width="1" height="1" patternContentUnits="objectBoundingBox">
+              <image xlinkHref={heartBorder} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+            </pattern>
+            <pattern id="default_male" width="1" height="1" patternContentUnits="objectBoundingBox">
+              <image xlinkHref={malePic} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+            </pattern>
+            <pattern id="default_female" width="1" height="1" patternContentUnits="objectBoundingBox">
+              <image xlinkHref={femalePic} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+            </pattern>
+            <pattern id="NEI" width="1" height="1" patternContentUnits="objectBoundingBox">
+              <image xlinkHref={nei} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+            </pattern>
+            <pattern id="AETTUA" width="1" height="1" patternContentUnits="objectBoundingBox">
+              <image xlinkHref={aettua} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+            </pattern>
+            <pattern id="CF" width="1" height="1" patternContentUnits="objectBoundingBox">
+              <image xlinkHref={anzol} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+            </pattern>
+            <pattern id="CS" width="1" height="1" patternContentUnits="objectBoundingBox">
+              <image xlinkHref={sal} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+            </pattern>
+            <pattern id="escrivao" width="1" height="1" patternContentUnits="objectBoundingBox">
+              <image xlinkHref={rol} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+            </pattern>
+            <pattern id="pescador" width="1" height="1" patternContentUnits="objectBoundingBox">
+              <image xlinkHref={lenco} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+            </pattern>
+            <pattern id="salgado" width="1" height="1" patternContentUnits="objectBoundingBox">
+              <image xlinkHref={pa} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
+            </pattern>
+          </defs>
+          <text x="100" y="100" style={{ font: "bold 300px sans-serif" }}>djfldsk</text>
+        </svg>
       </div>
-      <svg className="treeei">
-        <defs>
-          <marker id="dot" viewBox="0,0,20,20" refX="10" refY="10" markerWidth="10" markerHeight="10">
-            <circle cx="10" cy="10" r="4" fill="silver"></circle>
-          </marker>
-          <filter id="drop-shadow2" height="130%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur"></feGaussianBlur>
-            <feOffset in="blur" dx="5" dy="5" result="offsetBlur"></feOffset>
-            <feMerge>
-              <feMergeNode in="offsetBlur"></feMergeNode>
-              <feMergeNode in="SourceGraphic"></feMergeNode>
-            </feMerge>
-          </filter>
-          <filter id="drop-shadow" filterUnits="userSpaceOnUse" width="250%" height="250%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur-out"></feGaussianBlur>
-            {/* <feColorMatrix in="blur-out" type="hueRotate" values="180" result="color-out"></feColorMatrix> */}
-            <feOffset in="color-out" dx="1" dy="1" result="the-shadow"></feOffset>
-            <feOffset in="color-out" dx="-1" dy="-1" result="the-shadow"></feOffset>
-            <feBlend in="SourceGraphic" in2="the-shadow" mode="normal"></feBlend>
-          </filter>
-          <pattern id="heart_border" width="1" height="1" patternContentUnits="objectBoundingBox">
-            <image xlinkHref={heartBorder} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
-          </pattern>
-          <pattern id="default_male" width="1" height="1" patternContentUnits="objectBoundingBox">
-            <image xlinkHref={malePic} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
-          </pattern>
-          <pattern id="default_female" width="1" height="1" patternContentUnits="objectBoundingBox">
-            <image xlinkHref={femalePic} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
-          </pattern>
-          <pattern id="NEI" width="1" height="1" patternContentUnits="objectBoundingBox">
-            <image xlinkHref={nei} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
-          </pattern>
-          <pattern id="AETTUA" width="1" height="1" patternContentUnits="objectBoundingBox">
-            <image xlinkHref={aettua} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
-          </pattern>
-          <pattern id="CF" width="1" height="1" patternContentUnits="objectBoundingBox">
-            <image xlinkHref={anzol} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
-          </pattern>
-          <pattern id="CS" width="1" height="1" patternContentUnits="objectBoundingBox">
-            <image xlinkHref={sal} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
-          </pattern>
-          <pattern id="escrivao" width="1" height="1" patternContentUnits="objectBoundingBox">
-            <image xlinkHref={rol} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
-          </pattern>
-          <pattern id="pescador" width="1" height="1" patternContentUnits="objectBoundingBox">
-            <image xlinkHref={lenco} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
-          </pattern>
-          <pattern id="salgado" width="1" height="1" patternContentUnits="objectBoundingBox">
-            <image xlinkHref={pa} height="1" width="1" preserveAspectRatio="xMinYMin slice"></image>
-          </pattern>
-        </defs>
-        <text x="100" y="100" style={{ font: "bold 300px sans-serif" }}>djfldsk</text>
-      </svg>
+    )
+  }
+
+  return (
+    <div style={{ display: "flex", zIndex: 1000, justifyContent: "center", alignItems: "center", flexDirection: "column", height: "80vh" }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <TextField id="pass" placeholder="Password" type="password" label={null} variant="outlined"
+          sx={{
+            mt: 1, flex: 1,
+            '& legend': { display: 'none' },
+            '& fieldset': { top: 0, borderColor: 'var(--border) !important' },
+            '& .MuiInputBase-input': { p: 1 },
+            '& .MuiOutlinedInput-root': { padding: '4px', color: 'var(--text-primary)', },
+          }}
+          onChange={(e) => setPass(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && validatePass()}
+          value={pass}
+        />
+      </div>
     </div>
   )
 }
