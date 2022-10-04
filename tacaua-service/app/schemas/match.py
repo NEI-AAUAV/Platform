@@ -6,7 +6,7 @@ from .team import Team
 
 
 class MatchBase(BaseModel):
-    round_id: int
+    round: int
     team1_id: Optional[int]
     team2_id: Optional[int]
     score1: Optional[int]

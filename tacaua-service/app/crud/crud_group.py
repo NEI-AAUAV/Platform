@@ -9,9 +9,8 @@ from app.crud.base import CRUDBase
 from app.schemas.competition import (
     Metadata, SingleElimination, RoundRobin, Swiss)
 from app.schemas.group import GroupCreate, GroupUpdate
-from app.schemas.round import RoundCreate
 from app.schemas.match import MatchCreate
-from app.models import Group, Team, Round, Match
+from app.models import Group, Team, Match
 from app.core.logging import logger
 
 
@@ -31,7 +30,7 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
         self, db: Session, group: Group, metadata: SingleElimination
     ) -> None:
         logger.debug(metadata.system)
-
+        '''
         matches_per_round = self.get_matches_per_round(len(group.teams))
         n_rounds = len(matches_per_round)
         matches = [[] for _ in range(n)]
@@ -73,16 +72,16 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
                 match = crud.match.create(db, obj_in=obj_in)
 
                 matches[r].append(match)
-
+        '''
         ...
 
-    def create_round_robin(
+    def update_round_robin(
         self, db: Session, group: Group, metadata: RoundRobin
     ) -> None:
         logger.debug(metadata.system)
         ...
 
-    def create_swiss(
+    def update_swiss(
         self, db: Session, group: Group, metadata: Swiss
     ) -> None:
         logger.debug(metadata.system)
@@ -98,15 +97,16 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
         db.commit()
         db.refresh(db_obj)
 
-        metadata = crud.competition.get(db_obj.competition_id).metadata_
+        metadata = crud.competition.get(
+            db, id=db_obj.competition_id).metadata_
         metadata = Metadata.parse_obj(metadata).__root__
 
         if isinstance(metadata, SingleElimination):
-            self.create_single_elimination(db, db_obj, metadata)
+            self.update_single_elimination(db, db_obj, metadata)
         elif isinstance(metadata, RoundRobin):
-            self.create_round_robin(db, db_obj, metadata)
+            self.update_round_robin(db, db_obj, metadata)
         elif isinstance(metadata, Swiss):
-            self.create_swiss(db, db_obj, metadata)
+            self.update_swiss(db, db_obj, metadata)
 
         return db_obj
 

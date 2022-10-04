@@ -29,8 +29,8 @@ class Group(Base):
     name = Column(String(20), Computed(
         "CASE WHEN number IS NULL THEN null ELSE 'Grupo ' || CHR(number) END"))
 
-    rounds = relationship(
-        "Round",
+    matches = relationship(
+        "Match",
         cascade="all",
         passive_deletes=True,
         lazy='joined',

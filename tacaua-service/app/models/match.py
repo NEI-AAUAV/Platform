@@ -8,9 +8,10 @@ from app.db.base_class import Base
 
 class Match(Base):
     id = Column(Integer, primary_key=True)
-    round_id = Column(
+    round = Column(SmallInteger, nullable=False)
+    group_id = Column(
         Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".round.id", ondelete='CASCADE'),
+        ForeignKey(settings.SCHEMA_NAME + ".group.id", ondelete='CASCADE'),
         nullable=False,
         index=True
     )

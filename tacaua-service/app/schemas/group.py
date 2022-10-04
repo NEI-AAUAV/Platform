@@ -2,7 +2,7 @@ from typing import List, Optional, Set
 
 from pydantic import BaseModel, constr
 
-from .round import Round
+from .match import Match
 from .team import TeamLazy
 
 
@@ -23,7 +23,7 @@ class Group(GroupBase):
     id: int
     competition_id: int
     number: int
-    rounds: List[Round]
+    matches: List[Match]
     teams: List[TeamLazy] | list
    
     class Config:
