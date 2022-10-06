@@ -41,4 +41,7 @@ def update_user(
     """
     Update a user in the database.
     """
-    return crud.users.update(db=db, obj_in=user_in, db_obj=db.get(Users, user_id))
+    if db.get(Users, user_id):
+        return crud.users.update(db=db, obj_in=user_in, db_obj=db.get(Users, user_id))
+
+    return None

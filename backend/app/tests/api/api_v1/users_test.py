@@ -14,11 +14,11 @@ USERS = [
         "id": 2,
         "name": 'Ze Pistolas',
         "full_name": 'Ze Pistolas Pistolas',
-        "uu_email": 'pmapm@ua.pt',
+        "uu_email": 'zpp@ua.pt',
         "uu_yupi": 'x1x1',
-        "curriculo": 'pedro_cv',
-        "linkedin": 'pedro_linkedin',
-        "git": 'pedro_git',
+        "curriculo": 'ze_cv',
+        "linkedin": 'ze_linkedin',
+        "git": 'ze_git',
         "permission": 'COLABORATOR',
         "created_at": datetime(2022, 8, 4)
     },
@@ -26,11 +26,11 @@ USERS = [
         "id": 3,
         "name": "Francisco Abrantes",
         "full_name": "Francisco Miguel Abrantes",
-        "uu_email": "eduardofernandes@ua.pt",
+        "uu_email": "fma@ua.pt",
         "uu_yupi": 'x2x2',
-        "curriculo": 'eduardo_cv',
-        "linkedin": 'eduardo_linkedin',
-        "git": 'eduardo_git',
+        "curriculo": 'francisco_cv',
+        "linkedin": 'francisco_linkedin',
+        "git": 'francisco_git',
         "permission": 'COLABORATOR',
         "created_at": datetime(2022, 8, 4)
     }
@@ -91,7 +91,6 @@ def test_update_user(client: TestClient) -> None:
     user_id = 2
     r = client.put(f"{settings.API_V1_STR}/users/{user_id}", json=user)
     data = r.json()
-    print(data)
     assert r.status_code == 200
     assert data["id"] == user_id
     assert data["name"] == "nome alterado"
