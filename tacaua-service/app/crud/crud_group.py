@@ -79,7 +79,13 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
         modality_id = crud.competition.get(
             db, id=db_obj.competition_id).modality_id
         teams = [t for t in db_obj.teams if t.id in teams_id]
-        teams_id_diff = teams_id - {t.id for t in teams}
+        teams_id_diff = set(teams_id) - {t.id for t in teams}
+
+        if len(teams) == len(db_obj.teams) and not teams_id_diff:
+            # Nothing to update
+            return db_obj
+
+        # Assign new teams to group
         for tid in teams_id_diff:
             team = db.query(Team).filter(
                 Team.id == tid, Team.modality_id == modality_id).first()
@@ -91,43 +97,42 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
         db.commit()
         db.refresh(db_obj)
 
+        # Update matches according to system
         metadata = crud.competition.get(
             db, id=db_obj.competition_id).metadata_
         metadata = Metadata.parse_obj(metadata).__root__
-
-        if teams_id_diff:
-            # Update matches according to system
-            if isinstance(metadata, SingleElimination):
-                f = self.update_single_elimination
-            elif isinstance(metadata, RoundRobin):
-                f = self.update_round_robin
-            elif isinstance(metadata, Swiss):
-                f = self.update_swiss
-            else:
-                raise NotImplementedException()
-            f(db, db_obj, teams_id_diff, metadata)
+        if isinstance(metadata, SingleElimination):
+            f = self.update_single_elimination
+        elif isinstance(metadata, RoundRobin):
+            f = self.update_round_robin
+        elif isinstance(metadata, Swiss):
+            f = self.update_swiss
+        else:
+            raise NotImplementedException()
+        f(db, db_obj, metadata)
 
         return db_obj
 
     def update_single_elimination(
-        self, db: Session, group: Group, teams_id_diff: Set[int],
-        metadata: SingleElimination
+        self, db: Session, group: Group, metadata: SingleElimination
     ) -> None:
         """Recreate match bracket."""
 
-        logger.debug(metadata.system)
         matches = db.query(Match).filter(Match.group_id == group.id).all()
-
+        teams_id = {t.id for t in group.teams}
         savepoint = db.begin_nested()
         try:
-            for i, m in enumerate(matches):
+            for m in matches[:]:
                 # Delete matches without both teams
-                if not (m.team1_id and m.team2_id):
-                    del matches[i]
+                # or with teams out of group
+                if not teams_id.issuperset((m.team1_id, m.team2_id)):
+                    matches.remove(m)
                     db.delete(m)
-                    # Add teams in deleted matches to difference
-                    if m.team1_id or m.team2_id:
-                        teams_id_diff.add(m.team1_id or m.team2_id)
+                    db.commit()
+
+            teams_id_assigned = {tid for m in matches
+                                 for tid in (m.team1_id, m.team2_id) if tid}
+            teams_id_diff = teams_id - teams_id_assigned
 
             matches_count_per_round = self.get_matches_per_round(
                 len(group.teams))
@@ -141,10 +146,9 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
                         assert r < 2
                         m = matches.pop()
                         m.round = r + 1
-                        db.add(m)
                     else:
                         # Create match
-                        match_data = {'round': r + 1}
+                        match_data = {'group_id': group.id, 'round': r + 1}
                         if teams_id_diff:
                             tid1 = teams_id_diff.pop()
                             match_data |= {'team1_id': tid1}
@@ -156,9 +160,9 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
                             else:
                                 # Create next match for 1 previous match
                                 assert r > 0
-                                assert c > 0
                                 c = matches_count_per_round[r - 1]
-                                m = matches_per_round[r][c - 1]
+                                assert c > 0
+                                m = matches_per_round[r - 1][c - 1]
                                 match_data |= {
                                     'team2_prereq_match_id': m.id
                                 }
@@ -166,34 +170,34 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
                         else:
                             # Create next match for 2 previous matches
                             assert r > 0
-                            assert c > 1
                             c = matches_count_per_round[r - 1]
-                            ms = matches_per_round[r]
+                            assert c > 1
+                            ms = matches_per_round[r - 1]
                             match_data |= {
                                 'team1_prereq_match_id': ms[c - 1].id,
                                 'team2_prereq_match_id': ms[c - 2].id
                             }
                             matches_count_per_round[r - 1] -= 2
-
-                        m = Match(MatchCreate(**match_data))
-                        db.add(m)
-
+                        m = Match(**match_data)
+                    db.add(m)
+                    db.commit()
+                    db.refresh(m)
                     matches_per_round[r].append(m)
         except AssertionError as e:
             # Perhaps database has an unexpected state
             savepoint.rollback()
             logger.error(e)
+        # TODO:
+        db.commit()
 
     def update_round_robin(
-        self, db: Session, group: Group, teams_id_diff: Set[int],
-        metadata: RoundRobin
+        self, db: Session, group: Group, metadata: RoundRobin
     ) -> None:
         logger.debug(metadata.system)
         ...
 
     def update_swiss(
-        self, db: Session, group: Group, teams_id_diff: Set[int],
-        metadata: Swiss
+        self, db: Session, group: Group, metadata: Swiss
     ) -> None:
         logger.debug(metadata.system)
         ...

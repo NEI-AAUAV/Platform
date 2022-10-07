@@ -40,12 +40,14 @@ class Match(Base):
     team1_prereq_match_id = Column(
         Integer,
         ForeignKey(settings.SCHEMA_NAME + ".match.id",  # TODO: needs ondelete for when round deletes??
+                   ondelete='SET NULL',
                    name="match_team1_prereq_match_id_fkey"),
         index=True
     )
     team2_prereq_match_id = Column(
         Integer,
         ForeignKey(settings.SCHEMA_NAME + ".match.id",
+                   ondelete='SET NULL',
                    name="match_team2_prereq_match_id_fkey"),
         index=True
     )
