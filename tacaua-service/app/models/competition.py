@@ -1,9 +1,9 @@
 from sqlalchemy import Column, SmallInteger, Integer, String, JSON, ForeignKey, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from app.core.config import settings
-from app.schemas.competition import RankByEnum, TiebreakEnum, SystemEnum
+from app.schemas.competition import Metadata
 from app.db.base_class import Base
 
 
@@ -27,3 +27,8 @@ class Competition(Base):
         passive_deletes=True,
         lazy='joined',
     )
+
+    @validates("metadata_")
+    def validate_metadata(self, key, value):
+        Metadata.validate(value)
+        return value

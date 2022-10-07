@@ -180,6 +180,7 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
 
                     matches_per_round[r].append(m)
         except AssertionError as e:
+            # Perhaps database has an unexpected state
             savepoint.rollback()
             logger.error(e)
 

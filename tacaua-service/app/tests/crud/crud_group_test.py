@@ -16,3 +16,12 @@ import app.crud as crud
 ])
 def test_get_matches_per_round(input, expected):
     assert crud.group.get_matches_per_round(input) == expected
+
+
+# @pytest.mark.noautofixt
+# def test_update_single_elimination(client: TestClient) -> None:
+    
+#     crud.group.update(db: SessionTesting, id=)
+#     def
+
+#     ...
