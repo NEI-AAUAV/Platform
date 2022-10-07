@@ -5,8 +5,17 @@ from pydantic import BaseModel
 from .team import Team
 
 
-class MatchBase(BaseModel):
+class MatchCreate(BaseModel):
     round: int
+    team1_id: Optional[int]
+    team2_id: Optional[int]
+    team1_prereq_match_id: Optional[int]
+    team2_prereq_match_id: Optional[int]
+    team1_is_prereq_match_winner: bool = True
+    team2_is_prereq_match_winner: bool = True
+
+
+class MatchUpdate(BaseModel):
     team1_id: Optional[int]
     team2_id: Optional[int]
     score1: Optional[int]
@@ -15,19 +24,11 @@ class MatchBase(BaseModel):
     games2: List[int] = []
     winner: Optional[Literal[0, 1, 2]]
     forfeiter: Optional[Literal[1, 2]]
-    live: bool = False
+    live: bool = False  # validate if its public # and has started obvs
     date: Optional[datetime]
-    team1_prereq_match_id: Optional[int]
-    team2_prereq_match_id: Optional[int]
-    team1_is_prereq_match_winner: bool = True
-    team2_is_prereq_match_winner: bool = True
 
 
-class MatchCreate(MatchBase):
-    pass
-
-
-class MatchLazy(MatchBase):
+class MatchLazy(MatchCreate, MatchUpdate):
     id: int
 
     class Config:
@@ -35,5 +36,5 @@ class MatchLazy(MatchBase):
 
 
 class Match(MatchLazy):
-    team1: Team
-    team2: Team
+    team1: Optional[Team]
+    team2: Optional[Team]

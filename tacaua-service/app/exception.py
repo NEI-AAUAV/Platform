@@ -34,3 +34,8 @@ class ImageFormatException(APIException):
 class RestrictionException(APIException):
     status_code = 400
     detail = "Restriction Not Respected"
+
+
+class NotImplementedException(APIException):
+    status_code = 501
+    detail = "Not Implemented"

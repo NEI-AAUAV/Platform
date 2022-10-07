@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 import app.crud as crud
-from app.exception import NotFoundException
+from app.exception import NotFoundException, NotImplementedException
 from app.crud.base import CRUDBase
 from app.schemas.competition import (
     Metadata, SingleElimination, RoundRobin, Swiss)
@@ -16,77 +16,6 @@ from app.core.logging import logger
 
 class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
 
-    def get_matches_per_round(self, n_teams: int) -> List[int]:
-        if n_teams < 1:
-            return []
-        n = int(math.log2(n_teams))
-        matches_per_round = [2**i for i in reversed(range(n))]
-        matches_diff = n_teams - sum(matches_per_round) - 1
-        if matches_diff:
-            matches_per_round = [matches_diff] + matches_per_round
-        return matches_per_round
-
-    def update_single_elimination(
-        self, db: Session, group: Group, metadata: SingleElimination
-    ) -> None:
-        logger.debug(metadata.system)
-        '''
-        matches_per_round = self.get_matches_per_round(len(group.teams))
-        n_rounds = len(matches_per_round)
-        matches = [[] for _ in range(n)]
-
-        rounds = db.query(Round).filter(Round.group_id == group.id).order_by(
-            Round.number).all()
-
-        n_rounds_diff = len(rounds) - n_rounds
-        if n_rounds_diff > 0:
-            # Delete rounds
-            for r in range(n_rounds_diff):
-                db.delete(rounds[r])
-            rounds = rounds[n_rounds_diff:]
-        elif n_rounds_diff < 0:
-            # Create rounds
-            rounds = [None]*abs(n_rounds_diff) + rounds
-
-        for r in range(n_rounds):
-            if n_rounds_diff != 0:
-                if not rounds[r]:
-                    # Create new round
-                    obj_in = RoundCreate(number=r + 1)
-                    rounds[r] = crud.round.create(db, obj_in=obj_in)
-                else:
-                    # Update existent round
-                    rounds[r] = crud.round.update(db, {"number": r + 1})
-
-            for m in range(matches_per_round[r]):
-                match1_id = match2_id = None
-
-                matches = db.query(Match).filter(
-                    Match.round_id == rounds[r].id)
-
-                if r > 0:
-                    match1_id = match2_id
-
-                obj_in = MatchCreate(round_id=round.id, team1_prereq_match_id=match1_id,
-                                     team2_prereq_match_id=match2_id)
-                match = crud.match.create(db, obj_in=obj_in)
-
-                matches[r].append(match)
-        '''
-        ...
-
-    def update_round_robin(
-        self, db: Session, group: Group, metadata: RoundRobin
-    ) -> None:
-        logger.debug(metadata.system)
-        ...
-
-    def update_swiss(
-        self, db: Session, group: Group, metadata: Swiss
-    ) -> None:
-        logger.debug(metadata.system)
-        ...
-
     def create(self, db: Session, *, obj_in: GroupCreate) -> Group:
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = Group(**obj_in_data)
@@ -96,18 +25,35 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
+        return db_obj
 
-        metadata = crud.competition.get(
-            db, id=db_obj.competition_id).metadata_
-        metadata = Metadata.parse_obj(metadata).__root__
+    def update(
+        self,
+        db: Session,
+        *,
+        id: int,
+        obj_in: Union[GroupUpdate, Dict[str, Any]]
+    ) -> Group:
+        db_obj = self.get(db, id=id)
+        obj_data = jsonable_encoder(db_obj)
+        if isinstance(obj_in, dict):
+            update_data = obj_in
+        else:
+            update_data = obj_in.dict(exclude_unset=True)
 
-        if isinstance(metadata, SingleElimination):
-            self.update_single_elimination(db, db_obj, metadata)
-        elif isinstance(metadata, RoundRobin):
-            self.update_round_robin(db, db_obj, metadata)
-        elif isinstance(metadata, Swiss):
-            self.update_swiss(db, db_obj, metadata)
+        if 'number' in update_data:
+            number = update_data.pop('number')
+            db_obj = self.update_number(db, db_obj=db_obj, number=number)
+        if 'teams_id' in update_data:
+            teams_id = update_data['teams_id']
+            db_obj = self.update_teams(db, db_obj=db_obj, teams_id=teams_id)
 
+        for field in obj_data:
+            if field in update_data:
+                setattr(db_obj, field, update_data[field])
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
         return db_obj
 
     def update_number(
@@ -144,36 +90,122 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
+
+        metadata = crud.competition.get(
+            db, id=db_obj.competition_id).metadata_
+        metadata = Metadata.parse_obj(metadata).__root__
+
+        if teams_id_diff:
+            # Update matches according to system
+            if isinstance(metadata, SingleElimination):
+                f = self.update_single_elimination
+            elif isinstance(metadata, RoundRobin):
+                f = self.update_round_robin
+            elif isinstance(metadata, Swiss):
+                f = self.update_swiss
+            else:
+                raise NotImplementedException()
+            f(db, db_obj, teams_id_diff, metadata)
+
         return db_obj
 
-    def update(
-        self,
-        db: Session,
-        *,
-        id: int,
-        obj_in: Union[GroupUpdate, Dict[str, Any]]
-    ) -> Group:
-        db_obj = self.get(db, id=id)
-        obj_data = jsonable_encoder(db_obj)
-        if isinstance(obj_in, dict):
-            update_data = obj_in
-        else:
-            update_data = obj_in.dict(exclude_unset=True)
+    def update_single_elimination(
+        self, db: Session, group: Group, teams_id_diff: Set[int],
+        metadata: SingleElimination
+    ) -> None:
+        """Recreate match bracket."""
 
-        if 'number' in update_data:
-            number = update_data.pop('number')
-            db_obj = self.update_number(db, db_obj=db_obj, number=number)
-        if 'teams_id' in update_data:
-            teams_id = update_data['teams_id']
-            db_obj = self.update_teams(db, db_obj=db_obj, teams_id=teams_id)
+        logger.debug(metadata.system)
+        matches = db.query(Match).filter(Match.group_id == group.id).all()
 
-        for field in obj_data:
-            if field in update_data:
-                setattr(db_obj, field, update_data[field])
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
+        savepoint = db.begin_nested()
+        try:
+            for i, m in enumerate(matches):
+                # Delete matches without both teams
+                if not (m.team1_id and m.team2_id):
+                    del matches[i]
+                    db.delete(m)
+                    # Add teams in deleted matches to difference
+                    if m.team1_id or m.team2_id:
+                        teams_id_diff.add(m.team1_id or m.team2_id)
+
+            matches_count_per_round = self.get_matches_per_round(
+                len(group.teams))
+            matches_per_round = [[] for _ in range(
+                len(matches_count_per_round))]
+
+            for r, matches_count in enumerate(matches_count_per_round):
+                for _ in range(matches_count):
+                    if matches:
+                        # Add leaf match
+                        assert r < 2
+                        m = matches.pop()
+                        m.round = r + 1
+                        db.add(m)
+                    else:
+                        # Create match
+                        match_data = {'round': r + 1}
+                        if teams_id_diff:
+                            tid1 = teams_id_diff.pop()
+                            match_data |= {'team1_id': tid1}
+                            if teams_id_diff:
+                                # Create leaf match
+                                assert r < 2
+                                tid2 = teams_id_diff.pop()
+                                match_data |= {'team2_id': tid2}
+                            else:
+                                # Create next match for 1 previous match
+                                assert r > 0
+                                assert c > 0
+                                c = matches_count_per_round[r - 1]
+                                m = matches_per_round[r][c - 1]
+                                match_data |= {
+                                    'team2_prereq_match_id': m.id
+                                }
+                                matches_count_per_round[r - 1] -= 1
+                        else:
+                            # Create next match for 2 previous matches
+                            assert r > 0
+                            assert c > 1
+                            c = matches_count_per_round[r - 1]
+                            ms = matches_per_round[r]
+                            match_data |= {
+                                'team1_prereq_match_id': ms[c - 1].id,
+                                'team2_prereq_match_id': ms[c - 2].id
+                            }
+                            matches_count_per_round[r - 1] -= 2
+
+                        m = Match(MatchCreate(**match_data))
+                        db.add(m)
+
+                    matches_per_round[r].append(m)
+        except AssertionError as e:
+            savepoint.rollback()
+            logger.error(e)
+
+    def update_round_robin(
+        self, db: Session, group: Group, teams_id_diff: Set[int],
+        metadata: RoundRobin
+    ) -> None:
+        logger.debug(metadata.system)
+        ...
+
+    def update_swiss(
+        self, db: Session, group: Group, teams_id_diff: Set[int],
+        metadata: Swiss
+    ) -> None:
+        logger.debug(metadata.system)
+        ...
+
+    def get_matches_per_round(self, n_teams: int) -> List[int]:
+        if n_teams < 1:
+            return []
+        n = int(math.log2(n_teams))
+        matches_per_round = [2**i for i in reversed(range(n))]
+        matches_diff = n_teams - sum(matches_per_round) - 1
+        if matches_diff:
+            matches_per_round = [matches_diff] + matches_per_round
+        return matches_per_round
 
 
 group = CRUDGroup(Group)
