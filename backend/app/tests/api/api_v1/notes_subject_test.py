@@ -76,4 +76,5 @@ def test_update_inexistent_note_subject(client: TestClient) -> None:
     inexistent_paco_code = -1
     r = client.put(f"{settings.API_V1_STR}/notes/subjects/{inexistent_paco_code}", json=note_subject)
     data = r.json()
-    assert data == None
+    assert r.status_code == 404
+    assert data["detail"] == "Invalid Note Subject id"

@@ -98,5 +98,6 @@ def test_update_user(client: TestClient) -> None:
 def test_update_inexistent_user(client: TestClient) -> None:
     inexistent_user_id = 10
     r = client.put(f"{settings.API_V1_STR}/users/{inexistent_user_id}", json=user)
+    assert r.status_code == 404
     data = r.json()
-    assert data == None
+    assert data["detail"] == "Invalid User id"

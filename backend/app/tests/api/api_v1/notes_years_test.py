@@ -63,5 +63,6 @@ def test_update_note_year(client: TestClient) -> None:
 def test_update_inexistent_note_year(client: TestClient) -> None:
     id = -1
     r = client.put(f"{settings.API_V1_STR}/notes/years/{id}", json=note_year)
+    assert r.status_code == 404
     data = r.json()
-    assert data == None
+    assert data["detail"] == "Invalid Note Year id"

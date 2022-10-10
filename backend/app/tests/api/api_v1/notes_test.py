@@ -245,4 +245,5 @@ def test_update_inexistent_note(client: TestClient) -> None:
     inexistent_note_id = -1
     r = client.put(f"{settings.API_V1_STR}/notes/{inexistent_note_id}", json=update_note)
     data = r.json()
-    assert data == None
+    assert r.status_code == 404
+    assert data["detail"] == "Invalid Note id"
