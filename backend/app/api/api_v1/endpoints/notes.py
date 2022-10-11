@@ -43,6 +43,8 @@ def get_note_by_id(
 ) -> Any:
     """
     """
+    if not db.get(Notes, note_id):
+        raise HTTPException(status_code=404, detail="Invalid Note id")
     return crud.notes.get(db=db, id=note_id)
 
 @router.post("/", status_code=201, response_model=NotesInDB)

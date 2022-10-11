@@ -77,8 +77,8 @@ def test_get_inexistent_user_by_id(client: TestClient) -> None:
     inexistent_user_id = 10
     r = client.get(f"{settings.API_V1_STR}/users/{inexistent_user_id}")
     data = r.json()
-    assert r.status_code == 200
-    assert data == None
+    assert r.status_code == 404
+    assert data["detail"] == "Invalid User id"
 
 def test_create_user(client: TestClient) -> None:
     r = client.post(f"{settings.API_V1_STR}/users/", json=user)
