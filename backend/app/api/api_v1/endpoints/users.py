@@ -23,6 +23,8 @@ def get_user_by_id(
 ) -> Any:
     """
     """
+    if not db.get(Users, user_id):
+        raise HTTPException(status_code=404, detail="Invalid User id")
     return crud.users.get(db=db, id=user_id)
 
 @router.post("/", status_code=201, response_model=UsersInDB)

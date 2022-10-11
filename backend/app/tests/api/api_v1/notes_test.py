@@ -223,8 +223,8 @@ def test_get_inexistent_note_by_id(client: TestClient) -> None:
     inexistent_note_id = -1
     r = client.get(f"{settings.API_V1_STR}/notes/{inexistent_note_id}")
     data = r.json()
-    assert r.status_code == 200
-    assert data == None
+    assert r.status_code == 404
+    assert data["detail"] == "Invalid Note id"
 
 def test_create_note(client: TestClient) -> None:
     r = client.post(f"{settings.API_V1_STR}/notes/", json=note)
