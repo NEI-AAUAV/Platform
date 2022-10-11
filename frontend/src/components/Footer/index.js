@@ -2,6 +2,7 @@ import React from "react";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faFacebookSquare, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
+import { SiLinktree } from "react-icons/si";
 
 import "./index.css";
 
@@ -17,6 +18,9 @@ const Footer = () => {
                 </a>
                 <a href="https://www.youtube.com/channel/UCfvCzdDn0o-avwBSayqrQog/featured" target="_blank" className="text-secondary">
                     <FontAwesomeIcon icon={ faYoutube } size="lg"/>
+                </a>
+                <a href="https://linktr.ee/NEI_AAUAv" target="_blank" className="text-secondary">
+                    <SiLinktree size="22px"/>
                 </a>
             </div>
             <div className="footer-copyright">
