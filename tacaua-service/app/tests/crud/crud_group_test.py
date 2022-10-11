@@ -8,8 +8,8 @@ from app.models import Modality, Competition, Group, Match, Course, Team
 from app.tests.conftest import SessionTesting
 
 
-group_id = None
-teams_id = None
+gl_group_id = None
+gl_teams_id = None
 
 competition_data = {
     "name": "string",
@@ -25,7 +25,7 @@ competition_data = {
 
 @pytest.fixture(scope='module', name='db')
 def setup_teams(connection: Connection):
-    global teams_id, group_id
+    global gl_teams_id, gl_group_id
 
     transaction = connection.begin()
     db = SessionTesting(bind=connection)
@@ -65,8 +65,8 @@ def setup_teams(connection: Connection):
         ))
     db.commit()
 
-    teams_id = [t.id for t in db.query(Team).all()]
-    group_id = group.id
+    gl_teams_id = [t.id for t in db.query(Team).all()]
+    gl_group_id = group.id
 
     yield db
     db.close()
@@ -115,8 +115,8 @@ def test_update_single_elimination(
     def has_no_team(match: Match) -> bool:
         return not (match.team1_id or match.team2_id)
 
-    rand_teams_id = random.sample(teams_id, input)
-    group = crud.group.update(db, id=group_id, obj_in={
+    rand_teams_id = random.sample(gl_teams_id, input)
+    group = crud.group.update(db, id=gl_group_id, obj_in={
         'teams_id': rand_teams_id})
 
     if not expected:
@@ -135,3 +135,11 @@ def test_update_single_elimination(
             lambda m: has_one_team(m), round_matches))) == e[1]
         assert len(list(filter(
             lambda m: has_no_team(m), round_matches))) == e[2]
+
+    teams_id = [tid for m in group.matches for tid in (
+        m.team1_id, m.team2_id) if tid]
+    prereq_matches_id = [mid for m in group.matches for mid in (
+        m.team1_prereq_match_id, m.team2_prereq_match_id) if mid]
+    
+    assert len(teams_id) == len(set(teams_id))
+    assert len(prereq_matches_id) == len(set(prereq_matches_id))

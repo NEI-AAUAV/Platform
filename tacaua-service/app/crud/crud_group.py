@@ -117,6 +117,7 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
         self, db: Session, group: Group, metadata: SingleElimination
     ) -> None:
         """Recreate match bracket."""
+        # TODO: not using metadata for 3rd match
 
         matches = db.query(Match).filter(Match.group_id == group.id).all()
         teams_id = {t.id for t in group.teams}
@@ -143,7 +144,6 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
                 for _ in range(matches_count):
                     if matches:
                         # Add leaf match
-                        assert r < 2
                         m = matches.pop()
                         m.round = r + 1
                     else:
@@ -154,14 +154,11 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
                             match_data |= {'team1_id': tid1}
                             if teams_id_diff:
                                 # Create leaf match
-                                assert r < 2
                                 tid2 = teams_id_diff.pop()
                                 match_data |= {'team2_id': tid2}
                             else:
                                 # Create next match for 1 previous match
-                                assert r > 0
                                 c = matches_count_per_round[r - 1]
-                                assert c > 0
                                 m = matches_per_round[r - 1][c - 1]
                                 match_data |= {
                                     'team2_prereq_match_id': m.id
@@ -169,9 +166,7 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
                                 matches_count_per_round[r - 1] -= 1
                         else:
                             # Create next match for 2 previous matches
-                            assert r > 0
                             c = matches_count_per_round[r - 1]
-                            assert c > 1
                             ms = matches_per_round[r - 1]
                             match_data |= {
                                 'team1_prereq_match_id': ms[c - 1].id,
@@ -180,15 +175,13 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
                             matches_count_per_round[r - 1] -= 2
                         m = Match(**match_data)
                     db.add(m)
-                    db.commit()
-                    db.refresh(m)
                     matches_per_round[r].append(m)
-        except AssertionError as e:
+        except Exception as e:
             # Perhaps database has an unexpected state
             savepoint.rollback()
             logger.error(e)
-        # TODO:
         db.commit()
+        
 
     def update_round_robin(
         self, db: Session, group: Group, metadata: RoundRobin
