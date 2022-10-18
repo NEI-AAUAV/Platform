@@ -63,7 +63,7 @@ const Sports = () => {
         marginBottom: 50,
         marginTop: 50,
       }}
-    ></Image>)
+    />)
   }, [tabIndicator, tabIndicatorSex]);*/
 
   function changeTab(value) {
@@ -181,68 +181,92 @@ const Sports = () => {
       </div> */}
 
       <div className="d-flex flex-column flex-wrap team-wrapper" y>
-        <Row>
-          <Image
-            src={equipa}
-            rounded
-            fluid
-            className="slideUpFade"
-            style={{
-              animationDelay: animationBase + animationIncrement * 0 + "s",
-              marginBottom: 50,
-              marginTop: 50,
-            }}
-          ></Image>
-        </Row>
-        <Row>
-          <TextList
-            colSize={4}
-            text="Pedro Monteiro"
-            className="slideUpFade"
-            style={{
-              animationDelay: animationBase + animationIncrement * 0 + "s",
-            }}
-          />
-          <TextList
-            colSize={4}
-            text="Pedro Monteiro"
-            className="slideUpFade"
-            style={{
-              animationDelay: animationBase + animationIncrement * 0 + "s",
-            }}
-          />
-          <TextList
-            colSize={4}
-            text="Pedro Monteiro"
-            className="slideUpFade"
-            style={{
-              animationDelay: animationBase + animationIncrement * 0 + "s",
-            }}
-          />
-          <TextList
-            colSize={4}
-            text="Pedro Monteiro"
-            className="slideUpFade"
-            style={{
-              animationDelay: animationBase + animationIncrement * 0 + "s",
-            }}
-          />
-          <TextList
-            colSize={4}
-            text="Pedro Monteiro"
-            className="slideUpFade"
-            style={{
-              animationDelay: animationBase + animationIncrement * 0 + "s",
-            }}
-          />
-          <TextList
-            colSize={4}
-            text="Pedro Monteiro"
-            className="slideUpFade"
-            style={{
-              animationDelay: animationBase + animationIncrement * 0 + "s",
-            }}
-          />
+        <Row className="modalidades">
+          <div className="modalidade">
+            <Image
+              src={equipa}
+              alt=""
+              rounded
+              className="slideUpFade"
+              style={{
+                animationDelay: animationBase + animationIncrement * 0 + "s",
+                objectFit: "cover",
+              }}
+              width={"100%"}
+              height={200}
+            />
+            <div className="gradient">
+              <p className="modalidadeText">Futsal Masculino</p>
+            </div>
+          </div>
+          <div className="modalidade">
+            <Image
+              src={equipa}
+              alt=""
+              rounded
+              className="slideUpFade"
+              style={{
+                animationDelay: animationBase + animationIncrement * 0 + "s",
+                objectFit: "cover",
+              }}
+              width={"100%"}
+              height={200}
+            />
+            <div className="gradient">
+              <p className="modalidadeText">Futsal Masculino</p>
+            </div>
+          </div>
+          <div className="modalidade">
+            <Image
+              src={equipa}
+              alt=""
+              rounded
+              className="slideUpFade"
+              style={{
+                animationDelay: animationBase + animationIncrement * 0 + "s",
+                objectFit: "cover",
+              }}
+              width={"100%"}
+              height={200}
+            />
+            <div className="gradient">
+              <p className="modalidadeText">Futsal Masculino</p>
+            </div>
+          </div>
+          <div className="modalidade">
+            <Image
+              src={equipa}
+              alt=""
+              rounded
+              className="slideUpFade"
+              style={{
+                animationDelay: animationBase + animationIncrement * 0 + "s",
+                objectFit: "cover",
+              }}
+              width={"100%"}
+              height={200}
+            />
+            <div className="gradient">
+              <p className="modalidadeText">Futsal Masculino</p>
+            </div>
+          </div>
+          <div className="modalidade">
+            <Image
+              src={equipa}
+              alt=""
+              rounded
+              className="slideUpFade"
+              style={{
+                animationDelay: animationBase + animationIncrement * 0 + "s",
+                objectFit: "cover",
+              }}
+              width={"100%"}
+              height={200}
+            />
+            <div className="gradient">
+              <p className="modalidadeText">Futsal Masculino</p>
+            </div>
+          </div>
         </Row>
 
         <Row className="games-section">

@@ -28,6 +28,50 @@
 
 .column-header {
     margin-bottom: 2rem;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.modalidades {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.modalidade {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    position: relative;
+    opacity: 0.8;
+}
+
+.modalidade:hover {
+    opacity: 1;
+}
+
+.modalidadeText {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.5rem;
+    color: white;
+}
+
+.gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20%;
+    background-color: black;
+    background: linear-gradient(rgba(0, 0, 0, 0.1),rgba(0, 0, 0, 0.4),rgba(0, 0, 0, 0.4),rgba(0, 0, 0, 0.4));
+    border-radius: 5px;
 }
 
 ul.slideUpFade {
