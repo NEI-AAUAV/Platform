@@ -270,13 +270,13 @@ const Sports = () => {
         </Row>
 
         <Row className="games-section">
-          <Col className="column" lg={6}>
+          <Col className="column">
             <h3 className="column-header">Resultados</h3>
             <Game data="31/02"></Game>
             <Game data="31/02"></Game>
             <Game data="31/02"></Game>
           </Col>
-          <Col className="column" lg={6}>
+          <Col className="column">
             <h3 className="column-header">Próximos Jogos</h3>
             <Game data="31/02"></Game>
             <Game data="31/02"></Game>

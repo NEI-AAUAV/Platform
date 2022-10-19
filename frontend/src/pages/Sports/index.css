@@ -24,6 +24,8 @@
 
 .column {
     text-align: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 .column-header {
