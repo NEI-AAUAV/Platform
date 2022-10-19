@@ -15,6 +15,8 @@ import Typist from "react-typist";
 import "./index.css";
 import SportTable from "./SportTable";
 
+import SportsBracket from "./SportsBracket";
+
 const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
 const animationIncrement = parseFloat(
   process.env.REACT_APP_ANIMATION_INCREMENT
@@ -126,6 +128,8 @@ const Sports = () => {
     )
 
   }
+
+  return <SportsBracket />
 
   return (
     <>
