@@ -1,0 +1,104 @@
+.img-card {
+    border-radius: 3% !important;
+    border: none !important;
+    box-shadow: 0 6px 10px -4px var(--card-shadow);
+    transition: transform .3s cubic-bezier(.34, 2, .6, 1), box-shadow .2s ease, -webkit-transform .3s cubic-bezier(.34, 2, .6, 1);
+}
+
+.img-card:hover {
+    transform: translateY(-8px) !important;
+}
+
+.img-card * {
+    border-radius: 0% !important;
+    border-top-left-radius: 3% !important;
+    border-top-right-radius: 3% !important;
+}
+
+.img-card img {
+    height: 300px;
+    /* object-fit: contain;  not sure which is better, cover is as it is in current site */
+    object-fit: cover;
+    background-color: white;
+}
+
+.img-card img:hover{
+    transform: scale(1.05);
+    transition: .8s;
+    background:white;
+}
+
+.img-card .card-body {
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+}
+
+/*
+.img-card .card-title {
+    font-size: 1em;
+} */
+
+.img-card .card-text {
+    flex-grow: 1 !important;
+    display: flex;
+}
+
+.img-card.dark .card-text,
+.img-card .dark .card-text {
+    color: white !important;
+}
+
+.img-card .card-text * {
+    align-self: center;
+    flex-grow: 1 !important;
+}
+
+.img-card .plus-button {
+    position: absolute;
+    top: 180px;
+    left: 8px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    width: 40px;
+    height: 40px;
+    background-color: var(--background);
+    display: flex;
+}
+
+.img-card.dark .plus-button {
+    background-color: #4a4946;
+}
+
+.img-card .plus-button span {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    flex-grow: 1;
+    font-family: Roboto, sans-serif;
+    font-size: 26px;
+    font-weight: 100;
+}
+
+.img-card a:link,
+.img-card a:visited,
+.img-card a:active {
+    text-decoration: none;
+    color: #147a26;
+}
+
+.img-card a:hover {
+    text-decoration: none;
+    color: #1db939;
+}
+
+.img-card.dark a:link,
+.img-card.dark a:visited,
+.img-card.dark a:hover,
+.img-card.dark a:active {
+    color: white !important;
+}
+
+.img-card.dark {
+    color: white !important;
+    background-color: #4a4946 !important;
+}
