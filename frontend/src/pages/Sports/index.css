@@ -73,6 +73,7 @@
 
 .modalidadeText {
     font-weight: bold;
+    font-size: 19px;
     display: flex;
     justify-content: center;
     align-items: center;
