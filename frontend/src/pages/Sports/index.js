@@ -10,6 +10,8 @@ import img2 from "./img/unknown2.png";
 import img3 from "./img/unknown3.png";
 import equipa from "./img/equipa.jpg";
 
+import { ReactComponent as Futsal } from "../../assets/icons/tacaua/high_contrast/voleibol.svg";
+
 import Typist from "react-typist";
 
 import "./index.css";
@@ -192,11 +194,12 @@ const Sports = () => {
                 animationDelay: animationBase + animationIncrement * 0 + "s",
                 objectFit: "cover",
               }}
-              width={"100%"}
+              width={350}
               height={200}
             />
             <div className="gradient">
               <p className="modalidadeText">Futsal Masculino</p>
+              <Futsal className="icon" />
             </div>
           </div>
           <div className="modalidade">
@@ -209,11 +212,12 @@ const Sports = () => {
                 animationDelay: animationBase + animationIncrement * 0 + "s",
                 objectFit: "cover",
               }}
-              width={"100%"}
+              width={350}
               height={200}
             />
             <div className="gradient">
               <p className="modalidadeText">Futsal Masculino</p>
+              <Futsal className="icon" />
             </div>
           </div>
           <div className="modalidade">
@@ -226,11 +230,12 @@ const Sports = () => {
                 animationDelay: animationBase + animationIncrement * 0 + "s",
                 objectFit: "cover",
               }}
-              width={"100%"}
+              width={350}
               height={200}
             />
             <div className="gradient">
               <p className="modalidadeText">Futsal Masculino</p>
+              <Futsal className="icon" />
             </div>
           </div>
           <div className="modalidade">
@@ -243,11 +248,12 @@ const Sports = () => {
                 animationDelay: animationBase + animationIncrement * 0 + "s",
                 objectFit: "cover",
               }}
-              width={"100%"}
+              width={350}
               height={200}
             />
             <div className="gradient">
               <p className="modalidadeText">Futsal Masculino</p>
+              <Futsal className="icon" />
             </div>
           </div>
           <div className="modalidade">
@@ -260,11 +266,12 @@ const Sports = () => {
                 animationDelay: animationBase + animationIncrement * 0 + "s",
                 objectFit: "cover",
               }}
-              width={"100%"}
+              width={350}
               height={200}
             />
             <div className="gradient">
               <p className="modalidadeText">Futsal Masculino</p>
+              <Futsal className="icon" />
             </div>
           </div>
         </Row>

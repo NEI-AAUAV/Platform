@@ -26,6 +26,7 @@ const Game = (props) => {
               animationDelay: animationBase + animationIncrement * 0 + "s",
             }}
           ></Image>
+          <p>Eng. Informática</p>
         </Col>
         <Col className="game-result" lg={2}>
           <h4>3 - 0</h4>
@@ -40,6 +41,7 @@ const Game = (props) => {
               animationDelay: animationBase + animationIncrement * 0 + "s",
             }}
           ></Image>
+          <p>Eng. Computacional</p>
         </Col>
       </Row>
     </>
