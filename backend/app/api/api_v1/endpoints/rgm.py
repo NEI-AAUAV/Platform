@@ -13,7 +13,10 @@ router = APIRouter()
 def get_rgm(
     category: str, db: Session = Depends(deps.get_db),
 ) -> Any:
-
-    return crud.rgm.get_by(db=db, category = category)
+    ValidCat = ["PAO","RAC","ATAS"]
+    if category.upper() in ValidCat:
+        return crud.rgm.get_by(db=db, category = category)
+    else:
+        raise HTTPException(status_code=400, detail="Bad Request")
 
 

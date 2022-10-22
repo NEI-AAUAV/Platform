@@ -11,9 +11,14 @@ from .team import Team
 from .team_colaborators import TeamColaborators
 from .team_roles import TeamRoles
 from .users import Users
+from .rgm import Rgm
+from .history import History
+from .merchandisings import Merchandisings
+from .partners import Partners
 from .notes import Notes
 from .notes_schoolyear import NotesSchoolYear
 from .notes_subject import NotesSubject
 from .notes_teachers import NotesTeachers
 from .notes_thanks import NotesThanks
 from .notes_types import NotesTypes
+
