@@ -1,7 +1,7 @@
 from app.schemas.pagination import Page, PageParams
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import Any
+from typing import Any, List
 
 from app import crud
 from app.api import deps
@@ -13,7 +13,7 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=Page[NewsInDB])
 def get_news_list(
     *, page_params: PageParams = Depends(PageParams),
-    categories: list[str] = Query(
+    categories: List[str] = Query(
         default=[], alias='category',
         description="List of categories",
     ),

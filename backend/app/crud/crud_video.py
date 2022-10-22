@@ -15,7 +15,7 @@ class CRUDVideo(CRUDBase[Video, VideoCreate, VideoUpdate]):
         """
         return db.query(Video).filter(Video.id == id).first()
 
-    def get_videos_by_categories(self, db: Session, categories: list[int], pagenumber: int) -> List[VideoInDB]:
+    def get_videos_by_categories(self, db: Session, categories: List[int], pagenumber: int) -> List[VideoInDB]:
         """
         Return list of videos by categories.
         """

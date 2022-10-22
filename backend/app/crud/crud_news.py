@@ -9,7 +9,7 @@ from typing import List
 
 class CRUDNews(CRUDBase[News, NewsCreate, NewsUpdate]):
 
-    def get_news_categories(self, db: Session) -> list[str]:
+    def get_news_categories(self, db: Session) -> List[str]:
         """
         Return every distinct category
         """
@@ -21,7 +21,7 @@ class CRUDNews(CRUDBase[News, NewsCreate, NewsUpdate]):
         """
         return db.query(News).filter(News.id == id).first()
 
-    def get_news_by_categories(self, db: Session, categories: list[str], page: int, size: int) -> List[NewsInDB]:
+    def get_news_by_categories(self, db: Session, categories: List[str], page: int, size: int) -> List[NewsInDB]:
         """
         Return filtered/unfiltered news
         """
