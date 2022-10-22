@@ -23,6 +23,8 @@ def get_user_by_id(
 ) -> Any:
     """
     """
+    if not db.get(Users, user_id):
+        raise HTTPException(status_code=404, detail="Invalid User id")
     return crud.users.get(db=db, id=user_id)
 
 @router.post("/", status_code=201, response_model=UsersInDB)
@@ -41,4 +43,7 @@ def update_user(
     """
     Update a user in the database.
     """
-    return crud.users.update(db=db, obj_in=user_in, db_obj=db.get(Users, user_id))
+    if not db.get(Users, user_id):
+        raise HTTPException(status_code=404, detail="Invalid User id")
+    
+    return crud.notes.update(db=db, obj_in=user_in, db_obj=db.get(Users, user_id))

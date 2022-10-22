@@ -1,27 +1,29 @@
 import React from "react";
 
-import MainLayout from "./Layouts/MainLayout";
+import config from 'config';
 
-import Homepage from "./Pages/Homepage";
-import Team from "./Pages/Team";
-import Partners from "./Pages/Partners";
-import Error404 from "./Pages/Error404";
-import Seniors from "./Pages/Seniors";
-import Faina from "./Pages/Faina"
-import News from "./Pages/News";
-import NewsArticle from "./Pages/NewsArticle";
-import RGM from "./Pages/RGM";
-import Calendar from "./Pages/Calendar";
-import History from "./Pages/History";
-import Merchandising from "./Pages/Merchandising";
-import CleanLayout from "./Layouts/CleanLayout";
-import Apontamentos from "./Pages/Apontamentos";
-import FeedbackForm from './Pages/Forms/FeedbackForm';
-import Videos from "./Pages/Videos";
-import Video from "./Pages/Video";
-import Sports from "./Pages/Sports";
-import FainaTree from "./Pages/FainaTree";
-import Internship from "./Pages/Internship";
+import MainLayout from "./layouts/MainLayout";
+
+import Homepage from "./pages/Homepage";
+import Team from "./pages/Team";
+import Partners from "./pages/Partners";
+import Error404 from "./pages/Error404";
+import Seniors from "./pages/Seniors";
+import Faina from "./pages/Faina"
+import News from "./pages/News";
+import NewsArticle from "./pages/NewsArticle";
+import RGM from "./pages/RGM";
+import Calendar from "./pages/Calendar";
+import History from "./pages/History";
+import Merchandising from "./pages/Merchandising";
+import CleanLayout from "./layouts/CleanLayout";
+import Apontamentos from "./pages/Apontamentos";
+import FeedbackForm from './pages/Forms/FeedbackForm';
+import Videos from "./pages/Videos";
+import Video from "./pages/Video";
+import Sports from "./pages/Sports";
+import FainaTree from "./pages/FainaTree";
+import Internship from "./pages/Internship";
 
 
 const routes = [
@@ -32,7 +34,7 @@ const routes = [
 			{ path: "/", element: <Homepage /> },
 			{ path: "/merch", element: <Merchandising /> },
 			{ path: "/familias", element: <FainaTree /> },
-		]
+		],
 	},
 	{
 		path: "/",
@@ -47,20 +49,15 @@ const routes = [
 			{ path: "/rgm/:id", element: <RGM /> },
 			{ path: "/historia", element: <History /> },
 			{ path: "/seniors/:id", element: <Seniors /> },
-			{ path: "/faina", element: <Faina/> },
-			{ path: "/videos", element: <Videos/> },
-			{ path: "/videos/:id", element: <Video/> },
-			{ path: "/estagios", element: <Internship /> },
-			{ path: "/desporto", element: <Sports/>},
 			{ path: "/faina", element: <Faina /> },
 			{ path: "/videos", element: <Videos /> },
 			{ path: "/videos/:id", element: <Video /> },
-			// Forms
-			{ path: "/forms/feedback", element: <FeedbackForm /> },
-			// Everything else is 404
-			{ path: "/:id", element: <Error404 /> },
+			{ path: "/estagios", element: <Internship /> },
+			!config.PRODUCTION && { path: "/desporto", element: <Sports /> },
+			// { path: "/forms/feedback", element: <FeedbackForm /> },
+			{ path: "*", element: <Error404 /> }
 		],
-	}
+	},
 ];
 
 export default routes;
