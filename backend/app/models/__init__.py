@@ -1,8 +1,3 @@
-from .tacaua_classification import TacaUAClassification
-from .tacaua_game import TacaUAGame
-from .tacaua_modality_details import TacaUAModalityDetails
-from .tacaua_modality import TacaUAModality
-from .tacaua_team import TacaUATeam
 from .video_tag import VideoTag
 from .video import Video
 from .redirect import Redirect
@@ -20,3 +15,10 @@ from .rgm import Rgm
 from .history import History
 from .merchandisings import Merchandisings
 from .partners import Partners
+from .notes import Notes
+from .notes_schoolyear import NotesSchoolYear
+from .notes_subject import NotesSubject
+from .notes_teachers import NotesTeachers
+from .notes_thanks import NotesThanks
+from .notes_types import NotesTypes
+

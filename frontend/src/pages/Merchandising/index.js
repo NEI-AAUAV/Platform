@@ -61,7 +61,7 @@ const Merchandising = () => {
 
             <Row className="text-center mx-0" style={{ position: "relative" }}>
                 <a
-                    href="https://aauav.pt/nucleos/"
+                    href="https://forms.gle/pWNPzNi1LV59iSsAA"
                     target="_blank"
                     className="mx-auto"
                 >
