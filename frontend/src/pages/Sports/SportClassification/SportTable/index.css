@@ -1,0 +1,34 @@
+tr:nth-child(1) { 
+  background-color: #66666666;
+}
+
+td:nth-child(1) {
+  background-color: #66666666; /* this changes first column color. If you change (1) to odd or even, you have a striped column*/
+}
+
+span {
+  font-weight: bold;
+}
+
+.tablecss {
+  overflow-y: scroll;
+  overflow-x: scroll;
+  text-align: center;
+}
+
+tr:hover {
+  background-color: green;
+}
+
+.up{
+  color: rgb(132, 234, 132);
+}
+
+.down{
+  color: red;
+
+}
+
+
+
+

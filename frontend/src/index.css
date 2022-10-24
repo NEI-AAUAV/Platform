@@ -39,6 +39,10 @@ body {
     
 }
 
+.tr,td {
+    color: var(--text-primary);
+}
+
 .form-control{
     background-color: var(--background) ; 
     color: var(--text-secondary) ; 

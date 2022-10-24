@@ -13,7 +13,7 @@ import equipa from "./img/equipa.jpg";
 import Typist from "react-typist";
 
 import "./index.css";
-import SportTable from "./SportTable";
+import SportClassification from "./SportClassification";
 
 const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
 const animationIncrement = parseFloat(
@@ -126,6 +126,8 @@ const Sports = () => {
     )
 
   }
+
+  return <SportClassification/>
 
   return (
     <>
@@ -264,10 +266,6 @@ const Sports = () => {
             <Game data="31/02"></Game>
             <Game data="31/02"></Game>
           </Col>
-        </Row>
-
-        <Row className="games-section">
-          <SportTable />
         </Row>
       </div>
     </>
