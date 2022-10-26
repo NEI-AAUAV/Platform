@@ -21,15 +21,15 @@ def get_video(
     ),
     db: Session = Depends(deps.get_db)
 ) -> Any:
-    
-    all_cat = set(crud.videotag.get_multi(db=db))
+
+    all_cat = set(e.id for e in crud.videotag.get_multi(db=db))
     
     if not all_cat.issuperset(tags):
         raise HTTPException(status_code=400, detail="Invalid tag")
 
         
         
-    items = crud.video.get_videos_by_categories(db=db, categories=tags, 
+    items = crud.video.get_videos_by_categories(db=db, tags=tags, 
                                                 page=page_params.page, size=page_params.size)
     return Page.create(items,page_params)
 

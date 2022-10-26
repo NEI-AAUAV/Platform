@@ -59,13 +59,9 @@ def setup_database(db: SessionTesting):
         db.add(VideoTag(**videotags))
     db.commit()
     for video in videos:
-        Vcopy = video.copy()
-        tags = Vcopy.pop("tags")
-        v = Video(**Vcopy)
-        db.add(v)
-        db.commit()
-        db.refresh(v)
-        v.tags = tags
+        v = Video(**video)
+        v.tags = [ db.query(VideoTag).get(t) for t in video["tags"] ]
+        print()
         db.add(v)
     db.commit()
 
@@ -78,45 +74,42 @@ def test_get_VideoTags(db: SessionTesting, client: TestClient) -> None:
     assert "id" in data[0]
 
 def test_get_VideosbyCategories(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/?category[]=0&category[]=1&page=1")
+    r = client.get(f"{settings.API_V1_STR}/videos/?tags=0&tags=1&page=1")
     data = r.json()
-    print(data)
     assert r.status_code == 200
-    assert len(data) == 3
-    assert data[0].items() >= video[0].items()
-    assert "id" in data[0]
-"""
-def test_get_Video(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/?category[]=0&category[]=1&page=1&video=0")
-    data = r.json()
-    print(data)
-    assert r.status_code == 200
-    assert len(data) == 1
-    assert data[0].items() >= video[0].items()
-    assert "id" in data[0]
+    assert len(data["items"]) == 3
+    assert data["items"][0].keys() >= videos[0].keys()
+    assert "id" in data["items"][0]
 
+def test_get_Video(db: SessionTesting, client: TestClient) -> None:
+    id = (db.query(Video).first().id)
+    r = client.get(f"{settings.API_V1_STR}/videos/{id}")
+    data = r.json()
+    print(data)
+    assert r.status_code == 200
+    assert len(data) == 8
+    assert data.keys() >= videos[0].keys()
+    assert "id" in data
 def test_get_VideoBadRequest(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/")
+    r = client.get(f"{settings.API_V1_STR}/videos/?tags=-1")
     data = r.json()
     print(data)
     assert r.status_code == 400
 
 def test_get_VideoWithPartialInfo(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/?category[]=0&category[]=1")
+    r = client.get(f"{settings.API_V1_STR}/videos/?tags=0&tags=1")
     data = r.json()
     print(data)
     assert r.status_code == 200
-    assert len(data) == 3
-    assert data[0].items() >= video[0].items()
-    assert "id" in data[0]
+    assert len(data["items"]) == 3
+    assert data["items"][0].keys() >= videos[0].keys()
+    assert "id" in data["items"][0]
     
     r = client.get(f"{settings.API_V1_STR}/videos/?page=1")
     data = r.json()
     print(data)
     assert r.status_code == 200
-    assert len(data) == 3
-    assert data[0].items() >= video[0].items()
-    assert "id" in data[0]
+    assert len(data["items"]) == 3
+    assert data["items"][0].keys() >= videos[0].keys()
+    assert "id" in data["items"][0]
 
-
-"""
