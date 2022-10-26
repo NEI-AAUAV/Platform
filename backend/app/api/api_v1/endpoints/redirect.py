@@ -8,9 +8,13 @@ from app.schemas import RedirectUpdate, RedirectCreate, RedirectInDB
 
 router = APIRouter()
 
-@router.get("/", status_code=200, response_model=List[RedirectInDB])
+@router.get("/", status_code=200, response_model=RedirectInDB)
 def get_redirect(
     *, alias: str,
     db: Session = Depends(deps.get_db)
 ) -> Any:
-    return crud.redirect.get_redirect(db=db, alias=alias)
+    resp = crud.redirect.get_redirect(db=db, alias=alias)
+    if resp == None:
+        raise HTTPException(status_code=404, detail="Not found.")
+    else:
+        return resp

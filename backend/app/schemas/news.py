@@ -5,10 +5,11 @@ from datetime import datetime
 
 from enum import Enum
 from typing_extensions import Annotated
-#from .users import UserInDB
+from .users import UsersInDB
+
 class StatusEnum(int, Enum):
-     ACTIVE : 1
-     INACTIVE : 0
+     ACTIVE = 1
+     INACTIVE = 0
 
 
 class CategoryEnum(str, Enum):
@@ -22,7 +23,7 @@ class NewsBase(BaseModel):
      title: Annotated[str, Field(max_length=255)]
      category: Annotated[str, Field(max_length=255)]
      content: Annotated[str, Field(max_length=20000)]
-     publish_by: int
+     published_by: int
      created_at: datetime
      last_change_at: Optional[datetime]
      changed_by: Optional[int]
@@ -30,9 +31,9 @@ class NewsBase(BaseModel):
 
 class NewsInDB(NewsBase):
      id: int
-     #publisher: UserInDB
-     #author: UserInDB
-     #editor: Optional[UserInDB]
+     publisher: UsersInDB
+     author: UsersInDB
+     editor: Optional[UsersInDB]
 
      class Config:
           orm_mode = True

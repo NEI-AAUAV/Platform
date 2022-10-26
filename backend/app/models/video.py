@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from .video_tag import VideoTag
 from app.api import deps
-from fastapi import Depends
+
 from sqlalchemy.orm import Session, validates
 
 from app.core.config import settings

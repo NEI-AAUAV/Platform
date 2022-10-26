@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Any, List, Union
 
+from app.schemas.pagination import Page, PageParams
+
 from app import crud
 from app.api import deps
 from app.schemas import VideoInDB, VideoUpdate, VideoCreate, VideoTagInDB
@@ -9,19 +11,33 @@ from app.schemas import VideoInDB, VideoUpdate, VideoCreate, VideoTagInDB
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=Union[List[VideoInDB], VideoInDB])
+
+@router.get("/", status_code=200, response_model=Page[VideoInDB])
 def get_video(
-    *, category = None, # list[str] testar
-    video: int = None,
-    page: int = None,
+    *, page_params: PageParams = Depends(PageParams),
+    tags: list[int] = Query(
+        default=[], alias='tags',
+        description="List of Tags"
+    ),
     db: Session = Depends(deps.get_db)
 ) -> Any:
-    if video != None:
-        return crud.video.get_video_by_id(db=db, id=video)
-    elif category != None and page != None:
-        return crud.video.get_videos_by_categories(db=db, categories=category, pagenumber=page)
-    else:
-        raise HTTPException(status_code=400, detail="Bad Request")
+    
+    all_cat = set(crud.videotag.get_multi(db=db))
+    
+    if not all_cat.issuperset(tags):
+        raise HTTPException(status_code=400, detail="Invalid tag")
+
+        
+        
+    items = crud.video.get_videos_by_categories(db=db, categories=tags, 
+                                                page=page_params.page, size=page_params.size)
+    return Page.create(items,page_params)
+
+@router.get("/{videoid}", status_code=200, response_model=VideoInDB)
+def get_video(
+    *, videoid: int, db: Session = Depends(deps.get_db)
+    ) -> Any:
+        return crud.video.get_video_by_id(db=db, id=videoid)
 
 @router.get("/categories/", status_code=200, response_model=List[VideoTagInDB])
 def get_categories(
