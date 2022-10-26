@@ -9,9 +9,9 @@ from app.api.api_v1.endpoints import team
 from app.api.api_v1.endpoints import team_colaborators
 from app.api.api_v1.endpoints import seniors
 from app.api.api_v1.endpoints import seniors_students
-from app.api.api_v1.endpoints import tacaua_game, redirect, news, notes, users, treeei
+from app.api.api_v1.endpoints import tacaua_game
+from app.api.api_v1.endpoints import video, redirect, news, notes, users, treeei
 from app.api.api_v1.endpoints import history, rgm, merchandisings, partners
-from app.api.api_v1.endpoints import redirect, news, users, treeei
 
 
 api_router = APIRouter()

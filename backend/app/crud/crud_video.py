@@ -24,7 +24,7 @@ class CRUDVideo(CRUDBase[Video, VideoCreate, VideoUpdate]):
             allvids = db.query(Video).all()
             filtVids = [vid for vid in allvids if {tag.id for tag in vid.tags}.intersection(tags)]
             return filtVids
-
+            
         else:
             return db.query(Video).\
                 limit(size).offset((page - 1) * size).all()

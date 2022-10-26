@@ -24,9 +24,6 @@ class PartnersUpdate():
 
 class PartnersInDB(PartnersBase):
     id: int
-    bannerUrl: str
-    bannerImage: str
-    bannerUntil: datetime
 
     class Config:
         orm_mode = True
