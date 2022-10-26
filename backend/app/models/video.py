@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from .video_tag import VideoTag
 from app.api import deps
-from fastapi import Depends
+
 from sqlalchemy.orm import Session, validates
 
 from app.core.config import settings
@@ -23,20 +23,16 @@ class Video(Base):
 
     #tag = relationship("VideoTag", foreign_keys=[tag_id])
 
-    @validates('tag_id')
-    def validate_name(self, key, value, db: Session = Depends(deps.get_db)):
-        print("HERE     HERE     HERE     HERE     HERE     HERE     HERE     HERE     HERE     HERE     HERE     ")
-        print(self)
-        print(key)
-        print(value)
-        if not value:
-            return
+    #@validates('tag_id')
+    #def validate_tag_id(self, key, value, db: Session = Depends(deps.get_db)):
+    #    if not value:
+    #        return
 
-        all_ids = [r.id for r in db.query(VideoTag.id).all()]
-        non_existent_ids = [id for id in value if id not in all_ids]
+    #   all_ids = [r.id for r in db.query(VideoTag.id).all()]
+    #    non_existent_ids = [id for id in value if id not in all_ids]
         
-        assert not non_existent_ids, "Non existent video tag"
-        return value
+    #    assert not non_existent_ids, "Non existent video tag"
+    #    return value
 
 
 

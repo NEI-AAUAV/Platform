@@ -22,5 +22,3 @@ def init_db() -> None:
     Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)
 
-
-    

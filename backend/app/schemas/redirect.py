@@ -10,6 +10,9 @@ class RedirectBase(BaseModel):
 class RedirectInDB(RedirectBase):
     id: int
 
+    class Config:
+        orm_mode = True
+
 class RedirectCreate(RedirectBase):
     """Properties to receive via API on creation."""
     pass
