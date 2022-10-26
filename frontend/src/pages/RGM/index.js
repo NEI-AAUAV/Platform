@@ -109,16 +109,21 @@ const RGM = () => {
                 <Row>
                     {
                         // On ATAS category, show only those which mandato match tab
-                        docs.filter(doc => id.toUpperCase() != "ATAS" || doc.mandato == tab).map(
+                        docs.sort((a, b) => a.file.includes('2022-23') ? -1 : b.mandato - a.mandato)
+                        .filter(doc => id.toUpperCase() != "ATAS" || doc.mandato == tab).map(
                             (doc, index, arr) =>
                                 <div key={index}>
                                     <Document
                                         name={
-                                            id.toUpperCase() != "ATAS"
+                                            id.toUpperCase() === "ATAS"
                                                 ?
-                                                id.toUpperCase() + ' ' + doc.mandato
-                                                :
                                                 "ATA" + ' ' + (arr.length - index) + ' '
+                                                :
+                                                id.toUpperCase() === "PAO"
+                                                ?
+                                                id.toUpperCase() + ' ' + doc.file?.slice(21, -4).replace('I', '')
+                                                :
+                                                id.toUpperCase() + ' ' + doc.mandato
                                         }
                                         description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandato}
                                         link={process.env.REACT_APP_STATIC + doc.file}

@@ -43,6 +43,8 @@ def get_note_by_id(
 ) -> Any:
     """
     """
+    if not db.get(Notes, note_id):
+        raise HTTPException(status_code=404, detail="Invalid Note id")
     return crud.notes.get(db=db, id=note_id)
 
 @router.post("/", status_code=201, response_model=NotesInDB)
@@ -61,7 +63,10 @@ def update_note(
     """
     Update a note in the database.
     """
+    if not db.get(Notes, note_id):
+        raise HTTPException(status_code=404, detail="Invalid Note id")
     return crud.notes.update(db=db, obj_in=note_in, db_obj=db.get(Notes, note_id))
+
 
 @router.get("/subjects/", status_code=200, response_model=List[NotesSubjectInDB])
 def get_notes_subject(
@@ -87,6 +92,8 @@ def update_note_subject(
     """
     Update a note in the database.
     """
+    if not db.get(NotesSubject, paco_code):
+        raise HTTPException(status_code=404, detail="Invalid Note Subject id")
     return crud.notes.update(db=db, obj_in=note_in, db_obj=db.get(NotesSubject, paco_code))
 
 @router.get("/thanks/", status_code=200, response_model=List[NotesThanksInDB])
@@ -113,6 +120,8 @@ def update_note_thank(
     """
     Update a note thank in the database.
     """
+    if not db.get(NotesThanks, note_thank_id):
+        raise HTTPException(status_code=404, detail="Invalid Note Thanks id")
     return crud.notes_thanks.update(db=db, obj_in=note_in, db_obj=db.get(NotesThanks, note_thank_id))
 
 @router.get("/teachers/", status_code=200, response_model=List[NotesTeachersInDB])
@@ -139,6 +148,8 @@ def update_note_teacher(
     """
     Update a note teacher in the database.
     """
+    if not db.get(NotesTeachers, note_teacher_id):
+        raise HTTPException(status_code=404, detail="Invalid Note Teachers id")
     return crud.notes_teachers.update(db=db, obj_in=note_in, db_obj=db.get(NotesTeachers, note_teacher_id))
 
 @router.get("/types/", status_code=200, response_model=List[NotesTypesInDB])
@@ -165,6 +176,8 @@ def update_note_type(
     """
     Update a note type in the database.
     """
+    if not db.get(NotesTypes, note_type_id):
+        raise HTTPException(status_code=404, detail="Invalid Note Type id")
     return crud.notes_types.update(db=db, obj_in=note_in, db_obj=db.get(NotesTypes, note_type_id))
 
 @router.get("/years/", status_code=200, response_model=List[NotesSchoolyearInDB])
@@ -191,4 +204,7 @@ def update_note_year(
     """
     Update a note school year in the database.
     """
+    if not db.get(NotesSchoolYear, note_year_id):
+        raise HTTPException(status_code=404, detail="Invalid Note Year id")
+
     return crud.notes_schoolyear.update(db=db, obj_in=note_in, db_obj=db.get(NotesSchoolYear, note_year_id))
