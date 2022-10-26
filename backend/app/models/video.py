@@ -23,7 +23,6 @@ class Video(Base):
     __tablename__ = "video"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    tag_id = Column(ARRAY(Integer))
     ytld =  Column(String(255))
     title = Column(String(255))
     subtitle = Column(String(255))
