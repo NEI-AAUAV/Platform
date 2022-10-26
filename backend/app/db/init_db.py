@@ -3,16 +3,9 @@ from sqlalchemy import event
 from datetime import date, datetime
 
 from app.core.config import settings
-from app.models.notes import Notes
-from app.models.notes_schoolyear import NotesSchoolYear
-from app.models.notes_subject import NotesSubject
-from app.models.notes_teachers import NotesTeachers
-from app.models.notes_thanks import NotesThanks
-from app.models.notes_types import NotesTypes
-from app.models.users import Users
-from .base import Base, TacaUATeam, TacaUAGame, History, Rgm, Merchandisings, Partners, Faina, FainaRoles, FainaMember, Seniors, SeniorsStudents, Team, TeamColaborators, TeamRoles, Video, VideoTag
+from .base import Base
 from .session import engine
-
+"""
 USERS = [
     {
         "name": 'Pedro Monteiro',
@@ -351,118 +344,8 @@ VIDEO = [
         "subtitle": "",
         "image": "",
         "created": datetime(2002, 6, 10)
-    }]
+    }] """
 
-
-@event.listens_for(Faina.__table__, "after_create")
-def insert_faina(target, conn, **kwargs):
-    for vals in FAINA:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(FainaRoles.__table__, "after_create")
-def insert_faina_roles(target, conn, **kwargs):
-    for vals in FAINA_ROLES:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(FainaMember.__table__, "after_create")
-def insert_faina_member(target, conn, **kwargs):
-    for vals in FAINA_MEMBER:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(Seniors.__table__, "after_create")
-def insert_seniors(target, conn, **kwargs):
-    for vals in SENIORS:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(SeniorsStudents.__table__, "after_create")
-def insert_seniors_students(target, conn, **kwargs):
-    for vals in SENIORS_STUDENTS:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(TeamRoles.__table__, "after_create")
-def insert_team_roles(target, conn, **kwargs):
-    for vals in TEAM_ROLES:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(Team.__table__, "after_create")
-def insert_team(target, conn, **kwargs):
-    for vals in TEAM:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(TeamColaborators.__table__, "after_create")
-def insert_team_colaborators(target, conn, **kwargs):
-    for vals in TEAM_COLABORATORS:
-        conn.execute(target.insert().values(**vals))
-
-
-@event.listens_for(Users.__table__, "after_create")
-def insert_users(target, conn, **kwargs):
-    for vals in USERS:
-        conn.execute(target.insert().values(**vals))
-
-
-@event.listens_for(NotesSchoolYear.__table__, "after_create")
-def insert_notes_school_year(target, conn, **kwargs):
-    for vals in NOTES_SCHOOL_YEAR:
-        conn.execute(target.insert().values(**vals))
-
-
-@event.listens_for(NotesSubject.__table__, "after_create")
-def insert_notes_subject(target, conn, **kwargs):
-    for vals in NOTES_SUBJECT:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(NotesTeachers.__table__, "after_create")
-def insert_notes_teachers(target, conn, **kwargs):
-    for vals in NOTES_TEACHERS:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(NotesThanks.__table__, "after_create")
-def insert_notes_thanks(target, conn, **kwargs):
-    for vals in NOTES_THANKS:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(NotesTypes.__table__, "after_create")
-def insert_notes_types(target, conn, **kwargs):
-    for vals in NOTES_TYPES:
-        conn.execute(target.insert().values(**vals))
-        
-@event.listens_for(Notes.__table__, "after_create")
-def insert_notes(target, conn, **kwargs):
-    for vals in NOTES:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(History.__table__, "after_create")
-def insert_history(target, conn, **kwargs):
-    for vals in HISTORY:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(Rgm.__table__, "after_create")
-def insert_rgm(target, conn, **kwargs):
-    for vals in RGM:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(Merchandisings.__table__, "after_create")
-def insert_merchandisings(target, conn, **kwargs):
-    for vals in MERCHANDISINGS:
-        conn.execute(target.insert().values(**vals))
-
-@event.listens_for(Partners.__table__, "after_create")
-def insert_partners(target, conn, **kwargs):
-    for vals in PARTNERS:
-        conn.execute(target.insert().values(**vals))
-
-
-@event.listens_for(VideoTag.__table__, "after_create")
-def insert_tacaua_games(target, conn, **kwargs):
-    for vals in VIDEO_TAG:
-        conn.execute(target.insert().values(**vals))
-
-
-@event.listens_for(Video.__table__, "after_create")
-def insert_tacaua_games(target, conn, **kwargs):
-    for vals in VIDEO:
-        conn.execute(target.insert().values(**vals))
         
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly

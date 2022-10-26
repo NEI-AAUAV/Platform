@@ -16,3 +16,4 @@ from .team import Team
 from .team_colaborators import TeamColaborators
 from .team_roles import TeamRoles
 from .users import Users
+from .rgm import Rgm
