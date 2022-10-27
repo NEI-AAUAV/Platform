@@ -65,11 +65,11 @@ const SportTable = (props) => {
 
   return (
     <>
-      <Table className={"text-center mb-5"}>
+      <Table className={"text-center mb-5"} style={{overflowX:"auto"}}>
         <thead>
           {header.map((row) => {
             return (
-              <tr>
+              <tr className={"tableheader"}>
                 {row.map((col) => (
                   <td>{col}</td>
                 ))}

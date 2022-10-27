@@ -1,5 +1,6 @@
-tr:nth-child(1) { 
+.tableheader {
   background-color: #66666666;
+  font-weight: bold;
 }
 
 tr td:nth-child(1) {
@@ -28,6 +29,9 @@ tr:hover {
   display: inline-block;
   margin-right: 20px;
   text-align: right;
+  position: center;
+
+
 }
 
 .positioncss {
@@ -43,6 +47,7 @@ tr:hover {
   margin-right: 20px;
   text-align: left;
 }
+
 
 
 
