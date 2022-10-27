@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     SCHEMA_NAME: str = "aauav_nei"
     POSTGRES_SERVER: str = os.getenv('POSTGRES_SERVER', 'localhost')
     POSTGRES_USER: str = os.getenv('POSTGRES_USER', "postgres")
-    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "1234")
+    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "postgres")
     POSTGRES_DB: str = os.getenv('POSTGRES_DB', "postgres")
     SQLALCHEMY_DATABASE_URI: Optional[
         PostgresDsn
