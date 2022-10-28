@@ -1,10 +1,5 @@
 .game {
-    margin-top: 2rem;
-}
-
-.game-date {
-    margin-bottom: 0.5rem;
-    margin-top: 1rem;
+    background-color: rgb(249, 236, 236);
 }
 
 .logo {
@@ -19,8 +14,7 @@
     align-items: center;
 }
 
-.col-image-wrapper {
-    background-color: yellow;
-    min-height: 100%;
-    width: 100%;
+.game-data h4 {
+    padding-top: 1rem;
+    text-align: center;
 }

@@ -1,25 +1,15 @@
-.lista {
-    box-sizing: border-box;
+.bars{
+    width: 100%;
     display: flex;
-    justify-content: center;
 }
 
-.gender-list {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 22%;
-    margin-left: 39%;
-    margin-right: 39%;
-}
-
-.image-wrapper {
-    height: 500px;
+.games-and-top-bar {
+    width: 79.5%;
 }
 
 .games-section {
-    margin-top: 3rem;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .column {
@@ -30,76 +20,26 @@
     margin-bottom: 2rem;
 }
 
-ul.slideUpFade {
-    list-style-type: none;
+.games {
+    margin: 0;
+    padding: 0;
+    padding-left: 4rem;
+}
+
+.row-game {
+    margin-top: 2rem;
+}
+
+.games-header, .games-day {
+    font-weight: 600;
+}
+
+.games-filters {
+    margin-top: 2rem;
     display: flex;
-    width: 40vw;
-    justify-content: space-between;
+    gap: 2rem;
 }
 
-.carousel-image-wrapper {
-    height: 500px;
-}
-
-ul.slideUpFade li{
-    position: relative;
-    text-align: center;
-}
-
-ul.slideUpFade li:hover {
-    cursor: pointer;
-}
-
-li.act::after {
-    position: absolute;
-    content: "";
-    height: 3px;
-    width: 65%;
-    background-color: green;
-    left:12px;
-    bottom: -5px;
-    border-radius: 2px;
-    animation: appear 0.3s linear;
-}
-
-@media screen and (max-width: 960px) { 
-    .lista ul.slideUpFade {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    ul.slideUpFade {
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        gap: 1rem;
-    }
-
-    .gender-list .slideUpFade {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        margin: 0 !important;
-        padding: 1rem 0 0 0 !important;
-    }
-
-    .carousel-image-wrapper {
-        height: 400px;
-    }
-}
-
-@keyframes appear {
-    from {
-        width: 0;
-    }
-    to {
-        width: 65%;
-    }
+.games-list {
+    margin-bottom: 1rem;
 }

@@ -1,0 +1,21 @@
+.game-filter {
+    background-color: rgb(249, 236, 236);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.game-filter:hover {
+    cursor: pointer;    
+    background-color: rgb(211, 196, 196);
+    transition: 0.2s;
+}
+
+.game-filter p {
+    font-weight: 500;
+    height: 100%;
+    margin: 0;
+}

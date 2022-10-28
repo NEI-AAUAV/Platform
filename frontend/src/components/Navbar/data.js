@@ -63,12 +63,7 @@ const data = [
     },
     !config.PRODUCTION && {
         'name': 'Desporto',
-        'dropdown': [
-            {
-                'name': 'Taça UA',
-                'link': '/desporto'
-            },
-        ]
+        'link': '/desporto'
     },
     {
         'name': 'Faina',
