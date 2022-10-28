@@ -8,9 +8,9 @@
 
 ## Installation
 
-- [Local Installation](docs/DEVELOPER.md#local-installation)
-- [Docker Installation](docs/DEVELOPER.md#docker-installation)
-- [Docker Deployement](docs/DEVELOPER.md#docker-deployement)
+- [Local Installation](docs/DEVELOPER.md#2-local-installation)
+- [Docker Installation](docs/DEVELOPER.md#3-docker-installation)
+- [Docker Deployement](docs/DEVELOPER.md#4-docker-deployment)
 
 ## Contributors
 

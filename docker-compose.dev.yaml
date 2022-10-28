@@ -1,29 +1,32 @@
 version: "3.9"
-
 services:
   pg_db:
     image: postgres:15-alpine
-    ports:
-      - 5432:5432
     volumes: 
       - pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    network_mode: host
   nei_api:
     build:
       context: backend
       dockerfile: Dockerfile
     volumes: 
-      - node_modules:/web_app/node_modules
-    ports:
-      - 8000:8000
+      - ${PWD}/backend:/nei_api
     depends_on:
       - pg_db
-    stdin_open: true
-  # tacaua_api:
-  #   build:
-  #     context: tacaua-service
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - pg_db
+    network_mode: host
+  tacaua_api:
+    build:
+      context: tacaua-api
+      dockerfile: Dockerfile
+    volumes: 
+      - ${PWD}/tacaua-api:/nei_api
+    depends_on:
+      - pg_db
+    network_mode: host
   web_app:
     build:
       context: frontend
@@ -31,15 +34,17 @@ services:
     volumes: 
       - node_modules:/web_app/node_modules
       - ${PWD}/frontend:/web_app
-    ports:
-      - 3000:3000
     depends_on:
       - nei_api
-      # - tacaua_api
-    stdin_open: true
+      - tacaua_api
+    network_mode: host
 
 volumes:
   pg_data:
     driver: local
   node_modules:
     driver: local
+
+networks:
+  backend_net:
+    driver: bridge

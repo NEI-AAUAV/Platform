@@ -1,8 +1,8 @@
-# NEI-API Service
+# TaçaUA-API Service
 
-Follow one of the installation tutorials to run this service. If everything was successful, the server should be up on http://localhost:8000/.
+Follow one of the installation tutorials to run this service. If everything was successful, the server should be up on http://localhost:8001/.
 
-Check http://localhost:8000/docs to watch the API documentation with Swagger UI.
+Check http://localhost:8001/docs to watch the API documentation with Swagger UI.
 
 ## DB Documentation
  to be written
@@ -43,12 +43,13 @@ docker run -d -p 0.0.0.0:5432:5432 -e POSTGRES_DB="postgres_test" -e POSTGRES_PA
 
 On the service's root directory, build the image that will be used to create the service container. The flag `--no-cache` can be useful in some situations that require to not use cache when building the image.
 ```
-docker build . -f Dockerfile.dev -t nei_api [--no-cache]
+docker build . -f Dockerfile.dev -t tacaua_api [--no-cache]
 ```
 
 Create the NEI-API service.
 ```
-docker run -it -v ${PWD}:/nei_api --network host --name nei_api nei_api
+docker run -it -v ${PWD}:/tacaua_api --network host --name tacaua_api tacaua_api
 ```
 
-With this latter step, everything is completed. To restart the service afterwards, simply run `docker start pg_db` and `docker start -i nei_api` (the -i flag runs the container in interactive mode).
+With this latter step, everything is completed. To restart the service afterwards, simply run `docker start pg_db` and `docker start -i tacaua_api` (the -i flag runs the container in interactive mode).
+

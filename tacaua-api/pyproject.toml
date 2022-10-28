@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "tacaua-service"
+name = "tacaua-api"
 version = "0.1.0"
 description = "Taça UA Service"
 authors = []

@@ -26,11 +26,11 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    # PostgreSQL Db
+    # PostgreSQL DB
     SCHEMA_NAME: str = "tacaua"
     POSTGRES_SERVER: str = os.getenv('POSTGRES_SERVER', 'localhost')
     POSTGRES_USER: str = os.getenv('POSTGRES_USER', "postgres")
-    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "1234")
+    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "postgres")
     POSTGRES_DB: str = os.getenv('POSTGRES_DB', "postgres")
     SQLALCHEMY_DATABASE_URI: Optional[
         PostgresDsn

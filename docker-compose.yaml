@@ -8,6 +8,7 @@ services:
     volumes: 
       - pg_data:/var/lib/postgresql/data
     environment:
+      - POSTGRES_DB=postgres_test
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     networks:
@@ -26,13 +27,19 @@ services:
     networks:
       - backend_net
     restart: always
-  # tacaua_api:
-  #   build:
-  #     context: tacaua-service
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - pg_db
-  #   restart: always
+  tacaua_api:
+    build:
+      context: tacaua-api
+      dockerfile: Dockerfile
+    ports:
+      - 8001:8001
+    environment:
+      - POSTGRES_SERVER=pg_db
+    depends_on:
+      - pg_db
+    networks:
+      - backend_net
+    restart: always
   # web_app:
   #   build:
   #     context: frontend
@@ -54,4 +61,3 @@ networks:
 volumes:
   pg_data:
     driver: local
-

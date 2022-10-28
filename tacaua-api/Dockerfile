@@ -1,0 +1,32 @@
+FROM python:3.9-slim as requirements-stage
+
+WORKDIR /tmp
+
+RUN pip install --upgrade pip \
+    pip install --upgrade poetry
+
+COPY ./pyproject.toml ./poetry.lock* /tmp/
+
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /tacaua_api
+
+COPY --from=requirements-stage /tmp/requirements.txt requirements.txt
+
+RUN apt-get update \
+    && apt-get -y install libpq-dev gcc
+
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir --upgrade -r requirements.txt
+
+COPY ./app ./app
+
+RUN mkdir static
+
+EXPOSE 8000
+CMD gunicorn app.main:app --bind 0.0.0.0:8001 -k uvicorn.workers.UvicornWorker
