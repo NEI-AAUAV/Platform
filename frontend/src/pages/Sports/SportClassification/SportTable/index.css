@@ -1,10 +1,27 @@
 .tableheader {
   background-color: #66666666;
   font-weight: bold;
+  width: 15em;
+  text-align: center;
 }
 
 tr td:nth-child(1) {
   background-color: #66666666; /* this changes first column color. If you change (1) to odd or even, you have a striped column*/
+}
+
+td,th {
+  margin: 0;
+  white-space: nowrap;
+  color: white;
+  border-width: 0px;
+  text-align: center;
+}
+
+.divcss {
+  width: 90%;
+  overflow-x: scroll;
+  margin-left: 15em;
+  margin-right: 50rem;
 }
 
 span {
@@ -16,22 +33,20 @@ tr:hover {
   background-color: green;
 }
 
-.up{
+.up {
   color: rgb(132, 234, 132);
 }
 
-.down{
+.down {
   color: red;
 }
 
 .iconcss {
-  width: 2ch;
+  width: 1rem;
   display: inline-block;
   margin-right: 20px;
+  align-items: left;
   text-align: right;
-  position: center;
-
-
 }
 
 .positioncss {
@@ -42,11 +57,29 @@ tr:hover {
 }
 
 .teamnamecss {
-  width: 10ch;
-  display: inline-block;
+  width: 10rem;
+  display: inline;
+  position: center;
   margin-right: 20px;
-  text-align: left;
 }
+
+.tablecss {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.headcol {
+  position: absolute;
+  width: 15em;
+  left: 0;
+  top: auto;
+  border-top-width: 1px;  
+}
+
+.headcol:hover {
+  background-color: green;
+}
+
 
 
 

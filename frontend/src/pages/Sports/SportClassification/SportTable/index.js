@@ -22,11 +22,24 @@ const SportTable = (props) => {
     <FontAwesomeIcon icon={faAngleDoubleDown} className="down" />
   );
 
-  const header = [["Equipa", "Jogos", "Pontos", "Vitórias", "Empates", "Derrotas", "Golos Marcados", "Golos Sofridos", "Divisão","Últimos 5 jogos"]];  // falta um elemento que é os últimos 5 jogos
+  const header = [
+    {
+      head_team: "Equipa",
+      head_games: "Jogos",
+      head_points: "Pontos", 
+      head_vict: "Vitórias",
+      head_draws: "Empates", 
+      head_defeats: "Derrotas", 
+      head_scoredg: "Golos Marcados", 
+      head_soufferedg: "Golos Sofridos", 
+      head_divison: "Divisão",
+      head_lastgames: "Últimos 5 jogos"
+    }
+  ];
 
   const data = [
     {
-      position_team: {icon: UpArrow,pos: 1,team: "Engenharia Informática"},
+      position_team: {icon: UpArrow,pos: 1,team: "EI"},
       games: "test",
       points: "test1",
       victories: "test2",
@@ -65,39 +78,47 @@ const SportTable = (props) => {
 
   return (
     <>
-      <Table className={"text-center mb-5"} style={{overflowX:"auto"}}>
-        <thead>
-          {header.map((row) => {
-            return (
+      <div className="divcss">
+        <Table className={"mb-5 tablecss"}>
+          <thead>
+            {header.map((row) => 
               <tr className={"tableheader"}>
-                {row.map((col) => (
-                  <td>{col}</td>
-                ))}
+                <td className="headcol">{row.head_team}</td>
+                <td>{row.head_games}</td>
+                <td>{row.head_points}</td>
+                <td>{row.head_vict}</td>
+                <td>{row.head_draws}</td>
+                <td>{row.head_defeats}</td>
+                <td>{row.head_scoredg}</td>
+                <td>{row.head_soufferedg}</td>
+                <td>{row.head_divison}</td>
+                <td>{row.head_lastgames}</td>
               </tr>
-            );
-          })}
-        </thead>
-        <tbody>
-          {data.map((row) =>
-            <tr>
-              <td>
-                <span className="iconcss">{row.position_team.icon}</span>
-                <span className="positioncss">{row.position_team.pos}</span>
-                <span className="teamnamecss">{row.position_team.team}</span>
-              </td>
-              <td>{row.games}</td>
-              <td>{row.points}</td>
-              <td>{row.victories}</td>
-              <td>{row.draws}</td>
-              <td>{row.defeats}</td>
-              <td>{row.scored_goals}</td>
-              <td>{row.souffered_goals}</td>
-              <td>{row.divison_group}</td>
-              <td>{row.last_games}</td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+            )}
+          </thead>
+          <tbody>
+            {data.map((row) =>
+              <tr>
+                <td className="headcol">
+                  <span className="iconcss">{row.position_team.icon}</span>
+                  <span className="positioncss">{row.position_team.pos}</span>
+                  <span className="teamnamecss">{row.position_team.team}</span>
+                </td>
+                <td>{row.games}</td>
+                <td>{row.points}</td>
+                <td>{row.victories}</td>
+                <td>{row.draws}</td>
+                <td>{row.defeats}</td>
+                <td>{row.scored_goals}</td>
+                <td>{row.souffered_goals}</td>
+                <td>{row.divison_group}</td>
+                <td>{row.last_games}</td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </div>
+    
       {/* <div className="legend">
         <h4>Legenda:</h4>
         <ul>
