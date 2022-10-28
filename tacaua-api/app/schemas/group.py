@@ -24,7 +24,7 @@ class Group(GroupBase):
     competition_id: int
     number: int
     matches: List[Match]
-    teams: List[TeamLazy] | list
+    teams: List[TeamLazy]
    
     class Config:
         orm_mode = True
