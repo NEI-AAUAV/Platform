@@ -14,7 +14,16 @@
     align-items: center;
 }
 
+.game-result h4 {
+    text-transform: uppercase;
+}
+
 .game-data h4 {
-    padding-top: 1rem;
     text-align: center;
+}
+
+.game-number p{
+    font-weight: bold;
+    margin: 0;
+    padding: 0.5rem 0 0 0;
 }

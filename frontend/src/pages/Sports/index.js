@@ -30,53 +30,27 @@ const Sports = () => {
               <GameFilter text="Playoffs" />
             </div>
             <h3 className="games-header">Grupo A</h3>
-            <p className="games-day">Jornada 1</p>
             <div className="games-list">
               <Row className="row-game">
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game gameDay="Jornada 1" data="31/02" result="3 - 0" />
                 </Col>
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game gameDay="Jornada 2" data="31/02" result="3 - 0"/>
                 </Col>
                 <Col lg={4}>
-                  <Game data="31/02" />
-                </Col>
-              </Row>
-              <Row className="row-game">
-                <Col lg={4}>
-                  <Game data="31/02" />
-                </Col>
-                <Col lg={4}>
-                  <Game data="31/02" />
-                </Col>
-                <Col lg={4}>
-                  <Game data="31/02" />
-                </Col>
-              </Row>
-            </div>
-            <p className="games-day">Jornada 2</p>
-            <div className="games-list">
-              <Row className="row-game">
-                <Col lg={4}>
-                  <Game data="31/02" />
-                </Col>
-                <Col lg={4}>
-                  <Game data="31/02" />
-                </Col>
-                <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game gameDay="Jornada 3" data="31/02" result="VS"/>
                 </Col>
               </Row>
               <Row className="row-game">
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game gameDay="Jornada 4" data="31/02" result="VS" />
                 </Col>
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game gameDay="Jornada 5" data="31/02" result="VS" />
                 </Col>
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game gameDay="Jornada 6" data="31/02" result="VS" />
                 </Col>
               </Row>
             </div>
@@ -87,24 +61,24 @@ const Sports = () => {
             <div>
               <Row className="row-game">
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game data="31/02" result="VS" />
                 </Col>
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game data="31/02" result="VS" />
                 </Col>
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game data="31/02" result="VS" />
                 </Col>
               </Row>
               <Row className="row-game">
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game data="31/02" result="VS" />
                 </Col>
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game data="31/02" result="VS" />
                 </Col>
                 <Col lg={4}>
-                  <Game data="31/02" />
+                  <Game data="31/02" result="VS" />
                 </Col>
               </Row>
             </div>

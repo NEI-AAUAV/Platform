@@ -15,6 +15,9 @@ const Game = (props) => {
             <Row style={{paddingBottom: '1rem', margin: 0, 
                         animationDelay:
                                 animationBase + animationIncrement * 0 + "s"}} className="slideUpFade game">
+                <Col className="game-number" lg={12}>
+                    <p>{props.gameDay}</p>
+                </Col>
                 <Col className="game-data" lg={12}>
                     <h4>{props.data}</h4>
                 </Col>
@@ -27,7 +30,7 @@ const Game = (props) => {
                     ></Image>
                 </Col>
                 <Col style={{padding: 0, margin: 0}} className="game-result" lg={4}>
-                    <h4>3 - 0</h4>
+                    <h4>{props.result}</h4>
                 </Col>
                 <Col style={{padding: 0, margin: 0}} lg={4}>
                     <Image
