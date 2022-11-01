@@ -9,8 +9,7 @@ from app.api.api_v1.endpoints import team
 from app.api.api_v1.endpoints import team_colaborators
 from app.api.api_v1.endpoints import seniors
 from app.api.api_v1.endpoints import seniors_students
-from app.api.api_v1.endpoints import tacaua_game
-from app.api.api_v1.endpoints import video, redirect, news, notes, users, treeei
+from app.api.api_v1.endpoints import videos, redirect, news, notes, users, treeei
 from app.api.api_v1.endpoints import history, rgm, merchandisings, partners
 
 
@@ -23,7 +22,6 @@ api_router.include_router(team_roles.router, prefix="/team/roles", tags=["Team R
 api_router.include_router(faina_roles.router, prefix="/faina/roles", tags=["Faina Roles"])
 api_router.include_router(faina_member.router, prefix="/faina/member", tags=["Faina Member"])
 api_router.include_router(faina.router, prefix="/faina", tags=["Faina"])
-api_router.include_router(tacaua_game.router, prefix="/tacaua/games", tags=["Taça UA Games"])
 api_router.include_router(videos.router, prefix="/videos", tags=["Videos"])
 api_router.include_router(redirect.router, prefix="/redirects", tags=["Redirect"])
 api_router.include_router(news.router, prefix="/news", tags=["News"])
