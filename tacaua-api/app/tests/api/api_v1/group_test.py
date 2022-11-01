@@ -65,10 +65,10 @@ def setup_database(db: SessionTesting):
     db.commit()
     db.refresh(course)
 
-    db.add(Team(modality_id=modality.id, **team_data))
+    db.add(Team(modality_id=modality.id, course_id=course.id, **team_data))
     db.commit()
 
-    db.add(Team(modality_id=modality2.id, **team_data))
+    db.add(Team(modality_id=modality2.id, course_id=course.id, **team_data))
     db.commit()
 
 
