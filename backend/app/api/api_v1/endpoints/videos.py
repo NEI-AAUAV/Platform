@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Any, List, Union
+
 from app.schemas.pagination import Page, PageParams
 
 from app import crud
@@ -8,6 +9,7 @@ from app.api import deps
 from app.schemas import VideoInDB, VideoUpdate, VideoCreate, VideoTagInDB
 
 router = APIRouter()
+
 
 
 @router.get("/", status_code=200, response_model=Page[VideoInDB])
@@ -19,16 +21,16 @@ def get_video(
     ),
     db: Session = Depends(deps.get_db)
 ) -> Any:
-    
-    all_cat = set(crud.videotag.get_multi(db=db))
+
+    all_cat = set(e.id for e in crud.videotag.get_multi(db=db))
+
     
     if not all_cat.issuperset(tags):
         raise HTTPException(status_code=400, detail="Invalid tag")
 
         
         
-    items = crud.video.get_videos_by_categories(db=db, categories=tags, 
-                                                page=page_params.page, size=page_params.size)
+    items = crud.video.get_videos_by_categories(db=db, tags=tags, page=page_params.page, size=page_params.size)
     return Page.create(items,page_params)
 
 @router.get("/{videoid}", status_code=200, response_model=VideoInDB)

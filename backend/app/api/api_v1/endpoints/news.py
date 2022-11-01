@@ -33,7 +33,7 @@ def get_news_list(
 def get_news_categories(
     *, db: Session = Depends(deps.get_db),
 ) -> Any:
-    """"
+    """
     Return the categories
     """
     

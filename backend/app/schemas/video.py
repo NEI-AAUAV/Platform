@@ -7,7 +7,6 @@ from typing import Optional, List
 from typing_extensions import Annotated
 
 class VideoBase(BaseModel):
-    tag_id: List[int]
     ytld: Annotated[str, Field(max_length=255)]
     title: Annotated[str, Field(max_length=255)]
     subtitle: Annotated[Optional[str], Field(max_length=255)]
@@ -17,7 +16,7 @@ class VideoBase(BaseModel):
 
 class VideoInDB(VideoBase):
     id: int
-    tag: VideoTagInDB
+    tags: List[VideoTagInDB]
     class Config:
         orm_mode = True
 
