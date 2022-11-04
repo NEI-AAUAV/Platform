@@ -21,4 +21,4 @@ from .notes_subject import NotesSubject
 from .notes_teachers import NotesTeachers
 from .notes_thanks import NotesThanks
 from .notes_types import NotesTypes
-
+from .rgm import Rgm

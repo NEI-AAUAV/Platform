@@ -8,11 +8,11 @@ jobs:
       - run:
           name: Run Poetry Tests
           command: |
-            cd ./backend/app
+            cd ./backend
             pip install --upgrade pip
             pip3 install poetry
             pip3 install -U pip virtualenv
-            docker run -d -P -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="1234" -e POSTGRES_DB="postgres_test" --name pg postgres
+            docker run -d -p 0.0.0.0:5432:5432 -e POSTGRES_DB="postgres_test" -e POSTGRES_PASSWORD="postgres" --name pg_db postgres:15-alpine
             sudo apt install python3-dev libpq-dev 
             poetry install
             poetry run uvicorn app.main:app --reload &

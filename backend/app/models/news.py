@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from app.core.config import settings
 from app.db.base_class import Base
-from app.schemas.news import StatusEnum
+from app.schemas.news import StatusEnum, CategoryEnum
 
 
 class News(Base):
@@ -11,9 +11,9 @@ class News(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     header = Column(String(255))
-    status = Column(Enum(StatusEnum, name="type_enum", create_type=False))
+    status = Column(Enum(StatusEnum, name="status_enum", create_type=False))
     title = Column(String(255))
-    category = Column(String(255))
+    category = Column(Enum(CategoryEnum, name="category_enum", create_type=False))
     content = Column(String(20000))
     published_by = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id", name="fk_publisher_id"), index=True)
     created_at = Column(DateTime)

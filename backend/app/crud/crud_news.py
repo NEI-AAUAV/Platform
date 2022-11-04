@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 from app.crud.base import CRUDBase
 from app.models.news import News
 from app.schemas.news import NewsCategories, NewsCreate, NewsUpdate, NewsInDB
-from app.core.config import Settings
+
 from typing import List
+
+
 
 
 class CRUDNews(CRUDBase[News, NewsCreate, NewsUpdate]):
@@ -19,6 +21,7 @@ class CRUDNews(CRUDBase[News, NewsCreate, NewsUpdate]):
         """
         Return individual new info
         """
+        
         return db.query(News).filter(News.id == id).first()
 
     def get_news_by_categories(self, db: Session, categories: List[str], page: int, size: int) -> List[NewsInDB]:
