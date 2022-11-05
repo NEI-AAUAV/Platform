@@ -1,0 +1,14 @@
+
+
+.cardBody {
+    border-radius: 0% !important;
+    border: none !important;
+    box-shadow: 0 6px 10px -4px var(--card-shadow);
+    transition: transform .3s cubic-bezier(.34, 2, .6, 1), box-shadow .2s ease, -webkit-transform .3s cubic-bezier(.34, 2, .6, 1);
+}
+
+.teamCardsImg:hover {
+    transform: scale(1.1);
+    transition: transform .4s;
+    width: 100%;
+}
