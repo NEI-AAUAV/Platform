@@ -8,7 +8,7 @@ jobs:
       - run:
           name: Run Poetry Tests
           command: |
-            cd ./backend/app
+            cd ./backend
             pip install --upgrade pip
             pip3 install poetry
             pip3 install -U pip virtualenv
@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Run Taca Ua Tests
           command: |
-            cd ./tacaua-api/app
+            cd ./tacaua-api
             pip install --upgrade pip
             pip3 install poetry
             pip3 install -U pip virtualenv
