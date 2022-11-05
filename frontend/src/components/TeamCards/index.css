@@ -1,14 +1,53 @@
 
 
+.CardTeam {
+    float: left;
+    width: 60%; /* The width is 60%, by default */
+    
+  }
+  
+  /* Use a media query to add a breakpoint at 800px: */
+  @media screen and (max-width: 800px) {
+    .left, .main, .right {
+      width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+    }
+}
+
 .cardBody {
-    border-radius: 0% !important;
+    border-radius: 5% !important;
     border: none !important;
     box-shadow: 0 6px 10px -4px var(--card-shadow);
     transition: transform .3s cubic-bezier(.34, 2, .6, 1), box-shadow .2s ease, -webkit-transform .3s cubic-bezier(.34, 2, .6, 1);
+    width: 230px;
+    height: 250px;
+
+
 }
 
-.teamCardsImg:hover {
-    transform: scale(1.1);
-    transition: transform .4s;
-    width: 100%;
+.PlayerName{
+    padding: 2px 16px;
+}
+
+/* Zoom In #1 */
+.teamCardsImg {
+    border-start-end-radius: 5%;
+    border-start-start-radius: 5%;
+    background-size: 130%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    width: 230px;
+    height: 200px;
+
+    display: inline-block;
+
+	-webkit-transition: .4s ease-in-out;
+	transition: .4s ease-in-out;
+}
+.teamCardsImg:hover{
+    background-size: 145%;
+    background-position: center center;
+    background-repeat: no-repeat;
+	-webkit-transition: .4s ease-in-out;
+	transition: .4s ease-in-out;
+    
 }

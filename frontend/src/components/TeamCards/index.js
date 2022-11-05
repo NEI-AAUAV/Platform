@@ -1,29 +1,27 @@
 import React from 'react';
 
-import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import equipa from "../../pages/Sports/img/equipa.jpg";
+import player from "../../pages/Sports/img/unknown2.png";
 
 import "./index.css";
 
+//{Array.from({ length: 5 }).map((_, idx) => ()
 
 const Player = () => {
     return (
-        <Row xs={2} md={5} className="g-6">
-        {Array.from({ length: 5 }).map((_, idx) => (
-          <Col>
-            <Card className="cardBody">
-                <div  className="teamCardsImg"  >
-                    <Card.Img variant="top" src={equipa} />
-                </div>
-              <Card.Body>
-                <Card.Title>Marco António</Card.Title>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
+      <Row xs={2} md={5} className="g-6 Card_Team" >
+      
+        <Col>
+          <div className="cardBody"> 
+            <div  className="teamCardsImg"  style={{backgroundImage:`url(${player})`}}></div>
+              <div className='PlayerName'>
+                <h5>Marco António</h5>
+              </div>
+          </div>
+        </Col>
+
       </Row>
     );
 }
