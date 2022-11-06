@@ -40,22 +40,35 @@ services:
     networks:
       - backend_net
     restart: always
-  # web_app:
-  #   build:
-  #     context: frontend
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - nei_api
-  #     # - tacaua_api
-  #   restart: always
-  # nginx:
-  #   build:
-  #     context: nginx
-  #     dockerfile: Dockerfile
-  #   restart: always
+  web_app:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - nei_api
+      - tacaua_api
+    networks:
+      - frontend_net
+    restart: always
+  nginx:
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - nei_api
+      - tacaua_api
+      - web_app
+    networks:
+      - backend_net
+      - frontend_net
+    restart: always
 
 networks:
   backend_net:
+    driver: bridge
+  frontend_net:
     driver: bridge
 
 volumes:
