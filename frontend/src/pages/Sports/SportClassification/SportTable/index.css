@@ -9,6 +9,15 @@ tr td:nth-child(1) {
   background-color: #66666666; /* this changes first column color. If you change (1) to odd or even, you have a striped column*/
 }
 
+.divcss::-webkit-scrollbar {
+  height: 5px;
+}
+
+.divcss::-webkit-scrollbar-thumb {
+  background-color: #66666666 ;
+  border-radius: 20px;
+}
+
 td,th {
   margin: 0;
   white-space: nowrap;
