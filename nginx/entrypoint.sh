@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Get certs
-certbot certonly -n -d aauav-nei.ua.pt,www.aauav-nei.ua.pt \
+certbot certonly -n -d nei-aauav.pt,www.nei-aauav.pt \
   --standalone --preferred-challenges http --email nei@aauav.pt --agree-tos --expand
 
 # Kick off cron
