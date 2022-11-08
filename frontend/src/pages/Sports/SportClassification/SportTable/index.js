@@ -38,7 +38,7 @@ const SportTable = (props) => {
 
   const data = [
     {
-      position_team: {icon: UpArrow,pos: 1,team: "EI"},
+      position_team: {icon: UpArrow,pos: 1,team: "Eng. Informática"},
       games: "test",
       points: "test1",
       victories: "test2",
