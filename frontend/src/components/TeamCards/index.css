@@ -3,15 +3,10 @@
 .CardTeam {
     float: left;
     width: 60%; /* The width is 60%, by default */
+
     
   }
   
-  /* Use a media query to add a breakpoint at 800px: */
-  @media screen and (max-width: 800px) {
-    .left, .main, .right {
-      width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
-    }
-}
 
 .cardBody {
     border-radius: 5% !important;
@@ -20,6 +15,8 @@
     transition: transform .3s cubic-bezier(.34, 2, .6, 1), box-shadow .2s ease, -webkit-transform .3s cubic-bezier(.34, 2, .6, 1);
     width: 230px;
     height: 250px;
+    margin-bottom: 20px;
+    
 
 
 }
@@ -37,8 +34,8 @@
     background-repeat: no-repeat;
     width: 230px;
     height: 200px;
-
-    display: inline-block;
+    
+    
 
 	-webkit-transition: .4s ease-in-out;
 	transition: .4s ease-in-out;

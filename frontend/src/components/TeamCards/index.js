@@ -11,9 +11,9 @@ import "./index.css";
 
 const Player = () => {
     return (
-      <Row xs={2} md={5} className="g-6 Card_Team" >
-      
-        <Col>
+      <Row xs={1} sm={2} md={3} lg={4} xl={6} className=" Card_Team" >
+      {Array.from({ length: 8 }).map((_, idx) => (
+        <Col >
           <div className="cardBody"> 
             <div  className="teamCardsImg"  style={{backgroundImage:`url(${player})`}}></div>
               <div className='PlayerName'>
@@ -21,7 +21,7 @@ const Player = () => {
               </div>
           </div>
         </Col>
-
+      ))}
       </Row>
     );
 }
