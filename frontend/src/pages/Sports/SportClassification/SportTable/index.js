@@ -2,22 +2,21 @@ import React from "react";
 import { Table } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faCheckCircle,
+  faTimesCircle,
+  faMinusCircle,
   faAngleUp,
   faAngleDown,
   faAngleDoubleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import "./index.css";
 
-
-// var clone = document.getElementsByClassName("main-table")[0].cloneNode(true);
- 
-// clone.classList.add("clone");
-// document.getElementById("table-scroll").append(clone);
-// // https://codepen.io/paulobrien/pen/gWoVzN - scrollable table
-
 const SportTable = (props) => {
   const UpArrow = <FontAwesomeIcon icon={faAngleUp} className="up" />;
   const DownArrow = <FontAwesomeIcon icon={faAngleDown} className="down" />;
+  const GameDraw = <FontAwesomeIcon icon={faMinusCircle} className="draw" />;
+  const GameWon = <FontAwesomeIcon icon={faCheckCircle} className="win"/>;
+  const GameLost = <FontAwesomeIcon icon={faTimesCircle} className="lose"/>;
   const DoubleDownArrow = (
     <FontAwesomeIcon icon={faAngleDoubleDown} className="down" />
   );
@@ -48,7 +47,7 @@ const SportTable = (props) => {
       scored_goals: "test5",
       souffered_goals: "test6",
       divison_group: "test7",
-      last_games:"test8"
+      last_games: [GameWon,GameDraw,GameWon,GameLost,GameWon]
     },
     {
       position_team: {icon: DownArrow,pos: 2,team: "Matemática"},
@@ -60,7 +59,7 @@ const SportTable = (props) => {
       scored_goals: "test14",
       souffered_goals: "test15",
       divison_group: "test16",
-      last_games: "test17"
+      last_games: [GameLost,GameWon,GameWon,GameDraw,GameLost]
     },
     {
       position_team: {icon: DoubleDownArrow,pos: 3,team: "Biologia"},
@@ -72,7 +71,7 @@ const SportTable = (props) => {
       scored_goals: "test23",
       souffered_goals: "test24",
       divison_group: "test25",
-      last_games: "test26",
+      last_games: [GameDraw,GameWon,GameLost,GameDraw,GameWon]
     },
   ];
 
@@ -81,8 +80,8 @@ const SportTable = (props) => {
       <div className="divcss">
         <Table className={"mb-5 tablecss"}>
           <thead>
-            {header.map((row) => 
-              <tr className={"tableheader"}>
+            {header.map((row,index1) => 
+              <tr className={"tableheader"} key={index1}>
                 <td className="headcol">{row.head_team}</td>
                 <td>{row.head_games}</td>
                 <td>{row.head_points}</td>
@@ -97,8 +96,8 @@ const SportTable = (props) => {
             )}
           </thead>
           <tbody>
-            {data.map((row) =>
-              <tr>
+            {data.map((row,index) =>
+              <tr key={index}>
                 <td className="headcol">
                   <span className="iconcss">{row.position_team.icon}</span>
                   <span className="positioncss">{row.position_team.pos}</span>

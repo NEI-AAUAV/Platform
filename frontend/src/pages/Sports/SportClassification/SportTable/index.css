@@ -27,7 +27,7 @@ td,th {
 }
 
 .divcss {
-  width: 90%;
+  width: 80%;
   overflow-x: scroll;
   margin-left: 15em;
   margin-right: 50rem;
@@ -48,6 +48,18 @@ tr:hover {
 
 .down {
   color: red;
+}
+
+.win {
+  color:rgb(132, 234, 132);
+}
+
+.lose {
+  color: red;
+}
+
+.draw {
+  color: gray;
 }
 
 .iconcss {

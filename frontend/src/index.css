@@ -39,7 +39,7 @@ body {
     
 }
 
-.tr,td {
+.tr,td,th {
     color: var(--text-primary);
 }
 
