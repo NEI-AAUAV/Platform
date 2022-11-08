@@ -33,4 +33,5 @@ jobs:
         docker-compose down
         docker-compose pull
     - name: Docker deploy
+      run: |
         docker-compose up -d
