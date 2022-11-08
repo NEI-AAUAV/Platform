@@ -1,9 +1,70 @@
-# Website NEI
+# NEI-AAUAv Platform
+
+## Documentation
+
+- [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+- [Developer Documentation](docs/DEVELOPER.md)
+- [Administrator Documentation](docs/ADMIN.md)
+
+## Installation
+
+- [Local Installation](docs/DEVELOPER.md#2-local-installation)
+- [Docker Installation](docs/DEVELOPER.md#3-docker-installation)
+- [Docker Deployement](docs/DEVELOPER.md#4-docker-deployment)
+
+## Contributors
+
+**2021 Mandate**
+
+Vogal:
+[Gonçalo Matos](https://github.com/gmatosferreira) gmatosferreira
+
+<details open>
+<summary>Collaborators:</summary>
+
+- [Diogo Monteiro](https://github.com/diomont) diomont
+- [Fábio Martins](https://github.com/fMart8421) fMart8421
+- [Lucius Vinicius](https://github.com/luciusvinicius) luciusvinicius
+- [Pedro Duarte](https://github.com/PedroDuarte536) PedroDuarte536
+</details>
 
 
+**2022 Mandate (Semester 1)**
 
-## External packages
+Vogal:
+[Leandro Silva](https://github.com/leand12) leand12
 
-- [React Router](https://www.npmjs.com/package/react-router/v/6.0.0-beta.0), [React Router Dom](https://www.npmjs.com/package/react-router-dom/v/6.0.0-beta.0) and [History](https://www.npmjs.com/package/history) for routing;
-- [React Bootstrap](https://react-bootstrap.github.io/getting-started/introduction) for styling; 
+<details open>
+<summary>Collaborators:</summary>
 
+- [Alexandre Cotorobai](https://github.com/AlexandreCotorobai) AlexandreCotorobai
+- [Bernardo Figueiredo](https://github.com/LeikRad) LeikRad
+- [Daniel Madureira](https://github.com/Dan1m4D) Dan1m4D
+- [Diana Miranda](https://github.com/dianarrmiranda) dianarrmiranda
+- [Eduardo Fernandes](https://github.com/eduardofernandes11) eduardofernandes11
+- [João Luís](https://github.com/jnluis) jnluis
+- [José Gameiro](https://github.com/zegameiro) zegameiro
+- [Pedro Monteiro](https://github.com/pedromonteiro01) pedromonteiro01
+</details>
+
+**2022 Mandate**
+
+Vogal:
+[Leandro Silva](https://github.com/leand12) leand12
+
+<details open>
+<summary>Collaborators:</summary>
+
+- [Alexandre Cotorobai](https://github.com/AlexandreCotorobai) AlexandreCotorobai
+- [Bárbara Galiza](https://github.com/Barb02) Barb02
+- [Bernardo Figueiredo](https://github.com/LeikRad) LeikRad
+- [Dani Figueiredo](https://github.com/daniff15) daniff15
+- [Daniel Madureira](https://github.com/Dan1m4D) Dan1m4D
+- [Diana Miranda](https://github.com/dianarrmiranda) dianarrmiranda
+- [Eduardo Fernandes](https://github.com/eduardofernandes11) eduardofernandes11
+- [João Capucho](https://github.com/JCapucho) JCapucho
+- [João Luís](https://github.com/jnluis) jnluis
+- [José Gameiro](https://github.com/zegameiro) zegameiro
+- [Pedro Monteiro](https://github.com/pedromonteiro01) pedromonteiro01
+- [Tomás Victal](https://github.com/fungame2270) fungame2270
+</details>

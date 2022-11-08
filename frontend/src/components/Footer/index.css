@@ -1,0 +1,26 @@
+#footer {
+    min-height: 4rem;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+
+.footer-links>a {
+    font-size: 1rem;
+    margin-right: 1rem;
+}
+
+@media 
+    only screen and (max-width: 420px),
+    only screen and (max-height: 420px) 
+{
+    .footer-links>a {
+        font-size: 0.825rem;
+        margin-right: 0.5rem;
+    }
+
+    .footer-copyright {
+        font-size: 0.825rem;
+        margin-right: 0.825rem;
+    }
+}

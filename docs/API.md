@@ -39,3 +39,4 @@ After downloading it, click the button below to open the NEI API collection.
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/7af49970eb4e5516c575)
 
+Sometimes, uploading large image files on form-data with Postman resulted in "There was an error parsing the body". This is a Postman issue, that is described [here](https://github.com/tiangolo/fastapi/issues/2401#issuecomment-735454025). A solution could be to use similar applications to Postman, like [Insomnia]( https://insomnia.rest/).
