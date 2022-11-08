@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - deploy
+      - 162-add-continuous-deployment
 
   workflow_dispatch:
 
@@ -16,7 +17,7 @@ jobs:
       env:
         DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
       run: |
-        echo $DOCKERHUB_PASSWORD | docker login -u neiaauav --password-stdin
+        docker login -u neiaauav -p $DOCKERHUB_PASSWORD
     - name: Docker build 
       run: |
         docker-compose build
