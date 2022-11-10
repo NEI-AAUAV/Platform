@@ -47,6 +47,8 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
+    ports:
+      - 3000:3000
     depends_on:
       - nei_api
       - tacaua_api
@@ -70,7 +72,7 @@ services:
     networks:
       - backend_net
       - frontend_net
-    restart: always
+    # restart: always
 
 networks:
   backend_net:
