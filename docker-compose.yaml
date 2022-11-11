@@ -22,6 +22,7 @@ services:
     ports:
       - 8000:8000
     environment:
+      - ROOT_PATH=/nei/api/v1
       - POSTGRES_SERVER=pg_db
     depends_on:
       - pg_db
@@ -36,6 +37,7 @@ services:
     ports:
       - 8001:8001
     environment:
+      - ROOT_PATH=/tacaua/api/v1
       - POSTGRES_SERVER=pg_db
     depends_on:
       - pg_db

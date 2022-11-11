@@ -12,7 +12,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 class Settings(BaseSettings):
     PRODUCTION = False
-    API_V1_STR: str = "/api/v1"
+    API_V1_STR: str = os.getenv('ROOT_PATH', "/api/v1")
     HOST: AnyHttpUrl = "http://localhost:8000"
     STATIC_URL: AnyHttpUrl = HOST + "/static"
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
