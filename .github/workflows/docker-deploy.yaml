@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - deploy
-      - 162-add-continuous-deployment
 
   workflow_dispatch:
 

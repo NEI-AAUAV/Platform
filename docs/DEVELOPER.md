@@ -20,7 +20,7 @@
 To run the project in your host machine, read the **Local Installation** section of each service documentation.
 
 - [Web App](../frontend/README.md#local-installation) web_app
-- [NEI API](../backend/README.md#local-installation) nei_api
+- [NEI API](../nei-api/README.md#local-installation) nei_api
 - [Taça UA API](../tacaua-api/README.md#local-installation) tacaua_api
 
 ## 3. Docker Installation
@@ -44,7 +44,7 @@ docker-compose -f docker-compose.dev.yaml down -v
 
 To run one service individually, append the service name to the command (e.g. `nei_api`). On alternative, create the images and the container manually by reading the **Docker Installation** section in the respective service documentation.
 - [Web App](../frontend/README.md#docker-installation) web_app
-- [NEI API](../backend/README.md#docker-installation) nei_api
+- [NEI API](../nei-api/README.md#docker-installation) nei_api
 - [Taça UA API](../tacaua-api/README.md#docker-installation) tacaua_api
 ```
 docker-compose -f docker-compose.dev.yaml up --build [SERVICE...]
