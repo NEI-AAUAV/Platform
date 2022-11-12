@@ -22,6 +22,7 @@ services:
     ports:
       - 8000:8000
     environment:
+      - ROOT_PATH=/nei/api/v1
       - POSTGRES_SERVER=pg_db
     depends_on:
       - pg_db
@@ -36,6 +37,7 @@ services:
     ports:
       - 8001:8001
     environment:
+      - ROOT_PATH=/tacaua/api/v1
       - POSTGRES_SERVER=pg_db
     depends_on:
       - pg_db
@@ -47,6 +49,8 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
+    ports:
+      - 3000:3000
     depends_on:
       - nei_api
       - tacaua_api
@@ -70,7 +74,7 @@ services:
     networks:
       - backend_net
       - frontend_net
-    restart: always
+    # restart: always
 
 networks:
   backend_net:

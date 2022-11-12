@@ -28,5 +28,5 @@ COPY ./app ./app
 
 RUN mkdir static
 
-EXPOSE 8000
+EXPOSE 8001
 CMD gunicorn app.main:app --bind 0.0.0.0:8001 -k uvicorn.workers.UvicornWorker
