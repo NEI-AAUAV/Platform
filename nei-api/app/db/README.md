@@ -39,7 +39,7 @@ RESET search_path;
 
 ### Clean database
 
-With the current setup, the default data inside the tables that is defined in `backend/app/db/init_db.py` is only inserted after the tables creation. Once the tables are created, the event listener will not run and, therefore, will not insert any additional data. For this reason, it may be needed to clean the database to force the table creation again. To do this, it is simpler if the schema `aauav_nei` is deleted with:
+With the current setup, the default data inside the tables that is defined in `nei-api/app/db/init_db.py` is only inserted after the tables creation. Once the tables are created, the event listener will not run and, therefore, will not insert any additional data. For this reason, it may be needed to clean the database to force the table creation again. To do this, it is simpler if the schema `aauav_nei` is deleted with:
 
 ```
 DROP SCHEMA aauav_nei CASCADE;
