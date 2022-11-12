@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - deploy
-      - dev-update-ci-cd-with-rallytascas
 
   workflow_dispatch:
 
