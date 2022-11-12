@@ -66,5 +66,5 @@ Vogal:
 - [João Luís](https://github.com/jnluis) jnluis
 - [José Gameiro](https://github.com/zegameiro) zegameiro
 - [Pedro Monteiro](https://github.com/pedromonteiro01) pedromonteiro01
-- [fungame2270](https://github.com/fungame2270) fungame2270
+- [Tomás Victal](https://github.com/fungame2270) fungame2270
 </details>
