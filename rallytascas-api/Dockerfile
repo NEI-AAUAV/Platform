@@ -14,7 +14,7 @@ FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /tacaua_api
+WORKDIR /rally-tascas
 
 COPY --from=requirements-stage /tmp/requirements.txt requirements.txt
 
@@ -28,5 +28,5 @@ COPY ./app ./app
 
 RUN mkdir static
 
-EXPOSE 8001
-CMD gunicorn app.main:app --bind 0.0.0.0:8001 -k uvicorn.workers.UvicornWorker
+EXPOSE 8002
+CMD gunicorn app.main:app --bind 0.0.0.0:8002 -k uvicorn.workers.UvicornWorker

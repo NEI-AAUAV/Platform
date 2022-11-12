@@ -11,10 +11,12 @@ services:
     network_mode: host
   nei_api:
     build:
-      context: backend
+      context: nei-api
       dockerfile: Dockerfile
     volumes: 
-      - ${PWD}/backend:/nei_api
+      - ${PWD}/nei-api:/nei_api
+    environment:
+      - ROOT_PATH=/nei/api/v1
     depends_on:
       - pg_db
     network_mode: host
@@ -24,6 +26,19 @@ services:
       dockerfile: Dockerfile
     volumes: 
       - ${PWD}/tacaua-api:/nei_api
+    environment:
+      - ROOT_PATH=/tacaua/api/v1
+    depends_on:
+      - pg_db
+    network_mode: host
+  rallytascas_api:
+    build:
+      context: rallytascas-api
+      dockerfile: Dockerfile
+    volumes: 
+      - ${PWD}/rallytascas-api:/rallytascas_api
+    environment:
+      - ROOT_PATH=/rallytascas/api/v1
     depends_on:
       - pg_db
     network_mode: host
@@ -44,7 +59,3 @@ volumes:
     driver: local
   node_modules:
     driver: local
-
-networks:
-  backend_net:
-    driver: bridge

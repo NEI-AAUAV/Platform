@@ -13,8 +13,6 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 class Settings(BaseSettings):
     PRODUCTION = False
     API_V1_STR: str = os.getenv('ROOT_PATH', "/api/v1")
-    HOST: AnyHttpUrl = "http://localhost:8000"
-    STATIC_URL: AnyHttpUrl = HOST + "/static"
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
 
@@ -26,8 +24,8 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    # PostgreSQL DB
-    SCHEMA_NAME: str = "tacaua"
+    # PostgreSQL Db
+    SCHEMA_NAME: str = "rally_tascas"
     POSTGRES_SERVER: str = os.getenv('POSTGRES_SERVER', 'localhost')
     POSTGRES_USER: str = os.getenv('POSTGRES_USER', "postgres")
     POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "postgres")
