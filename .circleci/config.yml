@@ -19,34 +19,34 @@ jobs:
             poetry run pytest
             
       - run:
-          name: Run TacaUa-API Tests
-          command: |
-            cd ./tacaua-api
-            pip install --upgrade pip
-            pip3 install poetry
-            pip3 install -U pip virtualenv
-            docker stop pg
-            docker rm pg
-            docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
-            sudo apt install python3-dev libpq-dev 
-            poetry install
-            poetry run uvicorn app.main:app --reload &
-            poetry run pytest
+        name: Run TacaUa-API Tests
+        command: |
+          cd ./tacaua-api
+          pip install --upgrade pip
+          pip3 install poetry
+          pip3 install -U pip virtualenv
+          docker stop pg
+          docker rm pg
+          docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
+          sudo apt install python3-dev libpq-dev 
+          poetry install
+          poetry run uvicorn app.main:app --reload &
+          poetry run pytest
 
-        - run:
-          name: Run RallyTascas-API Tests
-          command: |
-            cd ./rallytascas-api
-            pip install --upgrade pip
-            pip3 install poetry
-            pip3 install -U pip virtualenv
-            docker stop pg
-            docker rm pg
-            docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
-            sudo apt install python3-dev libpq-dev 
-            poetry install
-            poetry run uvicorn app.main:app --reload &
-            poetry run pytest
+      - run:
+        name: Run RallyTascas-API Tests
+        command: |
+          cd ./rallytascas-api
+          pip install --upgrade pip
+          pip3 install poetry
+          pip3 install -U pip virtualenv
+          docker stop pg
+          docker rm pg
+          docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
+          sudo apt install python3-dev libpq-dev 
+          poetry install
+          poetry run uvicorn app.main:app --reload &
+          poetry run pytest
             
 workflows:
   build-and-test:
