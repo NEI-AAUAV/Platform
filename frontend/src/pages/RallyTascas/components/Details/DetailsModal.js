@@ -2,16 +2,18 @@ import React from "react";
 import { Modal, Text, Button, Row } from "@nextui-org/react";
 
 function DetailsModal(props) {
+  let visible = props.visible;
+
   const closeHandler = () => {
     props.setVisible(false);
   };
+
   return (
     <Modal
+      aria-label="modalDetails"
       closeButton
       aria-labelledby="modal-title"
-      //este preventClose na vista de mobile que estava a fazer continuava a fechar-se a nao ser q eu alterasse um bocadinho o tamanho (nao faz sentido)
-      preventClose
-      open={props.visible}
+      open={visible}
       onClose={closeHandler}
       width="700px"
       css={{
@@ -40,7 +42,7 @@ function DetailsModal(props) {
           Detalhes de
           <Text b color="white" size={18}>
             {" "}
-            NOME DA EQUIPA
+            {props.selectedTeam.teamName}
           </Text>
         </Text>
       </Modal.Header>
@@ -59,7 +61,7 @@ function DetailsModal(props) {
             Nome da Equipa:
           </Text>
           <Text color="white" size={18}>
-            NOME DA EQUIPA
+            {props.selectedTeam.teamName}
           </Text>
         </Row>
         <Row
@@ -76,7 +78,7 @@ function DetailsModal(props) {
             Pontuação
           </Text>
           <Text color="white" size={18}>
-            631 Pontos
+            {props.selectedTeam.total}
           </Text>
         </Row>
         <Row>
@@ -84,142 +86,26 @@ function DetailsModal(props) {
             Checkpoints
           </Text>
         </Row>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
-            P1 - DETI
-          </Text>
-          <Text color="white" size={18}>
-            120 Pontos
-          </Text>
-        </Row>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
-            P2 - Reitoria
-          </Text>
-          <Text color="white" size={18}>
-            100 Pontos
-          </Text>
-        </Row>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
-            P3 - FITUA
-          </Text>
-          <Text color="white" size={18}>
-            120 Pontos
-          </Text>
-        </Row>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
-            P4 - AFFUAV
-          </Text>
-          <Text color="white" size={18}>
-            200 Pontos
-          </Text>
-        </Row>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
-            P5 - Teatro Aveirense
-          </Text>
-          <Text color="white" size={18}>
-            35 Pontos
-          </Text>
-        </Row>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
-            P6 - Câmara Municipal
-          </Text>
-          <Text color="white" size={18}>
-            100 Pontos
-          </Text>
-        </Row>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
-            P7 - Santos
-          </Text>
-          <Text color="white" size={18}>
-            -54 Pontos
-          </Text>
-        </Row>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
-            P8 - Bar do Estudante
-          </Text>
-          <Text color="white" size={18}>
-            10 Pontos
-          </Text>
-        </Row>
+        {props.selectedTeam.scores.map((checkpoint) => (
+          <Row
+            key={checkpoint.id}
+            css={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginBottom: "1rem",
+              paddingRight: "0.5rem",
+              zIndex: 1,
+            }}
+          >
+            <Text color="white" css={{ fontWeight: "bold" }} size={18}>
+              P{checkpoint.id} - {checkpoint.name}
+            </Text>
+            <Text color="white" size={18}>
+              {checkpoint.score} Pontos
+            </Text>
+          </Row>
+        ))}
       </Modal.Body>
       <Modal.Footer>
         <Button auto bordered color="error" onClick={closeHandler} size="sm">
