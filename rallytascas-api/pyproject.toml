@@ -1,10 +1,8 @@
 [tool.poetry]
-name = "rally-tascas-api"
+name = "rallytascas-api"
 version = "0.1.0"
 description = "Rally Tascas Service"
 authors = []
-readme = "README.md"
-packages = [{include = "rally_tascas_api"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
