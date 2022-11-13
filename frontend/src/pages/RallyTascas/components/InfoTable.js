@@ -1,8 +1,9 @@
 import React from "react";
-import { Button, Col, Row, Table, css, Tooltip } from "@nextui-org/react";
+import { Col, Row, Table, Tooltip } from "@nextui-org/react";
 import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
 import { EditIcon } from "./EditIcon";
+import DetailsModal from "./Details/DetailsModal";
 
 function InfoTable() {
   const columns = [
@@ -15,8 +16,8 @@ function InfoTable() {
       label: "Equipa",
     },
     {
-      key: "checkpoint",
-      label: "P1",
+      key: "lastCheckPoint",
+      label: "Last Checkpoint",
     },
     {
       key: "total",
@@ -63,10 +64,13 @@ function InfoTable() {
     },
   ];
 
+  const [visibleDetails, setVisibleDetails] = React.useState(false);
+  const detailsModalHandler = () => setVisibleDetails(true);
+
   const renderCell = (team, columnKey) => {
     const cellValue = team[columnKey];
     switch (columnKey) {
-      case "checkpoint":
+      case "lastCheckPoint":
         return (
           <>
             <Col>{cellValue}</Col>
@@ -79,7 +83,7 @@ function InfoTable() {
           <Row justify="center" align="center">
             <Col css={{ d: "flex" }}>
               <Tooltip content="Details">
-                <IconButton>
+                <IconButton onClick={detailsModalHandler}>
                   <EyeIcon size={20} fill="#979797" />
                 </IconButton>
               </Tooltip>
@@ -99,48 +103,51 @@ function InfoTable() {
   };
 
   return (
-    <Table
-      css={{
-        height: "auto",
-        minWidth: "100%",
-        zIndex: 1,
-      }}
-    >
-      <Table.Header columns={columns}>
-        {(column) => (
-          <Table.Column
-            key={column.key}
-            css={{
-              backgroundColor: "#16181A",
-              color: "white",
-              fontWeight: "bold",
-              width: `calc(100% / ${columns.length})`,
-            }}
-          >
-            {column.label}
-          </Table.Column>
-        )}
-      </Table.Header>
-      <Table.Body items={rows}>
-        {(team) => (
-          <Table.Row
-            //css to change the background color of the table rows
-            css={{
-              color: "white",
-              fontSize: "0.875rem",
-              fontWeight: "bold",
-              "&:nth-child(even)": {
-                backgroundColor: "#000711",
-              },
-            }}
-          >
-            {(columnKey) => (
-              <Table.Cell>{renderCell(team, columnKey)}</Table.Cell>
-            )}
-          </Table.Row>
-        )}
-      </Table.Body>
-    </Table>
+    <>
+      <Table
+        css={{
+          height: "auto",
+          minWidth: "100%",
+          zIndex: 1,
+        }}
+      >
+        <Table.Header columns={columns}>
+          {(column) => (
+            <Table.Column
+              key={column.key}
+              css={{
+                backgroundColor: "#16181A",
+                color: "white",
+                fontWeight: "bold",
+                width: `calc(100% / ${columns.length})`,
+              }}
+            >
+              {column.label}
+            </Table.Column>
+          )}
+        </Table.Header>
+        <Table.Body items={rows}>
+          {(team) => (
+            <Table.Row
+              //css to change the background color of the table rows
+              css={{
+                color: "white",
+                fontSize: "0.875rem",
+                fontWeight: "bold",
+                "&:nth-child(even)": {
+                  backgroundColor: "#000711",
+                },
+              }}
+            >
+              {(columnKey) => (
+                <Table.Cell>{renderCell(team, columnKey)}</Table.Cell>
+              )}
+            </Table.Row>
+          )}
+        </Table.Body>
+      </Table>
+      <DetailsModal visible={visibleDetails} setVisible={setVisibleDetails} />
+    </>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Button, Col, Input, Modal, Row, Text } from "@nextui-org/react";
+import { Button, Col, Row } from "@nextui-org/react";
 import React from "react";
 import InfoTable from "./components/InfoTable";
 import ModalTeam from "./components/NewTeam/ModalTeam";
