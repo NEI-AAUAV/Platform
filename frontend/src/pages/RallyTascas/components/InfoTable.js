@@ -4,6 +4,7 @@ import { IconButton } from "./IconButton";
 import { EyeIcon } from "./EyeIcon";
 import { EditIcon } from "./EditIcon";
 import DetailsModal from "./Details/DetailsModal";
+import EditDetails from "./EditDetails/EditDetails";
 
 const columns = [
   {
@@ -265,9 +266,14 @@ const rows = [
 
 function InfoTable() {
   const [visibleDetails, setVisibleDetails] = React.useState(false);
+  const [editDetails, setEditDetails] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState(null);
   const detailsModalHandler = () => {
     setVisibleDetails(true);
+  };
+
+  const editModalHandler = () => {
+    setEditDetails(true);
   };
 
   const renderCell = (team, columnKey) => {
@@ -300,7 +306,14 @@ function InfoTable() {
             <Col css={{ d: "flex" }}>
               <Tooltip content="Edit Team">
                 <IconButton>
-                  <EditIcon size={20} fill="#979797" />
+                  <EditIcon
+                    size={20}
+                    fill="#979797"
+                    onClick={() => {
+                      setSelectedTeam(team);
+                      editModalHandler();
+                    }}
+                  />
                 </IconButton>
               </Tooltip>
             </Col>
@@ -359,6 +372,14 @@ function InfoTable() {
         <DetailsModal
           visible={visibleDetails}
           setVisible={setVisibleDetails}
+          selectedTeam={selectedTeam}
+        />
+      )}
+
+      {editDetails && (
+        <EditDetails
+          visible={editDetails}
+          setVisible={setEditDetails}
           selectedTeam={selectedTeam}
         />
       )}
