@@ -15,7 +15,7 @@ jobs:
             docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
             sudo apt install python3-dev libpq-dev 
             poetry install
-            poetry run uvicorn app.main:app --reload &
+            poetry run uvicorn app.main:app --reload --port 8000 &
             poetry run pytest
       - run:
           name: Run TacaUa-API Tests
@@ -29,7 +29,7 @@ jobs:
             docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
             sudo apt install python3-dev libpq-dev 
             poetry install
-            poetry run uvicorn app.main:app --reload &
+            poetry run uvicorn app.main:app --reload --port 8001 &
             poetry run pytest
       - run:
           name: Run RallyTascas-API Tests
@@ -43,7 +43,7 @@ jobs:
             docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
             sudo apt install python3-dev libpq-dev 
             poetry install
-            poetry run uvicorn app.main:app --reload &
+            poetry run uvicorn app.main:app --reload --port 8002 &
             poetry run pytest
             
 workflows:
