@@ -13,6 +13,7 @@ const RallyTascas = () => {
           justifyContent: "flex-end",
           marginBottom: "1rem",
           paddingRight: "0.5rem",
+          zIndex: 1,
         }}
       >
         <Button

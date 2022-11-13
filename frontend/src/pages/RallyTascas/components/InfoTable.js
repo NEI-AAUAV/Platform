@@ -45,6 +45,22 @@ function InfoTable() {
       timeOfCheckpoint: "00:12:58",
       total: "250 Pts",
     },
+    {
+      id: 3,
+      position: "3º",
+      teamName: "Team 3",
+      checkpoint: "190 Pts",
+      timeOfCheckpoint: "00:22:30",
+      total: "190 Pts",
+    },
+    {
+      id: 4,
+      position: "4º",
+      teamName: "Team 4",
+      checkpoint: "175 Pts",
+      timeOfCheckpoint: "00:30:02",
+      total: "175 Pts",
+    },
   ];
 
   const renderCell = (team, columnKey) => {
@@ -84,39 +100,21 @@ function InfoTable() {
 
   return (
     <Table
-      aria-label="Example table with custom cells"
       css={{
         height: "auto",
         minWidth: "100%",
+        zIndex: 1,
       }}
-      selectionMode="none"
     >
       <Table.Header columns={columns}>
         {(column) => (
           <Table.Column
             key={column.key}
-            /* 
-            // this css, when uncommented, makes the id occupy almost the entire width of the table
-            // probably will use to scroll horizontally minus the id column
             css={{
-              backgroundColor: "#F5F5F5",
-              color: "#979797",
-              fontSize: "0.875rem",
-              fontWeight: "bold",
-              padding: "0.5rem 1rem",
-              textAlign: "left",
-              width: "100%",
-              "&:first-child": {
-                borderRadius: "0.5rem 0 0 0.5rem",
-              },
-              "&:last-child": {
-                borderRadius: "0 0.5rem 0.5rem 0",
-              },
-            }} */
-            css={{
-              backgroundColor: "#0a0a0a",
+              backgroundColor: "#16181A",
               color: "white",
               fontWeight: "bold",
+              width: `calc(100% / ${columns.length})`,
             }}
           >
             {column.label}
@@ -126,10 +124,14 @@ function InfoTable() {
       <Table.Body items={rows}>
         {(team) => (
           <Table.Row
+            //css to change the background color of the table rows
             css={{
               color: "white",
+              fontSize: "1rem",
               fontWeight: "bold",
-              fontSize: "0.875rem",
+              "&:nth-child(even)": {
+                backgroundColor: "#000711",
+              },
             }}
           >
             {(columnKey) => (
