@@ -127,7 +127,7 @@ function InfoTable() {
             //css to change the background color of the table rows
             css={{
               color: "white",
-              fontSize: "1rem",
+              fontSize: "0.875rem",
               fontWeight: "bold",
               "&:nth-child(even)": {
                 backgroundColor: "#000711",
