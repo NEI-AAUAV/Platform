@@ -1,5 +1,11 @@
   
-
+.Card_Team{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
 .cardBody {
     border-radius: 5% !important;
     border: none !important;
@@ -8,25 +14,32 @@
     height: 250px;
     margin-left: 1rem;
     margin-bottom: 20px;
+    padding-right: 0px !important;
+    padding-left: 0px !important;
 
 
 }
 
 .PlayerName{
-    padding: 2px 16px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    padding-top: 3%;
+    text-align: center;
 }
 
 .teamCardsImg {
-    background-size: 150%;
+    background-size: 200%;
     background-position: center center;
+    background-repeat: no-repeat;
     width: 100%;
     height: 85%;
-    padding: 0;
+    border-radius: 5% 5% 0 0;
 	-webkit-transition: .4s ease-in-out;
 	transition: .4s ease-in-out;
 }
 .teamCardsImg:hover{
-    background-size: 185%;
+    background-size: 225%;
     background-position: center center;
 	-webkit-transition: .4s ease-in-out;
 	transition: .4s ease-in-out;

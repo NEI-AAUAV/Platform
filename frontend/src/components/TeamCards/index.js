@@ -9,7 +9,7 @@ import "./index.css";
 
 const Player = () => {
     return (
-      <Row xsm={2} md={3} lg={6} className=" Card_Team" >
+      <Row  xs={1} sm={3} md={4} lg={5} xl={6} className=" Card_Team" >
       {Array.from({ length: 8 }).map((_, idx) => (
         <Col className="cardBody">
           <div  className="teamCardsImg"  style={{backgroundImage:`url(${player})`}}></div>
