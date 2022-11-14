@@ -1,8 +1,10 @@
-import React from "react";
-import { Modal, Text, Button, Row } from "@nextui-org/react";
+import React, { useState } from "react";
+import { Modal, Text, Button, Row, Input } from "@nextui-org/react";
 import { IconButton } from "../IconButton";
 import { EditIcon } from "../EditIcon";
 import EditLine from "./EditLine";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 function EditDetails(props) {
   let visible = props.visible;
@@ -11,11 +13,11 @@ function EditDetails(props) {
     props.setVisible(false);
   };
 
-  const [editView, setEditView] = React.useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  /* const handlerEditView = (id) => {
-    setEditView(true);
-  }; */
+  const handlerEditView = () => {
+    setIsEditing(true);
+  };
 
   return (
     <Modal
@@ -32,7 +34,6 @@ function EditDetails(props) {
         marginLeft: "20px",
         marginRight: "20px",
         backgroundColor: "#010b13",
-        //decrease width on different screen sizes
         "@media (min-width: 320px)": {
           width: "80%",
           marginLeft: "10%",
@@ -73,16 +74,79 @@ function EditDetails(props) {
             style={{
               display: "flex",
               flexDirection: "row",
-              justifyContent: "space-between",
-              width: "150px",
+              justifyContent: "flex-end",
+              alignItems: "right",
+              width: "50%",
             }}
           >
-            <Text color="white" size={18}>
-              {props.selectedTeam.teamName}
-            </Text>
-            <IconButton style={{ marginBottom: "1rem" }}>
-              <EditIcon size={20} fill="#979797" />
-            </IconButton>
+            {!isEditing ? (
+              <>
+                <Text color="white" size={18}>
+                  {props.selectedTeam.teamName}
+                </Text>
+                <IconButton
+                  style={{ marginBottom: "1rem", marginLeft: "1rem" }}
+                  onClick={handlerEditView}
+                >
+                  <EditIcon size={20} fill="#979797" />
+                </IconButton>
+              </>
+            ) : (
+              <>
+                <Row
+                  css={{
+                    display: "flex",
+                    "@media (min-width: 320px)": {
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                      paddingRight: 0,
+                    },
+                    "@media (min-width: 481px)": {
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                      paddingRight: 0,
+                    },
+                    "@media (min-width: 768px)": {
+                      flexDirection: "row",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                      width: "100%",
+                    },
+                  }}
+                >
+                  <Input
+                    clearable
+                    fullWidth
+                    size="lg"
+                    placeholder="Nome da Equipa"
+                    value={props.selectedTeam.teamName}
+                    css={{
+                      backgroundColor: "black",
+                      color: "white",
+                      width: "150px",
+                      marginRight: "1rem",
+                    }}
+                  />
+                  <FontAwesomeIcon
+                    className="text-danger"
+                    icon={faTimes}
+                    size={"2x"}
+                    onClick={() => setIsEditing(false)}
+                    style={{ marginRight: "1rem" }}
+                  />
+                  <FontAwesomeIcon
+                    className="text-primary"
+                    icon={faCheck}
+                    size={"2x"}
+                    css={{ marginLeft: "1rem" }}
+                  />
+                </Row>
+              </>
+            )}
           </div>
         </Row>
         <Row
