@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, Text, Button, Row } from "@nextui-org/react";
 import { IconButton } from "../IconButton";
 import { EditIcon } from "../EditIcon";
+import EditLine from "./EditLine";
 
 function EditDetails(props) {
   let visible = props.visible;
@@ -107,44 +108,7 @@ function EditDetails(props) {
           </Text>
         </Row>
         {props.selectedTeam.scores.map((checkpoint) => (
-          <Row
-            key={checkpoint.id}
-            css={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: "1rem",
-              paddingRight: "0.5rem",
-              zIndex: 1,
-            }}
-          >
-            <Text color="white" css={{ fontWeight: "bold" }} size={18}>
-              P{checkpoint.id} - {checkpoint.name}
-            </Text>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "150px",
-              }}
-            >
-              <Text
-                color="white"
-                size={18}
-                css={{
-                  fontWeight: "bold",
-                  textAlign: "left",
-                }}
-              >
-                {checkpoint.score} Pontos
-              </Text>
-              <IconButton style={{ marginBottom: "1rem" }}>
-                <EditIcon size={20} fill="#979797" />
-              </IconButton>
-            </div>
-          </Row>
+          <EditLine checkpoint={checkpoint} />
         ))}
       </Modal.Body>
       <Modal.Footer>
