@@ -40,7 +40,8 @@ span {
 
 
 tr:hover {
-  background-color: green;
+  background-color: rgba(6, 153, 6, 0.828);
+  transition: all 0.125s ease-in-out;
 }
 
 .up {
@@ -99,7 +100,8 @@ tr:hover {
 }
 
 .headcol:hover {
-  background-color: green;
+  background-color: rgba(6, 153, 6, 0.828);
+  transition: all 0.125s ease-in-out;
 }
 
 

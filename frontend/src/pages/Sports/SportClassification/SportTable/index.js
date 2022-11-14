@@ -80,8 +80,8 @@ const SportTable = (props) => {
       <div className="divcss">
         <Table className={"mb-5 tablecss"}>
           <thead>
-            {header.map((row,index1) => 
-              <tr className={"tableheader"} key={index1}>
+            {header.map((row,index) => 
+              <tr className="tableheader" key={index}>
                 <td className="headcol">{row.head_team}</td>
                 <td>{row.head_games}</td>
                 <td>{row.head_points}</td>
@@ -117,21 +117,6 @@ const SportTable = (props) => {
           </tbody>
         </Table>
       </div>
-    
-      {/* <div className="legend">
-        <h4>Legenda:</h4>
-        <ul>
-            <li><p><span>Pos-</span> Posição</p></li>
-            <li><p><span>Eq-</span> Equipa</p></li>
-            <li><p><span>P-</span> Pontos</p></li>
-            <li><p><span>V-</span> Vitórias</p></li>
-            <li><p><span>E-</span> Empates</p></li>
-            <li><p><span>D-</span> Derrotas</p></li>
-            <li><p><span>GM-</span> Golos Marcados</p></li>
-            <li><p><span>GS-</span> Golos Sofridos</p></li>
-            <li><p><span>DG-</span> Divisão do Grupo</p></li>
-        </ul>
-      </div> */}
     </>
   );
 };
