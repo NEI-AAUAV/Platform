@@ -32,6 +32,7 @@ td,th {
   overflow-x: scroll;
   margin-left: 20em;
   margin-right: 50rem;
+  padding-right: 30px;
 }
 
 span {
