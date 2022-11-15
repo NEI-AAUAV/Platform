@@ -3,7 +3,7 @@ import React from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import player from "../../pages/Sports/img/unknown2.png";
+import player from "../../pages/Sports/img/dani.jpeg";
 
 import "./index.css";
 
