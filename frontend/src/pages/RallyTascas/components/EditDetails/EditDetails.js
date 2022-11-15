@@ -27,25 +27,7 @@ function EditDetails(props) {
       open={visible}
       onClose={closeHandler}
       width="700px"
-      css={{
-        height: "auto",
-        borderRadius: "0.5rem",
-        padding: "1rem",
-        marginLeft: "20px",
-        marginRight: "20px",
-        backgroundColor: "#010b13",
-        "@media (min-width: 320px)": {
-          width: "80%",
-          marginLeft: "10%",
-          marginRight: "10%",
-        },
-        "@media (min-width: 481px)": {
-          width: "90%",
-        },
-        "@media (min-width: 768px)": {
-          width: "100%",
-        },
-      }}
+      css={styles.modal}
     >
       <Modal.Header>
         <Text id="modal-title" color="white" size={18}>
@@ -57,28 +39,11 @@ function EditDetails(props) {
         </Text>
       </Modal.Header>
       <Modal.Body>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
+        <Row css={styles.modalBody}>
           <Text color="white" css={{ fontWeight: "bold" }} size={18}>
             Nome da Equipa:
           </Text>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              alignItems: "right",
-              width: "50%",
-            }}
-          >
+          <div style={styles.modalRow}>
             {!isEditing ? (
               <>
                 <Text color="white" size={18}>
@@ -93,72 +58,36 @@ function EditDetails(props) {
               </>
             ) : (
               <>
-                <Row
-                  css={{
-                    display: "flex",
-                    "@media (min-width: 320px)": {
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "100%",
-                      paddingRight: 0,
-                    },
-                    "@media (min-width: 481px)": {
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "100%",
-                      paddingRight: 0,
-                    },
-                    "@media (min-width: 768px)": {
-                      flexDirection: "row",
-                      justifyContent: "flex-end",
-                      alignItems: "center",
-                      width: "100%",
-                    },
-                  }}
-                >
+                <Row css={styles.editingRow}>
                   <Input
                     clearable
                     fullWidth
                     size="lg"
                     placeholder="Nome da Equipa"
                     value={props.selectedTeam.teamName}
-                    css={{
-                      backgroundColor: "black",
-                      color: "white",
-                      width: "150px",
-                      marginRight: "1rem",
-                    }}
+                    css={styles.input}
                   />
-                  <FontAwesomeIcon
-                    className="text-danger"
-                    icon={faTimes}
-                    size={"2x"}
-                    onClick={() => setIsEditing(false)}
-                    style={{ marginRight: "1rem" }}
-                  />
-                  <FontAwesomeIcon
-                    className="text-primary"
-                    icon={faCheck}
-                    size={"2x"}
-                    css={{ marginLeft: "1rem" }}
-                  />
+                  <div>
+                    <FontAwesomeIcon
+                      className="text-danger"
+                      icon={faTimes}
+                      size={"2x"}
+                      onClick={() => setIsEditing(false)}
+                      style={{ marginRight: "1rem" }}
+                    />
+                    <FontAwesomeIcon
+                      className="text-primary"
+                      icon={faCheck}
+                      size={"2x"}
+                      css={{ marginLeft: "1rem" }}
+                    />
+                  </div>
                 </Row>
               </>
             )}
           </div>
         </Row>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
+        <Row css={styles.modalBody}>
           <Text color="white" css={{ fontWeight: "bold" }} size={18}>
             Pontuação
           </Text>
@@ -185,3 +114,73 @@ function EditDetails(props) {
 }
 
 export default EditDetails;
+
+const styles = {
+  modal: {
+    height: "auto",
+    borderRadius: "0.5rem",
+    padding: "1rem",
+    marginLeft: "20px",
+    marginRight: "20px",
+    backgroundColor: "#010b13",
+    "@media (min-width: 320px)": {
+      width: "80%",
+      marginLeft: "10%",
+      marginRight: "10%",
+    },
+    "@media (min-width: 481px)": {
+      width: "90%",
+    },
+    "@media (min-width: 768px)": {
+      width: "100%",
+    },
+  },
+
+  modalBody: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: "1rem",
+    paddingRight: "0.5rem",
+    zIndex: 1,
+  },
+
+  modalRow: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "right",
+    width: "50%",
+  },
+
+  editingRow: {
+    display: "flex",
+    "@media (min-width: 320px)": {
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      paddingRight: 0,
+    },
+    "@media (min-width: 481px)": {
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      paddingRight: 0,
+    },
+    "@media (min-width: 768px)": {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      width: "100%",
+    },
+  },
+
+  input: {
+    backgroundColor: "black",
+    color: "white",
+    width: "150px",
+    marginRight: "1rem",
+  },
+};

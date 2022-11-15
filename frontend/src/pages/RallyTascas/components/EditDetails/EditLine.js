@@ -13,49 +13,11 @@ function EditLine(props) {
   };
 
   return (
-    <Row
-      key={props.checkpoint.id}
-      css={{
-        marginBottom: "1rem",
-        zIndex: 1,
-        "@media (min-width: 320px)": {
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          paddingRight: 0,
-        },
-        "@media (min-width: 481px)": {
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          paddingRight: 0,
-        },
-        "@media (min-width: 768px)": {
-          width: "100%",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingRight: "0.5rem",
-        },
-      }}
-    >
+    <Row key={props.checkpoint.id} css={styles.container}>
       <Text color="white" css={{ fontWeight: "bold" }} size={18}>
         P{props.checkpoint.id} - {props.checkpoint.name}
       </Text>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          alignItems: "right",
-          width: "50%",
-        }}
-      >
+      <div style={styles.rightSide}>
         {!isEditing ? (
           <>
             <Text
@@ -77,57 +39,30 @@ function EditLine(props) {
           </>
         ) : (
           <>
-            <Row
-              css={{
-                display: "flex",
-                "@media (min-width: 320px)": {
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  paddingRight: 0,
-                },
-                "@media (min-width: 481px)": {
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  paddingRight: 0,
-                },
-                "@media (min-width: 768px)": {
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  width: "100%",
-                },
-              }}
-            >
+            <Row css={styles.editingRow}>
               <Input
                 clearable
                 fullWidth
                 size="lg"
                 placeholder="Nome da Equipa"
                 value={props.checkpoint.score}
-                css={{
-                  backgroundColor: "black",
-                  color: "white",
-                  width: "150px",
-                  marginRight: "1rem",
-                }}
+                css={styles.input}
               />
-              <FontAwesomeIcon
-                className="text-danger"
-                icon={faTimes}
-                size={"2x"}
-                onClick={() => setIsEditing(false)}
-                style={{ marginRight: "1rem" }}
-              />
-              <FontAwesomeIcon
-                className="text-primary"
-                icon={faCheck}
-                size={"2x"}
-                css={{ marginLeft: "1rem" }}
-              />
+              <div>
+                <FontAwesomeIcon
+                  className="text-danger"
+                  icon={faTimes}
+                  size={"2x"}
+                  onClick={() => setIsEditing(false)}
+                  style={{ marginRight: "1rem" }}
+                />
+                <FontAwesomeIcon
+                  className="text-primary"
+                  icon={faCheck}
+                  size={"2x"}
+                  css={{ marginLeft: "1rem" }}
+                />
+              </div>
             </Row>
           </>
         )}
@@ -137,3 +72,73 @@ function EditLine(props) {
 }
 
 export default EditLine;
+
+const styles = {
+  container: {
+    marginBottom: "1rem",
+    zIndex: 1,
+    "@media (min-width: 320px)": {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      paddingRight: 0,
+    },
+    "@media (min-width: 481px)": {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      paddingRight: 0,
+    },
+    "@media (min-width: 768px)": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingRight: "0.5rem",
+    },
+  },
+
+  rightSide: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "right",
+    width: "50%",
+  },
+
+  editingRow: {
+    display: "flex",
+    "@media (min-width: 320px)": {
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      paddingRight: 0,
+    },
+    "@media (min-width: 481px)": {
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      paddingRight: 0,
+    },
+    "@media (min-width: 768px)": {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      width: "100%",
+    },
+  },
+
+  input: {
+    backgroundColor: "black",
+    color: "white",
+    width: "150px",
+    marginRight: "1rem",
+  },
+};
