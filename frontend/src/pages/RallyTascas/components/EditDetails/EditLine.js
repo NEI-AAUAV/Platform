@@ -76,7 +76,10 @@ export default EditLine;
 const styles = {
   container: {
     marginBottom: "1rem",
+    border: "1px solid #18191a",
+    borderRadius: "0.5rem",
     zIndex: 1,
+    padding: "1rem",
     "@media (min-width: 320px)": {
       display: "flex",
       flexDirection: "column",

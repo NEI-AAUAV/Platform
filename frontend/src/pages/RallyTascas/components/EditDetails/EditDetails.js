@@ -123,16 +123,21 @@ const styles = {
     marginLeft: "20px",
     marginRight: "20px",
     backgroundColor: "#010b13",
+    border: "1px solid #979797",
     "@media (min-width: 320px)": {
       width: "80%",
-      marginLeft: "10%",
-      marginRight: "10%",
+      marginLeft: "auto",
+      marginRight: "auto",
     },
     "@media (min-width: 481px)": {
       width: "90%",
+      marginLeft: "auto",
+      marginRight: "auto",
     },
     "@media (min-width: 768px)": {
       width: "100%",
+      marginLeft: "auto",
+      marginRight: "auto",
     },
   },
 

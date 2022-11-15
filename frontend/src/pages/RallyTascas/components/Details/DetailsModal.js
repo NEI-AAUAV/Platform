@@ -16,26 +16,7 @@ function DetailsModal(props) {
       open={visible}
       onClose={closeHandler}
       width="700px"
-      css={{
-        height: "auto",
-        borderRadius: "0.5rem",
-        padding: "1rem",
-        marginLeft: "20px",
-        marginRight: "20px",
-        backgroundColor: "#010b13",
-        //decrease width on different screen sizes
-        "@media (min-width: 320px)": {
-          width: "80%",
-          marginLeft: "10%",
-          marginRight: "10%",
-        },
-        "@media (min-width: 481px)": {
-          width: "90%",
-        },
-        "@media (min-width: 768px)": {
-          width: "100%",
-        },
-      }}
+      css={styles.container}
     >
       <Modal.Header>
         <Text id="modal-title" color="white" size={18}>
@@ -47,16 +28,7 @@ function DetailsModal(props) {
         </Text>
       </Modal.Header>
       <Modal.Body>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
+        <Row css={styles.row}>
           <Text color="white" css={{ fontWeight: "bold" }} size={18}>
             Nome da Equipa:
           </Text>
@@ -64,16 +36,7 @@ function DetailsModal(props) {
             {props.selectedTeam.teamName}
           </Text>
         </Row>
-        <Row
-          css={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingRight: "0.5rem",
-            zIndex: 1,
-          }}
-        >
+        <Row css={styles.row}>
           <Text color="white" css={{ fontWeight: "bold" }} size={18}>
             Pontuação
           </Text>
@@ -87,17 +50,7 @@ function DetailsModal(props) {
           </Text>
         </Row>
         {props.selectedTeam.scores.map((checkpoint) => (
-          <Row
-            key={checkpoint.id}
-            css={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: "1rem",
-              paddingRight: "0.5rem",
-              zIndex: 1,
-            }}
-          >
+          <Row key={checkpoint.id} css={styles.rowPoints}>
             <Text color="white" css={{ fontWeight: "bold" }} size={18}>
               P{checkpoint.id} - {checkpoint.name}
             </Text>
@@ -117,3 +70,50 @@ function DetailsModal(props) {
 }
 
 export default DetailsModal;
+
+const styles = {
+  container: {
+    height: "auto",
+    borderRadius: "0.5rem",
+    padding: "1rem",
+    marginLeft: "20px",
+    marginRight: "20px",
+    backgroundColor: "#010b13",
+    "@media (min-width: 320px)": {
+      width: "80%",
+      marginLeft: "auto",
+      marginRight: "auto",
+    },
+    "@media (min-width: 481px)": {
+      width: "90%",
+      marginLeft: "auto",
+      marginRight: "auto",
+    },
+    "@media (min-width: 768px)": {
+      width: "100%",
+      marginLeft: "auto",
+      marginRight: "auto",
+    },
+  },
+
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: "1rem",
+    paddingRight: "0.5rem",
+    zIndex: 1,
+  },
+
+  rowPoints: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: "1rem",
+    paddingRight: "0.5rem",
+    zIndex: 1,
+    border: "1px solid #18191a",
+    borderRadius: "0.5rem",
+    padding: "1rem",
+  },
+};
