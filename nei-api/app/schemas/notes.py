@@ -1,20 +1,18 @@
 from datetime import datetime
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field
 
 from typing import Optional
 from typing_extensions import Annotated
 
 from .users import UsersInDB
 from .notes_schoolyear import NotesSchoolyearInDB
-
 from .notes_teachers import NotesTeachersInDB
-
 from .notes_subject import NotesSubjectInDB
 
 
 class NotesBase(BaseModel):
     name: Annotated[Optional[str], Field(max_length=255)]
-    location: Annotated[Optional[str], Field(max_length=255)]
+    location: Annotated[Optional[str], Field(max_length=2048)]
     subject_id: int
     author_id: int
     school_year_id: int
@@ -46,5 +44,6 @@ class NotesInDB(NotesBase):
     author: UsersInDB
     teacher: NotesTeachersInDB
     school_year: NotesSchoolyearInDB
+
     class Config:
         orm_mode = True

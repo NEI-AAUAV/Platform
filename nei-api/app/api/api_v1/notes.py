@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import Any, List
+from typing import Any, List, Optional
 
 from app import crud
 from app.api import deps
@@ -26,7 +26,12 @@ def get_notes(
     categories: List[str] = Query(
         default=[], alias='category[]',
         description="List of categories",
-    ), db: Session = Depends(deps.get_db),
+    ),
+    school_year: Optional[int] = None,
+    subject: Optional[int] = None,
+    student: Optional[int] = None,
+    teacher: Optional[int] = None,
+    db: Session = Depends(deps.get_db),
 ) -> Any:
     all_categories = set(crud.notes.get_notes_categories(db=db))
     
@@ -71,6 +76,9 @@ def update_note(
 @router.get("/subjects/", status_code=200, response_model=List[NotesSubjectInDB])
 def get_notes_subject(
     *, db: Session = Depends(deps.get_db),
+    school_year: Optional[int] = None,
+    student: Optional[int] = None,
+    teacher: Optional[int] = None,
 ) -> Any:
     """
     """
@@ -127,6 +135,9 @@ def update_note_thank(
 @router.get("/teachers/", status_code=200, response_model=List[NotesTeachersInDB])
 def get_notes_teachers(
     *, db: Session = Depends(deps.get_db),
+    school_year: Optional[int] = None,
+    subject: Optional[int] = None,
+    student: Optional[int] = None,
 ) -> Any:
     """
     """
@@ -183,6 +194,9 @@ def update_note_type(
 @router.get("/years/", status_code=200, response_model=List[NotesSchoolyearInDB])
 def get_notes_year(
     *, db: Session = Depends(deps.get_db),
+    subject: Optional[int] = None,
+    student: Optional[int] = None,
+    teacher: Optional[int] = None,
 ) -> Any:
     """
     """
