@@ -9,10 +9,11 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     network_mode: host
+    restart: always
   nei_api:
     build:
       context: nei-api
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes: 
       - ${PWD}/nei-api:/nei_api
     environment:
@@ -23,9 +24,9 @@ services:
   tacaua_api:
     build:
       context: tacaua-api
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes: 
-      - ${PWD}/tacaua-api:/nei_api
+      - ${PWD}/tacaua-api:/tacaua_api
     environment:
       - ROOT_PATH=/tacaua/api/v1
     depends_on:
@@ -34,7 +35,7 @@ services:
   rallytascas_api:
     build:
       context: rallytascas-api
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes: 
       - ${PWD}/rallytascas-api:/rallytascas_api
     environment:
@@ -42,6 +43,7 @@ services:
     depends_on:
       - pg_db
     network_mode: host
+    restart: always
   web_app:
     build:
       context: frontend
@@ -52,7 +54,9 @@ services:
     depends_on:
       - nei_api
       - tacaua_api
+      - rallytascas_api
     network_mode: host
+    restart: always
 
 volumes:
   pg_data:

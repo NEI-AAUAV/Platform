@@ -2,7 +2,7 @@ FROM python:3.9-slim as requirements-stage
 
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /rally-tascas
+WORKDIR /rallytascas_api
 
 RUN apt-get update && apt-get -y install libpq-dev gcc
 

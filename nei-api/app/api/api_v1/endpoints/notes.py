@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Any, List
-from app.schemas.pagination import Page, PageParams
 
 from app import crud
 from app.api import deps
@@ -17,6 +16,7 @@ from app.schemas import NotesSchoolyearCreate, NotesSchoolyearUpdate, NotesSchoo
 from app.schemas import NotesSubjectCreate, NotesSubjectUpdate, NotesSubjectInDB
 from app.schemas import NotesTeachersCreate, NotesTeachersUpdate, NotesTeachersInDB
 from app.schemas import NotesTypesCreate, NotesTypesUpdate, NotesTypesInDB
+from app.schemas.pagination import Page, PageParams
 
 router = APIRouter()
 

@@ -14,7 +14,7 @@ FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /rally-tascas
+WORKDIR /rallytascas_api
 
 COPY --from=requirements-stage /tmp/requirements.txt requirements.txt
 
