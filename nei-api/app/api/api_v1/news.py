@@ -14,7 +14,7 @@ router = APIRouter()
 def get_news_list(
     *, page_params: PageParams = Depends(PageParams),
     categories: List[str] = Query(
-        default=[], alias='category',
+        default=[], alias='category[]',
         description="List of categories",
     ),
     db: Session = Depends(deps.get_db)

@@ -75,7 +75,7 @@ def test_get_VideoTags(db: SessionTesting, client: TestClient) -> None:
     assert "id" in data[0]
 
 def test_get_VideosbyCategories(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/?tags=0&tags=1&page=1")
+    r = client.get(f"{settings.API_V1_STR}/videos/?tag[]=0&tag[]=1&page=1")
     data = r.json()
     assert r.status_code == 200
     assert len(data["items"]) == 3
@@ -93,13 +93,13 @@ def test_get_Video(db: SessionTesting, client: TestClient) -> None:
     assert "id" in data
     
 def test_get_VideoBadRequest(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/?tags=-1")
+    r = client.get(f"{settings.API_V1_STR}/videos/?tag[]=-1")
     data = r.json()
     print(data)
     assert r.status_code == 400
 
 def test_get_VideoWithPartialInfo(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/?tags=0&tags=1")
+    r = client.get(f"{settings.API_V1_STR}/videos/?tag[]=0&tag[]=1")
     data = r.json()
     print(data)
     assert r.status_code == 200

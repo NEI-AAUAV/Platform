@@ -7,6 +7,9 @@ import parse from 'html-react-parser';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faFilter, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
 
+import service from 'services/NEIService';
+
+
 function titleCase(str) {
     var splitStr = str.toLowerCase().split(' ');
     for (var i = 0; i < splitStr.length; i++) {
@@ -28,28 +31,19 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
         setLoading(true);
 
         // Get note data from API when component loads
-        fetch(process.env.REACT_APP_API + "/notes/?note=" + note_id)
-                .then((response) => {
-                    if (!response.ok) {throw new Error(response.status)}
-                    return response.json();
-                })
-                .then((response) => {
-                    if ('data' in response && response['data']) {
-                        setNote(response.data);
-                    } else {
-                        throw new Error('Note not found!');
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error getting note:", note_id, error);
-                    setAlert({
-                        'type': 'alert',
-                        'text': 'Ocorreu um erro ao obter os dados do apontamento que selecionaste. Por favor tenta novamente.'
-                    });
-                })
-                .finally(() => {
-                    setLoading(false);
+        service.getNoteById(note_id)
+            .then((data) => setNote(data))
+            .catch(() => {
+                console.error("Error getting note:", note_id);
+                setAlert({
+                    'type': 'alert',
+                    'text': 'Ocorreu um erro ao obter os dados do apontamento que selecionaste. Por favor tenta novamente.'
                 });
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+
     }, [note_id]);
 
     useEffect(() => {
