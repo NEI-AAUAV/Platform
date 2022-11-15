@@ -338,8 +338,8 @@ function InfoTable() {
             <Table.Column
               key={column.key}
               css={{
-                backgroundColor: "#16181A",
-                color: "white",
+                backgroundColor: "var(--background-column-index)",
+                color: "var(--column-color)",
                 fontWeight: "bold",
                 width: `calc(100% / ${columns.length})`,
               }}
@@ -352,11 +352,11 @@ function InfoTable() {
           {(team) => (
             <Table.Row
               css={{
-                color: "white",
+                color: "var(--column-color)",
                 fontSize: "0.875rem",
                 fontWeight: "bold",
                 "&:nth-child(even)": {
-                  backgroundColor: "#000711",
+                  backgroundColor: "var(--background-even-row)",
                 },
               }}
             >

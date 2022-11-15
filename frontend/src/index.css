@@ -15,13 +15,17 @@
     --card-shadow: rgba(0, 0, 0, 0.187);
     --border: rgb(0 0 0 / 13%);
     --hover: #ebebeb;
+    --background-even-row: rgb(243, 243, 243);
+    --background-column-index: rgb(235, 235, 235);
+    --background-modal: rgb(243, 243, 243);
+    --column-color: black;
 }
 
 [data-theme='dark'],
 [data-theme='dark']::after,
 [data-theme='dark']::before {
     --background: black;
-    --background-secondary: #212121;
+    --background-secondary: "#212121";
     --background-third: #050505;
     --background-card: black;
     --background-calendar-Today: rgba(242, 242, 242, 0.4);
@@ -31,6 +35,10 @@
     --card-shadow: rgba(255, 255, 255, 0.187);
     --border: rgb(255 255 255 / 39%);
     --hover: #383838;
+    --background-even-row: #000711;
+    --background-column-index: #16181A;
+    --background-modal: #010b13;
+    --column-color: white;
 }
 
 body {

@@ -10,8 +10,6 @@ function ModalTeam(props) {
     <Modal
       closeButton
       aria-labelledby="modal-title"
-      //este preventClose na vista de mobile que estava a fazer continuava a fechar-se a nao ser q eu alterasse um bocadinho o tamanho (nao faz sentido)
-      preventClose
       open={props.visible}
       onClose={closeHandler}
       css={{
@@ -20,8 +18,7 @@ function ModalTeam(props) {
         padding: "1rem",
         marginLeft: "20px",
         marginRight: "20px",
-        backgroundColor: "#010b13",
-        //decrease width on different screen sizes
+        backgroundColor: "var(--background-modal)",
         "@media (min-width: 320px)": {
           width: "80%",
           marginLeft: "10%",
@@ -36,9 +33,9 @@ function ModalTeam(props) {
       }}
     >
       <Modal.Header>
-        <Text id="modal-title" color="white" size={18}>
+        <Text id="modal-title" color="var(--column-color)" size={18}>
           Criar uma nova
-          <Text b color="white" size={18}>
+          <Text b color="var(--column-color)" size={18}>
             {" "}
             Equipa
           </Text>

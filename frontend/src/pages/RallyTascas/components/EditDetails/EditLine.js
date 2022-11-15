@@ -14,14 +14,14 @@ function EditLine(props) {
 
   return (
     <Row key={props.checkpoint.id} css={styles.container}>
-      <Text color="white" css={{ fontWeight: "bold" }} size={18}>
+      <Text color="var(--column-color)" css={{ fontWeight: "bold" }} size={18}>
         P{props.checkpoint.id} - {props.checkpoint.name}
       </Text>
       <div style={styles.rightSide}>
         {!isEditing ? (
           <>
             <Text
-              color="white"
+              color="var(--column-color)"
               size={18}
               css={{
                 fontWeight: "bold",
@@ -44,7 +44,7 @@ function EditLine(props) {
                 clearable
                 fullWidth
                 size="lg"
-                placeholder="Nome da Equipa"
+                placeholder="Pontos"
                 value={props.checkpoint.score}
                 css={styles.input}
               />
@@ -135,7 +135,6 @@ const styles = {
 
   input: {
     backgroundColor: "black",
-    color: "white",
     width: "150px",
     marginRight: "1rem",
   },

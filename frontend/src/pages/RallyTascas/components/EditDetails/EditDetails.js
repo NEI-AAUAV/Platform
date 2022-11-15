@@ -30,9 +30,9 @@ function EditDetails(props) {
       css={styles.modal}
     >
       <Modal.Header>
-        <Text id="modal-title" color="white" size={18}>
+        <Text id="modal-title" color="var(--column-color)" size={18}>
           Detalhes de
-          <Text b color="white" size={18}>
+          <Text b color="var(--column-color)" size={18}>
             {" "}
             {props.selectedTeam.teamName}
           </Text>
@@ -40,13 +40,17 @@ function EditDetails(props) {
       </Modal.Header>
       <Modal.Body>
         <Row css={styles.modalBody}>
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
+          <Text
+            color="var(--column-color)"
+            css={{ fontWeight: "bold" }}
+            size={18}
+          >
             Nome da Equipa:
           </Text>
           <div style={styles.modalRow}>
             {!isEditing ? (
               <>
-                <Text color="white" size={18}>
+                <Text color="var(--column-color)" size={18}>
                   {props.selectedTeam.teamName}
                 </Text>
                 <IconButton
@@ -88,15 +92,19 @@ function EditDetails(props) {
           </div>
         </Row>
         <Row css={styles.modalBody}>
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
+          <Text
+            color="var(--column-color)"
+            css={{ fontWeight: "bold" }}
+            size={18}
+          >
             Pontuação
           </Text>
-          <Text color="white" size={18}>
+          <Text color="var(--column-color)" size={18}>
             {props.selectedTeam.total}
           </Text>
         </Row>
         <Row>
-          <Text color="white" size={18}>
+          <Text color="var(--column-color)" size={18}>
             Checkpoints
           </Text>
         </Row>
@@ -122,7 +130,7 @@ const styles = {
     padding: "1rem",
     marginLeft: "20px",
     marginRight: "20px",
-    backgroundColor: "#010b13",
+    backgroundColor: "var(--background-modal)",
     border: "1px solid #979797",
     "@media (min-width: 320px)": {
       width: "80%",

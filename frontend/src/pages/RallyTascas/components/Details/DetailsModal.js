@@ -19,9 +19,9 @@ function DetailsModal(props) {
       css={styles.container}
     >
       <Modal.Header>
-        <Text id="modal-title" color="white" size={18}>
+        <Text id="modal-title" color="var(--column-color)" size={18}>
           Detalhes de
-          <Text b color="white" size={18}>
+          <Text b color="var(--column-color)" size={18}>
             {" "}
             {props.selectedTeam.teamName}
           </Text>
@@ -29,32 +29,32 @@ function DetailsModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Row css={styles.row}>
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
+          <Text color="var(--column-color)" css={{ fontWeight: "bold" }} size={18}>
             Nome da Equipa:
           </Text>
-          <Text color="white" size={18}>
+          <Text color="var(--column-color)" size={18}>
             {props.selectedTeam.teamName}
           </Text>
         </Row>
         <Row css={styles.row}>
-          <Text color="white" css={{ fontWeight: "bold" }} size={18}>
+          <Text color="var(--column-color)" css={{ fontWeight: "bold" }} size={18}>
             Pontuação
           </Text>
-          <Text color="white" size={18}>
+          <Text color="var(--column-color)" size={18}>
             {props.selectedTeam.total}
           </Text>
         </Row>
         <Row>
-          <Text color="white" size={18}>
+          <Text color="var(--column-color)" size={18}>
             Checkpoints
           </Text>
         </Row>
         {props.selectedTeam.scores.map((checkpoint) => (
           <Row key={checkpoint.id} css={styles.rowPoints}>
-            <Text color="white" css={{ fontWeight: "bold" }} size={18}>
+            <Text color="var(--column-color)" css={{ fontWeight: "bold" }} size={18}>
               P{checkpoint.id} - {checkpoint.name}
             </Text>
-            <Text color="white" size={18}>
+            <Text color="var(--column-color)" size={18}>
               {checkpoint.score} Pontos
             </Text>
           </Row>
@@ -78,7 +78,7 @@ const styles = {
     padding: "1rem",
     marginLeft: "20px",
     marginRight: "20px",
-    backgroundColor: "#010b13",
+    backgroundColor: "var(--background-modal)",
     "@media (min-width: 320px)": {
       width: "80%",
       marginLeft: "auto",
