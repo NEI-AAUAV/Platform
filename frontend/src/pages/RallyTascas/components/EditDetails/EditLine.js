@@ -85,16 +85,12 @@ const styles = {
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
-      width: "100%",
-      paddingRight: 0,
     },
     "@media (min-width: 481px)": {
       display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
+      flexDirection: "row",
+      justifyContent: "space-between",
       alignItems: "center",
-      width: "100%",
-      paddingRight: 0,
     },
     "@media (min-width: 768px)": {
       width: "100%",
@@ -102,7 +98,6 @@ const styles = {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingRight: "0.5rem",
     },
   },
 
