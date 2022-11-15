@@ -21,6 +21,7 @@ services:
     depends_on:
       - pg_db
     network_mode: host
+    restart: always
   tacaua_api:
     build:
       context: tacaua-api
@@ -32,6 +33,7 @@ services:
     depends_on:
       - pg_db
     network_mode: host
+    restart: always
   rallytascas_api:
     build:
       context: rallytascas-api
