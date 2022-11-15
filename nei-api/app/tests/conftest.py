@@ -9,7 +9,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.schema import CreateSchema
 
 from app.api.deps import get_db
-from app.api.api_v1.api import api_router
+from app.api.api import api_v1_router
 from app.core.config import settings
 from app.db.base_class import Base
 
@@ -62,7 +62,7 @@ def app() -> Generator[FastAPI, Any, None]:
     """Create a new application for the test session."""
 
     _app = FastAPI()
-    _app.include_router(api_router, prefix=settings.API_V1_STR)
+    _app.include_router(api_v1_router, prefix=settings.API_V1_STR)
     yield _app
 
 

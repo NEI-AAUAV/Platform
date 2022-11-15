@@ -16,7 +16,7 @@ router = APIRouter()
 def get_video(
     *, page_params: PageParams = Depends(PageParams),
     tags: list[int] = Query(
-        default=[], alias='tags',
+        default=[], alias='tag[]',
         description="List of Tags"
     ),
     db: Session = Depends(deps.get_db)
