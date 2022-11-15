@@ -1,12 +1,12 @@
 import axios from "axios";
-import { TACAUA_URL } from "config";
+import config from "config";
 
-let instance = null;
 
 const client = axios.create({
-    baseURL: TACAUA_URL,
+    baseURL: config.TACAUA_URL,
     timeout: 5000,
 });
+
 
 client.interceptors.request.use(function (config) {
     // Do something before request is sent
@@ -45,15 +45,8 @@ client.interceptors.response.use(function (response) {
 });
 
 
-class NEIService {
-
-    constructor() {
-        if (!instance) {
-            instance = this;
-        }
-        return instance;
-    }
+class TacaUAService {
 
 }
 
-export default NEIService();
+export default new TacaUAService();

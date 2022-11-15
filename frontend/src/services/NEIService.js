@@ -1,13 +1,12 @@
 import axios from "axios";
-import { NEI_URL } from "config";
+import config from "config";
 
-
-let instance = null;
 
 const client = axios.create({
-    baseURL: NEI_URL,
+    baseURL: config.NEI_URL,
     timeout: 5000,
 });
+
 
 client.interceptors.request.use(function (config) {
     // Do something before request is sent
@@ -48,21 +47,34 @@ client.interceptors.response.use(function (response) {
 
 class NEIService {
 
-    constructor() {
-        if (!instance) {
-            instance = this;
-        }
-        return instance;
-    }
-
-    async getNotes() {
-        return await client.get(`/notes`, { params: { category: ['ola'] } });
+    async getNotes(params) {
+        return await client.get('/notes', { params });
     }
 
     async getNotesById(id) {
         return await client.get(`/notes/${id}`);
     }
 
+    async getNotesThanks() {
+        return await client.get('/notes/thanks');
+    }
+
+    async getNotesYears(params) {
+        return await client.get('/notes/years', { params });
+    }
+
+    async getNotesSubjects(params) {
+        return await client.get('/notes/subjects', { params });
+    }
+
+    async getNotesStudents(params) {
+        return await client.get('/notes/students', { params });
+    }
+
+    async getNotesTeachers(params) {
+        return await client.get('/notes/teachers', { params });
+    }
 }
 
-export default NEIService();
+// Export a singleton service
+export default new NEIService();
