@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Text, Button, Row, Input } from "@nextui-org/react";
 import { IconButton } from "../IconButton";
-import { EditIcon } from "../EditIcon";
+import { EditIcon } from "../Icons/EditIcon";
 import EditLine from "./EditLine";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";

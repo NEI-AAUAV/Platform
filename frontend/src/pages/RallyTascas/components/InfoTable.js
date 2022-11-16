@@ -1,10 +1,11 @@
 import React from "react";
 import { Col, Row, Table, Tooltip } from "@nextui-org/react";
 import { IconButton } from "./IconButton";
-import { EyeIcon } from "./EyeIcon";
-import { EditIcon } from "./EditIcon";
+import { EyeIcon } from "./Icons/EyeIcon";
+import { EditIcon } from "./Icons/EditIcon";
 import DetailsModal from "./Details/DetailsModal";
 import EditDetails from "./EditDetails/EditDetails";
+import StaffModal from "./StaffModal/StaffModal";
 
 const columns = [
   {
@@ -267,6 +268,7 @@ const rows = [
 function InfoTable() {
   const [visibleDetails, setVisibleDetails] = React.useState(false);
   const [editDetails, setEditDetails] = React.useState(false);
+  const [staffModal, setStaffModal] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState(null);
   const detailsModalHandler = () => {
     setVisibleDetails(true);
@@ -274,6 +276,10 @@ function InfoTable() {
 
   const editModalHandler = () => {
     setEditDetails(true);
+  };
+
+  const staffModalHandler = () => {
+    setStaffModal(true);
   };
 
   const renderCell = (team, columnKey) => {
@@ -312,6 +318,20 @@ function InfoTable() {
                     onClick={() => {
                       setSelectedTeam(team);
                       editModalHandler();
+                    }}
+                  />
+                </IconButton>
+              </Tooltip>
+            </Col>
+            <Col css={{ d: "flex" }}>
+              <Tooltip content="Staff Modal">
+                <IconButton>
+                  <EditIcon
+                    size={20}
+                    fill="#979797"
+                    onClick={() => {
+                      setSelectedTeam(team);
+                      staffModalHandler();
                     }}
                   />
                 </IconButton>
@@ -380,6 +400,14 @@ function InfoTable() {
         <EditDetails
           visible={editDetails}
           setVisible={setEditDetails}
+          selectedTeam={selectedTeam}
+        />
+      )}
+
+      {staffModal && (
+        <StaffModal
+          visible={staffModal}
+          setVisible={setStaffModal}
           selectedTeam={selectedTeam}
         />
       )}
