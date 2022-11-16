@@ -62,7 +62,6 @@ def setup_database(db: SessionTesting):
     for video in videos:
         v = Video(**video)
         v.tags = [ db.query(VideoTag).get(t) for t in video["tags"] ]
-        print()
         db.add(v)
     db.commit()
 
@@ -86,7 +85,6 @@ def test_get_Video(db: SessionTesting, client: TestClient) -> None:
     id = (db.query(Video).first().id)
     r = client.get(f"{settings.API_V1_STR}/videos/{id}")
     data = r.json()
-    print(data)
     assert r.status_code == 200
     assert len(data) == 8
     assert data.keys() >= videos[0].keys()
@@ -95,13 +93,11 @@ def test_get_Video(db: SessionTesting, client: TestClient) -> None:
 def test_get_VideoBadRequest(db: SessionTesting, client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/videos/?tag[]=-1")
     data = r.json()
-    print(data)
     assert r.status_code == 400
 
 def test_get_VideoWithPartialInfo(db: SessionTesting, client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/videos/?tag[]=0&tag[]=1")
     data = r.json()
-    print(data)
     assert r.status_code == 200
     assert len(data["items"]) == 3
     assert data["items"][0].keys() >= videos[0].keys()
@@ -109,7 +105,6 @@ def test_get_VideoWithPartialInfo(db: SessionTesting, client: TestClient) -> Non
     
     r = client.get(f"{settings.API_V1_STR}/videos/?page=1")
     data = r.json()
-    print(data)
     assert r.status_code == 200
     assert len(data["items"]) == 3
     assert data["items"][0].keys() >= videos[0].keys()
