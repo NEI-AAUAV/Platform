@@ -2,11 +2,11 @@ from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
 from app.models.notes import Notes
-from app.schemas.notes import NotesCreate, NotesUpdate, NotesInDB
+from app.schemas.notes import NotesInDB
 from typing import List
 
 
-class CRUDNotes(CRUDBase[Notes, NotesCreate, NotesUpdate]):
+class CRUDNotes(CRUDBase[Notes, None, None]):
     
     def get_notes_categories(self, db: Session) -> List[str]:
         """
@@ -24,13 +24,10 @@ class CRUDNotes(CRUDBase[Notes, NotesCreate, NotesUpdate]):
         """
         Return filtered/unfiltered notes
         """
-        if categories:
-            return db.query(Notes).\
-                filter(Notes.category.in_(categories)).\
-                limit(size).offset((page - 1) * size).all()
-        else:
-            return db.query(Notes).\
-                limit(size).offset((page - 1) * size).all()
+        query = db.query(Notes)
+        for cat in categories:
+            query = query.filter(getattr(Notes, cat) == 1)
+        return query.limit(size).offset((page - 1) * size).all()
 
 
 notes = CRUDNotes(Notes)

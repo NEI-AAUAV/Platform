@@ -28,14 +28,6 @@ class NotesBase(BaseModel):
     created_at: datetime
     type_id: int
     size: int
-    category: Annotated[str, Field(max_length=255)]
-    
-class NotesCreate(NotesBase):
-    pass
-
-
-class NotesUpdate(NotesBase):
-    pass
 
 
 class NotesInDB(NotesBase):
