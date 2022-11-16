@@ -164,9 +164,9 @@ const Apontamentos = () => {
         }
         else {
             service.getNotes({ ...params, page: selPage })
-                .then(({ items, total }) => {
+                .then(({ items, last }) => {
                     setData(items);
-                    setPageNumber(total || 1);
+                    setPageNumber(last || 1);
                     setLoading(false);
                 })
                 .catch(() => {
