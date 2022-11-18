@@ -9,7 +9,6 @@ import Game from './components/Game';
 import "./index.css";
 import GameFilter from "./components/GameFilter";
 
-import SportsBracket from "./SportsBracket";
 import SportBracket from "./SportBracket";
 
 const Sports = () => {
