@@ -15,7 +15,7 @@ services:
       context: nei-api
       dockerfile: Dockerfile.dev
     volumes: 
-      - ${PWD}/nei-api:/nei_api
+      - ./nei-api:/nei_api
     environment:
       - ROOT_PATH=/nei/api/v1
     depends_on:
@@ -27,7 +27,7 @@ services:
       context: tacaua-api
       dockerfile: Dockerfile.dev
     volumes: 
-      - ${PWD}/tacaua-api:/tacaua_api
+      - ./tacaua-api:/tacaua_api
     environment:
       - ROOT_PATH=/tacaua/api/v1
     depends_on:
@@ -39,7 +39,7 @@ services:
       context: rallytascas-api
       dockerfile: Dockerfile.dev
     volumes: 
-      - ${PWD}/rallytascas-api:/rallytascas_api
+      - ./rallytascas-api:/rallytascas_api
     environment:
       - ROOT_PATH=/rallytascas/api/v1
     depends_on:
@@ -52,7 +52,7 @@ services:
       dockerfile: Dockerfile.dev
     volumes: 
       - node_modules:/web_app/node_modules
-      - ${PWD}/frontend:/web_app
+      - ./frontend:/web_app
     depends_on:
       - nei_api
       - tacaua_api
