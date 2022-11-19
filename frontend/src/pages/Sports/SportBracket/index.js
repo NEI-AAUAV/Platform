@@ -1,5 +1,8 @@
 
 import "./index.css"
+import * as d3 from 'd3';
+import { useEffect } from "react";
+import { renderToStaticMarkup } from "react-dom/server"
 
 
 const SportMatch = ({ id, x, y, team1, team2, score1, score2, live, horizontal }) => (
@@ -44,13 +47,159 @@ const SportMatch = ({ id, x, y, team1, team2, score1, score2, live, horizontal }
     </g>
 );
 
+let treeDataRaw = [
+    {
+
+        "id": 1,
+        "pid1": null,
+        "pid2": null,
+        "team1": "Eng. Informatica",
+        "team2": "Eng. Mecanica",
+        "score1": 10,
+        "score2": 1,
+    },
+    {
+        "id": 2,
+        "pid1": null,
+        "pid2": null,
+        "team1": "Eng. Materiais",
+        "team2": "Eng. Mecanica",
+        "score1": 11,
+        "score2": 2,
+    },
+    {
+        "id": 3,
+        "pid1": null,
+        "pid2": null,
+        "team1": "Eng. Informatica",
+        "team2": "Eng. Mecanica",
+        "score1": 21,
+        "score2": 12,
+    },
+    {
+        "id": 4,
+        "pid1": null,
+        "pid2": null,
+        "team1": "Ciências Biomédica",
+        "team2": "Eng. Mecanica",
+        "score1": 2,
+        "score2": 12,
+    },
+    {
+        "id": 5,
+        "pid1": 1,
+        "pid2": 2,
+        "team1": "EGI",
+        "team2": "Biologia",
+        "score1": 3,
+        "score2": 5,
+    },
+    {
+        "id": 6,
+        "pid1": 3,
+        "pid2": 4,
+        "team1": "Geologia",
+        "team2": "MOG",
+        "score1": 0,
+        "score2": 1,
+    },
+    {
+        "id": 7,
+        "pid1": 5,
+        "pid2": 6,
+        "parentId": null,
+        "team1": "Eng. quimica",
+        "team2": "ESSUA",
+        "score1": 2,
+        "score2": 1,
+    }
+];
 
 function buildBracket() {
+
+    treeDataRaw = treeDataRaw.reduce((a, m) => ({ ...a, [m.id]: m }), {});
+
+    Object.entries(treeDataRaw).map(([id, match]) => {
+        if (match.pid1) treeDataRaw[match.pid1]["parentId"] = +id;
+        if (match.pid2) treeDataRaw[match.pid2]["parentId"] = +id;
+    })
+
+    const treeData = d3.stratify()
+        .id(d => d.id)
+        .parentId(d => d.parentId)
+        (Object.values(treeDataRaw));
+
+    // set the dimensions and margins of the diagram
+    const margin = { top: 20, right: 90, bottom: 30, left: 90 },
+        width = 900 - margin.left - margin.right,
+        height = 942 - margin.top - margin.bottom;
+
+    // declares a tree layout and assigns the size
+    const treemap = d3.tree().size([height, width]);
+
+    //  assigns the data to a hierarchy using parent-child relationships
+    let nodes = d3.hierarchy(treeData, d => d.children);
+
+    // maps the node data to the tree layout
+    nodes = treemap(nodes);
+
+    // append the svg object to the body of the page
+    // appends a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+    const svg = d3.select("svg.bracket-svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom),
+        g = svg.append("g")
+            .attr("transform",
+                "translate(" + (width + margin.left) + "," + margin.top + ") scale(-1, 1)");
+
+    // adds the links between the nodes
+    const link = g.selectAll(".link")
+        .data(nodes.descendants().slice(1))
+        .enter().append("path")
+        .attr("class", "link")
+        .style("stroke", d => d.data.level)
+        .attr("d", d => d3.line()
+            .x((p) => p[0])
+            .y((p) => p[1])
+            .curve(d3.curveStep)([[d.y, d.x], [d.parent.y, d.parent.x]])
+        );
+
+    // adds each node as a group
+    const node = g.selectAll(".node")
+        .data(nodes.descendants())
+        .enter().append("g")
+        .attr("class", d => "node" + (d.children ? " node--internal" : " node--leaf"))
+        .attr("transform", d => "translate(" + d.y + "," + d.x + ")")
+        .each(function (d) {
+            d3.select(this).html(
+                renderToStaticMarkup(<SportMatch id="3" team1="NMec" team2="NEI" score1="20" score2="90" x={d.x} y={d.y} />)
+            )
+        })
+
+    // // adds the circle to the node
+    // node.append("circle")
+    //     .attr("r", 10)
+    //     .style("stroke", "white")
+    //     .style("fill", "black");
+
+    // // adds the text to the node
+    // node.append("text")
+    //     .attr("dy", ".35em")
+    //     .attr("x", d => d.children ? (d.data.value + 5) * -1 : d.data.value + 5)
+    //     .attr("y", d => d.children && d.depth !== 0 ? -(d.data.value + 5) : d)
+    //     .style("text-anchor", d => d.children ? "end" : "start")
+    //     .text(d => d.data.name);
 
 }
 
 
 const SportBracket = () => {
+
+    useEffect(() => {
+        buildBracket();
+    }, [])
+
     return (
         <>
             <svg className="bracket-svg" width="900" height="942" viewBox="0 0 900 942">

@@ -1,3 +1,10 @@
+svg.bracket-svg .link {
+    stroke: var(--border);
+    stroke-width: 2;
+    fill: none;
+}
+
+
 svg.bracket-svg {
     position: absolute;
     -webkit-transform-origin: top left;
