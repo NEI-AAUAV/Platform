@@ -14,7 +14,7 @@ router = APIRouter()
 def get_teams(
     *, db: Session = Depends(deps.get_db)
 ) -> Any:
-    return crud.team.get_all(db=db)
+    return crud.team.get_multi(db)
 
 
 @router.put("/teams/{id}/checkpoint", status_code=201, response_model=TeamInDB)
