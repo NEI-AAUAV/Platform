@@ -3,7 +3,7 @@ from datetime import datetime
 
 from app.crud.base import CRUDBase
 from app.models.team import Team
-from app.schemas.teams import TeamInDB, TeamCreate, TeamUpdate, Checkpoint
+from app.schemas.team import TeamInDB, TeamCreate, TeamUpdate, Checkpoint
 
 class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
 

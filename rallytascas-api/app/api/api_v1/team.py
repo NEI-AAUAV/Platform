@@ -6,18 +6,18 @@ from app import crud
 from app.exception import NotFoundException
 from app.api import deps
 from app.core.logging import logger
-from app.schemas.teams import TeamCreate, TeamUpdate, TeamInDB, Checkpoint
+from app.schemas.team import TeamCreate, TeamUpdate, TeamInDB, Checkpoint
 
 router = APIRouter()
 
-@router.get("/teams", status_code=200, response_model=List[TeamInDB])
+@router.get("/", status_code=200, response_model=List[TeamInDB])
 def get_teams(
     *, db: Session = Depends(deps.get_db)
 ) -> Any:
     return crud.team.get_multi(db)
 
 
-@router.put("/teams/{id}/checkpoint", status_code=201, response_model=TeamInDB)
+@router.put("/{id}/checkpoint", status_code=201, response_model=TeamInDB)
 def add_checkpoint(
     id: int,
     checkpoint: Checkpoint, 

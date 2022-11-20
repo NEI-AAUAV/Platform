@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 from typing import Optional, List
-
+from datetime import datetime
 
 class TeamBase(BaseModel):
     name: str
-    scores: Optional(List[int])
-    times: Optional(List[datetime])
+    scores: Optional[List[int]]
+    times: Optional[List[datetime]]
 
     
 class TeamCreate(TeamBase):
