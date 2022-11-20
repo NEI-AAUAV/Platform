@@ -29,18 +29,19 @@ def setup_database(db: SessionTesting):
         db.add(Team(**teams))
     db.commit()
 
-def get_teams(client: TestClient) -> None:
+def test_get_teams(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/team/")
     data = r.json()
     assert r.status_code == 200
-    assert len(data["items"]) == 2
-    assert data["items"][0].keys() >= team[0].keys()
-    assert "id" in data["items"][0]
+    assert len(data) == 2
+    assert data[0].keys() >= team[0].keys()
+    assert "id" in data[0]
 
-def add_checkpoint(client: TestClient) -> None:
+def test_add_checkpoint(client: TestClient) -> None:
     r = client.put(f"{settings.API_V1_STR}/team/0/checkpoint", json={"checkpoint_id": 1, "score": 100})
     data = r.json()
     assert r.status_code == 201
+    print(data)
     assert data["id"] == 0
     assert data["scores"][0] == 100
     assert len(data["times"]) == 1
