@@ -1,10 +1,3 @@
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 9.6.10
--- Dumped by pg_dump version 9.6.10
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -15,30 +8,24 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
-
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
 
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: _faina_roles; Type: TABLE; Schema: aauav_nei; 
+-- Table structure for table classificacao_tacaua
 --
 
+CREATE SEQUENCE aauav_nei.classificacao_tacaua_seq
+   START 3
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.classificacao_tacaua (
-  id SERIAL NOT NULL,
+  id integer default nextval('aauav_nei.classificacao_tacaua_seq') NOT NULL,
   idModalidade integer  NOT NULL,
   idEquipa integer  NOT NULL,
   pontuacao integer  NOT NULL DEFAULT '0',
@@ -60,8 +47,13 @@ INSERT INTO aauav_nei.classificacao_tacaua (id, idModalidade, idEquipa, pontuaca
 -- Table structure for table companies
 --
 
+
+CREATE SEQUENCE aauav_nei.companies_seq
+   START 11
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.companies (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.companies') NOT NULL,
   name character varying(255) NOT NULL,
   email character varying(255) NOT NULL,
   permission integer NOT NULL,
@@ -82,8 +74,13 @@ INSERT INTO aauav_nei.companies (id, name, email, permission, password) VALUES
 -- Table structure for table equipas_tacaua
 --
 
+
+CREATE SEQUENCE aauav_nei.equipas_tacaua_seq
+   START 43
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.equipas_tacaua (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.equipas_tacaua_seq') NOT NULL,
   nome text NOT NULL
 );
 
@@ -206,8 +203,13 @@ INSERT INTO aauav_nei.estatistica (id, acessos) VALUES
 -- Table structure for table estatistica_comp
 --
 
+
+CREATE SEQUENCE aauav_nei.estatistica_comp_seq
+   START 1
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.estatistica_comp (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.estatistica_comp_seq') NOT NULL,
   acessos integer NOT NULL
 );
 
@@ -217,8 +219,13 @@ CREATE TABLE aauav_nei.estatistica_comp (
 -- Table structure for table faina
 --
 
+
+CREATE SEQUENCE aauav_nei.faina_seq
+   START 2022
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.faina (
-  mandato integer NOT NULL,
+  mandato integer default nextval('aauav_nei.faina_seq') NOT NULL,
   imagem character varying(255) DEFAULT NULL,
   anoLetivo character varying(9) DEFAULT NULL
 );
@@ -245,8 +252,13 @@ INSERT INTO aauav_nei.faina (mandato, imagem, anoLetivo) VALUES
 -- Table structure for table faina_memb
 --
 
+
+CREATE SEQUENCE aauav_nei.faina_memb_seq
+   START 248
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.faina_memb (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.faina_memb_seq') NOT NULL,
   nome character varying NOT NULL,
   ano integer NOT NULL
 );
@@ -349,8 +361,13 @@ INSERT INTO aauav_nei.faina_memb (id, nome, ano) VALUES
 -- Table structure for table faina_member
 --
 
+
+CREATE SEQUENCE aauav_nei.faina_member_seq
+   START 326
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.faina_member (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.faina_member_seq') NOT NULL,
   member integer DEFAULT NULL,
   year integer DEFAULT NULL,
   role integer DEFAULT NULL
@@ -475,8 +492,13 @@ INSERT INTO aauav_nei.faina_member (id, member, year, role) VALUES
 -- Table structure for table faina_roles
 --
 
+
+CREATE SEQUENCE aauav_nei.faina_roles_seq
+   START 11
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.faina_roles (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.faina_roles_seq') NOT NULL,
   name character varying(20) DEFAULT NULL,
   weight integer DEFAULT NULL
 );
@@ -503,8 +525,13 @@ INSERT INTO aauav_nei.faina_roles (id, name, weight) VALUES
 -- Table structure for table GenTokens
 --
 
+
+CREATE SEQUENCE aauav_nei.GenTokens_seq
+   START 9130
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.GenTokens (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.GenTokens_seq') NOT NULL,
   userid integer NOT NULL,
   token character varying(255) NOT NULL,
   expire_date integer NOT NULL
@@ -2864,8 +2891,12 @@ INSERT INTO aauav_nei.GenTokens (id, userid, token, expire_date) VALUES
 -- Table structure for table GenTokensComp
 --
 
+CREATE SEQUENCE aauav_nei.GenTokensComp_seq
+   START 470
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.GenTokensComp (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.GenTokensComp_seq') NOT NULL,
   compid integer NOT NULL,
   token character varying(255) NOT NULL,
   expire_date integer NOT NULL
@@ -3008,6 +3039,11 @@ INSERT INTO aauav_nei.GenTokensComp (id, compid, token, expire_date) VALUES
 -- Table structure for table history
 --
 
+
+CREATE SEQUENCE aauav_nei.classificacaoo_tacaua_seq
+   START 3
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.history (
   moment date NOT NULL,
   title character varying(120) DEFAULT NULL,
@@ -3033,8 +3069,13 @@ INSERT INTO aauav_nei.history (moment, title, body, image) VALUES
 -- Table structure for table jogos_tacaua
 --
 
+
+CREATE SEQUENCE aauav_nei.jogos_tacaua_seq
+   START 1
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.jogos_tacaua (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.jogos_tacaua_seq') NOT NULL,
   idModalidade integer NOT NULL,
   idEquipaCasa integer NOT NULL,
   idEquipaFora integer NOT NULL,
@@ -3052,8 +3093,12 @@ CREATE TABLE aauav_nei.jogos_tacaua (
 -- Table structure for table Links
 --
 
+CREATE SEQUENCE aauav_nei.Links_seq
+   START 30
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.Links (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.Links_seq') NOT NULL,
   nome character varying(255) NOT NULL,
   link text NOT NULL
 );
@@ -3084,8 +3129,12 @@ INSERT INTO aauav_nei.Links (id, nome, link) VALUES
 -- Table structure for table merchandisings
 --
 
+CREATE SEQUENCE aauav_nei.merchandisings_seq
+   START 20
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.merchandisings (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.merchandisings_seq') NOT NULL,
   name character varying(255) NOT NULL,
   image character varying(255) NOT NULL,
   price numeric NOT NULL,
@@ -3109,10 +3158,14 @@ INSERT INTO aauav_nei.merchandisings (id, name, image, price, number_of_items) V
 -- Table structure for table modalidades_tacaua
 --
 
+CREATE SEQUENCE aauav_nei.modalidades_tacaua_seq
+   START 37
+   INCREMENT 1;
+
 CREATE TYPE aauav_nei.sport_participants AS ENUM ('COLETIVA', 'INDIVIDUAL');
 
 CREATE TABLE aauav_nei.modalidades_tacaua (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.modalidades_tacaua_seq') NOT NULL,
   modalidade text NOT NULL,
   tipo_modalidade aauav_nei.sport_participants NOT NULL,
   ano_letivo text NOT NULL,
@@ -3353,10 +3406,15 @@ INSERT INTO aauav_nei.NEI_Disciplina_Apontamentos (disciplina, link_ficheiro, no
 --
 -- Table structure for table NEI_Merch
 --
+
+CREATE SEQUENCE aauav_nei.NEI_Merch_seq
+   START 68
+   INCREMENT 1;
+
 CREATE TYPE aauav_nei.bi AS ENUM ('0', '1');
 
 CREATE TABLE aauav_nei.NEI_Merch (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.NEI_Merch_seq') NOT NULL,
   data character varying(200) NOT NULL,
   hora character varying(200) NOT NULL,
   nome character varying(200) NOT NULL,
@@ -3393,8 +3451,13 @@ INSERT INTO aauav_nei.NEI_Merch (id, data, hora, nome, email, estado, ficheiro) 
 --
 -- Table structure for table news
 --
+
+CREATE SEQUENCE aauav_nei.news_seq
+   START 97
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.news (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.news_seq') NOT NULL,
   header character varying(255) NOT NULL,
   status aauav_nei.bi NOT NULL,
   title character varying(255) NOT NULL,
@@ -3451,8 +3514,12 @@ INSERT INTO aauav_nei.news (id, header, status, title, category, content, publis
 -- Table structure for table notes
 --
 
+CREATE SEQUENCE aauav_nei.notes_seq
+   START 386
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.notes (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.notes_seq') NOT NULL,
   name character varying(255) DEFAULT NULL,
   location character varying(255) DEFAULT NULL,
   subject integer DEFAULT NULL,
@@ -3751,8 +3818,12 @@ INSERT INTO aauav_nei.notes (id, name, location, subject, author, schoolYear, te
 -- Table structure for table notes_schoolyear
 --
 
+CREATE SEQUENCE aauav_nei.notes_schoolyear_seq
+   START 9
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.notes_schoolyear (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.notes_schoolyear') NOT NULL,
   yearBegin smallint DEFAULT NULL,
   yearEnd smallint DEFAULT NULL
 );
@@ -3841,8 +3912,13 @@ INSERT INTO aauav_nei.notes_subjects (paco_code, name, year, semester, short, di
 -- Table structure for table notes_teachers
 --
 
+
+CREATE SEQUENCE aauav_nei.notes_teachers_seq
+   START 41
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.notes_teachers (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.notes_teachers_seq') NOT NULL,
   name character varying(100) DEFAULT NULL,
   personalPage character varying(255) DEFAULT NULL
 );
@@ -3893,8 +3969,13 @@ INSERT INTO aauav_nei.notes_teachers (id, name, personalPage) VALUES
 -- Table structure for table notes_thanks
 --
 
+
+CREATE SEQUENCE aauav_nei.notes_thanks_seq
+   START 5
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.notes_thanks (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.notes_thanks_seq') NOT NULL,
   author integer DEFAULT NULL,
   notesPersonalPage character varying(255) DEFAULT NULL
 );
@@ -3912,8 +3993,12 @@ INSERT INTO aauav_nei.notes_thanks (id, author, notesPersonalPage) VALUES
 -- Table structure for table notes_types
 --
 
+CREATE SEQUENCE aauav_nei.notes_types_seq
+   START 5
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.notes_types (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.notes_types_seq') NOT NULL,
   name character varying(40) DEFAULT NULL,
   download_caption character varying(40) DEFAULT NULL,
   icon_display character varying(40) DEFAULT NULL,
@@ -3937,8 +4022,12 @@ INSERT INTO aauav_nei.notes_types (id, name, download_caption, icon_display, ico
 -- Table structure for table partners
 --
 
+CREATE SEQUENCE aauav_nei.partners_seq
+   START 5
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.partners (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.partners_seq') NOT NULL,
   header character varying(255) NOT NULL,
   company character varying(255) NOT NULL,
   description text NOT NULL,
@@ -3963,8 +4052,12 @@ INSERT INTO aauav_nei.partners (id, header, company, description, content, link,
 -- Table structure for table RecoverToken
 --
 
+CREATE SEQUENCE aauav_nei.RecoverToken_seq
+   START 1
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.RecoverToken (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.RecoverToken_seq') NOT NULL,
   email character varying(255) NOT NULL,
   token character varying(255) NOT NULL,
   expire_date character varying(255) NOT NULL
@@ -3976,8 +4069,12 @@ CREATE TABLE aauav_nei.RecoverToken (
 -- Table structure for table redirects
 --
 
+CREATE SEQUENCE aauav_nei.redirects_seq
+   START 31
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.redirects (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.redirects_seq') NOT NULL,
   alias character varying(255) DEFAULT NULL,
   redirect character varying(255) DEFAULT NULL
 );
@@ -4003,8 +4100,12 @@ INSERT INTO aauav_nei.redirects (id, alias, redirect) VALUES
 -- Table structure for table rgm
 --
 
+CREATE SEQUENCE aauav_nei.rgm_seq
+   START 165
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.rgm (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.rgm_seq') NOT NULL,
   categoria character varying(11) NOT NULL,
   mandato integer NOT NULL,
   file character varying(255) NOT NULL
@@ -4175,8 +4276,12 @@ INSERT INTO aauav_nei.tacaua_classification (team, modality, score, games, victo
 -- Table structure for table tacaua_games
 --
 
+CREATE SEQUENCE aauav_nei.tacaua_games_seq
+   START 5
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.tacaua_games (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.tacaua_games') NOT NULL,
   team1 integer NOT NULL,
   team2 integer NOT NULL,
   goals1 smallint NOT NULL,
@@ -4196,10 +4301,14 @@ INSERT INTO aauav_nei.tacaua_games (id, team1, team2, goals1, goals2) VALUES
 -- Table structure for table tacaua_modalities
 --
 
+CREATE SEQUENCE aauav_nei.tacaua_modalities_seq
+   START 2
+   INCREMENT 1;
+
 CREATE TYPE aauav_nei.sport_gender AS ENUM ('MISTO', 'MASCULINO', 'FEMININO');
 
 CREATE TABLE aauav_nei.tacaua_modalities (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.tacaua_modalities_seq') NOT NULL,
   name character varying(30) NOT NULL,
   type aauav_nei.sport_participants NOT NULL,
   gender aauav_nei.sport_gender NOT NULL,
@@ -4224,8 +4333,12 @@ INSERT INTO aauav_nei.tacaua_modalities (id, name, type, gender, year, division,
 -- Table structure for table tacaua_teams
 --
 
+CREATE SEQUENCE aauav_nei.tacaua_teams_seq
+   START 2
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.tacaua_teams (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.tacaua_teams_seq') NOT NULL,
   name character varying(30) NOT NULL,
   image text NOT NULL
 );
@@ -4244,8 +4357,12 @@ INSERT INTO aauav_nei.tacaua_teams (id, name, image) VALUES
 -- Table structure for table team
 --
 
+CREATE SEQUENCE aauav_nei.team_seq
+   START 398
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.team (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.team_seq') NOT NULL,
   header character varying(255) NOT NULL,
   mandato int NOT NULL,
   user_id integer NOT NULL,
@@ -4427,8 +4544,12 @@ INSERT INTO aauav_nei.team_colaborators (colaborator, mandate) VALUES
 -- Table structure for table team_roles
 --
 
+CREATE SEQUENCE aauav_nei.team_roles_seq
+   START 19
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.team_roles (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.team_roles_seq') NOT NULL,
   name character varying(120) DEFAULT NULL,
   weight integer DEFAULT NULL
 );
@@ -4463,10 +4584,14 @@ INSERT INTO aauav_nei.team_roles (id, name, weight) VALUES
 -- Table structure for table users
 --
 
+CREATE SEQUENCE aauav_nei.users_seq
+   START 2162
+   INCREMENT 1;
+
 CREATE TYPE aauav_nei.user_roles AS ENUM ('DEFAULT','FAINA','HELPER','COLABORATOR','MANAGER','ADMIN', '');
 
 CREATE TABLE aauav_nei.users (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.users_seq') NOT NULL,
   name character varying(255) NOT NULL,
   full_name character varying(255) NOT NULL,
   uu_email character varying(255) NOT NULL,
@@ -4976,8 +5101,12 @@ INSERT INTO aauav_nei.users (id, name, full_name, uu_email, uu_iupi, curriculo, 
 -- Table structure for table videos
 --
 
+CREATE SEQUENCE aauav_nei.videos_seq
+   START 8
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.videos (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.videos_seq') NOT NULL,
   tag integer DEFAULT NULL,
   ytId character varying(255) DEFAULT NULL,
   title character varying(255) DEFAULT NULL,
@@ -5006,8 +5135,12 @@ INSERT INTO aauav_nei.videos (id, tag, ytId, title, subtitle, image, created, pl
 -- Table structure for table videos_tags
 --
 
+CREATE SEQUENCE aauav_nei.videos_tags_seq
+   START 7
+   INCREMENT 1;
+
 CREATE TABLE aauav_nei.videos_tags (
-  id integer NOT NULL,
+  id integer default nextval('aauav_nei.videos_tags_seq') NOT NULL,
   name character varying(255) DEFAULT NULL,
   color character varying(18) DEFAULT NULL
 );
