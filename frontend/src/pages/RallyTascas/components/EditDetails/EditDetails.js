@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Text, Button, Row, Input } from "@nextui-org/react";
-import { IconButton } from "../IconButton";
+import { IconButton } from "../Customized";
 import { EditIcon } from "../Icons/EditIcon";
 import EditLine from "./EditLine";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

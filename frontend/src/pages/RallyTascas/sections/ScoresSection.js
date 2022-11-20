@@ -1,11 +1,11 @@
 import React from "react";
 import { Col, Row, Table, Tooltip } from "@nextui-org/react";
-import { IconButton } from "./IconButton";
-import { EyeIcon } from "./Icons/EyeIcon";
-import { EditIcon } from "./Icons/EditIcon";
-import DetailsModal from "./Details/DetailsModal";
-import EditDetails from "./EditDetails/EditDetails";
-import StaffModal from "./StaffModal/StaffModal";
+import { IconButton } from "../components/Customized";
+import { EyeIcon } from "../components/Icons/EyeIcon";
+import { EditIcon } from "../components/Icons/EditIcon";
+import DetailsModal from "../components/Details/DetailsModal";
+import EditDetails from "../components/EditDetails/EditDetails";
+import StaffModal from "../components/StaffModal/StaffModal";
 
 const columns = [
   {

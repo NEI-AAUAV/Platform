@@ -3,6 +3,8 @@ import React from "react";
 import config from "config";
 
 import MainLayout from "./layouts/MainLayout";
+import CleanLayout from "./layouts/CleanLayout";
+import SimpleLayout from "./layouts/SimpleLayout";
 
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
@@ -16,7 +18,6 @@ import RGM from "./pages/RGM";
 import Calendar from "./pages/Calendar";
 import History from "./pages/History";
 import Merchandising from "./pages/Merchandising";
-import CleanLayout from "./layouts/CleanLayout";
 import Apontamentos from "./pages/Apontamentos";
 import FeedbackForm from "./pages/Forms/FeedbackForm";
 import Videos from "./pages/Videos";
@@ -38,6 +39,13 @@ const routes = [
   },
   {
     path: "/",
+    element: <SimpleLayout />,
+    children: [
+      { path: "/rallytascas", element: <RallyTascas /> },
+    ],
+  },
+  {
+    path: "/",
     element: <MainLayout />,
     children: [
       { path: "/noticias", element: <News /> },
@@ -53,7 +61,6 @@ const routes = [
       { path: "/videos", element: <Videos /> },
       { path: "/videos/:id", element: <Video /> },
       { path: "/estagios", element: <Internship /> },
-      { path: "/rallytascas", element: <RallyTascas /> },
       !config.PRODUCTION && { path: "/desporto", element: <Sports /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
       { path: "*", element: <Error404 /> },
