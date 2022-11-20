@@ -1,0 +1,21 @@
+@font-face {
+    font-family: 'Aldrich';
+    src: url(assets/fonts/Aldrich/Aldrich-Regular.ttf) format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+@media screen and (min-width: 600px) {
+    .rally-header {
+        font-size: 3rem;
+    }
+}
+
+.rally-header {
+    font-family: 'Aldrich';
+    color: 'white';
+}
+
+.rally-close {
+    display: block;
+    margin-left: auto;
+    cursor: pointer;
+}
