@@ -19,3 +19,13 @@
     margin-left: auto;
     cursor: pointer;
 }
+
+.rally-card-team-name {
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: #FC8551;
+    border-style: solid;
+    background-color: inherit;
+    align-items: center;
+    color:white;
+}
