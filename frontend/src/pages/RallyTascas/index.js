@@ -41,10 +41,9 @@ const RallyTascas = () => {
         backgroundImage: `url(${bg})`,
         backgroundPosition: 'center 100px',
         backgroundRepeat: 'repeat-x',
-        backgroundSize: '1500px 100%',
-        width: '100vw', height: '100vh',
-        position: 'absolute', top: 0, left: 0,
-        zIndex: -1
+        backgroundSize: '1500px 100vh',
+        position: 'absolute', zIndex: -1,
+        top: 0, left: 0, bottom: 0, right: 0,
       }}>
       </div>
       <Col style={{ maxWidth: "1000px", margin: "0 auto", fontFamily: "", padding: '2rem 0.5rem' }}>
