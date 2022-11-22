@@ -1,46 +1,77 @@
 import InfoTeamSection from "./InfoTeamSection";
 import { Card, Col, Text } from "@nextui-org/react";
 import { Button } from '@nextui-org/react';
-import icon1 from './IconsTeamsSection/icon1.png';
+import React, { useState } from "react";
 
 
 
 const TeamCard = () => {
-  const list = [
+  const images = [
     {
-      img: "../img/icon1.png",
+      img: './images/IconsTeamsSection/icon1.png',
     },
     {
-      img: "../img/icon2.png",
+      img: "./images/IconsTeamsSection/icon2.png",
     },
     {
-      img: "../img/icon3.png",
+      img: "./images/IconsTeamsSection/icon3.png",
     },
     {
-      img: "../img/icon4.png",
+      img: "./images/IconsTeamsSection/icon4.png",
     },
     {
-      img: "../img/icon5.png",
+      img: "./images/IconsTeamsSection/icon5.png",
     },
     {
-      img: "../img/icon6.png",
+      img: "./images/IconsTeamsSection/icon6.png",
     },
     {
-      img: "../img/icon1.png",
+      img: "./images/IconsTeamsSection/icon7.png",
     },
     {
-      img: "../img/icon1.png",
+      img: "./images/IconsTeamsSection/icon8.png",
+    },
+    {
+      img: "./images/IconsTeamsSection/icon9.png",
+    },
+    {
+      img: "./images/IconsTeamsSection/icon10.png",
+    },
+    {
+      img: "./images/IconsTeamsSection/icon11.png",
+    },
+    {
+      img: "./images/IconsTeamsSection/icon12.png",
+    },
+    {
+      img: "./images/IconsTeamsSection/icon13.png",
+    },
+    {
+      img: "./images/IconsTeamsSection/icon14.png",
+    },
+    {
+      img: "./images/IconsTeamsSection/icon15.png",
+    },
+    {
+      img: "./images/IconsTeamsSection/icon16.png",
     },
   ];
 
+  const [show, setShow] = useState(false);
+
+  if (show)
   return (
-    <div>
-      {list.map((item, index) => (
+    <InfoTeamSection />
+  );
+
+  return (
+    <>
+      {images.map((item, index) => (
         <Card key={index} css={{ bg: "transparent", borderColor: "#FC8551", w: 300, marginBottom: 20 }}>
 
           <Card.Image
             src={item.img}
-            width="100%"
+            height="50%"
             objectFit="contain"
             alt="Card image background"
           />
@@ -66,17 +97,16 @@ const TeamCard = () => {
                     background: '#FC8551bb',
                   },
                 }}
+
+                onPress={() => {setShow(true)}}
               >
                 View Team
               </Button>
             </Col>
-
           </Card.Footer>
         </Card>
-
-
       ))}
-    </div>
+    </>
 
   );
 }
