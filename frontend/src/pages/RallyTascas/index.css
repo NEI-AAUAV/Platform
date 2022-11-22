@@ -19,3 +19,12 @@
     margin-left: auto;
     cursor: pointer;
 }
+
+
+.rally-visible {
+    font-weight: 800;
+}
+
+.rally-setVisible {
+    font-weight: 800;
+}
