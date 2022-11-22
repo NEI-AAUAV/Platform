@@ -28,7 +28,7 @@ const Team = () => {
 
     const [loading, setLoading] = useState(true);
 
-    async function getMandateYears() {
+    const getMandateYears = async () => {
 
         const config = {
             method: 'get',
@@ -44,8 +44,7 @@ const Team = () => {
         setSelectedYear(anos[0]);
     }
 
-
-    async function getTeamByMandate() {
+    const getTeamByMandate = async () => {
 
         const config = {
             method: 'get',

@@ -15,8 +15,7 @@ const News = () => {
     const [currPage, setCurrPage] = useState(1);            // current page
     const [totalPages, setTotalPages] = useState(1);        // total number of pages
 
-
-    async function getNews(p_num, api) {
+    const getNews = async (p_num, api) => {
 
         const config = {
             method: 'get',
@@ -64,7 +63,7 @@ const News = () => {
     // Get initial news page from API when component renders, and when selected filters change
     useEffect(() => { fetchPage(1) }, [whitelist]);
 
-    async function getCategories() {
+    const getCategories = async () => {
 
         const config = {
             method: 'get',

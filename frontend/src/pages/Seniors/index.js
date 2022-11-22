@@ -32,7 +32,7 @@ const Seniors = () => {
     const [namesOnly, setNamesOnly] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    async function getCoursesList() {
+    const getCoursesList = async () => {
 
         const config = {
             method: 'get',
@@ -47,7 +47,7 @@ const Seniors = () => {
         }
     }
 
-    async function getYears() {
+    const getYears = async () => {
 
         const config = {
             method: 'get',
@@ -74,7 +74,7 @@ const Seniors = () => {
         getYears();
     }, [id])
 
-    async function getSeniorImages() {
+    const getSeniorImages = async () => {
 
         const config = {
             method: 'get',

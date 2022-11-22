@@ -22,7 +22,7 @@ const Faina = () => {
 
     const [loading, setLoading] = useState(true);
 
-    async function getFainaMandates() {
+    const getFainaMandates = async () => {
 
         const config = {
             method: 'get',
@@ -41,7 +41,7 @@ const Faina = () => {
         }
     }
 
-    async function getFainaByMandate() {
+    const getFainaByMandate = async () => {
 
         setLoading(true);
         if (selectedYear == undefined) return;
