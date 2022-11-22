@@ -4,6 +4,7 @@ import Typist from 'react-typist';
 import Filters from '../../components/Filters';
 import Document from '../../components/Document';
 import PageNav from '../../components/PageNav';
+import axios from "axios";
 
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 
@@ -23,24 +24,32 @@ const Videos = () => {
     const [selection, setSelection] = useState([]);
     const [loadingCategories, setLoadingCategories] = useState(true);
 
+    const getCategories = async () => {
+
+        const config = {
+            method: 'get',
+            url: process.env.REACT_APP_API + "/videos/categories/"
+        }
+
+        let res = await axios(config)
+
+        if ('data' in res.data) {
+            setCategories(res.data['data']);
+            var cats = [];
+            var catsObjs = [];
+            res.data['data'].forEach(c => {
+                cats.push(c.name);
+                catsObjs.push({ filter: c.name, color: c.color });
+            });
+            setSelection(cats);
+            setFilters(catsObjs);
+            setLoadingCategories(false);
+        }
+    }
+
     // Get categories from API
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/videos/categories/")
-            .then(response => response.json())
-            .then((response) => {
-                if ('data' in response) {
-                    setCategories(response['data']);
-                    var cats = [];
-                    var catsObjs = [];
-                    response['data'].forEach(c => {
-                        cats.push(c.name);
-                        catsObjs.push({ filter: c.name, color: c.color });
-                    });
-                    setSelection(cats);
-                    setFilters(catsObjs);
-                    setLoadingCategories(false);
-                }
-            });
+        getCategories();
     }, []);
 
     // Videos
@@ -64,26 +73,31 @@ const Videos = () => {
                 }
             });
             url += 'page=' + selPage;
-            // Get data from API
-            fetch(url)
-                .then(response => response.json())
-                .then((response) => {
-                    if ('data' in response) {
-                        setVideos(response['data']);
-                        setPages(response['page']['pagesNumber']);
-                        setSelPage(response['page']['currentPage']);
-                    } else {
-                        setLoading(false);
-                        setPages(1);
-                        setSelPage(1);
-                    }
-                    setLoading(false)
-                }).catch((error) => {
-                    console.error("Erro getting videos from API!", error);
+
+            const getVideos = async () => {
+                const config = {
+                    method: 'get',
+                    url: url
+                }
+        
+                let res = await axios(config)
+                console.log(res.data)
+
+                if ('data' in res.data) {
+                    setVideos(res.data['data']);
+                    setPages(res.data['page']['pagesNumber']);
+                    setSelPage(res.data['page']['currentPage']);
+                } else {
                     setLoading(false);
                     setPages(1);
                     setSelPage(1);
-                });
+                }
+                setLoading(false)
+            }
+
+            getVideos();
+            // Get data from API
+            
         } else {
             setLoading(false);
             setVideos([]);
