@@ -3,7 +3,8 @@ import NewsList from "./NewsList";
 import PageNav from "../../components/PageNav";
 import FilterSelect from "../../components/Filters/FilterSelect";
 import Typist from 'react-typist';
-import {Spinner} from 'react-bootstrap';
+import axios from "axios";
+import { Spinner } from 'react-bootstrap';
 
 const News = () => {
 
@@ -13,6 +14,24 @@ const News = () => {
     const [whitelist, setWhitelist] = useState([]);         // list of currently active categories
     const [currPage, setCurrPage] = useState(1);            // current page
     const [totalPages, setTotalPages] = useState(1);        // total number of pages
+
+
+    async function getNews(p_num, api) {
+
+        const config = {
+            method: 'get',
+            url: process.env.REACT_APP_API + api + "page=" + p_num
+        }
+
+        let res = await axios(config);
+        setIsLoading(false);
+
+        if ('data' in res.data) {
+            setCurrPage(p_num);
+            setTotalPages(res.data["page"].pagesNumber);
+            setNews(res.data['data']);
+        }
+    }
 
     /** Get given news page from API */
     const fetchPage = (p_num) => {
@@ -29,52 +48,52 @@ const News = () => {
             var api = "/news/" + window.location.search + "&";
         else
             var api = "/news/?";
-            
+
         if (whitelist != newsTypes) {
-            whitelist.forEach( v => {
-                api = api + "category[]=" + v + "&"; 
+            whitelist.forEach(v => {
+                api = api + "category[]=" + v + "&";
             });
-        }        
+        }
 
         setIsLoading(true);
         setNews([]);
 
-        fetch(process.env.REACT_APP_API + api + "page=" + p_num)
-            .then(response => response.json())
-            .then((response) => {
-                setIsLoading(false);
-                if('data' in response) {
-                    setCurrPage(p_num);
-                    setTotalPages(response["page"].pagesNumber);
-                    setNews(response['data']);
-                }
-            });
+        getNews(p_num, api);
     };
 
     // Get initial news page from API when component renders, and when selected filters change
-    useEffect( () => {fetchPage(1)}, [whitelist]);
+    useEffect(() => { fetchPage(1) }, [whitelist]);
+
+    async function getCategories() {
+
+        const config = {
+            method: 'get',
+            url: process.env.REACT_APP_API + "/news/categories/"
+        }
+
+        let res = await axios(config)
+
+        console.log(res.data)
+        if ('data' in res.data) {
+            var cats = [];
+            res.data['data'].forEach(c => cats.push(c.category));
+            setNewsTypes(cats);
+            setWhitelist(cats);
+        }
+    }
 
     // Get categories from API when component renders
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/news/categories/")
-            .then(response => response.json())
-            .then((response) => {
-                if('data' in response) {
-                    var cats = [];
-                    response['data'].forEach( c => cats.push(c.category) );
-                    setNewsTypes(cats);
-                    setWhitelist(cats);
-                }
-            });
+        getCategories();
     }, []);
 
     return (
         <div className="d-flex flex-column flex-wrap">
             <h2 className="text-center"><Typist>Notícias</Typist></h2>
 
-            <FilterSelect 
+            <FilterSelect
                 accordion={true}
-                filterList={newsTypes.map(nt => {return {'filter': nt}})}
+                filterList={newsTypes.map(nt => { return { 'filter': nt } })}
                 activeFilters={whitelist}
                 setActiveFilters={setWhitelist}
                 className="mb-3"
@@ -85,10 +104,10 @@ const News = () => {
 
             {
                 isLoading
-                ?
-                <Spinner animation="grow" variant="primary" className="mx-auto" title="A carregar..." />
-                :
-                <NewsList news={news} loading={isLoading}></NewsList>
+                    ?
+                    <Spinner animation="grow" variant="primary" className="mx-auto" title="A carregar..." />
+                    :
+                    <NewsList news={news} loading={isLoading}></NewsList>
             }
 
         </div>
