@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 
 import Person from "./components/Person.js";
+import axios from "axios";
 import Tabs from "../../components/Tabs/index.js"
 import TextList from "../../components/TextList/index.js"
 import { Container, Row, Spinner } from 'react-bootstrap';
@@ -9,6 +10,7 @@ import Typist from 'react-typist';
 
 import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
+import data from "components/Navbar/data.js";
 
 
 // Animation
@@ -26,16 +28,56 @@ const Team = () => {
 
     const [loading, setLoading] = useState(true);
 
+    async function getMandateYears() {
+
+        const config = {
+            method: 'get',
+            url: process.env.REACT_APP_API + "/team/mandates/"
+        }
+
+        let res = await axios(config)
+
+        var anos = res.data.data.map(year =>
+            year.mandato
+        ).reverse();
+        setYears(anos);
+        setSelectedYear(anos[0]);
+    }
+
+
+    async function getTeamByMandate() {
+
+        const config = {
+            method: 'get',
+            url: process.env.REACT_APP_API + "/team/?mandate=" + selectedYear
+        }
+
+        let res = await axios(config)
+
+        setPeople(res.data.data.team.map((person, i) =>
+            <Person
+                key={person.linkedIn}
+                img={process.env.REACT_APP_STATIC + person.header}
+                name={person.name}
+                description={person.role} linke={person.linkedIn}
+                className="slideUpFade"
+                style={{
+                    animationDelay: animationBase + animationIncrement * i + "s",
+                }}
+            />
+        )
+        )
+
+        setColaborators(res.data.data.colaborators.map(colab =>
+            <TextList key={colab.name} colSize={4} text={colab.name} />
+        )
+        )
+
+        setLoading(false);
+    }
+
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/team/mandates/")
-            .then(response => response.json())
-            .then((response) => {
-                var anos = response.data.map(year =>
-                    year.mandato
-                ).sort((a, b) => b - a);
-                setYears(anos);
-                setSelectedYear(anos[0]);
-            })
+        getMandateYears();
     }, [])
 
 
@@ -43,30 +85,7 @@ const Team = () => {
         setLoading(true);
 
         if (selectedYear != null) {
-            fetch(process.env.REACT_APP_API + "/team/?mandate=" + selectedYear)
-                .then(response => response.json())
-                .then(
-                    (response) => {
-                        var resp = response.data
-
-                        setPeople(resp.team.map((person, i) =>
-                            <Person
-                                img={process.env.REACT_APP_STATIC + person.header}
-                                name={person.name}
-                                description={person.role} linke={person.linkedIn}
-                                className="slideUpFade"
-                                style={{
-                                    animationDelay: animationBase + animationIncrement * i + "s",
-                                }}
-                            />
-                        ))
-
-                        setColaborators(resp.colaborators.map(colab =>
-                            <TextList colSize={4} text={colab.name} />
-                        ));
-
-                        setLoading(false);
-                    })
+            getTeamByMandate();
         }
     }, [selectedYear])
 

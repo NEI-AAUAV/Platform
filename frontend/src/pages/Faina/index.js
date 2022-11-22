@@ -4,7 +4,7 @@ import Image from 'react-bootstrap/Image';
 import TextList from "../../components/TextList"
 
 import Typist from 'react-typist';
-
+import axios from "axios";
 import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
 
@@ -22,52 +22,73 @@ const Faina = () => {
 
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        // pegar o número de anos
-        fetch(process.env.REACT_APP_API + "/faina/mandates/")
-            .then((response) => response.json())
-            .then((response) => {
-                let anos = response.data.map((curso) => curso.mandato).sort((a, b) => parseInt(b.split('/')[0]) - parseInt(a.split('/')[0]));
-                if (anos.length > 0) {
-                    setYears(anos);
-                    setSelectedYear(anos[0]);
-                }
-            });
-    }, [])
+    async function getFainaMandates() {
 
-    useEffect(() => {
+        const config = {
+            method: 'get',
+            url: process.env.REACT_APP_API + "/faina/mandates/"
+        }
+
+        let res = await axios(config)
+
+        var anos = res.data.data.map(year =>
+            year.mandato
+        ).reverse();
+
+        if (anos.length > 0) {
+            setYears(anos);
+            setSelectedYear(anos[0]);
+        }
+    }
+
+    async function getFainaByMandate() {
+
         setLoading(true);
         if (selectedYear == undefined) return;
 
-        fetch(process.env.REACT_APP_API + "/faina/?mandate=" + selectedYear)
-            .then((response) => response.json())
-            .then((response) => {
-                setPeople(response.data.members.map(
-                    (person, i) =>
-                        <TextList
-                            key={i}
-                            colSize={12}
-                            text={person.role + " " + person.name}
-                            className="slideUpFade"
-                            style={{
-                                animationDelay: animationBase + animationIncrement * (i + 1) + "s",
-                            }}
-                        />
-                ))
-                if (response.data.imagem) {
-                    setImg(<Image
-                        src={process.env.REACT_APP_STATIC + response.data.imagem} rounded fluid
-                        className="slideUpFade"
-                        style={{
-                            animationDelay: animationBase + animationIncrement * 0 + "s",
-                            "marginBottom": 50
-                        }}
-                    />);
-                } else {
-                    setImg(null);
-                }
-                setLoading(false);
-            })
+        const config = {
+            method: 'get',
+            url: process.env.REACT_APP_API + "/faina/?mandate=" + selectedYear
+        }
+
+        let res = await axios(config)
+
+        setPeople(res.data.data.members.map((person, i) =>
+            <TextList
+                key={i}
+                colSize={12}
+                text={person.role + " " + person.name}
+                className="slideUpFade"
+                style={{
+                    animationDelay: animationBase + animationIncrement * (i + 1) + "s",
+                }}
+            />
+        )
+        )
+
+        if (res.data.data.imagem) {
+            setImg(<Image
+                src={process.env.REACT_APP_STATIC + res.data.data.imagem} rounded fluid
+                className="slideUpFade"
+                style={{
+                    animationDelay: animationBase + animationIncrement * 0 + "s",
+                    "marginBottom": 50
+                }}
+            />);
+        } else {
+            setImg(null);
+        }
+
+        setLoading(false);
+    }
+
+
+    useEffect(() => {
+        getFainaMandates();
+    }, [])
+
+    useEffect(() => {
+        getFainaByMandate();
     }, [selectedYear])
 
     return (
