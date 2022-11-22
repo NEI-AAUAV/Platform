@@ -21,11 +21,55 @@
 }
 
 .rally-card-team-name {
-    border-radius: 5px;
-    border-width: 1px;
-    border-color: #FC8551;
-    border-style: solid;
     background-color: inherit;
-    align-items: center;
     color:white;
+    overflow: hidden !important;
+    position: absolute!important;
+    width: 350px;
+    height: 13% !important;
+    left: 212px;
+    top: 655px;
+    border: 1px solid #FC8551;
+    border-radius: 10px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 22px;
+    display: flex !important;
+    align-items: center;
+    text-align: center;
+}
+
+.rally-card-team-information {
+    border-radius: 10px;
+    position: absolute;
+    background-color: inherit;
+    display: inline-block;
+    height: 60% !important;
+    width: 300px !important;
+    width: 256px;
+    height: 242px;
+    left: 628px;
+    top: 272px;
+    color:white;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 35px;
+    text-transform: uppercase !important;
+    overflow: hidden !important;
+}
+.rally-card-team-checkpoint{
+    position: absolute;
+    background-color: inherit;
+    width: 270px;
+    height: 250px;
+    left: 628px;
+    top: 580px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 35px;
+    text-transform: uppercase;
+
+    color: #FC8551;
 }
