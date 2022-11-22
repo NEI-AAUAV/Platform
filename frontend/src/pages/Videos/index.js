@@ -81,7 +81,6 @@ const Videos = () => {
                 }
         
                 let res = await axios(config)
-                console.log(res.data)
 
                 if ('data' in res.data) {
                     setVideos(res.data['data']);
