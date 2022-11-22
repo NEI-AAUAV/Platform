@@ -1,12 +1,11 @@
-from datetime import datetime
 from pydantic import BaseModel
-from typing import Optional, List
-
+from typing import Optional, List, Union
+from datetime import datetime
 
 class TeamBase(BaseModel):
     name: str
-    scores: Optional(List[int])
-    times: Optional(List[datetime])
+    scores: Optional[List[int]]
+    times: Optional[List[datetime]]
 
     
 class TeamCreate(TeamBase):
@@ -25,8 +24,6 @@ class TeamInDB(TeamBase):
     class Config:
         orm_mode = True
 
-
 class Checkpoint(BaseModel):
     checkpoint_id: int
     score: int
-    time: datetime = datetime.now
