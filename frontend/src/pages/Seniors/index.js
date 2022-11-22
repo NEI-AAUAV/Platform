@@ -6,6 +6,7 @@ import Image from 'react-bootstrap/Image';
 import TextList from "../../components/TextList";
 import SeniorsCard from "./SeniorsCard";
 import Typist from 'react-typist';
+import axios from "axios";
 
 import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
@@ -31,65 +32,81 @@ const Seniors = () => {
     const [namesOnly, setNamesOnly] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    async function getCoursesList() {
+
+        const config = {
+            method: 'get',
+            url: process.env.REACT_APP_API + "/seniors/courses/"
+        }
+
+        let res = await axios(config)
+
+        let courses = res.data["data"].map(el => el["course"]);
+        if (!courses.includes(id)) {
+            throw new Error("Not available");
+        }
+    }
+
+    async function getYears() {
+
+        const config = {
+            method: 'get',
+            url: process.env.REACT_APP_API + "/seniors/courses/years/?course=" + id
+        }
+
+        let res = await axios(config)
+
+        var anos = res.data.data.map((curso) => curso.year).reverse();
+        if (anos.length > 0) {
+            setYears(anos);
+            setSelectedYear(anos[0]);
+        }
+        else {
+            throw new Error("Not available");
+        }
+    }
+
     useEffect(() => {
         setYears(null); // hack to update typist title
-
-        // get list of courses to check if 'id' is valid
-        fetch(process.env.REACT_APP_API + "/seniors/courses/")
-            .then((response) => response.json())
-            .then((response) => {
-                let courses = response["data"].map(el => el["course"]);
-                if (!courses.includes(id)) {
-                    throw new Error("Not available");
-                }
-            }).catch((error) => {
-                window.location.href = "/404";
-            });
-
-
+        //get courses list
+        getCoursesList();
         // pegar o número de anos
-        fetch(process.env.REACT_APP_API + "/seniors/courses/years/?course=" + id)
-            .then((response) => response.json())
-            .then((response) => {
-                var anos = response.data.map((curso) => curso.year).sort((a, b) => b - a);
-                if (anos.length > 0) {
-                    setYears(anos);
-                    setSelectedYear(anos[0]);
-                }
-                else {
-                    throw new Error("Not available");
-                }
-            }).catch((error) => {
-                window.location.href = "/404";
-            });
+        getYears();
     }, [id])
+
+    async function getSeniorImages() {
+
+        const config = {
+            method: 'get',
+            url: process.env.REACT_APP_API + "/seniors/?course=" + id + "&year=" + selectedYear
+        }
+
+        let res = await axios(config)
+
+        setNamesOnly(res.data.data.students[0]["quote"] == null &&
+            res.data.data.students[0]["image"] == null);
+        setPeople(res.data.data.students);
+        setImg(
+            <Image
+                src={process.env.REACT_APP_STATIC + res.data.data.image}
+                rounded
+                fluid
+                className="slideUpFade"
+                style={{
+                    animationDelay: animationBase + animationIncrement * 0 + "s",
+                    "marginBottom": 50
+                }}
+            />
+        );
+        setLoading(false);
+
+    }
 
     useEffect(() => {
         if (selectedYear === undefined) return;
         setLoading(true);
 
-        fetch(process.env.REACT_APP_API + "/seniors/?course=" + id + "&year=" + selectedYear)
-            .then((response) => response.json())
-            .then((response) => {
-                setNamesOnly(response.data.students[0]["quote"] == null &&
-                    response.data.students[0]["image"] == null);
-                setPeople(response.data.students);
-                setImg(
-                    <Image
-                        src={process.env.REACT_APP_STATIC + response.data.image}
-                        rounded
-                        fluid
-                        className="slideUpFade"
-                        style={{
-                            animationDelay: animationBase + animationIncrement * 0 + "s",
-                            "marginBottom": 50
-                        }}
-                    />
-                );
-                setLoading(false);
-            }).catch((error) => {
-                window.location.href = "/404";
-            });
+        getSeniorImages();
     }, [selectedYear, id])
 
     return (
