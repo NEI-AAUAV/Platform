@@ -27,3 +27,31 @@ def add_checkpoint(
     if not team:
         raise NotFoundException(detail="Team Not Found")
     return crud.team.add_checkpoint(db=db, team=team, checkpoint=checkpoint)
+
+
+@router.post("/", status_code=201, response_model=TeamInDB)
+def create_team(
+    *,
+    db: Session = Depends(deps.get_db),
+    team_in: TeamCreate,
+) -> Any:
+    team = crud.team.get_multi(db)
+    ## check if team name already exists
+    for t in team:
+        if t.name == team_in.name:
+            raise HTTPException(status_code=400, detail="Team name already exists")
+    return crud.team.create(db=db, obj_in=team_in)
+
+
+
+@router.put("/{id}", status_code=200, response_model=TeamInDB)
+def update_team(
+    *,
+    db: Session = Depends(deps.get_db),
+    id: int,
+    team_in: TeamUpdate,
+) -> Any:
+    team = crud.team.get(db=db, id=id)
+    if not team:
+        raise NotFoundException(detail="Team Not Found")
+    return crud.team.update(db=db, id=id, obj_in=team_in)
