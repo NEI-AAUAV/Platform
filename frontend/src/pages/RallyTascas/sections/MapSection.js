@@ -90,16 +90,19 @@ function ordinal_suffix_of(i) {
 
 const LeaderBoardEntry = (props) => {
     const placeString = ordinal_suffix_of(props.placement + 1);
+    const headerColor = props.placement < 3 ? "#FC8551" : "#FFFFFF";
+
+    const HeaderText = (props) => (
+        <p style={{ color: headerColor }} className="m-0 map-item-subtitle">
+            {props.children}
+        </p>
+    );
 
     return (
         <div>
             <div className="d-flex justify-content-between">
-                <p style={{ color: "#FC8551" }} className="m-0 map-item-subtitle">
-                    {placeString} place
-                </p>
-                <p style={{ color: "#FC8551" }} className="m-0 map-item-subtitle">
-                    {props.points} pts
-                </p>
+                <HeaderText>{placeString} place</HeaderText>
+                <HeaderText>{props.points} pts</HeaderText>
             </div>
             <p className="text-white">{props.team}</p>
         </div>
