@@ -35,6 +35,7 @@ def test_get_teams(client: TestClient) -> None:
     assert data[0].keys() >= team[0].keys()
     assert "id" in data[0]
 
+
 def test_add_checkpoint(client: TestClient, db: SessionTesting) -> None:
     id = db.query(Team).first().id
     r = client.put(f"{settings.API_V1_STR}/team/{id}/checkpoint", json={"checkpoint_id": 1, "score": 100})
@@ -60,5 +61,3 @@ def test_update_team(client: TestClient, db: SessionTesting) -> None:
     assert data["name"] == "Test1"
     assert data["scores"] == [50,5,2]
     assert data["times"] == ["2021-05-01T12:00:00"]
-
-

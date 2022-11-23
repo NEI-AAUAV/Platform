@@ -9,12 +9,12 @@ from app.tests.conftest import SessionTesting
 
 NOTES_SCHOOL_YEAR = [
     {
-        "yearBegin": 2020,
-        "yearEnd": 2023
+        "year_begin": 2020,
+        "year_end": 2023
     },
     {
-        "yearBegin": 2020,
-        "yearEnd": 2023
+        "year_begin": 2020,
+        "year_end": 2023
     }
 ]
 
@@ -112,7 +112,7 @@ USERS = [
         "name": 'Ze Pistolas',
         "full_name": 'Ze Pistolas Pistolas',
         "uu_email": 'zpp@ua.pt',
-        "uu_yupi": 'x1x1',
+        "uu_iupi": 'x1x1',
         "curriculo": 'ze_cv',
         "linkedin": 'ze_linkedin',
         "git": 'ze_git',
@@ -123,7 +123,7 @@ USERS = [
         "name": "Francisco Abrantes",
         "full_name": "Francisco Miguel Abrantes",
         "uu_email": "fma@ua.pt",
-        "uu_yupi": 'x2x2',
+        "uu_iupi": 'x2x2',
         "curriculo": 'francisco_cv',
         "linkedin": 'francisco_linkedin',
         "git": 'francisco_git',

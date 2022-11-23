@@ -17,9 +17,9 @@ PARTNERS = [
         "description": "Cat123456",
         "content": "Cat123456",
         "link": "https://nei.web.ua.pt/nei.png",
-        "bannerUrl": "https://nei.web.ua.pt/nei.png",
-        "bannerImage": "https://nei.web.ua.pt/nei.png", 
-        "bannerUntil": datetime(2022, 7, 19).isoformat()
+        "banner_url": "https://nei.web.ua.pt/nei.png",
+        "banner_image": "https://nei.web.ua.pt/nei.png", 
+        "banner_until": datetime(2022, 7, 19).isoformat()
     },
     {
         "id": 23,
@@ -62,8 +62,8 @@ def test_img(client: TestClient) -> None:
     data = r.json()
     assert r.status_code == 200
     for i in range(len(data)):
-        if PARTNERS[i].get("bannerImage") != None:
-            assert data[i]["bannerImage"]#Checkar se caso haja imagem, existe string
+        if PARTNERS[i].get("banner_image") != None:
+            assert data[i]["banner_image"]#Checkar se caso haja imagem, existe string
             
-        if PARTNERS[i].get("bannerImage") != None:
-            assert data[i]["bannerUrl"]#Checkar se caso haja imagem, existe string
+        if PARTNERS[i].get("banner_image") != None:
+            assert data[i]["banner_url"]#Checkar se caso haja imagem, existe string
