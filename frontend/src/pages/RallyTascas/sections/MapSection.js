@@ -73,23 +73,19 @@ const PreviousCheckpoints = () => {
     );
 }
 
-function ordinal_suffix_of(i) {
-    var j = i % 10,
-        k = i % 100;
-    if (j == 1 && k != 11) {
-        return i + "st";
-    }
-    if (j == 2 && k != 12) {
-        return i + "nd";
-    }
-    if (j == 3 && k != 13) {
-        return i + "rd";
-    }
-    return i + "th";
+function suffix_for_ordinal(i) {
+    const j = i % 10;
+    const k = i % 100;
+
+    if (j === 1 && k !== 11) return "st";
+    else if (j === 2 && k !== 12) return "nd";
+    else if (j === 3 && k !== 13) return "rd";
+    else return "th";
 }
 
 const LeaderBoardEntry = (props) => {
-    const placeString = ordinal_suffix_of(props.placement + 1);
+    const placeNumber = props.placement + 1;
+    const placeSuffix = suffix_for_ordinal(placeNumber);
     const headerColor = props.placement < 3 ? "#FC8551" : "#FFFFFF";
 
     const HeaderText = (props) => (
@@ -101,7 +97,7 @@ const LeaderBoardEntry = (props) => {
     return (
         <div>
             <div className="d-flex justify-content-between">
-                <HeaderText>{placeString} place</HeaderText>
+                <HeaderText>{placeNumber}{placeSuffix} place</HeaderText>
                 <HeaderText>{props.points} pts</HeaderText>
             </div>
             <p className="text-white">{props.team}</p>
