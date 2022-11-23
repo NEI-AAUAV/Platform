@@ -4,7 +4,7 @@ import Typist from 'react-typist';
 import Filters from '../../components/Filters';
 import Document from '../../components/Document';
 import PageNav from '../../components/PageNav';
-import axios from "axios";
+import service from 'services/NEIService';
 
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 
@@ -24,32 +24,25 @@ const Videos = () => {
     const [selection, setSelection] = useState([]);
     const [loadingCategories, setLoadingCategories] = useState(true);
 
-    const getCategories = async () => {
-
-        const config = {
-            method: 'get',
-            url: process.env.REACT_APP_API + "/videos/categories/"
-        }
-
-        let res = await axios(config)
-
-        if ('data' in res.data) {
-            setCategories(res.data['data']);
-            var cats = [];
-            var catsObjs = [];
-            res.data['data'].forEach(c => {
-                cats.push(c.name);
-                catsObjs.push({ filter: c.name, color: c.color });
-            });
-            setSelection(cats);
-            setFilters(catsObjs);
-            setLoadingCategories(false);
-        }
-    }
-
     // Get categories from API
     useEffect(() => {
-        getCategories();
+        service.getVideosCategories()
+            .then(response => {
+                setCategories(response);
+                var cats = [];
+                var catsObjs = [];
+                response.forEach(c => {
+                    cats.push(c.name);
+                    catsObjs.push({ filter: c.name, color: c.color });
+                });
+                setSelection(cats);
+                setFilters(catsObjs);
+                setLoadingCategories(false);
+            })
+            .catch(() => {
+                console.log("something went wrong...")
+            })
+
     }, []);
 
     // Videos
@@ -63,40 +56,29 @@ const Videos = () => {
     // When categories selected change, update videos list (get from API)
     useEffect(() => {
         setLoading(true);
+
+        const params = {
+            tag: []
+        }
+        
         if (selection.length) {
             // Compute url with categories ids selected
-            let url = process.env.REACT_APP_API + "/videos/?";
             selection.forEach(s => {
                 const candidates = categories.filter(c => c.name == s);
                 if (candidates.length > 0) {
-                    url += 'category[]= ' + candidates[0].id + '&';
+                    params.tag.push(candidates[0].id);
                 }
             });
-            url += 'page=' + selPage;
 
-            const getVideos = async () => {
-                const config = {
-                    method: 'get',
-                    url: url
-                }
-        
-                let res = await axios(config)
-
-                if ('data' in res.data) {
-                    setVideos(res.data['data']);
-                    setPages(res.data['page']['pagesNumber']);
-                    setSelPage(res.data['page']['currentPage']);
-                } else {
+            service.getVideos({ ...params, page: selPage })
+                .then((response) => {
+                    setVideos(response.items);
+                    setPages(response.last)
+                    setSelPage(response.page)
                     setLoading(false);
-                    setPages(1);
-                    setSelPage(1);
-                }
-                setLoading(false)
-            }
+                    console.log(response)
+                });
 
-            getVideos();
-            // Get data from API
-            
         } else {
             setLoading(false);
             setVideos([]);

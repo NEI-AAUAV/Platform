@@ -74,6 +74,26 @@ class NEIService {
     async getNotesTeachers(params) {
         return await client.get('/notes/teachers', { params });
     }
+
+    async getTeamMandates(params) {
+        return await client.get('/team/mandates/', { params });
+    }
+
+    async getSeniorsStudents(params) {
+        return await client.get('/seniors/students/', { params });
+    }
+
+    async getSeniorsYears(params) {
+        return await client.get('/seniors/', { params });
+    }
+
+    async getVideosCategories(params) {
+        return await client.get('/videos/categories/', { params });
+    }
+
+    async getVideos(params, url) {
+        return await client.get('/videos/', { params });
+    }
 }
 
 // Export a singleton service
