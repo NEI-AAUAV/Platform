@@ -87,7 +87,7 @@ const ListView = (props) => {
                                     <Col sm="12" lg="8">
                                         <dl className="mb-2">
                                             {
-                                            item.yearBegin && item.yearEnd &&
+                                            item.year_begin && item.year_end &&
                                             <>
                                                 <dt className="small font-weight-bold">
                                                     <span className="mr-1">Ano letivo</span>
@@ -99,7 +99,7 @@ const ListView = (props) => {
                                                         onClick={() => props.setSelYear(item.yearId)}
                                                     />
                                                 </dt>
-                                                <dd>{item.yearBegin}/{item.yearEnd}</dd>
+                                                <dd>{item.year_begin}/{item.year_end}</dd>
                                             </>
                                             }
                                             {
