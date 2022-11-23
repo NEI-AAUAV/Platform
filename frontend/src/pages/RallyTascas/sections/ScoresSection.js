@@ -305,7 +305,7 @@ function InfoTable() {
                     detailsModalHandler();
                   }}
                 >
-                  <EyeIcon size={20} fill="#979797" />
+                  <EyeIcon size={20} fill="#FFFFFF" />
                 </IconButton>
               </Tooltip>
             </Col>
@@ -314,7 +314,7 @@ function InfoTable() {
                 <IconButton>
                   <EditIcon
                     size={20}
-                    fill="#979797"
+                    fill="#FFFFFF"
                     onClick={() => {
                       setSelectedTeam(team);
                       editModalHandler();
@@ -328,7 +328,7 @@ function InfoTable() {
                 <IconButton>
                   <EditIcon
                     size={20}
-                    fill="#979797"
+                    fill="#FFFFFF"
                     onClick={() => {
                       setSelectedTeam(team);
                       staffModalHandler();
@@ -368,15 +368,22 @@ function InfoTable() {
             </Table.Column>
           )}
         </Table.Header>
-        <Table.Body items={rows}>
+        <Table.Body
+          items={rows}
+          css={{
+            height: "auto",
+            width: "100%",
+          }}
+        >
           {(team) => (
             <Table.Row
+              // put border of table orange
               css={{
                 color: "var(--column-color)",
                 fontSize: "0.875rem",
                 fontWeight: "bold",
                 "&:nth-child(even)": {
-                  backgroundColor: "var(--background-even-row)",
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
                 },
               }}
             >
