@@ -19,14 +19,15 @@ def get_team(
     """
     return crud.team.get_multi(db=db)
 
-@router.get("/{mandato_id}", status_code=200, response_model=TeamInDB)
-def get_team_by_mandato(
-    *, db: Session = Depends(deps.get_db), mandato_id: int
+
+@router.get("/{mandate}", status_code=200, response_model=List[TeamInDB])
+def get_team_by_mandate(
+    *, db: Session = Depends(deps.get_db), mandate: int
 ) -> Any:
     """
     Return faina information.
     """
-    return crud.team.get_team_by_mandato(db=db, mandato=mandato_id)
+    return crud.team.get_team_by_mandate(db=db, mandate=mandate)
 
 
 @router.post("/", status_code=201, response_model=TeamInDB)
@@ -37,6 +38,7 @@ def create_team(
     Create a new faina row in the database.
     """
     return crud.team.create(db=db, obj_in=team_create_in)
+
 
 @router.put("/{id}", status_code=200, response_model=TeamInDB)
 def update_team(

@@ -7,5 +7,5 @@ class NotesSchoolYear(Base):
     __tablename__ = "notes_school_year"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    yearBegin = Column(SmallInteger)
-    yearEnd = Column(SmallInteger)
+    year_begin = Column(SmallInteger)
+    year_end = Column(SmallInteger)

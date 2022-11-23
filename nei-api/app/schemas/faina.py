@@ -1,12 +1,13 @@
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field
 
-from typing import Optional
+from typing import Optional, List
 from typing_extensions import Annotated
+from .faina_member import FainaMemberInDB
 
 
 class FainaBase(BaseModel):
-    imagem: Annotated[str, Field(max_length=255)]
-    anoLetivo: Annotated[str, Field(max_length=9)]
+    image: Annotated[Optional[str], Field(max_length=255)]
+    year: Annotated[str, Field(max_length=9)]
 
 
 class FainaCreate(FainaBase):
@@ -16,13 +17,13 @@ class FainaCreate(FainaBase):
 
 class FainaUpdate(FainaBase):
     """Properties to receive via API on update."""
-    imagem: Annotated[Optional[str], Field(max_length=255)]
-    anoLetivo: Annotated[Optional[str], Field(max_length=9)]
+    year: Annotated[Optional[str], Field(max_length=9)]
 
 
 class FainaInDB(FainaBase):
     """Properties properties stored in DB."""
-    mandato: int
+    id: int
+    members: List[FainaMemberInDB]
 
     class Config:
         orm_mode = True

@@ -19,6 +19,7 @@ def get_team_roles(
     """
     return crud.team_roles.get_multi(db=db)
 
+
 @router.get("/{id}", status_code=200, response_model=TeamRolesInDB)
 def get_team_roles_by_id(
     *, db: Session = Depends(deps.get_db), id: int
@@ -37,6 +38,7 @@ def create_team_roles(
     Create a new faina row in the database.
     """
     return crud.team_roles.create(db=db, obj_in=team_roles_create_in)
+
 
 @router.put("/{id}", status_code=200, response_model=TeamRolesInDB)
 def update_team_roles(
