@@ -27,3 +27,9 @@ def add_checkpoint(
     if not team:
         raise NotFoundException(detail="Team Not Found")
     return crud.team.add_checkpoint(db=db, team=team, checkpoint=checkpoint)
+
+@router.get("/me", status_code=200, response_model=TeamInDB)
+def get_own_team(
+    db: Session = Depends(deps.get_db)
+) -> Any:
+    return None # Authorization required
