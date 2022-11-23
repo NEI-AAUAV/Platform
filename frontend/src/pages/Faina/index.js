@@ -4,6 +4,7 @@ import Image from 'react-bootstrap/Image';
 import TextList from "../../components/TextList"
 
 import Typist from 'react-typist';
+import service from 'services/NEIService';
 import axios from "axios";
 import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
@@ -21,25 +22,6 @@ const Faina = () => {
     const [img, setImg] = useState(null);
 
     const [loading, setLoading] = useState(true);
-
-    const getFainaMandates = async () => {
-
-        const config = {
-            method: 'get',
-            url: process.env.REACT_APP_API + "/faina/mandates/"
-        }
-
-        let res = await axios(config)
-
-        var anos = res.data.data.map(year =>
-            year.mandato
-        ).reverse();
-
-        if (anos.length > 0) {
-            setYears(anos);
-            setSelectedYear(anos[0]);
-        }
-    }
 
     const getFainaByMandate = async () => {
 
@@ -84,11 +66,63 @@ const Faina = () => {
 
 
     useEffect(() => {
-        getFainaMandates();
+        let anos = []
+        service.getFainaMandates()
+            .then(response => {
+                for (var i = 0; i < response.length; i++) {
+                    anos.push(response[i].year)
+                }
+                if (anos.length > 0) {
+                    setYears(anos.reverse());
+                    setSelectedYear(anos[0]);
+                }
+            })
+        setLoading(false);
+
     }, [])
 
     useEffect(() => {
-        getFainaByMandate();
+        let members = []
+        service.getFainaMandates()
+            .then(response => {
+                for (var i = 0; i < response.length; i++) {
+                    if (response[i].year === selectedYear) {
+                        if (response[i].image) {
+                            setImg(<Image
+                                src={process.env.REACT_APP_STATIC + response[i].image} rounded fluid
+                                className="slideUpFade"
+                                style={{
+                                    animationDelay: animationBase + animationIncrement * 0 + "s",
+                                    "marginBottom": 50
+                                }}
+                            />);
+                        } else {
+                            setImg(null);
+                        }
+                        for (var j = 0; j < response[i].members.length; j++) {
+                            members.push({
+                                role: response[i].members[j].role.name,
+                                name: response[i].members[j].member.name
+                            });
+                            //console.log(response[i].members[j].role.name+" "+response[i].members[j].member.name)
+                        }
+                    }
+                }
+                setPeople(members.map((person, i) =>
+                    <TextList
+                        key={i}
+                        colSize={12}
+                        text={person.role + " " + person.name}
+                        className="slideUpFade"
+                        style={{
+                            animationDelay: animationBase + animationIncrement * (i + 1) + "s",
+                        }}
+                    />
+                )
+                )
+            })
+        setLoading(false);
+
     }, [selectedYear])
 
     return (
