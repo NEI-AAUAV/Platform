@@ -12,7 +12,7 @@ USERS = [
         "name": 'Pedro Monteiro',
         "full_name": 'Pedro Miguel Afonso de Pina Monteiro',
         "uu_email": 'pmapm@ua.pt',
-        "uu_yupi": 'x1x1',
+        "uu_iupi": 'x1x1',
         "curriculo": 'pedro_cv',
         "linkedin": 'pedro_linkedin',
         "git": 'pedro_git',
@@ -23,7 +23,7 @@ USERS = [
         "name": "Eduardo",
         "full_name": "Eduardo Rocha Fernandes",
         "uu_email": "eduardofernandes@ua.pt",
-        "uu_yupi": 'x2x2',
+        "uu_iupi": 'x2x2',
         "curriculo": 'eduardo_cv',
         "linkedin": 'eduardo_linkedin',
         "git": 'eduardo_git',
@@ -34,7 +34,7 @@ USERS = [
         "name": 'Name Test',
         "full_name": 'Full Name Test',
         "uu_email": 'test@ua.pt',
-        "uu_yupi": 'x1x1',
+        "uu_iupi": 'x1x1',
         "curriculo": '',
         "linkedin": '',
         "git": '',
@@ -45,12 +45,12 @@ USERS = [
 
 NOTES_SCHOOL_YEAR = [
     {
-        "yearBegin": 2020,
-        "yearEnd": 2023
+        "year_begin": 2020,
+        "year_end": 2023
     },
         {
-        "yearBegin": 2020,
-        "yearEnd": 2023
+        "year_begin": 2020,
+        "year_end": 2023
     }
 ]
 
@@ -96,12 +96,12 @@ USERS = [
 
 FAINA = [
     {
-        "imagem" : "imagem_url",
-        "anoLetivo": "2020/2021"
+        "image" : "imagem_url",
+        "year": "2020/2021"
     },
     {
-        "imagem" : "imagem_url",
-        "anoLetivo": "2021/2022"
+        "image" : "imagem_url",
+        "year": "2021/2022"
     }
 ]
 
@@ -115,7 +115,7 @@ FAINA_ROLES = [
 FAINA_MEMBER = [
     {
         "member_id" : 1,
-        "mandato_id" : 1,
+        "mandate_id" : 1,
         "role_id" : 1
     }
 ]
@@ -153,7 +153,7 @@ SENIORS_STUDENTS = [
 TEAM = [
     {
         "header" : "Vim para trabalhar",
-        "mandato" : 2022,
+        "mandate" : 2022,
         "user_id" : 2,
         "role_id" : 1
     }
@@ -173,7 +173,7 @@ TEAM_ROLES = [
 TEAM_COLABORATORS = [
     {
         "colaborator" : 2,
-        "mandato" : 2022
+        "mandate" : 2022
     }
 ]
 
@@ -286,8 +286,8 @@ HISTORY = [
 RGM = [
     {
         "id": 1,
-        "categoria": "Cat123456",
-        "mandato": 4,
+        "category": "Cat123456",
+        "mandate": 4,
         "file": "https://nei.web.ua.pt/nei.png"
     }
 ]
@@ -310,9 +310,9 @@ PARTNERS = [
         "description": "Cat123456",
         "content": "Cat123456",
         "link": "https://nei.web.ua.pt/nei.png",
-        "bannerUrl": "https://nei.web.ua.pt/nei.png",
+        "banner_url": "https://nei.web.ua.pt/nei.png",
         "bannerImage": "https://nei.web.ua.pt/nei.png", 
-        "bannerUntil": datetime(2022, 7, 19)
+        "banner_until": datetime(2022, 7, 19)
     }
 ]
 
@@ -331,7 +331,7 @@ VIDEO_TAG = [
 VIDEO = [
     {
         "tag_id": [1,2],
-        "ytld": "tjmk0C64eJg",
+        "youtube_id": "tjmk0C64eJg",
         "title": "test1111",
         "subtitle": "tetst",
         "image": "http://www.example.com",
@@ -340,7 +340,7 @@ VIDEO = [
     },
     {
         "tag_id": [1],
-        "ytld": "ejGxijpPpsE",
+        "youtube_id": "ejGxijpPpsE",
         "title": "test2222",
         "subtitle": "",
         "image": "",
@@ -358,7 +358,7 @@ def init_db() -> None:
     # the tables with Base.metadata.create_all(bind=engine)
 
     if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
-        event.listen(Base.metadata, "before_create", CreateSchema(settings.SCHEMA_NAME))
+        event.listen(Base.metadata, "before_create", CreateSchema(settings.SCHEMA_NAME), insert=True)
 
     Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)

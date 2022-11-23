@@ -42,14 +42,13 @@ def get_news_categories(
     return {"data": data}
 
 
-@router.get("/{news_id}/", status_code=200, response_model=NewsInDB)
+@router.get("/{id}/", status_code=200, response_model=NewsInDB)
 def get_news(
-    *, news_id: int, db: Session = Depends(deps.get_db)
+    *, id: int, db: Session = Depends(deps.get_db)
 ) -> Any:
     
-    item = crud.news.get_news_by_id(db=db, id=news_id)
+    item = crud.news.get(db=db, id=id)
     if item == None:
         raise HTTPException(status_code=404, detail="Item not found")
     else:
         return item
-

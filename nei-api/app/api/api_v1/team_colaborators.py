@@ -29,6 +29,7 @@ def create_team(
     """
     return crud.team_colaborators.create(db=db, obj_in=team_colaborators_create_in)
 
+
 @router.put("/{id}", status_code=200, response_model=TeamColaboratorsInDB)
 def update_team_colaborators(
     *, team_colaborators_update_in: TeamColaboratorsUpdate, db: Session = Depends(deps.get_db), id: int

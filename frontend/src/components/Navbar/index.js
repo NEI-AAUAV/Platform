@@ -9,9 +9,9 @@ import {
 import { Link } from "react-router-dom";
 
 import data from "./data";
-import logo from './logo.png';
+import logo from 'assets/images/logo.png';
 import "./index.css";
-import { link } from "d3";
+
 
 const Navbar = () => {
     const [transparent, setTransparent] = useState(true);

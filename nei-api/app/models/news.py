@@ -11,9 +11,9 @@ class News(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     header = Column(String(255))
-    status = Column(Enum(StatusEnum, name="status_enum", create_type=False))
+    status = Column(Enum(StatusEnum, name="status_enum", inherit_schema=True))
     title = Column(String(255))
-    category = Column(Enum(CategoryEnum, name="category_enum", create_type=False))
+    category = Column(Enum(CategoryEnum, name="category_enum", inherit_schema=True))
     content = Column(String(20000))
     published_by = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id", name="fk_publisher_id"), index=True)
     created_at = Column(DateTime)
