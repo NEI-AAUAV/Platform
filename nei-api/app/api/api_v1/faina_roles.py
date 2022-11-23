@@ -1,3 +1,4 @@
+from app.models import faina_roles
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Any, List
@@ -26,7 +27,10 @@ def get_faina_roles_by_id(
     """
     Return faina information.
     """
-    return crud.faina_roles.get(db=db, id=id)
+    faina_role = crud.faina_roles.get(db=db, id=id)
+    if not faina_role:
+        raise HTTPException(status_code=404, detail="Faina Role Not Found")
+    return faina_role
 
 
 @router.post("/", status_code=201, response_model=FainaRolesInDB)
@@ -45,4 +49,7 @@ def update_faina_roles(
     """
     Update a faina row in the database.
     """
+    faina_role = crud.faina_roles.get(db=db, id=id)
+    if not faina_role:
+        raise HTTPException(status_code=404, detail="Faina Role Not Found")
     return crud.faina_roles.update(db=db, obj_in=faina_roles_update_in, db_obj=db.get(FainaRoles, id))

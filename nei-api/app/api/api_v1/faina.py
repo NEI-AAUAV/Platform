@@ -36,4 +36,7 @@ def update_faina(
     """
     Update a faina row in the database.
     """
+    faina = crud.faina.get_faina(db=db, mandato=mandato)
+    if not faina:
+        raise HTTPException(status_code=404, detail="Faina Not Found")
     return crud.faina.update(db=db, obj_in=faina_update_in, db_obj=db.get(Faina, mandato))
