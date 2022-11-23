@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field
 
 from typing import Optional
 from typing_extensions import Annotated
+
 
 class NotesTypesBase(BaseModel):
     name: Annotated[Optional[str], Field(max_length=40)]

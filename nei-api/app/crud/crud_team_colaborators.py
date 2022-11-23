@@ -13,4 +13,5 @@ from datetime import datetime
 class CRUDTeamColaborators(CRUDBase[TeamColaborators, TeamColaboratorsCreate, TeamColaboratorsUpdate]):
     ...
 
+
 team_colaborators = CRUDTeamColaborators(TeamColaborators)

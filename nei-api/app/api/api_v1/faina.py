@@ -29,14 +29,15 @@ def create_faina(
     """
     return crud.faina.create(db=db, obj_in=faina_create_in)
 
-@router.put("/{mandato}", status_code=200, response_model=FainaInDB)
+
+@router.put("/{mandate}", status_code=200, response_model=FainaInDB)
 def update_faina(
-    *, faina_update_in: FainaUpdate, db: Session = Depends(deps.get_db), mandato: int
+    *, faina_update_in: FainaUpdate, db: Session = Depends(deps.get_db), mandate: int
 ) -> dict:
     """
     Update a faina row in the database.
     """
-    faina = crud.faina.get_faina(db=db, mandato=mandato)
+    faina = crud.faina.get_faina(db=db, mandate=mandate)
     if not faina:
         raise HTTPException(status_code=404, detail="Faina Not Found")
-    return crud.faina.update(db=db, obj_in=faina_update_in, db_obj=db.get(Faina, mandato))
+    return crud.faina.update(db=db, obj_in=faina_update_in, db_obj=db.get(Faina, mandate))

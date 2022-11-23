@@ -113,10 +113,10 @@ def get_notes(
     return Page.create(items, page_params)
 
 
-@router.get("/{note_id}", status_code=200, response_model=NotesInDB)
+@router.get("/{id}", status_code=200, response_model=NotesInDB)
 def get_note_by_id(
-    *, note_id: int, db: Session = Depends(deps.get_db),
+    *, id: int, db: Session = Depends(deps.get_db),
 ) -> Any:
-    if not db.get(Notes, note_id):
+    if not db.get(Notes, id):
         raise HTTPException(status_code=404, detail="Invalid Note id")
-    return crud.notes.get(db=db, id=note_id)
+    return crud.notes.get(db=db, id=id)

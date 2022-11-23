@@ -20,6 +20,7 @@ def get_faina_roles(
     """
     return crud.faina_roles.get_multi(db=db)
 
+
 @router.get("/{id}", status_code=200, response_model=FainaRolesInDB)
 def get_faina_roles_by_id(
     *, db: Session = Depends(deps.get_db), id: int
@@ -41,6 +42,7 @@ def create_faina_roles(
     Create a new faina row in the database.
     """
     return crud.faina_roles.create(db=db, obj_in=faina_roles_create_in)
+
 
 @router.put("/{id}", status_code=200, response_model=FainaRolesInDB)
 def update_faina_roles(
