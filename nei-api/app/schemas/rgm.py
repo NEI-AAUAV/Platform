@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from typing import Optional
 
 class RgmBase(BaseModel):
-    categoria: str
-    mandato: Optional[int]
+    category: str
+    mandate: Optional[int]
     file: Optional[str]
 
 class RgmCreate(RgmBase):
@@ -17,7 +17,7 @@ class RgmUpdate():
 
 class RgmInDB(RgmBase):
     id: int
-    mandato: int
+    mandate: int
 
     class Config:
         orm_mode = True
