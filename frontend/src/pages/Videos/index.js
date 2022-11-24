@@ -76,7 +76,6 @@ const Videos = () => {
                     setPages(response.last)
                     setSelPage(response.page)
                     setLoading(false);
-                    console.log(response)
                 });
 
         } else {
@@ -149,7 +148,7 @@ const Videos = () => {
                             link={'/videos/' + video.id}
                             blank={false}
                             icon={faPlayCircle}
-                            image={process.env.REACT_APP_STATIC + video.image}
+                            image={video.image}
                             className="col-lg-6 col-xl-4 slideUpFade p-2"
                             tags={tag ? [tag] : []}
                         />)

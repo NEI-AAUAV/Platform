@@ -5,6 +5,8 @@ import FilterSelect from "../../components/Filters/FilterSelect";
 import Typist from 'react-typist';
 import axios from "axios";
 import { Spinner } from 'react-bootstrap';
+import service from 'services/NEIService';
+
 
 const News = () => {
 
@@ -63,27 +65,17 @@ const News = () => {
     // Get initial news page from API when component renders, and when selected filters change
     useEffect(() => { fetchPage(1) }, [whitelist]);
 
-    const getCategories = async () => {
-
-        const config = {
-            method: 'get',
-            url: process.env.REACT_APP_API + "/news/categories/"
-        }
-
-        let res = await axios(config)
-
-        console.log(res.data)
-        if ('data' in res.data) {
-            var cats = [];
-            res.data['data'].forEach(c => cats.push(c.category));
-            setNewsTypes(cats);
-            setWhitelist(cats);
-        }
-    }
-
     // Get categories from API when component renders
     useEffect(() => {
-        getCategories();
+        service.getNewsCategories()
+            .then(response => {
+                if ('data' in response) {
+                    var cats = [];
+                    response.data.forEach(c => cats.push(c));
+                    setNewsTypes(cats);
+                    setWhitelist(cats);
+                }
+            })
     }, []);
 
     return (

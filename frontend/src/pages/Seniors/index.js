@@ -8,6 +8,8 @@ import SeniorsCard from "./SeniorsCard";
 import Typist from 'react-typist';
 import axios from "axios";
 
+import service from 'services/NEIService';
+
 import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
 
@@ -70,6 +72,15 @@ const Seniors = () => {
         setYears(null); // hack to update typist title
         //get courses list
         getCoursesList();
+        let anos = new Set();
+        let cursos = new Set();
+        service.getSeniors()
+            .then(response => {
+                for (var i = 0; i < response.length; i++) {
+                    anos.add(response[i].year)
+                    cursos.add(response[i].course)
+                }
+            })
         // pegar o número de anos
         getYears();
     }, [id])

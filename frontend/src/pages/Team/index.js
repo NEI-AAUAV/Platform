@@ -2,17 +2,15 @@ import React, { useEffect, useState } from "react";
 
 
 import Person from "./components/Person.js";
-import axios from "axios";
-import Tabs from "../../components/Tabs/index.js"
 import TextList from "../../components/TextList/index.js"
 import { Container, Row, Spinner } from 'react-bootstrap';
 import Typist from 'react-typist';
 
 import service from 'services/NEIService';
+import config from 'config/index'
 
 import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
-import data from "components/Navbar/data.js";
 
 
 // Animation
@@ -31,6 +29,7 @@ const Team = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         let anos = new Set();
         service.getTeamMandates()
             .then(response => {
@@ -72,7 +71,7 @@ const Team = () => {
                     setPeople(team.map((person, i) =>
                         <Person
                             key={person.id}
-                            img={process.env.REACT_APP_STATIC + person.header}
+                            img={person.header}
                             name={person.name}
                             description={person.role} linke={person.linkedIn}
                             className="slideUpFade"

@@ -5,7 +5,6 @@ import TextList from "../../components/TextList"
 
 import Typist from 'react-typist';
 import service from 'services/NEIService';
-import axios from "axios";
 import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
 
@@ -22,48 +21,6 @@ const Faina = () => {
     const [img, setImg] = useState(null);
 
     const [loading, setLoading] = useState(true);
-
-    const getFainaByMandate = async () => {
-
-        setLoading(true);
-        if (selectedYear == undefined) return;
-
-        const config = {
-            method: 'get',
-            url: process.env.REACT_APP_API + "/faina/?mandate=" + selectedYear
-        }
-
-        let res = await axios(config)
-
-        setPeople(res.data.data.members.map((person, i) =>
-            <TextList
-                key={i}
-                colSize={12}
-                text={person.role + " " + person.name}
-                className="slideUpFade"
-                style={{
-                    animationDelay: animationBase + animationIncrement * (i + 1) + "s",
-                }}
-            />
-        )
-        )
-
-        if (res.data.data.imagem) {
-            setImg(<Image
-                src={process.env.REACT_APP_STATIC + res.data.data.imagem} rounded fluid
-                className="slideUpFade"
-                style={{
-                    animationDelay: animationBase + animationIncrement * 0 + "s",
-                    "marginBottom": 50
-                }}
-            />);
-        } else {
-            setImg(null);
-        }
-
-        setLoading(false);
-    }
-
 
     useEffect(() => {
         let anos = []
@@ -87,6 +44,7 @@ const Faina = () => {
             .then(response => {
                 for (var i = 0; i < response.length; i++) {
                     if (response[i].year === selectedYear) {
+                        console.log(response)
                         if (response[i].image) {
                             setImg(<Image
                                 src={process.env.REACT_APP_STATIC + response[i].image} rounded fluid
@@ -104,7 +62,7 @@ const Faina = () => {
                                 role: response[i].members[j].role.name,
                                 name: response[i].members[j].member.name
                             });
-                            //console.log(response[i].members[j].role.name+" "+response[i].members[j].member.name)
+                            console.log(response[i].members[j].role.name+" "+response[i].members[j].member.name)
                         }
                     }
                 }

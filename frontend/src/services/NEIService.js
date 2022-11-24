@@ -76,11 +76,27 @@ class NEIService {
     }
 
     async getTeamMandates(params) {
-        return await client.get('/team/mandates/', { params });
+        return await client.get('/team/', { params });
     }
 
-    async getSeniorsStudents(params) {
-        return await client.get('/seniors/students/', { params });
+    async getTeamRoles(params) {
+        return await client.get('/team/roles', { params });
+    }
+
+    async getTeamColaborators(params) {
+        return await client.get('/team/colaborators/', { params });
+    }
+
+    async getFainaMandates(params) {
+        return await client.get('/faina/', { params });
+    }
+
+    async getNewsCategories(params) {
+        return await client.get('/news/categories/', { params });
+    }
+
+    async getNews(params) {
+        return await client.get('/news/', { params });
     }
 
     async getSeniorsYears(params) {
@@ -91,8 +107,12 @@ class NEIService {
         return await client.get('/videos/categories/', { params });
     }
 
-    async getVideos(params, url) {
+    async getVideos(params) {
         return await client.get('/videos/', { params });
+    }
+
+    async getSeniors(params) {
+        return await client.get('/seniors/', { params });
     }
 }
 
