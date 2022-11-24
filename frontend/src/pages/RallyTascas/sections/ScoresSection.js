@@ -312,6 +312,10 @@ function InfoTable() {
                   fontWeight: "bold",
                   padding: "0",
                   margin: "0",
+                  //active and hover background color red
+                  "&:hover": {
+                    backgroundColor: "#FF4646",
+                  },
                 }}
               >
                 Ver Equipa

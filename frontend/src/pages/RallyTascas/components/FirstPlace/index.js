@@ -92,5 +92,8 @@ const styles = {
     fontWeight: "bold",
     padding: "0",
     margin: "0",
+    "&:hover": {
+      backgroundColor: "#FF4646",
+    },
   },
 };
