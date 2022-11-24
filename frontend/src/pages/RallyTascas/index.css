@@ -1,6 +1,35 @@
 @font-face {
     font-family: 'Aldrich';
-    src: url(assets/fonts/Aldrich/Aldrich-Regular.ttf) format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+    src: url(assets/fonts/Aldrich/Aldrich-Regular.ttf) format('truetype');
+    /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+@keyframes flicker {
+    0% {
+        background-size: 1500px 100vh
+    }
+
+    5% {
+        background-size: 0
+    }
+
+    40% {
+        background-size: 1500px 100vh
+    }
+
+    45% {
+        background-size: 0
+    }
+
+    100% {
+        background-size: 1500px 100vh
+    }
+}
+
+
+.flicker-bg {
+    background-size: 0;
+    animation: flicker 2s linear 1s 1 normal forwards;
 }
 
 @media screen and (min-width: 600px) {

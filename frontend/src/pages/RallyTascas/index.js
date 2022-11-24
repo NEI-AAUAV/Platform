@@ -34,12 +34,13 @@ const RallyTascas = () => {
   return (
     <>
       <div
+        className="flicker-bg"
         style={{
           backgroundColor: "#00020E",
           backgroundImage: `url(${bg})`,
           backgroundPosition: "center 100px",
           backgroundRepeat: "repeat-x",
-          backgroundSize: "1500px 100vh",
+          // backgroundSize: "1500px 100vh",
           position: "absolute",
           zIndex: -1,
           top: 0,
