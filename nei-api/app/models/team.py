@@ -10,7 +10,7 @@ class Team(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     header = Column(String(255))
-    mandato = Column(Integer, index=True)
+    mandate = Column(Integer, index=True)
     user_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + '.users.id'), index=True)
     role_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + '.team_roles.id'), index=True)
 

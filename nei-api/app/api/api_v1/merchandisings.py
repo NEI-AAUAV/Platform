@@ -14,4 +14,4 @@ def get(
     *, db: Session = Depends(deps.get_db),
 ) -> Any:
 
-    return crud.merchandisings.get_all(db=db)
+    return crud.merchandisings.get_multi(db=db)

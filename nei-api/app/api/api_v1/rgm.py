@@ -18,5 +18,3 @@ def get_rgm(
         return crud.rgm.get_by(db=db, category = category)
     else:
         raise HTTPException(status_code=400, detail="Bad Request")
-
-

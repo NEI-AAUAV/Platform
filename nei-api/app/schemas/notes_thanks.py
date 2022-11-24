@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field
 
 from typing import Optional
 from typing_extensions import Annotated
@@ -19,6 +19,7 @@ class NotesThanksUpdate(NotesThanksBase):
     
 class NotesThanksInDB(NotesThanksBase):
     id: int
+    author: UsersInDB
 
     class Config:
         orm_mode = True
