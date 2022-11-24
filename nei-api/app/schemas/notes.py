@@ -14,9 +14,9 @@ class NotesBase(BaseModel):
     name: Annotated[Optional[str], Field(max_length=255)]
     location: Annotated[Optional[str], Field(max_length=2048)]
     subject_id: int
-    author_id: int
-    school_year_id: int
-    teacher_id: int
+    author_id: Optional[int]
+    school_year_id: Optional[int]
+    teacher_id: Optional[int]
     summary: int
     tests: int
     bibliography: int
@@ -24,7 +24,7 @@ class NotesBase(BaseModel):
     exercises: int
     projects: int
     notebook: int
-    content: str
+    content: Optional[str]
     created_at: datetime
     type_id: int
     size: int
@@ -33,9 +33,9 @@ class NotesBase(BaseModel):
 class NotesInDB(NotesBase):
     id: int
     subject: NotesSubjectInDB
-    author: UsersInDB
-    teacher: NotesTeachersInDB
-    school_year: NotesSchoolyearInDB
+    author: Optional[UsersInDB]
+    teacher: Optional[NotesTeachersInDB]
+    school_year: Optional[NotesSchoolyearInDB]
 
     class Config:
         orm_mode = True

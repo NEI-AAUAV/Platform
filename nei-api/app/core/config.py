@@ -8,11 +8,14 @@ from typing import List, Optional, Union
 # Project Directories
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
+PRODUCTION = False
 
 
 class Settings(BaseSettings):
-    PRODUCTION = False
-    API_V1_STR: str = os.getenv('ROOT_PATH', "/api/v1")
+    PRODUCTION: bool = PRODUCTION
+    API_V1_STR: str = "/api/v1"
+    HOST: AnyHttpUrl = "http://aauav-nei.ua.pt/nei" if PRODUCTION else "http://localhost:8000/nei"
+    STATIC_URL: AnyHttpUrl = HOST + "/static"
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
 

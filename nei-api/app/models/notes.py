@@ -1,5 +1,9 @@
+from typing import Optional
+
+from pydantic import AnyHttpUrl
 from sqlalchemy import Column, ForeignKey, SmallInteger, Integer, String, Text, DateTime
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.core.config import settings
 from app.db.base_class import Base
@@ -10,7 +14,7 @@ class Notes(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255))
-    location = Column(String(255))
+    _location = Column("location", String(2048))
 
     subject_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".notes_subject.paco_code", name="fk_subject_id"), index=True)
     author_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id", name="fk_author_id"), index=True)
@@ -35,3 +39,11 @@ class Notes(Base):
     school_year = relationship("NotesSchoolYear", foreign_keys=[school_year_id])
     teacher = relationship("NotesTeachers", foreign_keys=[teacher_id])
     type = relationship("NotesTypes", foreign_keys=[type_id])
+
+    @hybrid_property
+    def location(self) -> Optional[AnyHttpUrl]:
+        return self._location and settings.STATIC_URL + self._location
+
+    @location.setter
+    def location(self, location: Optional[AnyHttpUrl]):
+        self._location = location  

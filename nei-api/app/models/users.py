@@ -17,4 +17,3 @@ class Users(Base):
     git = Column(String(255))
     permission = Column(Enum(PermissionEnum, name="permission_enum", inherit_schema=True), nullable=True)
     created_at = Column(DateTime, index=True)
-    
