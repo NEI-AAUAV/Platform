@@ -6,6 +6,7 @@ import { EditIcon } from "../components/Icons/EditIcon";
 import DetailsModal from "../components/Details/DetailsModal";
 import EditDetails from "../components/EditDetails/EditDetails";
 import StaffModal from "../components/StaffModal/StaffModal";
+import "./ScoresSection.css";
 
 const columns = [
   {
@@ -14,7 +15,7 @@ const columns = [
   },
   {
     key: "teamName",
-    label: "Equipa",
+    label: "Team",
   },
   {
     key: "lastCheckPoint",
@@ -22,7 +23,7 @@ const columns = [
   },
   {
     key: "total",
-    label: "Total",
+    label: "Total Score",
   },
   {
     key: "icons",
@@ -34,7 +35,7 @@ const rows = [
   {
     id: 1,
     position: "1º",
-    teamName: "Team 1",
+    teamName: "Pretty Big Name",
     lastCheckPoint: "350 Pts",
     timeOfCheckpoint: "23:42:22",
     total: "350 Pts",
@@ -347,7 +348,14 @@ function InfoTable() {
   return (
     <>
       <Table
+        bordered
+        //alter border color
         css={{
+          marginTop: "20px",
+          marginBottom: "8px",
+          padding: "30px",
+          border: "1px solid #ed7f38",
+          borderRadius: "10px",
           height: "auto",
           minWidth: "100%",
           zIndex: 1,
@@ -358,9 +366,10 @@ function InfoTable() {
             <Table.Column
               key={column.key}
               css={{
-                backgroundColor: "var(--background-column-index)",
-                color: "var(--column-color)",
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                color: "#ed7f38",
                 fontWeight: "bold",
+                fontSize: "1rem",
                 width: `calc(100% / ${columns.length})`,
               }}
             >
@@ -373,11 +382,11 @@ function InfoTable() {
           css={{
             height: "auto",
             width: "100%",
+            overflow: "auto",
           }}
         >
           {(team) => (
             <Table.Row
-              // put border of table orange
               css={{
                 color: "var(--column-color)",
                 fontSize: "0.875rem",
@@ -388,7 +397,36 @@ function InfoTable() {
               }}
             >
               {(columnKey) => (
-                <Table.Cell>{renderCell(team, columnKey)}</Table.Cell>
+                <Table.Cell
+                  css={{
+                    width: `calc(100% / ${columns.length})`,
+                    borderLeft: `${
+                      columnKey === columns[0].key
+                        ? "1px solid #ed7f38"
+                        : "none"
+                    }`,
+                    borderRight: `${
+                      columnKey === columns[columns.length - 1].key
+                        ? "1px solid #ed7f38"
+                        : "none"
+                    }`,
+
+                    "&:first-child": {
+                      borderTopLeftRadius: "10px",
+                      borderBottomLeftRadius: "10px",
+                    },
+
+                    "&:last-child": {
+                      borderTopRightRadius: "10px",
+                      borderBottomRightRadius: "10px",
+                    },
+
+                    borderTop: "1px solid #ed7f38",
+                    borderBottom: "1px solid #ed7f38",
+                  }}
+                >
+                  {renderCell(team, columnKey)}
+                </Table.Cell>
               )}
             </Table.Row>
           )}
