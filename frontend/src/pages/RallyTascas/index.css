@@ -29,8 +29,7 @@
     height: 13% !important;
     left: 212px;
     top: 655px;
-    border: 1px solid #FC8551;
-    border-radius: 10px;
+    border: 2px solid #FC8551;
     font-style: normal;
     font-weight: 400;
     font-size: 20px;
@@ -70,6 +69,13 @@
     font-size: 20px;
     line-height: 35px;
     text-transform: uppercase;
-
     color: #FC8551;
 }
+.rally-card-team-image{
+    position: absolute;
+    background-color: inherit;
+    width:350px;
+    height:400px;
+    border: 2px solid #FC8551 !important;
+}
+
