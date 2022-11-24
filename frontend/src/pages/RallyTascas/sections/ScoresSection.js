@@ -359,6 +359,8 @@ function InfoTable() {
           height: "auto",
           minWidth: "100%",
           zIndex: 1,
+          borderSpacing: '0 20px',
+          paddingBottom: 0,
         }}
       >
         <Table.Header columns={columns}>
@@ -383,6 +385,7 @@ function InfoTable() {
             height: "auto",
             width: "100%",
             overflow: "auto",
+            transform: 'translateY(-20px)'
           }}
         >
           {(team) => (
