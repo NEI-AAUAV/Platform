@@ -7,11 +7,11 @@ from typing import Optional, List
 from typing_extensions import Annotated
 
 class VideoBase(BaseModel):
-    ytld: Annotated[str, Field(max_length=255)]
+    youtube_id: Annotated[str, Field(max_length=255)]
     title: Annotated[str, Field(max_length=255)]
     subtitle: Annotated[Optional[str], Field(max_length=255)]
     image: Optional[str]
-    created: datetime
+    created_at: datetime
     playlist: Optional[int]
 
 class VideoInDB(VideoBase):
@@ -26,5 +26,5 @@ class VideoCreate(VideoBase):
 
 class VideoUpdate(VideoBase):
     """Properties to receive via API on update."""
-    ytld: Annotated[Optional[str], Field(max_length=255)]
+    youtube_id: Annotated[Optional[str], Field(max_length=255)]
     title: Annotated[Optional[str], Field(max_length=255)]

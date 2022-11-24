@@ -6,7 +6,7 @@ from app.db.base_class import Base
 class NotesSubject(Base):
     __tablename__ = "notes_subject"
 
-    paco_code = Column(Integer, primary_key=True)
+    paco_code = Column(Integer, primary_key=True, autoincrement=False)
     name = Column(String(60))
     year = Column(Integer)
     semester = Column(Integer)

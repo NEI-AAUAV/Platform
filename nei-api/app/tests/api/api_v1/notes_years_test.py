@@ -9,19 +9,19 @@ from app.tests.conftest import SessionTesting
 NOTES_SCHOOL_YEAR = [
     {
         "id": 2,
-        "yearBegin": 2020,
-        "yearEnd": 2023
+        "year_begin": 2020,
+        "year_end": 2023
     },
     {
         "id": 3,
-        "yearBegin": 2020,
-        "yearEnd": 2023
+        "year_begin": 2020,
+        "year_end": 2023
     }
 ]
 
 note_year = {
-    "yearBegin": 2079,
-    "yearEnd": 2090
+    "year_begin": 2079,
+    "year_end": 2090
 }
 
 
@@ -41,5 +41,5 @@ def test_get_notes_year(client: TestClient) -> None:
     assert len(data) == 2  # created 2 note subjects
     for lst in data:
         assert "id" in lst
-        assert "yearBegin" in lst
-        assert "yearEnd" in lst
+        assert "year_begin" in lst
+        assert "year_end" in lst
