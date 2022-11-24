@@ -12,23 +12,7 @@ function FirstPlace(props) {
 
   return (
     <>
-      <Row
-        style={{
-          backgroundColor: "rgba(252, 133, 81, 0.3)",
-          color: "white",
-          border: "1px solid #FC8551",
-          borderRadius: "10px",
-          fontSize: "1rem",
-          fontWeight: "bold",
-          paddingLeft: "1rem",
-          marginTop: "3rem",
-          marginBottom: "1rem",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}
-      >
+      <Row css={styles.container}>
         <Col>{props.selectedTeam.position}</Col>
         <Col>{props.selectedTeam.teamName}</Col>
         <Col
@@ -40,7 +24,13 @@ function FirstPlace(props) {
           <p>{props.selectedTeam.timeOfCheckpoint}</p>
         </Col>
         <Col>{props.selectedTeam.total}</Col>
-        <Col>
+        <Col
+          css={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Button
             onClick={() => {
               setSelectedTeam(props.selectedTeam);
@@ -48,13 +38,7 @@ function FirstPlace(props) {
             }}
             className="btn-icon btn-round"
             size="sm"
-            css={{
-              backgroundColor: "#ed7f38",
-              color: "black",
-              fontWeight: "bold",
-              padding: "0",
-              margin: "0",
-            }}
+            css={styles.button}
           >
             Ver Equipa
           </Button>
@@ -72,3 +56,41 @@ function FirstPlace(props) {
 }
 
 export default FirstPlace;
+
+const styles = {
+  container: {
+    backgroundColor: "rgba(252, 133, 81, 0.3)",
+    color: "white",
+    border: "1px solid #FC8551",
+    borderRadius: "10px",
+    fontSize: "1rem",
+    fontWeight: "bold",
+    marginTop: "3rem",
+    marginBottom: "1rem",
+    //media queries 320 column flex direction column
+    "@media (min-width: 200px)": {
+      display: "flex",
+      flexDirection: "column",
+      textAlign: "center",
+    },
+
+    "@media (min-width: 450px)": {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-around",
+      alignItems: "center",
+      width: "100%",
+      height: "auto",
+      marginTop: "3rem",
+      marginBottom: "1rem",
+    },
+  },
+
+  button: {
+    backgroundColor: "#ed7f38",
+    color: "black",
+    fontWeight: "bold",
+    padding: "0",
+    margin: "0",
+  },
+};
