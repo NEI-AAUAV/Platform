@@ -99,7 +99,7 @@ const RallyTascas = () => {
             </div>
             {activeTab === TAB.SCORES && (
               <>
-                <Row
+                {/* <Row
                   css={{
                     display: "flex",
                     flexDirection: "row",
@@ -128,7 +128,7 @@ const RallyTascas = () => {
                     Criar Equipa
                   </Button>
                   <ModalTeam visible={visible} setVisible={setVisible} />
-                </Row>
+                </Row> */}
                 <ScoresSection />
               </>
             )}

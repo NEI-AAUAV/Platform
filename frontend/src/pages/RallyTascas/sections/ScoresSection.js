@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Row, Table, Tooltip } from "@nextui-org/react";
+import { Button, Col, Row, Table, Tooltip } from "@nextui-org/react";
 import { IconButton } from "../components/Customized";
 import { EyeIcon } from "../components/Icons/EyeIcon";
 import { EditIcon } from "../components/Icons/EditIcon";
@@ -7,6 +7,7 @@ import DetailsModal from "../components/Details/DetailsModal";
 import EditDetails from "../components/EditDetails/EditDetails";
 import StaffModal from "../components/StaffModal/StaffModal";
 import "./ScoresSection.css";
+import FirstPlace from "../components/FirstPlace";
 
 const columns = [
   {
@@ -275,13 +276,13 @@ function InfoTable() {
     setVisibleDetails(true);
   };
 
-  const editModalHandler = () => {
+  /* const editModalHandler = () => {
     setEditDetails(true);
   };
 
   const staffModalHandler = () => {
     setStaffModal(true);
-  };
+  }; */
 
   const renderCell = (team, columnKey) => {
     const cellValue = team[columnKey];
@@ -296,10 +297,34 @@ function InfoTable() {
 
       case "icons":
         return (
+          <>
+            <Col>
+              <Button
+                onClick={() => {
+                  setSelectedTeam(team);
+                  detailsModalHandler();
+                }}
+                className="btn-icon btn-round"
+                size="sm"
+                css={{
+                  backgroundColor: "#ed7f38",
+                  color: "black",
+                  fontWeight: "bold",
+                  padding: "0",
+                  margin: "0",
+                }}
+              >
+                Ver Equipa
+              </Button>
+            </Col>
+          </>
+        );
+
+      /* case "icons":
+        return (
           <Row justify="center" align="center">
             <Col css={{ d: "flex" }}>
               <Tooltip content="Details">
-                {/* Get selected team */}
                 <IconButton
                   onClick={() => {
                     setSelectedTeam(team);
@@ -339,7 +364,7 @@ function InfoTable() {
               </Tooltip>
             </Col>
           </Row>
-        );
+        ); */
       default:
         return cellValue;
     }
@@ -347,9 +372,9 @@ function InfoTable() {
 
   return (
     <>
+      <FirstPlace selectedTeam={rows[0]} />
       <Table
         bordered
-        //alter border color
         css={{
           marginTop: "20px",
           marginBottom: "8px",
@@ -359,7 +384,7 @@ function InfoTable() {
           height: "auto",
           minWidth: "100%",
           zIndex: 1,
-          borderSpacing: '0 20px',
+          borderSpacing: "0 20px",
           paddingBottom: 0,
         }}
       >
@@ -368,7 +393,7 @@ function InfoTable() {
             <Table.Column
               key={column.key}
               css={{
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                backgroundColor: "transparent",
                 color: "#ed7f38",
                 fontWeight: "bold",
                 fontSize: "1rem",
@@ -385,7 +410,7 @@ function InfoTable() {
             height: "auto",
             width: "100%",
             overflow: "auto",
-            transform: 'translateY(-20px)'
+            transform: "translateY(-20px)",
           }}
         >
           {(team) => (
@@ -435,7 +460,6 @@ function InfoTable() {
           )}
         </Table.Body>
       </Table>
-      {/* Conditional rendering */}
       {visibleDetails && (
         <DetailsModal
           visible={visibleDetails}

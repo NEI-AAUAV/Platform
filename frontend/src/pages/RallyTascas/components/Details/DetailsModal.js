@@ -29,7 +29,11 @@ function DetailsModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Row css={styles.row}>
-          <Text color="var(--column-color)" css={{ fontWeight: "bold" }} size={18}>
+          <Text
+            color="var(--column-color)"
+            css={{ fontWeight: "bold" }}
+            size={18}
+          >
             Nome da Equipa:
           </Text>
           <Text color="var(--column-color)" size={18}>
@@ -37,7 +41,11 @@ function DetailsModal(props) {
           </Text>
         </Row>
         <Row css={styles.row}>
-          <Text color="var(--column-color)" css={{ fontWeight: "bold" }} size={18}>
+          <Text
+            color="var(--column-color)"
+            css={{ fontWeight: "bold" }}
+            size={18}
+          >
             Pontuação
           </Text>
           <Text color="var(--column-color)" size={18}>
@@ -51,7 +59,11 @@ function DetailsModal(props) {
         </Row>
         {props.selectedTeam.scores.map((checkpoint) => (
           <Row key={checkpoint.id} css={styles.rowPoints}>
-            <Text color="var(--column-color)" css={{ fontWeight: "bold" }} size={18}>
+            <Text
+              color="var(--column-color)"
+              css={{ fontWeight: "bold" }}
+              size={18}
+            >
               P{checkpoint.id} - {checkpoint.name}
             </Text>
             <Text color="var(--column-color)" size={18}>
