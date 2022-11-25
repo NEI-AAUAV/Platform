@@ -9,23 +9,23 @@
     }
 }
 
-.row {
+.rally-tascas-row {
     float: left;
     width: 50%;
     padding: 10px;
 }
-.column {
+.rallu-tascas-column {
     margin: 0 -5px;
 }
 
-.column:after {
+.rally-tascas-column:after {
     content: "";
     display: inline-block;
     clear: both;
 }
 
 @media screen and (max-width: 600px) {
-    .row {
+    .rally-tascas-row {
         width: 100%;
         display: inline-block;
         margin-bottom: 20px;
@@ -71,7 +71,7 @@
     text-transform: uppercase !important;
     overflow: hidden !important;
 }
-.rally-card-team-checkpoint{
+.rally-card-team-checkpoint {
     background-color: inherit;
     height: 70% !important;
     font-style: normal;
@@ -81,7 +81,19 @@
     text-transform: uppercase !important;
     color: #FC8551;
 }
-.rally-card-team-image{
+
+.rally-card-team-points {
+    background-color: inherit;
+    width: 256px;
+    height: 146px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 35px;
+    text-transform: uppercase;
+}
+
+.rally-card-team-image {
     background-color: inherit;
     width:350px;
     height:400px;
