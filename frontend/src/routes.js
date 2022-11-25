@@ -60,10 +60,10 @@ const routes = [
       { path: "/faina", element: <Faina /> },
       { path: "/videos", element: <Videos /> },
       { path: "/videos/:id", element: <Video /> },
-      { path: "/estagios", element: <Internship /> },
+      // { path: "/estagios", element: <Internship /> },
       !config.PRODUCTION && { path: "/desporto", element: <Sports /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
-      { path: "*", element: <Error404 /> },
+      { path: "/:id", element: <Error404 /> },
     ],
   },
 ];

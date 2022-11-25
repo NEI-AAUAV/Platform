@@ -28,7 +28,7 @@ def create_seniors_students(
     """
     Create a new seniors students row in the database.
     """
-    seniors = crud.seniors.get(db=db, year=seniors_students_create_in.year, course=seniors_students_create_in.course_name)
+    seniors = crud.seniors.get(db=db, year=seniors_students_create_in.year, course=seniors_students_create_in.course)
     if not seniors:
         raise HTTPException(status_code=404, detail="Senior not found")
     user = crud.users.get(db=db, id=seniors_students_create_in.user_id)

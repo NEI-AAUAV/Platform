@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 import {
     useParams
@@ -7,6 +7,9 @@ import {
 import {
     Spinner
 } from "react-bootstrap";
+
+import service from 'services/NEIService';
+
 
 const Error404 = () => {
     let { id } = useParams();
@@ -20,14 +23,11 @@ const Error404 = () => {
 
         // Call /redirects API to check if it is an alias
         // Fetch API if valid
-        fetch(process.env.REACT_APP_API + "/redirects/?alias=" + id)
-            .then(res => res.json())
-            .then(json => {
+        service.getRedirects({ alias: id })
+            .then(data => {
+                setRedirect(data.redirect);
                 setLoading(false);
-                if ('data' in json && json['data'].length) {
-                    setRedirect(json['data'][0]['redirect']);
-                }
-            }).catch((error) => {
+            }).catch(() => {
                 setLoading(false);
             });
     }, []);
@@ -42,17 +42,17 @@ const Error404 = () => {
     return (
         <div className="d-flex flex-column flex-wrap">
             {
-                loading 
-                ? <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
-                : redirect 
-                    ? 
+                loading
+                    ? <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
+                    : redirect
+                        ?
                         <div className="mx-auto text-center">
                             <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
                             <h1 className="word-break">A redirecionar</h1>
                             <p>para <a href={redirect}>{redirect}</a>.</p>
                             <p className="small">Se o redirecionamento não ocorrer nos próximos 5 segundos, clica <a href={redirect}>aqui</a>.</p>
                         </div>
-                    :   
+                        :
                         <div>
                             <h1 className="word-break">Error 404</h1>
                             <p>Ups! Parece que a página que procuras não existe. &#128517;</p>

@@ -17,8 +17,6 @@ services:
       dockerfile: Dockerfile.dev
     volumes: 
       - ./nei-api:/nei_api
-    environment:
-      - ROOT_PATH=/nei/api/v1
     depends_on:
       - pg_db
     network_mode: host
@@ -29,8 +27,6 @@ services:
       dockerfile: Dockerfile.dev
     volumes: 
       - ./tacaua-api:/tacaua_api
-    environment:
-      - ROOT_PATH=/tacaua/api/v1
     depends_on:
       - pg_db
     network_mode: host
@@ -41,8 +37,6 @@ services:
       dockerfile: Dockerfile.dev
     volumes: 
       - ./rallytascas-api:/rallytascas_api
-    environment:
-      - ROOT_PATH=/rallytascas/api/v1
     depends_on:
       - pg_db
     network_mode: host

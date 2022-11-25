@@ -15,12 +15,12 @@ import FilterButton from "./FilterButton";
  * - activeFilters                      see FilterButton doc 
  * - setActiveFilters                   see FilterButton doc
  */
-const Filters = ({activeFilters, setActiveFilters, filterList, className, btnClass, allBtnClass, style}) => {
+const Filters = ({ activeFilters, setActiveFilters, filterList, className, btnClass, allBtnClass, style }) => {
 
     const [toggleText, setToggleText] = useState("Nenhum");
 
     // update toggle button text
-    useEffect( () => {
+    useEffect(() => {
         if (activeFilters.length == filterList.length)
             setToggleText("Nenhumas");
         else
@@ -36,7 +36,7 @@ const Filters = ({activeFilters, setActiveFilters, filterList, className, btnCla
     };
 
     return (
-        <div 
+        <div
             className={className}
             style={style}
         >
@@ -48,13 +48,15 @@ const Filters = ({activeFilters, setActiveFilters, filterList, className, btnCla
             }
 
             {
-                filterList.map( f => 
-                    <FilterButton
-                        filter={f} 
-                        setActiveFilters={setActiveFilters}
-                        activeFilters={activeFilters}
-                        btnClass={btnClass + " " + allBtnClass}
-                    />
+                filterList.map((f, index) =>
+                    <React.Fragment key={index}>
+                        <FilterButton
+                            filter={f}
+                            setActiveFilters={setActiveFilters}
+                            activeFilters={activeFilters}
+                            btnClass={btnClass + " " + allBtnClass}
+                        />
+                    </React.Fragment>
                 )
             }
         </div>

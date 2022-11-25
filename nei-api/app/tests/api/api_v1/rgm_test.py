@@ -14,7 +14,7 @@ RGM = [
         "id": 1,
         "category": "pao",
         "mandate": 4,
-        "file": "https://nei.web.ua.pt/nei.png"
+        "file": "/nei.png"
     },
     {
         "id": 2,
@@ -36,7 +36,12 @@ def test_category(client: TestClient) -> None:
     data = r.json()
     assert r.status_code == 200
     for i in range(len(data)):
-        assert data[i].items() >= RGM[i].items()
+        data2 = dict(RGM[i])
+        file = data2.pop('file', None)
+        assert data[i].items() >= data2.items()
+        if file:
+            assert data[i]['file'].endswith(file)
+
 
 def test_bad_request(client: TestClient) -> None:
     category = 'p'

@@ -18,7 +18,7 @@ PARTNERS = [
         "content": "Cat123456",
         "link": "https://nei.web.ua.pt/nei.png",
         "banner_url": "https://nei.web.ua.pt/nei.png",
-        "banner_image": "https://nei.web.ua.pt/nei.png", 
+        "banner_image": "/nei.png", 
         "banner_until": datetime(2022, 7, 19).isoformat()
     },
     {
@@ -45,7 +45,11 @@ def test_elements(client: TestClient) -> None:
     data = r.json()
     assert r.status_code == 200
     for i in range(len(data)):
-        assert data[i].items() >= PARTNERS[i].items()
+        data2 = dict(PARTNERS[i])
+        banner_image = data2.pop('banner_image', None)
+        assert data[i].items() >= data2.items()
+        if banner_image:
+            assert data[i]['banner_image'].endswith(banner_image)
     
 def test_text(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/partners")
