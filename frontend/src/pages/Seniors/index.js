@@ -6,7 +6,6 @@ import Image from 'react-bootstrap/Image';
 import TextList from "../../components/TextList";
 import SeniorsCard from "./SeniorsCard";
 import Typist from 'react-typist';
-import axios from "axios";
 
 import service from 'services/NEIService';
 
@@ -34,47 +33,111 @@ const Seniors = () => {
     const [namesOnly, setNamesOnly] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const getCoursesList = async () => {
+    // const getCoursesList = async () => {
 
-        const config = {
-            method: 'get',
-            url: process.env.REACT_APP_API + "/seniors/courses/"
-        }
+    //     const config = {
+    //         method: 'get',
+    //         url: process.env.REACT_APP_API + "/seniors/courses/"
+    //     }
 
-        let res = await axios(config)
+    //     let res = await axios(config)
 
-        let courses = res.data["data"].map(el => el["course"]);
-        if (!courses.includes(id)) {
-            throw new Error("Not available");
-        }
-    }
+    //     let courses = res.data["data"].map(el => el["course"]);
+    //     if (!courses.includes(id)) {
+    //         throw new Error("Not available");
+    //     }
+    // }
+
+    // useEffect(() => {
+    //     setYears([]); // hack to update typist title
+    //     //get courses list
+    //     // getCoursesList();
+    //     let anos = new Set();
+    //     let cursos = new Set();
+    //     service.getSeniors()
+    //         .then(data => {
+    //             console.log(data)
+    //             for (var i = 0; i < data.length; i++) {
+    //                 anos.add(data[i].year)
+    //                 cursos.add(data[i].course)
+    //             }
+    //             setYears([...anos]);
+    //             setSelectedYear(anos[0]);
+    //         })
+    // }, [id])
+
+    // const getSeniorImages = async () => {
+
+    //     service.getSeniorsBy(course, year)
+    //         .then(data => {
+    //             console.log(data)
+    //             setNamesOnly(data.students?.[0]["quote"] == null &&
+    //                 data.students?.[0]["image"] == null);
+    //             console.log(data.students)
+    //             setPeople(data.students);
+    //             setImg(
+    //                 <Image
+    //                     src={data.image}
+    //                     rounded
+    //                     fluid
+    //                     className="slideUpFade"
+    //                     style={{
+    //                         animationDelay: animationBase + animationIncrement * 0 + "s",
+    //                         "marginBottom": 50
+    //                     }}
+    //                 />
+    //             );
+    //             setLoading(false);
+    //         })
+    // }
+
+    // useEffect(() => {
+    //     if (selectedYear === undefined) return;
+    //     setLoading(true);
+
+    //     getSeniorImages();
+    // }, [selectedYear, id])
+
 
     useEffect(() => {
         setYears([]); // hack to update typist title
-        //get courses list
-        // getCoursesList();
-        let anos = new Set();
-        let cursos = new Set();
-        service.getSeniors()
-            .then(data => {
-                console.log(data)
-                for (var i = 0; i < data.length; i++) {
-                    anos.add(data[i].year)
-                    cursos.add(data[i].course)
+
+        // get list of courses to check if 'id' is valid
+        service.getSeniorsCourse()
+            .then((data) => {
+                if (!data.includes(id)) {
+                    throw new Error("Not available");
                 }
-                setYears([...anos]);
-                setSelectedYear(anos[0]);
-            })
+            }).catch(() => {
+                window.location.href = "/404";
+            });
+
+
+        // pegar o número de anos
+        service.getSeniorsCourseYear(id)
+            .then((data) => {
+                console.log(data)
+                var anos = data.sort((a, b) => b - a);
+                if (anos.length > 0) {
+                    setYears(anos);
+                    setSelectedYear(anos[0]);
+                }
+                else {
+                    throw new Error("Not available");
+                }
+            }).catch(() => {
+                window.location.href = "/404";
+            });
     }, [id])
 
-    const getSeniorImages = async () => {
+    useEffect(() => {
+        if (selectedYear === undefined) return;
+        setLoading(true);
 
-        service.getSeniors({course: id, year: selectedYear})
-            .then(data => {
-                console.log(data)
-                setNamesOnly(data.students?.[0]["quote"] == null &&
-                    data.students?.[0]["image"] == null);
-                console.log(data.students)
+        service.getSeniorsBy(id, selectedYear)
+            .then((data) => {
+                setNamesOnly(data.students[0]["quote"] == null &&
+                    data.students[0]["image"] == null);
                 setPeople(data.students);
                 setImg(
                     <Image
@@ -89,14 +152,9 @@ const Seniors = () => {
                     />
                 );
                 setLoading(false);
-            })
-    }
-
-    useEffect(() => {
-        if (selectedYear === undefined) return;
-        setLoading(true);
-
-        getSeniorImages();
+            }).catch(() => {
+                window.location.href = "/404";
+            });
     }, [selectedYear, id])
 
     return (

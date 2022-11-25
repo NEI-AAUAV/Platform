@@ -1,7 +1,9 @@
 from pydantic import BaseModel, Field
 
-from typing import Optional
+from typing import Optional, List
 from typing_extensions import Annotated
+
+from .seniors_students import SeniorsStudentsInDB
 
 
 class SeniorsBase(BaseModel):
@@ -25,6 +27,7 @@ class SeniorsInDB(SeniorsBase):
     """Properties properties stored in DB."""
     year: int
     course: Annotated[str, Field(max_length=3)]
+    students: List[SeniorsStudentsInDB]
 
     class Config:
         orm_mode = True
