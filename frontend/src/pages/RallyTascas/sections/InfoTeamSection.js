@@ -1,30 +1,33 @@
-import { Card, Grid,Text} from "@nextui-org/react"
+import { Card,Text} from "@nextui-org/react"
 import "../index.css";
 
 const InfoTeamSection = () => {
+    const columnsPerRow = 3;
     return (
-        <div className="d-flex flex-wrap" style={{ justifyContent:"space-evenly"}}>
-        <Grid.Container gap={2} >
-            <Grid xs={4} css={{ paddingLeft:0,paddingRight:0}}>
-            <Card variant="bordered" className="rally-card-team-image">   
-        <Card.Image
-        src="https://nextui.org/images/card-example-2.jpeg"
-        width="100%"
-        height="100%"
-        objectFit="cover"
-        alt="Card image background"
-      />
-    </Card>
-            </Grid>
-            <Grid xs={4}>
+    <div className="d-flex flex-wrap" style={{ justifyContent:"space-evenly"}}>
+        <div className="column">
+            <div className="row">
+                <Card variant="bordered" className="rally-card-team-image">   
+                    <Card.Image
+                    src="https://nextui.org/images/card-example-2.jpeg"
+                    width="350px"
+                    height="100%"
+                    objectFit="cover"
+                    alt="Card image background"
+                    />
+                </Card>
+            </div>
+            <div className="row">
                 <Card variant="bordered" className="rally-card-team-name" >
                     <Card.Body>
                         <Text style={{color:"#FC8551"}}>9th place</Text>
                         <Text h3 style={{color:"white"}}>Team Name</Text>
                     </Card.Body>
                 </Card>
-            </Grid>
-            <Grid xs={4}>
+            </div>
+        </div>
+        <div className="column">
+            <div className="row">
                 <Card className="rally-card-team-information" >
                     <Card.Body>
                         <Text h3 style={{color:"#FC8551",fontWeight:"bold"}}>{'>'} TEAM MEMBERS</Text>
@@ -35,8 +38,8 @@ const InfoTeamSection = () => {
                         <Text style={{color:"white"}}>Team Member 5</Text>
                     </Card.Body>
                 </Card>
-            </Grid>
-            <Grid xs={4}>
+            </div>
+            <div className="row">
                 <Card variant="bordered" className="rally-card-team-checkpoint">
                     <Card.Body>
                         <Text h3 style={{color:"#FC8551",fontWeight:"bold"}}>{'>'} CHECKPOINT</Text>
@@ -45,9 +48,9 @@ const InfoTeamSection = () => {
                         <Text style={{color:"white"}}>Date: --/--/-- --:--</Text>
                     </Card.Body>
                 </Card>
-            </Grid>
-        </Grid.Container>
+            </div>
         </div>
+    </div>
     );
 }
 
