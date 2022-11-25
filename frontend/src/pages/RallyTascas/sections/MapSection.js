@@ -22,14 +22,11 @@ const InfoCard = (props) => {
     );
 }
 
-const NextShot = () => {
+const NextShot = (props) => {
     return (
-        <InfoCard title="Next Shot" subtitle="Shot Name">
-            <p className="text-white text-uppercase mt-4 shot-description">
-                Shot Description and slogan.
-            </p>
-            <p className="text-white text-uppercase text-justify shot-description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur consequat tristique dui ut placerat. Morbi quis lacus lacus. Vestibulum.
+        <InfoCard title="Next Shot" subtitle={props.shot_name}>
+            <p style={{ whiteSpace: "pre-line" }} className="text-white text-uppercase mt-4 shot-description">
+                {props.description}
             </p>
         </InfoCard>
     );
@@ -121,10 +118,16 @@ const LeaderBoard = () => {
 }
 
 const MapSection = () => {
+    const dummyNextShot = {
+        id: 0,
+        shot_name: "Shot Name",
+        description: "Shot Description and slogan.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur consequat tristique dui ut placerat. Morbi quis lacus lacus. Vestibulum.",
+    };
+
     return (
         <div className="map-root-container row m-2">
             <div className="col-12 col-md-4 px-3">
-                <NextShot />
+                <NextShot {...dummyNextShot} />
                 <NextCheckpointCard />
             </div>
             <div className="col-12 col-md-4 px-3">
