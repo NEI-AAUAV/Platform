@@ -47,7 +47,7 @@ const Faina = () => {
                         console.log(response)
                         if (response[i].image) {
                             setImg(<Image
-                                src={process.env.REACT_APP_STATIC + response[i].image} rounded fluid
+                                src={response[i].image} rounded fluid
                                 className="slideUpFade"
                                 style={{
                                     animationDelay: animationBase + animationIncrement * 0 + "s",
