@@ -11,6 +11,7 @@ from app.schemas import (NotesInDB,
                          NotesSubjectInDB,
                          NotesTeachersInDB,
                          NotesTypesInDB)
+from app.schemas.notes import notes_categories
 from app.schemas.pagination import Page, PageParams
 
 
@@ -101,16 +102,14 @@ def get_notes(
     teacher: Optional[int] = None,
     db: Session = Depends(deps.get_db),
 ) -> Any:
-    all_categories = {
-        'summary', 'tests', 'bibliography', 'slides',
-        'exercises', 'projects', 'notebook'
-    }
-    if not all_categories.issuperset(categories):
+    if not notes_categories.issuperset(categories):
         raise HTTPException(status_code=400, detail="Invalid category")
 
-    items = crud.notes.get_notes_by_categories(db=db, categories=categories,
-                                               page=page_params.page, size=page_params.size)
-    return Page.create(items, page_params)
+    categories = categories or notes_categories
+
+    total, items = crud.notes.get_notes_by_categories(
+        db=db, categories=categories, page=page_params.page, size=page_params.size)
+    return Page.create(total, items, page_params)
 
 
 @router.get("/{id}", status_code=200, response_model=NotesInDB)

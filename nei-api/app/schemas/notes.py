@@ -10,6 +10,12 @@ from .notes_teachers import NotesTeachersInDB
 from .notes_subject import NotesSubjectInDB
 
 
+notes_categories = {
+    'summary', 'tests', 'bibliography', 'slides',
+    'exercises', 'projects', 'notebook'
+}
+
+
 class NotesBase(BaseModel):
     name: Annotated[Optional[str], Field(max_length=255)]
     location: Annotated[Optional[str], Field(max_length=2048)]
@@ -27,7 +33,7 @@ class NotesBase(BaseModel):
     content: Optional[str]
     created_at: datetime
     type_id: int
-    size: int
+    size: Optional[int]
 
 
 class NotesInDB(NotesBase):
