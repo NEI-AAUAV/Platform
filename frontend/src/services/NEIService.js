@@ -99,10 +99,6 @@ class NEIService {
         return await client.get('/news/', { params });
     }
 
-    async getSeniorsYears(params) {
-        return await client.get('/seniors/', { params });
-    }
-
     async getVideosCategories(params) {
         return await client.get('/videos/categories/', { params });
     }
@@ -113,6 +109,10 @@ class NEIService {
 
     async getSeniors(params) {
         return await client.get('/seniors/', { params });
+    }
+
+    async getSeniorsStudents(params) {
+        return await client.get('/seniors/students/', { params });
     }
 }
 

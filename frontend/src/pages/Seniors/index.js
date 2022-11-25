@@ -49,68 +49,47 @@ const Seniors = () => {
         }
     }
 
-    const getYears = async () => {
-
-        const config = {
-            method: 'get',
-            url: process.env.REACT_APP_API + "/seniors/courses/years/?course=" + id
-        }
-
-        let res = await axios(config)
-
-        var anos = res.data.data.map((curso) => curso.year).reverse();
-        if (anos.length > 0) {
-            setYears(anos);
-            setSelectedYear(anos[0]);
-        }
-        else {
-            throw new Error("Not available");
-        }
-    }
-
     useEffect(() => {
-        setYears(null); // hack to update typist title
+        setYears([]); // hack to update typist title
         //get courses list
-        getCoursesList();
+        // getCoursesList();
         let anos = new Set();
         let cursos = new Set();
         service.getSeniors()
-            .then(response => {
-                for (var i = 0; i < response.length; i++) {
-                    anos.add(response[i].year)
-                    cursos.add(response[i].course)
+            .then(data => {
+                console.log(data)
+                for (var i = 0; i < data.length; i++) {
+                    anos.add(data[i].year)
+                    cursos.add(data[i].course)
                 }
+                setYears([...anos]);
+                setSelectedYear(anos[0]);
             })
-        // pegar o número de anos
-        getYears();
     }, [id])
 
     const getSeniorImages = async () => {
 
-        const config = {
-            method: 'get',
-            url: process.env.REACT_APP_API + "/seniors/?course=" + id + "&year=" + selectedYear
-        }
-
-        let res = await axios(config)
-
-        setNamesOnly(res.data.data.students[0]["quote"] == null &&
-            res.data.data.students[0]["image"] == null);
-        setPeople(res.data.data.students);
-        setImg(
-            <Image
-                src={process.env.REACT_APP_STATIC + res.data.data.image}
-                rounded
-                fluid
-                className="slideUpFade"
-                style={{
-                    animationDelay: animationBase + animationIncrement * 0 + "s",
-                    "marginBottom": 50
-                }}
-            />
-        );
-        setLoading(false);
-
+        service.getSeniors({course: id, year: selectedYear})
+            .then(data => {
+                console.log(data)
+                setNamesOnly(data.students?.[0]["quote"] == null &&
+                    data.students?.[0]["image"] == null);
+                console.log(data.students)
+                setPeople(data.students);
+                setImg(
+                    <Image
+                        src={data.image}
+                        rounded
+                        fluid
+                        className="slideUpFade"
+                        style={{
+                            animationDelay: animationBase + animationIncrement * 0 + "s",
+                            "marginBottom": 50
+                        }}
+                    />
+                );
+                setLoading(false);
+            })
     }
 
     useEffect(() => {
@@ -126,6 +105,8 @@ const Seniors = () => {
                 {years && <Typist>{"Finalistas de " + id}</Typist>}
             </h2>
             <Box sx={{ maxWidth: { xs: "100%", md: "900px" }, margin: "auto", marginBottom: "50px" }}>
+    {console.log(years)}
+
                 <YearTabs
                     years={years}
                     value={selectedYear}
@@ -145,7 +126,7 @@ const Seniors = () => {
                         <Row>
                             {
                                 namesOnly ?
-                                    people.map((person, index) =>
+                                    people?.map((person, index) =>
                                         <Fragment key={index}>
                                             <TextList
                                                 colSize={3}
@@ -158,7 +139,7 @@ const Seniors = () => {
                                         </Fragment>
                                     )
                                     :
-                                    people.map((person, index) =>
+                                    people?.map((person, index) =>
                                         <Fragment key={index}>
                                             <SeniorsCard
                                                 name={person.name}
