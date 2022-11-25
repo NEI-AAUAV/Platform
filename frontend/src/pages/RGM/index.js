@@ -9,6 +9,8 @@ import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
 import Typist from "react-typist";
 
+import service from 'services/NEIService';
+
 
 const validCategories = {
     'PAO': {
@@ -57,18 +59,13 @@ const RGM = () => {
         id = id.toUpperCase();
         setTitle(validCategories[id]['plural']);
         // Fetch API if valid
-        fetch(process.env.REACT_APP_API + "/rgm/?category=" + id)
-            .then(res => res.json())
-            .then(json => {
-                if ('data' in json) {
-                    setDocs(json['data']);
-                    // Set tab to maximum year
-                    json['data'].forEach(doc => setTab(oldTab => oldTab < doc['mandato'] ? doc['mandato'] : oldTab));
-                } else {
-                    window.location.href = "/404";
-                }
+        service.getRGM(id)
+            .then((data) => {
+                setDocs(data);
+                // Set tab to maximum year
+                data.forEach(doc => setTab(oldTab => oldTab < doc['mandate'] ? doc['mandate'] : oldTab));
                 setLoading(false);
-            }).catch((error) => {
+            }).catch(() => {
                 window.location.href = "/404";
             });
     }, [id]);
@@ -91,26 +88,26 @@ const RGM = () => {
             </div>
             {
                 // Only show tabs to ATAS category
-                id.toUpperCase() == "ATAS" &&
+                id.toUpperCase() === "ATAS" &&
                 <Box sx={{ maxWidth: { xs: "100%", md: "700px" }, margin: "auto", marginBottom: "50px" }}>
                     <YearTabs
-                        years={[...new Set(docs.map(doc => doc.mandato))]}
+                        years={[...new Set(docs.map(doc => doc.mandate))].sort((a, b) => b - a)}
                         value={tab}
                         onChange={changeTab}
                     />
                 </Box>
             }
             {
-                loading &&
+                !!loading &&
                 <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
             }
             {
                 !loading &&
                 <Row>
                     {
-                        // On ATAS category, show only those which mandato match tab
-                        docs.sort((a, b) => a.file.includes('2022-23') ? -1 : b.mandato - a.mandato)
-                        .filter(doc => id.toUpperCase() != "ATAS" || doc.mandato == tab).map(
+                        // On ATAS category, show only those which mandate match tab
+                        docs.sort((a, b) => a.file.includes('2022-23') ? -1 : b.mandate - a.mandate)
+                        .filter(doc => id.toUpperCase() != "ATAS" || doc.mandate == tab).map(
                             (doc, index, arr) =>
                                 <div key={index}>
                                     <Document
@@ -121,12 +118,12 @@ const RGM = () => {
                                                 :
                                                 id.toUpperCase() === "PAO"
                                                 ?
-                                                id.toUpperCase() + ' ' + doc.file?.slice(21, -4).replace('I', '')
+                                                doc.file?.split("/").pop().replace("_", " ").replace(".pdf", "").replace("20", " 20")
                                                 :
-                                                id.toUpperCase() + ' ' + doc.mandato
+                                                id.toUpperCase() + ' ' + doc.mandate
                                         }
-                                        description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandato}
-                                        link={process.env.REACT_APP_STATIC + doc.file}
+                                        description={validCategories[id.toUpperCase()]['singular'] + ' de ' + doc.mandate}
+                                        link={doc.file}
                                         blank={true}
                                         className="col-lg-6 col-xl-3 slideUpFade"
                                         style={{

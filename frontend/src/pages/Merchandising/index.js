@@ -3,6 +3,7 @@ import { Button, Row, Col } from "react-bootstrap";
 import Image from 'react-bootstrap/Image';
 import "./index.css";
 import Typist from 'react-typist';
+import service from 'services/NEIService';
 
 
 // Animation
@@ -15,39 +16,35 @@ const Merchandising = () => {
     const [imgs, setImgs] = useState([]);
 
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/merch/")
-            .then(response => response.json())
-            .then((response) => {
+        service.getMerch()
+            .then((data) => {
+                setImgs(data.map((img, idx) =>
+                    <div
+                        className={
+                            idx % 2 === 0
+                                ? "impar text-center slideUpFade"
+                                : "par2 text-center slideUpFade"
+                        }
+                        style={{
+                            animationDelay: animationBase + animationIncrement * idx + "s",
+                        }}
+                    >
+                        <Row className="mx-0">
+                            <Col lg={idx % 2 == 0 ? 4 : 8} md={6} sm={12} className={idx % 2 == 0 ? "order-0 d-flex" : "order-1 d-flex"}>
+                                {
+                                    !!img.image
+                                        ? <Image className="img my-auto mx-auto" src={img.image} style={{ width: 200 }} />
+                                        : <p className="text-center mx-auto my-auto small">Imagem disponível em breve.</p>
+                                }
+                            </Col>
+                            <Col lg={idx % 2 == 0 ? 8 : 4} md={6} sm={12} className={idx % 2 == 0 ? "order-1" : "order-0"}>
+                                <h22>{img.name}</h22>
+                                <h55>Preço: {img.price}€</h55>
+                            </Col>
+                        </Row>
 
-                if ('data' in response) {
-                    setImgs(response.data.map((img, idx) =>
-                        <div
-                            className={
-                                idx % 2 == 0
-                                    ? "impar text-center slideUpFade"
-                                    : "par2 text-center slideUpFade"
-                            }
-                            style={{
-                                animationDelay: animationBase + animationIncrement * idx + "s",
-                            }}
-                        >
-                            <Row className="mx-0">
-                                <Col lg={idx % 2 == 0 ? 4 : 8} md={6} sm={12} className={idx % 2 == 0 ? "order-0 d-flex" : "order-1 d-flex"}>
-                                    {
-                                        img.image
-                                            ? <Image className="img my-auto mx-auto" src={process.env.REACT_APP_STATIC + img.image} style={{ width: 200 }} />
-                                            : <p className="text-center mx-auto my-auto small">Imagem disponível em breve.</p>
-                                    }
-                                </Col>
-                                <Col lg={idx % 2 == 0 ? 8 : 4} md={6} sm={12} className={idx % 2 == 0 ? "order-1" : "order-0"}>
-                                    <h22>{img.name}</h22>
-                                    <h55>Preço: {img.price}€</h55>
-                                </Col>
-                            </Row>
-
-                        </div>
-                    ));
-                }
+                    </div>
+                ));
             })
     }, [])
 

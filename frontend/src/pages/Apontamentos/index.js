@@ -180,7 +180,7 @@ const Apontamentos = () => {
         service.getNotesYears(params)
             .then((data) => {
                 const arr = data.map(year => {
-                    const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd };
+                    const x = { value: year.id, label: year.year_begin + "-" + year.year_end };
                     if (x.value == selYear)
                         setShownYear(x);
                     return x;
@@ -463,10 +463,10 @@ const Apontamentos = () => {
                             <Tab.Pane eventKey="list" >
                                 <div className="d-flex flex-column">
                                     {
-                                        loading ?
+                                        !!loading ?
                                             <Spinner animation="grow" variant="primary" className="mx-auto mt-3" title="A carregar..." />
                                             :
-                                            data.length == 0 ?
+                                            data.length === 0 ?
                                                 <Col sm={12}>
                                                     <h3 className="text-center mt-3">Nenhum apontamento encontrado</h3>
                                                     <h4 className="text-center">Tente definir filtros menos restritivos</h4>
@@ -502,14 +502,14 @@ const Apontamentos = () => {
 
                         <Row>
                             {
-                                thanks.map(t =>
-                                    <div className="mx-auto my-3">
-                                        <h4 className="">{t.author}</h4>
+                                thanks.map((t, index) =>
+                                    <div key={index} className="mx-auto my-3">
+                                        <h4 className="">{t.author?.name}</h4>
                                         <div className="small">
-                                            <a href={'/apontamentos?author=' + t.authorId}>Os seus apontamentos no site do NEI</a>
+                                            <a href={'/apontamentos?author=' + t.author_id}>Os seus apontamentos no site do NEI</a>
                                             <br />
                                             {
-                                                t.personalPage && <a href={t.personalPage} target="_blank">Website de apontamentos</a>
+                                                !!t.author?.personal_page && <a href={t.author?.personal_page} target="_blank">Website de apontamentos</a>
                                             }
                                         </div>
                                     </div>
