@@ -24,7 +24,7 @@ class Video(Base):
     youtube_id =  Column(String(255))
     title = Column(String(255))
     subtitle = Column(String(255))
-    image = Column(Text)
+    _image = Column("image", String(2048))
     created_at = Column(DateTime, index=True)
     playlist = Column(SmallInteger)
     tags = relationship("VideoTag", secondary=video_video_tags)
