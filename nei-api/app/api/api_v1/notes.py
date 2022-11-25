@@ -10,7 +10,8 @@ from app.schemas import (NotesInDB,
                          NotesSchoolyearInDB,
                          NotesSubjectInDB,
                          NotesTeachersInDB,
-                         NotesTypesInDB)
+                         NotesTypesInDB,
+                         UsersInDB)
 from app.schemas.notes import notes_categories
 from app.schemas.pagination import Page, PageParams
 
@@ -75,8 +76,8 @@ def get_notes_year(
     return crud.notes_schoolyear.get_multi(db=db)
 
 
-@router.get("/students", status_code=200, response_model=List[NotesSchoolyearInDB])
-def get_notes_year(
+@router.get("/students", status_code=200, response_model=List[UsersInDB])
+def get_notes_students(
     *, db: Session = Depends(deps.get_db),
     school_year: Optional[int] = None,
     subject: Optional[int] = None,
@@ -86,7 +87,7 @@ def get_notes_year(
     Get all students that are associated with a
     `school_year`, `subject` and `teacher`.
     """
-    return crud.notes_schoolyear.get_multi(db=db)
+    return crud.notes.get_notes_students(db=db)
 
 
 @router.get("/", status_code=200, response_model=Page[NotesInDB])

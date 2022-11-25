@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
 from app.models.notes import Notes
+from app.models.users import Users
 
 
 class CRUDNotes(CRUDBase[Notes, None, None]):
@@ -24,6 +25,9 @@ class CRUDNotes(CRUDBase[Notes, None, None]):
             query = query.filter(or_(getattr(Notes, cat) == 1 for cat in categories))
         total = query.count()
         return total, query.limit(size).offset((page - 1) * size).all()
+
+    def get_notes_students(self, db: Session) -> List[Users]:
+        return db.query(Users).join(Notes).all()
 
 
 notes = CRUDNotes(Notes)
