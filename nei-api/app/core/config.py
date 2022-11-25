@@ -8,16 +8,19 @@ from typing import List, Optional, Union
 # Project Directories
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
-PRODUCTION = False
-
 
 class Settings(BaseSettings):
-    PRODUCTION: bool = PRODUCTION
-    API_V1_STR: str = "/api/v1"
-    HOST: AnyHttpUrl = "http://aauav-nei.ua.pt/nei" if PRODUCTION else "http://localhost:8000/nei"
-    STATIC_URL: AnyHttpUrl = HOST + "/static"
+    PRODUCTION: bool = os.getenv("ENV") == "production"
+
+    API_V1_STR: str = "/nei/api/v1"
+    STATIC_STR: str = "/nei/static"
+
+    HOST: AnyHttpUrl = ("http://aauav-nei.ua.pt" if PRODUCTION else
+                        "http://localhost:8000")
+    STATIC_URL: AnyHttpUrl = HOST + STATIC_STR
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://aauav-nei.ua.pt" if PRODUCTION else
+                                              "http://localhost:3000"]
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:

@@ -16,18 +16,18 @@ class SeniorsStudents(Base):
     @declared_attr
     def __table_args__(cls) -> dict:
         return (ForeignKeyConstraint(
-            ['year', 'course_name'],
+            ['year', 'course'],
             [settings.SCHEMA_NAME + '.seniors.year', settings.SCHEMA_NAME + '.seniors.course']
         ),{"schema": settings.SCHEMA_NAME})
 
     year = Column(Integer, primary_key=True)
-    course_name = Column(String(3), primary_key=True)
+    course = Column(String(3), primary_key=True)
     user_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id"), primary_key=True)
     quote = Column(String(280))
     _image = Column("image", String(2048))
 
     #year = relationship("Seniors", foreign_keys=[year_id])
-    #course = relationship("Seniors", foreign_keys=[course_name])
+    #course = relationship("Seniors", foreign_keys=[course])
     user = relationship("Users", foreign_keys=[user_id])
 
     @hybrid_property

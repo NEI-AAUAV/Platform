@@ -17,10 +17,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/nei/static", StaticFiles(directory="static"), name="static")
+app.mount(settings.STATIC_STR, StaticFiles(directory="static"), name="static")
 app.add_event_handler("startup", init_logging)
 app.add_event_handler("startup", init_db)
-app.include_router(api_v1_router, prefix="/nei" + settings.API_V1_STR)
+app.include_router(api_v1_router, prefix=settings.API_V1_STR)
 
 
 if __name__ == "__main__":
