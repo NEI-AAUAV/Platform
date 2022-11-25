@@ -101,10 +101,10 @@ const data = [
       },
     ],
   },
-  {
-    name: "Estágios",
-    link: "/estagios",
-  },
+  // {
+  //   name: "Estágios",
+  //   link: "/estagios",
+  // },
   {
     name: "Parceiros",
     link: "/parceiros",

@@ -1579,15 +1579,15 @@ INSERT INTO aauav_nei.partners (id, header, company, description, content, link,
 --
 
 INSERT INTO aauav_nei.redirect (id, alias, redirect) VALUES
-(1, 'mapa', '/static/integracao/202122/peddypaper/mapa.png'),
-(2, 'glicinias', '/static/integracao/202122/peddypaper/glicinias.jpg'),
-(3, 'ribau', '/static/integracao/202122/peddypaper/congressos.jpg'),
-(4, 'forum', '/static/integracao/202122/peddypaper/forum.jpg'),
-(5, 'santos', '/static/integracao/202122/peddypaper/santos.jpg'),
-(6, 'macaca', '/static/integracao/202122/peddypaper/macaca.jpg'),
-(7, 'convivio', '/static/integracao/202122/peddypaper/convivio.jpg'),
-(8, 'be', '/static/integracao/202122/peddypaper/be.jpg'),
-(9, 'socorro', '/static/integracao/202122/guiasobrevivencia.pdf');
+(1, 'mapa', '/integracao/202122/peddypaper/mapa.png'),
+(2, 'glicinias', '/integracao/202122/peddypaper/glicinias.jpg'),
+(3, 'ribau', '/integracao/202122/peddypaper/congressos.jpg'),
+(4, 'forum', '/integracao/202122/peddypaper/forum.jpg'),
+(5, 'santos', '/integracao/202122/peddypaper/santos.jpg'),
+(6, 'macaca', '/integracao/202122/peddypaper/macaca.jpg'),
+(7, 'convivio', '/integracao/202122/peddypaper/convivio.jpg'),
+(8, 'be', '/integracao/202122/peddypaper/be.jpg'),
+(9, 'socorro', '/integracao/202122/guiasobrevivencia.pdf');
 
 
 --

@@ -144,7 +144,7 @@ const Seniors = () => {
                                             <SeniorsCard
                                                 name={person.name}
                                                 quote={person.quote}
-                                                image={process.env.REACT_APP_STATIC + person.image}
+                                                image={person.image}
                                                 colSizeXs="12"
                                                 colSizeSm="6"
                                                 colSizeLg="4"

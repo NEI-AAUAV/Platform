@@ -75,6 +75,26 @@ class NEIService {
         return await client.get('/notes/teachers', { params });
     }
 
+    async getHistory() {
+        return await client.get('/history/');
+    }
+
+    async getRGM(category) {
+        return await client.get(`/rgm/${category}`)
+    }
+
+    async getMerch() {
+        return await client.get(`/merch/`)
+    }
+
+    async getPartners() {
+        return await client.get(`/partners/`)
+    }
+
+    async getPartnersBanner() {
+        return await client.get(`/partners/banner/`)
+    }
+
     async getTeamMandates(params) {
         return await client.get('/team/', { params });
     }
@@ -105,6 +125,10 @@ class NEIService {
 
     async getVideos(params) {
         return await client.get('/videos/', { params });
+    }
+
+    async getRedirects(params) {
+        return await client.get('/redirects/', { params });
     }
 
     async getSeniors(params) {
