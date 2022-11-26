@@ -100,7 +100,7 @@ const Seniors = () => {
 
 
     useEffect(() => {
-        setYears([]); // hack to update typist title
+        setYears(null); // hack to update typist title
 
         // get list of courses to check if 'id' is valid
         service.getSeniorsCourse()
@@ -109,7 +109,8 @@ const Seniors = () => {
                     throw new Error("Not available");
                 }
             }).catch(() => {
-                window.location.href = "/404";
+                console.error("404 acula")
+                // window.location.href = "/404";
             });
 
 
@@ -126,7 +127,9 @@ const Seniors = () => {
                     throw new Error("Not available");
                 }
             }).catch(() => {
-                window.location.href = "/404";
+                console.error("404 piscam")
+
+                // window.location.href = "/404";
             });
     }, [id])
 
@@ -136,6 +139,9 @@ const Seniors = () => {
 
         service.getSeniorsBy(id, selectedYear)
             .then((data) => {
+                if (!data) {
+                    throw new Error("Not available");
+                }
                 setNamesOnly(data.students[0]["quote"] == null &&
                     data.students[0]["image"] == null);
                 setPeople(data.students);
@@ -153,7 +159,8 @@ const Seniors = () => {
                 );
                 setLoading(false);
             }).catch(() => {
-                window.location.href = "/404";
+                console.error("404 aqui")
+                // window.location.href = "/404";
             });
     }, [selectedYear, id])
 
@@ -163,7 +170,7 @@ const Seniors = () => {
                 {years && <Typist>{"Finalistas de " + id}</Typist>}
             </h2>
             <Box sx={{ maxWidth: { xs: "100%", md: "900px" }, margin: "auto", marginBottom: "50px" }}>
-    {console.log(years)}
+                {console.log(years)}
 
                 <YearTabs
                     years={years}
@@ -188,7 +195,7 @@ const Seniors = () => {
                                         <Fragment key={index}>
                                             <TextList
                                                 colSize={3}
-                                                text={person.name}
+                                                text={person.user?.name}
                                                 className="slideUpFade"
                                                 style={{
                                                     animationDelay: animationBase + animationIncrement * 0 + "s"
@@ -200,7 +207,7 @@ const Seniors = () => {
                                     people?.map((person, index) =>
                                         <Fragment key={index}>
                                             <SeniorsCard
-                                                name={person.name}
+                                                name={person.user?.name}
                                                 quote={person.quote}
                                                 image={person.image}
                                                 colSizeXs="12"
