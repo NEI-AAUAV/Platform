@@ -3,6 +3,11 @@
     src: url(assets/fonts/Aldrich/Aldrich-Regular.ttf) format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
 }
 
+@font-face {
+    font-family: 'Akshar';
+    src: url(assets/fonts/Akshar/Akshar-Regular.ttf) format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
 @media screen and (min-width: 600px) {
     .rally-header {
         font-size: 3rem;
