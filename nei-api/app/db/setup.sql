@@ -78,7 +78,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE aauav_nei.faina (
     id integer NOT NULL,
-    image character varying(255),
+    image character varying(2048),
     year character varying(9)
 );
 
@@ -186,7 +186,7 @@ CREATE TABLE aauav_nei.history (
     moment date NOT NULL,
     title character varying(120),
     body text,
-    image character varying(255)
+    image character varying(2048)
 );
 
 
@@ -199,7 +199,7 @@ ALTER TABLE aauav_nei.history OWNER TO postgres;
 CREATE TABLE aauav_nei.merchandisings (
     id integer NOT NULL,
     name character varying(255),
-    image character varying(255),
+    image character varying(2048),
     price double precision,
     number_of_items integer
 );
@@ -235,7 +235,7 @@ ALTER SEQUENCE aauav_nei.merchandisings_id_seq OWNED BY aauav_nei.merchandisings
 
 CREATE TABLE aauav_nei.news (
     id integer NOT NULL,
-    header character varying(255),
+    header character varying(2048),
     status aauav_nei.status_enum,
     title character varying(255),
     category aauav_nei.category_enum,
@@ -279,7 +279,7 @@ ALTER SEQUENCE aauav_nei.news_id_seq OWNED BY aauav_nei.news.id;
 CREATE TABLE aauav_nei.notes (
     id integer NOT NULL,
     name character varying(255),
-    location character varying(255),
+    location character varying(2048),
     subject_id integer,
     author_id integer,
     school_year_id integer,
@@ -488,13 +488,13 @@ ALTER SEQUENCE aauav_nei.notes_types_id_seq OWNED BY aauav_nei.notes_types.id;
 
 CREATE TABLE aauav_nei.partners (
     id integer NOT NULL,
-    header character varying(255),
+    header character varying(2048),
     company character varying(255),
     description text,
     content character varying(255),
     link character varying(255),
     banner_url character varying(255),
-    banner_image character varying(255),
+    banner_image character varying(2048),
     banner_until timestamp without time zone
 );
 
@@ -530,7 +530,7 @@ ALTER SEQUENCE aauav_nei.partners_id_seq OWNED BY aauav_nei.partners.id;
 CREATE TABLE aauav_nei.redirect (
     id integer NOT NULL,
     alias character varying(255),
-    redirect text
+    redirect character varying(2048)
 );
 
 
@@ -566,7 +566,7 @@ CREATE TABLE aauav_nei.rgm (
     id integer NOT NULL,
     category character varying(11),
     mandate integer,
-    file character varying(255)
+    file character varying(2048)
 );
 
 
@@ -599,24 +599,46 @@ ALTER SEQUENCE aauav_nei.rgm_id_seq OWNED BY aauav_nei.rgm.id;
 --
 
 CREATE TABLE aauav_nei.seniors (
-    year integer NOT NULL,
-    course character varying(3) NOT NULL,
-    image character varying(255)
+    id integer NOT NULL,
+    year integer,
+    course character varying(6),
+    image character varying(2048)
 );
 
 
 ALTER TABLE aauav_nei.seniors OWNER TO postgres;
 
 --
+-- Name: seniors_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+--
+
+CREATE SEQUENCE aauav_nei.seniors_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE aauav_nei.seniors_id_seq OWNER TO postgres;
+
+--
+-- Name: seniors_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER SEQUENCE aauav_nei.seniors_id_seq OWNED BY aauav_nei.seniors.id;
+
+
+--
 -- Name: seniors_students; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
 CREATE TABLE aauav_nei.seniors_students (
-    year integer NOT NULL,
-    course character varying(3) NOT NULL,
+    seniors_id integer NOT NULL,
     user_id integer NOT NULL,
     quote character varying(280),
-    image character varying(255)
+    image character varying(2048)
 );
 
 
@@ -628,7 +650,7 @@ ALTER TABLE aauav_nei.seniors_students OWNER TO postgres;
 
 CREATE TABLE aauav_nei.team (
     id integer NOT NULL,
-    header character varying(255),
+    header character varying(2048),
     mandate integer,
     user_id integer,
     role_id integer
@@ -757,7 +779,7 @@ CREATE TABLE aauav_nei.video (
     youtube_id character varying(255),
     title character varying(255),
     subtitle character varying(255),
-    image text,
+    image character varying(2048),
     created_at timestamp without time zone,
     playlist smallint
 );
@@ -926,6 +948,13 @@ ALTER TABLE ONLY aauav_nei.rgm ALTER COLUMN id SET DEFAULT nextval('aauav_nei.rg
 
 
 --
+-- Name: seniors id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.seniors ALTER COLUMN id SET DEFAULT nextval('aauav_nei.seniors_id_seq'::regclass);
+
+
+--
 -- Name: team id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
@@ -958,8 +987,6 @@ ALTER TABLE ONLY aauav_nei.video ALTER COLUMN id SET DEFAULT nextval('aauav_nei.
 --
 
 ALTER TABLE ONLY aauav_nei.video_tag ALTER COLUMN id SET DEFAULT nextval('aauav_nei.video_tag_id_seq'::regclass);
-
-
 
 
 --
@@ -1654,50 +1681,50 @@ INSERT INTO aauav_nei.rgm (id, category, mandate, file) VALUES
 -- Data for Name: seniors; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.seniors (year, course, image) VALUES
-(2020, 'LEI', '/seniors/lei/2020_3.jpg'),
-(2020, 'MEI', '/seniors/mei/2020.jpg'),
-(2021, 'LEI', NULL),
-(2021, 'MEI', NULL);
+INSERT INTO aauav_nei.seniors (id, year, course, image) VALUES
+(1, 2020, 'LEI', '/seniors/lei/2020_3.jpg'),
+(2, 2020, 'MEI', '/seniors/mei/2020.jpg'),
+(3, 2021, 'LEI', NULL),
+(4, 2021, 'MEI', NULL);
 
 
 --
 -- Data for Name: seniors_students; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.seniors_students (year, course, user_id, quote, image) VALUES
-(2020, 'LEI', 873, NULL, NULL),
-(2020, 'LEI', 879, NULL, NULL),
-(2020, 'LEI', 897, NULL, NULL),
-(2020, 'LEI', 900, NULL, NULL),
-(2020, 'LEI', 927, NULL, NULL),
-(2020, 'LEI', 999, NULL, NULL),
-(2020, 'LEI', 1002, NULL, NULL),
-(2020, 'LEI', 1137, NULL, NULL),
-(2020, 'LEI', 1161, NULL, NULL),
-(2020, 'LEI', 1245, NULL, NULL),
-(2020, 'LEI', 1266, NULL, NULL),
-(2020, 'LEI', 1362, NULL, NULL),
-(2020, 'LEI', 1425, NULL, NULL),
-(2020, 'LEI', 1476, NULL, NULL),
-(2020, 'LEI', 1545, NULL, NULL),
-(2020, 'LEI', 1647, NULL, NULL),
-(2020, 'LEI', 1764, NULL, NULL),
-(2020, 'LEI', 1938, NULL, NULL),
-(2020, 'LEI', 1995, NULL, NULL),
-(2020, 'LEI', 2130, NULL, NULL),
-(2020, 'MEI', 1059, NULL, '/seniors/mei/2020/1059.jpg'),
-(2020, 'MEI', 2131, NULL, '/seniors/mei/2020/2131.jpg'),
-(2021, 'LEI', 1020, 'Level up', '/seniors/lei/2021/1020.jpg'),
-(2021, 'LEI', 1164, 'Mal posso esperar para ver o que se segue', '/seniors/lei/2021/1164.jpg'),
-(2021, 'LEI', 1200, 'Já dizia a minha avó: \O meu neto não bebe álcool\', '/seniors/lei/2021/1200.jpg'),
-(2021, 'LEI', 1275, NULL, '/seniors/lei/2021/1275.jpg'),
-(2021, 'LEI', 1329, NULL, '/seniors/lei/2021/1329.jpg'),
-(2021, 'LEI', 1461, 'Simplesmente viciado em café e futebol', '/seniors/lei/2021/1461.jpg'),
-(2021, 'LEI', 1602, 'MD é fixe.', '/seniors/lei/2021/1602.jpg'),
-(2021, 'LEI', 1716, 'Há tempo para tudo na vida académica!', '/seniors/lei/2021/1716.jpg'),
-(2021, 'LEI', 1827, 'Melhorias = Mito', '/seniors/lei/2021/1827.jpg'),
-(2021, 'MEI', 1023, '<h1>Fun fact: #EAAA00</h1>', '/seniors/mei/2021/1023.jpg');
+INSERT INTO aauav_nei.seniors_students (seniors_id, user_id, quote, image) VALUES
+(1, 873, NULL, NULL),
+(1, 879, NULL, NULL),
+(1, 897, NULL, NULL),
+(1, 900, NULL, NULL),
+(1, 927, NULL, NULL),
+(1, 999, NULL, NULL),
+(1, 1002, NULL, NULL),
+(1, 1137, NULL, NULL),
+(1, 1161, NULL, NULL),
+(1, 1245, NULL, NULL),
+(1, 1266, NULL, NULL),
+(1, 1362, NULL, NULL),
+(1, 1425, NULL, NULL),
+(1, 1476, NULL, NULL),
+(1, 1545, NULL, NULL),
+(1, 1647, NULL, NULL),
+(1, 1764, NULL, NULL),
+(1, 1938, NULL, NULL),
+(1, 1995, NULL, NULL),
+(1, 2130, NULL, NULL),
+(2, 1059, NULL, '/seniors/mei/2020/1059.jpg'),
+(2, 2131, NULL, '/seniors/mei/2020/2131.jpg'),
+(3, 1020, 'Level up', '/seniors/lei/2021/1020.jpg'),
+(3, 1164, 'Mal posso esperar para ver o que se segue', '/seniors/lei/2021/1164.jpg'),
+(3, 1200, 'Já dizia a minha avó: \O meu neto não bebe álcool\', '/seniors/lei/2021/1200.jpg'),
+(3, 1275, NULL, '/seniors/lei/2021/1275.jpg'),
+(3, 1329, NULL, '/seniors/lei/2021/1329.jpg'),
+(3, 1461, 'Simplesmente viciado em café e futebol', '/seniors/lei/2021/1461.jpg'),
+(3, 1602, 'MD é fixe.', '/seniors/lei/2021/1602.jpg'),
+(3, 1716, 'Há tempo para tudo na vida académica!', '/seniors/lei/2021/1716.jpg'),
+(3, 1827, 'Melhorias = Mito', '/seniors/lei/2021/1827.jpg'),
+(4, 1023, '<h1>Fun fact: #EAAA00</h1>', '/seniors/mei/2021/1023.jpg');
 
 
 --
@@ -2510,6 +2537,13 @@ SELECT pg_catalog.setval('aauav_nei.rgm_id_seq', 1, false);
 
 
 --
+-- Name: seniors_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+--
+
+SELECT pg_catalog.setval('aauav_nei.seniors_id_seq', 1, false);
+
+
+--
 -- Name: team_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
@@ -2669,7 +2703,7 @@ ALTER TABLE ONLY aauav_nei.rgm
 --
 
 ALTER TABLE ONLY aauav_nei.seniors
-    ADD CONSTRAINT seniors_pkey PRIMARY KEY (year, course);
+    ADD CONSTRAINT seniors_pkey PRIMARY KEY (id);
 
 
 --
@@ -2677,7 +2711,7 @@ ALTER TABLE ONLY aauav_nei.seniors
 --
 
 ALTER TABLE ONLY aauav_nei.seniors_students
-    ADD CONSTRAINT seniors_students_pkey PRIMARY KEY (year, course, user_id);
+    ADD CONSTRAINT seniors_students_pkey PRIMARY KEY (seniors_id, user_id);
 
 
 --
@@ -2702,6 +2736,14 @@ ALTER TABLE ONLY aauav_nei.team
 
 ALTER TABLE ONLY aauav_nei.team_roles
     ADD CONSTRAINT team_roles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: seniors uc_year_course; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.seniors
+    ADD CONSTRAINT uc_year_course UNIQUE (year, course);
 
 
 --
@@ -2966,19 +3008,19 @@ ALTER TABLE ONLY aauav_nei.notes
 
 
 --
+-- Name: seniors_students seniors_students_seniors_id_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.seniors_students
+    ADD CONSTRAINT seniors_students_seniors_id_fkey FOREIGN KEY (seniors_id) REFERENCES aauav_nei.seniors(id);
+
+
+--
 -- Name: seniors_students seniors_students_user_id_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
 ALTER TABLE ONLY aauav_nei.seniors_students
     ADD CONSTRAINT seniors_students_user_id_fkey FOREIGN KEY (user_id) REFERENCES aauav_nei.users(id);
-
-
---
--- Name: seniors_students seniors_students_year_course_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
---
-
-ALTER TABLE ONLY aauav_nei.seniors_students
-    ADD CONSTRAINT seniors_students_year_course_fkey FOREIGN KEY (year, course) REFERENCES aauav_nei.seniors(year, course);
 
 
 --
