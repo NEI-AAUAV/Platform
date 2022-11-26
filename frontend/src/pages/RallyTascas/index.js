@@ -95,7 +95,7 @@ const RallyTascas = () => {
               }
               {
                 activeTab === TAB.TEAMS &&
-                <TeamsSection />
+                <TeamsSection/>
               }
               {
                 activeTab === TAB.CARDS &&
