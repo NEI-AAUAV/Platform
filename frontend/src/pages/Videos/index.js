@@ -4,6 +4,7 @@ import Typist from 'react-typist';
 import Filters from '../../components/Filters';
 import Document from '../../components/Document';
 import PageNav from '../../components/PageNav';
+import service from 'services/NEIService';
 
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 
@@ -25,22 +26,23 @@ const Videos = () => {
 
     // Get categories from API
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/videos/categories/")
-            .then(response => response.json())
-            .then((response) => {
-                if ('data' in response) {
-                    setCategories(response['data']);
-                    var cats = [];
-                    var catsObjs = [];
-                    response['data'].forEach(c => {
-                        cats.push(c.name);
-                        catsObjs.push({ filter: c.name, color: c.color });
-                    });
-                    setSelection(cats);
-                    setFilters(catsObjs);
-                    setLoadingCategories(false);
-                }
-            });
+        service.getVideosCategories()
+            .then(response => {
+                setCategories(response);
+                var cats = [];
+                var catsObjs = [];
+                response.forEach(c => {
+                    cats.push(c.name);
+                    catsObjs.push({ filter: c.name, color: c.color });
+                });
+                setSelection(cats);
+                setFilters(catsObjs);
+                setLoadingCategories(false);
+            })
+            .catch(() => {
+                console.log("something went wrong...")
+            })
+
     }, []);
 
     // Videos
@@ -54,36 +56,28 @@ const Videos = () => {
     // When categories selected change, update videos list (get from API)
     useEffect(() => {
         setLoading(true);
+
+        const params = {
+            tag: []
+        }
+        
         if (selection.length) {
             // Compute url with categories ids selected
-            let url = process.env.REACT_APP_API + "/videos/?";
             selection.forEach(s => {
                 const candidates = categories.filter(c => c.name == s);
                 if (candidates.length > 0) {
-                    url += 'category[]= ' + candidates[0].id + '&';
+                    params.tag.push(candidates[0].id);
                 }
             });
-            url += 'page=' + selPage;
-            // Get data from API
-            fetch(url)
-                .then(response => response.json())
+
+            service.getVideos({ ...params, page: selPage })
                 .then((response) => {
-                    if ('data' in response) {
-                        setVideos(response['data']);
-                        setPages(response['page']['pagesNumber']);
-                        setSelPage(response['page']['currentPage']);
-                    } else {
-                        setLoading(false);
-                        setPages(1);
-                        setSelPage(1);
-                    }
-                    setLoading(false)
-                }).catch((error) => {
-                    console.error("Erro getting videos from API!", error);
+                    setVideos(response.items);
+                    setPages(response.last)
+                    setSelPage(response.page)
                     setLoading(false);
-                    setPages(1);
-                    setSelPage(1);
                 });
+
         } else {
             setLoading(false);
             setVideos([]);
@@ -154,7 +148,7 @@ const Videos = () => {
                             link={'/videos/' + video.id}
                             blank={false}
                             icon={faPlayCircle}
-                            image={process.env.REACT_APP_STATIC + video.image}
+                            image={video.image}
                             className="col-lg-6 col-xl-4 slideUpFade p-2"
                             tags={tag ? [tag] : []}
                         />)

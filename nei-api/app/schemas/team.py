@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field
 
 from typing import Optional
 from typing_extensions import Annotated
@@ -9,7 +9,7 @@ from .users import UsersInDB
 
 class TeamBase(BaseModel):
     header: Annotated[str, Field(max_length=255)]
-    mandato: Optional[int]
+    mandate: Optional[int]
     user_id: int
     role_id: int
 
@@ -22,7 +22,7 @@ class TeamCreate(TeamBase):
 class TeamUpdate(TeamBase):
     """Properties to receive via API on creation."""
     header: Annotated[Optional[str], Field(max_length=255)]
-    mandato: Optional[int]
+    mandate: Optional[int]
     user_id: Optional[int]
     role_id: Optional[int]
 

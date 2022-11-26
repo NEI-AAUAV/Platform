@@ -33,8 +33,9 @@ def create_seniors(
         raise HTTPException(status_code=400, detail="Senior already exist!")
     return crud.seniors.create(db=db, obj_in=seniors_create_in)
 
+
 @router.put("/", status_code=200, response_model=SeniorsInDB)
-def update_faina(
+def update_seniors(
     *, seniors_update_in: SeniorsUpdate, db: Session = Depends(deps.get_db), year: int, course: str
 ) -> dict:
     """

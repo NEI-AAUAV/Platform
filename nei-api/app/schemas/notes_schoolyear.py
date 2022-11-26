@@ -1,19 +1,19 @@
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel
 
 from typing import Optional
 from typing_extensions import Annotated
 
 class NotesSchoolyearBase(BaseModel):
-    yearBegin: int
-    yearEnd: int
+    year_begin: int
+    year_end: int
 
 class NotesSchoolyearCreate(NotesSchoolyearBase):
-    yearBegin: int
-    yearEnd: int
+    year_begin: int
+    year_end: int
 
 class NotesSchoolyearUpdate(NotesSchoolyearBase):
-    yearBegin: int
-    yearEnd: int
+    year_begin: int
+    year_end: int
     
 class NotesSchoolyearInDB(NotesSchoolyearBase):
     id: int

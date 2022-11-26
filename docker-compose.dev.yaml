@@ -3,6 +3,7 @@ services:
   pg_db:
     image: postgres:15-alpine
     volumes: 
+      - ./nei-api/app/db/setup.sql:/docker-entrypoint-initdb.d/init.sql
       - pg_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres_test
@@ -16,8 +17,6 @@ services:
       dockerfile: Dockerfile.dev
     volumes: 
       - ./nei-api:/nei_api
-    environment:
-      - ROOT_PATH=/nei/api/v1
     depends_on:
       - pg_db
     network_mode: host
@@ -28,8 +27,6 @@ services:
       dockerfile: Dockerfile.dev
     volumes: 
       - ./tacaua-api:/tacaua_api
-    environment:
-      - ROOT_PATH=/tacaua/api/v1
     depends_on:
       - pg_db
     network_mode: host
@@ -40,8 +37,6 @@ services:
       dockerfile: Dockerfile.dev
     volumes: 
       - ./rallytascas-api:/rallytascas_api
-    environment:
-      - ROOT_PATH=/rallytascas/api/v1
     depends_on:
       - pg_db
     network_mode: host

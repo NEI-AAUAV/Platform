@@ -25,8 +25,6 @@ import "./index.css";
  *  style (Optional)
  */
 const Document = ({name, description, link, blank, className, icon, size, onClick, title, tags, style, image, iconColor}) => {
-    
-    
 
     return (
         <a 
@@ -57,9 +55,9 @@ const Document = ({name, description, link, blank, className, icon, size, onClic
                         <p className="small text-secondary mb-0" dangerouslySetInnerHTML={{__html: description}}></p>
                         <div className="row mx-0 mt-1">
                             {
-                                tags && tags.map(
-                                    tag =>
+                                tags && tags.map((tag, index) =>
                                     <span 
+                                        key={index}
                                         className={"ml-0 mb-1 mr-1 badge badge-pill " + tag.className}
                                         style={tag.color ? {backgroundColor: tag.color} : {}}
                                     >{tag.name}</span>
