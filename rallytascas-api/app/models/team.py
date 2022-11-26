@@ -1,6 +1,7 @@
 from sqlalchemy import String, Column, ARRAY, DateTime, Integer, Boolean
-from typing import Union
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.mutable import MutableList
+
 from app.db.base_class import Base
 
 
@@ -15,3 +16,5 @@ class Team(Base):
     card2 = Column(Boolean, default=False)
     card3 = Column(Boolean, default=False)
     classification = Column(Integer, default=-1)
+
+    members = relationship("User")

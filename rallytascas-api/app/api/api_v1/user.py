@@ -1,3 +1,4 @@
+from typing import List
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -11,7 +12,7 @@ from app.schemas.user import Token, UserInDB, UserCreate
 router = APIRouter()
 
 
-@router.post("/login", response_model=Token)
+@router.post("/token", response_model=Token)
 async def login(
     db: Session = Depends(deps.get_db),
     form_data: OAuth2PasswordRequestForm = Depends()
@@ -31,9 +32,20 @@ async def login(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
+@router.get("/", response_model=List[UserInDB])
+async def get_users(
+    *, db: Session = Depends(deps.get_db)
+):
+    return crud.user.get_multi(db=db)
+
+
 @router.post("/", response_model=UserInDB)
 async def create_user(
     *, db: Session = Depends(deps.get_db),
     obj_in: UserCreate
 ):
+    if obj_in.team_id:
+        team = crud.team.get(db=db, id=obj_in.team_id)
+        if not team:
+            raise HTTPException(status_code=404, detail="Team not found")
     return crud.user.create(db=db, obj_in=obj_in)

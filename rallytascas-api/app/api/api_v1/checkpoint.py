@@ -4,6 +4,7 @@ from typing import Any
 
 from app import crud
 from app.api import deps
+from app.exception import NotFoundException
 from app.schemas.user import UserInDB
 from app.schemas.checkpoint import CheckPointInDB
 
@@ -15,4 +16,7 @@ router = APIRouter()
 def get_next_checkpoint(
     *, db: Session = Depends(deps.get_db), curr_user: UserInDB = Depends(deps.get_current_active_user)
 ) -> Any:
-    return crud.checkpoint.get_next(db=db, team_id=curr_user.team_id)
+    checkpoint = crud.checkpoint.get_next(db=db, team_id=curr_user.team_id)
+    if not checkpoint:
+        raise NotFoundException(detail="Checkpoint Not Found")
+    return checkpoint

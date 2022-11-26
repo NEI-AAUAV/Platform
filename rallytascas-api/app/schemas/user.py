@@ -24,4 +24,8 @@ class UserCreate(UserBase):
 
 
 class UserInDB(UserBase):
-    hashed_password: str
+    id: int
+    hashed_password: str # TODO: remove this
+
+    class Config:
+        orm_mode = True

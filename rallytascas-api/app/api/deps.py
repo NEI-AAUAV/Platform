@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.db.session import SessionLocal
 from app.models.user import User
-from app.schemas.user import UserInDB, TokenData
+from app.schemas.user import TokenData
 
 
 # to get a string like this run:
@@ -30,7 +30,7 @@ def get_db() -> Generator:
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/rallytascas/api/v1/user/token")
 
 
 def verify_password(plain_password, hashed_password):
@@ -41,17 +41,18 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def get_user(db, id: int) -> Optional[UserInDB]:
-    user = db.query(User).get(id)
-    if user:
-        return UserInDB(**user)
+def get_user(db, username: str) -> Optional[User]:
+    return db.query(User).filter(User.username == username).first()
 
 
-def authenticate_user(fake_db, id: int, password: str) -> Optional[UserInDB]:
-    user = get_user(fake_db, id)
+def authenticate_user(db: Session, username: str, password: str) -> Optional[User]:
+    user = get_user(db, username)
+    print(user)
     if not user:
+        print("NOT USER")
         return
     if not verify_password(password, user.hashed_password):
+        print("NOT PASS")
         return
     return user
 

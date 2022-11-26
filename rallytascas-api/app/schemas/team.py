@@ -1,6 +1,9 @@
-from pydantic import BaseModel
-from typing import Optional, List, Union
+from typing import Optional, List, Any, Union
 from datetime import datetime
+
+from pydantic import BaseModel
+
+from .user import UserInDB
 
 
 class TeamBase(BaseModel):
@@ -25,6 +28,7 @@ class TeamInDB(TeamBase):
     card2: bool
     card3: bool
     classification: int
+    members: List[UserInDB]
 
     class Config:
         orm_mode = True
