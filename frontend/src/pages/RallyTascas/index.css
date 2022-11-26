@@ -43,6 +43,14 @@
     cursor: pointer;
 }
 
+.rally-visible {
+    font-weight: 800;
+}
+
+.rally-setVisible {
+    font-weight: 800;
+}
+
 .rally-card-team-name {
     background-color: inherit;
     color:white;
@@ -99,4 +107,3 @@
     height:400px;
     border: 2px solid #FC8551 !important;
 }
-
