@@ -4,7 +4,7 @@ import ModalTeam from "./components/NewTeam/ModalTeam";
 import ScoresSection from "./sections/ScoresSection";
 import MapSection from "./sections/MapSection";
 import CardsSection from "./sections/CardsSection";
-import TeamsSection from "./sections/MapSection";
+import TeamsSection from "./sections/TeamsSection";
 import Countdown from "./sections/Countdown";
 import { TabButton } from "./components/Customized";
 
