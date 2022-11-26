@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 
 from app.exception import NotFoundException
 from app.db.base_class import Base
-from app.core.logging import logger
 
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)

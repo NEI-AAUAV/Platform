@@ -43,15 +43,13 @@ const Seniors = () => {
                     throw new Error("Not available");
                 }
             }).catch(() => {
-                console.error("404 acula")
-                // window.location.href = "/404";
+                window.location.href = "/404";
             });
 
 
         // pegar o número de anos
         service.getSeniorsCourseYear(id)
             .then((data) => {
-                console.log(data)
                 var anos = data.sort((a, b) => b - a);
                 if (anos.length > 0) {
                     setYears(anos);
@@ -61,9 +59,7 @@ const Seniors = () => {
                     throw new Error("Not available");
                 }
             }).catch(() => {
-                console.error("404 piscam")
-
-                // window.location.href = "/404";
+                window.location.href = "/404";
             });
     }, [id])
 
@@ -93,8 +89,7 @@ const Seniors = () => {
                 );
                 setLoading(false);
             }).catch(() => {
-                console.error("404 aqui")
-                // window.location.href = "/404";
+                window.location.href = "/404";
             });
     }, [selectedYear, id])
 

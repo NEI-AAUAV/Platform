@@ -1,17 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import Any, Optional, List
+from typing import Any
 
 from app import crud
-from app.exception import NotFoundException
 from app.api import deps
-from app.core.logging import logger
-from app.schemas.team import TeamCreate, TeamUpdate, TeamInDB, Checkpoint
+from app.schemas.user import UserInDB
+from app.schemas.checkpoint import CheckPointInDB
+
 
 router = APIRouter()
 
-@router.get("/me", status_code=200, response_model=Checkpoint)
-def get_checkpoint(
-    *, db: Session = Depends(deps.get_db)
+
+@router.get("/me", status_code=200, response_model=CheckPointInDB)
+def get_next_checkpoint(
+    *, db: Session = Depends(deps.get_db), curr_user: UserInDB = Depends(deps.get_current_active_user)
 ) -> Any:
-    return None
+    return crud.checkpoint.get_next(db=db, team_id=curr_user.team_id)
