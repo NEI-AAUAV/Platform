@@ -46,7 +46,9 @@ client.interceptors.response.use(function (response) {
 
 
 class RallyTascasService {
-
+    async getOwnTeam() {
+        return await client.get(`/team/me`);
+    }
 }
 
 // Export a singleton service
