@@ -1,11 +1,13 @@
+from typing import Any, List
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import Any
 
 from app import crud
 from app.api import deps
 from app.exception import NotFoundException
 from app.schemas.user import UserInDB
+from app.schemas.team import TeamMeInDB
 from app.schemas.checkpoint import CheckPointInDB
 
 
@@ -25,7 +27,7 @@ def get_next_checkpoint(
     return checkpoint
 
 
-@router.get("/teams", status_code=200, response_model=CheckPointInDB)
+@router.get("/teams", status_code=200, response_model=List[TeamMeInDB])
 def get_checkpoint_teams(
     *, db: Session = Depends(deps.get_db),
     staff_user: UserInDB = Depends(deps.get_staff)

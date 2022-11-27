@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
@@ -27,10 +28,8 @@ import "./index.css";
 const Document = ({name, description, link, blank, className, icon, size, onClick, title, tags, style, image, iconColor}) => {
 
     return (
-        <a 
-            href={link && link} 
-            target={blank ? "_blank" : "_self"}
-            rel={blank ? "noreferrer" : ""}
+        <Link
+            to={link && link} 
             onClick={onClick}
             title={title ? title : ""}
             style={style}
@@ -67,7 +66,7 @@ const Document = ({name, description, link, blank, className, icon, size, onClic
                     </div>
                 </div>
             </div>
-        </a>
+        </Link>
     );
 }
 

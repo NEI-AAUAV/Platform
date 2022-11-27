@@ -38,4 +38,7 @@ class TeamMeInDB(TeamInDB):
 
 
 class StaffTeamUpdate(BaseModel):
-    score: int
+    score: Optional[int]
+    card1: Optional[bool]
+    card2: Optional[bool]
+    card3: Optional[bool]

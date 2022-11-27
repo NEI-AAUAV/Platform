@@ -1,29 +1,29 @@
-import { Button, Col, Row } from "@nextui-org/react";
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
+import { Button, Col, Row } from "@nextui-org/react";
+import ClearIcon from "@nextui-org/react/esm/utils/clear-icon"
+
 import ModalTeam from "./components/NewTeam/ModalTeam";
 import ScoresSection from "./sections/ScoresSection";
 import MapSection from "./sections/MapSection";
 import CardsSection from "./sections/CardsSection";
 import TeamsSection from "./sections/TeamsSection";
 import Countdown from "./sections/Countdown";
+import LoginSection from "./sections/LoginSection";
 import { TabButton } from "./components/Customized";
 
-import ClearIcon from "@nextui-org/react/esm/utils/clear-icon"
-
-import { useNavigate } from "react-router";
-
+import { useRallyAuth } from "stores/useRallyAuth";
 import bg from 'assets/images/rally_bg.jpg';
 import './index.css';
 
-// orange FC8551
 
 const TAB = {
   SCORES: 0,
   MAP: 1,
   TEAMS: 2,
-  CARDS: 3
+  CARDS: 3,
+  LOGIN: 4,
 }
-
 
 
 const RallyTascas = () => {
@@ -32,7 +32,7 @@ const RallyTascas = () => {
   const [showCountdown, setShowCountdown] = useState(false);
   const [visible, setVisible] = useState(false);
   const teamModalHandler = () => setVisible(true);
-
+  const { name, token, isStaff, isAdmin, teamName, logout } = useRallyAuth(state => state);
 
   return (
     <>
@@ -51,12 +51,39 @@ const RallyTascas = () => {
         {
           !showCountdown ?
             <>
-              <h2 className="rally-header mt-3">Break the Bars</h2>
-              <div className="d-flex flex-wrap justify-content-around mb-3">
+              <div className="mt-3 d-flex flex-sm-row flex-column justify-content-between">
+                <div>
+                  {
+                    isStaff ?
+                      <h5 className="rally-small-header mt-3">Checkpoint #{isStaff}</h5>
+                      :
+                      teamName ?
+                        <h5 className="rally-small-header mt-3">{teamName}</h5>
+                        :
+                        null
+                  }
+                  <h2 className="rally-header">Break the Bars</h2>
+                </div>
+                <div className="mb-3 d-flex flex-column align-items-center justify-content-end">
+                  {!!token && <h5 className="rally-small-header mt-3">{name}</h5>}
+                  {
+                    !token ?
+                      <TabButton active color={'#FC8551'} onPress={() => setActiveTab(TAB.LOGIN)} size="sm">Login</TabButton>
+                      :
+                      <TabButton active color={'#FC8551'} onPress={() => logout()} size="sm">Logout</TabButton>
+                  }
+                </div>
+              </div>
+              <div className="d-flex flex-wrap justify-content-center mb-3">
                 <TabButton active={activeTab === TAB.SCORES} onPress={() => setActiveTab(TAB.SCORES)} size="sm">Scores</TabButton>
-                <TabButton active={activeTab === TAB.MAP} onPress={() => setActiveTab(TAB.MAP)} size="sm">Map</TabButton>
                 <TabButton active={activeTab === TAB.TEAMS} onPress={() => setActiveTab(TAB.TEAMS)} size="sm">Teams</TabButton>
-                <TabButton active={activeTab === TAB.CARDS} onPress={() => setActiveTab(TAB.CARDS)} size="sm">Cards</TabButton>
+                {
+                  !!token &&
+                  <>
+                    <TabButton active={activeTab === TAB.MAP} onPress={() => setActiveTab(TAB.MAP)} size="sm">Map</TabButton>
+                    <TabButton active={activeTab === TAB.CARDS} onPress={() => setActiveTab(TAB.CARDS)} size="sm">Cards</TabButton>
+                  </>
+                }
               </div>
               {
                 activeTab === TAB.SCORES &&
@@ -95,11 +122,16 @@ const RallyTascas = () => {
               }
               {
                 activeTab === TAB.TEAMS &&
-                <TeamsSection/>
+                <TeamsSection />
               }
               {
                 activeTab === TAB.CARDS &&
                 <CardsSection />
+              }
+              {
+                activeTab === TAB.LOGIN &&
+                <LoginSection />
+
               }
             </>
             :

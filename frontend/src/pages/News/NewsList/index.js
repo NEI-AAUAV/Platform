@@ -26,10 +26,10 @@ const NewsList = (props) => {
                     return (
                         <Col lg={4} md={6} sm={12} key={key++}>
                             <ImageCard
-                                image={process.env.REACT_APP_STATIC + article.header}
+                                image={article.header}
                                 title={article.title}
                                 preTitle={article.category}
-                                text={article.created_at}
+                                text={article.created_at?.split('T').at(0)}
                                 anchor={"/noticia/" + article.id}
                                 animKey={animKey++}
                             ></ImageCard>

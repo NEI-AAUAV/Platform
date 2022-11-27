@@ -9,9 +9,24 @@
 }
 
 @media screen and (min-width: 600px) {
-    .rally-header {
-        font-size: 3rem;
+    h2.rally-header {
+        font-size: 2.8rem !important;
     }
+
+    h5.rally-small-header {
+        font-size: 1.25rem !important;
+    }
+}
+
+.rally-header {
+    font-family: 'Aldrich';
+    color: white;
+}
+
+.rally-small-header {
+    font-family: 'Aldrich';
+    color: #FC8551;
+    margin-bottom: 0;
 }
 
 .rally-tascas-row {
@@ -35,11 +50,6 @@
         display: inline-block;
         margin-bottom: 20px;
     }
-}
-
-.rally-header {
-    font-family: 'Aldrich';
-    color: 'white';
 }
 
 .rally-close {

@@ -7,7 +7,7 @@ import NewsList from "../News/NewsList";
 import "./index.css";
 import { ReactTerminal } from "react-terminal-component";
 import terminalstate from "./terminalconf";
-
+import service from 'services/NEIService';
 import Typist from 'react-typist';
 
 // Animation
@@ -23,28 +23,22 @@ const Homepage = () => {
 
     useEffect(() => {
         // Get first 3 news articles from API when page loads
-        fetch(process.env.REACT_APP_API + "/news/?itemsPerPage=3")
-            .then(response => response.json())
-            .then((response) => {
-                if('data' in response) {
-                    setNews(response['data']);
-                }
+        service.getNews({ size: 3 })
+            .then((data) => {
+                setNews(data.items || []);
                 setIsLoading(false);
             });
 
         // Get partner banner
-        fetch(process.env.REACT_APP_API + "/partners/banner/")
-            .then(response => response.json())
-            .then((response) => {
-                if('data' in response && response.data.length) {
-                    setBanner(response['data'][0]);
-                }
+        service.getPartnersBanner()
+            .then((data) => {
+                setBanner(data);
             });
     }, []);
 
     return (
         <div className="py-5">
-            <div className="section" style={{"minHeight": "calc(100vh - 7rem)"}}>
+            <div className="section" style={{ "minHeight": "calc(100vh - 7rem)" }}>
                 <Col xs={11} sm={10} className="mx-auto col-xxl-9">
                     <Row>
                         <Col md="12" lg="7" className="home-main-header">
@@ -53,7 +47,7 @@ const Homepage = () => {
                                     Bem-vindo ao
                                     <br /><br />
                                     <b>Núcleo de Estudantes de Informática</b>
-                                    <br/>
+                                    <br />
                                     da AAUAv
                                 </Typist>
                             </h1>
@@ -62,51 +56,51 @@ const Homepage = () => {
                                     Bem-vindo ao
                                     <br /><br />
                                     <b>Núcleo de Estudantes de Informática</b>
-                                    <br/>
+                                    <br />
                                     da AAUAv
                                 </Typist>
                             </h3>
                         </Col>
-                        <Col 
+                        <Col
                             className="px-xl-0 pt-xl-0 pt-3 slideUpFade"
-                            style={{animationDelay: animationBase+1*animationIncrement}}
+                            style={{ animationDelay: animationBase + 1 * animationIncrement }}
                             lg={5}
                         >
                             <div
                                 style={{
-                                    height:"34px",
-                                    width:"100%",
-                                    padding:"7px",
-                                    backgroundColor:"rgb(238, 238, 238)",
-                                    borderRadius:"5px 5px 0 0",
-                                    display:"flex",
-                                    justifyContent:"flex-end"
+                                    height: "34px",
+                                    width: "100%",
+                                    padding: "7px",
+                                    backgroundColor: "rgb(238, 238, 238)",
+                                    borderRadius: "5px 5px 0 0",
+                                    display: "flex",
+                                    justifyContent: "flex-end"
                                 }}
                             >
                                 <div
                                     style={{
-                                        height:"20px",
-                                        width:"20px",
-                                        backgroundColor:"rgb(163, 190, 140)",
-                                        borderRadius:"50%"
+                                        height: "20px",
+                                        width: "20px",
+                                        backgroundColor: "rgb(163, 190, 140)",
+                                        borderRadius: "50%"
                                     }}
                                 ></div>
                                 <div
                                     style={{
-                                        height:"20px",
-                                        width:"20px",
-                                        marginLeft:"4px",
-                                        backgroundColor:"rgb(235, 203, 139)",
-                                        borderRadius:"50%"
+                                        height: "20px",
+                                        width: "20px",
+                                        marginLeft: "4px",
+                                        backgroundColor: "rgb(235, 203, 139)",
+                                        borderRadius: "50%"
                                     }}
                                 ></div>
                                 <div
                                     style={{
-                                        height:"20px",
-                                        width:"20px",
-                                        marginLeft:"4px",
-                                        backgroundColor:"rgb(191, 97, 106)",
-                                        borderRadius:"50%"
+                                        height: "20px",
+                                        width: "20px",
+                                        marginLeft: "4px",
+                                        backgroundColor: "rgb(191, 97, 106)",
+                                        borderRadius: "50%"
                                     }}
                                 ></div>
                             </div>
@@ -115,15 +109,15 @@ const Homepage = () => {
                                 clickToFocus={true}
                                 autoFocus={true}
                                 theme={{
-                                    height:"320px",
-                                    width:"100%",
-                                    fontFamily:"monospace",
-                                    fontSize:"1em",
-                                    promptSymbolColor:"rgb(0, 255, 0)",
-                                    commandColor:"#fcfcfc",
-                                    outputColor:"#fcfcfc",
-                                    errorOutputColor:"#fcfcfc",
-                                    background:"#222222",
+                                    height: "320px",
+                                    width: "100%",
+                                    fontFamily: "monospace",
+                                    fontSize: "1em",
+                                    promptSymbolColor: "rgb(0, 255, 0)",
+                                    commandColor: "#fcfcfc",
+                                    outputColor: "#fcfcfc",
+                                    errorOutputColor: "#fcfcfc",
+                                    background: "#222222",
                                 }}
                                 promptSymbol="nei@nei-os $"
                             />
@@ -133,11 +127,11 @@ const Homepage = () => {
             </div>
 
             {
-                banner && 
+                !!banner &&
                 <Col xs={11} sm={10} className="mx-auto col-xxl-9 my-3">
-                    <a href={banner.bannerUrl} target="_blank">
-                        <img 
-                            src={process.env.REACT_APP_STATIC + banner.bannerImage}
+                    <a href={banner.banner_url} target="_blank">
+                        <img
+                            src={banner.banner_image}
                             className="w-100"
                         />
                         <p className="mb-0 text-primary text-center small">O NEI é apoiado pela {banner.company}</p>
@@ -149,18 +143,18 @@ const Homepage = () => {
                 <Col xs={11} sm={10} className="d-flex flex-column flex-wrap mx-auto col-xxl-9 text-center">
                     <h2 className="header-dark mb-4">Notícias</h2>
                     {
-                        isLoading 
-                        ?
-                        <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
-                        :
-                        <NewsList news={news}></NewsList>
+                        !!isLoading
+                            ?
+                            <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
+                            :
+                            <NewsList news={news}></NewsList>
                     }
                     <Button
                         variant="outline-dark"
                         className="rounded-pill mx-auto"
                         size="lg"
                         href="/noticias"
-                        >Ver Todas
+                    >Ver Todas
                     </Button>
                 </Col>
             </div>
@@ -174,7 +168,7 @@ const Homepage = () => {
 
                     <Row>
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
-                            <FontAwesomeIcon icon={ faHistory } size="4x" className="text-primary mb-4" />
+                            <FontAwesomeIcon icon={faHistory} size="4x" className="text-primary mb-4" />
                             <h3>História do NEI</h3>
                             <p className="text-secondary flex-grow-1">
                                 Apesar de ser relativamente recente o NEI já conta com alguns feitos de relevância que vão desde bons resultados na Taça UA nas diversas modalidades que participou como a participação e candidaturas ao ENEI.
@@ -182,7 +176,7 @@ const Homepage = () => {
                             <a className="font-weight-bold" href="/historia">Ver história</a>
                         </Col>
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
-                            <FontAwesomeIcon icon={ faUsers } size="4x" className="text-primary mb-4" />
+                            <FontAwesomeIcon icon={faUsers} size="4x" className="text-primary mb-4" />
                             <h3>Comissões de Faina</h3>
                             <p className="text-secondary flex-grow-1">
                                 Responsáveis por guiar a Faina do nosso curso, uma importante faceta do percurso académico com o intuito de dinamizar e integrar os novos estudantes. Encarregam-se também de organizar certos eventos lúdicos como Jantares e Festas de Curso.
@@ -190,7 +184,7 @@ const Homepage = () => {
                             <a className="font-weight-bold" href="/faina">Ver comissões</a>
                         </Col>
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
-                            <FontAwesomeIcon icon={ faLightbulb } size="4x" className="text-primary mb-4" />
+                            <FontAwesomeIcon icon={faLightbulb} size="4x" className="text-primary mb-4" />
                             <h3>Novos Alunos</h3>
                             <p className="text-secondary flex-grow-1">
                                 Estás interessado no curso? Precisas de ajuda? Temos aqui tudo o que tu precisas, todas as informações do curso. Se tiveres dúvidas, podes entrar em contacto connosco via facebook ou email!
@@ -198,7 +192,7 @@ const Homepage = () => {
                             <a className="font-weight-bold" href="http://deti-cdn.clients.ua.pt/lei/">Mais informações</a>
                         </Col>
                         <Col xs="12" sm="6" lg="3" className="home-info-col mb-5">
-                            <FontAwesomeIcon icon={ faFutbol } size="4x" className="text-primary mb-4" />
+                            <FontAwesomeIcon icon={faFutbol} size="4x" className="text-primary mb-4" />
                             <h3>Taça UA</h3>
                             <p className="text-secondary flex-grow-1">
                                 Sabemos que por vezes é dificil acompanhar a Taça UA sem te perderes, como não queremos que estejas fora do acontecimento, temos uma nova plataforma para acompanhares tudo o que se passa!

@@ -11,7 +11,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     network_mode: host
-    restart: always
+    restart: unless-stopped
   nei_api:
     build:
       context: nei-api
@@ -21,7 +21,7 @@ services:
     depends_on:
       - pg_db
     network_mode: host
-    restart: always
+    restart: unless-stopped
   tacaua_api:
     build:
       context: tacaua-api
@@ -31,7 +31,7 @@ services:
     depends_on:
       - pg_db
     network_mode: host
-    restart: always
+    restart: unless-stopped
   rallytascas_api:
     build:
       context: rallytascas-api
@@ -41,7 +41,7 @@ services:
     depends_on:
       - pg_db
     network_mode: host
-    restart: always
+    restart: unless-stopped
   web_app:
     build:
       context: frontend
@@ -54,7 +54,7 @@ services:
       - tacaua_api
       - rallytascas_api
     network_mode: host
-    restart: always
+    restart: unless-stopped
 
 volumes:
   pg_data:

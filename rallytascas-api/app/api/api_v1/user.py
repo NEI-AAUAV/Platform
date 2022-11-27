@@ -29,8 +29,8 @@ async def login(
     access_token = deps.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer",
-            "is_staff": bool(user.staff_checkpoint_id), "is_admin": user.is_admin}
+    return {"access_token": access_token, "token_type": "bearer", "name": user.name,
+            "staff_checkpoint_id": user.staff_checkpoint_id, "is_admin": user.is_admin}
 
 
 @router.get("/", response_model=List[AdminUserInDB])

@@ -18,7 +18,7 @@ export const IconButton = styled("button", {
   },
 });
 
-export const TabButton = ({ active, children, ...props }) =>
+export const TabButton = ({ active, color = '#FF4646', children, ...props }) =>
   <Button
     auto
     css={{
@@ -26,14 +26,17 @@ export const TabButton = ({ active, children, ...props }) =>
       fontWeight: 'bold',
       margin: '0.5rem',
       border: '$space$1 solid transparent',
-      background: active ? '#FF4646' : 'transparent',
-      color: active ? 'white' : '#FF4646',
-      borderColor: '#FF4646',
+      background: active ? color : 'transparent',
+      color: active ? 'white' : color,
+      borderColor: color,
       height: '$12', // space[12]
       boxShadow: '$md', // shadows.md
       '&:hover': {
-        background: active ? '#FF4646' : '#FF464666',
+        background: active ? color : '#FF464666',
       },
+      '@md': {
+        margin: '0.5rem 3rem',
+      }
     }}
     {...props}
   >
