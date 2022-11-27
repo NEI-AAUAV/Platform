@@ -5,7 +5,7 @@ import ScoresSection from "./sections/ScoresSection";
 import MapSection from "./sections/MapSection";
 import CardsSection from "./sections/CardsSection";
 import TeamsSection from "./sections/TeamsSection";
-import Countdown from "./sections/Countdown";
+import {Countdown_section} from "./sections/Countdown";
 import { TabButton } from "./components/Customized";
 
 import ClearIcon from "@nextui-org/react/esm/utils/clear-icon"
@@ -29,7 +29,7 @@ const TAB = {
 const RallyTascas = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(TAB.SCORES);
-  const [showCountdown, setShowCountdown] = useState(false);
+  const [showCountdown, setShowCountdown] = useState(true);
   const [visible, setVisible] = useState(false);
   const teamModalHandler = () => setVisible(true);
 
@@ -103,7 +103,7 @@ const RallyTascas = () => {
               }
             </>
             :
-            <Countdown />
+            <Countdown_section />
         }
       </Col>
     </>
