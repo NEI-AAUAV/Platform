@@ -12,9 +12,13 @@ import Countdown from "./sections/Countdown";
 import LoginSection from "./sections/LoginSection";
 import { TabButton } from "./components/Customized";
 
+import ClearIcon from "@nextui-org/react/esm/utils/clear-icon";
+
+import { useNavigate } from "react-router";
+
+import bg from "assets/images/rally_bg.jpg";
+import "./index.css";
 import { useRallyAuth } from "stores/useRallyAuth";
-import bg from 'assets/images/rally_bg.jpg';
-import './index.css';
 
 
 const TAB = {
@@ -25,7 +29,6 @@ const TAB = {
   LOGIN: 4,
 }
 
-
 const RallyTascas = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(TAB.SCORES);
@@ -34,8 +37,9 @@ const RallyTascas = () => {
   const teamModalHandler = () => setVisible(true);
   const { name, token, isStaff, isAdmin, teamName, logout } = useRallyAuth(state => state);
   const [mobile, setMobile] = useState(false);
-
-  useEffect(() => {
+  
+  
+    useEffect(() => {
     function handleResize() {
       setMobile(window.innerWidth < 600)
     }
@@ -46,6 +50,7 @@ const RallyTascas = () => {
     });
   })
 
+    
   return (
     <>
       <div style={{
@@ -115,34 +120,7 @@ const RallyTascas = () => {
               </div>
               {
                 activeTab === TAB.SCORES &&
-                <>
-                  <Row
-                    css={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-end",
-                      marginBottom: "1rem",
-                      paddingRight: "0.5rem",
-                      zIndex: 1,
-                    }}
-                  >
-                    <Button
-                      css={{
-                        marginRight: "0.5rem",
-                      }}
-                      shadow
-                      color="primary"
-                      auto
-                    >
-                      Ver Mapa
-                    </Button>
-                    <Button shadow color="secondary" auto onClick={teamModalHandler}>
-                      Criar Equipa
-                    </Button>
-                    <ModalTeam visible={visible} setVisible={setVisible} />
-                  </Row>
-                  <ScoresSection />
-                </>
+                <ScoresSection />
               }
               {
                 activeTab === TAB.MAP &&
