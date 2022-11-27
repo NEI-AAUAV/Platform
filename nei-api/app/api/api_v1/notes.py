@@ -10,7 +10,9 @@ from app.schemas import (NotesInDB,
                          NotesSchoolyearInDB,
                          NotesSubjectInDB,
                          NotesTeachersInDB,
-                         NotesTypesInDB)
+                         NotesTypesInDB,
+                         UsersInDB)
+from app.schemas.notes import notes_categories
 from app.schemas.pagination import Page, PageParams
 
 
@@ -74,8 +76,8 @@ def get_notes_year(
     return crud.notes_schoolyear.get_multi(db=db)
 
 
-@router.get("/students", status_code=200, response_model=List[NotesSchoolyearInDB])
-def get_notes_year(
+@router.get("/students", status_code=200, response_model=List[UsersInDB])
+def get_notes_students(
     *, db: Session = Depends(deps.get_db),
     school_year: Optional[int] = None,
     subject: Optional[int] = None,
@@ -85,7 +87,7 @@ def get_notes_year(
     Get all students that are associated with a
     `school_year`, `subject` and `teacher`.
     """
-    return crud.notes_schoolyear.get_multi(db=db)
+    return crud.notes.get_notes_students(db=db)
 
 
 @router.get("/", status_code=200, response_model=Page[NotesInDB])
@@ -101,22 +103,20 @@ def get_notes(
     teacher: Optional[int] = None,
     db: Session = Depends(deps.get_db),
 ) -> Any:
-    all_categories = {
-        'summary', 'tests', 'bibliography', 'slides',
-        'exercises', 'projects', 'notebook'
-    }
-    if not all_categories.issuperset(categories):
+    if not notes_categories.issuperset(categories):
         raise HTTPException(status_code=400, detail="Invalid category")
 
-    items = crud.notes.get_notes_by_categories(db=db, categories=categories,
-                                               page=page_params.page, size=page_params.size)
-    return Page.create(items, page_params)
+    categories = categories or notes_categories
+
+    total, items = crud.notes.get_notes_by_categories(
+        db=db, categories=categories, page=page_params.page, size=page_params.size)
+    return Page.create(total, items, page_params)
 
 
-@router.get("/{note_id}", status_code=200, response_model=NotesInDB)
+@router.get("/{id}", status_code=200, response_model=NotesInDB)
 def get_note_by_id(
-    *, note_id: int, db: Session = Depends(deps.get_db),
+    *, id: int, db: Session = Depends(deps.get_db),
 ) -> Any:
-    if not db.get(Notes, note_id):
+    if not db.get(Notes, id):
         raise HTTPException(status_code=404, detail="Invalid Note id")
-    return crud.notes.get(db=db, id=note_id)
+    return crud.notes.get(db=db, id=id)

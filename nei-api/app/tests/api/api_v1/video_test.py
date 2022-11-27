@@ -24,29 +24,29 @@ videotag = [
 videos = [
     {
         "tags": [0],
-        "ytld": "xAcntjKChy8",
+        "youtube_id": "xAcntjKChy8",
         "title": "Video 1",
         "subtitle": "Video 1 Sub",
         "image": "Image link here",
-        "created": datetime.now().isoformat(),
+        "created_at": datetime.now().isoformat(),
         "playlist": 0
     },
     {
         "tags": [1],
-        "ytld": "PEad2KJ5RaE",
+        "youtube_id": "PEad2KJ5RaE",
         "title": "Video 2",
         "subtitle": "Video 2 Sub",
         "image": "Image link here",
-        "created": datetime(2016, 1, 1).isoformat(),
+        "created_at": datetime(2016, 1, 1).isoformat(),
         "playlist": 0
     },
     {
         "tags": [0, 1],
-        "ytld": "KZokQov_aH0",
+        "youtube_id": "KZokQov_aH0",
         "title": "Video 3",
         "subtitle": "Video 3 Sub",
         "image": "Image link here",
-        "created": datetime(2017, 1, 1).isoformat(),
+        "created_at": datetime(2017, 1, 1).isoformat(),
         "playlist": 0
     }
 ]

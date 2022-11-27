@@ -74,6 +74,82 @@ class NEIService {
     async getNotesTeachers(params) {
         return await client.get('/notes/teachers', { params });
     }
+
+    async getHistory() {
+        return await client.get('/history/');
+    }
+
+    async getRGM(category) {
+        return await client.get(`/rgm/${category}`)
+    }
+
+    async getMerch() {
+        return await client.get(`/merch/`)
+    }
+
+    async getPartners() {
+        return await client.get(`/partners/`)
+    }
+
+    async getPartnersBanner() {
+        return await client.get(`/partners/banner/`)
+    }
+
+    async getTeamMandates(params) {
+        return await client.get('/team/', { params });
+    }
+
+    async getTeamRoles(params) {
+        return await client.get('/team/roles', { params });
+    }
+
+    async getTeamColaborators(params) {
+        return await client.get('/team/colaborators/', { params });
+    }
+
+    async getFainaMandates(params) {
+        return await client.get('/faina/', { params });
+    }
+
+    async getNewsCategories(params) {
+        return await client.get('/news/categories/', { params });
+    }
+
+    async getNewsById(id) {
+        return await client.get(`/news/${id}`);
+    }
+
+    async getNews(params) {
+        return await client.get('/news/', { params });
+    }
+
+    async getVideosCategories(params) {
+        return await client.get('/videos/categories/', { params });
+    }
+
+    async getVideosById(id) {
+        return await client.get(`/videos/${id}`);
+    }
+
+    async getVideos(params) {
+        return await client.get('/videos/', { params });
+    }
+
+    async getRedirects(params) {
+        return await client.get('/redirects/', { params });
+    }
+
+    async getSeniorsCourse() {
+        return await client.get('/seniors/course');
+    }
+
+    async getSeniorsCourseYear(course) {
+        return await client.get(`/seniors/${course}/year`);
+    }
+
+    async getSeniorsBy(course, year) {
+        return await client.get(`/seniors/${course}/${year}`);
+    }
 }
 
 // Export a singleton service

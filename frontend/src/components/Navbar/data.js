@@ -79,7 +79,7 @@ const data = [
       },
       {
         name: "Código de Faina",
-        link: process.env.REACT_APP_STATIC + "/faina/CodigoFaina.pdf",
+        link: process.env.PUBLIC_URL + "/faina/CodigoFaina.pdf",
         external: true,
       },
       {
@@ -101,10 +101,10 @@ const data = [
       },
     ],
   },
-  {
-    name: "Estágios",
-    link: "/estagios",
-  },
+  // {
+  //   name: "Estágios",
+  //   link: "/estagios",
+  // },
   {
     name: "Parceiros",
     link: "/parceiros",

@@ -8,6 +8,7 @@ from app.schemas import RedirectUpdate, RedirectCreate, RedirectInDB
 
 router = APIRouter()
 
+
 @router.get("/", status_code=200, response_model=RedirectInDB)
 def get_redirect(
     *, alias: str,

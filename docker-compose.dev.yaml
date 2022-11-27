@@ -3,49 +3,45 @@ services:
   pg_db:
     image: postgres:15-alpine
     volumes: 
+      - ./nei-api/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-nei.sql
+      - ./rallytascas-api/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-rallytascas.sql
       - pg_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres_test
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     network_mode: host
-    restart: always
+    restart: unless-stopped
   nei_api:
     build:
       context: nei-api
       dockerfile: Dockerfile.dev
     volumes: 
       - ./nei-api:/nei_api
-    environment:
-      - ROOT_PATH=/nei/api/v1
     depends_on:
       - pg_db
     network_mode: host
-    restart: always
+    restart: unless-stopped
   tacaua_api:
     build:
       context: tacaua-api
       dockerfile: Dockerfile.dev
     volumes: 
       - ./tacaua-api:/tacaua_api
-    environment:
-      - ROOT_PATH=/tacaua/api/v1
     depends_on:
       - pg_db
     network_mode: host
-    restart: always
+    restart: unless-stopped
   rallytascas_api:
     build:
       context: rallytascas-api
       dockerfile: Dockerfile.dev
     volumes: 
       - ./rallytascas-api:/rallytascas_api
-    environment:
-      - ROOT_PATH=/rallytascas/api/v1
     depends_on:
       - pg_db
     network_mode: host
-    restart: always
+    restart: unless-stopped
   web_app:
     build:
       context: frontend
@@ -58,7 +54,7 @@ services:
       - tacaua_api
       - rallytascas_api
     network_mode: host
-    restart: always
+    restart: unless-stopped
 
 volumes:
   pg_data:

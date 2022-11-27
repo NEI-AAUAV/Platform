@@ -19,37 +19,37 @@ def get_news_list(
     ),
     db: Session = Depends(deps.get_db)
 ) -> Any:
-    all_categories = set(e[0].value for e in crud.news.get_news_categories(db=db))
+    all_categories = set(
+        e[0].value for e in crud.news.get_news_categories(db=db))
 
     if not all_categories.issuperset(categories):
         raise HTTPException(status_code=400, detail="Invalid category")
 
-    items = crud.news.get_news_by_categories(db=db, categories=categories,
-                                             page=page_params.page, size=page_params.size)
-    return Page.create(items, page_params)
+    total, items = crud.news.get_news_by_categories(
+        db=db, categories=categories, page=page_params.page, size=page_params.size)
+    return Page.create(total, items, page_params)
 
 
-@router.get("/categories/", status_code=200, response_model=NewsCategories)
+@router.get("/categories", status_code=200, response_model=NewsCategories)
 def get_news_categories(
     *, db: Session = Depends(deps.get_db),
 ) -> Any:
     """
     Return the categories
     """
-    
+
     data = crud.news.get_news_categories(db=db)
     data = [e[0].value for e in data]
     return {"data": data}
 
 
-@router.get("/{news_id}/", status_code=200, response_model=NewsInDB)
+@router.get("/{id}", status_code=200, response_model=NewsInDB)
 def get_news(
-    *, news_id: int, db: Session = Depends(deps.get_db)
+    *, id: int, db: Session = Depends(deps.get_db)
 ) -> Any:
-    
-    item = crud.news.get_news_by_id(db=db, id=news_id)
+
+    item = crud.news.get(db=db, id=id)
     if item == None:
         raise HTTPException(status_code=404, detail="Item not found")
     else:
         return item
-

@@ -6,7 +6,7 @@ set -e
 # START OPTIONS
 
 # The name of the container
-CONTAINER="site-nei_pg_db_1"
+CONTAINER="website_pg_db_1"
 # Wether or not to apply zstd compression to the backup
 #
 # Must be one of "one" or "off"
@@ -20,13 +20,16 @@ ENCRYPT_RECIPIENT=""
 # By default it backups to the current directory
 BACKUP_NAME="backup.sql"
 
+POSTGRES_USER="postgres"
+POSTGRES_DB="postgres"
+POSTGRES_SCHEMA="aauav_nei"
+
 # END OPTIONS
 
 # Command to execute the backup, the backup is written to stdout
 backup() {
     # To execute the backup `pg_dump` is called from inside the container
-    BACKUP_CMD="pg_dump -U postgres"
-    docker exec "$CONTAINER" $BACKUP_CMD
+    docker exec pg_dump -U $POSTGRES_USER -d $POSTGRES_DB -n $POSTGRES_SCHEMA
 }
 
 # Command to encrypt stdin and write the result to stdout
