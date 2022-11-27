@@ -14,8 +14,8 @@ from app.schemas.checkpoint import CheckPointInDB
 router = APIRouter()
 
 
-@router.get("/me", status_code=200, response_model=List[CheckPointInDB])
-def get_checkpoint(
+@router.get("/", status_code=200, response_model=List[CheckPointInDB])
+def get_checkpoints(
     *, db: Session = Depends(deps.get_db)
 ) -> Any:
     return crud.checkpoint.get_multi(db=db)
@@ -27,7 +27,6 @@ def get_next_checkpoint(
     curr_user: UserInDB = Depends(deps.get_participant)
 ) -> Any:
     """Return the next checkpoint a team must head to."""
-
     checkpoint = crud.checkpoint.get_next(db=db, team_id=curr_user.team_id)
     if not checkpoint:
         raise NotFoundException(detail="Checkpoint Not Found")
