@@ -63,6 +63,10 @@ class RallyTascasService {
     async getTeams() {
         return await client.get('/team');
     }
+
+    async getCheckpoint() {
+        return await client.get('/checkpoint/me');
+    }
 }
 
 // Export a singleton service

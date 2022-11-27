@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import service from 'services/RallyTascasService';
+
 import GenericCard from "../components/GenericCard";
 import LeaderBoard from "../components/LeaderBoard";
 
@@ -27,8 +30,8 @@ const NextShot = (props) => {
     );
 }
 
-const NextCheckpointCard = () => {
-    return <InfoCard title="Next Checkpoint" subtitle="Checkpoint" />;
+const NextCheckpointCard = (props) => {
+    return <InfoCard title="Next Checkpoint" subtitle={props.name} />;
 }
 
 const Checkpoint = (props) => {
@@ -66,17 +69,18 @@ const PreviousCheckpoints = () => {
 }
 
 const MapSection = () => {
-    const dummyNextShot = {
-        id: 0,
-        shot_name: "Shot Name",
-        description: "Shot Description and slogan.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur consequat tristique dui ut placerat. Morbi quis lacus lacus. Vestibulum.",
-    };
+    const [nextData, setNextData] = useState({});
+
+    // Get API data when component renders
+    useEffect(() => {
+        service.getCheckpoint().then((data) => setNextData(data));
+    }, []);
 
     return (
         <div className="map-root-container row m-2">
             <div className="col-12 col-md-4 px-3">
-                <NextShot {...dummyNextShot} />
-                <NextCheckpointCard />
+                <NextShot {...nextData} />
+                <NextCheckpointCard name={nextData.name} />
             </div>
             <div className="col-12 col-md-4 px-3">
                 <PreviousCheckpoints />
