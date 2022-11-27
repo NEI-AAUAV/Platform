@@ -1,6 +1,8 @@
 import axios from "axios";
 import config from "config";
 
+import { useRallyAuth } from "stores/useRallyAuth";
+
 
 const client = axios.create({
     baseURL: config.RALLYTASCAS_URL,
@@ -12,7 +14,10 @@ client.interceptors.request.use(function (config) {
     // Do something before request is sent
 
     // Inject here authorization token in request header
-
+    const token = useRallyAuth.getState().token;
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
 }, function (error) {
     // Do something with request error
@@ -47,6 +52,17 @@ client.interceptors.response.use(function (response) {
 
 class RallyTascasService {
 
+    token() {
+        return useRallyAuth.getState().token;
+    }
+
+    async login(data) {
+        return await client.post(`/user/token`, data);
+    }
+
+    async getOwnTeam() {
+        return await client.get(`/team/me`);
+    }
 }
 
 // Export a singleton service

@@ -14,8 +14,6 @@ class SeniorsStudentsBase(BaseModel):
 
 class SeniorsStudentsCreate(SeniorsStudentsBase):
     """Properties to receive via API on creation."""
-    year: int
-    course: Annotated[str, Field(max_length=3)]
     user_id: int
     image: Annotated[str, Field(max_length=255)]
 
@@ -27,8 +25,6 @@ class SeniorsStudentsUpdate(SeniorsStudentsBase):
 
 class SeniorsStudentsInDB(SeniorsStudentsBase):
     """Properties properties stored in DB."""
-    year: int
-    course: str
     user: UsersInDB
 
     class Config:

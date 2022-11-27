@@ -6,7 +6,6 @@ import Image from 'react-bootstrap/Image';
 import TextList from "../../components/TextList";
 import SeniorsCard from "./SeniorsCard";
 import Typist from 'react-typist';
-import axios from "axios";
 
 import service from 'services/NEIService';
 
@@ -34,47 +33,47 @@ const Seniors = () => {
     const [namesOnly, setNamesOnly] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const getCoursesList = async () => {
-
-        const config = {
-            method: 'get',
-            url: process.env.REACT_APP_API + "/seniors/courses/"
-        }
-
-        let res = await axios(config)
-
-        let courses = res.data["data"].map(el => el["course"]);
-        if (!courses.includes(id)) {
-            throw new Error("Not available");
-        }
-    }
-
     useEffect(() => {
-        setYears([]); // hack to update typist title
-        //get courses list
-        // getCoursesList();
-        let anos = new Set();
-        let cursos = new Set();
-        service.getSeniors()
-            .then(data => {
-                console.log(data)
-                for (var i = 0; i < data.length; i++) {
-                    anos.add(data[i].year)
-                    cursos.add(data[i].course)
+        setYears(null); // hack to update typist title
+
+        // get list of courses to check if 'id' is valid
+        service.getSeniorsCourse()
+            .then((data) => {
+                if (!data.includes(id)) {
+                    throw new Error("Not available");
                 }
-                setYears([...anos]);
-                setSelectedYear(anos[0]);
-            })
+            }).catch(() => {
+                window.location.href = "/404";
+            });
+
+
+        // pegar o número de anos
+        service.getSeniorsCourseYear(id)
+            .then((data) => {
+                var anos = data.sort((a, b) => b - a);
+                if (anos.length > 0) {
+                    setYears(anos);
+                    setSelectedYear(anos[0]);
+                }
+                else {
+                    throw new Error("Not available");
+                }
+            }).catch(() => {
+                window.location.href = "/404";
+            });
     }, [id])
 
-    const getSeniorImages = async () => {
+    useEffect(() => {
+        if (selectedYear === undefined) return;
+        setLoading(true);
 
-        service.getSeniors({course: id, year: selectedYear})
-            .then(data => {
-                console.log(data)
-                setNamesOnly(data.students?.[0]["quote"] == null &&
-                    data.students?.[0]["image"] == null);
-                console.log(data.students)
+        service.getSeniorsBy(id, selectedYear)
+            .then((data) => {
+                if (!data) {
+                    throw new Error("Not available");
+                }
+                setNamesOnly(data.students[0]["quote"] == null &&
+                    data.students[0]["image"] == null);
                 setPeople(data.students);
                 setImg(
                     <Image
@@ -89,14 +88,9 @@ const Seniors = () => {
                     />
                 );
                 setLoading(false);
-            })
-    }
-
-    useEffect(() => {
-        if (selectedYear === undefined) return;
-        setLoading(true);
-
-        getSeniorImages();
+            }).catch(() => {
+                window.location.href = "/404";
+            });
     }, [selectedYear, id])
 
     return (
@@ -105,8 +99,6 @@ const Seniors = () => {
                 {years && <Typist>{"Finalistas de " + id}</Typist>}
             </h2>
             <Box sx={{ maxWidth: { xs: "100%", md: "900px" }, margin: "auto", marginBottom: "50px" }}>
-    {console.log(years)}
-
                 <YearTabs
                     years={years}
                     value={selectedYear}
@@ -130,7 +122,7 @@ const Seniors = () => {
                                         <Fragment key={index}>
                                             <TextList
                                                 colSize={3}
-                                                text={person.name}
+                                                text={person.user?.name}
                                                 className="slideUpFade"
                                                 style={{
                                                     animationDelay: animationBase + animationIncrement * 0 + "s"
@@ -142,7 +134,7 @@ const Seniors = () => {
                                     people?.map((person, index) =>
                                         <Fragment key={index}>
                                             <SeniorsCard
-                                                name={person.name}
+                                                name={person.user?.name}
                                                 quote={person.quote}
                                                 image={person.image}
                                                 colSizeXs="12"
