@@ -40,7 +40,7 @@ const Videos = () => {
                 setLoadingCategories(false);
             })
             .catch(() => {
-                console.log("something went wrong...")
+                console.error("something went wrong...")
             })
 
     }, []);

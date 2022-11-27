@@ -29,6 +29,11 @@
     margin-bottom: 0;
 }
 
+.rally-login-help {
+    font-weight: bold;
+    color: #FF4646;
+}
+
 .rally-tascas-row {
     float: left;
     width: 50%;
@@ -56,6 +61,13 @@
     display: block;
     margin-left: auto;
     cursor: pointer;
+}
+
+.rally-small-login > *:not(.name) {
+    color: #FC8551;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .rally-visible {

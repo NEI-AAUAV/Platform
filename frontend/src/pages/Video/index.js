@@ -25,7 +25,6 @@ const Video = () => {
 
         service.getVideosById(id)
             .then((data) => {
-                console.log(data)
                 setVideo(data);
                 setLoading(false);
             }).catch(() => {

@@ -12,7 +12,7 @@ from app.schemas.user import Token, UserCreate, UserUpdate, UserInDB, AdminUserI
 router = APIRouter()
 
 
-@router.post("/token", response_model=Token)
+@router.post("/token")
 async def login(
     db: Session = Depends(deps.get_db),
     form_data: OAuth2PasswordRequestForm = Depends()

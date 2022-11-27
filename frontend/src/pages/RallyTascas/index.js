@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Button, Col, Row } from "@nextui-org/react";
 import ClearIcon from "@nextui-org/react/esm/utils/clear-icon"
@@ -33,6 +33,18 @@ const RallyTascas = () => {
   const [visible, setVisible] = useState(false);
   const teamModalHandler = () => setVisible(true);
   const { name, token, isStaff, isAdmin, teamName, logout } = useRallyAuth(state => state);
+  const [mobile, setMobile] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setMobile(window.innerWidth < 600)
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return (() => {
+      window.removeEventListener('resize', handleResize)
+    });
+  })
 
   return (
     <>
@@ -47,7 +59,20 @@ const RallyTascas = () => {
       }}>
       </div>
       <Col style={{ maxWidth: "1000px", margin: "0 auto", fontFamily: "", padding: '2rem 0.5rem' }}>
-        <ClearIcon className="rally-close" fill="white" plain size="1.8rem" onClick={() => navigate('/')} />
+        <div className="d-flex align-items-center">
+          {
+            !!mobile &&
+            <p className="rally-small-login m-0">
+              {!token ?
+                <span onClick={() => setActiveTab(TAB.LOGIN)}>Log in</span>
+                :
+                <span onClick={() => { logout(); setActiveTab(TAB.SCORES) }}>Log out</span>
+              }
+              {!!name && <span className="name">&nbsp;{name}</span>}
+            </p>
+          }
+          <ClearIcon className="rally-close" fill="white" plain size="1.8rem" onClick={() => navigate('/')} />
+        </div>
         {
           !showCountdown ?
             <>
@@ -62,17 +87,20 @@ const RallyTascas = () => {
                         :
                         null
                   }
-                  <h2 className="rally-header">Break the Bars</h2>
+                  <h2 className="rally-header align-self-end">Break the Bars</h2>
                 </div>
-                <div className="mb-3 d-flex flex-column align-items-center justify-content-end">
-                  {!!token && <h5 className="rally-small-header mt-3">{name}</h5>}
-                  {
-                    !token ?
-                      <TabButton active color={'#FC8551'} onPress={() => setActiveTab(TAB.LOGIN)} size="sm">Login</TabButton>
-                      :
-                      <TabButton active color={'#FC8551'} onPress={() => logout()} size="sm">Logout</TabButton>
-                  }
-                </div>
+                {
+                  !mobile &&
+                  <div className="mb-3 d-flex flex-column align-items-end justify-content-center">
+                    {!!token && <h5 className="rally-small-header mt-3 mr-2">{name}</h5>}
+                    {
+                      !token ?
+                        <TabButton active login onPress={() => setActiveTab(TAB.LOGIN)} size="sm">Log in</TabButton>
+                        :
+                        <TabButton active login onPress={() => { logout(); setActiveTab(TAB.SCORES) }} size="sm">Log out</TabButton>
+                    }
+                  </div>
+                }
               </div>
               <div className="d-flex flex-wrap justify-content-center mb-3">
                 <TabButton active={activeTab === TAB.SCORES} onPress={() => setActiveTab(TAB.SCORES)} size="sm">Scores</TabButton>
@@ -130,7 +158,7 @@ const RallyTascas = () => {
               }
               {
                 activeTab === TAB.LOGIN &&
-                <LoginSection />
+                <LoginSection onSuccess={() => setActiveTab(TAB.SCORES)} />
 
               }
             </>

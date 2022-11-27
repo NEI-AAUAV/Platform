@@ -99,8 +99,6 @@ const Seniors = () => {
                 {years && <Typist>{"Finalistas de " + id}</Typist>}
             </h2>
             <Box sx={{ maxWidth: { xs: "100%", md: "900px" }, margin: "auto", marginBottom: "50px" }}>
-                {console.log(years)}
-
                 <YearTabs
                     years={years}
                     value={selectedYear}

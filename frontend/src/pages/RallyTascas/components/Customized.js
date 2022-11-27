@@ -18,8 +18,9 @@ export const IconButton = styled("button", {
   },
 });
 
-export const TabButton = ({ active, color = '#FF4646', children, ...props }) =>
-  <Button
+export const TabButton = ({ active, login, children, ...props }) => {
+  const color = login ? '#FC8551' : '#FF4646';
+  return <Button
     auto
     css={{
       minWidth: 135,
@@ -34,11 +35,12 @@ export const TabButton = ({ active, color = '#FF4646', children, ...props }) =>
       '&:hover': {
         background: active ? color : '#FF464666',
       },
-      '@md': {
-        margin: '0.5rem 3rem',
+      '@sm': {
+        margin: login ? '0.5rem' : '0.5rem 3rem',
       }
     }}
     {...props}
   >
     {children}
   </Button>
+}
