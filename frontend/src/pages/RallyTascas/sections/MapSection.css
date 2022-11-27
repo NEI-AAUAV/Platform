@@ -3,11 +3,6 @@
     color: 'white';
 }
 
-.map-outline-card {
-    border: 1px solid #FC8551;
-    border-radius: 10px;
-}
-
 .map-card-subtitle {
     font-size: 2rem !important;
     margin: 0;

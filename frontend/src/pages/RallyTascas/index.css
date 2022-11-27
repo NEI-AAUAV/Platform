@@ -1,6 +1,35 @@
 @font-face {
     font-family: 'Aldrich';
-    src: url(assets/fonts/Aldrich/Aldrich-Regular.ttf) format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+    src: url(assets/fonts/Aldrich/Aldrich-Regular.ttf) format('truetype');
+    /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+@keyframes flicker {
+    0% {
+        background-size: 1500px 100vh
+    }
+
+    5% {
+        background-size: 0
+    }
+
+    40% {
+        background-size: 1500px 100vh
+    }
+
+    45% {
+        background-size: 0
+    }
+
+    100% {
+        background-size: 1500px 100vh
+    }
+}
+
+
+.flicker-bg {
+    background-size: 0;
+    animation: flicker 2s linear 1s 1 normal forwards;
 }
 
 @font-face {
@@ -9,9 +38,29 @@
 }
 
 @media screen and (min-width: 600px) {
-    .rally-header {
-        font-size: 3rem;
+    h2.rally-header {
+        font-size: 2.8rem !important;
     }
+
+    h5.rally-small-header {
+        font-size: 1.25rem !important;
+    }
+}
+
+.rally-header {
+    font-family: 'Aldrich';
+    color: white;
+}
+
+.rally-small-header {
+    font-family: 'Aldrich';
+    color: #FC8551;
+    margin-bottom: 0;
+}
+
+.rally-login-help {
+    font-weight: bold;
+    color: #FF4646;
 }
 
 .rally-tascas-row {
@@ -37,15 +86,17 @@
     }
 }
 
-.rally-header {
-    font-family: 'Aldrich';
-    color: 'white';
-}
-
 .rally-close {
     display: block;
     margin-left: auto;
     cursor: pointer;
+}
+
+.rally-small-login > *:not(.name) {
+    color: #FC8551;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .rally-visible {

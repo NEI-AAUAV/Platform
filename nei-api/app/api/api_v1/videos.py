@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 @router.get("/", status_code=200, response_model=Page[VideoInDB])
-def get_video(
+def get_videos(
     *, page_params: PageParams = Depends(PageParams),
     tags: list[int] = Query(
         default=[], alias='tag[]',

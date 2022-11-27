@@ -22,7 +22,7 @@ const SeniorsCard = ({name, quote, image, colSizeXs, colSizeMd, colSizeSm, colSi
 
             <h4 className="font-weight-bold mt-3">{name}</h4>
             {
-                quote &&
+                !!quote &&
                 <p className="font-italic">"{quote}"</p>
             }
         </Col>
