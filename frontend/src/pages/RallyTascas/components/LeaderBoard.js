@@ -16,6 +16,7 @@ function suffix_for_ordinal(i) {
 const LeaderBoardEntry = (props) => {
     const placeSuffix = suffix_for_ordinal(props.classification);
     const headerColor = props.classification < 4 ? "#FC8551" : "#FFFFFF";
+    const classification = props.classification < 0 ? props.placement : props.classification;
 
     const points = props.scores.reduce((a, b) => a + b, 0);
 
@@ -30,7 +31,7 @@ const LeaderBoardEntry = (props) => {
     return (
         <div>
             <div className="d-flex justify-content-between">
-                <HeaderText>{props.classification}{placeSuffix} place</HeaderText>
+                <HeaderText>{classification}{placeSuffix} place</HeaderText>
                 <HeaderText>{points} pts</HeaderText>
             </div>
             <p className="text-white">{props.name}</p>
@@ -46,6 +47,12 @@ const LeaderBoard = () => {
         service.getTeams()
             .then((data) => {
                 const sortedData = data.sort((a, b) => {
+                    if (a.classification < 0 && b.classification > 0) {
+                        return 1
+                    }
+                    if (a.classification > 0 && b.classification < 0) {
+                        return -1
+                    }
                     if (a.classification > b.classification) {
                         return 1
                     }
@@ -60,7 +67,7 @@ const LeaderBoard = () => {
 
     return <GenericCard>
         {entries.map((entry, i) =>
-            <LeaderBoardEntry key={i} placement={i} {...entry} />
+            <LeaderBoardEntry key={i} placement={i + 1} {...entry} />
         )}
     </GenericCard>;
 }
