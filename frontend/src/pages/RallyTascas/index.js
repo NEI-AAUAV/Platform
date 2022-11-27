@@ -29,7 +29,7 @@ const TAB = {
 const RallyTascas = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(TAB.SCORES);
-  const [showCountdown, setShowCountdown] = useState(true);
+  const [showCountdown, setShowCountdown] = useState(false);
   const [visible, setVisible] = useState(false);
   const teamModalHandler = () => setVisible(true);
   const { name, token, isStaff, isAdmin, teamName, logout } = useRallyAuth(state => state);
