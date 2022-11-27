@@ -44,7 +44,6 @@ const Faina = () => {
             .then(response => {
                 for (var i = 0; i < response.length; i++) {
                     if (response[i].year === selectedYear) {
-                        console.log(response)
                         if (response[i].image) {
                             setImg(<Image
                                 src={response[i].image} rounded fluid
@@ -62,7 +61,6 @@ const Faina = () => {
                                 role: response[i].members[j].role.name,
                                 name: response[i].members[j].member.name
                             });
-                            console.log(response[i].members[j].role.name+" "+response[i].members[j].member.name)
                         }
                     }
                 }

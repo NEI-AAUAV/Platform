@@ -30,7 +30,7 @@ def get_news_list(
     return Page.create(total, items, page_params)
 
 
-@router.get("/categories/", status_code=200, response_model=NewsCategories)
+@router.get("/categories", status_code=200, response_model=NewsCategories)
 def get_news_categories(
     *, db: Session = Depends(deps.get_db),
 ) -> Any:
@@ -43,7 +43,7 @@ def get_news_categories(
     return {"data": data}
 
 
-@router.get("/{id}/", status_code=200, response_model=NewsInDB)
+@router.get("/{id}", status_code=200, response_model=NewsInDB)
 def get_news(
     *, id: int, db: Session = Depends(deps.get_db)
 ) -> Any:

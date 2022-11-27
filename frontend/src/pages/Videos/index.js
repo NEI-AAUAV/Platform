@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import Typist from 'react-typist';
 
 import Filters from '../../components/Filters';
@@ -40,7 +40,7 @@ const Videos = () => {
                 setLoadingCategories(false);
             })
             .catch(() => {
-                console.log("something went wrong...")
+                console.error("something went wrong...")
             })
 
     }, []);
@@ -60,7 +60,7 @@ const Videos = () => {
         const params = {
             tag: []
         }
-        
+
         if (selection.length) {
             // Compute url with categories ids selected
             selection.forEach(s => {
@@ -130,7 +130,7 @@ const Videos = () => {
                 }
 
                 {
-                    !loading && videos.map(video => {
+                    !loading && videos.map((video, index) => {
 
                         const candidates = categories.filter(c => c.id == video.tag);
                         let tag = [];
@@ -142,16 +142,18 @@ const Videos = () => {
                             }
                         }
 
-                        return (<Document
-                            name={video.title}
-                            description={video.subtitle}
-                            link={'/videos/' + video.id}
-                            blank={false}
-                            icon={faPlayCircle}
-                            image={video.image}
-                            className="col-lg-6 col-xl-4 slideUpFade p-2"
-                            tags={tag ? [tag] : []}
-                        />)
+                        return (<Fragment key={index}>
+                            <Document
+                                name={video.title}
+                                description={video.subtitle}
+                                link={'/videos/' + video.id}
+                                blank={false}
+                                icon={faPlayCircle}
+                                image={video.image}
+                                className="col-lg-6 col-xl-4 slideUpFade p-2"
+                                tags={tag ? [tag] : []}
+                            />
+                        </Fragment>)
                     })
                 }
             </Row>

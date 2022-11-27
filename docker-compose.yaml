@@ -6,12 +6,13 @@ services:
     ports:
       - 5432:5432
     volumes: 
-      - ./nei-api/app/db/setup.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./nei-api/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
+      - ./rallytascas-api/app/db/setup.sql:/docker-entrypoint-initdb.d/rallytascas-0001.sql
       - pg_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres_test
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     networks:
       - backend_net
     restart: always
@@ -25,6 +26,7 @@ services:
     environment:
       - ENV=production
       - POSTGRES_SERVER=pg_db
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     depends_on:
       - pg_db
     networks:
@@ -40,6 +42,7 @@ services:
     environment:
       - ENV=production
       - POSTGRES_SERVER=pg_db
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     depends_on:
       - pg_db
     networks:
@@ -55,6 +58,8 @@ services:
     environment:
       - ENV=production
       - POSTGRES_SERVER=pg_db
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - pg_db
     networks:

@@ -115,12 +115,20 @@ class NEIService {
         return await client.get('/news/categories/', { params });
     }
 
+    async getNewsById(id) {
+        return await client.get(`/news/${id}`);
+    }
+
     async getNews(params) {
         return await client.get('/news/', { params });
     }
 
     async getVideosCategories(params) {
         return await client.get('/videos/categories/', { params });
+    }
+
+    async getVideosById(id) {
+        return await client.get(`/videos/${id}`);
     }
 
     async getVideos(params) {

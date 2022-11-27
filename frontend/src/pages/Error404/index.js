@@ -13,7 +13,10 @@ const Error404 = () => {
 
     // On component render...
     useEffect(() => {
-        setLoading(true);
+        if (id === "404") {
+            setLoading(false);
+            return;
+        }
 
         // Call /redirects API to check if it is an alias
         // Fetch API if valid
