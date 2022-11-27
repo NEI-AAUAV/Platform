@@ -29,8 +29,9 @@ export const useRallyAuth = create((set) => ({
         set(() => ({ name, token: access_token, isStaff: staff_checkpoint_id, isAdmin: is_admin }))
     },
     logout: () => {
-        for (const key of Object.keys(storage))
+        for (const key of Object.values(storage)) {
             localStorage.removeItem(key);
+        }
         set(() => ({ name: null, teamName: null, token: null, isStaff: null, isAdmin: null }))
     },
 }))
