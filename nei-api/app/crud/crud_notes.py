@@ -1,26 +1,33 @@
+from typing import List, Tuple
+
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
 from app.models.notes import Notes
-from typing import List
+from app.models.users import Users
 
 
 class CRUDNotes(CRUDBase[Notes, None, None]):
-    
+
     def get_notes_categories(self, db: Session) -> List[str]:
         """
         Return every distinct category
         """
         return map(lambda x: x[0], db.query(Notes.category).distinct().all())
-    
-    def get_notes_by_categories(self, db: Session, categories: List[str], page: int, size: int) -> List[Notes]:
+
+    def get_notes_by_categories(self, db: Session, categories: List[str], page: int, size: int) -> Tuple[int, List[Notes]]:
         """
         Return filtered/unfiltered notes
         """
         query = db.query(Notes)
-        for cat in categories:
-            query = query.filter(getattr(Notes, cat) == 1)
-        return query.limit(size).offset((page - 1) * size).all()
+        if categories:
+            query = query.filter(or_(getattr(Notes, cat) == 1 for cat in categories))
+        total = query.count()
+        return total, query.limit(size).offset((page - 1) * size).all()
+
+    def get_notes_students(self, db: Session) -> List[Users]:
+        return db.query(Users).join(Notes).all()
 
 
 notes = CRUDNotes(Notes)

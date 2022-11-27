@@ -29,6 +29,7 @@ class NewsBase(BaseModel):
      changed_by: Optional[int]
      author_id: int
 
+
 class NewsInDB(NewsBase):
      id: int
      publisher: UsersInDB

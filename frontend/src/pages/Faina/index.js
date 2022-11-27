@@ -4,7 +4,7 @@ import Image from 'react-bootstrap/Image';
 import TextList from "../../components/TextList"
 
 import Typist from 'react-typist';
-
+import service from 'services/NEIService';
 import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
 
@@ -23,51 +23,64 @@ const Faina = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // pegar o número de anos
-        fetch(process.env.REACT_APP_API + "/faina/mandates/")
-            .then((response) => response.json())
-            .then((response) => {
-                let anos = response.data.map((curso) => curso.mandato).sort((a, b) => parseInt(b.split('/')[0]) - parseInt(a.split('/')[0]));
+        let anos = []
+        service.getFainaMandates()
+            .then(response => {
+                for (var i = 0; i < response.length; i++) {
+                    anos.push(response[i].year)
+                }
                 if (anos.length > 0) {
-                    setYears(anos);
+                    setYears(anos.reverse());
                     setSelectedYear(anos[0]);
                 }
-            });
+            })
+        setLoading(false);
+
     }, [])
 
     useEffect(() => {
-        setLoading(true);
-        if (selectedYear == undefined) return;
-
-        fetch(process.env.REACT_APP_API + "/faina/?mandate=" + selectedYear)
-            .then((response) => response.json())
-            .then((response) => {
-                setPeople(response.data.members.map(
-                    (person, i) =>
-                        <TextList
-                            key={i}
-                            colSize={12}
-                            text={person.role + " " + person.name}
-                            className="slideUpFade"
-                            style={{
-                                animationDelay: animationBase + animationIncrement * (i + 1) + "s",
-                            }}
-                        />
-                ))
-                if (response.data.imagem) {
-                    setImg(<Image
-                        src={process.env.REACT_APP_STATIC + response.data.imagem} rounded fluid
+        let members = []
+        service.getFainaMandates()
+            .then(response => {
+                for (var i = 0; i < response.length; i++) {
+                    if (response[i].year === selectedYear) {
+                        console.log(response)
+                        if (response[i].image) {
+                            setImg(<Image
+                                src={response[i].image} rounded fluid
+                                className="slideUpFade"
+                                style={{
+                                    animationDelay: animationBase + animationIncrement * 0 + "s",
+                                    "marginBottom": 50
+                                }}
+                            />);
+                        } else {
+                            setImg(null);
+                        }
+                        for (var j = 0; j < response[i].members.length; j++) {
+                            members.push({
+                                role: response[i].members[j].role.name,
+                                name: response[i].members[j].member.name
+                            });
+                            console.log(response[i].members[j].role.name+" "+response[i].members[j].member.name)
+                        }
+                    }
+                }
+                setPeople(members.map((person, i) =>
+                    <TextList
+                        key={i}
+                        colSize={12}
+                        text={person.role + " " + person.name}
                         className="slideUpFade"
                         style={{
-                            animationDelay: animationBase + animationIncrement * 0 + "s",
-                            "marginBottom": 50
+                            animationDelay: animationBase + animationIncrement * (i + 1) + "s",
                         }}
-                    />);
-                } else {
-                    setImg(null);
-                }
-                setLoading(false);
+                    />
+                )
+                )
             })
+        setLoading(false);
+
     }, [selectedYear])
 
     return (

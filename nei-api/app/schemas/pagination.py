@@ -41,17 +41,17 @@ class Page(GenericModel, Generic[T]):
     @classmethod
     def create(
         cls,
+        total: int,
         items: Sequence[T],
         params: PageParams,
     ) -> Page[T]:
         first = last = prev = next = None
-        total = len(items)
 
-        if items:
+        if total:
             first = 1
             last = math.ceil(total / params.size)
-            prev = None if params.page <= first else params.page - 1
-            next = None if params.page >= last else params.page + 1
+            prev = params.page - 1 if first < params.page <= last else None
+            next = params.page + 1 if first <= params.page < last else None
 
         return cls(
             items=items, total=total,

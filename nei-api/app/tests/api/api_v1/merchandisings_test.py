@@ -13,7 +13,7 @@ MERCHANDISINGS = [
     {
         "id": 1,
         "name": "Cat123456",
-        "image": "https://nei.web.ua.pt/nei.png",
+        "image": "/nei.png",
         "price": 4,
         "number_of_items": 5
     },
@@ -39,7 +39,11 @@ def test_elements(client: TestClient) -> None:
     data = r.json()
     assert r.status_code == 200
     for i in range(len(data)):
-        assert data[i].items() >= MERCHANDISINGS[i].items()
+        data2 = dict(MERCHANDISINGS[i])
+        image = data2.pop('image', None)
+        assert data[i].items() >= data2.items()
+        if image:
+            assert data[i]['image'].endswith(image)
     
 def test_text(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/merch")

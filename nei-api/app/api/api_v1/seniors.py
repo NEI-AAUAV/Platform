@@ -35,7 +35,7 @@ def create_seniors(
 
 
 @router.put("/", status_code=200, response_model=SeniorsInDB)
-def update_faina(
+def update_seniors(
     *, seniors_update_in: SeniorsUpdate, db: Session = Depends(deps.get_db), year: int, course: str
 ) -> dict:
     """

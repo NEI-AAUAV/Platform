@@ -613,7 +613,7 @@ ALTER TABLE aauav_nei.seniors OWNER TO postgres;
 
 CREATE TABLE aauav_nei.seniors_students (
     year integer NOT NULL,
-    course_name character varying(3) NOT NULL,
+    course character varying(3) NOT NULL,
     user_id integer NOT NULL,
     quote character varying(280),
     image character varying(255)
@@ -1579,15 +1579,15 @@ INSERT INTO aauav_nei.partners (id, header, company, description, content, link,
 --
 
 INSERT INTO aauav_nei.redirect (id, alias, redirect) VALUES
-(1, 'mapa', '/static/integracao/202122/peddypaper/mapa.png'),
-(2, 'glicinias', '/static/integracao/202122/peddypaper/glicinias.jpg'),
-(3, 'ribau', '/static/integracao/202122/peddypaper/congressos.jpg'),
-(4, 'forum', '/static/integracao/202122/peddypaper/forum.jpg'),
-(5, 'santos', '/static/integracao/202122/peddypaper/santos.jpg'),
-(6, 'macaca', '/static/integracao/202122/peddypaper/macaca.jpg'),
-(7, 'convivio', '/static/integracao/202122/peddypaper/convivio.jpg'),
-(8, 'be', '/static/integracao/202122/peddypaper/be.jpg'),
-(9, 'socorro', '/static/integracao/202122/guiasobrevivencia.pdf');
+(1, 'mapa', '/integracao/202122/peddypaper/mapa.png'),
+(2, 'glicinias', '/integracao/202122/peddypaper/glicinias.jpg'),
+(3, 'ribau', '/integracao/202122/peddypaper/congressos.jpg'),
+(4, 'forum', '/integracao/202122/peddypaper/forum.jpg'),
+(5, 'santos', '/integracao/202122/peddypaper/santos.jpg'),
+(6, 'macaca', '/integracao/202122/peddypaper/macaca.jpg'),
+(7, 'convivio', '/integracao/202122/peddypaper/convivio.jpg'),
+(8, 'be', '/integracao/202122/peddypaper/be.jpg'),
+(9, 'socorro', '/integracao/202122/guiasobrevivencia.pdf');
 
 
 --
@@ -1665,7 +1665,7 @@ INSERT INTO aauav_nei.seniors (year, course, image) VALUES
 -- Data for Name: seniors_students; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.seniors_students (year, course_name, user_id, quote, image) VALUES
+INSERT INTO aauav_nei.seniors_students (year, course, user_id, quote, image) VALUES
 (2020, 'LEI', 873, NULL, NULL),
 (2020, 'LEI', 879, NULL, NULL),
 (2020, 'LEI', 897, NULL, NULL),
@@ -2677,7 +2677,7 @@ ALTER TABLE ONLY aauav_nei.seniors
 --
 
 ALTER TABLE ONLY aauav_nei.seniors_students
-    ADD CONSTRAINT seniors_students_pkey PRIMARY KEY (year, course_name, user_id);
+    ADD CONSTRAINT seniors_students_pkey PRIMARY KEY (year, course, user_id);
 
 
 --
@@ -2974,11 +2974,11 @@ ALTER TABLE ONLY aauav_nei.seniors_students
 
 
 --
--- Name: seniors_students seniors_students_year_course_name_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: seniors_students seniors_students_year_course_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
 ALTER TABLE ONLY aauav_nei.seniors_students
-    ADD CONSTRAINT seniors_students_year_course_name_fkey FOREIGN KEY (year, course_name) REFERENCES aauav_nei.seniors(year, course);
+    ADD CONSTRAINT seniors_students_year_course_fkey FOREIGN KEY (year, course) REFERENCES aauav_nei.seniors(year, course);
 
 
 --

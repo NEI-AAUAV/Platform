@@ -14,7 +14,7 @@ HISTORY = [
         "moment": date(2022,1,2).isoformat(),
         "title": "TituloHistory",
         "body": "Texto muito interessante",
-        "image": "https://nei.web.ua.pt/nei.png"
+        "image": "/nei.png"
     },
     {
         "moment": date(1993,1,2).isoformat(),
@@ -36,7 +36,11 @@ def test_elements(client: TestClient) -> None:
     data = r.json()
     assert r.status_code == 200
     for i in range(len(data)):
-        assert data[i].items() >= HISTORY[i].items()
+        data2 = dict(HISTORY[i])
+        image = data2.pop('image', None)
+        assert data[i].items() >= data2.items()
+        if image:
+            assert data[i]['image'].endswith(image)
 
 def test_date(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/history")
