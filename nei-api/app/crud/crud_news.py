@@ -19,7 +19,7 @@ class CRUDNews(CRUDBase[News, NewsCreate, NewsUpdate]):
         """
         Return filtered/unfiltered news
         """
-        query = db.query(News)
+        query = db.query(News).order_by(News.created_at.desc())
         if categories:
             query = query.filter(News.category.in_(categories))
         total = query.count()

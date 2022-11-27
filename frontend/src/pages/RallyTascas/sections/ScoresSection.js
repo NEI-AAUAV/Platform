@@ -1,11 +1,13 @@
 import React from "react";
-import { Col, Row, Table, Tooltip } from "@nextui-org/react";
+import { Button, Col, Row, Table, Tooltip } from "@nextui-org/react";
 import { IconButton } from "../components/Customized";
 import { EyeIcon } from "../components/Icons/EyeIcon";
 import { EditIcon } from "../components/Icons/EditIcon";
 import DetailsModal from "../components/Details/DetailsModal";
 import EditDetails from "../components/EditDetails/EditDetails";
 import StaffModal from "../components/StaffModal/StaffModal";
+import "./ScoresSection.css";
+import FirstPlace from "../components/FirstPlace";
 
 const columns = [
   {
@@ -14,7 +16,7 @@ const columns = [
   },
   {
     key: "teamName",
-    label: "Equipa",
+    label: "Team",
   },
   {
     key: "lastCheckPoint",
@@ -22,7 +24,7 @@ const columns = [
   },
   {
     key: "total",
-    label: "Total",
+    label: "Total Score",
   },
   {
     key: "icons",
@@ -34,7 +36,7 @@ const rows = [
   {
     id: 1,
     position: "1º",
-    teamName: "Team 1",
+    teamName: "Pretty Big Name",
     lastCheckPoint: "350 Pts",
     timeOfCheckpoint: "23:42:22",
     total: "350 Pts",
@@ -274,13 +276,13 @@ function InfoTable() {
     setVisibleDetails(true);
   };
 
-  const editModalHandler = () => {
+  /* const editModalHandler = () => {
     setEditDetails(true);
   };
 
   const staffModalHandler = () => {
     setStaffModal(true);
-  };
+  }; */
 
   const renderCell = (team, columnKey) => {
     const cellValue = team[columnKey];
@@ -295,17 +297,45 @@ function InfoTable() {
 
       case "icons":
         return (
+          <>
+            <Col>
+              <Button
+                onClick={() => {
+                  setSelectedTeam(team);
+                  detailsModalHandler();
+                }}
+                className="btn-icon btn-round"
+                size="sm"
+                css={{
+                  backgroundColor: "#ed7f38",
+                  color: "black",
+                  fontWeight: "bold",
+                  padding: "0",
+                  margin: "0",
+                  //active and hover background color red
+                  "&:hover": {
+                    backgroundColor: "#FF4646",
+                  },
+                }}
+              >
+                Ver Equipa
+              </Button>
+            </Col>
+          </>
+        );
+
+      /* case "icons":
+        return (
           <Row justify="center" align="center">
             <Col css={{ d: "flex" }}>
               <Tooltip content="Details">
-                {/* Get selected team */}
                 <IconButton
                   onClick={() => {
                     setSelectedTeam(team);
                     detailsModalHandler();
                   }}
                 >
-                  <EyeIcon size={20} fill="#979797" />
+                  <EyeIcon size={20} fill="#FFFFFF" />
                 </IconButton>
               </Tooltip>
             </Col>
@@ -314,7 +344,7 @@ function InfoTable() {
                 <IconButton>
                   <EditIcon
                     size={20}
-                    fill="#979797"
+                    fill="#FFFFFF"
                     onClick={() => {
                       setSelectedTeam(team);
                       editModalHandler();
@@ -328,7 +358,7 @@ function InfoTable() {
                 <IconButton>
                   <EditIcon
                     size={20}
-                    fill="#979797"
+                    fill="#FFFFFF"
                     onClick={() => {
                       setSelectedTeam(team);
                       staffModalHandler();
@@ -338,7 +368,7 @@ function InfoTable() {
               </Tooltip>
             </Col>
           </Row>
-        );
+        ); */
       default:
         return cellValue;
     }
@@ -346,11 +376,20 @@ function InfoTable() {
 
   return (
     <>
+      <FirstPlace selectedTeam={rows[0]} />
       <Table
+        bordered
         css={{
+          marginTop: "20px",
+          marginBottom: "8px",
+          padding: "30px",
+          border: "1px solid #ed7f38",
+          borderRadius: "10px",
           height: "auto",
           minWidth: "100%",
           zIndex: 1,
+          borderSpacing: "0 20px",
+          paddingBottom: 0,
         }}
       >
         <Table.Header columns={columns}>
@@ -358,9 +397,10 @@ function InfoTable() {
             <Table.Column
               key={column.key}
               css={{
-                backgroundColor: "var(--background-column-index)",
-                color: "var(--column-color)",
+                backgroundColor: "transparent",
+                color: "#ed7f38",
                 fontWeight: "bold",
+                fontSize: "1rem",
                 width: `calc(100% / ${columns.length})`,
               }}
             >
@@ -368,7 +408,15 @@ function InfoTable() {
             </Table.Column>
           )}
         </Table.Header>
-        <Table.Body items={rows}>
+        <Table.Body
+          items={rows}
+          css={{
+            height: "auto",
+            width: "100%",
+            overflow: "auto",
+            transform: "translateY(-20px)",
+          }}
+        >
           {(team) => (
             <Table.Row
               css={{
@@ -376,18 +424,46 @@ function InfoTable() {
                 fontSize: "0.875rem",
                 fontWeight: "bold",
                 "&:nth-child(even)": {
-                  backgroundColor: "var(--background-even-row)",
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
                 },
               }}
             >
               {(columnKey) => (
-                <Table.Cell>{renderCell(team, columnKey)}</Table.Cell>
+                <Table.Cell
+                  css={{
+                    width: `calc(100% / ${columns.length})`,
+                    borderLeft: `${
+                      columnKey === columns[0].key
+                        ? "1px solid #ed7f38"
+                        : "none"
+                    }`,
+                    borderRight: `${
+                      columnKey === columns[columns.length - 1].key
+                        ? "1px solid #ed7f38"
+                        : "none"
+                    }`,
+
+                    "&:first-child": {
+                      borderTopLeftRadius: "10px",
+                      borderBottomLeftRadius: "10px",
+                    },
+
+                    "&:last-child": {
+                      borderTopRightRadius: "10px",
+                      borderBottomRightRadius: "10px",
+                    },
+
+                    borderTop: "1px solid #ed7f38",
+                    borderBottom: "1px solid #ed7f38",
+                  }}
+                >
+                  {renderCell(team, columnKey)}
+                </Table.Cell>
               )}
             </Table.Row>
           )}
         </Table.Body>
       </Table>
-      {/* Conditional rendering */}
       {visibleDetails && (
         <DetailsModal
           visible={visibleDetails}

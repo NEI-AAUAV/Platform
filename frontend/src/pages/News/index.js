@@ -3,7 +3,6 @@ import NewsList from "./NewsList";
 import PageNav from "../../components/PageNav";
 import FilterSelect from "../../components/Filters/FilterSelect";
 import Typist from 'react-typist';
-import axios from "axios";
 import { Spinner } from 'react-bootstrap';
 import service from 'services/NEIService';
 
@@ -17,26 +16,18 @@ const News = () => {
     const [currPage, setCurrPage] = useState(1);            // current page
     const [totalPages, setTotalPages] = useState(1);        // total number of pages
 
-    const getNews = async (p_num, api) => {
-
-        const config = {
-            method: 'get',
-            url: process.env.REACT_APP_API + api + "page=" + p_num
-        }
-
-        let res = await axios(config);
-        setIsLoading(false);
-
-        if ('data' in res.data) {
-            setCurrPage(p_num);
-            setTotalPages(res.data["page"].pagesNumber);
-            setNews(res.data['data']);
-        }
+    const getNews = async (p_num, newsTypes) => {
+        service.getNews({page: p_num, category: newsTypes, size: 9})
+            .then((data) => {
+                setIsLoading(false);
+                setCurrPage(p_num);
+                setTotalPages(data.last);
+                setNews(data.items || []);
+            })
     }
 
     /** Get given news page from API */
     const fetchPage = (p_num) => {
-        //console.log("currPage: " + currPage + ", new_page: " + p_num);
 
         // check if there are no categories selected
         if (whitelist.length == 0) {
@@ -44,22 +35,10 @@ const News = () => {
             return;
         }
 
-        // build string for api request
-        if (window.location.search)
-            var api = "/news/" + window.location.search + "&";
-        else
-            var api = "/news/?";
-
-        if (whitelist != newsTypes) {
-            whitelist.forEach(v => {
-                api = api + "category[]=" + v + "&";
-            });
-        }
-
         setIsLoading(true);
         setNews([]);
 
-        getNews(p_num, api);
+        getNews(p_num, newsTypes);
     };
 
     // Get initial news page from API when component renders, and when selected filters change
@@ -68,13 +47,11 @@ const News = () => {
     // Get categories from API when component renders
     useEffect(() => {
         service.getNewsCategories()
-            .then(response => {
-                if ('data' in response) {
-                    var cats = [];
-                    response.data.forEach(c => cats.push(c));
-                    setNewsTypes(cats);
-                    setWhitelist(cats);
-                }
+            .then(data => {
+                var cats = [];
+                data.data?.forEach(c => cats.push(c));
+                setNewsTypes(cats);
+                setWhitelist(cats);
             })
     }, []);
 
@@ -92,7 +69,6 @@ const News = () => {
             >
                 <PageNav className="col-12 col-lg ml-auto p-0" page={currPage} total={totalPages} handler={fetchPage}></PageNav>
             </FilterSelect>
-
             {
                 isLoading
                     ?
@@ -100,7 +76,6 @@ const News = () => {
                     :
                     <NewsList news={news} loading={isLoading}></NewsList>
             }
-
         </div>
     );
 }
