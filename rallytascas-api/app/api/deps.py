@@ -1,3 +1,4 @@
+import os
 from typing import Generator, Optional
 from datetime import datetime, timedelta
 
@@ -14,7 +15,7 @@ from app.schemas.user import TokenData
 
 # to get a string like this run:
 # openssl rand -hex 32
-SECRET_KEY = "4bd9e1c86c459885f0f0be7a1ce5aba0c8765359a65d7c0080f12e775f5e61b1"
+SECRET_KEY = os.getenv("ENV", "4bd9e1c86c459885f0f0be7a1ce5aba0c8765359a65d7c0080f12e775f5e61b1")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60*24
 
@@ -33,8 +34,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/rallytascas/api/v1/user/token")
 
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+def verify_password(password, hashed_password):
+    return pwd_context.verify(password, hashed_password)
 
 
 def get_password_hash(password):
@@ -47,12 +48,9 @@ def get_user(db, username: str) -> Optional[User]:
 
 def authenticate_user(db: Session, username: str, password: str) -> Optional[User]:
     user = get_user(db, username)
-    print(user)
     if not user:
-        print("NOT USER")
         return
     if not verify_password(password, user.hashed_password):
-        print("NOT PASS")
         return
     return user
 
@@ -88,7 +86,19 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     return user
 
 
-async def get_current_active_user(curr_user: User = Depends(get_current_user)):
+async def get_participant(curr_user: User = Depends(get_current_user)):
     if curr_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
+    return curr_user
+
+
+async def get_staff(curr_user: User = Depends(get_participant)):
+    if not curr_user.staff_checkpoint_id:
+        raise HTTPException(status_code=401, detail="User without staff permissions")
+    return curr_user
+
+
+async def get_admin(curr_user: User = Depends(get_participant)):
+    if not curr_user.is_admin:
+        raise HTTPException(status_code=401, detail="User without admin permissions")
     return curr_user

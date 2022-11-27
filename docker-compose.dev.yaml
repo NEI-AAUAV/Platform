@@ -3,7 +3,8 @@ services:
   pg_db:
     image: postgres:15-alpine
     volumes: 
-      - ./nei-api/app/db/setup.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./nei-api/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-nei.sql
+      - ./rallytascas-api/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-rallytascas.sql
       - pg_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres_test

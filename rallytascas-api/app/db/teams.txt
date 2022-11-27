@@ -1,0 +1,156 @@
+1
+Lambada de mão aberta, 
+6, zinco
+Duarte Cruz, 107359, duarteccruz@ua.pt, Eng. Informática, 
+Gonçalo Ferreira, 107853, goncalomf@ua.pt, Eng. Informática, 
+Diogo Almeida, 108902, almeidadiogo03@ua.pt, Eng. Informática, 
+Guilherme Duarte, 107766, duarte.g@ua.pt, Outro, 
+Tomás Matos, 108624, tomas.matos@ua.pt, Eng. Informática, 
+Rodrigo Graça, 107634, rodrigomgraca@ua.pt, Eng. Informática, 
+
+2
+Os cansados, 
+5, saturno
+Gonçalo Sousa, 108133, gfcs@ua.pt, Eng. Informática, 
+João Monteiro, 102690, joao.mont@ua.pt, Outro, 
+Liliana Ribeiro, 108713, lilianapcribeiro@ua.pt, Eng. Informática, 
+Paulo Pinto, 103234, paulojnpinto02@ua.pt, Eng. Informática, 
+Tiago Carvalho, 104142, tiagogcarvalho@ua.pt, Eng. Informática, 
+
+3
+Porta Aberta, 
+5, agosto
+Raquel Paradinha, 102491, raquelparadinha@ua.pt, Eng. Informática, 
+Catarina Costa, 103696, catarinateves02@ua.pt, Eng. Informática, 
+João Sousa, 103415, jsousa11@ua.pt, Eng. Informática, 
+Beatriz Dias, 103310, dias.beatriz@ua.pt, Outro, 
+Miguel Matos, 103341, miguelamatos@ua.pt, Eng. Informática, 
+
+4
+Seca Extrema, 
+6, esquilo
+Simão, 93383, simaocordeirosantos@ua.pt, Eng. Materiais, 
+Raquel, 92948, raq.milh@ua.pt, Outro, 
+Inês, 112980, ines4@ua.pt, Outro, 
+Lúcia, 93086, luciamsousa00@ua.pt, Outro, 
+Alexandre, 93289, alexandretomas@ua.pt, Outro, 
+João Gameiro, 93097, joao.gameiro@ua.pt, Outro, 
+
+5
+Uisqe konhaque tudo, 
+6, assalto
+Martim Santos, 114614, santos.martim@ua.pt, Eng. Informática, 
+Maria Linhares, 113534, marialinhares@ua.pt, Eng. Informática, 
+Rui Machado, 113765, rmachado@ua.pt, Eng. Informática, 
+Zakhar Kruptsala, 114478, zakhar.kruptsala@ua.pt, Eng. Informática, 
+Gabriel Martins Silva, 113786, gabrielmsilva4@ua.pt, Eng. Informática, 
+Guilherme Rosa, 113968, guilherme.rosa60@ua.pt, Eng. Informática, 
+
+6
+Não tavas capaz não vinhas, 
+6, bispo
+Bernardo Figueiredo, 108073, bernardo.figueiredo@ua.pt, Eng. Informática, 
+Gabriel Teixeira, 107876, gabrielm.teixeira@ua.pt, Eng. Informática, 
+Joaquim Rosa, 109089, joaquimvr15@ua.pt, Eng. Informática, 
+José Gameiro, 108840, jose.mcgameiro@ua.pt, Eng. Informática, 
+Alexandre Cotorobai, 107849, alexandrecotorobai@ua.pt, Eng. Informática, 
+Rodrigo Azevedo, 107298, rodrigo.azevedo@ua.pt, Eng. Informática, 
+
+7
+Gueguenation, 
+6, oceano
+Adriana Lages, 93101, adrianalages@ua.pt, Eng. Materiais, 
+Tomé Silva, 90270, tome.silva@ua.pt, Eng. Materiais, 
+Bernardo Botto, 93027, bernardoboto@ua.pt, Eng. Materiais, 
+Vasco Oliveira, 93055, vasco.oliveira00@ua.pt, Eng. Materiais, 
+Mariana Neves, 93332, mariananeves@ua.pt, Eng. Materiais, 
+Inês Vieira, 93306, inesvieira00@ua.pt, Eng. Materiais, 
+
+8
+Que mistelga, 
+6, tempero
+Patrícia Vaz, 99741, patricianvaz@ua.pt, Outro, 
+Jéssica Fernandes, 102958, jessicavfernandes@ua.pt, Outro, 
+Eduardo Lopes, 103070, eduardolplopes@ua.pt, Eng. Informática, 
+Susana Pinto, 97873, susanapfpinto@ua.pt, Outro, 
+Iara Matos, 116133, iaramatos1110@gmail.com, Outro, 
+Pedro Gonçalves, Pedroefta@gmail.com, Outro, 
+
+9
+equipa xl, 
+6, amarelo
+Mariana Oliveira, 108027, marianacso@ua.pt, Outro, 
+Sumeja Ferreira, 108862, sumejaferreira@ua.pt, Outro, 
+Beatriz Saraiva, 108944, beatriz.s@ua.pt, Outro, 
+Augusto Camacho, 107599, augustocamacho@ua.pt, Outro, 
+Maria Lucas, 108309, marialucas@ua.pt, Outro, 
+João Gonçalo, 107503, joao.goncalo.santos@ua.pt, Outro, 
+
+10
+Psisioneiros, 
+5, canela
+Oleksandr Vozovikov, 112679, hello@leks.gg, Psicologia, 
+Nolwenn Santos, 113606, nolwennsantos@ua.pt, Psicologia, 
+Lucas Sant'Ana de Alencar, 111602, lucas.alencar@ua.pt, Psicologia, 
+Sophia Kikuchi, 106965, sophia.kikuchi@ua.pt, Psicologia, 
+Gabriel Carvalho da Cruz Souza, 111631, gabriel.souza@ua.pt, Psicologia, 
+
+11
+FAJESƧE, 
+6, carimbo
+Diana Carapuço, 115770, dianacardoso1881@gmail.com, Eng. Materiais, 
+Carolina Marques, -, carolina.marques810@gmail.com, Outro, 
+Tiago Pereira, -, tiagopereira0477@gmail.com, Outro, 
+Diogo Ferreira, -, ferreiradiogo223@gmail.com, Outro, 
+Pedro Ramos, -, pedro10ramos1999@gmail.com, Outro, 
+Daniel Silva, -, danielfrsilva04@gmail.com, Outro, 
+
+12
+Tasca do Pai Jorge, 
+6, dormir
+Margarida Martins, 93169, margarida.martins@ua.pt, Eng. Informática, 
+Leandro Silva, 93446, leandrosilva12@ua.pt, Eng. Informática, 
+Pedro Marques, 92926, pedroagoncalvesmarques@ua.pt, Eng. Informática, 
+Pedro Tavares, 93103, pedrod33@ua.pt, Outro, 
+Chico Silva, 93430, mariosilva@ua.pt, Eng. Informática, 
+Afonso Silva, 93333, afonsosilva6@ua.pt, Eng. Informática, 
+
+13
+Psicoalcolémicos, 
+6, comboio
+Andreia Carlota Rodrigues, 99412, acar@ua.pt, Psicologia, 
+Daniela Carquejo, 88613, danielacarquejo@ua.pt, Psicologia, 
+Neuza Esteves, 99538, neuza-esteves@hotmail.com, Psicologia, 
+Helena Bernardo, 94382, helenabernardo19@ua.pt, Psicologia, 
+Daniela Fidalgo, 94273, danielasf@ua.pt, Psicologia, 
+Henrique Oliveira, 103713, valent.oliv@ua.pt, Psicologia, 
+
+14
+Portugal, 
+6, figado
+Filipe Maia Antão, 103470, fantao@ua.pt, Eng. Informática, 
+Pedro Matos, 102993, pedromfm02@ua.pt, Eng. Informática, 
+Simão Antunes, 104092, simaoma@ua.pt, Eng. Informática, 
+Pedro Nuno, 104091, pedronuno15@ua.pr, Outro, 
+Isaac Santiago, 104327, isaacddsantiago@uampt, Outro, 
+Tomás Marques, 112665, -, Eng. Informática, 
+
+15
+Pink stars, 
+6, golfinho
+Cíntia Magalhães, 116102, magalhaescintia9@ua.pt, Outro, 
+Maria Silva, -, geral.mariasilva36@gmail.com, Outro, 
+Beatriz Glória, 107285, beatriz.pg@ua.pt, Outro, 
+Catarina Castro, -, catarinalemoscastro@gmail.com, Outro, 
+Leonor Vicente, -, leonorvicente288@gmail.com, Outro, 
+Letícia Lima, -, leticiasantanadelima@gmail.com, Outro
+
+16
+Mmmm tenso, 
+6, londres
+José Almeida, 103298, jpaa1814@gmail.com, Psicologia, 
+João Gomes, 97379, joaopedrog@ua.pt, Psicologia, 
+Diogo Campinho, 100052, diogocampinho@ua.pt, Psicologia, 
+Ana Guerra, 102995, anabguerra@ua.pt, Psicologia, 
+Joana Lopes, 114422, joanalopes04@ua.pt, Psicologia, 
+Matilde Gonçalves, 114333, matildegonçalves@ua.pt, Psicologia

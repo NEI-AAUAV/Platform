@@ -24,9 +24,6 @@ class TeamInDB(TeamBase):
     id: int
     scores: List[int]
     times: List[datetime]
-    card1: bool
-    card2: bool
-    card3: bool
     classification: int
     members: List[UserInDB]
 
@@ -34,6 +31,11 @@ class TeamInDB(TeamBase):
         orm_mode = True
 
 
-class Checkpoint(BaseModel):
-    checkpoint_id: int
+class TeamMeInDB(TeamInDB):
+    card1: bool
+    card2: bool
+    card3: bool
+
+
+class StaffTeamUpdate(BaseModel):
     score: int

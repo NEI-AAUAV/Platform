@@ -14,18 +14,33 @@ class TokenData(BaseModel):
 
 class UserBase(BaseModel):
     team_id: Optional[int]
-    username: str
-    is_staff: bool = False
-    is_admin: bool = False
+    name: str
 
 
 class UserCreate(UserBase):
+    username: Optional[str]
+    staff_checkpoint_id: int = None
+    is_admin: bool = False
     password: str
+
+
+class UserUpdate(UserBase):
+    name: Optional[str]
+    username: Optional[str]
+    staff_checkpoint_id: Optional[int]
+    is_admin: Optional[bool]
+    password: Optional[str]
 
 
 class UserInDB(UserBase):
     id: int
-    hashed_password: str # TODO: remove this
 
     class Config:
         orm_mode = True
+
+
+class AdminUserInDB(UserInDB):
+    username: Optional[str]
+    staff_checkpoint_id: int = None
+    is_admin: bool = False
+    hashed_password: str

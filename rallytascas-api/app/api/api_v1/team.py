@@ -7,7 +7,7 @@ from app.exception import NotFoundException
 from app.api import deps
 from app.core.logging import logger
 from app.schemas.user import UserInDB
-from app.schemas.team import TeamCreate, TeamUpdate, TeamInDB, Checkpoint
+from app.schemas.team import TeamCreate, TeamUpdate, TeamInDB, TeamMeInDB, StaffTeamUpdate
 
 router = APIRouter()
 
@@ -21,19 +21,23 @@ def get_teams(
 
 @router.put("/{id}/checkpoint", status_code=201, response_model=TeamInDB)
 def add_checkpoint(
+    *, db: Session = Depends(deps.get_db),
     id: int,
-    checkpoint: Checkpoint,
-    db: Session = Depends(deps.get_db)
+    obj_in: StaffTeamUpdate,
+    staff_user: UserInDB = Depends(deps.get_staff)
 ) -> Any:
     team = crud.team.get(db=db, id=id)
     if not team:
         raise NotFoundException(detail="Team Not Found")
-    return crud.team.add_checkpoint(db=db, team=team, checkpoint=checkpoint)
+    return crud.team.add_checkpoint(
+        db=db, team=team, checkpoint_id=staff_user.staff_checkpoint_id,
+        score=obj_in.score)
 
 
-@router.get("/me", status_code=200, response_model=TeamInDB)
+@router.get("/me", status_code=200, response_model=TeamMeInDB)
 def get_own_team(
-    db: Session = Depends(deps.get_db), curr_user: UserInDB = Depends(deps.get_current_active_user)
+    db: Session = Depends(deps.get_db),
+    curr_user: UserInDB = Depends(deps.get_participant)
 ) -> Any:
     return crud.team.get(db=db, id=curr_user.team_id)
 
@@ -43,6 +47,7 @@ def create_team(
     *,
     db: Session = Depends(deps.get_db),
     team_in: TeamCreate,
+    admin_user: UserInDB = Depends(deps.get_admin)
 ) -> Any:
     team = crud.team.get_multi(db)
     # check if team name already exists
@@ -59,6 +64,7 @@ def update_team(
     db: Session = Depends(deps.get_db),
     id: int,
     team_in: TeamUpdate,
+    admin_user: UserInDB = Depends(deps.get_admin)
 ) -> Any:
     team = crud.team.get(db=db, id=id)
     if not team:

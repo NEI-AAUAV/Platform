@@ -14,7 +14,7 @@ class CRUDCheckPoint(CRUDBase[CheckPoint, CheckPointCreate, None]):
         team = db.query(Team).get(team_id)
         if team:
             index = len(team.scores) + 1
-            checkpoint = self.get(db, index)
+            checkpoint = self.get(db=db, id=index)
             return checkpoint
 
 

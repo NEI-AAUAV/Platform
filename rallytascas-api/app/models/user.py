@@ -8,9 +8,10 @@ class User(Base):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    team_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".team.id"), nullable=True)
     username = Column(String, unique=True)
-    is_staff = Column(Boolean, default=False)
+    name = Column(String)
+    team_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".team.id"), nullable=True)
+    staff_checkpoint_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".checkpoint.id"), nullable=True)
     is_admin = Column(Boolean, default=False)
     disabled = Column(Boolean, default=False)
     hashed_password = Column(String)

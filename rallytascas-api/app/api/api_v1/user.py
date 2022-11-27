@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app import crud
 from app.api import deps
-from app.schemas.user import Token, UserInDB, UserCreate
+from app.schemas.user import Token, UserCreate, UserUpdate, UserInDB, AdminUserInDB
 
 router = APIRouter()
 
@@ -29,12 +29,14 @@ async def login(
     access_token = deps.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer",
+            "is_staff": bool(user.staff_checkpoint_id), "is_admin": user.is_admin}
 
 
-@router.get("/", response_model=List[UserInDB])
+@router.get("/", response_model=List[AdminUserInDB])
 async def get_users(
-    *, db: Session = Depends(deps.get_db)
+    *, db: Session = Depends(deps.get_db),
+    admin_user: UserInDB = Depends(deps.get_admin)
 ):
     return crud.user.get_multi(db=db)
 
@@ -42,10 +44,25 @@ async def get_users(
 @router.post("/", response_model=UserInDB)
 async def create_user(
     *, db: Session = Depends(deps.get_db),
-    obj_in: UserCreate
+    obj_in: UserCreate,
+    admin_user: UserInDB = Depends(deps.get_admin)
 ):
     if obj_in.team_id:
         team = crud.team.get(db=db, id=obj_in.team_id)
         if not team:
             raise HTTPException(status_code=404, detail="Team not found")
     return crud.user.create(db=db, obj_in=obj_in)
+
+
+@router.put("/{id}", response_model=UserInDB)
+async def create_user(
+    *, db: Session = Depends(deps.get_db),
+    id: int,
+    obj_in: UserUpdate,
+    admin_user: UserInDB = Depends(deps.get_admin)
+):
+    if obj_in.team_id:
+        team = crud.team.get(db=db, id=obj_in.team_id)
+        if not team:
+            raise HTTPException(status_code=404, detail="Team not found")
+    return crud.user.update(db=db, id=id, obj_in=obj_in)
