@@ -1,12 +1,7 @@
-import './MapSection.css';
+import GenericCard from "../components/GenericCard";
+import LeaderBoard from "../components/LeaderBoard";
 
-const GenericCard = (props) => {
-    return (
-        <div className="map-outline-card p-3 pt-4 mb-3">
-            {props.children}
-        </div>
-    );
-}
+import './MapSection.css';
 
 const InfoCard = (props) => {
     return (
@@ -42,7 +37,7 @@ const Checkpoint = (props) => {
             <h6 className="text-uppercase text-white map-item-title">
                 {props.name}
             </h6>
-            <p transform="text-uppercase text-white map-item-subtitle">
+            <p className="text-uppercase text-white map-item-subtitle">
                 {props.points} PTS --/--/-- --:--
             </p>
         </div>
@@ -68,53 +63,6 @@ const PreviousCheckpoints = () => {
             </div>
         </>
     );
-}
-
-function suffix_for_ordinal(i) {
-    const j = i % 10;
-    const k = i % 100;
-
-    if (j === 1 && k !== 11) return "st";
-    else if (j === 2 && k !== 12) return "nd";
-    else if (j === 3 && k !== 13) return "rd";
-    else return "th";
-}
-
-const LeaderBoardEntry = (props) => {
-    const placeNumber = props.placement + 1;
-    const placeSuffix = suffix_for_ordinal(placeNumber);
-    const headerColor = props.placement < 3 ? "#FC8551" : "#FFFFFF";
-
-    const HeaderText = (props) => (
-        <p style={{ color: headerColor }} className="m-0 map-item-subtitle">
-            {props.children}
-        </p>
-    );
-
-    return (
-        <div>
-            <div className="d-flex justify-content-between">
-                <HeaderText>{placeNumber}{placeSuffix} place</HeaderText>
-                <HeaderText>{props.points} pts</HeaderText>
-            </div>
-            <p className="text-white">{props.team}</p>
-        </div>
-    );
-}
-
-const LeaderBoard = () => {
-    const dummyEntries = [
-        { team: "Nei Admin", points: 10000 },
-        { team: "Placeholder 1", points: 30 },
-        { team: "Placeholder 2", points: 20 },
-        { team: "Placeholder 3", points: 10 },
-        { team: "Nei Imagem", points: -20 },
-    ];
-    const entryItems = dummyEntries.map((entry, i) =>
-        <LeaderBoardEntry key={i} placement={i} {...entry} />
-    );
-
-    return <GenericCard>{entryItems}</GenericCard>;
 }
 
 const MapSection = () => {
