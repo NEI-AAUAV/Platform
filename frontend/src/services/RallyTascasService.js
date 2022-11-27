@@ -51,9 +51,6 @@ client.interceptors.response.use(function(response) {
 
 
 class RallyTascasService {
-    token() {
-        return useRallyAuth.getState().token;
-    }
 
     async login(data) {
         return await client.post(`/user/token`, data);
@@ -66,7 +63,6 @@ class RallyTascasService {
     async getTeams() {
         return await client.get('/team');
     }
-
 }
 
 // Export a singleton service
