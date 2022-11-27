@@ -65,12 +65,12 @@ const CardsSection = () => {
     {
       "team_id": 0,
       "name": "Leandro Silva",
-      "id": 0
+      "id": 0 
     }
   ],
-  "card1": false,
+  "card1": true,
   "card2": false,
-  "card3": false});
+  "card3": true});
       // Get API data when component renders
       useEffect(() => {
         service.getOwnTeam()
@@ -85,9 +85,9 @@ const CardsSection = () => {
             Team[`card${index}`] && <Card2 item={item} index={index} />
     ))}
       {(!(Team.card1 || Team.card2 || Team.card3) ?
-    <text style={{ color:"white", fontSize:"45px",textAlign:"center",fontWeight: "bold"}}><p style={{all: "inherit"}}>Não tens nenhuma carta.</p><p style={{all: "inherit"}}> Vai beber!</p></text>
+    <text style={{ fontFamily:"Akshar",color:"white", fontSize:"60px",textAlign:"center",marginTop:"3rem",fontWeight: "bold"}}><p style={{all: "inherit"}}>Não tens nenhuma carta. Vai beber!</p></text>
     :
-    <p> falta colocar para mostrar no meio do telemovel, que fica mais fixe</p>
+    null
     )}
     
       </div>
