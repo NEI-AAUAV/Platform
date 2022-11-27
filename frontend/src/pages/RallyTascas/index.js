@@ -12,10 +12,6 @@ import Countdown from "./sections/Countdown";
 import LoginSection from "./sections/LoginSection";
 import { TabButton } from "./components/Customized";
 
-import ClearIcon from "@nextui-org/react/esm/utils/clear-icon";
-
-import { useNavigate } from "react-router";
-
 import bg from "assets/images/rally_bg.jpg";
 import "./index.css";
 import { useRallyAuth } from "stores/useRallyAuth";

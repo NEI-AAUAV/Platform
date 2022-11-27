@@ -9,9 +9,9 @@ const storage = {
 }
 
 export const useRallyAuth = create((set) => ({
-    name: 'LEandro Sival' || localStorage.getItem(storage.NAME),
-    teamName: 'equipaxl' || localStorage.getItem(storage.TEAM_NAME),
-    token: 1 || localStorage.getItem(storage.TOKEN),
+    name: localStorage.getItem(storage.NAME),
+    teamName: localStorage.getItem(storage.TEAM_NAME),
+    token: localStorage.getItem(storage.TOKEN),
     isStaff: !!localStorage.getItem(storage.STAFF),
     isAdmin: !!localStorage.getItem(storage.ADMIN),
 
