@@ -44,14 +44,35 @@ const Checkpoint = (props) => {
     const minutes = props.time.getMinutes();
     const formattedHours = `${hours}:${minutes}`
 
+    const questionColor = props.question ? "rgb(70, 255, 70)" : "rgb(255, 70, 70)";
+    const tookMinutes = Math.floor(props.took / 60);
+    const tookSeconds = props.took % 60;
+
+    const formatMod = (num, label) => num > 0 ? (num > 1 ? `${num}x` : "") + label : "";
+    const pukesString = formatMod(props.pukes, "🤮");
+    const skipsString = formatMod(props.pukes, "⏭️");
+
     return (
         <div className="mt-2">
-            <h6 className="text-uppercase text-white map-item-title">
-                {props.name}
-            </h6>
-            <p className="text-uppercase text-white map-item-subtitle">
-                {props.score} PTS {formattedDate} {formattedHours}
-            </p>
+            <div className="d-flex justify-content-between">
+                <h6 className="text-uppercase text-white map-item-title">
+                    {props.name}
+                </h6>
+                <p className="map-item-subtitle text-white m-0">
+                    {pukesString} {skipsString}
+                </p>
+                <p className="text-uppercase map-item-subtitle m-0" style={{ color: questionColor }}>
+                    {props.question ? "Acertou" : "Errou"}
+                </p>
+            </div>
+            <div className="d-flex justify-content-between">
+                <p className="text-uppercase text-white map-item-subtitle">
+                    {formattedDate} {formattedHours}
+                </p>
+                <p className="map-item-subtitle m-0" style={{ color: "#FC8551" }}>
+                    {tookMinutes > 0 ? `${tookMinutes}m` : ""}{tookSeconds}s
+                </p>
+            </div>
         </div>
     );
 }
@@ -85,11 +106,19 @@ const MapSection = () => {
             service.getCheckpoints(),
         ]).then(([team, checkpoints]) => {
             let merged = [];
-            const len = Math.min(team.times.length, team.scores.length, checkpoints.length);
+            const len = Math.min(
+                team.times.length,
+                team.time_scores.length,
+                team.question_scores.length,
+                checkpoints.length
+            );
             for (let i = 0; i < len; i++) {
                 const checkpoint = checkpoints[i];
-                checkpoint.score = team.scores[i];
+                checkpoint.took = team.time_scores[i];
+                checkpoint.question = team.question_scores[i];
                 checkpoint.time = new Date(team.times[i]);
+                checkpoint.pukes = team.pukes[i] ?? 0;
+                checkpoint.skips = team.skips[i] ?? 0;
                 merged.push(checkpoint);
             }
             setPreviousCheckpoints(merged)
