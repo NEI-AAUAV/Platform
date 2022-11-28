@@ -35,24 +35,29 @@ const NextCheckpointCard = (props) => {
 }
 
 const Checkpoint = (props) => {
+    const day = props.time.getDate();
+    const month = props.time.getMonth() + 1;
+    const year = props.time.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`
+
+    const hours = props.time.getHours();
+    const minutes = props.time.getMinutes();
+    const formattedHours = `${hours}:${minutes}`
+
     return (
         <div className="mt-2">
             <h6 className="text-uppercase text-white map-item-title">
                 {props.name}
             </h6>
             <p className="text-uppercase text-white map-item-subtitle">
-                {props.points} PTS --/--/-- --:--
+                {props.score} PTS {formattedDate} {formattedHours}
             </p>
         </div>
     );
 }
 
-const PreviousCheckpoints = () => {
-    const dummyCheckpoints = [
-        { name: "Rua 1", points: 10 },
-        { name: "Rua 2", points: 5 },
-    ];
-    const checkpointItems = dummyCheckpoints.map((checkpoint, i) =>
+const PreviousCheckpoints = (props) => {
+    const checkpointItems = props.checkpoints.map((checkpoint, i) =>
         <Checkpoint key={i} {...checkpoint} />
     );
 
@@ -70,10 +75,25 @@ const PreviousCheckpoints = () => {
 
 const MapSection = () => {
     const [nextData, setNextData] = useState({});
+    const [previousCheckpoints, setPreviousCheckpoints] = useState([]);
 
     // Get API data when component renders
     useEffect(() => {
-        service.getCheckpoint().then((data) => setNextData(data));
+        service.getCurrentCheckpoint().then((data) => setNextData(data));
+        Promise.all([
+            service.getOwnTeam(),
+            service.getCheckpoints(),
+        ]).then(([team, checkpoints]) => {
+            let merged = [];
+            const len = Math.min(team.times.length, team.scores.length, checkpoints.length);
+            for (let i = 0; i < len; i++) {
+                const checkpoint = checkpoints[i];
+                checkpoint.score = team.scores[i];
+                checkpoint.time = new Date(team.times[i]);
+                merged.push(checkpoint);
+            }
+            setPreviousCheckpoints(merged)
+        });
     }, []);
 
     return (
@@ -83,7 +103,7 @@ const MapSection = () => {
                 <NextCheckpointCard name={nextData.name} />
             </div>
             <div className="col-12 col-md-4 px-3">
-                <PreviousCheckpoints />
+                <PreviousCheckpoints checkpoints={previousCheckpoints} />
             </div>
             <div className="col-4 d-none d-md-block px-3">
                 <LeaderBoard />

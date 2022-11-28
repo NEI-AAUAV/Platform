@@ -16,14 +16,21 @@ class TeamCreate(TeamBase):
 
 class TeamUpdate(TeamBase):
     name: Optional[str]
-    scores: Optional[List[int]]
+    question_scores: Optional[List[bool]]
+    time_scores: Optional[List[int]]
     times: Optional[List[datetime]]
+    pukes: Optional[List[int]]
+    skips: Optional[List[int]]
 
 
 class TeamInDB(TeamBase):
     id: int
-    scores: List[int]
+    question_scores: List[bool]
+    time_scores: List[int]
     times: List[datetime]
+    pukes: List[int]
+    skips: List[int]
+    total: int
     classification: int
     members: List[UserInDB]
 
@@ -32,13 +39,19 @@ class TeamInDB(TeamBase):
 
 
 class TeamMeInDB(TeamInDB):
+    card1: int
+    card2: int
+    card3: int
+
+
+class StaffScoresTeamUpdate(BaseModel):
+    question_score: bool
+    time_score: int
+    pukes: int
+    skips: int
+
+
+class StaffCardsTeamUpdate(BaseModel):
     card1: bool
     card2: bool
     card3: bool
-
-
-class StaffTeamUpdate(BaseModel):
-    score: Optional[int]
-    card1: Optional[bool]
-    card2: Optional[bool]
-    card3: Optional[bool]

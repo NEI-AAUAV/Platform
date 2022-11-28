@@ -13,7 +13,7 @@ class CRUDCheckPoint(CRUDBase[CheckPoint, CheckPointCreate, None]):
     def get_next(self, db: Session, team_id: int) -> Optional[CheckPoint]:
         team = db.query(Team).get(team_id)
         if team:
-            index = len(team.scores) + 1
+            index = len(team.times) + 1
             checkpoint = self.get(db=db, id=index)
             return checkpoint
 
