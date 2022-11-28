@@ -65,8 +65,7 @@
 
 .rally-tascas-row {
     float: left;
-    width: 50%;
-    padding: 10px;
+    width: 100%;
 }
 .rally-tascas-column {
     display: inline-grid;
@@ -165,6 +164,6 @@
     height: 350px;
     width:350px;
     border: 2px solid #FC8551 !important;
-    margin-bottom: -5rem;
-    margin-top: 3rem;
+    margin-top: 2rem;
+
 }

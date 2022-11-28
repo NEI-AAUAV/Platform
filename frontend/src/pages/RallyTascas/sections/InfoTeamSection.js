@@ -75,7 +75,7 @@ const InfoTeamSection = () => {
                             </Card>
                         </div>
                     </div>
-                    <div className="rally-tascas-column">
+                    <div className="rally-tascas-column d-none d-md-block px-3">
                         <LeaderBoard/>
                     </div>
                 </div>
