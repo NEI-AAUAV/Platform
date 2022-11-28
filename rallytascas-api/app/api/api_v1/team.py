@@ -7,7 +7,7 @@ from app.exception import NotFoundException
 from app.api import deps
 from app.core.logging import logger
 from app.schemas.user import UserInDB
-from app.schemas.team import TeamCreate, TeamUpdate, TeamInDB, TeamMeInDB, StaffTeamUpdate
+from app.schemas.team import TeamCreate, TeamUpdate, TeamInDB, TeamMeInDB, StaffScoresTeamUpdate, StaffCardsTeamUpdate
 
 router = APIRouter()
 
@@ -23,15 +23,28 @@ def get_teams(
 def add_checkpoint(
     *, db: Session = Depends(deps.get_db),
     id: int,
-    obj_in: StaffTeamUpdate,
+    obj_in: StaffScoresTeamUpdate,
     staff_user: UserInDB = Depends(deps.get_staff)
 ) -> Any:
     team = crud.team.get(db=db, id=id)
     if not team:
         raise NotFoundException(detail="Team Not Found")
     return crud.team.add_checkpoint(
-        db=db, team=team, checkpoint_id=staff_user.staff_checkpoint_id,
-        score=obj_in.score)
+        db=db, team=team, checkpoint_id=staff_user.staff_checkpoint_id, obj_in=obj_in)
+
+
+@router.put("/{id}/cards", status_code=201, response_model=TeamInDB)
+def activate_cards(
+    *, db: Session = Depends(deps.get_db),
+    id: int,
+    obj_in: StaffCardsTeamUpdate,
+    staff_user: UserInDB = Depends(deps.get_staff)
+) -> Any:
+    team = crud.team.get(db=db, id=id)
+    if not team:
+        raise NotFoundException(detail="Team Not Found")
+    return crud.team.activate_cards(
+        db=db, team=team, checkpoint_id=staff_user.staff_checkpoint_id, obj_in=obj_in)
 
 
 @router.get("/me", status_code=200, response_model=TeamMeInDB)

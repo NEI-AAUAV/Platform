@@ -74,11 +74,15 @@ ALTER SEQUENCE rally_tascas.checkpoint_id_seq OWNED BY rally_tascas.checkpoint.i
 CREATE TABLE rally_tascas.team (
     id integer NOT NULL,
     name character varying,
-    scores integer[],
+    question_scores boolean[],
+    time_scores integer[],
     times timestamp without time zone[],
-    card1 boolean,
-    card2 boolean,
-    card3 boolean,
+    pukes integer[],
+    skips integer[],
+    total integer,
+    card1 integer,
+    card2 integer,
+    card3 integer,
     classification integer
 );
 
@@ -188,23 +192,23 @@ INSERT INTO rally_tascas.checkpoint (id, name, shot_name, description) VALUES
 -- Data for Name: team; Type: TABLE DATA; Schema: rally_tascas; Owner: postgres
 --
 
-INSERT INTO rally_tascas.team (id, name, scores, times, card1, card2, card3, classification) VALUES
-(1, 'Lambada de mão aberta', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(2, 'Os cansados', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(3, 'Porta Aberta', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(4, 'Seca Extrema', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(5, 'Uisqe konhaque tudo', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(6, 'Não tavas capaz não vinhas', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(7, 'Gueguenation', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(8, 'Que mistelga', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(9, 'equipa xl', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(10, 'Psisioneiros', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(11, 'FAJESƧE', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(12, 'Tasca do Pai Jorge', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(13, 'Psicoalcolémicos', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(14, 'Portugal', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(15, 'Pink stars', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1),
-(16, 'Mmmm tenso', array[]::integer[], ARRAY[]::timestamp without time zone[], false, false, false, -1);
+INSERT INTO rally_tascas.team (id, name, question_scores, time_scores, times, pukes, skips, total, card1, card2, card3, classification) VALUES
+(1, 'Lambada de mão aberta', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(2, 'Os cansados', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(3, 'Porta Aberta', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(4, 'Seca Extrema', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(5, 'Uisqe konhaque tudo', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(6, 'Não tavas capaz não vinhas', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(7, 'Gueguenation', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(8, 'Que mistelga', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(9, 'equipa xl', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(10, 'Psisioneiros', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(11, 'FAJESƧE', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(12, 'Tasca do Pai Jorge', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(13, 'Psicoalcolémicos', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(14, 'Portugal', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(15, 'Pink stars', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
+(16, 'Mmmm tenso', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1);
 
 
 --
