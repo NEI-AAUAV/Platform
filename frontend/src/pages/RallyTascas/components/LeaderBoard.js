@@ -3,6 +3,8 @@ import service from 'services/RallyTascasService';
 
 import GenericCard from "./GenericCard";
 
+import "./LeaderBoard.css";
+
 function suffix_for_ordinal(i) {
     const j = i % 10;
     const k = i % 100;
@@ -15,8 +17,8 @@ function suffix_for_ordinal(i) {
 
 const LeaderBoardEntry = (props) => {
     const placeSuffix = suffix_for_ordinal(props.classification);
-    const headerColor = props.classification < 4 ? "#FC8551" : "#FFFFFF";
     const classification = props.classification < 0 ? props.placement : props.classification;
+    const headerColor = classification < 4 ? "#FC8551" : "#FFFFFF";
 
     const HeaderText = (props) => (
         <p className="m-0" style={{
@@ -38,7 +40,16 @@ const LeaderBoardEntry = (props) => {
 }
 
 const LeaderBoard = () => {
+    const [currentPage, setCurrentPage] = useState(1);
     const [entries, setEntries] = useState([]);
+
+    const recordsPerPage = 9;
+
+    const indexOfLastEntry = currentPage * recordsPerPage;
+    const indexOfFirstEntry = indexOfLastEntry - recordsPerPage;
+    const nPages = Math.ceil(entries.length / recordsPerPage)
+
+    const currentEntries = entries.slice(indexOfFirstEntry, indexOfLastEntry);
 
     // Get API data when component renders
     useEffect(() => {
@@ -64,9 +75,25 @@ const LeaderBoard = () => {
     }, []);
 
     return <GenericCard>
-        {entries.map((entry, i) =>
-            <LeaderBoardEntry key={i} placement={i + 1} {...entry} />
+        {currentEntries.map((entry, i) =>
+            <LeaderBoardEntry key={i} placement={i + 1 + indexOfFirstEntry} {...entry} />
         )}
+        <div className="d-flex justify-content-center">
+            {Array.from({ length: nPages }, (_, i) =>
+                <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className="leaderboard-page-btn"
+                    style={{
+                        "&:hover": {
+                            backgroundColor: "#FF4646",
+                        },
+                    }}
+                >
+                    {i}
+                </button>
+            )}
+        </div>
     </GenericCard>;
 }
 
