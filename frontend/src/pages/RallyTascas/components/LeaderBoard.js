@@ -18,8 +18,6 @@ const LeaderBoardEntry = (props) => {
     const headerColor = props.classification < 4 ? "#FC8551" : "#FFFFFF";
     const classification = props.classification < 0 ? props.placement : props.classification;
 
-    const points = props.scores.reduce((a, b) => a + b, 0);
-
     const HeaderText = (props) => (
         <p className="m-0" style={{
             color: headerColor,
@@ -32,7 +30,7 @@ const LeaderBoardEntry = (props) => {
         <div>
             <div className="d-flex justify-content-between">
                 <HeaderText>{classification}{placeSuffix} place</HeaderText>
-                <HeaderText>{points} pts</HeaderText>
+                <HeaderText>{props.total} pts</HeaderText>
             </div>
             <p className="text-white">{props.name}</p>
         </div>
