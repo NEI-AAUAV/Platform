@@ -1,11 +1,14 @@
 import { Card,Text} from "@nextui-org/react"
+import { useState } from "react";
 import LeaderBoard from "../components/LeaderBoard";
+import TeamsSection from "./TeamsSection";
 import "../index.css";
 
 const InfoTeamSection = () => {
+    
     const data = [
         {   
-            team_image: "./images/IconsTeamsSection/icon1.png",
+            team_image: "./images/IconsTeamsSection/icon1.png", 
             team_name: "Team Name",
             team_elements: ["Team Member 1", "Team Member 2","Team Member 3","Team member 4","Team Member 5","Team Member 6"],
             checkpoint_points: 10,
@@ -43,11 +46,6 @@ const InfoTeamSection = () => {
                             <Card className="rally-card-team-information" >
                                 <Card.Body>
                                     <Text h3 style={{color:"#FC8551",fontWeight:"bold"}}>{'>'} TEAM MEMBERS</Text>
-                                    {/* <Text style={{color:"white"}}>Team Member 1</Text>
-                                    <Text style={{color:"white"}}>Team Member 2</Text>
-                                    <Text style={{color:"white"}}>Team Member 3</Text>
-                                    <Text style={{color:"white"}}>Team Member 4</Text>
-                                    <Text style={{color:"white"}}>Team Member 5</Text> */}
                                     <ol style={{paddingLeft:"0px"}}>
                                         {item.team_elements.map((element, index) => (
                                             <ul key={index} style={{color:"white",paddingLeft:"0px"}}>{element}</ul>
