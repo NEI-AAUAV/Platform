@@ -53,11 +53,11 @@ client.interceptors.response.use(function(response) {
 class RallyTascasService {
 
     async login(data) {
-        return await client.post(`/user/token`, data);
+        return await client.post('/user/token', data);
     }
 
     async getOwnTeam() {
-        return await client.get(`/team/me`);
+        return await client.get('/team/me');
     }
 
     async getTeams() {

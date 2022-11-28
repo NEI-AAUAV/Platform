@@ -1,18 +1,17 @@
-import { Card,Text} from "@nextui-org/react"
-import { useState } from "react";
+import { Card,Text } from "@nextui-org/react";
 import LeaderBoard from "../components/LeaderBoard";
-import TeamsSection from "./TeamsSection";
 import "../index.css";
 
+
 const InfoTeamSection = () => {
-    
+
     const data = [
         {   
             team_image: "./images/IconsTeamsSection/icon1.png", 
             team_name: "Team Name",
-            team_elements: ["Team Member 1", "Team Member 2","Team Member 3","Team member 4","Team Member 5","Team Member 6"],
+            team_elements: ["Team Member 1","Team Member 2","Team Member 3","Team Member 4","Team Member 5","Team Member 6"],
             checkpoint_points: 10,
-            checkpoint_time: "--/--/-- --:--",
+            checkpoint_time: "--/-- --:--",
             total_score: 80
         }
     ]
