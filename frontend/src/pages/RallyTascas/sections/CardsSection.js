@@ -13,7 +13,7 @@ const Card2 = ({ item, index, disabled }) => {
 
   return (
     <>
-      <Card key={index} variant="bordered" isPressable onPress={() => { settextVisible(!textvisible) }}
+      <Card key={index} variant="bordered" isPressable={!disabled} onPress={() => settextVisible(!textvisible)}
         css={{
           bg: "#FC855133"  /* os últimos dois números são do canal alfa, que mostra a opacidade só do background-color*/,
           w: "280px", h: 400,
@@ -21,7 +21,7 @@ const Card2 = ({ item, index, disabled }) => {
           margin: 15, opacity: disabled ? 0.5 : 1,
           filter: disabled ? "grayscale(80%)" : 'none',
         }}>
-        <div style={{backgroundColor: "#1D1D1D", backgroundImage: `url(${item.img})`, backgroundPosition: 'center', backgroundRepeat: 'no-repeat', height: '100%'}}>
+        <div style={{ backgroundColor: "#1D1D1D", backgroundImage: `url(${item.img})`, backgroundPosition: 'center', backgroundRepeat: 'no-repeat', height: '100%' }}>
         </div>
         <Card.Footer css={{ fontFamily: "Akshar", zIndex: 1, paddingBottom: 0 }}>
           <Col>
@@ -58,12 +58,12 @@ const CardsSection = () => {
     {
       title: "Pergunta-Pass❔",
       img: "./images/CardsSection/CABULA_CABULOSA.svg",
-      text: "Poupa alguns neurónios! Tens direito a passar uma pergunta à frente, no entanto, recebes 6 pontos, em vez de 8",
+      text: "Poupa alguns neurónios! Tens direito a passar uma pergunta à frente, no entanto, recebes 6 pontos, em vez de 8.",
     },
     {
       title: "Desafio-pass🎯",
       img: "./images/CardsSection/SKIP_GYM_DAY.svg",
-      text: "Tens direito a passar um desafio à frente, no entanto, recebes 8 pontos em vez de 10",
+      text: "Tens direito a passar um desafio à frente, no entanto, recebes 8 pontos em vez de 10.",
     },
     {
       title: "Grego-Pass🤮",
@@ -73,12 +73,12 @@ const CardsSection = () => {
   ];
   const [Team, setTeam] = useState([]);
   // Get API data when component renders
- useEffect(() => {
-   service.getOwnTeam()
-       .then((data) => {
-           setTeam(data);
-       });
-}, []);
+  useEffect(() => {
+    service.getOwnTeam()
+      .then((data) => {
+        setTeam(data);
+      });
+  }, []);
 
   return (
     <div className="d-flex flex-wrap" style={{ justifyContent: "space-evenly" }}>
@@ -86,7 +86,9 @@ const CardsSection = () => {
         Team?.[`card${index + 1}`] !== -1 && <Card2 item={item} index={index} disabled={Team?.[`card${index + 1}`] !== 0} />
       ))}
       {((Team.card1 == -1 && Team.card2 == -1 && Team.card3 == -1) ?
-        <text style={{ fontFamily: "Akshar", color: "white", fontSize: "60px", textAlign: "center", marginTop: "3rem", fontWeight: "bold" }}><p style={{ all: "inherit" }}>Não tens nenhuma carta. Vai beber!</p></text>
+        <div className="rally-cards-empty">
+          <p>Não tens nenhuma carta.</p><p>Vai beber!</p>
+        </div>
         :
         null
       )}

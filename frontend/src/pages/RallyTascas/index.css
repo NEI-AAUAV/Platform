@@ -37,7 +37,7 @@
     src: url(assets/fonts/Akshar/Akshar-Regular.ttf) format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 650px) {
     h2.rally-header {
         font-size: 2.8rem !important;
         margin-left: 1rem;
@@ -81,7 +81,7 @@
     clear: both;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 650px) {
     .rally-tascas-row {
         width: 100%;
         display: inline-block;
@@ -162,4 +162,19 @@
     border: 2px solid #FC8551 !important;
     margin-bottom: -5rem;
     margin-top: 3rem;
+}
+
+@media screen and (min-width: 650px) {
+    .rally-cards-empty {
+        font-size: 3rem !important;
+    }
+}
+
+.rally-cards-empty {
+    font-family: "Akshar";
+    color: white;
+    font-size: 2rem;
+    text-align: center;
+    margin-top: 7rem;
+    font-weight: bold;
 }

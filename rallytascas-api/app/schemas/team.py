@@ -21,6 +21,9 @@ class TeamUpdate(TeamBase):
     times: Optional[List[datetime]]
     pukes: Optional[List[int]]
     skips: Optional[List[int]]
+    card1: Optional[int]
+    card2: Optional[int]
+    card3: Optional[int]
 
 
 class TeamInDB(TeamBase):
