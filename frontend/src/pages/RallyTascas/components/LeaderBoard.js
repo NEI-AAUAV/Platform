@@ -3,7 +3,7 @@ import service from 'services/RallyTascasService';
 
 import GenericCard from "./GenericCard";
 
-function suffix_for_ordinal(i) {
+export function suffix_for_ordinal(i) {
     const j = i % 10;
     const k = i % 100;
 
