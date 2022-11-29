@@ -71,35 +71,14 @@ const CardsSection = () => {
       text: "Deita tudo cá para fora! Um dos elementos tem direito a vomitar uma vez.",
     },
   ];
-  const [Team, setTeam] = useState({
-    "name": "A miha equipa bonita",
-    "id": 0,
-    "scores": [
-      0
-    ],
-    "times": [
-      "2022-11-27T16:16:03.903Z"
-    ],
-    "classification": 1,
-    "members": [
-      {
-        "team_id": 0,
-        "name": "Leandro Silva",
-        "id": 0
-      }
-    ],
-    "card1": -1,
-    "card2": 0,
-    "card3": 1
-  });
+  const [Team, setTeam] = useState([]);
   // Get API data when component renders
-  /*
  useEffect(() => {
    service.getOwnTeam()
        .then((data) => {
            setTeam(data);
        });
-}, []);  */
+}, []);
 
   return (
     <div className="d-flex flex-wrap" style={{ justifyContent: "space-evenly" }}>
