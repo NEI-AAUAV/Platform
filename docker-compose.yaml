@@ -12,7 +12,7 @@ services:
     environment:
       - POSTGRES_DB=postgres_test
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
     networks:
       - backend_net
     restart: always
@@ -26,28 +26,28 @@ services:
     environment:
       - ENV=production
       - POSTGRES_SERVER=pg_db
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
     depends_on:
       - pg_db
     networks:
       - backend_net
     restart: always
-  tacaua_api:
-    image: neiaauav/tacaua-api:${TAG:-latest}
-    build:
-      context: tacaua-api
-      dockerfile: Dockerfile
-    ports:
-      - 8001:8001
-    environment:
-      - ENV=production
-      - POSTGRES_SERVER=pg_db
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    depends_on:
-      - pg_db
-    networks:
-      - backend_net
-    restart: always
+  # tacaua_api:
+  #   image: neiaauav/tacaua-api:${TAG:-latest}
+  #   build:
+  #     context: tacaua-api
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 8001:8001
+  #   environment:
+  #     - ENV=production
+  #     - POSTGRES_SERVER=pg_db
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  #   depends_on:
+  #     - pg_db
+  #   networks:
+  #     - backend_net
+  #   restart: always
   rallytascas_api:
     image: neiaauav/rallytascas-api:${TAG:-latest}
     build:
@@ -58,7 +58,7 @@ services:
     environment:
       - ENV=production
       - POSTGRES_SERVER=pg_db
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - pg_db
@@ -74,7 +74,7 @@ services:
       - 3000:3000
     depends_on:
       - nei_api
-      - tacaua_api
+      # - tacaua_api
       - rallytascas_api
     networks:
       - frontend_net
@@ -91,7 +91,7 @@ services:
       - /nginx-letsencrypt:/etc/letsencrypt
     depends_on:
       - nei_api
-      - tacaua_api
+      # - tacaua_api
       - rallytascas_api
       - web_app
     networks:
