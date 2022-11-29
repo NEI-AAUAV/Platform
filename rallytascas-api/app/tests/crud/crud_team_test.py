@@ -19,7 +19,7 @@ teams = [
         "card1": 0,
         "card2": 2,
         "card3": 3,
-        "classification": -1, # 2
+        "classification": -1, # 1
     },
     {
         "name": "Arroz",
@@ -32,7 +32,7 @@ teams = [
         "card1": 3,
         "card2": 2,
         "card3": 0,
-        "classification": -1, # 1
+        "classification": -1, # 2
     },
     {
         "name": "Doce",

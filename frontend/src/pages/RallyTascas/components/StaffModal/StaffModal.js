@@ -1,9 +1,11 @@
 import { Button, Input, Modal, Text } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 
-function StaffModal(props) {
+function StaffModal({visible, setVisible}) {
+  
   const closeHandler = () => {
-    props.setVisible(false);
+    document.body.style.overflow = null;
+    setVisible(false);
   };
 
   const [dt, setDt] = useState(
@@ -31,7 +33,7 @@ function StaffModal(props) {
     <Modal
       closeButton
       aria-labelledby="modal-title"
-      open={props.visible}
+      open={visible}
       onClose={closeHandler}
       css={{
         height: "auto",
@@ -40,11 +42,6 @@ function StaffModal(props) {
         marginLeft: "20px",
         marginRight: "20px",
         backgroundColor: "var(--background-modal)",
-        "@media (min-width: 320px)": {
-          width: "80%",
-          marginLeft: "10%",
-          marginRight: "10%",
-        },
         "@media (min-width: 481px)": {
           width: "90%",
         },

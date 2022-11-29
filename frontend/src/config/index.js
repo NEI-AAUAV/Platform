@@ -2,7 +2,7 @@ let HOST, PRODUCTION;
 
 if(process.env.NODE_ENV === 'production') {
     PRODUCTION = true;
-    HOST = 'http://aauav-nei.ua.pt';
+    HOST = 'https://nei-aauav.pt';
 } else {
     PRODUCTION = false;
     HOST = 'http://localhost';

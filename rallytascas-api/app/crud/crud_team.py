@@ -18,7 +18,8 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         all_time_scores = [t.time_scores + [0] *
                            (8-len(t.time_scores)) for t in teams]
 
-        min_time_scores = [min(map(lambda s: s or math.inf, l)) for l in zip(*all_time_scores)]
+        min_time_scores = [min(map(lambda s: s or math.inf, l))
+                           for l in zip(*all_time_scores)]
 
         def calc_time_score(_):
             i, s = _
@@ -38,9 +39,12 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
 
         uniform_scores = {t.id: [
             list(map(calc_time_score, enumerate(t.time_scores))),
-            list(map(calc_question_scores, [(t.card1 == i + 1, s) for i, s in enumerate(t.question_scores)])),
-            list(map(calc_pukes, [(t.card3 == i + 1, s) for i, s in enumerate(t.pukes)])),
-            list(map(calc_skips, [(t.card2 == i + 1, s) for i, s in enumerate(t.skips)]))
+            list(map(calc_question_scores, [
+                 (t.card1 == i + 1, s) for i, s in enumerate(t.question_scores)])),
+            list(map(calc_pukes, [(t.card3 == i + 1, s)
+                 for i, s in enumerate(t.pukes)])),
+            list(map(calc_skips, [(t.card2 == i + 1, s)
+                 for i, s in enumerate(t.skips)]))
         ] for t in teams}
 
         def calc_total(scores):
@@ -61,14 +65,17 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         return team
 
     def update(self, db: Session, *, id: int, obj_in: Union[TeamUpdate, Dict[str, Any]]) -> Team:
+        team = self.get(db=db, id=id)
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
             update_data = obj_in.dict(exclude_unset=True)
 
-        if (len({len(update_data[key]) for key in ('times', 'question_scores', 'time_scores', 'pukes', 'skips')}) != 1):
-            raise APIException(status_code=400, detail="Lists must have the same size")
-        
+        if (len({len(update_data.get(key) or getattr(team, key)) for key in
+                 ('times', 'question_scores', 'time_scores', 'pukes', 'skips')}) != 1):
+            raise APIException(
+                status_code=400, detail="Lists must have the same size")
+
         team = super().update(db, id=id, obj_in=obj_in)
         self.update_classification(db=db)
         db.refresh(team)
@@ -86,7 +93,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         team.pukes.append(obj_in.pukes)
         team.skips.append(obj_in.skips)
         team.times.append(time)
-            
+
         db.add(team)
         db.commit()
         self.update_classification(db=db)
@@ -108,7 +115,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
             team.card1 = checkpoint_id
         # skip pass
         if obj_in.card2:
-            if team.card2 != 0: 
+            if team.card2 != 0:
                 raise CardNotActiveException()
             if team.skips[checkpoint_id] <= 0:
                 raise CardEffectException()
@@ -120,7 +127,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
             if team.pukes[checkpoint_id] <= 0:
                 raise CardEffectException()
             team.card3 = checkpoint_id
-        
+
         db.add(team)
         db.commit()
         self.update_classification(db=db)
