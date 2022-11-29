@@ -16,7 +16,19 @@ function DetailsModal({visible, setVisible, team, checkpoints}) {
       open={visible}
       onClose={closeHandler}
       width="700px"
-      css={styles.container}
+      css={{
+        ...styles.container,
+        margin: '0.5rem', 
+        width: 'unset',
+        '& .nextui-modal-body' : {
+          px: 0,
+        },
+        '@xs': {
+          '& .nextui-modal-body' : {
+            px: 'inherit',
+          }
+        },
+       }}
     >
       <Modal.Header>
         <Text id="modal-title" color="var(--column-color)" size={18}>

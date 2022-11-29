@@ -5,6 +5,7 @@ import { EditIcon } from "../Icons/EditIcon";
 import EditLine from "./EditLine";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { color } from "d3";
 
 function EditDetails({visible, setVisible, team, checkpoints}) {
 
@@ -27,7 +28,19 @@ function EditDetails({visible, setVisible, team, checkpoints}) {
       open={visible}
       onClose={closeHandler}
       width="700px"
-      css={styles.modal}
+      css={{
+        ...styles.modal, 
+        margin: '0.5rem', 
+        width: 'unset',
+        '& .nextui-modal-body' : {
+          px: 0,
+        },
+        '@xs': {
+          '& .nextui-modal-body' : {
+            px: 'inherit',
+          }
+        },
+      }}
     >
       <Modal.Header>
         <Text id="modal-title" color="var(--column-color)" size={18}>
@@ -109,7 +122,7 @@ function EditDetails({visible, setVisible, team, checkpoints}) {
           </Text>
         </Row>
         {checkpoints.map((checkpoint) => (
-          <EditLine checkpoint={checkpoint} score={team.time_scores[checkpoint.id]} />
+          <EditLine checkpoint={checkpoint} team={team} />
         ))}
       </Modal.Body>
       <Modal.Footer>

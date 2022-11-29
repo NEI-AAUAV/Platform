@@ -42,11 +42,6 @@ function StaffModal({visible, setVisible}) {
         marginLeft: "20px",
         marginRight: "20px",
         backgroundColor: "var(--background-modal)",
-        "@media (min-width: 320px)": {
-          width: "80%",
-          marginLeft: "10%",
-          marginRight: "10%",
-        },
         "@media (min-width: 481px)": {
           width: "90%",
         },
