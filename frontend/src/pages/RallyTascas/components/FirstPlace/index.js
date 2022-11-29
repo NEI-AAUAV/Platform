@@ -4,9 +4,10 @@ import DetailsModal from "../Details/DetailsModal";
 import { suffix_for_ordinal } from "../LeaderBoard"
 
 
-function FirstPlace({team, mobile, checkpoint}) {
+function FirstPlace({team, mobile, checkpoints}) {
   const [visibleDetails, setVisibleDetails] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState(null);
+  const checkpoint = checkpoints.find(c => c.id === team.times?.length);
 
   const detailsModalHandler = () => {
     setVisibleDetails(true);
@@ -53,7 +54,8 @@ function FirstPlace({team, mobile, checkpoint}) {
         <DetailsModal
           visible={visibleDetails}
           setVisible={setVisibleDetails}
-          selectedTeam={selectedTeam}
+          checkpoints={checkpoints}
+          team={selectedTeam}
         />
       )}
     </div>

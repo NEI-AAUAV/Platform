@@ -38,7 +38,7 @@ const RallyTascas = () => {
 
   useEffect(() => {
     function handleResize() {
-      setMobile(window.innerWidth < 600)
+      setMobile(window.innerWidth < 650)
     }
     handleResize();
     window.addEventListener('resize', handleResize);

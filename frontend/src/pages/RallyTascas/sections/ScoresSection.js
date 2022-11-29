@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button, Col, Row, Table, Tooltip } from "@nextui-org/react";
 import { IconButton } from "../components/Customized";
 import { EyeIcon } from "../components/Icons/EyeIcon";
@@ -9,6 +9,8 @@ import StaffModal from "../components/StaffModal/StaffModal";
 import "./ScoresSection.css";
 import FirstPlace from "../components/FirstPlace";
 import { suffix_for_ordinal } from "../components/LeaderBoard"
+
+import { useRallyAuth } from "stores/useRallyAuth";
 
 const columns = [
   {
@@ -88,30 +90,40 @@ const checkpoints = [
 const teams = [
   {
     name: "Equipa 1",
+    question_scores: [false, false, false],
+    time_scores: [360, 15, 0],
     times: ["2022-11-30T19:15:00", "2022-11-30T19:30:00", "2022-11-30T19:33:00"],
     total: 15,
-    classification: 2,
-  },
-  {
-    name: "Equipa 2",
-    times: ["2022-11-30T19:26:00", "2022-11-30T19:56:00", "2022-11-30T20:10:00"],
-    total: 13,
     classification: 1,
   },
   {
+    name: "Equipa 2",
+    question_scores: [true, false, false],
+    time_scores: [360, 15, 0],
+    times: ["2022-11-30T19:26:00", "2022-11-30T19:56:00", "2022-11-30T20:10:00"],
+    total: 13,
+    classification: 2,
+  },
+  {
     name: "Equipa 3",
+    question_scores: [true, true],
+    time_scores: [0, 20],
     times: ["2022-11-30T19:40:00", "2022-11-30T20:00:00"],
     total: 3,
     classification: 3,
   },
   {
     name: "Equipa 4",
+    question_scores: [false],
+    time_scores: [180],
     times: ["2022-11-30T20:05:00"],
     total: -12,
     classification: 5,
   },
   {
     name: "Equipa 5",
+    question_scores: [],
+    time_scores: [],
     times: [],
     total: 0,
     classification: 4,
@@ -124,28 +136,31 @@ function InfoTable() {
   const [editDetails, setEditDetails] = React.useState(false);
   const [staffModal, setStaffModal] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState(null);
+
+  const { isStaff, isAdmin } = useRallyAuth(state => state);
+
   const detailsModalHandler = () => {
     setVisibleDetails(true);
   };
 
   useEffect(() => {
     function handleResize() {
-      setMobile(window.innerWidth < 600)
+      setMobile(window.innerWidth < 650)
     }
     handleResize();
     window.addEventListener('resize', handleResize);
     return (() => {
       window.removeEventListener('resize', handleResize)
     });
-  })
+  }, [])
 
-  /* const editModalHandler = () => {
+  const editModalHandler = () => {
     setEditDetails(true);
   };
 
   const staffModalHandler = () => {
     setStaffModal(true);
-  }; */
+  };
 
   const renderCell = (team, columnKey) => {
     const cellValue = team[columnKey];
@@ -165,78 +180,80 @@ function InfoTable() {
 
       case "icons":
         return (
-          <>
-            <Col>
-              <Button
-                onClick={() => {
-                  setSelectedTeam(team);
-                  detailsModalHandler();
-                }}
-                className="btn-icon btn-round"
-                size="sm"
-                css={{
-                  backgroundColor: "#ed7f38",
-                  color: "black",
-                  fontWeight: "bold",
-                  padding: "0",
-                  margin: "0",
-                  //active and hover background color red
-                  "&:hover": {
-                    backgroundColor: "#FF4646",
-                  },
-                }}
-              >
-                Ver Equipa
-              </Button>
-            </Col>
-          </>
-        );
-
-      /* case "icons":
-        return (
           <Row justify="center" align="center">
-            <Col css={{ d: "flex" }}>
-              <Tooltip content="Details">
-                <IconButton
-                  onClick={() => {
-                    setSelectedTeam(team);
-                    detailsModalHandler();
-                  }}
-                >
-                  <EyeIcon size={20} fill="#FFFFFF" />
-                </IconButton>
-              </Tooltip>
-            </Col>
-            <Col css={{ d: "flex" }}>
-              <Tooltip content="Edit Team">
-                <IconButton>
-                  <EditIcon
-                    size={20}
-                    fill="#FFFFFF"
+            <Col css={{ d: "flex", m: 10 }}>
+              {
+                mobile ?
+                  <Tooltip content="Details">
+                    <IconButton
+                      onClick={() => {
+                        setSelectedTeam(team);
+                        detailsModalHandler();
+                      }}
+                    >
+                      <EyeIcon size={20} fill="#FFFFFF" />
+                    </IconButton>
+                  </Tooltip>
+                  :
+                  <Button
                     onClick={() => {
                       setSelectedTeam(team);
-                      editModalHandler();
+                      detailsModalHandler();
                     }}
-                  />
-                </IconButton>
-              </Tooltip>
-            </Col>
-            <Col css={{ d: "flex" }}>
-              <Tooltip content="Staff Modal">
-                <IconButton>
-                  <EditIcon
-                    size={20}
-                    fill="#FFFFFF"
-                    onClick={() => {
-                      setSelectedTeam(team);
-                      staffModalHandler();
+                    className="btn-icon btn-round"
+                    size="sm"
+                    css={{
+                      backgroundColor: "#ed7f38",
+                      color: "black",
+                      fontWeight: "bold",
+                      padding: "0",
+                      margin: "0",
+                      //  active and hover background color red
+                      "&:hover": {
+                        backgroundColor: "#FF4646",
+                      },
                     }}
-                  />
-                </IconButton>
-              </Tooltip>
+                  >
+                    Ver Equipa
+                  </Button>
+              }
             </Col>
+            {
+              !!isAdmin &&
+              <Col css={{ d: "flex", m: 10 }}>
+                <Tooltip content="Edit Team">
+                  <IconButton>
+                    <EditIcon
+                      size={20}
+                      fill="#FFFFFF"
+                      onClick={() => {
+                        setSelectedTeam(team);
+                        editModalHandler();
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </Col>
+            }
+            {
+              !!isStaff &&
+              <Col css={{ d: "flex", m: 10 }}>
+                <Tooltip content="Staff Modal">
+                  <IconButton>
+                    <EditIcon
+                      size={20}
+                      fill="#FFFFFF"
+                      onClick={() => {
+                        setSelectedTeam(team);
+                        staffModalHandler();
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </Col>
+            }
           </Row>
-        ); */
+        );
       default:
         return cellValue;
     }
@@ -247,7 +264,7 @@ function InfoTable() {
       <FirstPlace
         team={teams[0]}
         mobile={mobile}
-        checkpoint={checkpoints.find(c => c.id === teams[0].times?.length)}
+        checkpoints={checkpoints}
       />
       <Table
         bordered
@@ -278,9 +295,9 @@ function InfoTable() {
                 color: "#ed7f38",
                 fontWeight: "bold",
                 fontSize: "1rem",
-                width: column.key === 'classification'
+                width: column.key === 'classification' || (column.key === 'icons' && !mobile)
                   ? "10%"
-                  : `calc(90% / ${columns.length - 1})`,
+                  : `calc(80% / ${columns.length - 1})`,
               }}
             >
               {column.label}
@@ -296,9 +313,8 @@ function InfoTable() {
             transform: "translateY(-20px)",
           }}
         >
-          {(team) => {
-            console.log(team)
-            return <Table.Row
+          {(team) => (
+            <Table.Row
               key={team.name}
               css={{
                 color: "var(--column-color)",
@@ -312,9 +328,9 @@ function InfoTable() {
               {(columnKey) => (
                 <Table.Cell
                   css={{
-                    width: columnKey === 'classification'
+                    width: columnKey === 'classification' || (columnKey === 'icons' && !mobile)
                       ? "10%"
-                      : `calc(90% / ${columns.length - 1})`,
+                      : `calc(80% / ${columns.length - 1})`,
                     borderLeft: columnKey === columns.at(0).key
                       ? "1px solid #ed7f38"
                       : "none",
@@ -340,14 +356,15 @@ function InfoTable() {
                 </Table.Cell>
               )}
             </Table.Row>
-          }}
+          )}
         </Table.Body>
       </Table>
       {visibleDetails && (
         <DetailsModal
           visible={visibleDetails}
           setVisible={setVisibleDetails}
-          selectedTeam={selectedTeam}
+          team={selectedTeam}
+          checkpoints={checkpoints}
         />
       )}
 
@@ -355,7 +372,8 @@ function InfoTable() {
         <EditDetails
           visible={editDetails}
           setVisible={setEditDetails}
-          selectedTeam={selectedTeam}
+          team={selectedTeam}
+          checkpoints={checkpoints}
         />
       )}
 
@@ -363,7 +381,8 @@ function InfoTable() {
         <StaffModal
           visible={staffModal}
           setVisible={setStaffModal}
-          selectedTeam={selectedTeam}
+          team={selectedTeam}
+          checkpoints={checkpoints}
         />
       )}
     </>

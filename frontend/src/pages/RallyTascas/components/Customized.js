@@ -25,7 +25,7 @@ export const TabButton = ({ active, login, children, ...props }) => {
     css={{
       minWidth: 135,
       fontWeight: 'bold',
-      margin: '1rem',
+      margin: '0.5rem 1rem',
       border: '$space$1 solid transparent',
       background: active ? color : 'transparent',
       color: active ? 'white' : color,
