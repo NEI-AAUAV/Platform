@@ -5,7 +5,7 @@ import { IconButton } from "../Customized";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 
-function EditLine(props) {
+function EditLine({checkpoint, score}) {
   const [isEditing, setIsEditing] = useState(false);
 
   const handlerEditView = () => {
@@ -13,9 +13,9 @@ function EditLine(props) {
   };
 
   return (
-    <Row key={props.checkpoint.id} css={styles.container}>
+    <Row key={checkpoint.id} css={styles.container}>
       <Text color="var(--column-color)" css={{ fontWeight: "bold" }} size={18}>
-        P{props.checkpoint.id} - {props.checkpoint.name}
+        P{checkpoint.id} - {checkpoint.name}
       </Text>
       <div style={styles.rightSide}>
         {!isEditing ? (
@@ -28,7 +28,7 @@ function EditLine(props) {
                 textAlign: "left",
               }}
             >
-              {props.checkpoint.score} Pontos
+              {score} Pontos
             </Text>
             <IconButton
               style={{ marginBottom: "1rem", marginLeft: "1rem" }}
@@ -45,7 +45,7 @@ function EditLine(props) {
                 fullWidth
                 size="lg"
                 placeholder="Pontos"
-                value={props.checkpoint.score}
+                value={score}
                 css={styles.input}
               />
               <div>

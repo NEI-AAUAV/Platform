@@ -9,19 +9,19 @@
         background-size: 1500px 100vh
     }
 
-    5% {
+    1% {
         background-size: 0
     }
 
-    40% {
+    4% {
         background-size: 1500px 100vh
     }
 
-    45% {
+    6% {
         background-size: 0
     }
 
-    100% {
+    12% {
         background-size: 1500px 100vh
     }
 }
@@ -29,7 +29,7 @@
 
 .flicker-bg {
     background-size: 0;
-    animation: flicker 2s linear 1s 1 normal forwards;
+    animation: flicker 12s linear -11.5s infinite forwards;
 }
 
 @font-face {
@@ -40,10 +40,12 @@
 @media screen and (min-width: 600px) {
     h2.rally-header {
         font-size: 2.8rem !important;
+        margin-left: 1rem;
     }
 
     h5.rally-small-header {
         font-size: 1.25rem !important;
+        margin-left: 1rem;
     }
 }
 

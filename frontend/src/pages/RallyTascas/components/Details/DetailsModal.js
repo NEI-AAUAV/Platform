@@ -1,11 +1,11 @@
 import React from "react";
 import { Modal, Text, Button, Row } from "@nextui-org/react";
 
-function DetailsModal(props) {
-  let visible = props.visible;
+function DetailsModal({visible, setVisible, team, checkpoints}) {
 
   const closeHandler = () => {
-    props.setVisible(false);
+    document.body.style.overflow = null;
+    setVisible(false);
   };
 
   return (
@@ -23,7 +23,7 @@ function DetailsModal(props) {
           Detalhes de
           <Text b color="var(--column-color)" size={18}>
             {" "}
-            {props.selectedTeam.teamName}
+            {team.name}
           </Text>
         </Text>
       </Modal.Header>
@@ -37,7 +37,7 @@ function DetailsModal(props) {
             Nome da Equipa:
           </Text>
           <Text color="var(--column-color)" size={18}>
-            {props.selectedTeam.teamName}
+            {team.name}
           </Text>
         </Row>
         <Row css={styles.row}>
@@ -49,7 +49,7 @@ function DetailsModal(props) {
             Pontuação
           </Text>
           <Text color="var(--column-color)" size={18}>
-            {props.selectedTeam.total}
+            {team.total}
           </Text>
         </Row>
         <Row>
@@ -57,7 +57,7 @@ function DetailsModal(props) {
             Checkpoints
           </Text>
         </Row>
-        {props.selectedTeam.scores.map((checkpoint) => (
+        {checkpoints?.sort((a, b) => a.id - b.id).map((checkpoint) => (
           <Row key={checkpoint.id} css={styles.rowPoints}>
             <Text
               color="var(--column-color)"
@@ -67,7 +67,7 @@ function DetailsModal(props) {
               P{checkpoint.id} - {checkpoint.name}
             </Text>
             <Text color="var(--column-color)" size={18}>
-              {checkpoint.score} Pontos
+              {team.time_scores[checkpoint.id]} Pontos
             </Text>
           </Row>
         ))}
