@@ -89,7 +89,7 @@ const checkpoints = [
 
 const teams = [
   {
-    name: "Equipa 1",
+    name: "Não Tavas Capaz nao vinhas",
     question_scores: [false, false, false],
     time_scores: [360, 15, 0],
     times: ["2022-11-30T19:15:00", "2022-11-30T19:30:00", "2022-11-30T19:33:00"],
@@ -295,9 +295,9 @@ function InfoTable() {
                 color: "#ed7f38",
                 fontWeight: "bold",
                 fontSize: "1rem",
-                width: column.key === 'classification' || (column.key === 'icons' && !mobile)
+                width: column.key === 'classification' || (column.key === 'icons' && mobile)
                   ? "10%"
-                  : `calc(80% / ${columns.length - 1})`,
+                  : 'max-content',
               }}
             >
               {column.label}
@@ -328,9 +328,9 @@ function InfoTable() {
               {(columnKey) => (
                 <Table.Cell
                   css={{
-                    width: columnKey === 'classification' || (columnKey === 'icons' && !mobile)
+                    width: columnKey === 'classification' || (columnKey === 'icons' && mobile)
                       ? "10%"
-                      : `calc(80% / ${columns.length - 1})`,
+                      : 'max-content',
                     borderLeft: columnKey === columns.at(0).key
                       ? "1px solid #ed7f38"
                       : "none",

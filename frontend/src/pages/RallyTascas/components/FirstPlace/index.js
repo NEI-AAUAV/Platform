@@ -1,10 +1,12 @@
-import { Button, Col, Row } from "@nextui-org/react";
+import { Button, Col, Row, Tooltip } from "@nextui-org/react";
 import React from "react";
 import DetailsModal from "../Details/DetailsModal";
 import { suffix_for_ordinal } from "../LeaderBoard"
+import { EyeIcon } from "../Icons/EyeIcon";
+import { IconButton } from '../Customized'
 
 
-function FirstPlace({team, mobile, checkpoints}) {
+function FirstPlace({ team, mobile, checkpoints }) {
   const [visibleDetails, setVisibleDetails] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState(null);
   const checkpoint = checkpoints.find(c => c.id === team.times?.length);
@@ -15,8 +17,8 @@ function FirstPlace({team, mobile, checkpoints}) {
 
   return (
     <div style={{overflowY: 'auto'}}>
-      <Row css={{...styles.container, py: "0.625rem", px: mobile ? "1rem" : "calc(30px + 1rem)", textAlign: 'left', flexDirection: 'row', minWidth: 375}}>
-        <Col span={5}>{team.classification}{suffix_for_ordinal(team.classification)}</Col>
+      <Row css={{d: 'table-layout', ...styles.container, py: "0.625rem", px: mobile ? "1rem" : "calc(30px + 1rem)", textAlign: 'left', flexDirection: 'row', minWidth: 436}}>
+        <Col span={mobile ? 2 : 3.5}>{team.classification}{suffix_for_ordinal(team.classification)}</Col>
         <Col>{team.name}</Col>
         {
           !mobile &&
@@ -24,30 +26,46 @@ function FirstPlace({team, mobile, checkpoints}) {
             css={{
               marginTop: "0.8rem",
             }}
+            span={6}
           >
             <p>{checkpoint ? `${checkpoint.id} - ${checkpoint.name}` : '---'}</p>
             <p>{team.times.at(-1)?.split('T').at(-1) || '---'}</p>
           </Col>
         }
-        <Col>{team.total} pts</Col>
+        <Col span={mobile ? 2.5 : 4}>{team.total} pts</Col>
         <Col
           css={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
+          span={mobile ? 2.5 : 7}
         >
-          <Button
-            onClick={() => {
-              setSelectedTeam(team);
-              detailsModalHandler();
-            }}
-            className="btn-icon btn-round"
-            size="sm"
-            css={{...styles.button, marginRight: 'auto'}}
-          >
-            Ver Equipa
-          </Button>
+          {
+            mobile ?
+              <Tooltip content="Details">
+                <IconButton
+                  onClick={() => {
+                    setSelectedTeam(team);
+                    detailsModalHandler();
+                  }}
+                >
+                  <EyeIcon size={20} fill="#FFFFFF" />
+                </IconButton>
+              </Tooltip>
+              :
+              <Button
+                onClick={() => {
+                  setSelectedTeam(team);
+                  detailsModalHandler();
+                }}
+                className="btn-icon btn-round"
+                size="sm"
+                css={{ ...styles.button, marginRight: 'auto' }}
+              >
+                Ver Equipa
+              </Button>
+          }
         </Col>
       </Row>
       {visibleDetails && (
