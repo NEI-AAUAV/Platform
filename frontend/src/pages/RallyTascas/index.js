@@ -70,7 +70,7 @@ const RallyTascas = () => {
               {!token ?
                 <span onClick={() => setActiveTab(TAB.LOGIN)}>Log in</span>
                 :
-                <span onClick={() => { logout(); setActiveTab(TAB.SCORES) }}>Log out</span>
+                <span onClick={() => { logout(); setActiveTab(TAB.LOGIN) }}>Log out</span>
               }
               {!!name && <span className="name">&nbsp;{name}</span>}
             </p>
@@ -101,7 +101,7 @@ const RallyTascas = () => {
                       !token ?
                         <TabButton active login onPress={() => setActiveTab(TAB.LOGIN)} size="sm">Log in</TabButton>
                         :
-                        <TabButton active login onPress={() => { logout(); setActiveTab(TAB.SCORES) }} size="sm">Log out</TabButton>
+                        <TabButton active login onPress={() => { logout(); setActiveTab(TAB.LOGIN) }} size="sm">Log out</TabButton>
                     }
                   </div>
                 }
