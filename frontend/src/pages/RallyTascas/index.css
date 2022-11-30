@@ -14,7 +14,8 @@
     }
 
     4% {
-        background-size: 1500px 100vh
+        background-size: 1500px 100vh;
+        filter: brightness(0.3);
     }
 
     6% {
@@ -22,7 +23,8 @@
     }
 
     12% {
-        background-size: 1500px 100vh
+        background-size: 1500px 100vh;
+        filter: brightness(1);
     }
 }
 
@@ -34,7 +36,8 @@
 
 @font-face {
     font-family: 'Akshar';
-    src: url(assets/fonts/Akshar/Akshar-Regular.ttf) format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+    src: url(assets/fonts/Akshar/Akshar-Regular.ttf) format('truetype');
+    /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
 }
 
 @media screen and (min-width: 650px) {
@@ -69,21 +72,17 @@
     float: left;
     width: 100%;
 }
+
 .rally-tascas-column {
-    display: inline-grid;
+    display: flex;
+    flex-direction: column;
 }
 
-.rally-tascas-column:after {
-    content: "";
-    display: inline-block;
-    clear: both;
-}
 
 @media screen and (max-width: 650px) {
     .rally-tascas-row {
         width: 100%;
         display: inline-block;
-        margin-bottom: 20px;
     }
 }
 
@@ -93,7 +92,7 @@
     cursor: pointer;
 }
 
-.rally-small-login > *:not(.name) {
+.rally-small-login>*:not(.name) {
     color: #FC8551;
     text-decoration: underline;
     cursor: pointer;
@@ -102,9 +101,10 @@
 
 .rally-card-team-name {
     background-color: inherit;
-    color:white;
+    color: white;
     overflow: hidden !important;
-    width: 350px;
+    max-width: 320px;
+    width: 100%;
     border: 2px solid #FC8551;
     font-style: normal;
     font-weight: 400;
@@ -121,17 +121,15 @@
     display: inline-block;
     height: 100% !important;
     width: 300px !important;
-    color:white;
+    color: white;
     font-weight: 400;
     font-size: 20px;
     line-height: 35px;
     overflow: hidden !important;
-    margin-top: 1.5rem;
-    margin-bottom: -1rem;
 }
+
 .rally-card-team-checkpoint {
     background-color: inherit;
-    height: 250px !important;
     width: 270px !important;
     font-style: normal;
     font-weight: 400;
@@ -139,13 +137,11 @@
     line-height: 35px;
     text-transform: uppercase !important;
     color: #FC8551;
-    margin-bottom: -1rem;
 }
 
 .rally-card-team-points {
     background-color: inherit;
     width: 256px;
-    height: 146px;
     font-style: normal;
     font-weight: 400;
     font-size: 32px;
@@ -155,11 +151,9 @@
 
 .rally-card-team-image {
     background-color: inherit;
-    height: 350px;
-    width:350px;
+    max-width: 320px;
+    width: 100%;
     border: 2px solid #FC8551 !important;
-    margin-top: 2rem;
-    margin-bottom: -5rem;
 }
 
 @media screen and (min-width: 650px) {

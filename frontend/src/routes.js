@@ -41,7 +41,7 @@ const routes = [
     path: "/",
     element: <SimpleLayout />,
     children: [
-      { path: "/rallytascas", element: <RallyTascas /> },
+      { path: "/breakthebars", element: <RallyTascas /> },
     ],
   },
   {

@@ -9,6 +9,9 @@ import { IconButton } from '../Customized'
 function FirstPlace({ team, mobile, checkpoints }) {
   const [visibleDetails, setVisibleDetails] = React.useState(false);
   const [selectedTeam, setSelectedTeam] = React.useState(null);
+
+  if (!team) return null;
+
   const checkpoint = checkpoints.find(c => c.id === team.times?.length);
 
   const detailsModalHandler = () => {

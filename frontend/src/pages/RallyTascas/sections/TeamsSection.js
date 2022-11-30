@@ -1,95 +1,50 @@
+import React, { useEffect, useState } from "react";
 import InfoTeamSection from "./InfoTeamSection";
 import { Card, Col, Text } from "@nextui-org/react";
 import { Button } from '@nextui-org/react';
-import React, { useState } from "react";
-
+import service from 'services/RallyTascasService';
 
 
 const TeamCard = () => {
-  const images = [
-    {
-      img: './images/IconsTeamsSection/icon1.png',
-    },
-    {
-      img: "./images/IconsTeamsSection/icon2.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon3.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon4.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon5.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon6.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon7.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon8.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon9.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon10.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon11.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon12.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon13.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon14.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon15.png",
-    },
-    {
-      img: "./images/IconsTeamsSection/icon16.png",
-    },
-  ];
+  const [showTeam, setShowTeam] = useState(null);
+  const [teams, setTeams] = useState([]);
 
-  const [show, setShow] = useState(false);
+  useEffect(() => {
+    service.getTeams()
+      .then((data) => setTeams(data));
+  }, [])
 
-  if (show)
-  return (
-    <InfoTeamSection />
-  );
+  if (showTeam)
+    return (
+      <InfoTeamSection team={showTeam} />
+    );
 
   return (
     <>
-      {images.map((item, index) => (
-        <Card key={index} css={{ bg: "transparent", borderColor: "#FC8551", w: 300, marginBottom: 20 }}>
+      {teams.map((team, index) => (
+        <Card key={index} css={{ bg: "transparent", borderColor: "#FC8551", w: 150, marginBottom: 20, '@xs': { w: 200 } }}>
 
           <Card.Image
-            src={item.img}
-            height="50%"
+            src={`./images/IconsTeamsSection/icon${team.id % 16 + 1}.png`}
+            css={{h: 200}}
             objectFit="contain"
             alt="Card image background"
           />
-          <Card.Footer css={{ fontFamily: "Aldrich", zIndex: 1 }}>
+          <Card.Footer css={{ fontFamily: "Aldrich", zIndex: 1, flex: '1 0 auto', alignItems: 'flex-end', pt: 0 }}>
             <Col>
-              <Text h3 color="#FFFFFF" css={{ textAlign: 'center' }} >
-                Team Name
+              <Text h4 color="#FFFFFF" css={{ textAlign: 'center' }} >
+                {team.name}
               </Text>
               <Button
                 auto
                 css={{
-                  borderRadius: '$xs', // radii.xs
                   border: '$space$1 solid transparent',
                   background: '#FC8551', // colors.pink800
-                  color: 'black',
-                  fontSize: 25,
+                  color: '#1d1d1d',
+                  fontSize: '1.1rem',
+                  height: '2.1rem',
                   textAlign: "center",
-                  padding: 5,
+                  padding: 0,
                   width: "100%",
                   borderRadius: '12px',
                   boxShadow: '$md', // shadows.md
@@ -97,8 +52,7 @@ const TeamCard = () => {
                     background: '#FC8551bb',
                   },
                 }}
-
-                onPress={() => {setShow(true)}}
+                onPress={() => { setShowTeam(team) }}
               >
                 View Team
               </Button>
@@ -114,7 +68,7 @@ const TeamCard = () => {
 
 const TeamsSection = () => {
   return (
-    <div className="d-flex flex-wrap" style={{ justifyContent: 'space-evenly' }}>
+    <div className="d-flex flex-wrap mt-sm-5 mt-2" style={{ justifyContent: 'space-evenly' }}>
       <TeamCard />
     </div>
   );

@@ -11,6 +11,7 @@ import FirstPlace from "../components/FirstPlace";
 import { suffix_for_ordinal } from "../components/LeaderBoard"
 
 import { useRallyAuth } from "stores/useRallyAuth";
+import service from 'services/RallyTascasService';
 
 const columns = [
   {
@@ -36,111 +37,10 @@ const columns = [
 ];
 
 
-const checkpoints = [
-  {
-    name: "Tribunal",
-    shot_name: "shot 1",
-    description: "Uma breve descrição qualquer.",
-    id: 1
-  },
-  {
-    name: "Receção",
-    shot_name: "shot 2",
-    description: "Uma breve descrição qualquer.",
-    id: 2
-  },
-  {
-    name: "Cela",
-    shot_name: "shot 3",
-    description: "Uma breve descrição qualquer.",
-    id: 3
-  },
-  {
-    name: "Pátio",
-    shot_name: "shot 4",
-    description: "Uma breve descrição qualquer.",
-    id: 4
-  },
-  {
-    name: "Cantina",
-    shot_name: "shot 5",
-    description: "Uma breve descrição qualquer.",
-    id: 5
-  },
-  {
-    name: "WC",
-    shot_name: "shot 6",
-    description: "Uma breve descrição qualquer.",
-    id: 6
-  },
-  {
-    name: "Ginásio",
-    shot_name: "shot 7",
-    description: "Uma breve descrição qualquer.",
-    id: 7
-  },
-  {
-    name: "Enfermaria",
-    shot_name: "shot 8",
-    description: "Uma breve descrição qualquer.",
-    id: 8
-  }
-]
-
-const teams = [
-  {
-    name: "Não Tavas Capaz nao vinhas",
-    question_scores: [false, false, false],
-    time_scores: [360, 15, 0],
-    times: ["2022-11-30T19:15:00", "2022-11-30T19:30:00", "2022-11-30T19:33:00"],
-    pukes: [0, 0, 1],  
-    skips: [0, 1, 0],  
-    total: 15,
-    classification: 1,
-  },
-  {
-    name: "Equipa 2",
-    question_scores: [true, false, false],
-    time_scores: [360, 15, 0],
-    times: ["2022-11-30T19:26:00", "2022-11-30T19:56:00", "2022-11-30T20:10:00"],
-    pukes: [0, 0, 0],  
-    skips: [0, 2, 1],  
-    total: 13,
-    classification: 2,
-  },
-  {
-    name: "Equipa 3",
-    question_scores: [true, true],
-    time_scores: [0, 20],
-    times: ["2022-11-30T19:40:00", "2022-11-30T20:00:00"],
-    pukes: [0, 0, 1],  
-    skips: [0, 0],  
-    total: 3,
-    classification: 3,
-  },
-  {
-    name: "Equipa 4",
-    question_scores: [false],
-    time_scores: [180],
-    times: ["2022-11-30T20:05:00"],
-    pukes: [2],   
-    skips: [1],   
-    total: -12,
-    classification: 5,
-  },
-  {
-    name: "Equipa 5",
-    question_scores: [],
-    time_scores: [],
-    times: [],
-    pukes: [],
-    skips: [],
-    total: 0,
-    classification: 4,
-  },
-];
-
 function InfoTable() {
+  const [checkpoints, setCheckpoints] = useState([]);
+  const [teams, setTeams] = useState([]);
+  const [myTeam, setMyTeam] = useState(null);
   const [mobile, setMobile] = useState(false);
   const [visibleDetails, setVisibleDetails] = React.useState(false);
   const [editDetails, setEditDetails] = React.useState(false);
@@ -154,6 +54,15 @@ function InfoTable() {
   };
 
   useEffect(() => {
+    service.getCheckpoints()
+      .then((data) => setCheckpoints(data))
+    
+    service.getTeams()
+      .then((data) => setTeams(data))
+
+    service.getOwnTeam()
+      .then((data) => setMyTeam(data))
+
     function handleResize() {
       setMobile(window.innerWidth < 650)
     }
@@ -272,7 +181,7 @@ function InfoTable() {
   return (
     <>
       <FirstPlace
-        team={teams[0]}
+        team={myTeam}
         mobile={mobile}
         checkpoints={checkpoints}
       />
