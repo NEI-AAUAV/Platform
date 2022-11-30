@@ -79,7 +79,6 @@ const Checkpoint = (props) => {
 }
 
 const PreviousCheckpoints = (props) => {
-    console.log(props.checkpoints)
     const checkpointItems = props.checkpoints.map((checkpoint, i) =>
         <Checkpoint key={i} {...checkpoint} />
     );
@@ -92,7 +91,7 @@ const PreviousCheckpoints = (props) => {
             <div className="d-flex flex-column">
                 {checkpointItems.length ? checkpointItems
                     :
-                    <div style={{textAlign: 'left', marginTop: '0.5rem', fontSize: '1.4rem', fontFamily: 'Akshar', fontWeight: 'bold'}}>
+                    <div style={{ textAlign: 'left', marginTop: '0.5rem', fontSize: '1.4rem', fontFamily: 'Akshar', fontWeight: 'bold' }}>
                         <p>Não passaste nenhum checkpoint.</p><p>Vai beber!</p>
                     </div>
                 }
@@ -108,29 +107,45 @@ const MapSection = () => {
 
     // Get API data when component renders
     useEffect(() => {
-        service.getCurrentCheckpoint().then((data) => setNextData(data));
-        Promise.all([
-            service.getOwnTeam(),
-            service.getCheckpoints(),
-        ]).then(([team, checkpoints]) => {
-            let merged = [];
-            const len = Math.min(
-                team.times.length,
-                team.time_scores.length,
-                team.question_scores.length,
-                checkpoints.length
-            );
-            for (let i = 0; i < len; i++) {
-                const checkpoint = checkpoints[i];
-                checkpoint.took = team.time_scores[i];
-                checkpoint.question = team.question_scores[i];
-                checkpoint.time = new Date(team.times[i]);
-                checkpoint.pukes = team.pukes[i] ?? 0;
-                checkpoint.skips = team.skips[i] ?? 0;
-                merged.push(checkpoint);
-            }
-            setPreviousCheckpoints(merged)
-        });
+        let loading = false;
+        const checkPointsPromise = service.getCheckpoints();
+
+        function fetchEverything() {
+            if (loading) return;
+
+            loading = true;
+
+            service.getCurrentCheckpoint().then((data) => setNextData(data));
+            Promise.all([
+                service.getOwnTeam(),
+                checkPointsPromise,
+            ]).then(async ([team, checkpoints]) => {
+                console.log(checkpoints);
+                let merged = [];
+                const len = Math.min(
+                    team.times.length,
+                    team.time_scores.length,
+                    team.question_scores.length,
+                    checkpoints.length
+                );
+                for (let i = 0; i < len; i++) {
+                    const checkpoint = checkpoints[i];
+                    checkpoint.took = team.time_scores[i];
+                    checkpoint.question = team.question_scores[i];
+                    checkpoint.time = new Date(team.times[i]);
+                    checkpoint.pukes = team.pukes[i] ?? 0;
+                    checkpoint.skips = team.skips[i] ?? 0;
+                    merged.push(checkpoint);
+                }
+                setPreviousCheckpoints(merged)
+            });
+
+            loading = false;
+        }
+
+        fetchEverything();
+
+        const intervalId = setInterval(fetchEverything, 60_000);
 
         function handleResize() {
             setMobile(window.innerWidth < 960)
@@ -139,11 +154,12 @@ const MapSection = () => {
         window.addEventListener('resize', handleResize);
         return (() => {
             window.removeEventListener('resize', handleResize)
+            clearInterval(intervalId);
         });
     }, []);
 
     return (
-        <div className="map-root-container justify-content-around row mt-sm-5 mt-2">
+        <div className="map-root-container justify-content-around row m-0 mt-sm-5 mt-2">
             <div className="col-12 col-md-4 px-3 mb-4">
                 <NextShot {...nextData} />
                 <NextCheckpointCard name={nextData.name} />
