@@ -42,4 +42,6 @@ jobs:
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run: |
+        echo $SECRET_KEY
+        echo $POSTGRES_PASSWORD
         docker-compose up -d
