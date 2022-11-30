@@ -143,7 +143,7 @@ const MapSection = () => {
     }, []);
 
     return (
-        <div className="map-root-container justify-content-around row mt-sm-5 mt-2">
+        <div className="map-root-container justify-content-around row m-0 mt-sm-5 mt-2">
             <div className="col-12 col-md-4 px-3 mb-4">
                 <NextShot {...nextData} />
                 <NextCheckpointCard name={nextData.name} />
