@@ -1,15 +1,13 @@
-from re import U
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel
 
 from typing import Optional
-from typing_extensions import Annotated
 
 from .users import UsersInDB
 
 
 class TeamColaboratorsBase(BaseModel):
-    colaborator_id: int
-    mandato: int
+    user_id: int
+    mandate: int
 
 
 class TeamColaboratorsCreate(TeamColaboratorsBase):
@@ -19,13 +17,13 @@ class TeamColaboratorsCreate(TeamColaboratorsBase):
 
 class TeamColaboratorsUpdate(TeamColaboratorsBase):
     """Properties to receive via API on creation."""
-    colaborator_id: Optional[int]
-    mandato: Optional[int]
+    user_id: Optional[int]
+    mandate: Optional[int]
 
 
 class TeamColaboratorsInDB(TeamColaboratorsBase):
     """Properties properties stored in DB."""
-    colaborator: UsersInDB
+    user: UsersInDB
 
     class Config:
         orm_mode = True

@@ -1,0 +1,172 @@
+@font-face {
+    font-family: 'Aldrich';
+    src: url(assets/fonts/Aldrich/Aldrich-Regular.ttf) format('truetype');
+    /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+@keyframes flicker {
+    0% {
+        background-size: 1500px 100vh
+    }
+
+    1% {
+        background-size: 0
+    }
+
+    4% {
+        background-size: 1500px 100vh;
+        filter: brightness(0.3);
+    }
+
+    6% {
+        background-size: 0
+    }
+
+    12% {
+        background-size: 1500px 100vh;
+        filter: brightness(1);
+    }
+}
+
+
+.flicker-bg {
+    background-size: 0;
+    animation: flicker 12s linear -11.5s infinite forwards;
+}
+
+@font-face {
+    font-family: 'Akshar';
+    src: url(assets/fonts/Akshar/Akshar-Regular.ttf) format('truetype');
+    /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+@media screen and (min-width: 650px) {
+    h2.rally-header {
+        font-size: 2.8rem !important;
+        margin-left: 1rem;
+    }
+
+    h5.rally-small-header {
+        font-size: 1.25rem !important;
+        margin-left: 1rem;
+    }
+}
+
+.rally-header {
+    font-family: 'Aldrich';
+    color: white;
+}
+
+.rally-small-header {
+    font-family: 'Aldrich';
+    color: #FC8551;
+    margin-bottom: 0;
+}
+
+.rally-login-help {
+    font-weight: bold;
+    color: #FF4646;
+}
+
+.rally-tascas-row {
+    float: left;
+    width: 100%;
+}
+
+.rally-tascas-column {
+    display: flex;
+    flex-direction: column;
+}
+
+
+@media screen and (max-width: 650px) {
+    .rally-tascas-row {
+        width: 100%;
+        display: inline-block;
+    }
+}
+
+.rally-close {
+    display: block;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.rally-small-login>*:not(.name) {
+    color: #FC8551;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.rally-card-team-name {
+    background-color: inherit;
+    color: white;
+    overflow: hidden !important;
+    max-width: 320px;
+    width: 100%;
+    border: 2px solid #FC8551;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 22px;
+    display: flex !important;
+    align-items: center;
+    text-align: center;
+}
+
+.rally-card-team-information {
+    border-radius: 10px;
+    background-color: inherit;
+    display: inline-block;
+    height: 100% !important;
+    width: 300px !important;
+    color: white;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 35px;
+    overflow: hidden !important;
+}
+
+.rally-card-team-checkpoint {
+    background-color: inherit;
+    width: 270px !important;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 35px;
+    text-transform: uppercase !important;
+    color: #FC8551;
+}
+
+.rally-card-team-points {
+    background-color: inherit;
+    width: 256px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 35px;
+    text-transform: uppercase;
+}
+
+.rally-card-team-image {
+    background-color: inherit;
+    max-width: 320px;
+    width: 100%;
+    border: 2px solid #FC8551 !important;
+}
+
+@media screen and (min-width: 650px) {
+    .rally-cards-empty {
+        font-size: 3rem !important;
+    }
+}
+
+.rally-cards-empty {
+    font-family: "Akshar";
+    color: white;
+    font-size: 2rem;
+    text-align: center;
+    margin-top: 7rem;
+    font-weight: bold;
+}

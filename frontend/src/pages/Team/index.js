@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 
 
 import Person from "./components/Person.js";
-import Tabs from "../../components/Tabs/index.js"
 import TextList from "../../components/TextList/index.js"
 import { Container, Row, Spinner } from 'react-bootstrap';
 import Typist from 'react-typist';
+
+import service from 'services/NEIService';
+import config from 'config/index'
 
 import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
@@ -19,7 +21,7 @@ const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT)
 const Team = () => {
     const [years, setYears] = useState([]);
 
-    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedYear, setSelectedYear] = useState(2022);
 
     const [people, setPeople] = useState();
     const [colaborators, setColaborators] = useState();
@@ -27,14 +29,15 @@ const Team = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(process.env.REACT_APP_API + "/team/mandates/")
-            .then(response => response.json())
-            .then((response) => {
-                var anos = response.data.map(year =>
-                    year.mandato
-                ).sort((a, b) => b - a);
-                setYears(anos);
-                setSelectedYear(anos[0]);
+        setLoading(true);
+        let anos = new Set();
+        service.getTeamMandates()
+            .then(response => {
+                for (var i = 0; i < response.length; i++) {
+                    anos.add(response[i].mandate)
+                }
+                setYears(Array.from(anos.values()).sort((a, b) => a - b).reverse());
+                setLoading(false);
             })
     }, [])
 
@@ -43,31 +46,60 @@ const Team = () => {
         setLoading(true);
 
         if (selectedYear != null) {
-            fetch(process.env.REACT_APP_API + "/team/?mandate=" + selectedYear)
-                .then(response => response.json())
-                .then(
-                    (response) => {
-                        var resp = response.data
 
-                        setPeople(resp.team.map((person, i) =>
-                            <Person
-                                img={process.env.REACT_APP_STATIC + person.header}
-                                name={person.name}
-                                description={person.role} linke={person.linkedIn}
-                                className="slideUpFade"
-                                style={{
-                                    animationDelay: animationBase + animationIncrement * i + "s",
-                                }}
-                            />
-                        ))
+            const params = {
+                mandate: selectedYear
+            }
 
-                        setColaborators(resp.colaborators.map(colab =>
-                            <TextList colSize={4} text={colab.name} />
-                        ));
+            let team = []
+            let colabs = []
+            setPeople(team)
+            setColaborators(colabs)
+            service.getTeamMandates({ ...params })
+                .then((response) => {
+                    for (var i = 0; i < response.length; i++) {
+                        if (response[i].mandate === selectedYear) {
+                            team.push({
+                                id: response[i].user.id,
+                                name: response[i].user.name,
+                                role: response[i].role.name,
+                                header: response[i].header,
+                                linkedIn: response[i].user.linkedin,
+                            })
+                        }
+                    }
+                    setPeople(team.map((person, i) =>
+                        <Person
+                            key={person.id}
+                            img={person.header}
+                            name={person.name}
+                            description={person.role} linke={person.linkedIn}
+                            className="slideUpFade"
+                            style={{
+                                animationDelay: animationBase + animationIncrement * i + "s",
+                            }}
+                        />
+                    )
+                    )
+                });
 
-                        setLoading(false);
-                    })
+            service.getTeamColaborators()
+                .then(response => {
+                    for (var i = 0; i < response.length; i++) {
+                        if (response[i].mandate === selectedYear) {
+                            colabs.push({
+                                id: response[i].user.id,
+                                name: response[i].user.name
+                            })
+                        }
+                    }
+                    setColaborators(colabs.map((person, i) =>
+                        <TextList colSize={4} text={person.name} />
+                    ));
+                });
         }
+        setLoading(false);
+
     }, [selectedYear])
 
     return (

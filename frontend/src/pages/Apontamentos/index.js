@@ -13,26 +13,28 @@ import Select from "components/Select";
 import Typist from 'react-typist';
 import categoryFilters from './filters';
 
+import service from 'services/NEIService';
+
 
 const customStyles = {
     menu: (provided) => ({
-      ...provided,
+        ...provided,
         backgroundColor: "var(--background)",
-        color:"var(--text-primary)"
+        color: "var(--text-primary)"
     }),
-  
+
     control: (provided) => ({
-    //   width: width
-    ...provided,
+        //   width: width
+        ...provided,
         backgroundColor: "var(--background)",
-        color:"var(--text-primary)"
+        color: "var(--text-primary)"
     }),
 
     placeholder: (provided, state) => ({
         ...provided,
         opacity: 1,
         color: "var(--text-primary)",
-      }),
+    }),
 
     option: (provided, state) => ({
         ...provided,
@@ -40,8 +42,8 @@ const customStyles = {
         //color: state.isSelected ? 'red' : 'blue',
         // padding: 20,
         backgroundColor: "var(--background)",
-        color:"var(--text-primary)"
-      }),
+        color: "var(--text-primary)"
+    }),
 
     singleValue: (provided, state) => {
         const opacity = state.isDisabled ? 0.5 : 1;
@@ -49,14 +51,13 @@ const customStyles = {
         const color = "var(--text-primary)";
         return { ...provided, opacity, transition, color };
     },
- 
-  }
+
+}
 
 const Apontamentos = () => {
 
     // Grid view selected note
     const [selectedNote, setSelectedNote] = useState(null);
-
 
     // useStates and other variables
     const [data, setData] = useState([]);
@@ -77,7 +78,6 @@ const Apontamentos = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [selPage, setSelPage] = useState(1);
 
-
     const [shownYear, setShownYear] = useState();
     const [shownSubj, setShownSubj] = useState();
     const [shownAuth, setShownAuth] = useState();
@@ -92,7 +92,6 @@ const Apontamentos = () => {
         'text': ""
     })
 
-
     const fetchPage = (p_num) => {
         setSelPage(p_num);
     }
@@ -105,40 +104,31 @@ const Apontamentos = () => {
         // 2. Check if there are filtering parameters on URL
         // Get parameters and apply to filters
         const urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.get('year'))
+        if (urlParams.get('year'))
             setSelYear(urlParams.get('year'));
-        if(urlParams.get('subject'))
+        if (urlParams.get('subject'))
             setSelectedSubject(urlParams.get('subject'));
-        if(urlParams.get('author'))
+        if (urlParams.get('author'))
             setSelStudent(urlParams.get('author'));
-        if(urlParams.get('teacher'))
+        if (urlParams.get('teacher'))
             setSelTeacher(urlParams.get('teacher'));
         let active = [];
         urlParams.getAll('category').forEach((categoryParam) => {
-            let find = categoryFilters.find(f => f.db==categoryParam);
-            if (find) 
+            let find = categoryFilters.find(f => f.db == categoryParam);
+            if (find)
                 active.push(find.filter);
         });
-        if (active.length>0) {
+        if (active.length > 0) {
             setActiveFilters(active);
         }
         // Remove data from URL
         var url = document.location.href;
         window.history.pushState({}, "", url.split("?")[0]);
         // Load thanks
-        fetch(process.env.REACT_APP_API + "/notes/thanks/")
-            .then((response) => {
-                if (!response.ok) {throw new Error(response.status)}
-                return response.json()
+        service.getNotesThanks()
+            .then((data) => {
+                setThanks(data);
             })
-            .then((response) => {
-                if ('data' in response) {
-                    setThanks(response['data']);
-                }
-            })
-            .catch((error) => {
-                console.error("Error getting thanks", error);
-            });
     }, []);
 
     useEffect(() => {
@@ -148,16 +138,17 @@ const Apontamentos = () => {
         // Every time a new call is made to the API, close details
         setSelectedNote(null);
 
-
-        // extraVarName --> base used to concatenate and compare the optionals of every fetch
-        var extraYear = selYear == "" ? "" : "schoolYear=" + selYear + "&";
-        var extraSubj = selectedSubject == "" ? "" : "subject=" + selectedSubject + "&";
-        var extraStud = selStudent == "" ? "" : "student=" + selStudent + "&";
-        var extraTeacher = selTeacher == "" ? "" : "teacher=" + selTeacher + "&";
-        var extraCategory = "";
+        const params = {
+            school_year: selYear || null,
+            subject: selectedSubject || null,
+            student: selStudent || null,
+            teacher: selTeacher || null,
+            category: []
+        }
 
         for (var i = 0; i < activeFilters.length; i++) {
-            extraCategory += "category[]=" + filters.filter(f => f['filter'] == activeFilters[i])[0]['db'] + "&";
+            const cat = filters.filter(f => f['filter'] == activeFilters[i])[0]['db'];
+            params.category.push(cat);
         }
 
         if (activeFilters.length == 0) {
@@ -168,78 +159,17 @@ const Apontamentos = () => {
             return;
         }
 
-
-        // fullVarName --> sum of optionals of every fetch
-        var fullTeacher = "";
-
-        if (extraYear != "" || extraSubj != "" || extraStud != "") {
-            fullTeacher = "?";
-            fullTeacher += extraYear;
-            fullTeacher += extraSubj;
-            fullTeacher += extraStud;
-            fullTeacher = fullTeacher.substring(0, fullTeacher.length - 1); // ignore the last '&'
-        }
-
-        var fullYear = "";
-
-        if (extraTeacher != "" || extraSubj != "" || extraStud != "") {
-            fullYear = "?";
-            fullYear += extraTeacher;
-            fullYear += extraSubj;
-            fullYear += extraStud;
-            fullYear = fullYear.substring(0, fullYear.length - 1); // ignore the last '&'
-        }
-
-        var fullSubj = "";
-
-        if (extraTeacher != "" || extraYear != "" || extraStud != "") {
-            fullSubj = "?";
-            fullSubj += extraYear;
-            fullSubj += extraStud;
-            fullSubj += extraTeacher;
-            fullSubj = fullSubj.substring(0, fullSubj.length - 1); // ignore the last '&'
-        }
-
-        var fullStud = "";
-
-        if (extraTeacher != "" || extraSubj != "" || extraYear != "") {
-            fullStud = "?";
-            fullStud += extraTeacher;
-            fullStud += extraSubj;
-            fullStud += extraYear;
-            fullStud = fullStud.substring(0, fullStud.length - 1); // ignore the last '&'
-        }
-
-        if (extraCategory.length == 0) {
+        if (params.category.length == 0) {
             setData([]);
         }
         else {
-            var fullNotes = "?page=" + selPage + "&";
-
-            fullNotes += extraTeacher;
-            fullNotes += extraSubj;
-            fullNotes += extraStud;
-            fullNotes += extraCategory;
-            fullNotes += extraYear;
-            fullNotes = fullNotes.substring(0, fullNotes.length - 1); // ignore the last '&'
-
-            fetch(process.env.REACT_APP_API + "/notes/" + fullNotes)
-                .then((response) => {
-                    if (!response.ok) {throw new Error(response.status)}
-                    return response.json()
-                })
-                .then((response) => {
-                    if ('data' in response) {
-                        setData(response.data)
-                        setPageNumber(response.page.pagesNumber);
-                    } else {
-                        setData([]);
-                        setPageNumber(1);
-                    }
+            service.getNotes({ ...params, page: selPage })
+                .then(({ items, last }) => {
+                    setData(items);
+                    setPageNumber(last || 1);
                     setLoading(false);
                 })
-                .catch((error) => {
-                    console.error("Error getting notes!");
+                .catch(() => {
                     setAlert({
                         'type': 'alert',
                         'text': 'Ocorreu um erro ao processar o teu pedido. Por favor recarrega a página.'
@@ -247,29 +177,17 @@ const Apontamentos = () => {
                 });
         }
 
-        fetch(process.env.REACT_APP_API + "/notes/years/" + fullYear)
-            .then((response) => {
-                if (!response.ok) {throw new Error(response.status)}
-                return response.json()
+        service.getNotesYears(params)
+            .then((data) => {
+                const arr = data.map(year => {
+                    const x = { value: year.id, label: year.year_begin + "-" + year.year_end };
+                    if (x.value == selYear)
+                        setShownYear(x);
+                    return x;
+                })
+                setYears(arr);
             })
-            .then((response) => {
-                /*setYears(response.data.map( (year) => 
-                    <option value={year.id} selected={year.id == selYear}>{year.yearBegin + "-" + year.yearEnd}</option>
-                ))
-                */
-                if ('data' in response) {
-                    var arr = response.data.map(year => {
-
-                        const x = { value: year.id, label: year.yearBegin + "-" + year.yearEnd };
-                        if (x.value == selYear)
-                            setShownYear(x)
-                        return x;
-                    })
-
-                    setYears(arr)
-                }
-            })
-            .catch((error) => {
+            .catch(() => {
                 console.error("Invalid parameters (no \"years\" matching)!");
                 resetFilters();
                 setAlert({
@@ -278,28 +196,17 @@ const Apontamentos = () => {
                 });
             });
 
-        fetch(process.env.REACT_APP_API + "/notes/subjects/" + fullSubj)
-            .then((response) => {
-                if (!response.ok) {throw new Error(response.status)}
-                return response.json()
+        service.getNotesSubjects(params)
+            .then((data) => {
+                const arr = data.map(subj => {
+                    const x = { value: subj.paco_code, label: subj.short };
+                    if (x.value == selectedSubject)
+                        setShownSubj(x);
+                    return x;
+                })
+                setSubjects(arr);
             })
-            .then((response) => {
-
-                if ('data' in response) {
-
-
-                    var arr = response.data.map(subj => {
-
-                        const x = { value: subj.paco_code, label: subj.short };
-                        if (x.value == selectedSubject)
-                            setShownSubj(x)
-                        return x;
-                    })
-
-                    setSubjects(arr)
-                }
-            })
-            .catch((error) => {
+            .catch(() => {
                 console.error("Invalid parameters (no \"subjects\" matching)!");
                 resetFilters();
                 setAlert({
@@ -308,26 +215,17 @@ const Apontamentos = () => {
                 });
             });
 
-        fetch(process.env.REACT_APP_API + "/notes/students/" + fullStud)
-            .then((response) => {
-                if (!response.ok) {throw new Error(response.status)}
-                return response.json()
+        service.getNotesStudents(params)
+            .then((data) => {
+                const arr = data.map(t => {
+                    const x = { value: t.id, label: t.name };
+                    if (x.value == selStudent)
+                        setShownAuth(x)
+                    return x;
+                })
+                setStudents(arr);
             })
-            .then((response) => {
-
-                if ('data' in response) {
-                    var arr = response.data.map(t => {
-                        const x = { value: t.id, label: t.name };
-                        if (x.value == selStudent)
-                            setShownAuth(x)
-
-                        return x;
-                    })
-
-                    setStudents(arr)
-                }
-            })
-            .catch((error) => {
+            .catch(() => {
                 console.error("Invalid parameters (no \"students\" matching)!");
                 resetFilters();
                 setAlert({
@@ -336,26 +234,17 @@ const Apontamentos = () => {
                 });
             });
 
-
-        fetch(process.env.REACT_APP_API + "/notes/teachers/" + fullTeacher)
-            .then((response) => {
-                if (!response.ok) {throw new Error(response.status)}
-                return response.json()
+        service.getNotesTeachers(params)
+            .then((data) => {
+                const arr = data.map(t => {
+                    const x = { value: t.id, label: t.name };
+                    if (x.value == selTeacher)
+                        setShownTeacher(x)
+                    return x;
+                })
+                setTeachers(arr);
             })
-            .then((response) => {
-                if ('data' in response) {
-                    var arr = response.data.map(t => {
-                        const x = { value: t.id, label: t.name };
-                        if (x.value == selTeacher)
-                            setShownTeacher(x)
-
-                        return x;
-                    })
-
-                    setTeachers(arr)
-                }
-            })
-            .catch((error) => {
+            .catch(() => {
                 console.error("Invalid parameters (no \"teachers\" matching)!");
                 resetFilters();
                 setAlert({
@@ -374,13 +263,13 @@ const Apontamentos = () => {
     let linkShare = () => {
         // Build URL
         let url = window.location.origin + window.location.pathname + '?';
-        if (selYear!="")
+        if (selYear != "")
             url += `year=${selYear}&`;
-        if (selectedSubject!="")
+        if (selectedSubject != "")
             url += `subject=${selectedSubject}&`;
-        if (selStudent!="")
+        if (selStudent != "")
             url += `author=${selStudent}&`;
-        if (selTeacher!="")
+        if (selTeacher != "")
             url += `teacher=${selTeacher}&`;
         // Only include filters tags if not all selected (because if missing from url, all will be selected by default)
         if (activeFilters.length !== filters.length) {
@@ -407,15 +296,13 @@ const Apontamentos = () => {
         setShownTeacher("");
     }
 
-    
-
     return (
         <div id="apontamentosPage">
-            <div class="d-flex flex-column mb-5">
+            <div className="d-flex flex-column mb-5">
                 <h2 className="text-center mb-2">
                     <Typist>Apontamentos</Typist>
                 </h2>
-                <Alert 
+                <Alert
                     alert={alert}
                     setAlert={setAlert}
                 />
@@ -443,30 +330,30 @@ const Apontamentos = () => {
                         <h4>Filtros</h4>
                         {
                             (selectedSubject || selStudent || selTeacher || selYear) &&
-                                <div className="d-flex flex-row flex-wrap mb-2">
-                                    <button 
-                                        className="rounded-pill btn btn-outline-primary btn-sm pill animation mr-2"
-                                        onClick={() => linkShare()}    
-                                        title="Copiar link com filtros"
-                                    >
-                                        <span className="mr-1">Partilhar</span>
-                                        <FontAwesomeIcon
-                                            className="my-auto link"
-                                            icon={faShareAlt}
-                                        />
-                                    </button>
-                                    <button 
-                                        className="rounded-pill btn btn-outline-primary btn-sm pill animation mr-2"
-                                        onClick={() => resetFilters()}    
-                                        title="Remover filtros"
-                                    >
-                                        <span className="mr-1">Limpar</span>
-                                        <FontAwesomeIcon 
-                                            className="my-auto link" 
-                                            icon={faTimes} 
-                                        />
-                                    </button>
-                                </div>
+                            <div className="d-flex flex-row flex-wrap mb-2">
+                                <button
+                                    className="rounded-pill btn btn-outline-primary btn-sm pill animation mr-2"
+                                    onClick={() => linkShare()}
+                                    title="Copiar link com filtros"
+                                >
+                                    <span className="mr-1">Partilhar</span>
+                                    <FontAwesomeIcon
+                                        className="my-auto link"
+                                        icon={faShareAlt}
+                                    />
+                                </button>
+                                <button
+                                    className="rounded-pill btn btn-outline-primary btn-sm pill animation mr-2"
+                                    onClick={() => resetFilters()}
+                                    title="Remover filtros"
+                                >
+                                    <span className="mr-1">Limpar</span>
+                                    <FontAwesomeIcon
+                                        className="my-auto link"
+                                        icon={faTimes}
+                                    />
+                                </button>
+                            </div>
                         }
 
                         <Select
@@ -533,7 +420,7 @@ const Apontamentos = () => {
                 */}
                 <Col lg="8" xl="9">
 
-                    <Tab.Container defaultActiveKey={window.innerWidth>=992 ? "grid" : "list"}>
+                    <Tab.Container defaultActiveKey={window.innerWidth >= 992 ? "grid" : "list"}>
                         <div>
                             <Nav onSelect={() => setSelectedNote(null)}>
                                 <Nav.Item className="mx-auto mx-lg-0 ml-lg-0 d-none d-lg-block"><Nav.Link eventKey="grid" className="h5">
@@ -576,10 +463,10 @@ const Apontamentos = () => {
                             <Tab.Pane eventKey="list" >
                                 <div className="d-flex flex-column">
                                     {
-                                        loading ?
+                                        !!loading ?
                                             <Spinner animation="grow" variant="primary" className="mx-auto mt-3" title="A carregar..." />
                                             :
-                                            data.length == 0 ?
+                                            data.length === 0 ?
                                                 <Col sm={12}>
                                                     <h3 className="text-center mt-3">Nenhum apontamento encontrado</h3>
                                                     <h4 className="text-center">Tente definir filtros menos restritivos</h4>
@@ -597,37 +484,32 @@ const Apontamentos = () => {
                             </Tab.Pane>
                         </Tab.Content>
                     </Tab.Container>
-
-                    {
-                        !loading &&
-                        <PageNav
-                            page={selPage}
-                            total={pageNumber}
-                            handler={fetchPage}
-                            className="mx-auto d-lg-none mt-3"
-                        ></PageNav>
-                    }
-
+                    <PageNav
+                        page={selPage}
+                        total={pageNumber}
+                        handler={fetchPage}
+                        className="mx-auto d-lg-none mt-3"
+                    ></PageNav>
                 </Col>
             </Row>
+            {
+                !!thanks.length &&
+                <div className="text-center mt-5">
+                    <h3>Foi graças a pessoas como tu que esta página se tornou possível!</h3>
 
-            <div className="text-center mt-5">
-                <h3>Foi graças a pessoas como tu que esta página se tornou possível!</h3>
-                {
-                    thanks.length &&
                     <div>
                         <p className="m-0">O nosso agradecimento aos que mais contribuiram.</p>
 
                         <Row>
                             {
-                                thanks.map(t => 
-                                    <div className="mx-auto my-3">
-                                        <h4 className="">{t.author}</h4>
+                                thanks.map((t, index) =>
+                                    <div key={index} className="mx-auto my-3">
+                                        <h4 className="">{t.author?.name}</h4>
                                         <div className="small">
-                                            <a href={'/apontamentos?author=' + t.authorId}>Os seus apontamentos no site do NEI</a>
-                                            <br/>
+                                            <a href={'/apontamentos?author=' + t.author_id}>Os seus apontamentos no site do NEI</a>
+                                            <br />
                                             {
-                                                t.personalPage && <a href={t.personalPage} target="_blank">Website de apontamentos</a>
+                                                !!t.author?.personal_page && <a href={t.author?.personal_page} target="_blank">Website de apontamentos</a>
                                             }
                                         </div>
                                     </div>
@@ -635,11 +517,11 @@ const Apontamentos = () => {
                             }
                         </Row>
                     </div>
-                }
-                <p>
-                    Junta-te a elas e ajuda-nos a manter este repositório atualizado com os conteúdos mais recentes. Partilha connosco os teus através do email <a href="mailto:nei@aauav.pt">nei@aauav.pt</a>. Contamos com o teu apoio!
-                </p>
-            </div>
+                    <p>
+                        Junta-te a elas e ajuda-nos a manter este repositório atualizado com os conteúdos mais recentes. Partilha connosco os teus através do email <a href="mailto:nei@aauav.pt">nei@aauav.pt</a>. Contamos com o teu apoio!
+                    </p>
+                </div>
+            }
         </div>
     );
 }

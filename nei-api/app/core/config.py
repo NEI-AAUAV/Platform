@@ -9,12 +9,18 @@ from typing import List, Optional, Union
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
-
 class Settings(BaseSettings):
-    PRODUCTION = False
-    API_V1_STR: str = os.getenv('ROOT_PATH', "/api/v1")
+    PRODUCTION: bool = os.getenv("ENV") == "production"
+
+    API_V1_STR: str = "/nei/api/v1"
+    STATIC_STR: str = "/nei/static"
+
+    HOST: AnyHttpUrl = ("https://nei-aauav.pt" if PRODUCTION else
+                        "http://localhost:8000")
+    STATIC_URL: AnyHttpUrl = HOST + STATIC_STR
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["https://nei-aauav.pt" if PRODUCTION else
+                                              "http://localhost:3000"]
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:

@@ -1,7 +1,5 @@
 import pytest
-import os
-from io import BytesIO
-from datetime import date, datetime
+from datetime import datetime
 
 from fastapi.testclient import TestClient
 
@@ -10,21 +8,19 @@ from app.models import Notes, NotesThanks, NotesTypes, NotesSchoolYear, NotesSub
 from app.tests.conftest import SessionTesting
 
 NOTES_SCHOOL_YEAR = [
-    {   
-        "id":1,
-        "yearBegin": 2020,
-        "yearEnd": 2023
+    {
+        "year_begin": 2020,
+        "year_end": 2023
     },
-        {
-        "id":2,
-        "yearBegin": 2020,
-        "yearEnd": 2023
+    {
+        "year_begin": 2020,
+        "year_end": 2023
     }
 ]
 
 NOTES_SUBJECT = [
-        {
-        "paco_code":1,
+    {
+        "paco_code": 1,
         "name": "random name 0",
         "year": 2021,
         "semester": 2,
@@ -33,7 +29,7 @@ NOTES_SUBJECT = [
         "optional": 1
     },
     {
-        "paco_code":2,
+        "paco_code": 2,
         "name": "random name",
         "year": 2021,
         "semester": 2,
@@ -45,33 +41,26 @@ NOTES_SUBJECT = [
 
 NOTES_TEACHERS = [
     {
-        "id":1,
         'name': 'DG',
         'personal_page': 'personalpage_dg'
     },
-        {
-        "id":2,
+    {
         'name': 'TOS',
         'personal_page': 'personalpage_tos'
     }
 ]
 
 NOTES_THANKS = [
-        {
-        "id":1,
-        'author_id': 1,
-        "notes_personal_page": "very much thanks"
+    {
+        "notes_personal_page": "http://my-personal-page.com"
     },
     {
-        "id":2,
-        'author_id': 1,
-        "notes_personal_page": "very much thanks"
+        "notes_personal_page": "http://my-personal-page.com"
     }
 ]
 
 NOTES_TYPES = [
-        {
-        "id":1,
+    {
         "name": "name note type 0",
         "download_caption": "download_caption",
         "icon_display": 'display',
@@ -79,7 +68,6 @@ NOTES_TYPES = [
         "external": 1
     },
     {
-        "id":2,
         "name": "name note type",
         "download_caption": "download_caption",
         "icon_display": 'display',
@@ -90,13 +78,8 @@ NOTES_TYPES = [
 
 NOTES = [
     {
-        "id":2,
         'name': 'note name 0',
-        'location': 'Aveiro',
-        "subject_id": 1,
-        "author_id": 1,
-        "school_year_id": 1,
-        "teacher_id": 1,
+        'location': '/path/to/note/1',
         "summary": 1,
         "tests": 1,
         "bibliography": 1,
@@ -106,19 +89,30 @@ NOTES = [
         "notebook": 1,
         "content": "content text bla bla bla bla bla",
         "created_at": datetime(2022, 8, 4),
-        "type_id": 1,
         "size": 1,
-        "category": "xxxxxx"
+    },
+    {
+        'name': 'note name 1',
+        'location': '/path/to/note/2',
+        "summary": 1,
+        "tests": 1,
+        "bibliography": 0,
+        "slides": 1,
+        "exercises": 0,
+        "projects": 0,
+        "notebook": 1,
+        "content": "content text bla bla bla bla bla",
+        "created_at": datetime(2022, 8, 4),
+        "size": 1,
     }
 ]
 
 USERS = [
-    {   
-        "id": 1,
+    {
         "name": 'Ze Pistolas',
         "full_name": 'Ze Pistolas Pistolas',
         "uu_email": 'zpp@ua.pt',
-        "uu_yupi": 'x1x1',
+        "uu_iupi": 'x1x1',
         "curriculo": 'ze_cv',
         "linkedin": 'ze_linkedin',
         "git": 'ze_git',
@@ -126,11 +120,10 @@ USERS = [
         "created_at": datetime(2022, 8, 4)
     },
     {
-        "id": 2,
         "name": "Francisco Abrantes",
         "full_name": "Francisco Miguel Abrantes",
         "uu_email": "fma@ua.pt",
-        "uu_yupi": 'x2x2',
+        "uu_iupi": 'x2x2',
         "curriculo": 'francisco_cv',
         "linkedin": 'francisco_linkedin',
         "git": 'francisco_git',
@@ -140,34 +133,8 @@ USERS = [
 ]
 
 note = {
-    "id": 3,
-        'name': 'note name 0',
-        'location': 'Aveiro',
-        "subject_id": 1,
-        "author_id": 1,
-        "school_year_id": 1,
-        "teacher_id": 1,
-        "summary": 1,
-        "tests": 1,
-        "bibliography": 1,
-        "slides": 1,
-        "exercises": 0,
-        "projects": 0,
-        "notebook": 1,
-        "content": "content text bla bla bla bla bla",
-       "created_at": "2022-10-02T21:31:48.217Z",
-        "type_id": 1,
-        "size": 1,
-        "category": "xxxxxx"
-}
-
-update_note = {
-  "name": "string",
-  "location": "string",
-  "subject_id": 1,
-    "author_id": 1,
-    "school_year_id": 1,
-    "teacher_id": 1,
+    'name': 'note name 0',
+    'location': 'Aveiro',
     "summary": 1,
     "tests": 1,
     "bibliography": 1,
@@ -175,12 +142,26 @@ update_note = {
     "exercises": 0,
     "projects": 0,
     "notebook": 1,
-  "content": "Note Alterada",
-  "created_at": "2022-10-10T14:35:56.660Z",
-  "type_id": 1,
-  "size": 0,
-  "category": "string"
+    "content": "content text bla bla bla bla bla",
+    "created_at": "2022-10-02T21:31:48.217Z",
+    "size": 1,
 }
+
+update_note = {
+    "name": "string",
+    "location": "string",
+    "summary": 1,
+    "tests": 1,
+    "bibliography": 1,
+    "slides": 1,
+    "exercises": 0,
+    "projects": 0,
+    "notebook": 1,
+    "content": "Note Alterada",
+    "created_at": "2022-10-10T14:35:56.660Z",
+    "size": 0,
+}
+
 
 @pytest.fixture(autouse=True)
 def setup_database(db: SessionTesting):
@@ -190,17 +171,28 @@ def setup_database(db: SessionTesting):
         db.add(NotesSubject(**subj))
     for type in NOTES_TYPES:
         db.add(NotesTypes(**type))
-    for year in NOTES_SCHOOL_YEAR: 
+    for year in NOTES_SCHOOL_YEAR:
         db.add(NotesSchoolYear(**year))
-    for teacher in NOTES_TEACHERS: 
+    for teacher in NOTES_TEACHERS:
         db.add(NotesTeachers(**teacher))
-    for thanks in NOTES_THANKS:
-        db.add(NotesThanks(**thanks))
-    for note in NOTES:
-        db.add(Notes(**note))
     for user in USERS:
         db.add(Users(**user))
     db.commit()
+
+    for note, thanks, sid, aid, yid, tid, tyid in zip(
+        NOTES,
+        NOTES_THANKS,
+        [s.paco_code for s in db.query(NotesSubject).all()],
+        [a.id for a in db.query(Users).all()],
+        [y.id for y in db.query(NotesSchoolYear).all()],
+        [t.id for t in db.query(NotesTeachers).all()],
+        [ty.id for ty in db.query(NotesTypes).all()],
+    ):
+        db.add(Notes(**note, subject_id=sid, author_id=aid,
+               school_year_id=yid, teacher_id=tid, type_id=tyid))
+        db.add(NotesThanks(**thanks, author_id=aid))
+    db.commit()
+
 
 def test_get_notes(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/notes/")
@@ -211,13 +203,15 @@ def test_get_notes(client: TestClient) -> None:
     assert "subject" in data["items"][0]
     assert "school_year" in data["items"][0]
 
-def test_get_note_by_id(client: TestClient) -> None:
-    note_id = 2
+
+def test_get_note_by_id(client: TestClient, db: SessionTesting) -> None:
+    note_id = db.query(Notes).first().id
     r = client.get(f"{settings.API_V1_STR}/notes/{note_id}")
     data = r.json()
     assert r.status_code == 200
     assert "id" in data
     assert data["id"] == note_id
+
 
 def test_get_inexistent_note_by_id(client: TestClient) -> None:
     inexistent_note_id = -1
@@ -226,24 +220,18 @@ def test_get_inexistent_note_by_id(client: TestClient) -> None:
     assert r.status_code == 404
     assert data["detail"] == "Invalid Note id"
 
-def test_create_note(client: TestClient) -> None:
-    r = client.post(f"{settings.API_V1_STR}/notes/", json=note)
-    data = r.json()
-    assert r.status_code == 201
-    assert "id" in data
-    assert "location" in data
 
-def test_update_note(client: TestClient) -> None:
-    note_id = 2
-    r = client.put(f"{settings.API_V1_STR}/notes/{note_id}", json=update_note)
-    data = r.json()
+def test_get_notes_by_categories(client: TestClient) -> None:
+    r = client.get(
+        f"{settings.API_V1_STR}/notes?category[]=bibliography&category[]=tests")
     assert r.status_code == 200
-    assert data["id"] == note_id
-    assert data["content"] == update_note["content"]
-
-def test_update_inexistent_note(client: TestClient) -> None:
-    inexistent_note_id = -1
-    r = client.put(f"{settings.API_V1_STR}/notes/{inexistent_note_id}", json=update_note)
     data = r.json()
-    assert r.status_code == 404
-    assert data["detail"] == "Invalid Note id"
+    assert data['total'] == len(data['items']) == 1
+    assert all(i['bibliography'] and i['tests'] for i in data['items'])
+    r = client.get(
+        f"{settings.API_V1_STR}/notes?category[]=slides&category[]=tests")
+    assert r.status_code == 200
+    data = r.json()
+    assert data['total'] == len(data['items']) == 2
+    assert all(i['slides'] and i['tests'] for i in data['items'])
+

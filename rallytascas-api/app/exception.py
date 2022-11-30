@@ -39,3 +39,13 @@ class RestrictionException(APIException):
 class NotImplementedException(APIException):
     status_code = 501
     detail = "Not Implemented"
+
+
+class CardNotActiveException(APIException):
+    status_code = 400
+    detail = "Card Not Attributed"
+
+
+class CardEffectException(APIException):
+    status_code = 400
+    detail = "Card Not Applicable"

@@ -20,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.add_middleware(LogStatsMiddleware)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount(settings.STATIC_STR, StaticFiles(directory="static"), name="static")
 app.add_event_handler("startup", init_logging)
 app.add_event_handler("startup", init_db)
 app.include_router(api_v1_router, prefix=settings.API_V1_STR)
@@ -32,4 +32,4 @@ if __name__ == "__main__":
     # Use this for debugging purposes only
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8001, log_level="debug")
+    uvicorn.run(app, host="0.0.0.0", port=8081, log_level="debug")

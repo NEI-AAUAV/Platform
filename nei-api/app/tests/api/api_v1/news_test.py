@@ -15,7 +15,7 @@ USERS = [
         "name": 'Ze Pistolas',
         "full_name": 'Ze Pistolas Pistolas',
         "uu_email": 'zpp@ua.pt',
-        "uu_yupi": 'x1x1',
+        "uu_iupi": 'x1x1',
         "curriculo": 'ze_cv',
         "linkedin": 'ze_linkedin',
         "git": 'ze_git',
@@ -27,7 +27,7 @@ USERS = [
         "name": "Francisco Abrantes",
         "full_name": "Francisco Miguel Abrantes",
         "uu_email": "fma@ua.pt",
-        "uu_yupi": 'x2x2',
+        "uu_iupi": 'x2x2',
         "curriculo": 'francisco_cv',
         "linkedin": 'francisco_linkedin',
         "git": 'francisco_git',
@@ -60,7 +60,6 @@ NEWS = [
 ]
 
 
-
 @pytest.fixture(autouse=True)
 def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
@@ -80,14 +79,14 @@ def test_get_news(client: TestClient) -> None:
     assert "id" in data["items"][0]
 
 def test_get_news_by_category(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/news/?category=Event")
+    r = client.get(f"{settings.API_V1_STR}/news/?category[]=Event")
     data = r.json()
     assert r.status_code == 200
     assert len(data["items"]) == 1
     assert data["items"][0].keys() >= NEWS[0].keys()
 
 def test_get_news_by_categories(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/news/?category=Event&category=Parceria")
+    r = client.get(f"{settings.API_V1_STR}/news/?category[]=Event&category[]=Parceria")
     data = r.json()
     assert r.status_code == 200
     assert len(data["items"]) == 2
@@ -95,7 +94,7 @@ def test_get_news_by_categories(client: TestClient) -> None:
     assert "id" in data["items"][0]
 
 def test_nonexistant_category(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/news/?category=Event&category=TEST")
+    r = client.get(f"{settings.API_V1_STR}/news/?category[]=Event&category[]=TEST")
     data = r.json()
     assert r.status_code == 400
 
@@ -111,7 +110,6 @@ def test_get_specific_error(client:TestClient) -> None:
 
 def test_get_categories(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/news/categories")
-    print(f"{settings.API_V1_STR}/news/categories")
     data = r.json()
     assert r.status_code == 200
     assert len(data['data']) == 2

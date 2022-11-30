@@ -8,11 +8,11 @@ class PartnersBase(BaseModel):
     header: str
     company: str
     description: str
-    content: str
+    content: Optional[str]
     link: str
-    bannerUrl: Optional[str]
-    bannerImage: Optional[str]
-    bannerUntil: Optional[datetime]
+    banner_url: Optional[str]
+    banner_image: Optional[str]
+    banner_until: Optional[datetime]
 
 class PartnersCreate(PartnersBase):
     """Properties to receive via API on create."""
