@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Docker login
@@ -28,6 +28,11 @@ jobs:
         export TAG=${GITHUB_SHA:0:7}
         docker-compose build
         docker-compose push --ignore-push-failures
+  
+  deploy:
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v2
     - name: Docker pull
       run: |
         docker-compose down
