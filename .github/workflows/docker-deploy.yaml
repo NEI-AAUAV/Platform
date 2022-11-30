@@ -32,6 +32,9 @@ jobs:
   deploy:
     needs: build
     runs-on: self-hosted
+    env:
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
     steps:
     - uses: actions/checkout@v2
     - name: Docker pull
@@ -39,8 +42,5 @@ jobs:
         docker-compose down
         docker-compose pull
     - name: Docker deploy
-      env:
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run: |
         docker-compose up -d --remove-orphans --force-recreate
