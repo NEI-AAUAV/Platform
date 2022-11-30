@@ -30,6 +30,7 @@ jobs:
         docker-compose push --ignore-push-failures
   
   deploy:
+    needs: build
     runs-on: self-hosted
     steps:
     - uses: actions/checkout@v2
@@ -42,6 +43,4 @@ jobs:
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run: |
-        echo $SECRET_KEY
-        echo $POSTGRES_PASSWORD
-        docker-compose up -d
+        docker-compose up -d --remove-orphans --force-recreate
