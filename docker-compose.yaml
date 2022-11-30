@@ -82,13 +82,13 @@ services:
   nginx:
     image: neiaauav/nginx:${TAG:-latest}
     build:
-      context: nginx
+      context: nginx/nei.web.ua.pt
       dockerfile: Dockerfile
     ports:
       - 80:80
       - 443:443
-    volumes:
-      - /nginx-letsencrypt:/etc/letsencrypt
+    # volumes:
+    #   - /nginx-letsencrypt:/etc/letsencrypt
     depends_on:
       - nei_api
       # - tacaua_api
