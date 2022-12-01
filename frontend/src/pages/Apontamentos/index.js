@@ -163,7 +163,7 @@ const Apontamentos = () => {
             setData([]);
         }
         else {
-            service.getNotes({ ...params, page: selPage })
+            service.getNotes({ ...params, page: selPage, size: 18 })
                 .then(({ items, last }) => {
                     setData(items);
                     setPageNumber(last || 1);
