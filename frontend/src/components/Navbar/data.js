@@ -109,7 +109,7 @@ const data = [
     name: "Parceiros",
     link: "/parceiros",
   },
-  {
+  !config.PRODUCTION && {
     name: "Rally Tascas",
     link: "/breakthebars",
   },
