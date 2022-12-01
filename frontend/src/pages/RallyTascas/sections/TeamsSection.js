@@ -25,8 +25,8 @@ const TeamCard = () => {
         <Card key={index} css={{ bg: "transparent", borderColor: "#FC8551", w: 150, marginBottom: 20, '@xs': { w: 200 } }}>
 
           <Card.Image
-            src={`./images/IconsTeamsSection/icon${team.id % 16 + 1}.png`}
-            css={{h: 200}}
+            src={`../images/IconsTeamsSection/icon${team.id % 16 + 1}.png`}
+            css={{ h: 200 }}
             objectFit="contain"
             alt="Card image background"
           />

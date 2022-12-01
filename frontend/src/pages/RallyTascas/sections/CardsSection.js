@@ -57,17 +57,17 @@ const CardsSection = () => {
   const Images = [
     {
       title: "Pergunta-Pass❔",
-      img: "./images/CardsSection/CABULA_CABULOSA.svg",
+      img: "../images/CardsSection/CABULA_CABULOSA.svg",
       text: "Poupa alguns neurónios! Tens direito a passar uma pergunta à frente, no entanto, recebes 6 pontos, em vez de 8.",
     },
     {
       title: "Desafio-pass🎯",
-      img: "./images/CardsSection/SKIP_GYM_DAY.svg",
+      img: "../images/CardsSection/SKIP_GYM_DAY.svg",
       text: "Tens direito a passar um desafio à frente, no entanto, recebes 8 pontos em vez de 10.",
     },
     {
       title: "Grego-Pass🤮",
-      img: "./images/CardsSection/CHAMAR_O_GREGORIO.svg",
+      img: "../images/CardsSection/CHAMAR_O_GREGORIO.svg",
       text: "Deita tudo cá para fora! Um dos elementos tem direito a vomitar uma vez.",
     },
   ];
