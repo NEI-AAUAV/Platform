@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import Document from "../../../components/Document";
 
 import {
@@ -25,7 +25,7 @@ const GridView = ({ data, setSelected }) => {
         <div className="d-flex flex-row flex-wrap col-12 mx-0 p-0">
             {
                 data.map((note, i) =>
-                    <React.Fragment key={i}>
+                    <Fragment key={i}>
                         <Document
                             name={note.name}
                             description={
@@ -54,7 +54,7 @@ const GridView = ({ data, setSelected }) => {
                                 return tags;
                             })()}
                         />
-                    </React.Fragment>
+                    </Fragment>
                 )
             }
         </div>

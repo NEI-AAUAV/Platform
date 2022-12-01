@@ -17,7 +17,7 @@ import "./index.css";
  *  blank           Open link in new tab?
  *  className       Extra classes                   (Optional)
  *  icon            Icon component                  (Optional, default PDF)
- * iconColor        Icon color                      (Optional, default .text-primary)
+ *  iconColor       Icon color                      (Optional, default .text-primary)
  *  size            Icon size                       (Optional, default 3x)
  *  onClick         on click event handler          (Optional)
  *  title           title attribute                 (Optional)
