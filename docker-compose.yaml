@@ -87,8 +87,9 @@ services:
     ports:
       - 80:80
       - 443:443
-    # volumes:
-    #   - /nginx-letsencrypt:/etc/letsencrypt
+    volumes:
+      - /nginx/nei.web.ua.pt:/etc/ssl/private
+      # - /nginx/nei-aauav.pt:/etc/letsencrypt
     depends_on:
       - nei_api
       # - tacaua_api
