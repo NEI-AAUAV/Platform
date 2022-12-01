@@ -40,6 +40,7 @@ jobs:
     - name: Docker pull
       run: |
         docker-compose down
+        docker rmi $(docker images -aq)
         docker-compose pull
     - name: Docker deploy
       run: |

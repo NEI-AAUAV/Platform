@@ -41,7 +41,7 @@ const routes = [
     path: "/",
     element: <SimpleLayout />,
     children: [
-      { path: "/breakthebars", element: <RallyTascas /> },
+      !config.PRODUCTION && { path: "/breakthebars", element: <RallyTascas /> },
     ],
   },
   {
