@@ -23,6 +23,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8000:8000
+    volumes: 
+      - /nei-api/static:/nei_api/static
     environment:
       - ENV=production
       - POSTGRES_SERVER=pg_db
@@ -39,6 +41,8 @@ services:
   #     dockerfile: Dockerfile
   #   ports:
   #     - 8001:8001
+      # volumes: 
+      # - /tacaua-api/static:/tacaua_api/static
   #   environment:
   #     - ENV=production
   #     - POSTGRES_SERVER=pg_db
@@ -55,6 +59,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8002:8002
+    volumes: 
+      - /rallytascas-api/static:/rallytascas_api/static
     environment:
       - ENV=production
       - POSTGRES_SERVER=pg_db
