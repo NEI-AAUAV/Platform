@@ -83,7 +83,7 @@ const CardsSection = () => {
   return (
     <div className="d-flex flex-wrap" style={{ justifyContent: "space-evenly" }}>
       {Images.map((item, index) => (
-        Team?.[`card${index + 1}`] !== -1 && <Card2 item={item} index={index} disabled={Team?.[`card${index + 1}`] !== 0} />
+        Team?.[`card${index + 1}`] !== -1 && <Card2 key={index} item={item} index={index} disabled={Team?.[`card${index + 1}`] !== 0} />
       ))}
       {((Team.card1 == -1 && Team.card2 == -1 && Team.card3 == -1) ?
         <div className="rally-cards-empty">
