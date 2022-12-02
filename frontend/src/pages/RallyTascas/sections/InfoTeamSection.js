@@ -26,7 +26,7 @@ const InfoTeamSection = ({ team }) => {
                 <div className="rally-tascas-row">
                     <Card variant="bordered" className="rally-card-team-image">
                         <Card.Image
-                            src={`./images/IconsTeamsSection/icon${team.id % 16 + 1}.png`}
+                            src={`../images/IconsTeamsSection/icon${team.id % 16 + 1}.png`}
                             objectFit="cover"
                             alt="Card image background"
                         />
