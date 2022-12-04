@@ -42,10 +42,10 @@ function InfoTable() {
   const [teams, setTeams] = useState([]);
   const [myTeam, setMyTeam] = useState(null);
   const [mobile, setMobile] = useState(false);
-  const [visibleDetails, setVisibleDetails] = React.useState(false);
-  const [editDetails, setEditDetails] = React.useState(false);
-  const [staffModal, setStaffModal] = React.useState(false);
-  const [selectedTeam, setSelectedTeam] = React.useState(null);
+  const [visibleDetails, setVisibleDetails] = useState(false);
+  const [editDetails, setEditDetails] = useState(false);
+  const [staffModal, setStaffModal] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState(null);
 
   const { isStaff, isAdmin } = useRallyAuth(state => state);
 
@@ -93,11 +93,12 @@ function InfoTable() {
         return (
           <>
             <Col>{cp ? `${cp.id} - ${cp.name}` : '---'}</Col>
-            <Col>{cellValue.at(-1)?.split('T').at(-1) || '---'}</Col>
+            <Col>{cellValue.at(-1)?.split('T').at(-1).slice(0, 8) || '---'}</Col>
           </>
         );
 
       case "icons":
+        const staffCanEdit = isStaff - 1 === team.times.length;
         return (
           <Row justify="center" align="center">
             <Col css={{ d: "flex", m: 10 }}>
@@ -133,7 +134,7 @@ function InfoTable() {
                       },
                     }}
                   >
-                    Ver Equipa
+                    Ver Detalhes
                   </Button>
               }
             </Col>
@@ -157,14 +158,16 @@ function InfoTable() {
             {
               !!isStaff &&
               <Col css={{ d: "flex", m: 10 }}>
-                <Tooltip content="Staff Modal">
-                  <IconButton>
+                <Tooltip content="Staff Modal" css={staffCanEdit ? {} : {d: 'none'}}>
+                  <IconButton css={staffCanEdit ? {} : {opacity: '0.2 !important', cursor: 'default !important'}}>
                     <EditIcon
                       size={20}
                       fill="#FFFFFF"
                       onClick={() => {
-                        setSelectedTeam(team);
-                        staffModalHandler();
+                        if (staffCanEdit) {
+                          setSelectedTeam(team);
+                          staffModalHandler();
+                        }
                       }}
                     />
                   </IconButton>

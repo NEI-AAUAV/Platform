@@ -26,10 +26,10 @@ const TAB = {
   LOGIN: "login",
 }
 
-const ProtectedRoute = ({ children, loggedIn = true }) => {
+const ProtectedRoute = ({ children, noAuth, participantOnly }) => {
   const { token, isStaff, isAdmin } = useRallyAuth(state => state);
 
-  if ((token === null || isStaff || isAdmin) == loggedIn) {
+  if ((noAuth ^ !token) || (participantOnly && (isStaff || isAdmin))) {
     return <Navigate to=".." replace />;
   }
 
@@ -38,10 +38,11 @@ const ProtectedRoute = ({ children, loggedIn = true }) => {
 
 const rallyTascasRoutes = [
   { path: TAB.SCORES, element: <ScoresSection /> },
-  { path: TAB.MAP, element: <ProtectedRoute><MapSection /></ProtectedRoute> },
+  { path: TAB.MAP, element: <ProtectedRoute participantOnly><MapSection /></ProtectedRoute> },
   { path: TAB.TEAMS, element: <TeamsSection /> },
   { path: TAB.CARDS, element: <ProtectedRoute><CardsSection /></ProtectedRoute> },
-  { path: TAB.LOGIN, element: <ProtectedRoute loggedIn={false}><LoginSection /></ProtectedRoute> },
+  { path: TAB.LOGIN, element: <ProtectedRoute noAuth><LoginSection /></ProtectedRoute> },
+  { path: '*', element: <Navigate to="/breakthebars" replace /> },
 ];
 
 const RallyTascas = () => {
@@ -135,11 +136,12 @@ const RallyTascas = () => {
                 <TabLink to={TAB.SCORES}>Scores</TabLink>
                 <TabLink to={TAB.TEAMS}>Teams</TabLink>
                 {
+                  !!token &&
+                  <TabLink to={TAB.CARDS}>Cards</TabLink>
+                }
+                {
                   !!token && !isStaff && !isAdmin &&
-                  <>
-                    <TabLink to={TAB.MAP}>Map</TabLink>
-                    <TabLink to={TAB.CARDS}>Cards</TabLink>
-                  </>
+                  <TabLink to={TAB.MAP}>Map</TabLink>
                 }
               </div>
 

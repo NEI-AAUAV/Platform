@@ -66,6 +66,7 @@ const LoginSection = () => {
             {!!failed && <p className="rally-login-help">Email ou palavra-passe incorreta.</p>}
             <Spacer y={1} />
             <Input
+                aria-label="Username"
                 placeholder="Email"
                 css={inputStyles}
                 value={username}
@@ -73,6 +74,7 @@ const LoginSection = () => {
             />
             <Spacer y={1.6} />
             <Input.Password
+                aria-label="Password"
                 type="password"
                 placeholder="Password"
                 css={inputStyles}

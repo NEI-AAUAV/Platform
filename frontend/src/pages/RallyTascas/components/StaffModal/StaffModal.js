@@ -1,31 +1,54 @@
-import { Button, Input, Modal, Text } from "@nextui-org/react";
+import { Button, Input, Modal, Text, Checkbox } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
+import { useRallyAuth } from "stores/useRallyAuth";
+import service from "services/RallyTascasService";
 
-function StaffModal({visible, setVisible}) {
-  
+
+function StaffModal({ visible, setVisible, team }) {
+  const [dt, setDt] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [state, setState] = useState({
+    'question_score': false,
+    'time_score': '',
+    'skips': '',
+    'pukes': '',
+  })
+  const { isStaff } = useRallyAuth(state => state);
+
   const closeHandler = () => {
     document.body.style.overflow = null;
     setVisible(false);
   };
 
-  const [dt, setDt] = useState(
-    new Date().getHours() +
-      ":" +
-      new Date().getMinutes() +
-      ":" +
-      new Date().getSeconds()
-  );
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+    setState({ ...state, [name]: value });
+  }
+
+  const submit = () => {
+    setLoading(true);
+
+    const data = {...state};
+    Object.keys(data)
+      .forEach((k) => data[k] === '' && delete data[k]);
+    
+    service.updateTeamCheckpoint(team.id, data)
+      .then(() => {
+        setLoading(false);
+        closeHandler();
+      });
+  }
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    function setCurrTime() {
+      const date = new Date();
+      const times = [date.getHours(), date.getMinutes(), date.getSeconds()];
       setDt(
-        new Date().getHours() +
-          ":" +
-          new Date().getMinutes() +
-          ":" +
-          new Date().getSeconds()
+        times.map(t => ('00' + t).slice(-2)).join(':')
       );
-    }, 1000);
+    }
+    setCurrTime();
+    const interval = setInterval(setCurrTime, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -39,8 +62,7 @@ function StaffModal({visible, setVisible}) {
         height: "auto",
         borderRadius: "0.5rem",
         padding: "1rem",
-        marginLeft: "20px",
-        marginRight: "20px",
+        margin: "0 0.5rem",
         backgroundColor: "var(--background-modal)",
         "@media (min-width: 481px)": {
           width: "90%",
@@ -52,28 +74,60 @@ function StaffModal({visible, setVisible}) {
     >
       <Modal.Header>
         <Text id="modal-title" color="var(--column-color)" size={18}>
-          Confirmar chegada ao
+          Confirmar chegada de{' '}
           <Text b color="var(--column-color)" size={18}>
-            {/* Token vai dizer a q posto é q o staff pertence */} Posto X
+            {team.name}
+          </Text>
+          {' ao '}
+          <Text b color="var(--column-color)" size={18}>
+            Posto {isStaff}
           </Text>
         </Text>
       </Modal.Header>
       <Modal.Body>
         <Input
-          clearable
-          bordered
-          fullWidth
-          size="lg"
-          placeholder="Pontos"
-          status="primary"
+          type="number"
+          labelRight="⏱️"
+          aria-label="time_score"
+          name="time_score"
+          {...inputStyles}
+          value={state.time_score}
+          onChange={handleChange}
+          placeholder="Desafio"
+        />
+        <Checkbox
+          aria-label="question_score"
+          name="question_score"
+          {...checkStyles}
+          isSelected={state.question_score}
+          onChange={(v) => setState({ ...state, question_score: v })}>
+          Pergunta<span style={{marginLeft: 'auto', marginRight: '0.75rem'}}>❓</span>
+        </Checkbox>
+        <Input
+          type="number"
+          labelRight="⏭️"
+          aria-label="skips"
+          name="skips"
+          {...inputStyles}
+          value={state.skips}
+          onChange={handleChange}
+          placeholder="Pass"
+        />
+        <Input
+          type="number"
+          min={0}
+          labelRight="🤮"
+          aria-label="pukes"
+          name="pukes"
+          {...inputStyles}
+          value={state.pukes}
+          onChange={handleChange}
+          placeholder="Grego"
         />
         {/* Disabled input that keeps track of current time */}
         <Input
-          clearable
-          bordered
-          fullWidth
-          size="lg"
-          status="primary"
+          aria-label="time"
+          {...inputStyles}
           disabled
           placeholder={dt}
         />
@@ -85,8 +139,8 @@ function StaffModal({visible, setVisible}) {
           justifyContent: "center",
         }}
       >
-        <Button auto onClick={closeHandler} size="sm">
-          Confirmar
+        <Button auto onClick={submit} size="sm" color="warning">
+          <b>Confirmar</b>
         </Button>
       </Modal.Footer>
     </Modal>
@@ -94,3 +148,33 @@ function StaffModal({visible, setVisible}) {
 }
 
 export default StaffModal;
+
+
+const checkStyles = {
+  color: 'warning',
+  css: {
+    marginLeft: '0.625rem',
+    lineHeight: '2rem',
+    '& .nextui-checkbox-mask::before': {
+      background: '#ffffff22'
+    },
+    '&>span': {
+      width: '100%',
+      color: '#889096',
+      fontSize: '1rem'
+    }
+  }
+}
+
+const inputStyles = {
+  bordered: true,
+  fullWidth: true,
+  size: 'lg',
+  status: 'warning',
+  css: {
+    '& label>span': {
+      paddingLeft: "0.5rem",
+      background: '#ffffff22'
+    }
+  }
+}
