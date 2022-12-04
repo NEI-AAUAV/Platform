@@ -1,4 +1,5 @@
 import math
+import random
 from typing import Dict, Any, Union, List
 from datetime import datetime
 
@@ -94,6 +95,16 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         team.skips.append(obj_in.skips)
         team.times.append(time)
 
+        # add cards randomly
+        pity = len(team.times) == 7
+        chance = random.random() > 0.7
+        if chance or pity:
+            for card in random.sample(('card1', 'card2', 'card3'), 3):
+                if getattr(team, card) == -1:
+                    setattr(team, card, 0)
+                    if chance:
+                        break
+
         db.add(team)
         db.commit()
         self.update_classification(db=db)
@@ -110,21 +121,21 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         if obj_in.card1:
             if team.card1 != 0:
                 raise CardNotActiveException()
-            if team.question_scores[checkpoint_id]:
+            if team.question_scores[-1]:
                 raise CardEffectException()
             team.card1 = checkpoint_id
         # skip pass
         if obj_in.card2:
             if team.card2 != 0:
                 raise CardNotActiveException()
-            if team.skips[checkpoint_id] <= 0:
+            if team.skips[-1] <= 0:
                 raise CardEffectException()
             team.card2 = checkpoint_id
         # puke pass
         if obj_in.card3:
             if obj_in.card3 != 0:
                 raise CardNotActiveException()
-            if team.pukes[checkpoint_id] <= 0:
+            if team.pukes[-1] <= 0:
                 raise CardEffectException()
             team.card3 = checkpoint_id
 
@@ -136,7 +147,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
 
     def get_by_checkpoint(self, db: Session, checkpoint_id: int) -> List[Team]:
         teams = self.get_multi(db=db)
-        return [t for t in teams if len(t.times) == checkpoint_id - 1]
+        return [t for t in teams if len(t.times) == checkpoint_id]
 
 
 team = CRUDTeam(Team)

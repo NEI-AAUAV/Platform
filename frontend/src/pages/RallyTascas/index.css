@@ -28,6 +28,22 @@
     }
 }
 
+@keyframes glowing {
+    0% {
+        background-color: #fc8551;
+        box-shadow: 0 0 3px #fc8551;
+    }
+
+    50% {
+        background-color: #fc7136;
+        box-shadow: 0 0 15px #fc7136;
+    }
+
+    100% {
+        background-color: #fc8551;
+        box-shadow: 0 0 3px #fc8551;
+    }
+}
 
 .flicker-bg {
     background-size: 0;

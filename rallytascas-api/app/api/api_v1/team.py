@@ -19,7 +19,7 @@ def get_teams(
     return crud.team.get_multi(db)
 
 
-@router.put("/{id}/checkpoint", status_code=201, response_model=TeamInDB)
+@router.put("/{id}/checkpoint", status_code=201, response_model=TeamMeInDB)
 def add_checkpoint(
     *, db: Session = Depends(deps.get_db),
     id: int,
@@ -33,7 +33,7 @@ def add_checkpoint(
         db=db, team=team, checkpoint_id=staff_user.staff_checkpoint_id, obj_in=obj_in)
 
 
-@router.put("/{id}/cards", status_code=201, response_model=TeamInDB)
+@router.put("/{id}/cards", status_code=201, response_model=TeamMeInDB)
 def activate_cards(
     *, db: Session = Depends(deps.get_db),
     id: int,
