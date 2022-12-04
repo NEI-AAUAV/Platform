@@ -27,6 +27,8 @@ import FainaTree from "./pages/FainaTree";
 import Internship from "./pages/Internship";
 import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
 
+import { useRallyAuth } from "stores/useRallyAuth";
+
 const routes = [
   {
     path: "/",
@@ -41,7 +43,7 @@ const routes = [
     path: "/",
     element: <SimpleLayout />,
     children: [
-      !config.PRODUCTION && { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
+      useRallyAuth.getState().ready && { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
     ],
   },
   {

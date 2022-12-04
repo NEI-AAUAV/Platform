@@ -59,7 +59,7 @@ const TeamsSection = () => {
       .then((data) =>
         setTeams(
           data.sort((a, b) => a.times.length - b.times.length)
-            .sort((a, b) => Number(a.times.length === isStaff - 1))
+            .sort((a, b) => -Number(a.times.length === isStaff - 1))
         ));
   }
 

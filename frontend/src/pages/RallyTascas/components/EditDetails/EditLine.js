@@ -9,8 +9,9 @@ import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 const EditCell = ({ isEditing, score, setIsEditing }) => (
   <div>
     <Row css={styles.editingRow}>
-      {!!isEditing &&
+      {!!isEditing ?
         <Input
+          labelRight={score[0]}
           clearable
           fullWidth
           size="lg"
@@ -18,7 +19,7 @@ const EditCell = ({ isEditing, score, setIsEditing }) => (
           value={score[1]}
           css={{ ...styles.input, mx: '1rem', '& input': { fontWeight: 'bold' } }}
         />
-      }
+      :
       <Text
         color="var(--column-color)"
         size={18}
@@ -27,8 +28,9 @@ const EditCell = ({ isEditing, score, setIsEditing }) => (
           textAlign: "left",
         }}
       >
-        {!isEditing && (score[1] || 0)} {score[0]}
+        {score[1] || 0} {score[0]}
       </Text>
+      }
     </Row>
 
   </div>

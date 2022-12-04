@@ -67,10 +67,10 @@ const InfoTeamSection = ({ team, goBack }) => {
                                 {team.times.length > 0 ? <>
                                     <Text style={{ color: "white" }}>Last Checkpoint</Text>
                                     <Text style={{ color: "white" }}>Score: <span style={{ color: "rgb(255, 70, 70)" }}>{team.time_scores.at(-1)} PTS</span></Text>
-                                    <Text style={{ color: "white" }}>Date: {team.times.at(-1)?.split('T').at(-1)}</Text>
+                                    <Text style={{ color: "white" }}>Time: {team.times.at(-1)?.split('T').at(-1).slice(0, 8)}</Text>
                                 </> : (
                                     <div style={{
-                                        textAlign: 'left', textTransform: 'inherit', marginTop: '0.5rem',
+                                        textAlign: 'left', textTransform: 'none', marginTop: '0.5rem',
                                         fontSize: '1.4rem', fontFamily: 'Akshar', fontWeight: 'bold',
                                     }}>
                                         <p>Não passou por nenhum checkpoint.</p>

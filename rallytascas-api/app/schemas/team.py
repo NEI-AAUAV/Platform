@@ -1,7 +1,7 @@
 from typing import Optional, List, Any, Union
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, conint
 
 from .user import UserInDB
 
@@ -48,13 +48,13 @@ class TeamMeInDB(TeamInDB):
 
 
 class StaffScoresTeamUpdate(BaseModel):
-    question_score: bool
-    time_score: int
-    pukes: int
-    skips: int
+    question_score: bool = False
+    time_score: conint(ge=0) = 0
+    pukes: conint(ge=0) = 0
+    skips: conint(ge=0) = 0
 
 
 class StaffCardsTeamUpdate(BaseModel):
-    card1: bool
-    card2: bool
-    card3: bool
+    card1: Optional[bool]
+    card2: Optional[bool]
+    card3: Optional[bool]
