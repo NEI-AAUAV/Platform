@@ -36,9 +36,15 @@ def get_next_checkpoint(
 @router.get("/teams", status_code=200, response_model=List[TeamMeInDB])
 def get_checkpoint_teams(
     *, db: Session = Depends(deps.get_db),
-    staff_user: UserInDB = Depends(deps.get_staff)
+    admin_or_staff_user: UserInDB = Depends(deps.get_admin_or_staff)
 ) -> Any:
-    """Return all teams that are heading to a staff's checkpoint."""
-
+    """
+    If a staff is authenticated, returned all teams that just passed 
+    through a staff's checkpoint.
+    If an admin is authenticated, returned all teams.
+    """
+    if admin_or_staff_user.is_admin:
+        return crud.team.get_multi(db)
+    
     return crud.team.get_by_checkpoint(
-        db=db, checkpoint_id=staff_user.staff_checkpoint_id)
+        db=db, checkpoint_id=admin_or_staff_user.staff_checkpoint_id)

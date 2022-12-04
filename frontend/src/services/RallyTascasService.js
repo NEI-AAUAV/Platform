@@ -68,6 +68,10 @@ class RallyTascasService {
         return await client.get('/checkpoint');
     }
 
+    async getCheckpointTeams() {
+        return await client.get('/checkpoint/teams');
+    }
+
     async getCurrentCheckpoint() {
         return await client.get('/checkpoint/me');
     }

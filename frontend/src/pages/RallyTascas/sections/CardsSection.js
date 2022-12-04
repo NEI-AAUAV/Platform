@@ -1,10 +1,28 @@
 import { Card, Col, Text, Button } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
-import "../index.css";
 import service from 'services/RallyTascasService';
 import { useRallyAuth } from "stores/useRallyAuth";
+import { Dropdown } from "@nextui-org/react";
+import "../index.css";
 
 
+const images = [
+  {
+    title: "Pergunta-Pass❔",
+    img: "../images/CardsSection/CABULA_CABULOSA.svg",
+    text: "Poupa alguns neurónios! Tens direito a passar uma pergunta à frente, no entanto, recebes 6 pontos, em vez de 8.",
+  },
+  {
+    title: "Desafio-pass🎯",
+    img: "../images/CardsSection/SKIP_GYM_DAY.svg",
+    text: "Tens direito a passar um desafio à frente, no entanto, recebes 8 pontos em vez de 10.",
+  },
+  {
+    title: "Grego-Pass🤮",
+    img: "../images/CardsSection/CHAMAR_O_GREGORIO.svg",
+    text: "Deita tudo cá para fora! Um dos elementos tem direito a vomitar uma vez.",
+  },
+];
 
 const Card2 = ({ item, index, disabled }) => {
 
@@ -54,45 +72,70 @@ const Card2 = ({ item, index, disabled }) => {
 }
 
 const CardsSection = () => {
-  const Images = [
-    {
-      title: "Pergunta-Pass❔",
-      img: "../images/CardsSection/CABULA_CABULOSA.svg",
-      text: "Poupa alguns neurónios! Tens direito a passar uma pergunta à frente, no entanto, recebes 6 pontos, em vez de 8.",
-    },
-    {
-      title: "Desafio-pass🎯",
-      img: "../images/CardsSection/SKIP_GYM_DAY.svg",
-      text: "Tens direito a passar um desafio à frente, no entanto, recebes 8 pontos em vez de 10.",
-    },
-    {
-      title: "Grego-Pass🤮",
-      img: "../images/CardsSection/CHAMAR_O_GREGORIO.svg",
-      text: "Deita tudo cá para fora! Um dos elementos tem direito a vomitar uma vez.",
-    },
-  ];
-  const [Team, setTeam] = useState([]);
+
+  const [team, setTeam] = useState(null);
+  const [allTeams, setAllTeams] = useState([]);
+  const { isStaff, isAdmin } = useRallyAuth(state => state);
+
   // Get API data when component renders
   useEffect(() => {
-    service.getOwnTeam()
-      .then((data) => {
-        setTeam(data);
-      });
+    if (isStaff || isAdmin) {
+      service.getCheckpointTeams()
+        .then((data) => {
+          setAllTeams(data);
+          setTeam(data[0]);
+        });
+    } else {
+      service.getOwnTeam()
+        .then((data) => setTeam(data));
+    }
   }, []);
 
   return (
-    <div className="d-flex flex-wrap" style={{ justifyContent: "space-evenly" }}>
-      {Images.map((item, index) => (
-        Team?.[`card${index + 1}`] !== -1 && <Card2 key={index} item={item} index={index} disabled={Team?.[`card${index + 1}`] !== 0} />
-      ))}
-      {((Team.card1 == -1 && Team.card2 == -1 && Team.card3 == -1) ?
-        <div className="rally-cards-empty">
-          <p>Não tens nenhuma carta.</p><p>Vai beber!</p>
-        </div>
-        :
-        null
-      )}
-    </div>
+    <>
+      {allTeams.length > 0 && team &&
+        <Dropdown>
+          <Dropdown.Button flat color="secondary" css={{ tt: "capitalize" }}>
+            {team.name}
+          </Dropdown.Button>
+          <Dropdown.Menu
+            aria-label="Teams selection"
+            color="secondary"
+            disallowEmptySelection
+            selectionMode="single"
+            selectedKeys={[0]}
+            onSelectionChange={(k) => setTeam(allTeams[k.currentKey])}
+          >
+            {
+              allTeams.map((team, index) =>
+                <Dropdown.Item key={index}>{team.name}</Dropdown.Item>
+              )
+            }
+          </Dropdown.Menu>
+        </Dropdown>
+      }
+      {
+        !!team ?
+          <div className="d-flex flex-wrap" style={{ justifyContent: "space-evenly" }}>
+            {images.map((item, index) => (
+              team?.[`card${index + 1}`] !== -1 &&
+              <Card2 key={index} item={item} index={index} disabled={team?.[`card${index + 1}`] !== 0} />
+            ))}
+            {((team?.card1 == -1 && team?.card2 == -1 && team?.card3 == -1) ?
+              <div className="rally-cards-empty">
+                <p>Não tens nenhuma carta.</p><p>Vai beber!</p>
+              </div>
+              :
+              null
+            )}
+          </div>
+          :
+          <div className="rally-cards-empty">
+            <p>Nenhuma equipa disponível.</p>
+          </div>
+      }
+
+    </>
   );
 }
 

@@ -102,3 +102,9 @@ async def get_admin(curr_user: User = Depends(get_participant)):
     if not curr_user.is_admin:
         raise HTTPException(status_code=401, detail="User without admin permissions")
     return curr_user
+
+
+async def get_admin_or_staff(curr_user: User = Depends(get_participant)):
+    if not curr_user.is_admin and not curr_user.staff_checkpoint_id:
+        raise HTTPException(status_code=401, detail="User without permissions")
+    return curr_user
