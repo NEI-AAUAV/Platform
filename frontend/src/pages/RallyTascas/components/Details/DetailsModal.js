@@ -1,7 +1,8 @@
 import React from "react";
 import { Modal, Text, Button, Row } from "@nextui-org/react";
+import { Checkpoint } from '../../sections/MapSection'
 
-function DetailsModal({visible, setVisible, team, checkpoints}) {
+function DetailsModal({ visible, setVisible, team, checkpoints }) {
 
   const closeHandler = () => {
     document.body.style.overflow = null;
@@ -18,17 +19,17 @@ function DetailsModal({visible, setVisible, team, checkpoints}) {
       width="700px"
       css={{
         ...styles.container,
-        margin: '0.5rem', 
+        margin: '0.5rem',
         width: 'unset',
-        '& .nextui-modal-body' : {
+        '& .nextui-modal-body': {
           px: 0,
         },
         '@xs': {
-          '& .nextui-modal-body' : {
+          '& .nextui-modal-body': {
             px: 'inherit',
           }
         },
-       }}
+      }}
     >
       <Modal.Header>
         <Text id="modal-title" color="var(--column-color)" size={18}>
@@ -71,7 +72,7 @@ function DetailsModal({visible, setVisible, team, checkpoints}) {
         </Row>
         {checkpoints?.sort((a, b) => a.id - b.id).map((checkpoint) => (
           <Row key={checkpoint.id} css={styles.rowPoints}>
-            <Text
+            {/* <Text
               color="var(--column-color)"
               css={{ fontWeight: "bold" }}
               size={18}
@@ -80,7 +81,15 @@ function DetailsModal({visible, setVisible, team, checkpoints}) {
             </Text>
             <Text color="var(--column-color)" size={18}>
               {team.time_scores[checkpoint.id]} Pontos
-            </Text>
+            </Text> */}
+            <Checkpoint
+              name={`P${checkpoint.id} - ${checkpoint.name}`}
+              time={new Date(team.times[checkpoint.id - 1])}
+              took={team.time_scores[checkpoint.id - 1] ?? 0}
+              question={team.question_scores[checkpoint.id - 1]}
+              pukes={team.pukes[checkpoint.id - 1] ?? 0}
+              skips={team.skips[checkpoint.id - 1] ?? 0}
+            />
           </Row>
         ))}
       </Modal.Body>

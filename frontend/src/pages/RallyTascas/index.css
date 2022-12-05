@@ -115,8 +115,11 @@
     font-weight: bold;
 }
 
+.rally-card {
+    background: transparent;
+}
+
 .rally-card-team-name {
-    background-color: inherit;
     color: white;
     overflow: hidden !important;
     max-width: 320px;
@@ -133,7 +136,6 @@
 
 .rally-card-team-information {
     border-radius: 10px;
-    background-color: inherit;
     display: inline-block;
     height: 100% !important;
     width: 300px !important;
@@ -145,18 +147,13 @@
 }
 
 .rally-card-team-checkpoint {
-    background-color: inherit;
     width: 270px !important;
     font-style: normal;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 35px;
     text-transform: uppercase !important;
     color: #FC8551;
 }
 
 .rally-card-team-points {
-    background-color: inherit;
     width: 256px;
     font-style: normal;
     font-weight: 400;
@@ -166,7 +163,6 @@
 }
 
 .rally-card-team-image {
-    background-color: inherit;
     max-width: 320px;
     width: 100%;
     border: 2px solid #FC8551 !important;
