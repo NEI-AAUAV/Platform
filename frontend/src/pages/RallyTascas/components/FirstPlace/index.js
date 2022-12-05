@@ -21,7 +21,7 @@ function FirstPlace({ team, mobile, checkpoints }) {
   return (
     <div style={{overflowY: 'auto'}}>
       <Row css={{d: 'table-layout', ...styles.container, py: mobile ? "1rem" : '0.625rem', px: mobile ? "1rem" : "calc(30px + 1rem)", textAlign: 'left', flexDirection: 'row', minWidth: 436}}>
-        <Col span={mobile ? 2 : 3.5}>{team.classification}{suffix_for_ordinal(team.classification)}</Col>
+        <Col span={mobile ? 2 : 3.5}>{team.classification !== -1 ? team.classification : team.id}{suffix_for_ordinal(team.classification)}</Col>
         <Col>{team.name}</Col>
         {
           !mobile &&
@@ -66,7 +66,7 @@ function FirstPlace({ team, mobile, checkpoints }) {
                 size="sm"
                 css={{ ...styles.button, marginRight: 'auto' }}
               >
-                Ver Equipa
+                Ver Detalhes
               </Button>
           }
         </Col>

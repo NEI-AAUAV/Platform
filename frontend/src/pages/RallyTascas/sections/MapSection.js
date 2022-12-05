@@ -35,15 +35,18 @@ const NextCheckpointCard = (props) => {
     return <InfoCard title="Next Checkpoint" subtitle={props.name} />;
 }
 
-const Checkpoint = (props) => {
-    const day = props.time.getDate();
-    const month = props.time.getMonth() + 1;
-    const year = props.time.getFullYear();
-    const formattedDate = `${day}/${month}/${year}`
+export const Checkpoint = (props) => {
+    let formattedDate = "", formattedHours = "";
+    if (!isNaN(props.time)) {
+        let day = props.time.getDate();
+        let month = props.time.getMonth() + 1;
+        let year = props.time.getFullYear();
+        formattedDate = `${day}/${month}/${year}`;
 
-    const hours = props.time.getHours();
-    const minutes = props.time.getMinutes();
-    const formattedHours = `${hours}:${minutes}`
+        let hours = props.time.getHours();
+        let minutes = props.time.getMinutes();
+        formattedHours = `${hours}:${minutes}`
+    }
 
     const questionColor = props.question ? "rgb(70, 255, 70)" : "rgb(255, 70, 70)";
     const tookMinutes = Math.floor(props.took / 60);
@@ -51,10 +54,9 @@ const Checkpoint = (props) => {
 
     const formatMod = (num, label) => num > 0 ? (num > 1 ? `${num}x` : "") + label : "";
     const pukesString = formatMod(props.pukes, "🤮");
-    const skipsString = formatMod(props.pukes, "⏭️");
-
+    const skipsString = formatMod(props.skips, "⏭️");
     return (
-        <div className="mt-2">
+        <div className="mt-2 w-100" style={{fontFamily: 'Akshar'}}>
             <div className="d-flex justify-content-between">
                 <h6 className="text-uppercase text-white map-item-title">
                     {props.name}
@@ -63,7 +65,7 @@ const Checkpoint = (props) => {
                     {pukesString} {skipsString}
                 </p>
                 <p className="text-uppercase map-item-subtitle m-0" style={{ color: questionColor }}>
-                    {props.question ? "Acertou" : "Errou"}
+                    {props.question === true ? "Acertou" : props.question === false ? "Errou" : ""}
                 </p>
             </div>
             <div className="d-flex justify-content-between">
@@ -71,7 +73,8 @@ const Checkpoint = (props) => {
                     {formattedDate} {formattedHours}
                 </p>
                 <p className="map-item-subtitle m-0" style={{ color: "#FC8551" }}>
-                    {tookMinutes > 0 ? `${tookMinutes}m` : ""}{tookSeconds}s
+                    {tookMinutes > 0 ? `${tookMinutes}m` : ""}
+                    {tookSeconds > 0 ? `${tookSeconds}s` : ""}
                 </p>
             </div>
         </div>
@@ -120,7 +123,6 @@ const MapSection = () => {
                 service.getOwnTeam(),
                 checkPointsPromise,
             ]).then(async ([team, checkpoints]) => {
-                console.log(checkpoints);
                 let merged = [];
                 const len = Math.min(
                     team.times.length,
