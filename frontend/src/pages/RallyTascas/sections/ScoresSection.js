@@ -56,9 +56,11 @@ function InfoTable() {
   useEffect(() => {
     service.getCheckpoints()
       .then((data) => setCheckpoints(data))
-    
+
     service.getTeams()
-      .then((data) => setTeams(data))
+      .then((data) => setTeams(
+        data.sort((a, b) => a.classification - b.classification)
+      ))
 
     service.getOwnTeam()
       .then((data) => setMyTeam(data))
@@ -82,9 +84,10 @@ function InfoTable() {
   };
 
   const renderCell = (team, columnKey) => {
-    const cellValue = team[columnKey];
+    let cellValue = team[columnKey];
     switch (columnKey) {
       case "classification":
+        if (cellValue === -1) cellValue = team.id;
         return cellValue + suffix_for_ordinal(cellValue)
       case "total":
         return `${cellValue} pts`
@@ -158,8 +161,8 @@ function InfoTable() {
             {
               !!isStaff &&
               <Col css={{ d: "flex", m: 10 }}>
-                <Tooltip content="Staff Modal" css={staffCanEdit ? {} : {d: 'none'}}>
-                  <IconButton css={staffCanEdit ? {} : {opacity: '0.2 !important', cursor: 'default !important'}}>
+                <Tooltip content="Staff Modal" css={staffCanEdit ? {} : { d: 'none' }}>
+                  <IconButton css={staffCanEdit ? {} : { opacity: '0.2 !important', cursor: 'default !important' }}>
                     <EditIcon
                       size={20}
                       fill="#FFFFFF"
@@ -227,7 +230,7 @@ function InfoTable() {
           )}
         </Table.Header>
         <Table.Body
-          items={teams.sort((a, b) => a.classification - b.classification)}
+          items={teams}
           css={{
             height: "auto",
             width: "100%",
