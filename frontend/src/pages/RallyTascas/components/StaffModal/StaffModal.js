@@ -1,10 +1,10 @@
-import { Button, Input, Modal, Text, Checkbox } from "@nextui-org/react";
+import { Button, Input, Modal, Text, Checkbox, Loading } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { useRallyAuth } from "stores/useRallyAuth";
 import service from "services/RallyTascasService";
 
 
-function StaffModal({ visible, setVisible, team }) {
+function StaffModal({ visible, setVisible, team, reload }) {
   const [dt, setDt] = useState("");
   const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
@@ -36,6 +36,7 @@ function StaffModal({ visible, setVisible, team }) {
       .then(() => {
         setLoading(false);
         closeHandler();
+        reload()
       });
   }
 
@@ -140,7 +141,7 @@ function StaffModal({ visible, setVisible, team }) {
         }}
       >
         <Button auto onClick={submit} size="sm" color="warning">
-          <b>Confirmar</b>
+          {loading ? <Loading /> : <b>Confirmar</b>}
         </Button>
       </Modal.Footer>
     </Modal>

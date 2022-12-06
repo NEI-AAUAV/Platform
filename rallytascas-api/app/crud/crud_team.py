@@ -133,7 +133,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
             team.card2 = checkpoint_id
         # puke pass
         if obj_in.card3:
-            if obj_in.card3 != 0:
+            if team.card3 != 0:
                 raise CardNotActiveException()
             if team.pukes[-1] <= 0:
                 raise CardEffectException()

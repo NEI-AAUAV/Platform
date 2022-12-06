@@ -40,7 +40,7 @@ const checkApplicable = (team, card) => {
   return false;
 }
 
-const Card2 = ({ item, index, team }) => {
+const Card2 = ({ item, index, team, reload }) => {
 
   const [loading, setLoading] = useState(false);
   const [textvisible, settextVisible] = useState(true);
@@ -53,6 +53,7 @@ const Card2 = ({ item, index, team }) => {
     setLoading(true);
     service.updateTeamCards(team.id, { [`card${index + 1}`]: true })
       .then(() => {
+        reload();
         setLoading(false);
       })
   }
@@ -107,14 +108,18 @@ const CardsSection = () => {
   const [allTeams, setAllTeams] = useState([]);
   const { isStaff, isAdmin } = useRallyAuth(state => state);
 
+  function fetchTeams() {
+    service.getCheckpointTeams()
+      .then((data) => {
+        setAllTeams(data);
+        setTeam(team ? data.find(t => t.id === team?.id) : data[0]);
+      });
+  }
+
   // Get API data when component renders
   useEffect(() => {
     if (isStaff || isAdmin) {
-      service.getCheckpointTeams()
-        .then((data) => {
-          setAllTeams(data);
-          setTeam(data[0]);
-        });
+      fetchTeams();
     } else {
       service.getOwnTeam()
         .then((data) => setTeam(data));
@@ -158,6 +163,7 @@ const CardsSection = () => {
                   item={item}
                   index={index}
                   team={team}
+                  reload={fetchTeams}
                 />
               </Fragment>
             ))}

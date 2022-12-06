@@ -116,7 +116,7 @@
 }
 
 .rally-card {
-    background: transparent;
+    background: transparent !important;
 }
 
 .rally-card-team-name {
