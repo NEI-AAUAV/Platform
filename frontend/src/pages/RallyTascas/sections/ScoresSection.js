@@ -47,7 +47,7 @@ function InfoTable() {
   const [staffModal, setStaffModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
 
-  const { isStaff, isAdmin } = useRallyAuth(state => state);
+  const { isStaff, isAdmin, token } = useRallyAuth(state => state);
 
   const detailsModalHandler = () => {
     setVisibleDetails(true);
@@ -72,7 +72,7 @@ function InfoTable() {
         })
     }
 
-    if (!isStaff && !isAdmin) {
+    if (!isStaff && !isAdmin && !!token) {
       service.getOwnTeam()
         .then((data) => setMyTeam(data))
     }

@@ -1,5 +1,4 @@
 import config from "config";
-import { useRallyAuth } from "stores/useRallyAuth";
 
 const data = [
   {
@@ -110,7 +109,7 @@ const data = [
     name: "Parceiros",
     link: "/parceiros",
   },
-  useRallyAuth.getState().ready && {
+  {
     name: "Rally Tascas",
     link: "/breakthebars",
   },

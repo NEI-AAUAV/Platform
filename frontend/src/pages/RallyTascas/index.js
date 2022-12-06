@@ -55,10 +55,9 @@ const RallyTascas = () => {
     return <TabButton active={match} onPress={() => navigate(to)} size="sm">{children}</TabButton>
   };
 
-  const [showCountdown, setShowCountdown] = useState(false);
   const [visible, setVisible] = useState(false);
   const teamModalHandler = () => setVisible(true);
-  const { name, token, isStaff, isAdmin, teamName, logout } = useRallyAuth(state => state);
+  const { ready, name, token, isStaff, isAdmin, teamName, logout } = useRallyAuth(state => state);
   const [mobile, setMobile] = useState(false);
 
 
@@ -91,7 +90,7 @@ const RallyTascas = () => {
       <Col style={{ maxWidth: "1000px", margin: "0 auto", fontFamily: "", padding: '2rem 0.5rem' }}>
         <div className="d-flex align-items-center">
           {
-            !!mobile &&
+            !!mobile && !!ready &&
             <p className="rally-small-login m-0">
               {!token ?
                 <span onClick={() => navigate(TAB.LOGIN)}>Log in</span>
@@ -104,7 +103,7 @@ const RallyTascas = () => {
           <ClearIcon className="rally-close" fill="white" plain size="1.8rem" onClick={() => navigate('/')} />
         </div>
         {
-          !showCountdown ?
+          !!ready ?
             <>
               <div className="mt-3 d-flex flex-sm-row flex-column justify-content-between">
                 <div>
@@ -148,7 +147,7 @@ const RallyTascas = () => {
               <Outlet />
             </>
             :
-            <Countdown_section countdown_callback={()=>{setShowCountdown(false)}}/>
+            <Countdown_section countdown_callback={()=>{useRallyAuth.getState().setReady()}}/>
         }
       </Col>
     </>
