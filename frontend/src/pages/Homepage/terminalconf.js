@@ -21,6 +21,7 @@ const terminalstate = EmulatorState.create(
                 "tester": {
                     'function': (state, inpt) => {
                         localStorage.setItem("tester", 1);
+                        localStorage.setItem("secret", 1);
                         return {
                             output: OutputFactory.makeTextOutput("refresh the page and check the new features")
                         };

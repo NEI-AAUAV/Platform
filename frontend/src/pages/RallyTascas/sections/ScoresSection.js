@@ -55,15 +55,29 @@ function InfoTable() {
 
   useEffect(() => {
     service.getCheckpoints()
-      .then((data) => setCheckpoints(data))
+      .then((data) => setCheckpoints(data));
 
-    service.getTeams()
-      .then((data) => setTeams(
-        data.sort((a, b) => a.classification - b.classification)
-      ))
+    function fetchEverything() {
+      if (isAdmin) {
+        service.getCheckpointTeams()
+          .then((data) => setTeams(
+            data.sort((a, b) => a.classification - b.classification)
+          ))
+      } else {
+        service.getTeams()
+          .then((data) => setTeams(
+            data.sort((a, b) => a.classification - b.classification)
+          ))
+      }
 
-    service.getOwnTeam()
-      .then((data) => setMyTeam(data))
+      if (!isStaff && !isAdmin) {
+        service.getOwnTeam()
+          .then((data) => setMyTeam(data))
+      }
+    }
+
+    fetchEverything();
+    const intervalId = setInterval(fetchEverything, 30_000);
 
     function handleResize() {
       setMobile(window.innerWidth < 650)
@@ -71,7 +85,8 @@ function InfoTable() {
     handleResize();
     window.addEventListener('resize', handleResize);
     return (() => {
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('resize', handleResize);
+      clearInterval(intervalId);
     });
   }, [])
 
@@ -99,7 +114,6 @@ function InfoTable() {
             <Col>{cellValue.at(-1)?.split('T').at(-1).slice(0, 8) || '---'}</Col>
           </>
         );
-
       case "icons":
         const staffCanEdit = isStaff - 1 === team.times.length;
         return (
@@ -230,7 +244,7 @@ function InfoTable() {
           )}
         </Table.Header>
         <Table.Body
-          items={teams}
+          items={checkpoints.length > 0 ? teams: []}
           css={{
             height: "auto",
             width: "100%",
