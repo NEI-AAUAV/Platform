@@ -8,7 +8,7 @@ import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 import service from 'services/RallyTascasService';
 
-function EditDetails({ visible, setVisible, team, checkpoints }) {
+function EditDetails({ visible, setVisible, team, checkpoints, reload }) {
   const [isEditing, setIsEditing] = useState(false);
   const [cards, setCards] = useState([team.card1, team.card2, team.card3]);
 
@@ -17,13 +17,9 @@ function EditDetails({ visible, setVisible, team, checkpoints }) {
     setVisible(false);
   };
 
-  const handlerEditView = () => {
-    setIsEditing(true);
-  };
-
   const submit = () => {
-    service.updateTeam(team.id, {card1: cards[0], card2: cards[1], card3: cards[2]})
-      .then(() => window.location.reload())
+    service.updateTeam(team.id, { card1: cards[0], card2: cards[1], card3: cards[2] })
+      .then(() => { reload(); setIsEditing(false); })
   }
 
   return (
@@ -91,7 +87,7 @@ function EditDetails({ visible, setVisible, team, checkpoints }) {
                 className="text-danger mx-2"
                 icon={faTimes}
                 size={"2x"}
-                onClick={() => {setIsEditing(false); setCards([...[team.card1, team.card2, team.card3]])}}
+                onClick={() => { setIsEditing(false); setCards([...[team.card1, team.card2, team.card3]]) }}
               />
               <FontAwesomeIcon
                 className="text-primary mx-2"
@@ -164,7 +160,7 @@ function EditDetails({ visible, setVisible, team, checkpoints }) {
           </Text>
         </Row>
         {checkpoints.map((checkpoint, i) => (
-          <EditLine key={i} checkpoint={checkpoint} team={team} />
+          <EditLine reload={reload} key={i} checkpoint={checkpoint} team={team} />
         ))}
       </Modal.Body>
       <Modal.Footer>

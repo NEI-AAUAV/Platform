@@ -4,7 +4,7 @@ import { useRallyAuth } from "stores/useRallyAuth";
 import service from "services/RallyTascasService";
 
 
-function StaffModal({ visible, setVisible, team }) {
+function StaffModal({ visible, setVisible, team, reload }) {
   const [dt, setDt] = useState("");
   const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
@@ -34,9 +34,9 @@ function StaffModal({ visible, setVisible, team }) {
     
     service.updateTeamCheckpoint(team.id, data)
       .then(() => {
-        // setLoading(false);
-        // closeHandler();
-        window.location.reload()
+        setLoading(false);
+        closeHandler();
+        reload()
       });
   }
 

@@ -68,7 +68,7 @@ const EditCell = ({ isEditing, isCheckbox, label, name, score, setScore }) => (
   </div>
 )
 
-function EditLine({ checkpoint, team }) {
+function EditLine({ checkpoint, team, reload }) {
   const [isEditing, setIsEditing] = useState(false);
   const id = checkpoint.id - 1;
   const initialState = {
@@ -96,7 +96,7 @@ function EditLine({ checkpoint, team }) {
     pukes[id] = state.pukes;
 
     service.updateTeam(team.id, { time_scores, question_scores, skips, pukes })
-      .then(() => window.location.reload())
+      .then(() => { reload(); setIsEditing(false); } )
   }
 
   return (

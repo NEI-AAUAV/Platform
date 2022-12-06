@@ -53,28 +53,34 @@ function InfoTable() {
     setVisibleDetails(true);
   };
 
+  function fetchEverything() {
+    if (isAdmin) {
+      service.getCheckpointTeams()
+        .then((data) => {
+          setTeams(
+            data.sort((a, b) => a.classification - b.classification)
+          );
+          setSelectedTeam(data.find(t => selectedTeam?.id === t.id));
+        })
+    } else {
+      service.getTeams()
+        .then((data) => {
+          setTeams(
+            data.sort((a, b) => a.classification - b.classification)
+          );
+          setSelectedTeam(data.find(t => selectedTeam?.id === t.id));
+        })
+    }
+
+    if (!isStaff && !isAdmin) {
+      service.getOwnTeam()
+        .then((data) => setMyTeam(data))
+    }
+  }
+
   useEffect(() => {
     service.getCheckpoints()
       .then((data) => setCheckpoints(data));
-
-    function fetchEverything() {
-      if (isAdmin) {
-        service.getCheckpointTeams()
-          .then((data) => setTeams(
-            data.sort((a, b) => a.classification - b.classification)
-          ))
-      } else {
-        service.getTeams()
-          .then((data) => setTeams(
-            data.sort((a, b) => a.classification - b.classification)
-          ))
-      }
-
-      if (!isStaff && !isAdmin) {
-        service.getOwnTeam()
-          .then((data) => setMyTeam(data))
-      }
-    }
 
     fetchEverything();
     const intervalId = setInterval(fetchEverything, 30_000);
@@ -244,7 +250,7 @@ function InfoTable() {
           )}
         </Table.Header>
         <Table.Body
-          items={checkpoints.length > 0 ? teams: []}
+          items={checkpoints.length > 0 ? teams : []}
           css={{
             height: "auto",
             width: "100%",
@@ -313,6 +319,7 @@ function InfoTable() {
           setVisible={setEditDetails}
           team={selectedTeam}
           checkpoints={checkpoints}
+          reload={fetchEverything}
         />
       )}
 
@@ -322,6 +329,7 @@ function InfoTable() {
           setVisible={setStaffModal}
           team={selectedTeam}
           checkpoints={checkpoints}
+          reload={fetchEverything}
         />
       )}
     </>
