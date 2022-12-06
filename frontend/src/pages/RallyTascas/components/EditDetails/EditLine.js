@@ -27,7 +27,6 @@ const checkStyles = {
 
 const EditCell = ({ isEditing, isCheckbox, label, name, score, setScore }) => (
   <div>
-    {console.log(name, score)}
     <Row css={styles.editingRow}>
       {!!isEditing ? (
         !!isCheckbox ?

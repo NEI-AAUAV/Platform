@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button, Col, Row, Table, Tooltip } from "@nextui-org/react";
 import { IconButton } from "../components/Customized";
 import { EyeIcon } from "../components/Icons/EyeIcon";
@@ -46,6 +46,8 @@ function InfoTable() {
   const [editDetails, setEditDetails] = useState(false);
   const [staffModal, setStaffModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
+  const selectedTeamRef = useRef();
+  selectedTeamRef.current = selectedTeam;
 
   const { isStaff, isAdmin, token } = useRallyAuth(state => state);
 
@@ -53,14 +55,14 @@ function InfoTable() {
     setVisibleDetails(true);
   };
 
-  function fetchEverything() {
+  const fetchEverything = () => {
     if (isAdmin) {
       service.getCheckpointTeams()
         .then((data) => {
           setTeams(
             data.sort((a, b) => a.classification - b.classification)
           );
-          setSelectedTeam(data.find(t => selectedTeam?.id === t.id));
+          setSelectedTeam(data.find(t => selectedTeamRef.current?.id === t.id));
         })
     } else {
       service.getTeams()
@@ -68,7 +70,7 @@ function InfoTable() {
           setTeams(
             data.sort((a, b) => a.classification - b.classification)
           );
-          setSelectedTeam(data.find(t => selectedTeam?.id === t.id));
+          setSelectedTeam(data.find(t => selectedTeamRef.current?.id === t.id));
         })
     }
 

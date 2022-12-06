@@ -10,12 +10,18 @@ import service from 'services/RallyTascasService';
 
 function EditDetails({ visible, setVisible, team, checkpoints, reload }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [cards, setCards] = useState([team.card1, team.card2, team.card3]);
-
+  const initialState = [team?.card1, team?.card2, team?.card3]
+  const [cards, setCards] = useState(initialState);
+  
   const closeHandler = () => {
     document.body.style.overflow = null;
     setVisible(false);
   };
+
+  if (!team) {
+    closeHandler();
+    return null;
+  }
 
   const submit = () => {
     service.updateTeam(team.id, { card1: cards[0], card2: cards[1], card3: cards[2] })
@@ -87,7 +93,7 @@ function EditDetails({ visible, setVisible, team, checkpoints, reload }) {
                 className="text-danger mx-2"
                 icon={faTimes}
                 size={"2x"}
-                onClick={() => { setIsEditing(false); setCards([...[team.card1, team.card2, team.card3]]) }}
+                onClick={() => { setIsEditing(false); setCards([...initialState]) }}
               />
               <FontAwesomeIcon
                 className="text-primary mx-2"
@@ -100,7 +106,7 @@ function EditDetails({ visible, setVisible, team, checkpoints, reload }) {
         </Row>
         <Row css={styles.modalBody} className="flex-sm-row flex-column align-items-center">
           {[1, 2, 3].map((i) =>
-            <div className="text-center mb-2">
+            <div key={i} className="text-center mb-2">
               <div className="text-white mb-2">
                 {
                   ["Pergunta-Pass❔", "Desafio-pass🎯", "Grego-Pass🤮"][i - 1]
@@ -160,7 +166,7 @@ function EditDetails({ visible, setVisible, team, checkpoints, reload }) {
           </Text>
         </Row>
         {checkpoints.map((checkpoint, i) => (
-          <EditLine reload={reload} key={i} checkpoint={checkpoint} team={team} />
+          i < team?.times.length && <EditLine reload={reload} key={i} checkpoint={checkpoint} team={team} />
         ))}
       </Modal.Body>
       <Modal.Footer>
