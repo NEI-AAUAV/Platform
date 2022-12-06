@@ -1,24 +1,26 @@
 import React, { useState } from "react";
-import { Modal, Text, Button, Row, Input } from "@nextui-org/react";
+import { Modal, Text, Button, Row, Dropdown } from "@nextui-org/react";
 import { IconButton } from "../Customized";
 import { EditIcon } from "../Icons/EditIcon";
 import EditLine from "./EditLine";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
-import { color } from "d3";
 
-function EditDetails({visible, setVisible, team, checkpoints}) {
+import service from 'services/RallyTascasService';
+
+function EditDetails({ visible, setVisible, team, checkpoints, reload }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [cards, setCards] = useState([team.card1, team.card2, team.card3]);
 
   const closeHandler = () => {
     document.body.style.overflow = null;
     setVisible(false);
   };
 
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handlerEditView = () => {
-    setIsEditing(true);
-  };
+  const submit = () => {
+    service.updateTeam(team.id, { card1: cards[0], card2: cards[1], card3: cards[2] })
+      .then(() => { reload(); setIsEditing(false); })
+  }
 
   return (
     <Modal
@@ -29,14 +31,14 @@ function EditDetails({visible, setVisible, team, checkpoints}) {
       onClose={closeHandler}
       width="700px"
       css={{
-        ...styles.modal, 
-        margin: '0.5rem', 
+        ...styles.modal,
+        margin: '0.5rem',
         width: 'unset',
-        '& .nextui-modal-body' : {
+        '& .nextui-modal-body': {
           px: 0,
         },
         '@xs': {
-          '& .nextui-modal-body' : {
+          '& .nextui-modal-body': {
             px: 'inherit',
           }
         },
@@ -54,59 +56,7 @@ function EditDetails({visible, setVisible, team, checkpoints}) {
       <Modal.Body>
         <Row css={styles.modalBody}>
           <Text
-            color="var(--column-color)"
-            css={{ fontWeight: "bold" }}
-            size={18}
-          >
-            Nome da Equipa:
-          </Text>
-          <div style={styles.modalRow}>
-            {!isEditing ? (
-              <>
-                <Text color="var(--column-color)" size={18}>
-                  {team.name}
-                </Text>
-                <IconButton
-                  style={{ marginBottom: "1rem", marginLeft: "1rem" }}
-                  onClick={handlerEditView}
-                >
-                  <EditIcon size={20} fill="#979797" />
-                </IconButton>
-              </>
-            ) : (
-              <>
-                <Row css={styles.editingRow}>
-                  <Input
-                    clearable
-                    fullWidth
-                    size="lg"
-                    placeholder="Nome da Equipa"
-                    value={team.name}
-                    css={styles.input}
-                  />
-                  <div>
-                    <FontAwesomeIcon
-                      className="text-danger"
-                      icon={faTimes}
-                      size={"2x"}
-                      onClick={() => setIsEditing(false)}
-                      style={{ marginRight: "1rem" }}
-                    />
-                    <FontAwesomeIcon
-                      className="text-primary"
-                      icon={faCheck}
-                      size={"2x"}
-                      css={{ marginLeft: "1rem" }}
-                    />
-                  </div>
-                </Row>
-              </>
-            )}
-          </div>
-        </Row>
-        <Row css={styles.modalBody}>
-          <Text
-            color="var(--column-color)"
+            color="var(--nextui-colors-error)"
             css={{ fontWeight: "bold" }}
             size={18}
           >
@@ -116,13 +66,101 @@ function EditDetails({visible, setVisible, team, checkpoints}) {
             {team.total}
           </Text>
         </Row>
+        <Row css={styles.modalBody}>
+          <Text
+            color="var(--nextui-colors-error)"
+            css={{ fontWeight: "bold" }}
+            size={18}
+          >
+            Cartas:
+          </Text>
+          {!isEditing ?
+            <IconButton
+              style={{ marginBottom: "1rem", marginLeft: "1rem" }}
+              onClick={() => setIsEditing(true)}
+            >
+              <EditIcon size={20} fill="#979797" />
+            </IconButton>
+            :
+            <div>
+              <FontAwesomeIcon
+                className="text-danger mx-2"
+                icon={faTimes}
+                size={"2x"}
+                onClick={() => { setIsEditing(false); setCards([...[team.card1, team.card2, team.card3]]) }}
+              />
+              <FontAwesomeIcon
+                className="text-primary mx-2"
+                icon={faCheck}
+                size={"2x"}
+                onClick={submit}
+              />
+            </div>
+          }
+        </Row>
+        <Row css={styles.modalBody} className="flex-sm-row flex-column align-items-center">
+          {[1, 2, 3].map((i) =>
+            <div className="text-center mb-2">
+              <div className="text-white mb-2">
+                {
+                  ["Pergunta-Pass❔", "Desafio-pass🎯", "Grego-Pass🤮"][i - 1]
+                }
+              </div>
+              <div>
+                {!!isEditing ?
+                  <Dropdown>
+                    <Dropdown.Button flat color="error" css={{ tt: "capitalize", fontWeight: 'bold', marginLeft: 8 }}>
+                      {cards[i - 1] == -1 ? 'Ausente' :
+                        cards[i - 1] == 0 ? 'Por Ativar' :
+                          `Ativada em P${cards[i - 1]}`}
+                    </Dropdown.Button>
+                    <Dropdown.Menu
+                      color="error"
+                      aria-label="Cards selection"
+                      disallowEmptySelection
+                      selectionMode="single"
+                      selectedKeys={[cards[i - 1]]}
+                      onSelectionChange={(k) => setCards(prevCards => { prevCards[i - 1] = k.currentKey; return [...prevCards]; })}
+                      css={{ fontFamily: 'monospace' }}
+                    >
+                      <Dropdown.Item key={-1} css={{ padding: '0.3rem 0', height: 'auto' }} textValue="none">
+                        Ausente
+                      </Dropdown.Item>
+                      <Dropdown.Item key={0} css={{ padding: '0.3rem 0', height: 'auto' }} textValue="none">
+                        Por Ativar
+                      </Dropdown.Item>
+                      {
+                        Array.from({ length: 8 }, (_, i) => i + 1).map((index) =>
+                          <Dropdown.Item key={index} css={{ padding: '0.3rem 0', height: 'auto' }} textValue="none">
+                            Ativada em P{index}
+                          </Dropdown.Item>
+                        )
+                      }
+                    </Dropdown.Menu>
+                  </Dropdown>
+                  :
+                  <Text
+                    color="var(--column-color)"
+                  >
+                    {team[`card${i}`] === -1 ? 'Ausente' :
+                      team[`card${i}`] === 0 ? 'Por Ativar' :
+                        `Ativada em P${team[`card${i}`]}`}
+                  </Text>
+                }
+              </div>
+            </div>
+          )}
+        </Row>
         <Row>
-          <Text color="var(--column-color)" size={18}>
+          <Text color="var(--nextui-colors-error)"
+            css={{ fontWeight: "bold" }}
+            size={18}
+          >
             Checkpoints
           </Text>
         </Row>
-        {checkpoints.map((checkpoint) => (
-          <EditLine checkpoint={checkpoint} team={team} />
+        {checkpoints.map((checkpoint, i) => (
+          <EditLine reload={reload} key={i} checkpoint={checkpoint} team={team} />
         ))}
       </Modal.Body>
       <Modal.Footer>

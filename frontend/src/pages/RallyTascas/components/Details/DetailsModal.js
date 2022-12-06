@@ -83,7 +83,7 @@ function DetailsModal({ visible, setVisible, team, checkpoints }) {
               {team.time_scores[checkpoint.id]} Pontos
             </Text> */}
             <Checkpoint
-              name={`P${checkpoint.id} - ${checkpoint.name}`}
+              name={`${checkpoint.id} - ${checkpoint.name}`}
               time={new Date(team.times[checkpoint.id - 1])}
               took={team.time_scores[checkpoint.id - 1] ?? 0}
               question={team.question_scores[checkpoint.id - 1]}

@@ -45,6 +45,19 @@
     }
 }
 
+.neon {
+    color: #fff;
+    text-shadow:
+        0 0 5px #00020E,
+        0 0 10px #fff,
+        0 0 20px #fff,
+        0 0 40px #fc8551,
+        0 0 80px #fc8551,
+        0 0 90px #fc8551,
+        0 0 100px #fc8551,
+        0 0 150px #fc8551;
+}
+
 .flicker-bg {
     background-size: 0;
     animation: flicker 12s linear -11.5s infinite forwards;
@@ -116,7 +129,7 @@
 }
 
 .rally-card {
-    background: transparent;
+    background: transparent !important;
 }
 
 .rally-card-team-name {
