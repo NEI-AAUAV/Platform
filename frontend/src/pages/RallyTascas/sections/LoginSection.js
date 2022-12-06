@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router";
 import { Input, Spacer, Loading } from "@nextui-org/react";
 import { TabButton } from "../components/Customized";
 
@@ -21,7 +22,8 @@ const inputStyles = {
     }
 }
 
-const LoginSection = ({ onSuccess }) => {
+const LoginSection = () => {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -45,11 +47,11 @@ const LoginSection = ({ onSuccess }) => {
                         .then((team) => {
                             useRallyAuth.getState().setTeamName(team.name);
                             setLoading(false);
-                            onSuccess();
+                            navigate("..")
                         })
                 } else {
                     setLoading(false);
-                    onSuccess();
+                    navigate("..")
                 }
             })
             .catch(() => {
@@ -64,6 +66,7 @@ const LoginSection = ({ onSuccess }) => {
             {!!failed && <p className="rally-login-help">Email ou palavra-passe incorreta.</p>}
             <Spacer y={1} />
             <Input
+                aria-label="Username"
                 placeholder="Email"
                 css={inputStyles}
                 value={username}
@@ -71,6 +74,7 @@ const LoginSection = ({ onSuccess }) => {
             />
             <Spacer y={1.6} />
             <Input.Password
+                aria-label="Password"
                 type="password"
                 placeholder="Password"
                 css={inputStyles}

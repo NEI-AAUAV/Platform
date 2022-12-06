@@ -1,6 +1,7 @@
 import create from 'zustand';
 
 const storage = {
+    SECRET: 'secret',
     NAME: 'nm',
     TEAM_NAME: 'tn',
     TOKEN: 'tk',
@@ -9,15 +10,20 @@ const storage = {
 }
 
 export const useRallyAuth = create((set) => ({
+    ready: !!localStorage.getItem(storage.SECRET),
     name: localStorage.getItem(storage.NAME),
     teamName: localStorage.getItem(storage.TEAM_NAME),
     token: localStorage.getItem(storage.TOKEN),
-    isStaff: !!localStorage.getItem(storage.STAFF),
+    isStaff: localStorage.getItem(storage.STAFF),
     isAdmin: !!localStorage.getItem(storage.ADMIN),
 
     setTeamName: (teamName) => {
         localStorage.setItem(storage.TEAM_NAME, teamName);
         set(() => ({ teamName }))
+    },
+    setReady: () => {
+        localStorage.setItem(storage.SECRET, 1);
+        set(() => ({ ready: true }))
     },
     login: ({ name, access_token, staff_checkpoint_id, is_admin }) => {
         localStorage.setItem(storage.NAME, name);

@@ -5,12 +5,13 @@ import { EditIcon } from "../Icons/EditIcon";
 import EditLine from "./EditLine";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { color } from "d3";
 
-function EditDetails(props) {
-  let visible = props.visible;
+function EditDetails({visible, setVisible, team, checkpoints}) {
 
   const closeHandler = () => {
-    props.setVisible(false);
+    document.body.style.overflow = null;
+    setVisible(false);
   };
 
   const [isEditing, setIsEditing] = useState(false);
@@ -27,14 +28,26 @@ function EditDetails(props) {
       open={visible}
       onClose={closeHandler}
       width="700px"
-      css={styles.modal}
+      css={{
+        ...styles.modal, 
+        margin: '0.5rem', 
+        width: 'unset',
+        '& .nextui-modal-body' : {
+          px: 0,
+        },
+        '@xs': {
+          '& .nextui-modal-body' : {
+            px: 'inherit',
+          }
+        },
+      }}
     >
       <Modal.Header>
         <Text id="modal-title" color="var(--column-color)" size={18}>
           Detalhes de
           <Text b color="var(--column-color)" size={18}>
             {" "}
-            {props.selectedTeam.teamName}
+            {team.name}
           </Text>
         </Text>
       </Modal.Header>
@@ -51,7 +64,7 @@ function EditDetails(props) {
             {!isEditing ? (
               <>
                 <Text color="var(--column-color)" size={18}>
-                  {props.selectedTeam.teamName}
+                  {team.name}
                 </Text>
                 <IconButton
                   style={{ marginBottom: "1rem", marginLeft: "1rem" }}
@@ -68,7 +81,7 @@ function EditDetails(props) {
                     fullWidth
                     size="lg"
                     placeholder="Nome da Equipa"
-                    value={props.selectedTeam.teamName}
+                    value={team.name}
                     css={styles.input}
                   />
                   <div>
@@ -100,7 +113,7 @@ function EditDetails(props) {
             Pontuação
           </Text>
           <Text color="var(--column-color)" size={18}>
-            {props.selectedTeam.total}
+            {team.total}
           </Text>
         </Row>
         <Row>
@@ -108,8 +121,8 @@ function EditDetails(props) {
             Checkpoints
           </Text>
         </Row>
-        {props.selectedTeam.scores.map((checkpoint) => (
-          <EditLine checkpoint={checkpoint} />
+        {checkpoints.map((checkpoint) => (
+          <EditLine checkpoint={checkpoint} team={team} />
         ))}
       </Modal.Body>
       <Modal.Footer>

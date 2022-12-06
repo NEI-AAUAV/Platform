@@ -1,97 +1,182 @@
-import { Card, Col, Text } from "@nextui-org/react";
-import React, { useEffect,useState } from "react";
-import "../index.css";
+import { Card, Col, Text, Button, Loading } from "@nextui-org/react";
+import React, { Fragment, useEffect, useState } from "react";
 import service from 'services/RallyTascasService';
+import { useRallyAuth } from "stores/useRallyAuth";
+import { Dropdown } from "@nextui-org/react";
+import "../index.css";
 
-const Card2 = ({item, index}) => {
-  
+
+const images = [
+  {
+    title: "Pergunta-Pass❔",
+    img: "../images/CardsSection/CABULA_CABULOSA.svg",
+    text: "Poupa alguns neurónios! Tens direito a passar uma pergunta à frente, no entanto, recebes 6 pontos, em vez de 8.",
+  },
+  {
+    title: "Desafio-pass🎯",
+    img: "../images/CardsSection/SKIP_GYM_DAY.svg",
+    text: "Tens direito a passar um desafio à frente, no entanto, recebes 8 pontos em vez de 10.",
+  },
+  {
+    title: "Grego-Pass🤮",
+    img: "../images/CardsSection/CHAMAR_O_GREGORIO.svg",
+    text: "Deita tudo cá para fora! Um dos elementos tem direito a vomitar uma vez.",
+  },
+];
+
+const checkApplicable = (team, card) => {
+  if (!team) return false;
+
+  const checkpoint_id = team.times.length - 1;
+
+  switch (card) {
+    case 'card1':
+      return !(team.card1 != 0 || team.question_scores[checkpoint_id])
+    case 'card2':
+      return !(team.card2 != 0 || team.skips[checkpoint_id] <= 0)
+    case 'card3':
+      return !(team.card3 != 0 || team.pukes[checkpoint_id] <= 0)
+  }
+  return false;
+}
+
+const Card2 = ({ item, index, team }) => {
+
+  const [loading, setLoading] = useState(false);
   const [textvisible, settextVisible] = useState(true);
+  const { isStaff } = useRallyAuth(state => state);
 
-    return (
-      <>      
-        <Card key={index} variant="bordered" isPressable onPress={() => {settextVisible(!textvisible)}} css={{ bg: "#FC855133"  /* os últimos dois números são do canal alfa, que mostra a opacidade só do background-color*/ , w: "280px",h: 400, border: "2px solid #FC8551 !important", margin: 15 }}>   
-        <Card.Image
-        src={item.img}
-        width="100%"
-        height="100%"
-        objectFit="cover"
-        alt="Card image background"
-      />
-      <Card.Footer css={{fontFamily: "Akshar", zIndex: 1, paddingBottom: 0}}>
+  const disabled = team?.[`card${index + 1}`] !== 0;
+  const applicable = checkApplicable(team, `card${index + 1}`);
+
+  const updateCard = () => {
+    setLoading(true);
+    service.updateTeamCards(team.id, { [`card${index + 1}`]: true })
+      .then(() => {
+        setLoading(false);
+      })
+  }
+
+  return (
+    <>
+      <Card key={index} variant="bordered" isPressable={!disabled} onPress={() => settextVisible(!textvisible)}
+        css={{
+          bg: "#FC855133"  /* os últimos dois números são do canal alfa, que mostra a opacidade só do background-color*/,
+          w: "280px", h: 400,
+          border: "2px solid #FC8551 !important",
+          margin: 15, opacity: disabled ? 0.5 : 1,
+          filter: disabled ? "grayscale(80%)" : 'none',
+        }}>
+        <div style={{ backgroundColor: "#1D1D1D", backgroundImage: `url(${item.img})`, backgroundPosition: 'center', backgroundRepeat: 'no-repeat', height: '100%' }}>
+        </div>
+        <Card.Footer css={{ fontFamily: "Akshar", zIndex: 1, paddingBottom: 0 }}>
           <Col>
             <Text h3 color="#FC8551" >
-            {item.title}
+              {item.title}
             </Text>
           </Col>
-        </Card.Footer> 
-        <Card.Body css={{fontFamily: "Akshar", zIndex: 1, paddingTop: 0,  overflow: 'hidden'}}> 
-        <Text h4 color="#FFFFFF" css={{height: textvisible ? 0 : '200px', transition: 'height 0.2s linear', overflow: 'hidden'}}>
-        {item.text}
-            </Text>
+        </Card.Footer>
+
+        <Card.Body css={{ fontFamily: "Akshar", zIndex: 1, paddingTop: 5, overflow: 'hidden' }}>
+          {!disabled &&
+            (isStaff ?
+              <Button disabled={!applicable} rounded shadow color="rgb(252, 133, 81)"
+                onPress={() => isStaff && applicable && updateCard()}
+                css={{
+                  backgroundColor: "rgb(252, 133, 81)",
+                  margin: "auto",
+                  height: '3rem',
+                  fontSize: '1.1rem'
+                }}
+              >{loading ? <Loading color="currentColor" size="sm" /> : applicable ? 'Ativar' : 'Não aplicável'}</Button>
+              :
+              <Text h4 color="#FFFFFF" css={{ height: textvisible ? 0 : '175px', transition: 'height 0.2s linear', overflow: 'hidden' }}>
+                {item.text}
+              </Text>
+            )
+          }
         </Card.Body>
-    </Card>
+      </Card>
     </>
-    );
+  );
 }
 
 const CardsSection = () => {
-  const Images = [
-    {
-      title: "Lemon 2",
-      img: "./images/merch/brasao.png",
-      text: "Carta BACANA",
-    },
-    {
-      title: "Banana",
-      img: "./images/merch/brasao.png",
-      text: "Louca Carta",
-    },
-    {
-      title: "Watermelon",
-      img: "./images/merch/brasao.png",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et nulla orci. Donec nec felis semper, cursus risus quis, fringilla nisi. Nulla imperdiet nibh a mi posuere lacinia in ut.",
-    },
-  ];
-  const [Team, setTeam] = useState({  "name": "A miha equipa bonita",
-  "id": 0,
-  "scores": [
-    0
-  ],
-  "times": [
-    "2022-11-27T16:16:03.903Z"
-  ],
-  "classification": 1,
-  "members": [
-    {
-      "team_id": 0,
-      "name": "Leandro Silva",
-      "id": 0
+
+  const [team, setTeam] = useState(null);
+  const [allTeams, setAllTeams] = useState([]);
+  const { isStaff, isAdmin } = useRallyAuth(state => state);
+
+  // Get API data when component renders
+  useEffect(() => {
+    if (isStaff || isAdmin) {
+      service.getCheckpointTeams()
+        .then((data) => {
+          setAllTeams(data);
+          setTeam(data[0]);
+        });
+    } else {
+      service.getOwnTeam()
+        .then((data) => setTeam(data));
     }
-  ],
-  "card1": false,
-  "card2": false,
-  "card3": false});
-      // Get API data when component renders
-      useEffect(() => {
-        service.getOwnTeam()
-            .then((data) => {
-                setTeam(data);
-            });
-    }, []);
- 
-    return (
-        <div className="d-flex flex-wrap" style={{ justifyContent:"space-evenly"}}>
-         {Images.map((item, index) => (
-            Team[`card${index}`] && <Card2 item={item} index={index} />
-    ))}
-      {(!(Team.card1 || Team.card2 || Team.card3) ?
-    <text style={{ color:"white", fontSize:"45px",textAlign:"center",fontWeight: "bold"}}><p style={{all: "inherit"}}>Não tens nenhuma carta.</p><p style={{all: "inherit"}}> Vai beber!</p></text>
-    :
-    <p> falta colocar para mostrar no meio do telemovel, que fica mais fixe</p>
-    )}
-    
-      </div>
-    );
+  }, []);
+
+  return (
+    <>
+      {allTeams.length > 0 && team &&
+        <Dropdown>
+          <Dropdown.Button flat color="warning" css={{ tt: "capitalize", fontWeight: 'bold', marginLeft: 8 }}>
+            {team.name}
+          </Dropdown.Button>
+          <Dropdown.Menu
+            color="warning"
+            aria-label="Teams selection"
+            disallowEmptySelection
+            selectionMode="single"
+            selectedKeys={[0]}
+            onSelectionChange={(k) => setTeam(allTeams[k.currentKey])}
+            css={{ fontFamily: 'monospace' }}
+          >
+            {
+              allTeams.map((team, index) =>
+                <Dropdown.Item key={index} css={{ padding: '0.3rem 0', height: 'auto' }} textValue="none">
+                  (<b>{(team.card1 === 0) + (team.card2 === 0) + (team.card3 === 0)}</b>)
+                  {' '}{team.name}
+                </Dropdown.Item>
+              )
+            }
+          </Dropdown.Menu>
+        </Dropdown>
+      }
+      {
+        !!team ?
+          <div className="d-flex flex-wrap" style={{ justifyContent: "space-evenly" }}>
+            {images.map((item, index) => (
+              team?.[`card${index + 1}`] !== -1 &&
+              <Fragment key={index}>
+                <Card2
+                  item={item}
+                  index={index}
+                  team={team}
+                />
+              </Fragment>
+            ))}
+            {((team?.card1 == -1 && team?.card2 == -1 && team?.card3 == -1) ?
+              <div className="rally-cards-empty">
+                <p>Não recebeste nenhuma carta.</p><p>Vai beber!</p>
+              </div>
+              :
+              null
+            )}
+          </div>
+          :
+          <div className="rally-cards-empty">
+            <p>Nenhuma equipa disponível.</p>
+          </div>
+      }
+
+    </>
+  );
 }
 
 export default CardsSection;

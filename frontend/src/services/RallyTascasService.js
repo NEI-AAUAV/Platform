@@ -10,7 +10,7 @@ const client = axios.create({
 });
 
 
-client.interceptors.request.use(function(config) {
+client.interceptors.request.use(function (config) {
     // Do something before request is sent
 
     // Inject here authorization token in request header
@@ -19,7 +19,7 @@ client.interceptors.request.use(function(config) {
         config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
-}, function(error) {
+}, function (error) {
     // Do something with request error
     console.error(error);
 
@@ -27,13 +27,13 @@ client.interceptors.request.use(function(config) {
 });
 
 
-client.interceptors.response.use(function(response) {
+client.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     // console.log(response)
 
     return response.data;
-}, function(error) {
+}, function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
 
@@ -53,19 +53,39 @@ client.interceptors.response.use(function(response) {
 class RallyTascasService {
 
     async login(data) {
-        return await client.post(`/user/token`, data);
+        return await client.post('/user/token', data);
     }
 
     async getOwnTeam() {
-        return await client.get(`/team/me`);
+        return await client.get('/team/me');
     }
 
     async getTeams() {
         return await client.get('/team');
     }
 
-    async getCheckpoint() {
+    async getCheckpoints() {
+        return await client.get('/checkpoint');
+    }
+
+    async getCheckpointTeams() {
+        return await client.get('/checkpoint/teams');
+    }
+
+    async getCurrentCheckpoint() {
         return await client.get('/checkpoint/me');
+    }
+
+    async updateTeamCheckpoint(id, data) {
+        return await client.put(`/team/${id}/checkpoint`, data, { 'Content-Type': 'application/json' });
+    }
+
+    async updateTeamCards(id, data) {
+        return await client.put(`/team/${id}/cards`, data);
+    }
+
+    async updateTeam(id, data) {
+        return await client.put(`/team/${id}`, data);
     }
 }
 

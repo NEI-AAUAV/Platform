@@ -1,25 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import LinkAdapter from "components/LinkAdapter";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
 import "./index.css";
 
-
-const CustomLink = ({ link, children, ...props }) => {
-    if (link?.startsWith('http'))
-        return (
-            <a href={link} target="_blank" {...props} rel="noopener noreferer">
-                {children}
-            </a>
-        )
-    return (
-        <Link to={link} {...props}>
-            {children}
-        </Link>
-    )
-}
 
 /**
  * Component for document
@@ -31,7 +17,7 @@ const CustomLink = ({ link, children, ...props }) => {
  *  blank           Open link in new tab?
  *  className       Extra classes                   (Optional)
  *  icon            Icon component                  (Optional, default PDF)
- * iconColor        Icon color                      (Optional, default .text-primary)
+ *  iconColor       Icon color                      (Optional, default .text-primary)
  *  size            Icon size                       (Optional, default 3x)
  *  onClick         on click event handler          (Optional)
  *  title           title attribute                 (Optional)
@@ -42,8 +28,8 @@ const CustomLink = ({ link, children, ...props }) => {
  */
 const Document = ({ name, description, link, blank, className, icon, size, onClick, title, tags, style, image, iconColor }) => {
     return (
-        <CustomLink
-            link={link}
+        <LinkAdapter
+            to={link}
             onClick={onClick}
             title={title ? title : ""}
             style={style}
@@ -80,7 +66,7 @@ const Document = ({ name, description, link, blank, className, icon, size, onCli
                     </div>
                 </div>
             </div>
-        </CustomLink>
+        </LinkAdapter>
     );
 }
 

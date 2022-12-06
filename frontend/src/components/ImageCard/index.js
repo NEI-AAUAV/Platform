@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import LinkAdapter from "components/LinkAdapter";
 import { Card } from "react-bootstrap";
 import './index.css';
 
@@ -27,23 +27,23 @@ const ImageCard = (props) => {
       }}
     >
       {!!props.image && (
-        <Link to={props.anchor}>
+        <LinkAdapter to={props.anchor}>
           <Card.Img variant="top img-fluid" src={props.image} />
-        </Link>
+        </LinkAdapter>
       )}
 
       <div className={"plus-button" + color_class}>
         <span>
-          <Link to={props.anchor}>
+          <LinkAdapter to={props.anchor}>
             +
-          </Link>
+          </LinkAdapter>
         </span>
       </div>
 
       <Card.Body className={color_class}>
         {!!props.preTitle && <p className="mb-4">{props.preTitle}</p>}
         <Card.Title>
-          <Link to={props.anchor}>{props.title}</Link>
+          <LinkAdapter to={props.anchor}>{props.title}</LinkAdapter>
         </Card.Title>
         <Card.Text>
           <small>{props.text}</small>

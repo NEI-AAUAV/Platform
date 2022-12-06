@@ -13,9 +13,8 @@ from .openapi import custom_openapi
 app = FastAPI(title="Taça UA API")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    # allow_origins=settings.BACKEND_CORS_ORIGINS,
-    allow_credentials=False,
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

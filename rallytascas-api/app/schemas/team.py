@@ -1,7 +1,7 @@
 from typing import Optional, List, Any, Union
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, conint
 
 from .user import UserInDB
 
@@ -16,14 +16,24 @@ class TeamCreate(TeamBase):
 
 class TeamUpdate(TeamBase):
     name: Optional[str]
-    scores: Optional[List[int]]
+    question_scores: Optional[List[bool]]
+    time_scores: Optional[List[int]]
     times: Optional[List[datetime]]
+    pukes: Optional[List[int]]
+    skips: Optional[List[int]]
+    card1: Optional[int]
+    card2: Optional[int]
+    card3: Optional[int]
 
 
 class TeamInDB(TeamBase):
     id: int
-    scores: List[int]
+    question_scores: List[bool]
+    time_scores: List[int]
     times: List[datetime]
+    pukes: List[int]
+    skips: List[int]
+    total: int
     classification: int
     members: List[UserInDB]
 
@@ -32,13 +42,19 @@ class TeamInDB(TeamBase):
 
 
 class TeamMeInDB(TeamInDB):
-    card1: bool
-    card2: bool
-    card3: bool
+    card1: int
+    card2: int
+    card3: int
 
 
-class StaffTeamUpdate(BaseModel):
-    score: Optional[int]
+class StaffScoresTeamUpdate(BaseModel):
+    question_score: bool = False
+    time_score: conint(ge=0) = 0
+    pukes: conint(ge=0) = 0
+    skips: conint(ge=0) = 0
+
+
+class StaffCardsTeamUpdate(BaseModel):
     card1: Optional[bool]
     card2: Optional[bool]
     card3: Optional[bool]

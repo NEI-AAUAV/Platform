@@ -25,7 +25,9 @@ import Video from "./pages/Video";
 import Sports from "./pages/Sports";
 import FainaTree from "./pages/FainaTree";
 import Internship from "./pages/Internship";
-import RallyTascas from "pages/RallyTascas";
+import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
+
+import { useRallyAuth } from "stores/useRallyAuth";
 
 const routes = [
   {
@@ -41,7 +43,7 @@ const routes = [
     path: "/",
     element: <SimpleLayout />,
     children: [
-      { path: "/rallytascas", element: <RallyTascas /> },
+      useRallyAuth.getState().ready && { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
     ],
   },
   {

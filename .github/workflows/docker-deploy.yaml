@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Docker login
@@ -28,10 +28,20 @@ jobs:
         export TAG=${GITHUB_SHA:0:7}
         docker-compose build
         docker-compose push --ignore-push-failures
+  
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    env:
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    steps:
+    - uses: actions/checkout@v2
     - name: Docker pull
       run: |
         docker-compose down
+        docker rmi $(docker images -aq)
         docker-compose pull
     - name: Docker deploy
       run: |
-        docker-compose up -d
+        docker-compose up -d --remove-orphans --force-recreate

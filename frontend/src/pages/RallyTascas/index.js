@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, Outlet, Navigate, useMatch, useResolvedPath } from "react-router";
 import { Button, Col, Row } from "@nextui-org/react";
 import ClearIcon from "@nextui-org/react/esm/utils/clear-icon"
 
@@ -8,7 +8,7 @@ import ScoresSection from "./sections/ScoresSection";
 import MapSection from "./sections/MapSection";
 import CardsSection from "./sections/CardsSection";
 import TeamsSection from "./sections/TeamsSection";
-import {Countdown_section} from "./sections/Countdown";
+import { Countdown_section } from "./sections/Countdown";
 import Countdown from "./sections/Countdown";
 import LoginSection from "./sections/LoginSection";
 import { TabButton } from "./components/Customized";
@@ -19,26 +19,52 @@ import { useRallyAuth } from "stores/useRallyAuth";
 
 
 const TAB = {
-  SCORES: 0,
-  MAP: 1,
-  TEAMS: 2,
-  CARDS: 3,
-  LOGIN: 4,
+  SCORES: "",
+  MAP: "map",
+  TEAMS: "teams",
+  CARDS: "cards",
+  LOGIN: "login",
 }
+
+const ProtectedRoute = ({ children, noAuth, participantOnly }) => {
+  const { token, isStaff, isAdmin } = useRallyAuth(state => state);
+
+  if ((noAuth ^ !token) || (participantOnly && (isStaff || isAdmin))) {
+    return <Navigate to=".." replace />;
+  }
+
+  return children;
+}
+
+const rallyTascasRoutes = [
+  { path: TAB.SCORES, element: <ScoresSection /> },
+  { path: TAB.MAP, element: <ProtectedRoute participantOnly><MapSection /></ProtectedRoute> },
+  { path: TAB.TEAMS, element: <TeamsSection /> },
+  { path: TAB.CARDS, element: <ProtectedRoute><CardsSection /></ProtectedRoute> },
+  { path: TAB.LOGIN, element: <ProtectedRoute noAuth><LoginSection /></ProtectedRoute> },
+  { path: '*', element: <Navigate to="/breakthebars" replace /> },
+];
 
 const RallyTascas = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState(TAB.SCORES);
-  const [showCountdown, setShowCountdown] = useState(true);
+
+  const TabLink = ({ to, children }) => {
+    const resolver = useResolvedPath(to);
+    const match = useMatch({ path: resolver.pathname, end: true });
+
+    return <TabButton active={match} onPress={() => navigate(to)} size="sm">{children}</TabButton>
+  };
+
+  const [showCountdown, setShowCountdown] = useState(false);
   const [visible, setVisible] = useState(false);
   const teamModalHandler = () => setVisible(true);
   const { name, token, isStaff, isAdmin, teamName, logout } = useRallyAuth(state => state);
   const [mobile, setMobile] = useState(false);
-  
-  
-    useEffect(() => {
+
+
+  useEffect(() => {
     function handleResize() {
-      setMobile(window.innerWidth < 600)
+      setMobile(window.innerWidth < 650)
     }
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -47,18 +73,20 @@ const RallyTascas = () => {
     });
   })
 
-    
+
   return (
     <>
-      <div style={{
-        backgroundColor: "#00020E",
-        backgroundImage: `url(${bg})`,
-        backgroundPosition: 'center 100px',
-        backgroundRepeat: 'repeat-x',
-        backgroundSize: '1500px 100vh',
-        position: 'absolute', zIndex: -1,
-        top: 0, left: 0, bottom: 0, right: 0,
-      }}>
+      <div
+        className="flicker-bg"
+        style={{
+          backgroundColor: "#00020E",
+          backgroundImage: `url(${bg})`,
+          backgroundPosition: 'center 100px',
+          backgroundRepeat: 'repeat-x',
+          backgroundSize: '1500px 100vh',
+          position: 'absolute', zIndex: -1,
+          top: 0, left: 0, bottom: 0, right: 0,
+        }}>
       </div>
       <Col style={{ maxWidth: "1000px", margin: "0 auto", fontFamily: "", padding: '2rem 0.5rem' }}>
         <div className="d-flex align-items-center">
@@ -66,9 +94,9 @@ const RallyTascas = () => {
             !!mobile &&
             <p className="rally-small-login m-0">
               {!token ?
-                <span onClick={() => setActiveTab(TAB.LOGIN)}>Log in</span>
+                <span onClick={() => navigate(TAB.LOGIN)}>Log in</span>
                 :
-                <span onClick={() => { logout(); setActiveTab(TAB.SCORES) }}>Log out</span>
+                <span onClick={() => { logout(); navigate(TAB.LOGIN) }}>Log out</span>
               }
               {!!name && <span className="name">&nbsp;{name}</span>}
             </p>
@@ -94,48 +122,30 @@ const RallyTascas = () => {
                 {
                   !mobile &&
                   <div className="mb-3 d-flex flex-column align-items-end justify-content-center">
-                    {!!token && <h5 className="rally-small-header mt-3 mr-2">{name}</h5>}
+                    {!!token && <h5 className="rally-small-header mt-3 mr-3">{name}</h5>}
                     {
                       !token ?
-                        <TabButton active login onPress={() => setActiveTab(TAB.LOGIN)} size="sm">Log in</TabButton>
+                        <TabButton active login onPress={() => navigate(TAB.LOGIN)} size="sm">Log in</TabButton>
                         :
-                        <TabButton active login onPress={() => { logout(); setActiveTab(TAB.SCORES) }} size="sm">Log out</TabButton>
+                        <TabButton active login onPress={() => { logout(); navigate(TAB.LOGIN) }} size="sm">Log out</TabButton>
                     }
                   </div>
                 }
               </div>
-              <div className="d-flex flex-wrap justify-content-center mb-3">
-                <TabButton active={activeTab === TAB.SCORES} onPress={() => setActiveTab(TAB.SCORES)} size="sm">Scores</TabButton>
-                <TabButton active={activeTab === TAB.TEAMS} onPress={() => setActiveTab(TAB.TEAMS)} size="sm">Teams</TabButton>
+              <div className="d-flex flex-wrap justify-content-center justify-content-sm-start mb-3">
+                <TabLink to={TAB.SCORES}>Scores</TabLink>
+                <TabLink to={TAB.TEAMS}>Teams</TabLink>
                 {
                   !!token &&
-                  <>
-                    <TabButton active={activeTab === TAB.MAP} onPress={() => setActiveTab(TAB.MAP)} size="sm">Map</TabButton>
-                    <TabButton active={activeTab === TAB.CARDS} onPress={() => setActiveTab(TAB.CARDS)} size="sm">Cards</TabButton>
-                  </>
+                  <TabLink to={TAB.CARDS}>Cards</TabLink>
+                }
+                {
+                  !!token && !isStaff && !isAdmin &&
+                  <TabLink to={TAB.MAP}>Map</TabLink>
                 }
               </div>
-              {
-                activeTab === TAB.SCORES &&
-                <ScoresSection />
-              }
-              {
-                activeTab === TAB.MAP &&
-                <MapSection />
-              }
-              {
-                activeTab === TAB.TEAMS &&
-                <TeamsSection />
-              }
-              {
-                activeTab === TAB.CARDS &&
-                <CardsSection />
-              }
-              {
-                activeTab === TAB.LOGIN &&
-                <LoginSection onSuccess={() => setActiveTab(TAB.SCORES)} />
 
-              }
+              <Outlet />
             </>
             :
             <Countdown_section countdown_callback={()=>{setShowCountdown(false)}}/>
@@ -145,4 +155,4 @@ const RallyTascas = () => {
   );
 };
 
-export default RallyTascas;
+export { RallyTascas, rallyTascasRoutes };

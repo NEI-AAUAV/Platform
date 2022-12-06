@@ -15,11 +15,11 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/nei/api/v1"
     STATIC_STR: str = "/nei/static"
 
-    HOST: AnyHttpUrl = ("http://aauav-nei.ua.pt" if PRODUCTION else
+    HOST: AnyHttpUrl = ("https://nei.web.ua.pt" if PRODUCTION else
                         "http://localhost:8000")
     STATIC_URL: AnyHttpUrl = HOST + STATIC_STR
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://aauav-nei.ua.pt" if PRODUCTION else
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["https://nei.web.ua.pt" if PRODUCTION else
                                               "http://localhost:3000"]
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)

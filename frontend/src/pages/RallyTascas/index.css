@@ -9,41 +9,62 @@
         background-size: 1500px 100vh
     }
 
-    5% {
+    1% {
         background-size: 0
     }
 
-    40% {
-        background-size: 1500px 100vh
+    4% {
+        background-size: 1500px 100vh;
+        filter: brightness(0.3);
     }
 
-    45% {
+    6% {
         background-size: 0
     }
 
-    100% {
-        background-size: 1500px 100vh
+    12% {
+        background-size: 1500px 100vh;
+        filter: brightness(1);
     }
 }
 
+@keyframes glowing {
+    0% {
+        background-color: #fc8551;
+        box-shadow: 0 0 3px #fc8551;
+    }
+
+    50% {
+        background-color: #fc7136;
+        box-shadow: 0 0 15px #fc7136;
+    }
+
+    100% {
+        background-color: #fc8551;
+        box-shadow: 0 0 3px #fc8551;
+    }
+}
 
 .flicker-bg {
     background-size: 0;
-    animation: flicker 2s linear 1s 1 normal forwards;
+    animation: flicker 12s linear -11.5s infinite forwards;
 }
 
 @font-face {
     font-family: 'Akshar';
-    src: url(assets/fonts/Akshar/Akshar-Regular.ttf) format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+    src: url(assets/fonts/Akshar/Akshar-Regular.ttf) format('truetype');
+    /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 650px) {
     h2.rally-header {
         font-size: 2.8rem !important;
+        margin-left: 1rem;
     }
 
     h5.rally-small-header {
         font-size: 1.25rem !important;
+        margin-left: 1rem;
     }
 }
 
@@ -65,24 +86,19 @@
 
 .rally-tascas-row {
     float: left;
-    width: 50%;
-    padding: 10px;
-}
-.rallu-tascas-column {
-    margin: 0 -5px;
+    width: 100%;
 }
 
-.rally-tascas-column:after {
-    content: "";
-    display: inline-block;
-    clear: both;
+.rally-tascas-column {
+    display: flex;
+    flex-direction: column;
 }
 
-@media screen and (max-width: 600px) {
+
+@media screen and (max-width: 650px) {
     .rally-tascas-row {
         width: 100%;
         display: inline-block;
-        margin-bottom: 20px;
     }
 }
 
@@ -92,26 +108,22 @@
     cursor: pointer;
 }
 
-.rally-small-login > *:not(.name) {
+.rally-small-login>*:not(.name) {
     color: #FC8551;
     text-decoration: underline;
     cursor: pointer;
     font-weight: bold;
 }
 
-.rally-visible {
-    font-weight: 800;
-}
-
-.rally-setVisible {
-    font-weight: 800;
+.rally-card {
+    background: transparent;
 }
 
 .rally-card-team-name {
-    background-color: inherit;
-    color:white;
+    color: white;
     overflow: hidden !important;
-    width: 350px;
+    max-width: 320px;
+    width: 100%;
     border: 2px solid #FC8551;
     font-style: normal;
     font-weight: 400;
@@ -124,32 +136,25 @@
 
 .rally-card-team-information {
     border-radius: 10px;
-    background-color: inherit;
     display: inline-block;
-    height: 60% !important;
+    height: 100% !important;
     width: 300px !important;
-    color:white;
+    color: white;
     font-weight: 400;
     font-size: 20px;
     line-height: 35px;
-    text-transform: uppercase !important;
     overflow: hidden !important;
 }
+
 .rally-card-team-checkpoint {
-    background-color: inherit;
-    height: 70% !important;
+    width: 270px !important;
     font-style: normal;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 35px;
     text-transform: uppercase !important;
     color: #FC8551;
 }
 
 .rally-card-team-points {
-    background-color: inherit;
     width: 256px;
-    height: 146px;
     font-style: normal;
     font-weight: 400;
     font-size: 32px;
@@ -158,8 +163,22 @@
 }
 
 .rally-card-team-image {
-    background-color: inherit;
-    width:350px;
-    height:400px;
+    max-width: 320px;
+    width: 100%;
     border: 2px solid #FC8551 !important;
+}
+
+@media screen and (min-width: 650px) {
+    .rally-cards-empty {
+        font-size: 3rem !important;
+    }
+}
+
+.rally-cards-empty {
+    font-family: "Akshar";
+    color: white;
+    font-size: 2rem;
+    text-align: center;
+    margin-top: 7rem;
+    font-weight: bold;
 }
