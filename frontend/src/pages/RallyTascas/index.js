@@ -148,7 +148,7 @@ const RallyTascas = () => {
               <Outlet />
             </>
             :
-            <Countdown_section />
+            <Countdown_section countdown_callback={()=>{setShowCountdown(false)}}/>
         }
       </Col>
     </>
