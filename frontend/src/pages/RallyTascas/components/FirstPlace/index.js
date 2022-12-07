@@ -31,8 +31,8 @@ function FirstPlace({ team, mobile, checkpoints }) {
             }}
             span={6}
           >
-            <p>{checkpoint ? `${checkpoint.id} - ${checkpoint.name}` : '---'}</p>
-            <p>{team.times.at(-1)?.split('T').at(-1).slice(0, 8) || '---'}</p>
+            <p className="text-white">{checkpoint ? `${checkpoint.id} - ${checkpoint.name}` : '---'}</p>
+            <p className="text-white">{team.times.at(-1)?.split('T').at(-1).slice(0, 8) || '---'}</p>
           </Col>
         }
         <Col span={mobile ? 2.5 : 4}>{team.total} pts</Col>

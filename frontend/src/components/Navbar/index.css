@@ -15,10 +15,6 @@
     flex-wrap: wrap;
 }
 
-#basic-BNavbar-nav {
-    background-color: var(--background) !important;
-}
-
 .navBar {
     background-color: var(--background) !important;
     color: var(--text-primary) !important;

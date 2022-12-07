@@ -64,7 +64,7 @@ function StaffModal({ visible, setVisible, team, reload }) {
         borderRadius: "0.5rem",
         padding: "1rem",
         margin: "0 0.5rem",
-        backgroundColor: "var(--background-modal)",
+        backgroundColor: "#010b13",
         "@media (min-width: 481px)": {
           width: "90%",
         },

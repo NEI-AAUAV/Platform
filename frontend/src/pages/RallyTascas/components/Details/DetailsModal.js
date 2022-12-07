@@ -111,7 +111,7 @@ const styles = {
     padding: "1rem",
     marginLeft: "20px",
     marginRight: "20px",
-    backgroundColor: "var(--background-modal)",
+    backgroundColor: "#010b13",
     "@media (min-width: 320px)": {
       width: "80%",
       marginLeft: "auto",
