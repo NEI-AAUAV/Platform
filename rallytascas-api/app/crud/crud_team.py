@@ -36,7 +36,9 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
 
         def calc_skips(_):
             c2, s = _
-            return (s - 1 if c2 else s) * -8
+            if s > 0:
+                return (s - 1 if c2 else s) * -8
+            return abs(s) * 4
 
         uniform_scores = {t.id: [
             list(map(calc_time_score, enumerate(t.time_scores))),
