@@ -108,8 +108,13 @@ def get_notes(
 
     categories = categories or notes_categories
 
-    total, items = crud.notes.get_notes_by_categories(
-        db=db, categories=categories, page=page_params.page, size=page_params.size)
+    total, items = crud.notes.get_notes_by(
+        db=db, categories=categories,
+        school_year=school_year,
+        subject=subject,
+        student=student,
+        teacher=teacher,
+        page=page_params.page, size=page_params.size)
     return Page.create(total, items, page_params)
 
 

@@ -42,7 +42,8 @@ class Notes(Base):
 
     @hybrid_property
     def location(self) -> Optional[AnyHttpUrl]:
-        return self._location and settings.STATIC_URL + self._location
+        prefix = (self._location and self._location.startswith('/') and settings.STATIC_URL) or ''
+        return prefix + self._location
 
     @location.setter
     def location(self, location: Optional[AnyHttpUrl]):

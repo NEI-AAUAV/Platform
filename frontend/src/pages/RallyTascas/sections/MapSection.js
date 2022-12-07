@@ -54,7 +54,8 @@ export const Checkpoint = (props) => {
 
     const formatMod = (num, label) => num > 0 ? (num > 1 ? `${num}x` : "") + label : "";
     const pukesString = formatMod(props.pukes, "🤮");
-    const skipsString = formatMod(props.skips, "⏭️");
+    const skipsString = props.skips < 0 ? formatMod(Math.abs(props.skips), "🥃") : formatMod(props.skips, "⏭️");
+    
     return (
         <div className="mt-2 w-100" style={{fontFamily: 'Akshar'}}>
             <div className="d-flex justify-content-between">
