@@ -99,7 +99,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
 
         # add cards randomly
         pity = len(team.times) == 7
-        chance = random.random() > 0.7
+        chance = random.random() > 0.6
         if chance or pity:
             for card in random.sample(('card1', 'card2', 'card3'), 3):
                 if getattr(team, card) == -1:
