@@ -264,7 +264,7 @@ function InfoTable() {
             <Table.Row
               key={team.name}
               css={{
-                color: "var(--column-color)",
+                color: "white",
                 fontSize: "0.875rem",
                 fontWeight: "bold",
                 "&:nth-child(even)": {

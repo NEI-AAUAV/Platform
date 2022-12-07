@@ -23,7 +23,7 @@ const InfoCard = (props) => {
 
 const NextShot = (props) => {
     return (
-        <InfoCard title="Location" subtitle="">
+        <InfoCard title="Shot Name & Location" subtitle={props.shot_name}>
             <p style={{ whiteSpace: "pre-line" }} className="text-white text-uppercase mt-4 shot-description">
                 {props.description}
             </p>

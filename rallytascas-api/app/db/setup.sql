@@ -178,14 +178,14 @@ ALTER TABLE ONLY rally_tascas."user" ALTER COLUMN id SET DEFAULT nextval('rally_
 --
 
 INSERT INTO rally_tascas.checkpoint (id, name, shot_name, description) VALUES
-(1, 'Tribunal', 'shot 1', 'Uma breve descrição qualquer.'),
-(2, 'Receção', 'shot 2', 'Uma breve descrição qualquer.'),
-(3, 'Cela', 'shot 3', 'Uma breve descrição qualquer.'),
-(4, 'Pátio', 'shot 4', 'Uma breve descrição qualquer.'),
-(5, 'Cantina', 'shot 5', 'Uma breve descrição qualquer.'),
-(6, 'WC', 'shot 6', 'Uma breve descrição qualquer.'),
-(7, 'Ginásio', 'shot 7', 'Uma breve descrição qualquer.'),
-(8, 'Enfermaria', 'shot 8', 'Uma breve descrição qualquer.');
+(1, 'Tribunal', 'Mugshot', 'Dirige-te para a AFUAv'),
+(2, 'Receção', 'Algemas', 'Dirige-te para o Dep. Materiais'),
+(3, 'Cela', 'Até andas de lado', 'Dirige-te para o túnel entre o DETI e o DEP'),
+(4, 'Pátio', 'Palmada', 'Dirige-te para a Fotossíntese'),
+(5, 'Cantina', 'Hot Wheels', 'Dirige-te para o Dep. Matemática'),
+(6, 'WC', 'Sabonetes', 'Dirige-te para o Restaurante Universitário (Grelhados)'),
+(7, 'Ginásio', 'MotoMoto', 'Dirige-te para o Pavilhão Arístides'),
+(8, 'Enfermaria', 'SpEIderSémen', 'Dirige-te para a entrada da ponte do Crasto');
 
 
 --

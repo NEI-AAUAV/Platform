@@ -52,7 +52,7 @@ const EditCell = ({ isEditing, isCheckbox, label, name, score, setScore }) => (
           />
       ) :
         <Text
-          color="var(--column-color)"
+          color="white"
           size={18}
           css={{
             fontWeight: "bold",
@@ -101,7 +101,7 @@ function EditLine({ checkpoint, team, reload }) {
   return (
     <div key={checkpoint.id}>
       <div className="d-flex justify-content-between">
-        <Text color="var(--column-color)" css={{ fontWeight: "bold" }} size={18}>
+        <Text color="white" css={{ fontWeight: "bold" }} size={18}>
           {checkpoint.id} - {checkpoint.name}
         </Text>
         {!isEditing ?

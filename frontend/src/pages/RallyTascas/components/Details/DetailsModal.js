@@ -32,9 +32,9 @@ function DetailsModal({ visible, setVisible, team, checkpoints }) {
       }}
     >
       <Modal.Header>
-        <Text id="modal-title" color="var(--column-color)" size={18}>
+        <Text id="modal-title" color="white" size={18}>
           Detalhes de
-          <Text b color="var(--column-color)" size={18}>
+          <Text b color="white" size={18}>
             {" "}
             {team.name}
           </Text>
@@ -43,45 +43,35 @@ function DetailsModal({ visible, setVisible, team, checkpoints }) {
       <Modal.Body>
         <Row css={styles.row}>
           <Text
-            color="var(--column-color)"
+            color="white"
             css={{ fontWeight: "bold" }}
             size={18}
           >
             Nome da Equipa:
           </Text>
-          <Text color="var(--column-color)" size={18}>
+          <Text color="white" size={18}>
             {team.name}
           </Text>
         </Row>
         <Row css={styles.row}>
           <Text
-            color="var(--column-color)"
+            color="white"
             css={{ fontWeight: "bold" }}
             size={18}
           >
             Pontuação
           </Text>
-          <Text color="var(--column-color)" size={18}>
+          <Text color="white" size={18}>
             {team.total}
           </Text>
         </Row>
         <Row>
-          <Text color="var(--column-color)" size={18}>
+          <Text color="white" size={18}>
             Checkpoints
           </Text>
         </Row>
-        {checkpoints?.sort((a, b) => a.id - b.id).map((checkpoint) => (
-          <Row key={checkpoint.id} css={styles.rowPoints}>
-            {/* <Text
-              color="var(--column-color)"
-              css={{ fontWeight: "bold" }}
-              size={18}
-            >
-              P{checkpoint.id} - {checkpoint.name}
-            </Text>
-            <Text color="var(--column-color)" size={18}>
-              {team.time_scores[checkpoint.id]} Pontos
-            </Text> */}
+        {checkpoints?.sort((a, b) => a.id - b.id).map((checkpoint, i) => (
+          i < team?.times.length && <Row key={checkpoint.id} css={styles.rowPoints}>
             <Checkpoint
               name={`${checkpoint.id} - ${checkpoint.name}`}
               time={new Date(team.times[checkpoint.id - 1])}
