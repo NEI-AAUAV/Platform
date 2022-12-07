@@ -200,7 +200,7 @@ INSERT INTO rally_tascas.team (id, name, question_scores, time_scores, times, pu
 (5, 'equipa xl', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
 (6, 'Tasca do Pai Jorge', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
 (7, 'Pink stars', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(8, 'Mmmm tenso', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1);
+(8, 'Mmmm tenso', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
 (9, 'Diga diga', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
 (10, 'Psicoalcolémicos', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
 (11, 'eu não bebo', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
@@ -234,7 +234,7 @@ INSERT INTO rally_tascas."user" (id, name, username, team_id, staff_checkpoint_i
 (18, 'Rodrigo Martins', 'rodrigomartins@ua.pt', 2, NULL, false, false, '$2b$12$McP9I3pPmDS7h0hloI9do.FemAr7wCd5kLl4d1k0QdKI2LKnc9wpK'),
 (19, 'Lúcia', 'luciamsousa00@ua.pt', 2, NULL, false, false, '$2b$12$McP9I3pPmDS7h0hloI9do.FemAr7wCd5kLl4d1k0QdKI2LKnc9wpK'),
 (20, 'Alexandre', 'alexandretomas@ua.pt', 2, NULL, false, false, '$2b$12$McP9I3pPmDS7h0hloI9do.FemAr7wCd5kLl4d1k0QdKI2LKnc9wpK'),
-(21, 'João Gameiro', 'joao.gameiro@ua.pt', 2, NULL, false, false, '$2b$12$McP9I3pPmDS7h0hloI9do.FemAr7wCd5kLl4d1k0QdKI2LKnc9wpK')
+(21, 'João Gameiro', 'joao.gameiro@ua.pt', 2, NULL, false, false, '$2b$12$McP9I3pPmDS7h0hloI9do.FemAr7wCd5kLl4d1k0QdKI2LKnc9wpK'),
 -- Uisqe konhaque tudo
 (22, 'Martim Santos', 'santos.martim@ua.pt', 3, NULL, false, false, '$2b$12$GELTrMRS8h73siBTD8/iMeCpZR1fIjvarYik3/0leUu8m1uuOU8Ge'),
 (23, 'Maria Linhares', 'marialinhares@ua.pt', 3, NULL, false, false, '$2b$12$GELTrMRS8h73siBTD8/iMeCpZR1fIjvarYik3/0leUu8m1uuOU8Ge'),
@@ -282,7 +282,7 @@ INSERT INTO rally_tascas."user" (id, name, username, team_id, staff_checkpoint_i
 (59, 'Pedro Oliveira', 'pedrooliveira99@ua.pt', 9, NULL, false, false, '$2b$12$UBwboAvKLYhceuCvl4IB.ODaAa9YhvQS4NxRN7hoVfI/GieNr/FuW'),
 (60, 'Pedro Marques', 'pedromm@ua.pt', 9, NULL, false, false, '$2b$12$UBwboAvKLYhceuCvl4IB.ODaAa9YhvQS4NxRN7hoVfI/GieNr/FuW'),
 (61, 'Henrique Lourenço', 'henriquelourenco02@gmail.com', 9, NULL, false, false, '$2b$12$UBwboAvKLYhceuCvl4IB.ODaAa9YhvQS4NxRN7hoVfI/GieNr/FuW'),
-(62, 'Diogo Silva', '', 9, NULL, false, false, '$2b$12$UBwboAvKLYhceuCvl4IB.ODaAa9YhvQS4NxRN7hoVfI/GieNr/FuW'),
+(62, 'Diogo Silva', NULL, 9, NULL, false, false, '$2b$12$UBwboAvKLYhceuCvl4IB.ODaAa9YhvQS4NxRN7hoVfI/GieNr/FuW'),
 -- Psicoalcolémicos
 (63, 'Daniela Fidalgo', 'danielasf@ua.pt', 10, NULL, false, false, '$2b$12$VrFJ7HDsQum2wVvGf2ZoXuQCOJ5lp8KSmVQJHPSMNO4pgyDzeWwD2'),
 (64, 'Henrique Oliveira', 'valent.oliv@ua.pt', 10, NULL, false, false, '$2b$12$VrFJ7HDsQum2wVvGf2ZoXuQCOJ5lp8KSmVQJHPSMNO4pgyDzeWwD2'),
@@ -303,7 +303,7 @@ INSERT INTO rally_tascas."user" (id, name, username, team_id, staff_checkpoint_i
 (77, 'Natacha Ramos', 'natachaferreira@ua.pt', 12, NULL, false, false, '$2b$12$o.86IxcEw8nTuEbJWkpxgO1F3tz9BpNWaFXfhoX2x5TGlgLTDnu7G'),
 (78, 'Joana Costa', 'joanamonteirocosta@ua.pt', 12, NULL, false, false, '$2b$12$o.86IxcEw8nTuEbJWkpxgO1F3tz9BpNWaFXfhoX2x5TGlgLTDnu7G'),
 (79, 'Nolwenn Santos', 'nolwennsantos@ua.pt', 12, NULL, false, false, '$2b$12$o.86IxcEw8nTuEbJWkpxgO1F3tz9BpNWaFXfhoX2x5TGlgLTDnu7G'),
-(80, 'Inês Branco', '', 12, NULL, false, false, '$2b$12$o.86IxcEw8nTuEbJWkpxgO1F3tz9BpNWaFXfhoX2x5TGlgLTDnu7G');
+(80, 'Inês Branco', NULL, 12, NULL, false, false, '$2b$12$o.86IxcEw8nTuEbJWkpxgO1F3tz9BpNWaFXfhoX2x5TGlgLTDnu7G');
 
 
 --

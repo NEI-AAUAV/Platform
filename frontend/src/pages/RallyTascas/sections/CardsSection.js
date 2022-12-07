@@ -169,7 +169,7 @@ const CardsSection = () => {
             ))}
             {((team?.card1 == -1 && team?.card2 == -1 && team?.card3 == -1) ?
               <div className="rally-cards-empty">
-                <p>Não recebeste nenhuma carta.</p><p>Vai beber!</p>
+                <p className="text-white-50">Não recebeste nenhuma carta.<br />Vai beber!</p>
               </div>
               :
               null
@@ -177,7 +177,7 @@ const CardsSection = () => {
           </div>
           :
           <div className="rally-cards-empty">
-            <p>Nenhuma equipa disponível.</p>
+            <p className="text-white-50">Nenhuma equipa disponível.</p>
           </div>
       }
 

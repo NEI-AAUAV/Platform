@@ -56,7 +56,7 @@ const Navbar = () => {
                         <span></span>
                     </div>
                 </BNavbar.Toggle>
-                <BNavbar.Collapse id="basic-BNavbar-nav" className=" small font-weight-bold">
+                <BNavbar.Collapse id="basic-BNavbar-nav" className="small font-weight-bold">
                     <Nav className="mr-auto">
                         {
                             data.filter(d => d).map(

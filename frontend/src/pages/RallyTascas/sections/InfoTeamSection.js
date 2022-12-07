@@ -79,7 +79,7 @@ const InfoTeamSection = ({ team, goBack }) => {
                                         textAlign: 'left', textTransform: 'none', marginTop: '0.5rem',
                                         fontSize: '1.4rem', fontFamily: 'Akshar', fontWeight: 'bold',
                                     }}>
-                                        <p>Não passou por nenhum checkpoint.</p>
+                                        <p className="text-white-50">Não passou por nenhum checkpoint.</p>
                                     </div>
                                 )}
                             </Card.Body>
