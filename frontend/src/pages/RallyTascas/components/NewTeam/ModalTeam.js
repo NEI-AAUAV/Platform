@@ -33,9 +33,9 @@ function ModalTeam(props) {
       }}
     >
       <Modal.Header>
-        <Text id="modal-title" color="var(--column-color)" size={18}>
+        <Text id="modal-title" color="white" size={18}>
           Criar uma nova
-          <Text b color="var(--column-color)" size={18}>
+          <Text b color="white" size={18}>
             {" "}
             Equipa
           </Text>

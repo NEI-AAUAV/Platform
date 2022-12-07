@@ -74,13 +74,13 @@ function StaffModal({ visible, setVisible, team, reload }) {
       }}
     >
       <Modal.Header>
-        <Text id="modal-title" color="var(--column-color)" size={18}>
+        <Text id="modal-title" color="white" size={18}>
           Confirmar chegada de{' '}
-          <Text b color="var(--column-color)" size={18}>
+          <Text b color="white" size={18}>
             {team.name}
           </Text>
           {' ao '}
-          <Text b color="var(--column-color)" size={18}>
+          <Text b color="white" size={18}>
             Posto {isStaff}
           </Text>
         </Text>

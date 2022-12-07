@@ -51,9 +51,9 @@ function EditDetails({ visible, setVisible, team, checkpoints, reload }) {
       }}
     >
       <Modal.Header>
-        <Text id="modal-title" color="var(--column-color)" size={18}>
+        <Text id="modal-title" color="white" size={18}>
           Detalhes de
-          <Text b color="var(--column-color)" size={18}>
+          <Text b color="white" size={18}>
             {" "}
             {team.name}
           </Text>
@@ -68,7 +68,7 @@ function EditDetails({ visible, setVisible, team, checkpoints, reload }) {
           >
             Pontuação
           </Text>
-          <Text color="var(--column-color)" size={18}>
+          <Text color="white" size={18}>
             {team.total}
           </Text>
         </Row>
@@ -146,7 +146,7 @@ function EditDetails({ visible, setVisible, team, checkpoints, reload }) {
                   </Dropdown>
                   :
                   <Text
-                    color="var(--column-color)"
+                    color="white"
                   >
                     {team[`card${i}`] === -1 ? 'Ausente' :
                       team[`card${i}`] === 0 ? 'Por Ativar' :
