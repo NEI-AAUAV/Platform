@@ -1,4 +1,5 @@
 import React from "react";
+import LinkAdapter from "components/LinkAdapter";
 import { Card } from "react-bootstrap";
 import './index.css';
 
@@ -25,24 +26,24 @@ const ImageCard = (props) => {
         animationDelay: props.animKey ? props.animKey * 0.2 + "s" : "0",
       }}
     >
-      {props.image && (
-        <a href={props.anchor} target="_blank" rel="noreferrer noopener">
+      {!!props.image && (
+        <LinkAdapter to={props.anchor}>
           <Card.Img variant="top img-fluid" src={props.image} />
-        </a>
+        </LinkAdapter>
       )}
 
       <div className={"plus-button" + color_class}>
         <span>
-          <a href={props.anchor} target="_blank" rel="noreferrer noopener">
+          <LinkAdapter to={props.anchor}>
             +
-          </a>
+          </LinkAdapter>
         </span>
       </div>
 
       <Card.Body className={color_class}>
-        {props.preTitle && <p className="mb-4">{props.preTitle}</p>}
+        {!!props.preTitle && <p className="mb-4">{props.preTitle}</p>}
         <Card.Title>
-          <a href={props.anchor} target="_blank" rel="noreferrer noopener">{props.title}</a>
+          <LinkAdapter to={props.anchor}>{props.title}</LinkAdapter>
         </Card.Title>
         <Card.Text>
           <small>{props.text}</small>

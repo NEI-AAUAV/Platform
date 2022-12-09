@@ -1,0 +1,117 @@
+version: "3.9"
+
+services:
+  pg_db:
+    image: postgres:15-alpine
+    ports:
+      - 5432:5432
+    volumes: 
+      - ./nei-api/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
+      - ./rallytascas-api/app/db/setup.sql:/docker-entrypoint-initdb.d/rallytascas-0001.sql
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    networks:
+      - backend_net
+    restart: always
+  nei_api:
+    image: neiaauav/nei-api:${TAG:-latest}
+    build:
+      context: nei-api
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    volumes: 
+      - /nei-api/static:/nei_api/static
+    environment:
+      - ENV=production
+      - POSTGRES_SERVER=pg_db
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    depends_on:
+      - pg_db
+    networks:
+      - backend_net
+    restart: always
+  # tacaua_api:
+  #   image: neiaauav/tacaua-api:${TAG:-latest}
+  #   build:
+  #     context: tacaua-api
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 8001:8001
+      # volumes: 
+      # - /tacaua-api/static:/tacaua_api/static
+  #   environment:
+  #     - ENV=production
+  #     - POSTGRES_SERVER=pg_db
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  #   depends_on:
+  #     - pg_db
+  #   networks:
+  #     - backend_net
+  #   restart: always
+  rallytascas_api:
+    image: neiaauav/rallytascas-api:${TAG:-latest}
+    build:
+      context: rallytascas-api
+      dockerfile: Dockerfile
+    ports:
+      - 8002:8002
+    volumes: 
+      - /rallytascas-api/static:/rallytascas_api/static
+    environment:
+      - ENV=production
+      - POSTGRES_SERVER=pg_db
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - pg_db
+    networks:
+      - backend_net
+    restart: always
+  web_app:
+    image: neiaauav/web-app:${TAG:-latest}
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - nei_api
+      # - tacaua_api
+      - rallytascas_api
+    networks:
+      - frontend_net
+    restart: always
+  nginx:
+    image: neiaauav/nginx:${TAG:-latest}
+    build:
+      context: nginx/nei.web.ua.pt
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /nginx/nei.web.ua.pt:/etc/ssl/private
+      # - /nginx/nei-aauav.pt:/etc/letsencrypt
+    depends_on:
+      - nei_api
+      # - tacaua_api
+      - rallytascas_api
+      - web_app
+    networks:
+      - backend_net
+      - frontend_net
+    restart: always
+
+networks:
+  backend_net:
+    driver: bridge
+  frontend_net:
+    driver: bridge
+
+volumes:
+  pg_data:
+    driver: local
