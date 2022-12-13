@@ -109,10 +109,10 @@ const data = [
     name: "Parceiros",
     link: "/parceiros",
   },
-  {
-    name: "Rally Tascas",
-    link: "/breakthebars",
-  },
+  // {
+  //   name: "Rally Tascas",
+  //   link: "/breakthebars",
+  // },
 ];
 
 export default data;

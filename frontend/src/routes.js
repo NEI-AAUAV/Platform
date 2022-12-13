@@ -37,13 +37,13 @@ const routes = [
       { path: "/familias", element: <FainaTree /> },
     ],
   },
-  {
-    path: "/",
-    element: <SimpleLayout />,
-    children: [
-      { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
-    ],
-  },
+  // {
+  //   path: "/",
+  //   element: <SimpleLayout />,
+  //   children: [
+  //     { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
+  //   ],
+  // },
   {
     path: "/",
     element: <MainLayout />,
