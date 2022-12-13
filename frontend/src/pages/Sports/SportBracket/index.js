@@ -7,7 +7,7 @@ import { renderToStaticMarkup } from "react-dom/server"
 
 const SportMatch = ({ id, x, y, team1, team2, score1, score2, live, horizontal }) => (
 
-    <g transform={`translate(${x} ${y})`} className={"match " + (live ? "-open" : "-pending")} data-identifier="16" data-match-id="288716770">
+    <g transform={`translate(${y - 160},${x - 35})`} className={"match " + (live ? "-open" : "-pending")} data-identifier="16" data-match-id="288716770">
         <defs>
             <clipPath id="match-clippath-8">
                 <rect x="14" y="0" width="280" height="70" rx="10" ry="10"></rect>
@@ -43,7 +43,7 @@ const SportMatch = ({ id, x, y, team1, team2, score1, score2, live, horizontal }
                 </svg>
         }
 
-        <text x="211" y="59" width="21" height="25" text-anchor="middle" className="match--fa-icon" data-tooltip="Report Scores"></text>
+        {/* <text x="211" y="59" width="21" height="25" text-anchor="middle" className="match--fa-icon" data-tooltip="Report Scores"></text> */}
     </g>
 );
 
@@ -162,7 +162,7 @@ function buildBracket() {
         .attr("d", d => d3.line()
             .x((p) => p[0])
             .y((p) => p[1])
-            .curve(d3.curveStep)([[d.y, d.x], [d.parent.y, d.parent.x]])
+            .curve(d3.curveStep)([[d.y - 150, d.x], [d.parent.y + 170, d.parent.x ]])
         );
 
     // adds each node as a group
@@ -170,10 +170,10 @@ function buildBracket() {
         .data(nodes.descendants())
         .enter().append("g")
         .attr("class", d => "node" + (d.children ? " node--internal" : " node--leaf"))
-        .attr("transform", d => "translate(" + d.y + "," + d.x + ")")
+        .attr("transform", "scale(-1, 1)")
         .each(function (d) {
             d3.select(this).html(
-                renderToStaticMarkup(<SportMatch id="3" team1="NMec" team2="NEI" score1="20" score2="90" x={d.x} y={d.y} />)
+                renderToStaticMarkup(<SportMatch id="3" team1="NMec" team2="NEI" score1="20" score2="90" x={d.x} y={-d.y} />)
             )
         })
 
@@ -205,10 +205,10 @@ const SportBracket = () => {
             <svg className="bracket-svg" width="900" height="942" viewBox="0 0 900 942">
                 <g className="parent">
                     <g>
-                        <SportMatch id="0" team1="NAE-ESSUA" team2="NAE-ISCA" score1="10" score2="0" x={0} y={350} horizontal />
+                        {/* <SportMatch id="0" team1="NAE-ESSUA" team2="NAE-ISCA" score1="10" score2="0" x={0} y={350} horizontal />
                         <SportMatch id="1" team1="Eng. Informática" team2="EET" score1="2" score2="9" x={350} y={350} live />
                         <SportMatch id="2" team1="NEEET" team2="NAE-ISCA" score1="5" score2="0" x={700} y={500} live horizontal />
-                        <SportMatch id="3" team1="NMec" team2="NEI" score1="20" score2="90" x={700} y={350} />
+                        <SportMatch id="3" team1="NMec" team2="NEI" score1="20" score2="90" x={700} y={350} /> */}
 
                         {/* <g transform="translate(488 260)" className="match -open " data-identifier="7" data-match-id="288716761">
                             <defs>
