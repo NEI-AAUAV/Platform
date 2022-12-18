@@ -1,0 +1,78 @@
+
+.mulrange.mulrange-xs {
+    --height: 1rem;
+}
+
+.mulrange.mulrange-sm {
+    --height: 1.25rem;
+}
+
+.mulrange,
+.mulrange.mulrange-md {
+    --height: 1.5rem;
+}
+
+.mulrange.mulrange-lg {
+    --height: 2rem;
+}
+
+.mulrange>*:not(.mulrange-control) {
+    pointer-events: none;
+}
+
+.mulrange {
+    position: relative;
+    height: var(--height);
+}
+
+.mulrange-control {
+    position: absolute;
+    opacity: 0;
+}
+
+.mulrange-slider {
+    position: absolute;
+    margin: calc(var(--height) / 3) 0;
+    height: calc(var(--height) / 3);
+    width: 100%;
+    background-color: hsla(var(--bc) / 0.1);
+    border-radius: var(--rounded-box, 1rem);
+}
+
+.mulrange-ranges,
+.mulrange-handles {
+    position: absolute;
+    width: calc(100% - var(--height));
+    height: inherit;
+}
+
+.mulrange-ranges>* {
+    position: absolute;
+    height: inherit;
+    padding-left: var(--height);
+    box-sizing: content-box;
+    background-color: hsla(var(--bc) / var(--tw-text-opacity, 1));
+    border-radius: var(--rounded-box, 1rem);
+}
+
+.mulrange-handles>* {
+    position: absolute;
+    height: inherit;
+    aspect-ratio: 1 / 1;
+    background-color: hsla(var(--b1));
+    border-radius: 50%;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.mulrange-handles>*::after {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border: 3px solid hsl(var(--bc));
+    border-radius: 50%;
+}
