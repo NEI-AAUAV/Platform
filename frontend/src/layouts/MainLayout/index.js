@@ -20,17 +20,6 @@ const MainLayout = () => {
 
     return (
         <>
-            <Particles
-                id="tsparticles"
-                options={{
-                    ...config, "background": {
-                        "color": {
-                            "value": theme === 'light' ? "#fff" : "#010409"
-                        }
-                    }
-                }}
-                className="position-absolute"
-            />
             <div className="pt-10 mhvh-100 d-flex flex-column justify-content-between">
                 <Navbar />
 

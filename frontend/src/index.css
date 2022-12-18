@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 @import url("https://fonts.googleapis.com/css?family=Azeret+Mono:100,200,300,regular,500,600,700,800,900,100italic,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic");
 
@@ -26,7 +30,7 @@
 [data-theme='dark']::after,
 [data-theme='dark']::before {
     --background: black;
-    --background-secondary: "#212121";
+    --background-secondary: #212121;
     --background-third: #050505;
     --background-card: black;
     --background-calendar-Today: rgba(242, 242, 242, 0.4);
