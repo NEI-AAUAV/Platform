@@ -5,7 +5,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 @import url("https://fonts.googleapis.com/css?family=Azeret+Mono:100,200,300,regular,500,600,700,800,900,100italic,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic");
 
-:root,
+/* :root,
 :root::after,
 :root::before {
     --background: white;
@@ -55,10 +55,10 @@ body {
 .form-control{
     background-color: var(--background) ; 
     color: var(--text-secondary) ; 
-}
+} */
 
 /* Bootstrap corrections */
-.text-primary { color: #147a26!important }
+/* .text-primary { color: #147a26!important }
 
 a { color: #147a26!important }
 a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
@@ -73,7 +73,7 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
     font-size: .5rem!important;
 }
 
-/* .btn */
+
 .btn {
     font-size: inherit;
     border-width: 2px;
@@ -114,10 +114,10 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 .btn-outline-primary-force:hover {
     background-color: #147a26!important;
     color: #fff!important;
-}
+} */
 
 /* bgs */
-.bg-outline-primary {
+/* .bg-outline-primary {
     background: none;
     border: 1px solid #147a26;
     border-radius: .25rem;
@@ -127,10 +127,10 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
     background: none;
     border: 1px solid #dc3545;
     border-radius: .25rem;
-}
+} */
 
 /* cols from Bootstrap 5 */
-@media only screen and (max-width: 1320px){
+/* @media only screen and (max-width: 1320px){
     .col-xxl-9 {
         flex: 0 0 auto;
         width: 75%;
@@ -139,10 +139,10 @@ a.text-primary:hover, a:hover, a:focus { color: #147a26!important }
 
 .pt-10 {
     padding-top: 6rem !important;
-}
+} */
 
 /* text size */
-body { font-size: 1rem!important;}
+/* body { font-size: 1rem!important;}
 small, .small, .btn-sm { font-size: .75rem!important; }
 h1 { font-size: 3.6rem!important; color: var(--text-secondary) ; }
 h2 { font-size: 2.8rem!important; color: var(--text-secondary) ;}
@@ -153,9 +153,10 @@ h3 { font-size: 1.75rem!important;color: var(--text-secondary) ;}
 h4 { font-size: 1.25rem!important;color: var(--text-secondary) ; }
 h5, .h5 { font-size: 1.15rem!important; color: var(--text-secondary);}
 p{color: var(--text-secondary)}
-label {color: var(--text-secondary)}
+label {color: var(--text-secondary)} */
+
 /* extra Bootstrap */
-.link:hover {
+/* .link:hover {
     cursor: pointer!important;
 }
 
@@ -169,15 +170,15 @@ label {color: var(--text-secondary)}
 
 .word-break {
     word-break: break-word;
-}
+} */
 
 /* removing marker from li with ul inside */
-li.sub {
+/* li.sub {
     list-style-type: none;
-}
+} */
 
 /* animations */
-.animation {
+/* .animation {
     opacity: 0;
     animation-name: fadeIn;
     animation-duration: 1s;
@@ -209,4 +210,4 @@ li.sub {
     animation-duration: 0.7s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
-}
+} */

@@ -113,6 +113,10 @@ const data = [
   //   name: "Rally Tascas",
   //   link: "/breakthebars",
   // },
+  !config.PRODUCTION && {
+    name: "Components",
+    link: "/components",
+  },
 ];
 
 export default data;
