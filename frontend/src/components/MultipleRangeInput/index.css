@@ -1,19 +1,50 @@
+.mulrange {
+    --size: 1.5rem;
+    --color: var(--bc);
+}
 
 .mulrange.mulrange-xs {
-    --height: 1rem;
+    --size: 1rem;
 }
 
 .mulrange.mulrange-sm {
-    --height: 1.25rem;
+    --size: 1.25rem;
 }
 
-.mulrange,
 .mulrange.mulrange-md {
-    --height: 1.5rem;
+    --size: 1.5rem;
 }
 
 .mulrange.mulrange-lg {
-    --height: 2rem;
+    --size: 2rem;
+}
+
+.mulrange.mulrange-primary {
+    --color: var(--p);
+}
+
+.mulrange.mulrange-secondary {
+    --color: var(--s);
+}
+
+.mulrange.mulrange-accent {
+    --color: var(--a);
+}
+
+.mulrange.mulrange-success {
+    --color: var(--su);
+}
+
+.mulrange.mulrange-warning {
+    --color: var(--wa);
+}
+
+.mulrange.mulrange-info {
+    --color: var(--in);
+}
+
+.mulrange.mulrange-error {
+    --color: var(--er);
 }
 
 .mulrange>*:not(.mulrange-control) {
@@ -22,7 +53,7 @@
 
 .mulrange {
     position: relative;
-    height: var(--height);
+    height: var(--size);
 }
 
 .mulrange-control {
@@ -32,8 +63,8 @@
 
 .mulrange-slider {
     position: absolute;
-    margin: calc(var(--height) / 3) 0;
-    height: calc(var(--height) / 3);
+    margin: calc(var(--size) / 3) 0;
+    height: calc(var(--size) / 3);
     width: 100%;
     background-color: hsla(var(--bc) / 0.1);
     border-radius: var(--rounded-box, 1rem);
@@ -42,16 +73,16 @@
 .mulrange-ranges,
 .mulrange-handles {
     position: absolute;
-    width: calc(100% - var(--height));
+    width: calc(100% - var(--size));
     height: inherit;
 }
 
 .mulrange-ranges>* {
     position: absolute;
     height: inherit;
-    padding-left: var(--height);
+    padding-left: var(--size);
     box-sizing: content-box;
-    background-color: hsla(var(--bc) / var(--tw-text-opacity, 1));
+    background-color: hsla(var(--color) / var(--tw-text-opacity, 1));
     border-radius: var(--rounded-box, 1rem);
 }
 
@@ -73,6 +104,6 @@
     position: absolute;
     height: 100%;
     width: 100%;
-    border: 3px solid hsl(var(--bc));
+    border: 3px solid hsl(var(--color));
     border-radius: 50%;
 }
