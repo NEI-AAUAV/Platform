@@ -1,0 +1,43 @@
+.mockup-terminal.mockup-code pre[data-prefix]:before {
+    font-weight: bold;
+    margin-left: 1.5rem;
+    margin-right: 1ch;
+    width: auto;
+}
+
+.mockup-terminal.mockup-code pre:before {
+    margin-left: 1.5rem;
+    margin-right: 0;
+}
+
+.font-16 {
+    font-size: 16px;
+  }
+  
+  .font-20 {
+    font-size: 20px;
+  }
+  
+  .em { 
+    background: red;
+    height: 1em;
+    width: 1em;
+  }
+  
+  .rem { 
+    background: blue;
+    height: 1rem;
+    width: 1rem;
+  }
+  
+  .ch { 
+    background: green;
+    height: 2ch;
+    width: 2ch;
+  }
+  
+  .px {
+    background: orange;
+    height: 16px;
+    width: 16px;
+  }
