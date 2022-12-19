@@ -9,6 +9,7 @@ import { ReactTerminal } from "react-terminal-component";
 import terminalstate from "./terminalconf";
 import service from 'services/NEIService';
 import Typist from 'react-typist';
+import MockupTerminal from 'components/MockupTerminal';
 
 // Animation
 const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
@@ -61,49 +62,20 @@ const Homepage = () => {
                                 </Typist>
                             </h3>
                         </Col>
+
                         <Col
                             className="px-xl-0 pt-xl-0 pt-3 slideUpFade"
                             style={{ animationDelay: animationBase + 1 * animationIncrement }}
                             lg={5}
                         >
-                            <div
-                                style={{
-                                    height: "34px",
-                                    width: "100%",
-                                    padding: "7px",
-                                    backgroundColor: "rgb(238, 238, 238)",
-                                    borderRadius: "5px 5px 0 0",
-                                    display: "flex",
-                                    justifyContent: "flex-end"
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        height: "20px",
-                                        width: "20px",
-                                        backgroundColor: "rgb(163, 190, 140)",
-                                        borderRadius: "50%"
-                                    }}
-                                ></div>
-                                <div
-                                    style={{
-                                        height: "20px",
-                                        width: "20px",
-                                        marginLeft: "4px",
-                                        backgroundColor: "rgb(235, 203, 139)",
-                                        borderRadius: "50%"
-                                    }}
-                                ></div>
-                                <div
-                                    style={{
-                                        height: "20px",
-                                        width: "20px",
-                                        marginLeft: "4px",
-                                        backgroundColor: "rgb(191, 97, 106)",
-                                        borderRadius: "50%"
-                                    }}
-                                ></div>
-                            </div>
+                            <MockupTerminal />
+                        </Col>
+
+                        <Col
+                            className="px-xl-0 pt-xl-0 pt-3 slideUpFade"
+                            style={{ animationDelay: animationBase + 1 * animationIncrement }}
+                            lg={5}
+                        >
                             <ReactTerminal
                                 emulatorState={terminalstate}
                                 clickToFocus={true}

@@ -1,82 +1,100 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import './index.css';
 
-const MockupTerminal = () => {
-    const prefix = "guest@aauav-nei:~$";
+const terminalHistory = [
+    {
+        user: "guest",
+        device: "aauav-nei",
+        path: "~",
+        command: "cd lixo",
+        output: []
+    },
+    {
+        user: "guest",
+        device: "aauav-nei",
+        path: "~/lixo",
+        command: "ls",
+        output: ["lixo2", "readme.md", "something.sh"]
+    },
+    {
+        user: "guest",
+        device: "aauav-nei",
+        path: "~/lixo",
+        command: "ssh leand@ro",
+        output: ["leand@ro's password: "]
+    },
+    {
+        user: "leand",
+        device: "ro",
+        path: "~",
+        command: "",
+        output: []
+    },
+];
 
+
+const MockupTerminal = () => {
     const inputRef = useRef(null);
-    const [command, setCommnad] = useState(["dfsdfds", "lkdfjsf", "wfdsf"]);
+    const [history, setHistory] = useState(terminalHistory);
+    const [command, setCommnad] = useState("");
 
     const handleInput = (e) => {
-        const { type, key, target } = e;
+        const target = e.target;
         const value = target.value;
 
-        console.log('adeus', e)
-        if (type === "keydown") {
-            if (key === "Backspace" && value === ""
-                && command.length > 1 && command.at(-1) === "") {
-                // Remove additional input when latter is empty
-                console.log(command, [...command.slice(0, -1)])
-                setCommnad(prevCommand => [...prevCommand.slice(0, -1)]);
-                return;
-            }
-        }
+        setCommnad(value.trim());
 
-        console.log(target.scrollWidth, 'f', target.offsetWidth)
-
-        setCommnad(prevCommand => {
-            if (target.scrollWidth > target.offsetWidth) {
-                // Add input when latter is full
-                prevCommand.push(value.at(-1));
-            } else {
-                // Update latter input
-                prevCommand[prevCommand.length - 1] = value;
-            }
-            return [...prevCommand];
-        });
-    }
-
-    const isTextSelected = () => {
-        const selection = window.getSelection();
-        return selection && selection.type === 'Range';
+        target.style.height = 'auto';
+        target.style.height = target.scrollHeight + 'px';
     }
 
     const setInputFocus = (e) => {
-        return;
+        const isTextSelected = () => {
+            const selection = window.getSelection();
+            return selection && selection.type === 'Range';
+        }
         if (isTextSelected()) return;
         e.preventDefault();
         inputRef.current && inputRef.current.focus();
-    };
+    }
 
-    const handleInput2 = () => {
+    const executeCommand = () => {
+        setCommnad("");
+        const { user, device, path } = history.at(-1);
+        setHistory([...history, {
+            user, device, path, command,
+            output: [command ? `${command}: command not found` : ""]
+        }]);
+    }
 
+    const prompt = (user, device, path) => {
+        return <>{user}@{device}:<span className='text-info'>{path}</span>$</>;
     }
 
     return (
-        <>
-        
-        <div className="mockup-terminal mockup-code" onClick={setInputFocus}>
-            <pre data-prefix="$"><code>npm i daisyui</code></pre>
-            <pre data-prefix=">" className="text-warning"><code>installing...</code></pre>
-            <pre data-prefix=">" className="text-success"><code>Done!</code></pre>
-            {
-                command.slice(0, -1).map((c, i) =>
-                    <pre key={i} data-prefix={i === 0 ? prefix : null} className="text-success">
-                        <code>{c}</code>
-                    </pre>
-                )
-            }
-            <pre data-prefix={command.length > 1 ? null : prefix} className="text-success">
-                <code>{command.at(-1)}</code>
-                <input ref={inputRef} autoFocus type="text" spellCheck="false" className='w-[1ch] outline-none bg-transparent'
-                   value={command.at(-1)} onChange={handleInput} onKeyDown={handleInput} />
-            </pre>
-            <textarea spellCheck={false} className='px-[1.5rem] resize-none outline-none bg-transparent w-full'
-             value={""} onChange={handleInput2}>
-                sdf
-            </textarea>
-        </div >
-        </>
+        <div className="mockup-terminal mockup-code font-mono" onClick={setInputFocus}>
+            <div className='max-h-96 overflow-auto mockup-terminal-body px-[1.5rem]'>
+                {
+                    history.map(({ user, device, path, command, output }, i) =>
+                        <div key={i} className='text-success'>
+                            <span className='font-bold opacity-50 pr-[1ch]'>{prompt(user, device, path)}</span>
+                            <span>{command}</span>
+                            {
+                                output.map((out, i) => <span key={i} className='block'>{out}</span>)
+                            }
+                        </div>
+                    )
+                }
+                <div className='text-success relative'>
+                    <span className='font-bold opacity-50 absolute'>{prompt('leand', 'ro', '~')}</span>
+                    <textarea ref={inputRef} className='w-full bg-transparent resize-none outline-none'
+                        style={{ textIndent: `${('leand' + 'ro' + '~').length + 4}ch` }}
+                        autoFocus={true} autoComplete="false" autoCorrect="false" spellCheck={false}
+                        value={command} onChange={handleInput}
+                        onKeyDown={(e) => e.key === 'Enter' && executeCommand()} />
+                </div>
+            </div>
+        </div>
     );
 }
 
