@@ -113,6 +113,14 @@ const data = [
   //   name: "Rally Tascas",
   //   link: "/breakthebars",
   // },
+  {
+    name: "Test",
+    link: "/testing",
+  },
+  {
+    name: "TacauaAdminDemo",
+    link: "/tacaua-admin-demo",
+  }
 ];
 
 export default data;

@@ -7,7 +7,6 @@ authors = []
 [tool.poetry.dependencies]
 python = "^3.8"
 uvicorn = "^0.15"
-fastapi = "0.68.0"
 pydantic = {extras = ["email"], version = "~1.8.1"}
 SQLAlchemy = "^1.4.22"
 alembic = "^1.6.5"
@@ -24,3 +23,5 @@ mypy = "^0.790"
 sqlalchemy-stubs = "^0.4"
 h11 = "^0.14.0"
 httpcore = "^0.16.2"
+websockets = "^10.4"
+fastapi = "0.68.0"
