@@ -1,8 +1,7 @@
-
 import { Link } from "react-router-dom";
 
-const LinkAdapter = ({ to, children, ...props }) => {
-    if (!to || to?.startsWith('http'))
+const LinkAdapter = ({ to, external, children, ...props }) => {
+    if (!to || to.startsWith('http') || external)
         return (
             <a href={to} target="_blank" rel="noopener noreferer" {...props}>
                 {children}

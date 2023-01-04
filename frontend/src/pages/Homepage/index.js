@@ -3,13 +3,20 @@ import { Button, Row, Col, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb, faFutbol } from "@fortawesome/free-regular-svg-icons";
 import { faHistory, faUsers } from "@fortawesome/free-solid-svg-icons";
+import Typist from 'react-typist';
+import { ReactTerminal } from "react-terminal-component";
+import Particles from "react-tsparticles";
+
+import service from 'services/NEIService';
+import MockupTerminal from 'components/MockupTerminal';
+import ReactLogo from 'assets/images/theming-gradient.svg';
+// import backgroundAvif from 'assets/images/theming-gradient.png';
+import { ReactComponent as BackgroundImage } from 'assets/images/theming-gradient.svg';
+
+import terminalstate from "./terminalconf";
+import backgroundconfig from "./backgroundconfig";
 import NewsList from "../News/NewsList";
 import "./index.css";
-import { ReactTerminal } from "react-terminal-component";
-import terminalstate from "./terminalconf";
-import service from 'services/NEIService';
-import Typist from 'react-typist';
-import MockupTerminal from 'components/MockupTerminal';
 
 // Animation
 const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
@@ -38,7 +45,27 @@ const Homepage = () => {
     }, []);
 
     return (
-        <div className="py-5">
+        <>
+            {/* <img alt="background" className="w-screen h-screen" src={'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><g opacity=".3" filter="url(#a)"><path fill="hsl(var(--p))" opacity=".5" d="M35.3 44.6c-.5 1.8-2.5 2.7-2.8 4.8 0 .5-.6 1.5-2.5 1.3-1.8 1.1-7.6-1-9 .8-1 1.3-2.1 3.1-1.7 5.5.3 1.9 1.3 3.8 2.3 5.4 1.5 2.3 3.3 4.5 5.2 6.2 6.2 5.5 13.5 6.919.7 7 7.6 0 14.1-3 19.7-7.9 2.2-2 4.3-4.3 5.9-7.3 1.4-2.7.6-5.7 3.59 0 1.1-4.1 1.8-8.7 1.3-13.7-.3-3.7-1.97.4-4.1-10.7-2.94.56.9-7-10.8-7.3-2.3-.1-5 .8-5.14.2 0 2.5 1 5.4 1.78.05.7 1.1 4.2.05.1-1.8 1.54.5 1.9-6.9 2.3-3 .3-6.3-.4-9.5-.6-1.8-.1-3.3.8-4.6 1.9-1.092"/></g><g opacity=".3" filter="url(#b)"><path fill="hsl(var(--s))" opacity=".5" d="M35.3 44.6c-.5 1.8-2.5 2.7-2.8 4.8 0 .5-.6 1.5-2.5 1.3-1.8 1.1-7.6-1-9 .8-1 1.3-2.1 3.1-1.7 5.5.3 1.9 1.3 3.8 2.3 5.4 1.5 2.3 3.3 4.5 5.2 6.2 6.2 5.5 13.5 6.919.7 7 7.6 0 14.1-3 19.7-7.9 2.2-2 4.3-4.3 5.9-7.3 1.4-2.7.6-5.7 3.59 0 1.1-4.1 1.8-8.7 1.3-13.7-.3-3.7-1.97.4-4.1-10.7-2.94.56.9-7-10.8-7.3-2.3-.1-5 .8-5.14.2 0 2.5 1 5.4 1.78.05.7 1.1 4.2.05.1-1.8 1.54.5 1.9-6.9 2.3-3 .3-6.3-.4-9.5-.6-1.8-.1-3.3.8-4.6 1.9-1.092"/></g><defs><filter id="a" x="0" y="0" width="96" height="96" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_577_931"/></filter><filter id="b" x="0" y="0" width="96" height="96" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_577_931"/></filter></defs></svg>'} ></img>
+            <div className="w-screen h-screen flex-none flex justify-end" style={{backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cg opacity='.3' filter='url(%23a)'%3E%3Cpath fill='red' opacity='.5' d='M35.3 44.6c-.5 1.8-2.5 2.7-2.8 4.8 0 .5-.6 1.5-2.5 1.3-1.8 1.1-7.6-1-9 .8-1 1.3-2.1 3.1-1.7 5.5.3 1.9 1.3 3.8 2.3 5.4 1.5 2.3 3.3 4.5 5.2 6.2 6.2 5.5 13.5 6.919.7 7 7.6 0 14.1-3 19.7-7.9 2.2-2 4.3-4.3 5.9-7.3 1.4-2.7.6-5.7 3.59 0 1.1-4.1 1.8-8.7 1.3-13.7-.3-3.7-1.97.4-4.1-10.7-2.94.56.9-7-10.8-7.3-2.3-.1-5 .8-5.14.2 0 2.5 1 5.4 1.78.05.7 1.1 4.2.05.1-1.8 1.54.5 1.9-6.9 2.3-3 .3-6.3-.4-9.5-.6-1.8-.1-3.3.8-4.6 1.9-1.092'/%3E%3C/g%3E%3Cg opacity='.3' filter='url(%23b)'%3E%3Cpath fill='red' opacity='.5' d='M35.3 44.6c-.5 1.8-2.5 2.7-2.8 4.8 0 .5-.6 1.5-2.5 1.3-1.8 1.1-7.6-1-9 .8-1 1.3-2.1 3.1-1.7 5.5.3 1.9 1.3 3.8 2.3 5.4 1.5 2.3 3.3 4.5 5.2 6.2 6.2 5.5 13.5 6.919.7 7 7.6 0 14.1-3 19.7-7.9 2.2-2 4.3-4.3 5.9-7.3 1.4-2.7.6-5.7 3.59 0 1.1-4.1 1.8-8.7 1.3-13.7-.3-3.7-1.97.4-4.1-10.7-2.94.56.9-7-10.8-7.3-2.3-.1-5 .8-5.14.2 0 2.5 1 5.4 1.78.05.7 1.1 4.2.05.1-1.8 1.54.5 1.9-6.9 2.3-3 .3-6.3-.4-9.5-.6-1.8-.1-3.3.8-4.6 1.9-1.092'/%3E%3C/g%3E%3Cdefs%3E%3Cfilter id='a' x='0' y='0' width='96' height='96' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeFlood flood-opacity='0' result='BackgroundImageFix'/%3E%3CfeBlend in='SourceGraphic' in2='BackgroundImageFix' result='shape'/%3E%3CfeGaussianBlur stdDeviation='10' result='effect1_foregroundBlur_577_931'/%3E%3C/filter%3E%3Cfilter id='b' x='0' y='0' width='96' height='96' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'%3E%3CfeFlood flood-opacity='0' result='BackgroundImageFix'/%3E%3CfeBlend in='SourceGraphic' in2='BackgroundImageFix' result='shape'/%3E%3CfeGaussianBlur stdDeviation='10' result='effect1_foregroundBlur_577_931'/%3E%3C/filter%3E%3C/defs%3E%3C/svg%3E")`}}></div> */}
+            {/* <div class="w-screen h-screen flex-none flex justify-end">
+                <picture>
+                    <img src={background} alt="" class="w-[90rem] flex-none max-w-none hidden dark:block" decoding="async" />
+                    <source srcset={backgroundAvif} type="image/png" />
+                </picture>
+            </div> */}
+
+            {/* <BackgroundImage className="w-[10rem] md:w-[30rem] lg:w-[60rem]" /> */}
+
+
+            <div class="gradient-blur absolute z-0 right-0"></div>
+            <Particles
+                id="tsparticles"
+                options={backgroundconfig}
+                className="absolute"
+            />
+
+
             <div className="section" style={{ "minHeight": "calc(100vh - 7rem)" }}>
                 <Col xs={11} sm={10} className="mx-auto col-xxl-9">
                     <Row>
@@ -174,7 +201,7 @@ const Homepage = () => {
                     </Row>
                 </Col>
             </div>
-        </div>
+        </>
     );
 }
 

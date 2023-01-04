@@ -1,7 +1,80 @@
+import classname from 'classname';
+import {
+    Alert,
+    Document,
+    Filters,
+    Footer,
+    ImageCard,
+    LinkAdapter,
+    MockupTerminal,
+    MultipleRangeInput,
+    Navbar,
+} from 'components';
+
 const Components = () => {
     return (
-        <div className="rounded-box bg-base-100 border-base-content/5 text-base-content not-prose grid gap-3 border p-6"
-            data-theme="mytheme" 
+        <div>
+            <h1>Daisy UI Color Names</h1>
+            <table className='flex flex-wrap flex-start p-6'>
+                {
+                    [[
+                        { name: 'primary', key: 'p', required: true },
+                        { name: 'primary-focus', key: 'pf' },
+                        { name: 'primary-content', key: 'pc' },
+                        { name: 'secondary', key: 's', required: true },
+                        { name: 'secondary-focus', key: 'sf' },
+                        { name: 'secondary-content', key: 'sc' },
+                    ], [
+                        { name: 'accent', key: 'a', required: true },
+                        { name: 'accent-focus', key: 'af' },
+                        { name: 'accent-content', key: 'ac' },
+                        { name: 'neutral', key: 'n', required: true },
+                        { name: 'neutral-focus', key: 'nf' },
+                        { name: 'neutral-content', key: 'nc' }
+                    ], [
+                        { name: 'base-100', key: 'b1', required: true },
+                        { name: 'base-200', key: 'b2' },
+                        { name: 'base-300', key: 'b3' },
+                        { name: 'base-content', key: 'bc' },
+                        { name: 'info', key: 'in' },
+                        { name: 'info-content', key: 'inc' },
+                    ], [
+                        { name: 'success', key: 'su' },
+                        { name: 'success-content', key: 'suc' },
+                        { name: 'warning', key: 'wa' },
+                        { name: 'warning-content', key: 'wac' },
+                        { name: 'error', key: 'er' },
+                        { name: 'error-content', key: 'erc' },
+                    ]].map((colors) =>
+                        <tbody>
+                            {
+                                colors.map(({ name, key, required }) =>
+                                    <tr className='min-w-[200px]'>
+                                        <td>
+                                            <span className="ml-2 font-mono font-bold">{name}</span>
+                                            <br />
+                                            <span className={`badge bg-${name}`} style={{backgroundColor: `hsl(var(--${key}))`}}></span>
+                                            <span className={classname("float-right m-2 badge badge-sm", { "badge-ghost": !required })}>{required ? 'required' : 'optional'}</span>
+                                        </td>
+                                        <td>
+                                            <span className="text-xs opacity-60 font-mono">CSS var: <code>hsl(var(--{key}))</code></span>
+                                            <br />
+                                            <span className="font-mono text-xs opacity-60">Class: <code>bg-{name}</code></span>
+                                        </td>
+                                    </tr>
+                                )
+                            }
+                        </tbody>
+                    )}
+            </table>
+            <h1>NEI Components</h1>
+            <div className='p-6'>
+                <MockupTerminal />
+                <MultipleRangeInput size="sm" />
+            </div>
+            <h1>DaisyUI Components</h1>
+            <div className="rounded-box bg-base-100 border-base-content/5 text-base-content not-prose grid gap-3 border p-6"
+                // data-theme="mytheme"
             // style={{
             //     "--p": "114 71% 72%",
             //     "--s": "326 85% 85%",
@@ -28,186 +101,187 @@ const Components = () => {
             //     "--wac": "37 100% 87%",
             //     "--erc": "2 100% 91%;"
             // }}
-        >
-            <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-                <button className="btn">Default</button>
-                <button className="btn btn-primary">Primary</button>
-                <button className="btn btn-secondary">Secondary</button>
-                <button className="btn btn-accent">Accent</button>
-                <button className="btn btn-info">Info</button>
-                <button className="btn btn-success">Success</button>
-                <button className="btn btn-warning">Warning</button>
-                <button className="btn btn-error">Error</button>
-            </div>
-            <div className="grid grid-cols-2 place-items-center gap-2 md:grid-cols-4">
-                <span className="badge">Default</span>
-                <span className="badge badge-primary">Primary</span>
-                <span className="badge badge-secondary">Secondary</span>
-                <span className="badge badge-accent">Accent</span>
-                <span className="badge badge-info">Info</span>
-                <span className="badge badge-success">Success</span>
-                <span className="badge badge-warning">Warning</span>
-                <span className="badge badge-error">Error</span>
-            </div>
-            <div className="flex flex-col gap-3">
-                <div className="flex flex-col gap-3 md:flex-row">
-                    <div className="md:w-1/2">
-                        <div className="tabs">
-                            <button className="tab tab-lifted">Tab</button>
-                            <button className="tab tab-lifted tab-active">Tab</button>
-                            <button className="tab tab-lifted">Tab</button>
+            >
+                <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+                    <button className="btn">Default</button>
+                    <button className="btn btn-primary">Primary</button>
+                    <button className="btn btn-secondary">Secondary</button>
+                    <button className="btn btn-accent">Accent</button>
+                    <button className="btn btn-info">Info</button>
+                    <button className="btn btn-success">Success</button>
+                    <button className="btn btn-warning">Warning</button>
+                    <button className="btn btn-error">Error</button>
+                </div>
+                <div className="grid grid-cols-2 place-items-center gap-2 md:grid-cols-4">
+                    <span className="badge">Default</span>
+                    <span className="badge badge-primary">Primary</span>
+                    <span className="badge badge-secondary">Secondary</span>
+                    <span className="badge badge-accent">Accent</span>
+                    <span className="badge badge-info">Info</span>
+                    <span className="badge badge-success">Success</span>
+                    <span className="badge badge-warning">Warning</span>
+                    <span className="badge badge-error">Error</span>
+                </div>
+                <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 md:flex-row">
+                        <div className="md:w-1/2">
+                            <div className="tabs">
+                                <button className="tab tab-lifted">Tab</button>
+                                <button className="tab tab-lifted tab-active">Tab</button>
+                                <button className="tab tab-lifted">Tab</button>
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="link">I'm a simple link</span>
+                                <span className="link link-primary">I'm a simple link</span>
+                                <span className="link link-secondary">I'm a simple link</span>
+                                <span className="link link-accent">I'm a simple link</span>
+                            </div>
                         </div>
-                        <div className="flex flex-col">
-                            <span className="link">I'm a simple link</span>
-                            <span className="link link-primary">I'm a simple link</span>
-                            <span className="link link-secondary">I'm a simple link</span>
-                            <span className="link link-accent">I'm a simple link</span>
+                        <div className="flex flex-col gap-3 md:w-1/2">
+                            <progress value="20" max="100" className="progress">Default</progress>
+                            <progress value="25" max="100" className="progress progress-primary">Primary</progress>
+                            <progress value="30" max="100" className="progress progress-secondary">Secondary</progress>
+                            <progress value="40" max="100" className="progress progress-accent">Accent</progress>
+                            <progress value="45" max="100" className="progress progress-info">Info</progress>
+                            <progress value="55" max="100" className="progress progress-success">Success</progress>
+                            <progress value="70" max="100" className="progress progress-warning">Warning</progress>
+                            <progress value="90" max="100" className="progress progress-error">Error</progress>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-3 md:w-1/2">
-                        <progress value="20" max="100" className="progress">Default</progress>
-                        <progress value="25" max="100" className="progress progress-primary">Primary</progress>
-                        <progress value="30" max="100" className="progress progress-secondary">Secondary</progress>
-                        <progress value="40" max="100" className="progress progress-accent">Accent</progress>
-                        <progress value="45" max="100" className="progress progress-info">Info</progress>
-                        <progress value="55" max="100" className="progress progress-success">Success</progress>
-                        <progress value="70" max="100" className="progress progress-warning">Warning</progress>
-                        <progress value="90" max="100" className="progress progress-error">Error</progress>
+                    <div className="flex flex-col gap-3 md:flex-row">
+                        <div className="stats bg-base-300 border-base-300 border md:w-1/2">
+                            <div className="stat">
+                                <div className="stat-title">Total Page Views</div>
+                                <div className="stat-value">89,400</div>
+                                <div className="stat-desc">21% more than last month</div>
+                            </div>
+                        </div>
+                        <div className="flex flex-wrap items-center justify-center gap-3 md:w-1/2">
+                            <div className="radial-progress" style={{ "--value": 60, "--size": "3.5rem" }}>60%</div>
+                            <div className="radial-progress" style={{ "--value": 75, "--size": "3.5rem" }}>75%</div>
+                            <div className="radial-progress" style={{ "--value": 90, "--size": "3.5rem" }}>90%</div>
+                        </div>
                     </div>
                 </div>
-                <div className="flex flex-col gap-3 md:flex-row">
-                    <div className="stats bg-base-300 border-base-300 border md:w-1/2">
-                        <div className="stat">
-                            <div className="stat-title">Total Page Views</div>
-                            <div className="stat-value">89,400</div>
-                            <div className="stat-desc">21% more than last month</div>
+                <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 md:flex-row">
+                        <div className="md:w-1/2">
+                            <div>
+                                <input type="checkbox" className="toggle" />
+                                <input type="checkbox" className="toggle toggle-primary" />
+                                <input type="checkbox" className="toggle toggle-secondary" />
+                                <input type="checkbox" className="toggle toggle-accent" />
+                            </div>
+                            <div>
+                                <input type="checkbox" className="checkbox" />
+                                <input type="checkbox" className="checkbox checkbox-primary" />
+                                <input type="checkbox" className="checkbox checkbox-secondary" />
+                                <input type="checkbox" className="checkbox checkbox-accent" />
+                            </div>
+                            <div>
+                                <input type="radio" name="radio-1" className="radio" />
+                                <input type="radio" name="radio-1" className="radio radio-primary" />
+                                <input type="radio" name="radio-1" className="radio radio-secondary" />
+                                <input type="radio" name="radio-1" className="radio radio-accent" />
+                            </div>
+                        </div>
+                        <div className="md:w-1/2">
+                            <input type="range" min="0" max="100" className="range range-xs" />
+                            <input type="range" min="0" max="100" className="range range-xs range-primary" />
+                            <input type="range" min="0" max="100" className="range range-xs range-secondary" />
+                            <input type="range" min="0" max="100" className="range range-xs range-accent" />
                         </div>
                     </div>
-                    <div className="flex flex-wrap items-center justify-center gap-3 md:w-1/2">
-                        <div className="radial-progress" style={{"--value": 60, "--size": "3.5rem"}}>60%</div>
-                        <div className="radial-progress" style={{"--value": 75, "--size": "3.5rem"}}>75%</div>
-                        <div className="radial-progress" style={{"--value": 90, "--size": "3.5rem"}}>90%</div>
+                    <div className="flex flex-col gap-3 md:flex-row">
+                        <div className="flex flex-col gap-3 md:w-1/2">
+                            <input type="text" placeholder="Default" className="input input-bordered w-full" />
+                            <input type="text" placeholder="Primary" className="input input-primary input-bordered w-full" />
+                            <input type="text" placeholder="Secondary" className="input input-secondary input-bordered w-full" />
+                            <input type="text" placeholder="Accent" className="input input-accent input-bordered w-full" />
+                        </div>
+                        <div className="flex flex-col gap-3 md:w-1/2">
+                            <input type="text" placeholder="Info" className="input input-info input-bordered w-full" />
+                            <input type="text" placeholder="Success" className="input input-success input-bordered w-full" />
+                            <input type="text" placeholder="Warning" className="input input-warning input-bordered w-full" />
+                            <input type="text" placeholder="Error" className="input input-error input-bordered w-full" />
+                        </div>
+                    </div>
+                    <div className="navbar bg-neutral text-neutral-content rounded-box">
+                        <div className="flex-none">
+                            <button className="btn btn-square btn-ghost">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block h-5 w-5 stroke-current">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="flex-1">
+                            <button className="btn btn-ghost text-xl normal-case">daisyUI</button>
+                        </div>
+                    </div>
+                    <div className="flex gap-3">
+                        <div className="flex flex-grow flex-col gap-3">
+                            <div className="text-4xl font-bold">Text Size 1</div>
+                            <div className="text-3xl font-bold">Text Size 2</div>
+                            <div className="text-2xl font-bold">Text Size 3</div>
+                            <div className="text-xl font-bold">Text Size 4</div>
+                            <div className="text-lg font-bold">Text Size 5</div>
+                            <div className="text-sm font-bold">Text Size 6</div>
+                            <div className="text-xs font-bold">Text Size 7</div>
+                        </div>
+                        <ul className="steps steps-vertical">
+                            <li className="step step-primary">Step 1</li>
+                            <li className="step step-primary">Step 2</li>
+                            <li className="step">Step 3</li>
+                            <li className="step">Step 4</li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-            <div className="flex flex-col gap-3">
-                <div className="flex flex-col gap-3 md:flex-row">
-                    <div className="md:w-1/2">
+                <div className="flex flex-col gap-3">
+                    <div className="alert">
                         <div>
-                            <input type="checkbox" className="toggle" />
-                            <input type="checkbox" className="toggle toggle-primary" />
-                            <input type="checkbox" className="toggle toggle-secondary" />
-                            <input type="checkbox" className="toggle toggle-accent" />
-                        </div>
-                        <div>
-                            <input type="checkbox" className="checkbox" />
-                            <input type="checkbox" className="checkbox checkbox-primary" />
-                            <input type="checkbox" className="checkbox checkbox-secondary" />
-                            <input type="checkbox" className="checkbox checkbox-accent" />
-                        </div>
-                        <div>
-                            <input type="radio" name="radio-1" className="radio" />
-                            <input type="radio" name="radio-1" className="radio radio-primary" />
-                            <input type="radio" name="radio-1" className="radio radio-secondary" />
-                            <input type="radio" name="radio-1" className="radio radio-accent" />
-                        </div>
-                    </div>
-                    <div className="md:w-1/2">
-                        <input type="range" min="0" max="100" className="range range-xs" />
-                        <input type="range" min="0" max="100" className="range range-xs range-primary" />
-                        <input type="range" min="0" max="100" className="range range-xs range-secondary" />
-                        <input type="range" min="0" max="100" className="range range-xs range-accent" />
-                    </div>
-                </div>
-                <div className="flex flex-col gap-3 md:flex-row">
-                    <div className="flex flex-col gap-3 md:w-1/2">
-                        <input type="text" placeholder="Default" className="input input-bordered w-full" />
-                        <input type="text" placeholder="Primary" className="input input-primary input-bordered w-full" />
-                        <input type="text" placeholder="Secondary" className="input input-secondary input-bordered w-full" />
-                        <input type="text" placeholder="Accent" className="input input-accent input-bordered w-full" />
-                    </div>
-                    <div className="flex flex-col gap-3 md:w-1/2">
-                        <input type="text" placeholder="Info" className="input input-info input-bordered w-full" />
-                        <input type="text" placeholder="Success" className="input input-success input-bordered w-full" />
-                        <input type="text" placeholder="Warning" className="input input-warning input-bordered w-full" />
-                        <input type="text" placeholder="Error" className="input input-error input-bordered w-full" />
-                    </div>
-                </div>
-                <div className="navbar bg-neutral text-neutral-content rounded-box">
-                    <div className="flex-none">
-                        <button className="btn btn-square btn-ghost">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block h-5 w-5 stroke-current">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-info h-6 w-6 flex-shrink-0">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
                                 </path>
                             </svg>
-                        </button>
+                            <span>12 unread messages. Tap to see.</span>
+                        </div>
                     </div>
-                    <div className="flex-1">
-                        <button className="btn btn-ghost text-xl normal-case">daisyUI</button>
+                    <div className="alert alert-info">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-6 w-6 flex-shrink-0 stroke-current">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
+                            </svg>
+                            <span>New software update available.</span>
+                        </div>
                     </div>
-                </div>
-                <div className="flex gap-3">
-                    <div className="flex flex-grow flex-col gap-3">
-                        <div className="text-4xl font-bold">Text Size 1</div>
-                        <div className="text-3xl font-bold">Text Size 2</div>
-                        <div className="text-2xl font-bold">Text Size 3</div>
-                        <div className="text-xl font-bold">Text Size 4</div>
-                        <div className="text-lg font-bold">Text Size 5</div>
-                        <div className="text-sm font-bold">Text Size 6</div>
-                        <div className="text-xs font-bold">Text Size 7</div>
+                    <div className="alert alert-success">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
+                            </svg>
+                            <span>Your purchase has been confirmed!</span>
+                        </div>
                     </div>
-                    <ul className="steps steps-vertical">
-                        <li className="step step-primary">Step 1</li>
-                        <li className="step step-primary">Step 2</li>
-                        <li className="step">Step 3</li>
-                        <li className="step">Step 4</li>
-                    </ul>
-                </div>
-            </div>
-            <div className="flex flex-col gap-3">
-                <div className="alert">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-info h-6 w-6 flex-shrink-0">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                            </path>
-                        </svg>
-                        <span>12 unread messages. Tap to see.</span>
+                    <div className="alert alert-warning">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                </path>
+                            </svg>
+                            <span>Warning: Invalid email address!</span>
+                        </div>
                     </div>
-                </div>
-                <div className="alert alert-info">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-6 w-6 flex-shrink-0 stroke-current">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                            </path>
-                        </svg>
-                        <span>New software update available.</span>
-                    </div>
-                </div>
-                <div className="alert alert-success">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z">
-                            </path>
-                        </svg>
-                        <span>Your purchase has been confirmed!</span>
-                    </div>
-                </div>
-                <div className="alert alert-warning">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                            </path>
-                        </svg>
-                        <span>Warning: Invalid email address!</span>
-                    </div>
-                </div>
-                <div className="alert alert-error">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z">
-                            </path>
-                        </svg>
-                        <span>Error! Task failed successfully.</span>
+                    <div className="alert alert-error">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 flex-shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
+                            </svg>
+                            <span>Error! Task failed successfully.</span>
+                        </div>
                     </div>
                 </div>
             </div>

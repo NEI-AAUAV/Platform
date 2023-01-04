@@ -5,6 +5,89 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 @import url("https://fonts.googleapis.com/css?family=Azeret+Mono:100,200,300,regular,500,600,700,800,900,100italic,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic");
 
+@layer base {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-bold;
+    }
+
+    h1 {
+        @apply text-4xl;
+    }
+
+    h2 {
+        @apply text-3xl;
+    }
+
+    h3 {
+        @apply text-2xl;
+    }
+
+    h4 {
+        @apply text-xl;
+    }
+
+    h5 {
+        @apply text-lg;
+    }
+
+    h6 {
+        @apply text-sm;
+    }
+
+    .navbar,
+    .navbar-mobile {
+        @apply text-sm font-bold;
+        @apply max-w-[90rem] mx-auto;
+    }
+
+    .navbar-start {
+        @apply basis-[100px] !w-fit;
+    }
+
+    .navbar-end {
+        @apply grow !w-fit;
+    }
+
+    .menu :where(li)> :where(*:not(ul)) {
+        @apply !px-3 !py-2;
+    }
+
+    /* .menu > :where(li) > :where(ul) :where(li) > :where(:not(ul)) {
+        @apply !ml-4;
+    } */
+}
+
+
+/* 
+.menu > :where(li) > :where(ul) :where(li) > :where(:not(ul))::before {
+    content: '';
+    position: absolute;
+    left: .4rem;
+    bottom: 50%;
+    width: .6rem;
+    height: 20rem;
+    border: 2px solid hsl(220 13% 69% / 0.1) !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-radius: 0 var(--rounded-btn, 0.5rem);
+} */
+
+/* 
+* {
+    transition: all 0.25s ease-out;
+} */
+
+body {
+    overflow-x: hidden;
+}
+
+
 /* :root,
 :root::after,
 :root::before {

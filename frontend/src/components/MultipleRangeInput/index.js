@@ -16,11 +16,11 @@ const MultipleRangeInput = ({ min = 0, max = 150, step = 25, defaultValues = [[0
         }
     }
 
-    if (!['xs', 'sm', 'md', 'lg'].includes(size)) {
+    if (size && !['xs', 'sm', 'md', 'lg'].includes(size)) {
         throw Error("Invalid value for `size` property");
     }
 
-    if (!['primary', 'secondary', 'accent', 'success', 'warning', 'info', 'error'].includes(color)) {
+    if (color && !['primary', 'secondary', 'accent', 'success', 'warning', 'info', 'error'].includes(color)) {
         throw Error("Invalid value for `color` property");
     }
 
@@ -75,14 +75,6 @@ const MultipleRangeInput = ({ min = 0, max = 150, step = 25, defaultValues = [[0
     }
 
     return <>
-        <input type="range" className="range range-xs" step={step} defaultValue={defaultValues[0]} />
-        <div className="w-full flex justify-between text-xs px-2">
-            <span>|</span>
-            <span>|</span>
-            <span>|</span>
-            <span>|</span>
-            <span>|</span>
-        </div>
         <div className={classname('mulrange', size && `mulrange-${size}`, color && `mulrange-${color}`)}>
             <input className={classname('mulrange-control range', size && `range-${size}`)} type="range" min={min} max={max}
                 onInput={handleInput} onPointerDown={() => { pointerDown.current = true }} />
@@ -98,10 +90,9 @@ const MultipleRangeInput = ({ min = 0, max = 150, step = 25, defaultValues = [[0
                 )}
             </div>
         </div>
-        <div className="select-none w-full flex justify-between text-xs px-2">
+        <div className="select-none w-full flex justify-between text-xs p-2">
             {[...Array(ticks)].map((i) => <span key={i}>|</span>)}
         </div>
-
     </>;
 }
 

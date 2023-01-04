@@ -113,7 +113,7 @@ const MockupTerminal = () => {
             const firstCommand = command.trim().split(/(\s+)/).at(0);
             const history = [...prevHistory, {
                 user, device, path, command,
-                output: [!commandNames.includes(firstCommand) ? `${firstCommand}: command not found` : ""]
+                output: [firstCommand && !commandNames.includes(firstCommand) ? `${firstCommand}: command not found` : ""]
             }];
             setCommnad("");
             return history;
