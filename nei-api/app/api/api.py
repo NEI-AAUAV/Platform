@@ -11,7 +11,7 @@ from .api_v1 import seniors
 from .api_v1 import seniors_students
 from .api_v1 import videos, redirect, news, notes, users, treeei
 from .api_v1 import history, rgm, merchandisings, partners
-
+from .api_v1 import tacaua_ws
 
 api_v1_router = APIRouter()
 api_v1_router.include_router(seniors_students.router, prefix="/seniors/students", tags=["Seniors Students"])
@@ -32,3 +32,4 @@ api_v1_router.include_router(merchandisings.router, prefix="/merch", tags=["Merc
 api_v1_router.include_router(partners.router, prefix="/partners", tags=["Partners"])
 api_v1_router.include_router(users.router, prefix="/users", tags=["Users"])
 api_v1_router.include_router(treeei.router, prefix="/treeei", tags=["Tree EI"])
+api_v1_router.include_router(tacaua_ws.router, prefix="/ws", tags=["ws"])
