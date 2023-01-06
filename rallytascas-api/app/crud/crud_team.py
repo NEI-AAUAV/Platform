@@ -36,7 +36,9 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
 
         def calc_skips(_):
             c2, s = _
-            return (s - 1 if c2 else s) * -8
+            if s > 0:
+                return (s - 1 if c2 else s) * -8
+            return abs(s) * 4
 
         uniform_scores = {t.id: [
             list(map(calc_time_score, enumerate(t.time_scores))),
@@ -97,7 +99,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
 
         # add cards randomly
         pity = len(team.times) == 7
-        chance = random.random() > 0.7
+        chance = random.random() > 0.6
         if chance or pity:
             for card in random.sample(('card1', 'card2', 'card3'), 3):
                 if getattr(team, card) == -1:
@@ -133,7 +135,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
             team.card2 = checkpoint_id
         # puke pass
         if obj_in.card3:
-            if obj_in.card3 != 0:
+            if team.card3 != 0:
                 raise CardNotActiveException()
             if team.pukes[-1] <= 0:
                 raise CardEffectException()

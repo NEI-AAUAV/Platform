@@ -10,6 +10,11 @@ services:
       - POSTGRES_DB=postgres_test
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     network_mode: host
     restart: unless-stopped
   nei_api:
@@ -19,7 +24,8 @@ services:
     volumes: 
       - ./nei-api:/nei_api
     depends_on:
-      - pg_db
+      pg_db:
+        condition: service_healthy
     network_mode: host
     restart: unless-stopped
   tacaua_api:
@@ -29,7 +35,8 @@ services:
     volumes: 
       - ./tacaua-api:/tacaua_api
     depends_on:
-      - pg_db
+      pg_db:
+        condition: service_healthy
     network_mode: host
     restart: unless-stopped
   rallytascas_api:
@@ -39,9 +46,12 @@ services:
     volumes: 
       - ./rallytascas-api:/rallytascas_api
     depends_on:
-      - pg_db
+      pg_db:
+        condition: service_healthy
     network_mode: host
     restart: unless-stopped
+    profiles:
+      - disabled
   web_app:
     build:
       context: frontend
@@ -49,10 +59,6 @@ services:
     volumes: 
       - node_modules:/web_app/node_modules
       - ./frontend:/web_app
-    depends_on:
-      - nei_api
-      - tacaua_api
-      - rallytascas_api
     network_mode: host
     restart: unless-stopped
 

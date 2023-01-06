@@ -23,7 +23,7 @@ const InfoCard = (props) => {
 
 const NextShot = (props) => {
     return (
-        <InfoCard title="Next Shot" subtitle={props.shot_name}>
+        <InfoCard title="Shot Name & Location" subtitle={props.shot_name}>
             <p style={{ whiteSpace: "pre-line" }} className="text-white text-uppercase mt-4 shot-description">
                 {props.description}
             </p>
@@ -49,12 +49,11 @@ export const Checkpoint = (props) => {
     }
 
     const questionColor = props.question ? "rgb(70, 255, 70)" : "rgb(255, 70, 70)";
-    const tookMinutes = Math.floor(props.took / 60);
-    const tookSeconds = props.took % 60;
 
     const formatMod = (num, label) => num > 0 ? (num > 1 ? `${num}x` : "") + label : "";
     const pukesString = formatMod(props.pukes, "🤮");
-    const skipsString = formatMod(props.skips, "⏭️");
+    const skipsString = props.skips < 0 ? formatMod(Math.abs(props.skips), "🥃") : formatMod(props.skips, "⏭️");
+    
     return (
         <div className="mt-2 w-100" style={{fontFamily: 'Akshar'}}>
             <div className="d-flex justify-content-between">
@@ -73,8 +72,7 @@ export const Checkpoint = (props) => {
                     {formattedDate} {formattedHours}
                 </p>
                 <p className="map-item-subtitle m-0" style={{ color: "#FC8551" }}>
-                    {tookMinutes > 0 ? `${tookMinutes}m` : ""}
-                    {tookSeconds > 0 ? `${tookSeconds}s` : ""}
+                    {props.took} PI
                 </p>
             </div>
         </div>
@@ -95,7 +93,7 @@ const PreviousCheckpoints = (props) => {
                 {checkpointItems.length ? checkpointItems
                     :
                     <div style={{ textAlign: 'left', marginTop: '0.5rem', fontSize: '1.4rem', fontFamily: 'Akshar', fontWeight: 'bold' }}>
-                        <p>Não passaste nenhum checkpoint.</p><p>Vai beber!</p>
+                        <p className="text-white-50">Não passaste nenhum checkpoint.<br />Vai beber!</p>
                     </div>
                 }
             </div>

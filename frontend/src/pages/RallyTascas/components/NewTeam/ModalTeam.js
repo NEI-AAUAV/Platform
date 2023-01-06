@@ -18,7 +18,7 @@ function ModalTeam(props) {
         padding: "1rem",
         marginLeft: "20px",
         marginRight: "20px",
-        backgroundColor: "var(--background-modal)",
+        backgroundColor: "#010b13",
         "@media (min-width: 320px)": {
           width: "80%",
           marginLeft: "10%",
@@ -33,9 +33,9 @@ function ModalTeam(props) {
       }}
     >
       <Modal.Header>
-        <Text id="modal-title" color="var(--column-color)" size={18}>
+        <Text id="modal-title" color="white" size={18}>
           Criar uma nova
-          <Text b color="var(--column-color)" size={18}>
+          <Text b color="white" size={18}>
             {" "}
             Equipa
           </Text>

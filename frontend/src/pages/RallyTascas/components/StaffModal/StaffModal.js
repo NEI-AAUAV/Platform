@@ -1,10 +1,10 @@
-import { Button, Input, Modal, Text, Checkbox } from "@nextui-org/react";
+import { Button, Input, Modal, Text, Checkbox, Loading } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { useRallyAuth } from "stores/useRallyAuth";
 import service from "services/RallyTascasService";
 
 
-function StaffModal({ visible, setVisible, team }) {
+function StaffModal({ visible, setVisible, team, reload }) {
   const [dt, setDt] = useState("");
   const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
@@ -36,6 +36,7 @@ function StaffModal({ visible, setVisible, team }) {
       .then(() => {
         setLoading(false);
         closeHandler();
+        reload()
       });
   }
 
@@ -63,7 +64,7 @@ function StaffModal({ visible, setVisible, team }) {
         borderRadius: "0.5rem",
         padding: "1rem",
         margin: "0 0.5rem",
-        backgroundColor: "var(--background-modal)",
+        backgroundColor: "#010b13",
         "@media (min-width: 481px)": {
           width: "90%",
         },
@@ -73,13 +74,13 @@ function StaffModal({ visible, setVisible, team }) {
       }}
     >
       <Modal.Header>
-        <Text id="modal-title" color="var(--column-color)" size={18}>
+        <Text id="modal-title" color="white" size={18}>
           Confirmar chegada de{' '}
-          <Text b color="var(--column-color)" size={18}>
+          <Text b color="white" size={18}>
             {team.name}
           </Text>
           {' ao '}
-          <Text b color="var(--column-color)" size={18}>
+          <Text b color="white" size={18}>
             Posto {isStaff}
           </Text>
         </Text>
@@ -140,7 +141,7 @@ function StaffModal({ visible, setVisible, team }) {
         }}
       >
         <Button auto onClick={submit} size="sm" color="warning">
-          <b>Confirmar</b>
+          {loading ? <Loading /> : <b>Confirmar</b>}
         </Button>
       </Modal.Footer>
     </Modal>

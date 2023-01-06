@@ -51,7 +51,7 @@ class StaffScoresTeamUpdate(BaseModel):
     question_score: bool = False
     time_score: conint(ge=0) = 0
     pukes: conint(ge=0) = 0
-    skips: conint(ge=0) = 0
+    skips: int = 0
 
 
 class StaffCardsTeamUpdate(BaseModel):
