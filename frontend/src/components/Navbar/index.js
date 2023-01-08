@@ -9,9 +9,9 @@ import {
 import { Link } from "react-router-dom";
 
 import data from "./data";
-import logo from './logo.png';
+import logo from 'assets/images/logo.png';
 import "./index.css";
-import { link } from "d3";
+
 
 const Navbar = () => {
     const [transparent, setTransparent] = useState(true);
@@ -56,7 +56,7 @@ const Navbar = () => {
                         <span></span>
                     </div>
                 </BNavbar.Toggle>
-                <BNavbar.Collapse id="basic-BNavbar-nav" className=" small font-weight-bold">
+                <BNavbar.Collapse id="basic-BNavbar-nav" className="small font-weight-bold">
                     <Nav className="mr-auto">
                         {
                             data.filter(d => d).map(

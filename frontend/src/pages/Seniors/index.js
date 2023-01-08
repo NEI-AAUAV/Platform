@@ -7,6 +7,8 @@ import TextList from "../../components/TextList";
 import SeniorsCard from "./SeniorsCard";
 import Typist from 'react-typist';
 
+import service from 'services/NEIService';
+
 import YearTabs from "components/YearTabs";
 import Box from '@mui/material/Box';
 
@@ -35,23 +37,20 @@ const Seniors = () => {
         setYears(null); // hack to update typist title
 
         // get list of courses to check if 'id' is valid
-        fetch(process.env.REACT_APP_API + "/seniors/courses/")
-            .then((response) => response.json())
-            .then((response) => {
-                let courses = response["data"].map(el => el["course"]);
-                if (!courses.includes(id)) {
+        service.getSeniorsCourse()
+            .then((data) => {
+                if (!data.includes(id)) {
                     throw new Error("Not available");
                 }
-            }).catch((error) => {
+            }).catch(() => {
                 window.location.href = "/404";
             });
 
 
         // pegar o número de anos
-        fetch(process.env.REACT_APP_API + "/seniors/courses/years/?course=" + id)
-            .then((response) => response.json())
-            .then((response) => {
-                var anos = response.data.map((curso) => curso.year).sort((a, b) => b - a);
+        service.getSeniorsCourseYear(id)
+            .then((data) => {
+                var anos = data.sort((a, b) => b - a);
                 if (anos.length > 0) {
                     setYears(anos);
                     setSelectedYear(anos[0]);
@@ -59,7 +58,7 @@ const Seniors = () => {
                 else {
                     throw new Error("Not available");
                 }
-            }).catch((error) => {
+            }).catch(() => {
                 window.location.href = "/404";
             });
     }, [id])
@@ -68,15 +67,17 @@ const Seniors = () => {
         if (selectedYear === undefined) return;
         setLoading(true);
 
-        fetch(process.env.REACT_APP_API + "/seniors/?course=" + id + "&year=" + selectedYear)
-            .then((response) => response.json())
-            .then((response) => {
-                setNamesOnly(response.data.students[0]["quote"] == null &&
-                    response.data.students[0]["image"] == null);
-                setPeople(response.data.students);
+        service.getSeniorsBy(id, selectedYear)
+            .then((data) => {
+                if (!data) {
+                    throw new Error("Not available");
+                }
+                setNamesOnly(data.students[0]["quote"] == null &&
+                    data.students[0]["image"] == null);
+                setPeople(data.students);
                 setImg(
                     <Image
-                        src={process.env.REACT_APP_STATIC + response.data.image}
+                        src={data.image}
                         rounded
                         fluid
                         className="slideUpFade"
@@ -87,7 +88,7 @@ const Seniors = () => {
                     />
                 );
                 setLoading(false);
-            }).catch((error) => {
+            }).catch(() => {
                 window.location.href = "/404";
             });
     }, [selectedYear, id])
@@ -117,11 +118,11 @@ const Seniors = () => {
                         <Row>
                             {
                                 namesOnly ?
-                                    people.map((person, index) =>
+                                    people?.map((person, index) =>
                                         <Fragment key={index}>
                                             <TextList
                                                 colSize={3}
-                                                text={person.name}
+                                                text={person.user?.name}
                                                 className="slideUpFade"
                                                 style={{
                                                     animationDelay: animationBase + animationIncrement * 0 + "s"
@@ -130,12 +131,12 @@ const Seniors = () => {
                                         </Fragment>
                                     )
                                     :
-                                    people.map((person, index) =>
+                                    people?.map((person, index) =>
                                         <Fragment key={index}>
                                             <SeniorsCard
-                                                name={person.name}
+                                                name={person.user?.name}
                                                 quote={person.quote}
-                                                image={process.env.REACT_APP_STATIC + person.image}
+                                                image={person.image}
                                                 colSizeXs="12"
                                                 colSizeSm="6"
                                                 colSizeLg="4"

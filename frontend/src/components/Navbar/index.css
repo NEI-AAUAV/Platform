@@ -1,4 +1,5 @@
-.navbar-transparent .navbar-nav .nav-item .nav-link:not(.btn), [class*="bg"] .navbar-nav .nav-item .nav-link:not(.btn) {
+.navbar-transparent .navbar-nav .nav-item .nav-link:not(.btn),
+[class*="bg"] .navbar-nav .nav-item .nav-link:not(.btn) {
     border-color: #000;
 }
 
@@ -7,45 +8,50 @@
     padding: 10px 15px;
     opacity: .8;
     text-transform: uppercase;
-    color: var(--text-primary)!important ;
+    color: var(--text-primary) !important;
 }
 
 .navbar .navbar-nav {
     flex-wrap: wrap;
 }
 
-.navBar{
-    background-color: var(--background)!important ;
-    color: var(--text-primary)!important ;
+.navBar {
+    background-color: var(--background) !important;
+    color: var(--text-primary) !important;
 }
 
 .navbar .navbar-nav .nav-link:hover {
-    color: #147a26!important;
+    color: #147a26 !important;
 }
 
 /* Dropdown */
 .dropdown-menu {
-    padding: 0!important;
-    border: none!important;
-    background-color: var(--background)!important ;
-    
+    padding: 0 !important;
+    border: none !important;
+    background-color: var(--background) !important;
+
 }
+
 .dropdown-item {
-    color: var(--text-secondary)!important ;
-    padding: 10px 45px 10px 30px!important;
+    color: var(--text-secondary) !important;
+    padding: 10px 45px 10px 30px !important;
 }
-.dropdown-item:focus, .dropdown-item:hover, .dropdown-item.active, .dropdown-item:active {
-    color: #fff!important;
+
+.dropdown-item:focus,
+.dropdown-item:hover,
+.dropdown-item.active,
+.dropdown-item:active {
+    color: #fff !important;
     text-decoration: none;
-    background-color: #147a26!important;
+    background-color: #147a26 !important;
 }
 
 @media only screen and (min-width: 992px) {
     .dropdown-menu {
-        padding: 0!important;
-        box-shadow: 0 2px var(--card-shadow),0 2px 10px var(--card-shadow);
-        border-radius: 12px!important;
-        background-color: var(--background)!important ;
+        padding: 0 !important;
+        box-shadow: 0 2px var(--card-shadow), 0 2px 10px var(--card-shadow);
+        border-radius: 12px !important;
+        background-color: var(--background) !important;
     }
 
     .dropdown-menu .dropdown-item:first-child {
@@ -59,14 +65,15 @@
     }
 
     .dropdown-item {
-        color: var(--text-secondary)!important ;
-        padding: 10px 45px 10px 15px!important;
+        color: var(--text-secondary) !important;
+        padding: 10px 45px 10px 15px !important;
     }
 
-    .dropdown-item:focus, .dropdown-item:hover {
-        color: #fff!important;
+    .dropdown-item:focus,
+    .dropdown-item:hover {
+        color: #fff !important;
         text-decoration: none;
-        background-color: #147a26!important;
+        background-color: #147a26 !important;
     }
 }
 
@@ -81,23 +88,21 @@
 
 /* Mobile */
 .navbar-toggler {
-    border: none!important;
-    color: #000!important;
+    border: none !important;
+    color: #000 !important;
 }
 
-@media only screen and (max-width: 991px){
+@media only screen and (max-width: 991px) {
     .navbar .navbar-collapse .navbar-nav {
         border-radius: 0% !important;
         border: none !important;
         box-shadow: 0 6px 10px -4px rgba(0, 0, 0, 0.3);
-        transition: transform .3s cubic-bezier(.34,2,.6,1), box-shadow .2s ease;
+        transition: transform .3s cubic-bezier(.34, 2, .6, 1), box-shadow .2s ease;
     }
 }
 
-@media 
-    only screen and (max-width: 420px),
-    only screen and (max-height: 420px) 
-{
+@media only screen and (max-width: 420px),
+only screen and (max-height: 420px) {
     .navbar-brand>img {
         width: 60px;
         height: 60px;
@@ -115,10 +120,11 @@
     z-index: 5;
     top: 0;
     transition: .25s ease;
-    background-color: var(--background) ;
+    background-color: var(--background);
 }
+
 .navbardiv.bg-white {
-    box-shadow: 0 6px 10px -4px rgba(0,0,0,.15);
+    box-shadow: 0 6px 10px -4px rgba(0, 0, 0, .15);
 }
 
 
@@ -164,7 +170,8 @@
     top: 0px;
 }
 
-.hamburguer span:nth-child(2),.hamburguer span:nth-child(3) {
+.hamburguer span:nth-child(2),
+.hamburguer span:nth-child(3) {
     top: var(--burguer-gap, 12.5px);
 }
 

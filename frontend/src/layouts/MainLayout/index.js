@@ -11,6 +11,7 @@ import Footer from "../../components/Footer";
 import config from "../backgroundconfig";
 
 import { useTheme } from "stores/useTheme";
+import TopButton from "components/TopButton";
 
 
 const MainLayout = () => {
@@ -42,6 +43,7 @@ const MainLayout = () => {
                 </Col>
 
                 <Footer />
+                <TopButton />
             </div>
         </>
     );
