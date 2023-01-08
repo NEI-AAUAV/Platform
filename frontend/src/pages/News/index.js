@@ -5,7 +5,6 @@ import FilterSelect from "../../components/Filters/FilterSelect";
 import Typist from 'react-typist';
 import { Spinner } from 'react-bootstrap';
 import service from 'services/NEIService';
-import Merchandising from "pages/Merchandising";
 
 
 const News = () => {
