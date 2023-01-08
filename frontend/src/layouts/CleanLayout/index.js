@@ -10,7 +10,7 @@ import Footer from "../../components/Footer";
 const CleanLayout = () => {
 
     return (
-        <div className="pt-20 d-flex flex-column justify-content-between">
+        <div className="pt-20 min-h-screen d-flex flex-column justify-content-between">
             <Navbar />
             <Outlet />
             <Footer />

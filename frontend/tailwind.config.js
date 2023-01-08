@@ -3,7 +3,14 @@ module.exports = {
         "./src/**/*.{js,jsx,ts,tsx}",
     ],
     theme: {
-        extend: false,
+        extend: {
+            transitionDuration: {
+                DEFAULT: '250ms',
+            },
+            transitionProperty: {
+                size: 'margin, padding, height, width',
+            }
+        }
     },
     plugins: [require("daisyui")],
 

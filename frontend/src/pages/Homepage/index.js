@@ -57,72 +57,29 @@ const Homepage = () => {
 
             {/* <BackgroundImage className="w-[10rem] md:w-[30rem] lg:w-[60rem]" /> */}
 
+            <div class="gradient-blur absolute z-0 right-0 transition-size duration-500"></div>
 
-            <div class="gradient-blur absolute z-0 right-0"></div>
             <Particles
                 id="tsparticles"
                 options={backgroundconfig}
                 className="absolute"
             />
 
-
-            <div className="section" style={{ "minHeight": "calc(100vh - 7rem)" }}>
-                <Col xs={11} sm={10} className="mx-auto col-xxl-9">
-                    <Row>
-                        <Col md="12" lg="7" className="home-main-header">
-                            <h1 className="d-none d-md-block">
-                                <Typist>
-                                    Bem-vindo ao
-                                    <br /><br />
-                                    <b>Núcleo de Estudantes de Informática</b>
-                                    <br />
-                                    da AAUAv
-                                </Typist>
-                            </h1>
-                            <h3 className="d-md-none">
-                                <Typist>
-                                    Bem-vindo ao
-                                    <br /><br />
-                                    <b>Núcleo de Estudantes de Informática</b>
-                                    <br />
-                                    da AAUAv
-                                </Typist>
-                            </h3>
-                        </Col>
-
-                        <Col
-                            className="px-xl-0 pt-xl-0 pt-3 slideUpFade"
-                            style={{ animationDelay: animationBase + 1 * animationIncrement }}
-                            lg={5}
-                        >
-                            <MockupTerminal />
-                        </Col>
-
-                        <Col
-                            className="px-xl-0 pt-xl-0 pt-3 slideUpFade"
-                            style={{ animationDelay: animationBase + 1 * animationIncrement }}
-                            lg={5}
-                        >
-                            <ReactTerminal
-                                emulatorState={terminalstate}
-                                clickToFocus={true}
-                                autoFocus={true}
-                                theme={{
-                                    height: "320px",
-                                    width: "100%",
-                                    fontFamily: "monospace",
-                                    fontSize: "1em",
-                                    promptSymbolColor: "rgb(0, 255, 0)",
-                                    commandColor: "#fcfcfc",
-                                    outputColor: "#fcfcfc",
-                                    errorOutputColor: "#fcfcfc",
-                                    background: "#222222",
-                                }}
-                                promptSymbol="nei@nei-os $"
-                            />
-                        </Col>
-                    </Row>
-                </Col>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-72">
+                <div>
+                    <h1 className="d-none d-md-block">
+                        <Typist>
+                            Bem-vindo ao
+                            <br /><br />
+                            <b>Núcleo de Estudantes de Informática</b>
+                            <br />
+                            da AAUAv
+                        </Typist>
+                    </h1>
+                </div>
+                <div className="slideUpFade" style={{ animationDelay: animationBase + 1 * animationIncrement }}>
+                    <MockupTerminal />
+                </div>
             </div>
 
             {

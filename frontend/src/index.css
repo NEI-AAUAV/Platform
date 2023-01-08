@@ -55,13 +55,19 @@
     }
 
     .menu :where(li)> :where(*:not(ul)) {
-        @apply !px-3 !py-2;
+        @apply !px-3 !py-2 !gap-2;
     }
 
     /* .menu > :where(li) > :where(ul) :where(li) > :where(:not(ul)) {
         @apply !ml-4;
     } */
 }
+
+body {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
 
 
 /* 
@@ -82,10 +88,6 @@
 * {
     transition: all 0.25s ease-out;
 } */
-
-body {
-    overflow-x: hidden;
-}
 
 
 /* :root,
@@ -261,7 +263,7 @@ label {color: var(--text-secondary)} */
 } */
 
 /* animations */
-/* .animation {
+.animation {
     opacity: 0;
     animation-name: fadeIn;
     animation-duration: 1s;
@@ -291,6 +293,7 @@ label {color: var(--text-secondary)} */
     opacity: 0;
     animation-name: slideUp, fadeIn;
     animation-duration: 0.7s;
+    animation-delay: 0.4s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
-} */
+} 

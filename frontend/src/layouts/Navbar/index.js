@@ -47,8 +47,8 @@ const Navbar = () => {
     return (
         <>
             <div
-                className={classname("fixed top-0 z-40 w-full flex-wrap md:flex-nowrap text-base-300-content transition-[background-color] transition-[margin] duration-300 ease-out",
-                    openMobile && windowSize.width < 768 ? "!bg-base-200 border border-base-300 !shadow-lg m-1 w-[calc(100%-0.5rem)] rounded-md" : "",
+                className={classname("fixed top-0 z-40 w-full flex-wrap md:flex-nowrap text-base-300-content transition-colors transition-size ease-out",
+                    openMobile && windowSize.width < 768 ? "!bg-base-200 border border-base-300 !shadow-lg m-1 w-[calc(100%-0.5rem)] rounded-md" : "border-transparent",
                     windowScroll.y > 0 ? "bg-base-100/90 shadow backdrop-blur" : "bg-transparent")}
             >
                 <div className="navbar">
@@ -109,7 +109,7 @@ const Navbar = () => {
                     </div>
 
                 </div>
-                <div ref={navbarMobileRef} className="navbar-mobile transition-all duration-300 ease-out overflow-hidden max-h-0 md:hidden">
+                <div ref={navbarMobileRef} className="navbar-mobile transition-all ease-out overflow-hidden max-h-0 md:hidden">
                     <ul className="menu menu-vertical p-5 pt-0">
                         {data.map(({ name, link, dropdown }, index) => (
                             !dropdown ? (
@@ -122,7 +122,7 @@ const Navbar = () => {
                                         {name}
                                         <svg className="fill-current pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
                                     </a>
-                                    <ul className="relative left-0 flex transition-all duration-300 ease-out border-l-2 pl-2 ml-4 !rounded-none border-base-300 overflow-hidden max-h-0">
+                                    <ul className="relative left-0 flex transition-all ease-out border-l-2 pl-2 ml-4 !rounded-none border-base-300 overflow-hidden max-h-0">
                                         {dropdown.map(({ name, link, external }, index) =>
                                             <li key={index}>
                                                 <LinkAdapter to={link} external={external}>

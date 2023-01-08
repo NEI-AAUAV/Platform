@@ -15,17 +15,11 @@ import Footer from "../../components/Footer";
 const MainLayout = () => {
 
     return (
-        <div className="pt-10 mhvh-100 d-flex flex-column justify-content-between">
+        <div className="pt-20 min-h-screen d-flex flex-column justify-content-between">
             <Navbar />
-
-            <Col
-                xs={11}
-                sm={10}
-                className="mx-auto py-5 px-0 col-xxl-9"
-            >
+            <div className="max-w-[90rem] mx-auto pt-8 md:pt-16 px-1 sm:px-5">
                 <Outlet />
-            </Col>
-
+            </div>
             <Footer />
             <TopButton />
         </div>

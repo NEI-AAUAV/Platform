@@ -19,7 +19,7 @@ const config = {
     // delay: 0,
     fullScreen: {
         enable: true,
-        zIndex: -10
+        zIndex: 0
     },
     // detectRetina: true,
     // duration: 0,

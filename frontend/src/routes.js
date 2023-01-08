@@ -31,23 +31,9 @@ import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
 const routes = [
   {
     path: "/",
-    element: <CleanLayout />,
-    children: [
-      { path: "/", element: <Homepage /> },
-      { path: "/familias", element: <FainaTree /> },
-    ],
-  },
-  // {
-  //   path: "/",
-  //   element: <SimpleLayout />,
-  //   children: [
-  //     { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
-  //   ],
-  // },
-  {
-    path: "/",
     element: <MainLayout />,
     children: [
+      { path: "/", element: <Homepage /> },
       { path: "/noticias", element: <News /> },
       { path: "/noticia/:id", element: <NewsArticle /> },
       { path: "/apontamentos", element: <Apontamentos /> },
@@ -68,6 +54,20 @@ const routes = [
       { path: "/:id", element: <Error404 /> },
     ],
   },
+  {
+    path: "/",
+    element: <CleanLayout />,
+    children: [
+      { path: "/familias", element: <FainaTree /> },
+    ],
+  },
+  // {
+  //   path: "/",
+  //   element: <SimpleLayout />,
+  //   children: [
+  //     { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
+  //   ],
+  // },
 ];
 
 export default routes;

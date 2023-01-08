@@ -33,15 +33,27 @@ const terminalHistory = [
     },
 ];
 
+const terminalInput = {
+    curr: 0,
+    commands: [
+        { original: "", mutated: null },
+        { original: "ssh leand@ro", mutated: null },
+        { original: "ls", mutated: null },
+        { original: "cd lixo", mutated: null },
+    ]
+};
 
 const commandNames = ['ls', 'cd', 'cat', 'mkdir', 'rmdir', 'echo', 'pwd', 'clear', 'touch', 'cp', 'whoami', 'rm'];
 
 const MockupTerminal = () => {
     const inputRef = useRef(null);
     const terminalRef = useRef(null);
+    const [input, setInput] = useState(terminalInput);
     const [suggestion, setSuggestion] = useState("");
     const [history, setHistory] = useState(terminalHistory);
-    const [command, setCommnad] = useState("");
+
+    const currMutated = input.commands[input.curr].mutated;
+    const currCommand = currMutated != null ? currMutated : input.commands[input.curr].original;
 
     useEffect(() => {
         const elem = inputRef.current;
@@ -50,8 +62,8 @@ const MockupTerminal = () => {
             elem.style.height = 'auto';
             elem.style.height = elem.scrollHeight + 'px';
         }
-        findSuggestion();
-    }, [command])
+        findSuggestions();
+    }, [input])
 
     useEffect(() => {
         const elem = terminalRef.current;
@@ -64,7 +76,9 @@ const MockupTerminal = () => {
     const handleChange = (e) => {
         const target = e.target;
         const value = target.value;
-        setCommnad(value);
+        const commands = [...input.commands];
+        commands[input.curr].mutated = value;
+        setInput({ ...input, commands });
     }
 
     const setInputFocus = (e) => {
@@ -79,43 +93,77 @@ const MockupTerminal = () => {
     }
 
     const handleFocus = () => {
-        findSuggestion();
+        findSuggestions();
     }
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault();
             executeCommand();
         } else if (e.key === 'Tab') {
-            e.preventDefault();
-            setCommnad(prevCommand => prevCommand + suggestion);
-        }
-    }
-
-    const findSuggestion = () => {
-        const lastCommand = command.split(/(\s+)/).at(-1);
-        if (!lastCommand) {
-            setSuggestion("");
+            const suggestions = findSuggestions();
+            if (suggestions.length === 1) {
+                const commands = [...input.commands];
+                commands[input.curr].mutated += suggestion;
+                setInput({ ...input, commands });
+            } else if (suggestions.length > 1) {
+                setHistory(prevHistory => {
+                    const { user, device, path } = prevHistory.at(-1);
+                    const history = [...prevHistory, {
+                        user, device, path,
+                        command: currCommand,
+                        output: suggestions
+                    }];
+                    return history;
+                });
+            }
+        } else if (e.key === 'ArrowUp') {
+            if (input.curr < input.commands.length - 1) {
+                setInput(prevInput => ({ ...prevInput, curr: prevInput.curr + 1 }));
+            }
+        } else if (e.key === 'ArrowDown') {
+            if (input.curr > 0) {
+                setInput(prevInput => ({ ...prevInput, curr: prevInput.curr - 1 }));
+            }
+        } else {
             return;
         }
-        for (const cn of commandNames) {
-            if (cn.startsWith(lastCommand)) {
-                setSuggestion(cn.slice(lastCommand.length));
-                return;
-            }
-        }
+        e.preventDefault();
+    }
+
+    const findSuggestions = () => {
         setSuggestion("");
+        const lastCommand = currCommand.split(/(\s+)/).at(-1);
+        if (!lastCommand) {
+            return [];
+        }
+        const suggestions = commandNames
+            .filter(cn => cn.startsWith(lastCommand));
+        if (suggestions.length === 1) {
+            setSuggestion(suggestions.at(0).slice(lastCommand.length));
+        }
+        return suggestions;
     }
 
     const executeCommand = () => {
         setHistory(prevHistory => {
             const { user, device, path } = prevHistory.at(-1);
-            const firstCommand = command.trim().split(/(\s+)/).at(0);
+            const firstCommand = currCommand.trim().split(/(\s+)/).at(0);
             const history = [...prevHistory, {
-                user, device, path, command,
+                user, device, path,
+                command: currCommand,
                 output: [firstCommand && !commandNames.includes(firstCommand) ? `${firstCommand}: command not found` : ""]
             }];
-            setCommnad("");
+
+            // Update input
+            const prevCommand = (input.curr != 1 && input.commands[1]?.mutated) || input.commands[1]?.original;
+            const commands = input.commands;
+            commands[input.curr].mutated = null;
+            if (currCommand && (currCommand !== prevCommand)) {
+                commands[0] = { original: currCommand, mutated: null };
+                commands.unshift({ original: "", mutated: null });
+            }
+            setInput({ curr: 0, commands });
+
             return history;
         });
     }
@@ -130,7 +178,7 @@ const MockupTerminal = () => {
 
     return (
         <div className="mockup-terminal mockup-code font-mono leading-[22px]" onClick={setInputFocus}>
-            <div ref={terminalRef} className='max-h-96 overflow-hidden overflow-y-scroll mockup-terminal-body px-[1.5rem]'>
+            <div ref={terminalRef} className='h-80 overflow-hidden overflow-y-scroll mockup-terminal-body px-[1.5rem]'>
                 {
                     history.map(({ user, device, path, command, output }, i) =>
                         <div key={i} className='text-success relative'>
@@ -149,13 +197,13 @@ const MockupTerminal = () => {
                     <span className='font-bold opacity-50 absolute'>{prompt('leand', 'ro', '~')}</span>
                     <div className='w-full break-all whitespace-pre-wrap opacity-25 absolute text-gray-50'
                         style={{ textIndent: identationChars('leand', 'ro', '~') + 'ch' }}>
-                        <span className='invisible'>{command}</span>
+                        <span className='invisible'>{currCommand}</span>
                         {suggestion}
                     </div>
                     <textarea ref={inputRef} rows={1} className='w-full break-all bg-transparent resize-none outline-none'
                         style={{ textIndent: identationChars('leand', 'ro', '~') + 'ch' }}
                         autoFocus={true} autoComplete="false" autoCorrect="false" spellCheck={false}
-                        value={command} onChange={handleChange} onKeyDownCapture={handleKeyDown}
+                        value={currCommand} onChange={handleChange} onKeyDownCapture={handleKeyDown}
                         onFocus={handleFocus} onBlur={() => setSuggestion("")} />
                 </div>
             </div>
