@@ -3,8 +3,8 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from typing_extensions import Annotated
 
-from .team_roles import TeamRolesInDB
-from .users import UsersInDB
+from .team_role import TeamRoleInDB
+from .user import UserInDB
 
 
 class TeamBase(BaseModel):
@@ -30,8 +30,8 @@ class TeamUpdate(TeamBase):
 class TeamInDB(TeamBase):
     """Properties properties stored in DB."""
     id: int
-    user: UsersInDB
-    role: TeamRolesInDB
+    user: UserInDB
+    role: TeamRoleInDB
 
     class Config:
         orm_mode = True

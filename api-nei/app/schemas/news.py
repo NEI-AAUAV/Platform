@@ -1,11 +1,12 @@
 from typing import Optional, List
-
-from pydantic import BaseModel, Field
+from typing_extensions import Annotated
+from enum import Enum
 from datetime import datetime
 
-from enum import Enum
-from typing_extensions import Annotated
-from .users import UsersInDB
+from pydantic import BaseModel, Field
+
+from .user import UserInDB
+
 
 class StatusEnum(int, Enum):
      ACTIVE = 1
@@ -16,6 +17,7 @@ class CategoryEnum(str, Enum):
      EVENT = "Event"
      NEWS = "News"
      PARCERIA = "Parceria"
+
 
 class NewsBase(BaseModel):
      header: Annotated[str, Field(max_length=255)]
@@ -32,9 +34,9 @@ class NewsBase(BaseModel):
 
 class NewsInDB(NewsBase):
      id: int
-     publisher: UsersInDB
-     author: UsersInDB
-     editor: Optional[UsersInDB]
+     publisher: UserInDB
+     author: UserInDB
+     editor: Optional[UserInDB]
 
      class Config:
           orm_mode = True
@@ -56,5 +58,4 @@ class NewsUpdate(NewsBase):
 
 class NewsCategories(BaseModel):
      data: List[str]
-
 

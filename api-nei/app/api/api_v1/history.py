@@ -15,4 +15,3 @@ def get(
 ) -> Any:
 
     return crud.history.get_multi(db=db)
-

@@ -10,7 +10,7 @@ from typing import List, Tuple
 
 class CRUDVideo(CRUDBase[Video, VideoCreate, VideoUpdate]):
 
-    def get_videos_by_categories(self, db: Session, tags: set[int], page: int, size: int) -> Tuple[int, List[Video]]:
+    def get_video_by_categories(self, db: Session, tags: set[int], page: int, size: int) -> Tuple[int, List[Video]]:
         """
         Return list of videos by categories.
         """

@@ -4,7 +4,7 @@ from datetime import datetime
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.models import News, Users
+from app.models import News, User
 from app.tests.conftest import SessionTesting
 from app.schemas.news import StatusEnum, CategoryEnum
 
@@ -65,7 +65,7 @@ def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
     for user in USERS:
-        db.add(Users(**user))
+        db.add(User(**user))
     for news in NEWS:
         db.add(News(**news)) 
     db.commit()

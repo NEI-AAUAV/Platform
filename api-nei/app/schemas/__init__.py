@@ -1,18 +1,18 @@
 from .faina import FainaBase, FainaCreate, FainaInDB, FainaUpdate
-from .faina_roles import FainaRolesBase, FainaRolesCreate, FainaRolesInDB, FainaRolesUpdate
+from .faina_role import FainaRoleBase, FainaRoleCreate, FainaRoleInDB, FainaRoleUpdate
 from .faina_member import FainaMemberBase, FainaMemberInDB, FainaMemberUpdate, FainaMemberCreate
 from .team import TeamBase, TeamCreate, TeamInDB, TeamUpdate
-from .team_colaborators import TeamColaboratorsBase, TeamColaboratorsCreate, TeamColaboratorsInDB, TeamColaboratorsUpdate
-from .team_roles import TeamRolesBase, TeamRolesCreate, TeamRolesInDB, TeamRolesUpdate
-from .seniors import SeniorsBase, SeniorsCreate, SeniorsInDB, SeniorsUpdate
-from .seniors_students import SeniorsStudentsBase, SeniorsStudentsCreate, SeniorsStudentsInDB, SeniorsStudentsUpdate
-from .notes import NotesInDB
-from .notes_thanks import NotesThanksInDB
-from .notes_schoolyear import NotesSchoolyearInDB
-from .notes_subject import NotesSubjectInDB
-from .notes_types import NotesTypesInDB
-from .notes_teachers import NotesTeachersInDB
-from .users import UsersCreate, UsersUpdate, UsersInDB
+from .team_colaborator import TeamColaboratorBase, TeamColaboratorCreate, TeamColaboratorInDB, TeamColaboratorUpdate
+from .team_role import TeamRoleBase, TeamRoleCreate, TeamRoleInDB, TeamRoleUpdate
+from .senior import SeniorBase, SeniorCreate, SeniorInDB, SeniorUpdate
+from .senior_student import SeniorStudentBase, SeniorStudentCreate, SeniorStudentInDB, SeniorStudentUpdate
+from .note import NoteInDB
+from .note_thank import NoteThankInDB
+from .note_schoolyear import NoteSchoolyearInDB
+from .note_subject import NoteSubjectInDB
+from .note_type import NoteTypeInDB
+from .note_teacher import NoteTeacherInDB
+from .user import UserCreate, UserUpdate, UserInDB
 from .video import VideoInDB, VideoCreate, VideoUpdate
 from .video_tag import VideoTagInDB
 from .redirect import RedirectInDB, RedirectCreate, RedirectUpdate

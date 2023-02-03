@@ -17,13 +17,10 @@ The most top level object with basic user information.
 {
   "id": "objectId",         // automatic generated ID
   "name": "string",
-  "email": "string|null",
-  "nmec": "int|null",
-  "sex": "string",          // gender: "M"ale or "F"emale
-  "image": "string|null",   // profile image URL
+  "sex": "string",          // "M"ale or "F"emale
+  "image": "string|null",   // profile image URL from NEI-API
 
   "matriculations": "array[Matriculation]",
-  "insignias": "array[Insignia]",
   "organizations": "array[Organization]",
   "faina": "Faina|null"     // null if did not do/complete the faina
 }
@@ -43,23 +40,14 @@ Only people with TSI or LEI are meant to appear on the website. The color of the
 
 ### Organization
 
-```jsonc
-{
-  "course": "string",       // one of: TSI, LEI, MEI, MRSI, MCD, MC, MAPi, ...
-  "start_year": "int",      // first matriculation year
-  "end_year": "int|null"    // last matriculation year (inclusive)
-}
-```
-
-### Insignia
-
 An emblem representing an organization, faina position or taça UA modality.
 
 ```jsonc
 {
-  "year": "int",        // matriculation year
-  "name": "string",     // one of the following: AAUAV, NEI, AETTUA, ST, CS, CF, Handball, Athletics, Badminton, Basketball, Futsal, Swimming, Voleyball, Football, TableTennis, Chess, ...
-  "role": "string"      // variable, depending on the `name`
+  "name": "string",   // one of the following: AAUAV, NEI, AETTUA, ST, CS, CF, TaçaUA
+  // Handball, Athletics, Badminton, Basketball, Futsal, Swimming, Voleyball, Football, TableTennis, Chess, ...
+  "role": "string",   // optional and variable, depends on the `name` field
+  "year": "int",      // matriculation year
 }
 ```
 
@@ -69,11 +57,9 @@ The faina informations required for people who **have a faina family**.
 
 ```jsonc
 {
-    "parent": {
-        "parentId": "int",     // patrão/patroa ID
-        "baptism_name": "string",
-    },
-    "details": "FainaDetails|null"
+    "parent_id": "int",        // patrão/patroa ID
+    "baptism_name": "string",
+    "details": "FainaDetails|null"  // FIXME: can i create indexes here?
 }
 ```
 
@@ -83,19 +69,8 @@ The faina informations required for people who **completed the faina**.
 
 ```jsonc
 {
-    "eqv_years": "int",         // number of faina equivalence years in other courses before entering LEI/TSI
-    "names": "array[YearName]",
-    "roles": "array[YearName]
-}
-```
-
-### YearName
-
-This object is so that it can deal with name changes during the years.
-
-```jsonc
-{
-    "year": "int",      // last matriculation year when the name was defined/changed
-    "name": "string",   // faina name
+    "eqv_years": "int",               // number of faina equivalence years in other courses before entering LEI/TSI
+    "name": "string|array[string]",   // array deals with name changes during the years.
+    "organizations": "array[Organization]",
 }
 ```

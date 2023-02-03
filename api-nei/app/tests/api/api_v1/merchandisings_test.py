@@ -6,7 +6,7 @@ from datetime import datetime, date
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.models import Merchandisings
+from app.models import Merch
 from app.tests.conftest import SessionTesting
 
 MERCHANDISINGS = [
@@ -31,7 +31,7 @@ def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
     for merch in MERCHANDISINGS:
-        db.add(Merchandisings(**merch))
+        db.add(Merch(**merch))
     db.commit()
 
 def test_elements(client: TestClient) -> None:

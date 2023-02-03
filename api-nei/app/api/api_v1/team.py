@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("/", status_code=200, response_model=List[TeamInDB])
-def get_team(
+def get_teams(
     *, db: Session = Depends(deps.get_db),
 ) -> Any:
     """

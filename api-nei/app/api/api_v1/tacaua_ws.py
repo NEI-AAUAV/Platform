@@ -3,6 +3,7 @@ from typing import List
 
 router = APIRouter()
 
+
 class ConnectionManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
@@ -22,6 +23,7 @@ class ConnectionManager:
             await connection.send_text(message)
 
 manager = ConnectionManager()
+
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):

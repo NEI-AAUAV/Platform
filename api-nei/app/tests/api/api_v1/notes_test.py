@@ -4,7 +4,7 @@ from datetime import datetime
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.models import Notes, NotesThanks, NotesTypes, NotesSchoolYear, NotesSubject, NotesTeachers, Users
+from app.models import Note, NoteThank, NoteType, NoteSchoolYear, NoteSubject, NoteTeacher, User
 from app.tests.conftest import SessionTesting
 
 NOTES_SCHOOL_YEAR = [
@@ -52,10 +52,10 @@ NOTES_TEACHERS = [
 
 NOTES_THANKS = [
     {
-        "notes_personal_page": "http://my-personal-page.com"
+        "note_personal_page": "http://my-personal-page.com"
     },
     {
-        "notes_personal_page": "http://my-personal-page.com"
+        "note_personal_page": "http://my-personal-page.com"
     }
 ]
 
@@ -168,34 +168,34 @@ def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
     for subj in NOTES_SUBJECT:
-        db.add(NotesSubject(**subj))
+        db.add(NoteSubject(**subj))
     for type in NOTES_TYPES:
-        db.add(NotesTypes(**type))
+        db.add(NoteType(**type))
     for year in NOTES_SCHOOL_YEAR:
-        db.add(NotesSchoolYear(**year))
+        db.add(NoteSchoolYear(**year))
     for teacher in NOTES_TEACHERS:
-        db.add(NotesTeachers(**teacher))
+        db.add(NoteTeacher(**teacher))
     for user in USERS:
-        db.add(Users(**user))
+        db.add(User(**user))
     db.commit()
 
     for note, thanks, sid, aid, yid, tid, tyid in zip(
         NOTES,
         NOTES_THANKS,
-        [s.paco_code for s in db.query(NotesSubject).all()],
-        [a.id for a in db.query(Users).all()],
-        [y.id for y in db.query(NotesSchoolYear).all()],
-        [t.id for t in db.query(NotesTeachers).all()],
-        [ty.id for ty in db.query(NotesTypes).all()],
+        [s.paco_code for s in db.query(NoteSubject).all()],
+        [a.id for a in db.query(User).all()],
+        [y.id for y in db.query(NoteSchoolYear).all()],
+        [t.id for t in db.query(NoteTeacher).all()],
+        [ty.id for ty in db.query(NoteType).all()],
     ):
-        db.add(Notes(**note, subject_id=sid, author_id=aid,
+        db.add(Note(**note, subject_id=sid, author_id=aid,
                school_year_id=yid, teacher_id=tid, type_id=tyid))
-        db.add(NotesThanks(**thanks, author_id=aid))
+        db.add(NoteThank(**thanks, author_id=aid))
     db.commit()
 
 
-def test_get_notes(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/notes/")
+def test_get_note(client: TestClient) -> None:
+    r = client.get(f"{settings.API_V1_STR}/note/")
     data = r.json()
     assert r.status_code == 200
     assert "author" in data["items"][0]
@@ -205,8 +205,8 @@ def test_get_notes(client: TestClient) -> None:
 
 
 def test_get_note_by_id(client: TestClient, db: SessionTesting) -> None:
-    note_id = db.query(Notes).first().id
-    r = client.get(f"{settings.API_V1_STR}/notes/{note_id}")
+    note_id = db.query(Note).first().id
+    r = client.get(f"{settings.API_V1_STR}/note/{note_id}")
     data = r.json()
     assert r.status_code == 200
     assert "id" in data
@@ -215,21 +215,21 @@ def test_get_note_by_id(client: TestClient, db: SessionTesting) -> None:
 
 def test_get_inexistent_note_by_id(client: TestClient) -> None:
     inexistent_note_id = -1
-    r = client.get(f"{settings.API_V1_STR}/notes/{inexistent_note_id}")
+    r = client.get(f"{settings.API_V1_STR}/note/{inexistent_note_id}")
     data = r.json()
     assert r.status_code == 404
     assert data["detail"] == "Invalid Note id"
 
 
-def test_get_notes_by_categories(client: TestClient) -> None:
+def test_get_note_by_categories(client: TestClient) -> None:
     r = client.get(
-        f"{settings.API_V1_STR}/notes?category[]=bibliography&category[]=tests")
+        f"{settings.API_V1_STR}/note?category[]=bibliography&category[]=tests")
     assert r.status_code == 200
     data = r.json()
     assert data['total'] == len(data['items']) == 1
     assert all(i['bibliography'] and i['tests'] for i in data['items'])
     r = client.get(
-        f"{settings.API_V1_STR}/notes?category[]=slides&category[]=tests")
+        f"{settings.API_V1_STR}/note?category[]=slides&category[]=tests")
     assert r.status_code == 200
     data = r.json()
     assert data['total'] == len(data['items']) == 2

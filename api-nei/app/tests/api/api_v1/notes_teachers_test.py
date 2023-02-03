@@ -3,7 +3,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.models import NotesTeachers
+from app.models import NoteTeacher
 from app.tests.conftest import SessionTesting
 
 NOTES_TEACHERS = [
@@ -30,12 +30,12 @@ def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
     for subj in NOTES_TEACHERS:
-        db.add(NotesTeachers(**subj))
+        db.add(NoteTeacher(**subj))
     db.commit()
 
 
-def test_get_notes_teachers(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/notes/teachers/")
+def test_get_note_teacher(client: TestClient) -> None:
+    r = client.get(f"{settings.API_V1_STR}/note/teachers/")
     data = r.json()
     assert r.status_code == 200
     assert len(data) == 2  # created 2 note subjects

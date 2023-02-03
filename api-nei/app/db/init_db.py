@@ -180,11 +180,11 @@ TEAM_COLABORATORS = [
 NOTES_THANKS = [
         {
         'author_id': 1,
-        "notes_personal_page": "very much thanks"
+        "note_personal_page": "very much thanks"
     },
     {
         'author_id': 1,
-        "notes_personal_page": "very much thanks"
+        "note_personal_page": "very much thanks"
     }
 ]
 

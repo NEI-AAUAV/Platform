@@ -37,13 +37,13 @@ def create_faina_member(
     """
     Create a new faina row in the database.
     """
-    role = crud.faina_roles.get(db=db, id=faina_member_create_in.role_id)
+    role = crud.faina_role.get(db=db, id=faina_member_create_in.role_id)
     if not role:
         raise HTTPException(status_code=404, detail="Faina Role Not Found")
     faina = crud.faina.get_faina(db=db, faina_id=faina_member_create_in.faina_id)
     if not faina:
         raise HTTPException(status_code=404, detail="Faina Not Found")
-    user = crud.users.get(db=db, id=faina_member_create_in.member_id)
+    user = crud.get(db=db, id=faina_member_create_in.member_id)
     if not user:
         raise HTTPException(status_code=404, detail="User Not Found")
     faina_member = crud.faina_member.get_faina_member(db=db, member_id=faina_member_create_in.member_id, faina_id=faina_member_create_in.faina_id, role_id=faina_member_create_in.role_id)
@@ -59,13 +59,13 @@ def update_faina_member(
     """
     Update a faina row in the database.
     """
-    role = crud.faina_roles.get(db=db, id=faina_member_update_in.role_id)
+    role = crud.faina_role.get(db=db, id=faina_member_update_in.role_id)
     if not role:
         raise HTTPException(status_code=404, detail="Faina Role Not Found")
     faina = crud.faina.get_faina(db=db, faina_id=faina_member_update_in.mfaina_idandate)
     if not faina:
         raise HTTPException(status_code=404, detail="Faina Not Found")
-    user = crud.users.get(db=db, id=faina_member_update_in.member_id)
+    user = crud.get(db=db, id=faina_member_update_in.member_id)
     if not user:
         raise HTTPException(status_code=404, detail="User Not Found")
     faina_member = crud.faina_member.get(db=db, id=id)

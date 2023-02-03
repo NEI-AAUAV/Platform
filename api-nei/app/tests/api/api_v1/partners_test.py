@@ -6,7 +6,7 @@ from datetime import datetime, date
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.models import Partners
+from app.models import Partner
 from app.tests.conftest import SessionTesting
 
 PARTNERS = [
@@ -37,11 +37,11 @@ def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
     for prtns in PARTNERS:
-        db.add(Partners(**prtns))
+        db.add(Partner(**prtns))
     db.commit()
 
 def test_elements(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/partners")
+    r = client.get(f"{settings.API_V1_STR}/partner")
     data = r.json()
     assert r.status_code == 200
     for i in range(len(data)):
@@ -52,7 +52,7 @@ def test_elements(client: TestClient) -> None:
             assert data[i]['banner_image'].endswith(banner_image)
     
 def test_text(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/partners")
+    r = client.get(f"{settings.API_V1_STR}/partner")
     data = r.json()
     assert r.status_code == 200
     for el in data:
@@ -62,7 +62,7 @@ def test_text(client: TestClient) -> None:
         assert len(el["content"]) > 0
 
 def test_img(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/partners")
+    r = client.get(f"{settings.API_V1_STR}/partner")
     data = r.json()
     assert r.status_code == 200
     for i in range(len(data)):

@@ -4,19 +4,19 @@ from datetime import datetime
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.models import NotesThanks, NotesTeachers, Users
+from app.models import NoteThank, NoteTeacher, User
 from app.tests.conftest import SessionTesting
 
 NOTES_THANKS = [
     {
         "id": 2,
         'author_id': 1,
-        "notes_personal_page": "very much thanks"
+        "note_personal_page": "very much thanks"
     },
     {
         "id": 3,
         'author_id': 2,
-        "notes_personal_page": "very much thanks"
+        "note_personal_page": "very much thanks"
     }
 ]
 
@@ -60,10 +60,10 @@ USERS = [
     }
 ]
 
-note_thanks = {
+note_thank = {
     "id": 5,
     'author_id': 1,
-    "notes_personal_page": "very much thanks"
+    "note_personal_page": "very much thanks"
 }
 
 
@@ -72,20 +72,20 @@ def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
     for subj in NOTES_THANKS:
-        db.add(NotesThanks(**subj))
+        db.add(NoteThank(**subj))
     for subj in NOTES_TEACHERS:
-        db.add(NotesTeachers(**subj))
+        db.add(NoteTeacher(**subj))
     for subj in USERS:
-        db.add(Users(**subj))
+        db.add(User(**subj))
     db.commit()
 
 
-def test_get_notes_thanks(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/notes/thanks/")
+def test_get_note_thank(client: TestClient) -> None:
+    r = client.get(f"{settings.API_V1_STR}/note/thanks/")
     data = r.json()
     assert r.status_code == 200
     assert len(data) == 2  # created 2 note subjects
     for lst in data:
         assert "id" in lst
         assert "author_id" in lst
-        assert "notes_personal_page" in lst
+        assert "note_personal_page" in lst

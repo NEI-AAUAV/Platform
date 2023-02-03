@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from typing import Optional
 from typing_extensions import Annotated
 
-from .faina_roles import FainaRolesInDB
-from .users import UsersInDB
+from .faina_role import FainaRoleInDB
+from .user import UserInDB
 
 
 class FainaMemberBase(BaseModel):
@@ -27,8 +27,8 @@ class FainaMemberUpdate(FainaMemberBase):
 class FainaMemberInDB(FainaMemberBase):
     """Properties properties stored in DB."""
     id: int
-    member: UsersInDB
-    role: FainaRolesInDB
+    member: UserInDB
+    role: FainaRoleInDB
 
     class Config:
         orm_mode = True

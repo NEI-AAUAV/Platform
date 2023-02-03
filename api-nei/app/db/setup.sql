@@ -144,23 +144,23 @@ ALTER SEQUENCE aauav_nei.faina_member_id_seq OWNED BY aauav_nei.faina_member.id;
 
 
 --
--- Name: faina_roles; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: faina_role; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.faina_roles (
+CREATE TABLE aauav_nei.faina_role (
     id integer NOT NULL,
     name character varying(20),
     weight integer
 );
 
 
-ALTER TABLE aauav_nei.faina_roles OWNER TO postgres;
+ALTER TABLE aauav_nei.faina_role OWNER TO postgres;
 
 --
--- Name: faina_roles_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: faina_role_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.faina_roles_id_seq
+CREATE SEQUENCE aauav_nei.faina_role_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -169,13 +169,13 @@ CREATE SEQUENCE aauav_nei.faina_roles_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.faina_roles_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.faina_role_id_seq OWNER TO postgres;
 
 --
--- Name: faina_roles_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: faina_role_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.faina_roles_id_seq OWNED BY aauav_nei.faina_roles.id;
+ALTER SEQUENCE aauav_nei.faina_role_id_seq OWNED BY aauav_nei.faina_role.id;
 
 
 --
@@ -193,10 +193,10 @@ CREATE TABLE aauav_nei.history (
 ALTER TABLE aauav_nei.history OWNER TO postgres;
 
 --
--- Name: merchandisings; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: merch; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.merchandisings (
+CREATE TABLE aauav_nei.merch (
     id integer NOT NULL,
     name character varying(255),
     image character varying(2048),
@@ -205,13 +205,13 @@ CREATE TABLE aauav_nei.merchandisings (
 );
 
 
-ALTER TABLE aauav_nei.merchandisings OWNER TO postgres;
+ALTER TABLE aauav_nei.merch OWNER TO postgres;
 
 --
--- Name: merchandisings_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: merch_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.merchandisings_id_seq
+CREATE SEQUENCE aauav_nei.merch_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -220,13 +220,13 @@ CREATE SEQUENCE aauav_nei.merchandisings_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.merchandisings_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.merch_id_seq OWNER TO postgres;
 
 --
--- Name: merchandisings_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: merch_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.merchandisings_id_seq OWNED BY aauav_nei.merchandisings.id;
+ALTER SEQUENCE aauav_nei.merch_id_seq OWNED BY aauav_nei.merch.id;
 
 
 --
@@ -273,10 +273,10 @@ ALTER SEQUENCE aauav_nei.news_id_seq OWNED BY aauav_nei.news.id;
 
 
 --
--- Name: notes; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: note; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.notes (
+CREATE TABLE aauav_nei.note (
     id integer NOT NULL,
     name character varying(255),
     location character varying(2048),
@@ -298,13 +298,13 @@ CREATE TABLE aauav_nei.notes (
 );
 
 
-ALTER TABLE aauav_nei.notes OWNER TO postgres;
+ALTER TABLE aauav_nei.note OWNER TO postgres;
 
 --
--- Name: notes_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: note_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.notes_id_seq
+CREATE SEQUENCE aauav_nei.note_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -313,33 +313,33 @@ CREATE SEQUENCE aauav_nei.notes_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.notes_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.note_id_seq OWNER TO postgres;
 
 --
--- Name: notes_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: note_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.notes_id_seq OWNED BY aauav_nei.notes.id;
+ALTER SEQUENCE aauav_nei.note_id_seq OWNED BY aauav_nei.note.id;
 
 
 --
--- Name: notes_school_year; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: note_school_year; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.notes_school_year (
+CREATE TABLE aauav_nei.note_school_year (
     id integer NOT NULL,
     year_begin smallint,
     year_end smallint
 );
 
 
-ALTER TABLE aauav_nei.notes_school_year OWNER TO postgres;
+ALTER TABLE aauav_nei.note_school_year OWNER TO postgres;
 
 --
--- Name: notes_school_year_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: note_school_year_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.notes_school_year_id_seq
+CREATE SEQUENCE aauav_nei.note_school_year_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -348,20 +348,20 @@ CREATE SEQUENCE aauav_nei.notes_school_year_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.notes_school_year_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.note_school_year_id_seq OWNER TO postgres;
 
 --
--- Name: notes_school_year_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: note_school_year_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.notes_school_year_id_seq OWNED BY aauav_nei.notes_school_year.id;
+ALTER SEQUENCE aauav_nei.note_school_year_id_seq OWNED BY aauav_nei.note_school_year.id;
 
 
 --
--- Name: notes_subject; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: note_subject; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.notes_subject (
+CREATE TABLE aauav_nei.note_subject (
     paco_code integer NOT NULL,
     name character varying(60),
     year integer,
@@ -372,26 +372,26 @@ CREATE TABLE aauav_nei.notes_subject (
 );
 
 
-ALTER TABLE aauav_nei.notes_subject OWNER TO postgres;
+ALTER TABLE aauav_nei.note_subject OWNER TO postgres;
 
 --
--- Name: notes_teachers; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: note_teacher; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.notes_teachers (
+CREATE TABLE aauav_nei.note_teacher (
     id integer NOT NULL,
     name character varying(100),
     personal_page character varying(255)
 );
 
 
-ALTER TABLE aauav_nei.notes_teachers OWNER TO postgres;
+ALTER TABLE aauav_nei.note_teacher OWNER TO postgres;
 
 --
--- Name: notes_teachers_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: note_teacher_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.notes_teachers_id_seq
+CREATE SEQUENCE aauav_nei.note_teacher_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -400,33 +400,33 @@ CREATE SEQUENCE aauav_nei.notes_teachers_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.notes_teachers_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.note_teacher_id_seq OWNER TO postgres;
 
 --
--- Name: notes_teachers_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: note_teacher_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.notes_teachers_id_seq OWNED BY aauav_nei.notes_teachers.id;
+ALTER SEQUENCE aauav_nei.note_teacher_id_seq OWNED BY aauav_nei.note_teacher.id;
 
 
 --
--- Name: notes_thanks; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: note_thank; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.notes_thanks (
+CREATE TABLE aauav_nei.note_thank (
     id integer NOT NULL,
     author_id integer,
-    notes_personal_page character varying(255)
+    note_personal_page character varying(255)
 );
 
 
-ALTER TABLE aauav_nei.notes_thanks OWNER TO postgres;
+ALTER TABLE aauav_nei.note_thank OWNER TO postgres;
 
 --
--- Name: notes_thanks_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: note_thank_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.notes_thanks_id_seq
+CREATE SEQUENCE aauav_nei.note_thank_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -435,20 +435,20 @@ CREATE SEQUENCE aauav_nei.notes_thanks_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.notes_thanks_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.note_thank_id_seq OWNER TO postgres;
 
 --
--- Name: notes_thanks_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: note_thank_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.notes_thanks_id_seq OWNED BY aauav_nei.notes_thanks.id;
+ALTER SEQUENCE aauav_nei.note_thank_id_seq OWNED BY aauav_nei.note_thank.id;
 
 
 --
--- Name: notes_types; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: note_types; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.notes_types (
+CREATE TABLE aauav_nei.note_type (
     id integer NOT NULL,
     name character varying(40),
     download_caption character varying(40),
@@ -458,13 +458,13 @@ CREATE TABLE aauav_nei.notes_types (
 );
 
 
-ALTER TABLE aauav_nei.notes_types OWNER TO postgres;
+ALTER TABLE aauav_nei.note_type OWNER TO postgres;
 
 --
--- Name: notes_types_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: note_types_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.notes_types_id_seq
+CREATE SEQUENCE aauav_nei.note_type_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -473,20 +473,20 @@ CREATE SEQUENCE aauav_nei.notes_types_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.notes_types_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.note_type_id_seq OWNER TO postgres;
 
 --
--- Name: notes_types_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: note_types_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.notes_types_id_seq OWNED BY aauav_nei.notes_types.id;
+ALTER SEQUENCE aauav_nei.note_type_id_seq OWNED BY aauav_nei.note_type.id;
 
 
 --
--- Name: partners; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: partner; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.partners (
+CREATE TABLE aauav_nei.partner (
     id integer NOT NULL,
     header character varying(2048),
     company character varying(255),
@@ -499,13 +499,13 @@ CREATE TABLE aauav_nei.partners (
 );
 
 
-ALTER TABLE aauav_nei.partners OWNER TO postgres;
+ALTER TABLE aauav_nei.partner OWNER TO postgres;
 
 --
--- Name: partners_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: partner_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.partners_id_seq
+CREATE SEQUENCE aauav_nei.partner_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -514,13 +514,13 @@ CREATE SEQUENCE aauav_nei.partners_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.partners_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.partner_id_seq OWNER TO postgres;
 
 --
--- Name: partners_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: partner_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.partners_id_seq OWNED BY aauav_nei.partners.id;
+ALTER SEQUENCE aauav_nei.partner_id_seq OWNED BY aauav_nei.partner.id;
 
 
 --
@@ -595,10 +595,10 @@ ALTER SEQUENCE aauav_nei.rgm_id_seq OWNED BY aauav_nei.rgm.id;
 
 
 --
--- Name: seniors; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: senior; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.seniors (
+CREATE TABLE aauav_nei.senior (
     id integer NOT NULL,
     year integer,
     course character varying(6),
@@ -606,13 +606,13 @@ CREATE TABLE aauav_nei.seniors (
 );
 
 
-ALTER TABLE aauav_nei.seniors OWNER TO postgres;
+ALTER TABLE aauav_nei.senior OWNER TO postgres;
 
 --
--- Name: seniors_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: senior_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.seniors_id_seq
+CREATE SEQUENCE aauav_nei.senior_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -621,28 +621,28 @@ CREATE SEQUENCE aauav_nei.seniors_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.seniors_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.senior_id_seq OWNER TO postgres;
 
 --
--- Name: seniors_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: senior_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.seniors_id_seq OWNED BY aauav_nei.seniors.id;
+ALTER SEQUENCE aauav_nei.senior_id_seq OWNED BY aauav_nei.senior.id;
 
 
 --
--- Name: seniors_students; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: senior_student; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.seniors_students (
-    seniors_id integer NOT NULL,
+CREATE TABLE aauav_nei.senior_student (
+    senior_id integer NOT NULL,
     user_id integer NOT NULL,
     quote character varying(280),
     image character varying(2048)
 );
 
 
-ALTER TABLE aauav_nei.seniors_students OWNER TO postgres;
+ALTER TABLE aauav_nei.senior_student OWNER TO postgres;
 
 --
 -- Name: team; Type: TABLE; Schema: aauav_nei; Owner: postgres
@@ -660,16 +660,16 @@ CREATE TABLE aauav_nei.team (
 ALTER TABLE aauav_nei.team OWNER TO postgres;
 
 --
--- Name: team_colaborators; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: team_colaborator; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.team_colaborators (
+CREATE TABLE aauav_nei.team_colaborator (
     user_id integer NOT NULL,
     mandate integer NOT NULL
 );
 
 
-ALTER TABLE aauav_nei.team_colaborators OWNER TO postgres;
+ALTER TABLE aauav_nei.team_colaborator OWNER TO postgres;
 
 --
 -- Name: team_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
@@ -694,23 +694,23 @@ ALTER SEQUENCE aauav_nei.team_id_seq OWNED BY aauav_nei.team.id;
 
 
 --
--- Name: team_roles; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: team_role; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.team_roles (
+CREATE TABLE aauav_nei.team_role (
     id integer NOT NULL,
     name character varying(120),
     weight integer
 );
 
 
-ALTER TABLE aauav_nei.team_roles OWNER TO postgres;
+ALTER TABLE aauav_nei.team_role OWNER TO postgres;
 
 --
--- Name: team_roles_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: team_role_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.team_roles_id_seq
+CREATE SEQUENCE aauav_nei.team_role_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -719,20 +719,20 @@ CREATE SEQUENCE aauav_nei.team_roles_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.team_roles_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.team_role_id_seq OWNER TO postgres;
 
 --
--- Name: team_roles_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: team_role_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.team_roles_id_seq OWNED BY aauav_nei.team_roles.id;
+ALTER SEQUENCE aauav_nei.team_role_id_seq OWNED BY aauav_nei.team_role.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: user; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE TABLE aauav_nei.users (
+CREATE TABLE aauav_nei.user (
     id integer NOT NULL,
     name character varying(255),
     full_name character varying(255),
@@ -746,13 +746,13 @@ CREATE TABLE aauav_nei.users (
 );
 
 
-ALTER TABLE aauav_nei.users OWNER TO postgres;
+ALTER TABLE aauav_nei.user OWNER TO postgres;
 
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: user_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE SEQUENCE aauav_nei.users_id_seq
+CREATE SEQUENCE aauav_nei.user_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -761,13 +761,13 @@ CREATE SEQUENCE aauav_nei.users_id_seq
     CACHE 1;
 
 
-ALTER TABLE aauav_nei.users_id_seq OWNER TO postgres;
+ALTER TABLE aauav_nei.user_id_seq OWNER TO postgres;
 
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: user_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER SEQUENCE aauav_nei.users_id_seq OWNED BY aauav_nei.users.id;
+ALTER SEQUENCE aauav_nei.user_id_seq OWNED BY aauav_nei.user.id;
 
 
 --
@@ -871,17 +871,17 @@ ALTER TABLE ONLY aauav_nei.faina_member ALTER COLUMN id SET DEFAULT nextval('aau
 
 
 --
--- Name: faina_roles id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+-- Name: faina_role id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.faina_roles ALTER COLUMN id SET DEFAULT nextval('aauav_nei.faina_roles_id_seq'::regclass);
+ALTER TABLE ONLY aauav_nei.faina_role ALTER COLUMN id SET DEFAULT nextval('aauav_nei.faina_role_id_seq'::regclass);
 
 
 --
--- Name: merchandisings id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+-- Name: merch id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.merchandisings ALTER COLUMN id SET DEFAULT nextval('aauav_nei.merchandisings_id_seq'::regclass);
+ALTER TABLE ONLY aauav_nei.merch ALTER COLUMN id SET DEFAULT nextval('aauav_nei.merch_id_seq'::regclass);
 
 
 --
@@ -892,45 +892,45 @@ ALTER TABLE ONLY aauav_nei.news ALTER COLUMN id SET DEFAULT nextval('aauav_nei.n
 
 
 --
--- Name: notes id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+-- Name: note id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.notes ALTER COLUMN id SET DEFAULT nextval('aauav_nei.notes_id_seq'::regclass);
-
-
---
--- Name: notes_school_year id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
---
-
-ALTER TABLE ONLY aauav_nei.notes_school_year ALTER COLUMN id SET DEFAULT nextval('aauav_nei.notes_school_year_id_seq'::regclass);
+ALTER TABLE ONLY aauav_nei.note ALTER COLUMN id SET DEFAULT nextval('aauav_nei.note_id_seq'::regclass);
 
 
 --
--- Name: notes_teachers id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+-- Name: note_school_year id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.notes_teachers ALTER COLUMN id SET DEFAULT nextval('aauav_nei.notes_teachers_id_seq'::regclass);
-
-
---
--- Name: notes_thanks id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
---
-
-ALTER TABLE ONLY aauav_nei.notes_thanks ALTER COLUMN id SET DEFAULT nextval('aauav_nei.notes_thanks_id_seq'::regclass);
+ALTER TABLE ONLY aauav_nei.note_school_year ALTER COLUMN id SET DEFAULT nextval('aauav_nei.note_school_year_id_seq'::regclass);
 
 
 --
--- Name: notes_types id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+-- Name: note_teacher id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.notes_types ALTER COLUMN id SET DEFAULT nextval('aauav_nei.notes_types_id_seq'::regclass);
+ALTER TABLE ONLY aauav_nei.note_teacher ALTER COLUMN id SET DEFAULT nextval('aauav_nei.note_teacher_id_seq'::regclass);
 
 
 --
--- Name: partners id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+-- Name: note_thank id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.partners ALTER COLUMN id SET DEFAULT nextval('aauav_nei.partners_id_seq'::regclass);
+ALTER TABLE ONLY aauav_nei.note_thank ALTER COLUMN id SET DEFAULT nextval('aauav_nei.note_thank_id_seq'::regclass);
+
+
+--
+-- Name: note_types id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.note_type ALTER COLUMN id SET DEFAULT nextval('aauav_nei.note_type_id_seq'::regclass);
+
+
+--
+-- Name: partner id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.partner ALTER COLUMN id SET DEFAULT nextval('aauav_nei.partner_id_seq'::regclass);
 
 
 --
@@ -948,10 +948,10 @@ ALTER TABLE ONLY aauav_nei.rgm ALTER COLUMN id SET DEFAULT nextval('aauav_nei.rg
 
 
 --
--- Name: seniors id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+-- Name: senior id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.seniors ALTER COLUMN id SET DEFAULT nextval('aauav_nei.seniors_id_seq'::regclass);
+ALTER TABLE ONLY aauav_nei.senior ALTER COLUMN id SET DEFAULT nextval('aauav_nei.senior_id_seq'::regclass);
 
 
 --
@@ -962,17 +962,17 @@ ALTER TABLE ONLY aauav_nei.team ALTER COLUMN id SET DEFAULT nextval('aauav_nei.t
 
 
 --
--- Name: team_roles id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+-- Name: team_role id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.team_roles ALTER COLUMN id SET DEFAULT nextval('aauav_nei.team_roles_id_seq'::regclass);
+ALTER TABLE ONLY aauav_nei.team_role ALTER COLUMN id SET DEFAULT nextval('aauav_nei.team_role_id_seq'::regclass);
 
 
 --
--- Name: users id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+-- Name: user id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.users ALTER COLUMN id SET DEFAULT nextval('aauav_nei.users_id_seq'::regclass);
+ALTER TABLE ONLY aauav_nei.user ALTER COLUMN id SET DEFAULT nextval('aauav_nei.user_id_seq'::regclass);
 
 
 --
@@ -1120,10 +1120,10 @@ INSERT INTO aauav_nei.faina_member (id, member_id, faina_id, role_id) VALUES
 
 
 --
--- Data for Name: faina_roles; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: faina_role; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.faina_roles (id, name, weight) VALUES
+INSERT INTO aauav_nei.faina_role (id, name, weight) VALUES
 (1, 'Junco', 1),
 (2, 'Caniça', 1),
 (3, 'Moço', 2),
@@ -1150,10 +1150,10 @@ INSERT INTO aauav_nei.history (moment, title, body, image) VALUES
 
 
 --
--- Data for Name: merchandisings; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: merch; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.merchandisings (id, name, image, price, number_of_items) VALUES
+INSERT INTO aauav_nei.merch (id, name, image, price, number_of_items) VALUES
 (1, 'Emblema de curso', '/merch/emblema.png', 2.5, 0),
 (2, 'Cachecol de curso', '/merch/scarf.png', 3.5, 0),
 (3, 'Casaco de curso', '/merch/casaco.png', 16.5, 0),
@@ -1195,250 +1195,250 @@ INSERT INTO aauav_nei.news (id, header, status, title, category, content, publis
 
 
 --
--- Data for Name: notes; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: note; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.notes (id, name, location, subject_id, author_id, school_year_id, teacher_id, summary, tests, bibliography, slides, exercises, projects, notebook, content, created_at, type_id, size) VALUES
-(1, 'MPEI Exemplo Teste 2014', '/notes/segundo_ano/primeiro_semestre/mpei/MP_Exemplo_Teste.pdf', 40337, NULL, 1, 5, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(2, 'Diversos - 2017/2018 (zip)', '/notes/segundo_ano/primeiro_semestre/mpei/RafaelDireito_2017_2018_MPEI.zip', 40337, 1800, 2, 4, 1, 0, 1, 1, 1, 0, 0, NULL, '2021-06-14 19:17:30', 2, 35),
-(3, 'Resumos Teóricos (zip)', '/notes/segundo_ano/primeiro_semestre/mpei/Resumos_Teoricas.zip', 40337, 1023, 1, 5, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos_Teóricas</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 8),
-(4, 'Resumos FP 2018/2019 (zip)', '/notes/primeiro_ano/primeiro_semestre/fp/Goncalo_FP.zip', 40379, 1275, 3, 27, 1, 1, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Aulas Práticas</dt><dd><dd>148 pastas</dd><dd>132 ficheiros</dd><dd></dl><dl><dt>Resumos</dt><dd><dd>1 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>Testes para praticar</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>Visualize Cod...</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 30),
-(5, 'Material FP 2016/2017 (zip)', '/notes/primeiro_ano/primeiro_semestre/fp/RafaelDireito_FP_16_17.zip', 40379, 1800, 4, NULL, 1, 1, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...</dt><dd><dd>34 pastas</dd><dd>30 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 14),
-(6, 'Resoluções 18/19', '/notes/primeiro_ano/primeiro_semestre/fp/resolucoes18_19.zip', 40379, NULL, 3, NULL, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>18-19</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(7, 'Apontamentos Globais', '/notes/primeiro_ano/primeiro_semestre/itw/apontamentos001.pdf', 40380, NULL, NULL, 8, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
-(8, 'Questões de SO (zip)', '/notes/segundo_ano/primeiro_semestre/so/Questões.zip', 40381, NULL, 5, NULL, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Quest?es</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(9, 'Diversos - 2017/2018 (zip)', '/notes/segundo_ano/primeiro_semestre/so/RafaelDireito_2017_2018_SO.zip', 40381, 1800, 2, 1, 1, 0, 0, 1, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...</dt><dd><dd>46 pastas</dd><dd>43 ficheiros</dd><dd></dl><dl><dt>Rafael_Diteit...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 35),
-(10, 'Apontamentos Diversos (zip)', '/notes/segundo_ano/segundo_semestre/pds/JoaoAlegria_PDS.zip', 40383, 1455, 5, 12, 1, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>JoaoAlegria_R...</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>JoaoAlegria_E...</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
-(11, 'Resumos de 2015/2016', '/notes/segundo_ano/segundo_semestre/pds/pds_apontamentos_001.pdf', 40383, 1455, 5, 12, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 4),
-(12, 'Apontamentos genéricos I', '/notes/segundo_ano/segundo_semestre/pds/pds_apontamentos_002.pdf', 40383, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(13, 'Apontamentos genéricos II', '/notes/segundo_ano/segundo_semestre/pds/pds_apontamentos_003.pdf', 40383, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(14, 'Diversos - CBD Prof. JLO (zip)', '/notes/terceiro_ano/primeiro_semestre/cbd/InesCorreia_CBD(CC_JLO).zip', 40385, 1335, NULL, 12, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>InesCorreia_C...</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
-(15, 'MAS 2014/2015 (zip)', '/notes/primeiro_ano/segundo_semestre/mas/BarbaraJael_14_15_MAS.zip', 40431, 963, 1, 13, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>resumo-mas.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 14),
-(16, 'Preparação para Exame Final de MAS', '/notes/primeiro_ano/segundo_semestre/mas/Duarte_MAS.pdf', 40431, 1182, 3, 13, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(17, 'MAS 2016/2017 (zip)', '/notes/primeiro_ano/segundo_semestre/mas/RafaelDireito_2016_2017_MAS.zip', 40431, 1800, 4, 13, 1, 0, 1, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 19),
-(18, 'Resumos_MAS', '/notes/primeiro_ano/segundo_semestre/mas/Resumos_MAS_Carina.zip', 40431, 1002, 2, 13, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>MAS_Resumos.pdf</dt><dd><dd></dl><dl><dt>MAS_Resumos2.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 8),
-(19, 'Resolução das fichas (zip)', '/notes/segundo_ano/primeiro_semestre/smu/Resoluçao_das_fichas.zip', 40432, NULL, NULL, NULL, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resoluçao das fichas</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 27),
-(20, 'Resumos (zip)', '/notes/segundo_ano/primeiro_semestre/smu/Resumo.zip', 40432, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumo</dt><dd><dd>0 pastas</dd><dd>9 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 116),
-(21, 'Resumos de 2013/2014', '/notes/segundo_ano/primeiro_semestre/smu/smu_apontamentos_001.pdf', 40432, 963, 6, 26, 1, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 11),
-(22, 'Resumos de 2016/2017', '/notes/segundo_ano/primeiro_semestre/smu/smu_apontamentos_002.pdf', 40432, 1023, 4, 15, 1, 1, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
-(23, 'Resumos de 2017/2018', '/notes/segundo_ano/primeiro_semestre/smu/smu_apontamentos_003.pdf', 40432, 1866, 2, 15, 1, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 7),
-(24, 'Resumos 2018/19', '/notes/segundo_ano/primeiro_semestre/smu/SMU_Resumos.pdf', 40432, NULL, NULL, NULL, 1, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 4),
-(25, 'Resumos (zip)', '/notes/segundo_ano/primeiro_semestre/rs/Resumo.zip', 40433, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumo</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 24),
-(26, 'Caderno', '/notes/segundo_ano/primeiro_semestre/rs/rs_apontamentos_001.pdf', 40433, 963, 1, 16, 1, 0, 0, 0, 1, 0, 1, NULL, '2021-06-14 19:17:30', 1, 6),
-(27, 'Resumos_POO', '/notes/primeiro_ano/segundo_semestre/poo/Carina_POO_Resumos.zip', 40436, 1002, 2, 31, 1, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>POO_Resumos_OT.pdf</dt><dd><dd></dl><dl><dt>POO_Resumos.pdf</dt><dd><dd></dl><dl><dt>POO_resumos_v2.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
-(28, 'Resumos POO 2018/2019 (zip)', '/notes/primeiro_ano/segundo_semestre/poo/Goncalo_POO.zip', 40436, 1275, 3, 28, 1, 1, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Apontamentos</dt><dd><dd>1 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Aulas Práticas</dt><dd><dd>17 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 4),
-(29, 'Diversos - Prática e Teórica (zip)', '/notes/primeiro_ano/segundo_semestre/poo/RafaelDireito_2016_2017_POO.zip', 40436, 1800, 4, NULL, 1, 1, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...</dt><dd><dd>495 pastas</dd><dd>492 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 43),
-(30, 'Resumos Teóricos (zip)', '/notes/primeiro_ano/segundo_semestre/poo/Resumos.zip', 40436, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 22),
-(31, 'Resumos de 2016/2017', '/notes/segundo_ano/primeiro_semestre/aed/aed_apontamentos_001.pdf', 40437, 1023, 4, 17, 1, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 5),
-(32, 'Bibliografia (zip)', '/notes/segundo_ano/primeiro_semestre/aed/bibliografia.zip', 40437, NULL, NULL, NULL, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Linguagem C -...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 33),
-(33, 'Resumos 2016/2017', '/notes/mestrado/aa/aa_apontamentos_001.pdf', 40751, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(34, 'Exames 2017/2018', '/notes/mestrado/tai/tai_apontamentos_001.pdf', 40752, 1455, 2, NULL, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(35, 'Teste Modelo 2016/2017', '/notes/mestrado/tai/tai_apontamentos_002.pdf', 40752, 1455, 4, NULL, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
-(36, 'Ficha de Exercícios 1 - 2016/2017', '/notes/mestrado/tai/tai_apontamentos_003.pdf', 40752, 1455, 4, NULL, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 5),
-(37, 'Ficha de Exercícios 2 - 2016/2017', '/notes/mestrado/tai/tai_apontamentos_004.pdf', 40752, 1455, 4, NULL, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
-(38, 'Resumos 2016/2017', '/notes/mestrado/cle/cle_apontamentos_001.pdf', 40753, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 12),
-(39, 'Resumos 2016/2017', '/notes/mestrado/gic/gic_apontamentos_001.pdf', 40756, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 12),
-(40, 'Resumos 2017/2018', '/notes/terceiro_ano/primeiro_semestre/ia/ia_apontamentos_002.pdf', 40846, 1023, 2, 30, 1, 1, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 6),
-(41, 'Aulas Teóricas (zip)', '/notes/segundo_ano/segundo_semestre/c/Aulas_Teóricas.zip', 41469, NULL, 5, 10, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Aulas Teóricas</dt><dd><dd>41 pastas</dd><dd>27 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
-(42, 'Guião de preparacao para o teste prático (zip)', '/notes/segundo_ano/segundo_semestre/c/Guião_de _preparacao_para_o_teste_pratico.zip', 41469, NULL, NULL, NULL, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Gui?o de prep...</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(43, 'Apontamentos Diversos (zip)', '/notes/segundo_ano/segundo_semestre/ihc/Apontamentos.zip', 41549, NULL, NULL, NULL, 1, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Apontamentos</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 16),
-(44, 'Avaliação Heurística', '/notes/segundo_ano/segundo_semestre/ihc/ihc_apontamentos_001.pdf', 41549, 1455, 1, 9, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(45, 'Resumos de 2014/2015', '/notes/segundo_ano/segundo_semestre/ihc/ihc_apontamentos_002.pdf', 41549, 963, 1, 9, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
-(46, 'Resolução de fichas (zip)', '/notes/segundo_ano/segundo_semestre/ihc/Resolução_de_fichas.zip', 41549, NULL, NULL, 9, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resoluç?o de fichas</dt><dd><dd>2 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 14),
-(47, 'Apontamentos EF (zip)', '/notes/primeiro_ano/primeiro_semestre/ef/BarbaraJael_EF.zip', 41791, 963, 1, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>BarbaraJael_1...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 4),
-(48, 'Exercícios 2017/2018', '/notes/primeiro_ano/primeiro_semestre/ef/ef_apontamentos_001.pdf', 41791, 1800, 2, 24, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
-(49, 'Exercícios 2016/17', '/notes/primeiro_ano/primeiro_semestre/ef/ef_apontamentos_002.pdf', 41791, 1800, 4, NULL, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 7),
-(50, 'Resumos EF 2018/2019 (zip)', '/notes/primeiro_ano/primeiro_semestre/ef/Goncalo_EF.zip', 41791, 1275, 3, 29, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Documento_Obt...pdf</dt><dd><dd></dl><dl><dt>Documento_Tra...pdf</dt><dd><dd></dl><dl><dt>P4_7-12.pdf</dt><dd><dd></dl><dl><dt>PL1_Ótica.pdf</dt><dd><dd></dl><dl><dt>PL2_Pêndulo E...pdf</dt><dd><dd></dl><dl><dt>PL2_Pêndulo E...jpg</dt><dd><dd></dl><dl><dt>PL2_Pêndulo E...jpg</dt><dd><dd></dl><dl><dt>PL3_Difração.pdf</dt><dd><dd></dl><dl><dt>PL3_Difração_...jpg</dt><dd><dd></dl><dl><dt>PL3_Difração_...jpg</dt><dd><dd></dl><dl><dt>PL3_Difração_...jpg</dt><dd><dd></dl><dl><dt>PL3_Difração_...jpg</dt><dd><dd></dl><dl><dt>PL4_Relatório.pdf</dt><dd><dd></dl><dl><dt>PL_Pauta Final.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 5),
-(51, 'Exercícios 2018/19', '/notes/primeiro_ano/primeiro_semestre/ef/Pedro_Oliveira_2018_2019.zip', 41791, 1764, 3, 29, 0, 1, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pedro Oliveira</dt><dd><dd>6 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 28),
-(52, 'Apontamentos e Resoluções (zip)', '/notes/primeiro_ano/segundo_semestre/iac/PedroOliveira.zip', 42502, 1764, 2, 6, 0, 1, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pedro Oliveira</dt><dd><dd>10 pastas</dd><dd>7 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 23),
-(53, 'Caderno - 2016/2017', '/notes/segundo_ano/segundo_semestre/bd/bd_apontamentos_001.pdf', 42532, 1023, 4, 7, 1, 0, 0, 0, 1, 0, 1, NULL, '2021-06-14 19:17:30', 1, 2),
-(54, 'Resumos - 2014/2015', '/notes/segundo_ano/segundo_semestre/bd/bd_apontamentos_002.pdf', 42532, 1455, 1, 7, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(55, 'Resumos globais', '/notes/segundo_ano/segundo_semestre/bd/BD_Resumos.pdf', 42532, NULL, NULL, 7, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 8),
-(56, 'Slides das Aulas Teóricas (zip)', '/notes/segundo_ano/segundo_semestre/bd/Slides_Teoricas.zip', 42532, NULL, 1, 7, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides_Teoricas</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 21),
-(57, 'Outros Resumos (zip)', '/notes/terceiro_ano/primeiro_semestre/sio/Outros_Resumos.zip', 42573, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Outros Resumos</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
-(58, 'Resumo geral de segurança I', '/notes/terceiro_ano/primeiro_semestre/sio/sio_apontamentos_001.pdf', 42573, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
-(59, 'Resumo geral de segurança II', '/notes/terceiro_ano/primeiro_semestre/sio/sio_apontamentos_002.pdf', 42573, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(60, 'Resumos de 2015/2016', '/notes/terceiro_ano/primeiro_semestre/sio/sio_apontamentos_003.pdf', 42573, 963, 5, 3, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 8),
-(61, 'Resumo geral de segurança III', '/notes/terceiro_ano/primeiro_semestre/sio/sio_apontamentos_004.pdf', 42573, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(62, 'Apontamentos genéricos', '/notes/terceiro_ano/primeiro_semestre/sio/sio_apontamentos_005.pdf', 42573, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
-(63, 'Resumos de ALGA (zip)', '/notes/primeiro_ano/primeiro_semestre/alga/Carolina_Albuquerque_ALGA.zip', 42709, 1023, 5, 23, 1, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>ALGA - Resumo...pdf</dt><dd><dd></dl><dl><dt>Exemplos da i...pdf</dt><dd><dd></dl><dl><dt>Exemplos de m...pdf</dt><dd><dd></dl><dl><dt>Exemplos de m...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 59),
-(64, 'ALGA 2017/2018 (zip)', '/notes/primeiro_ano/primeiro_semestre/alga/DiogoSilva_17_18_ALGA.zip', 42709, 1161, 2, 23, 0, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>DiogoSilva_17...</dt><dd><dd>0 pastas</dd><dd>26 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 21),
-(65, 'Resumos ALGA 2018/2019 (zip)', '/notes/primeiro_ano/primeiro_semestre/alga/Goncalo_ALGA.zip', 42709, 1275, 3, 19, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1_Matrizes e ...pdf</dt><dd><dd></dl><dl><dt>2_Determinantes.pdf</dt><dd><dd></dl><dl><dt>3_Vetores, re...pdf</dt><dd><dd></dl><dl><dt>4_Espaços vet...pdf</dt><dd><dd></dl><dl><dt>5_Valores e v...pdf</dt><dd><dd></dl><dl><dt>6_Cónicas e q...pdf</dt><dd><dd></dl><dl><dt>7_Aplicações ...pdf</dt><dd><dd></dl><dl><dt>Complemento_C...pdf</dt><dd><dd></dl><dl><dt>Complemento_C...pdf</dt><dd><dd></dl><dl><dt>Resumo Teste ...pdf</dt><dd><dd></dl><dl><dt>Resumo Teste ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 41),
-(66, 'Resumos 2016/2017', '/notes/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_001.pdf', 42728, 1719, 4, 21, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 16),
-(67, 'Resumos 2016/2017', '/notes/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_002.pdf', 42728, 1866, 4, 21, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 5),
-(68, 'Teste Primitivas 2016/2017', '/notes/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_003.pdf', 42728, 1800, 4, 21, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
-(69, 'Exercícios 2016/2017', '/notes/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_004.pdf', 42728, 1800, 4, 21, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 5),
-(70, 'Resumos 2016/2017', '/notes/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_005.pdf', 42728, 1800, 4, 21, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 11),
-(71, 'Fichas 2016/2017', '/notes/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_006.pdf', 42728, 1800, 4, 21, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 22),
-(72, 'CI 2017/2018 (zip)', '/notes/primeiro_ano/primeiro_semestre/c1/DiogoSilva_17_18_C1.zip', 42728, 1161, 2, 21, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>28821701_4498...jpg</dt><dd><dd></dl><dl><dt>28768155_4497...jpg</dt><dd><dd></dl><dl><dt>28927694_4497...jpg</dt><dd><dd></dl><dl><dt>28821773_4497...jpg</dt><dd><dd></dl><dl><dt>28876807_4497...jpg</dt><dd><dd></dl><dl><dt>28879472_4497...jpg</dt><dd><dd></dl><dl><dt>28822131_4497...jpg</dt><dd><dd></dl><dl><dt>28768108_4497...jpg</dt><dd><dd></dl><dl><dt>28811040_4497...jpg</dt><dd><dd></dl><dl><dt>28943154_4497...jpg</dt><dd><dd></dl><dl><dt>28879660_4497...jpg</dt><dd><dd></dl><dl><dt>28876653_4497...jpg</dt><dd><dd></dl><dl><dt>28768432_4497...jpg</dt><dd><dd></dl><dl><dt>28768056_4497...jpg</dt><dd><dd></dl><dl><dt>28877054_4497...jpg</dt><dd><dd></dl><dl><dt>28768634_4497...jpg</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
-(73, 'Resumos Cálculo I 2018/2019 (zip)', '/notes/primeiro_ano/primeiro_semestre/c1/Goncalo_C1.zip', 42728, 1275, 3, 18, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>0_Formulário_...pdf</dt><dd><dd></dl><dl><dt>0_FORMULÁRIO_...pdf</dt><dd><dd></dl><dl><dt>0_Revisões se...pdf</dt><dd><dd></dl><dl><dt>1_Funções tri...pdf</dt><dd><dd></dl><dl><dt>2_Teoremas do...pdf</dt><dd><dd></dl><dl><dt>3_Integrais i...pdf</dt><dd><dd></dl><dl><dt>4_Integrais d...pdf</dt><dd><dd></dl><dl><dt>5_Integrais i...pdf</dt><dd><dd></dl><dl><dt>6_Séries numé...pdf</dt><dd><dd></dl><dl><dt>Formulário_Sé...pdf</dt><dd><dd></dl><dl><dt>Resumo_Integr...pdf</dt><dd><dd></dl><dl><dt>Tópicos_Teste 1.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 24),
-(74, 'Caderno de 2016/2017', '/notes/primeiro_ano/segundo_semestre/c2/calculoii_apontamentos_003.pdf', 42729, 1719, 4, 22, 0, 0, 0, 0, 0, 0, 1, NULL, '2021-06-14 19:17:30', 1, 18),
-(75, 'Resumos Cálculo II 2018/2019 (zip)', '/notes/primeiro_ano/segundo_semestre/c2/Goncalo_C2.zip', 42729, 1275, 3, 19, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>0_Revisões.pdf</dt><dd><dd></dl><dl><dt>1_Séries de p...pdf</dt><dd><dd></dl><dl><dt>2_Sucessões e...pdf</dt><dd><dd></dl><dl><dt>3.1_Funções r...pdf</dt><dd><dd></dl><dl><dt>3.2_Funções r...pdf</dt><dd><dd></dl><dl><dt>4_Equações di...pdf</dt><dd><dd></dl><dl><dt>5_Transformad...pdf</dt><dd><dd></dl><dl><dt>Detalhes para...pdf</dt><dd><dd></dl><dl><dt>Detalhes para...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 21),
-(76, 'Resumos 2016/2017', '/notes/mestrado/vi/vi_apontamentos_001.pdf', 44156, 1455, 4, 9, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 4),
-(77, 'Resumos por capítulo (zip)', '/notes/mestrado/ws/JoaoAlegria_ResumosPorCapítulo.zip', 44158, 1455, 4, 25, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>JoaoAlegria_R...</dt><dd><dd>0 pastas</dd><dd>10 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 8),
-(78, 'Resumos 2016/2017', '/notes/mestrado/ws/web_semantica_apontamentos_001.pdf', 44158, 1455, 4, 25, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 9),
-(79, 'Apontamentos Diversos', '/notes/terceiro_ano/primeiro_semestre/icm/Inês_Correia_ICM.pdf', 45424, 1335, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
-(80, 'Apontamentos Diversos', '/notes/terceiro_ano/segundo_semestre/tqs/Inês_Correia_TQS.pdf', 45426, 1335, 4, 13, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 14),
-(81, 'Resumos (zip)', '/notes/terceiro_ano/segundo_semestre/tqs/resumos.zip', 45426, NULL, 4, 13, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos_chave</dt><dd><dd>0 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 22),
-(82, 'Resumos 2015/2016', '/notes/terceiro_ano/segundo_semestre/tqs/tqs_apontamentos_002.pdf', 45426, 1455, 5, 13, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
-(83, 'Resumos 2017/2018 - I', '/notes/mestrado/ed/ed_dm_apontamentos_001.pdf', 45587, 1455, 4, 26, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 36),
-(84, 'Resumos 2017/2018 - II', '/notes/mestrado/ed/ed_dm_apontamentos_002.pdf', 45587, 1455, 4, 26, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 48),
-(85, 'Resumos MD 2018/2019 (zip)', '/notes/primeiro_ano/segundo_semestre/md/Goncalo_MD.zip', 47166, 1275, 3, 20, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1.1_Lógica pr...pdf</dt><dd><dd></dl><dl><dt>1.2_Conjuntos.pdf</dt><dd><dd></dl><dl><dt>1.3_Relações ...pdf</dt><dd><dd></dl><dl><dt>1.4_Funções.pdf</dt><dd><dd></dl><dl><dt>1.5_Relações ...pdf</dt><dd><dd></dl><dl><dt>1.6_Lógica de...pdf</dt><dd><dd></dl><dl><dt>2_Contextos e...pdf</dt><dd><dd></dl><dl><dt>3_Princípios ...pdf</dt><dd><dd></dl><dl><dt>4_Permutações.pdf</dt><dd><dd></dl><dl><dt>5_Agrupamento...pdf</dt><dd><dd></dl><dl><dt>6_Recorrência...pdf</dt><dd><dd></dl><dl><dt>7_Elementos d...pdf</dt><dd><dd></dl><dl><dt>Detalhes capí...pdf</dt><dd><dd></dl><dl><dt>Detalhes capí...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 27),
-(86, 'Resumos 2017/2018', '/notes/primeiro_ano/segundo_semestre/md/MD_Capitulo5.pdf', 47166, 1002, 2, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 4),
-(87, 'RafaelDireito_2016_2017_MD.zip', '/notes/primeiro_ano/segundo_semestre/md/RafaelDireito_2016_2017_MD.zip', 47166, 1800, 4, NULL, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...</dt><dd><dd>11 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 24),
-(88, 'RafaelDireito_MD_16_17_Apontamentos (zip)', '/notes/primeiro_ano/segundo_semestre/md/RafaelDireito_MD_16_17_Apontamentos.zip', 47166, 1800, 4, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>md_apontament...pdf</dt><dd><dd></dl><dl><dt>md_apontament...pdf</dt><dd><dd></dl><dl><dt>md_apontament...pdf</dt><dd><dd></dl><dl><dt>md_apontament...pdf</dt><dd><dd></dl><dl><dt>md_apontament...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 4),
-(89, 'DS_MPEI_18_19_Testes (zip)', '/notes/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Testes.zip', 40337, 1161, 3, 4, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Enunciados</dt><dd><dd>5 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>Teste 1 2015</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Teste 2 2015</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Teste 2 2017</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 23),
-(90, 'DS_MPEI_18_19_SlidesTeoricos (zip)', '/notes/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_SlidesTeoricos.zip', 40337, 1161, 3, 4, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>MPEI-2017-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2017-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 27),
-(91, 'DS_MPEI_18_19_Resumos (zip)', '/notes/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Resumos.zip', 40337, 1161, 3, 4, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumo1</dt><dd><dd>0 pastas</dd><dd>39 ficheiros</dd><dd></dl><dl><dt>Resumo2</dt><dd><dd>0 pastas</dd><dd>24 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 209),
-(92, 'DS_MPEI_18_19_Projeto (zip)', '/notes/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Projeto.zip', 40337, 1161, 3, 4, 0, 0, 0, 0, 0, 1, 0, '<dl><dt>/</dt><dd><dl><dt>mpei.pptx</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 16),
-(93, 'DS_MPEI_18_19_Praticas (zip)', '/notes/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Praticas.zip', 40337, 1161, 3, 4, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P01</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>P02</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>P03</dt><dd><dd>0 pastas</dd><dd>14 ficheiros</dd><dd></dl><dl><dt>P04</dt><dd><dd>0 pastas</dd><dd>14 ficheiros</dd><dd></dl><dl><dt>P05</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>P06</dt><dd><dd>0 pastas</dd><dd>21 ficheiros</dd><dd></dl><dl><dt>P07</dt><dd><dd>0 pastas</dd><dd>13 ficheiros</dd><dd></dl><dl><dt>P08</dt><dd><dd>0 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>Remakes</dt><dd><dd>2 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 9),
-(94, 'DS_MPEI_18_19_Livros (zip)', '/notes/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Livros.zip', 40337, 1161, 3, 4, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>estatistica-f...pdf</dt><dd><dd></dl><dl><dt>Livro.pdf</dt><dd><dd></dl><dl><dt>matlabnuminst...pdf</dt><dd><dd></dl><dl><dt>MATLAB_Starte...pdf</dt><dd><dd></dl><dl><dt>pt.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
-(95, 'DS_MPEI_18_19_Exercicios (zip)', '/notes/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Exercicios.zip', 40337, 1161, 3, 4, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>2</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>3</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>Slides Exercicios</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 37),
-(96, 'Goncalo_ITW_18_19_Testes (zip)', '/notes/primeiro_ano/primeiro_semestre/itw/Goncalo_ITW_18_19_Testes.zip', 40380, 1275, 3, 8, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P7 05_Nov_201...</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>Teste teórico 1.zip</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(97, 'Goncalo_ITW_18_19_Resumos (zip)', '/notes/primeiro_ano/primeiro_semestre/itw/Goncalo_ITW_18_19_Resumos.zip', 40380, 1275, 3, 8, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>ITW _ BOOTSTRAP.pdf</dt><dd><dd></dl><dl><dt>ITW _ CSS.pdf</dt><dd><dd></dl><dl><dt>ITW _ HTML.pdf</dt><dd><dd></dl><dl><dt>ITW _ JAVASCRIPT.pdf</dt><dd><dd></dl><dl><dt>JAVACRIPT _ E...pdf</dt><dd><dd></dl><dl><dt>JAVACRIPT _P6...pdf</dt><dd><dd></dl><dl><dt>Resumo_T10_Kn...pdf</dt><dd><dd></dl><dl><dt>Resumo_T11_Du...pdf</dt><dd><dd></dl><dl><dt>Resumo_T8_jQu...pdf</dt><dd><dd></dl><dl><dt>Resumo_T9_Goo...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 12),
-(98, 'Goncalo_ITW_18_19_Projeto (zip)', '/notes/primeiro_ano/primeiro_semestre/itw/Goncalo_ITW_18_19_Projeto.zip', 40380, 1275, 3, 8, 0, 0, 0, 0, 0, 1, 0, '<dl><dt>/</dt><dd><dl><dt>P11 03_Nov_20...</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>PROJETO</dt><dd><dd>147 pastas</dd><dd>147 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 33),
-(99, 'Goncalo_ITW_18_19_Praticas (zip)', '/notes/primeiro_ano/primeiro_semestre/itw/Goncalo_ITW_18_19_Praticas.zip', 40380, 1275, 3, 8, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P1 24_Set_2018</dt><dd><dd>0 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>P10 26_Nov_20...</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>P11 03_Nov_20...</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>P2 01_Out_2018</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>P3 08_Out_2018</dt><dd><dd>0 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>P4 15_Out_2018</dt><dd><dd>0 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>P5 22_Out_2018</dt><dd><dd>1 pastas</dd><dd>12 ficheiros</dd><dd></dl><dl><dt>P6 29_Out_2018</dt><dd><dd>1 pastas</dd><dd>13 ficheiros</dd><dd></dl><dl><dt>P7 05_Nov_201...</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>P8 12_Nov_2018</dt><dd><dd>0 pastas</dd><dd>21 ficheiros</dd><dd></dl><dl><dt>P9 19_Nov_201...</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 30),
-(100, 'RafaelDireito_ITW_18_19_Testes (zip)', '/notes/primeiro_ano/primeiro_semestre/itw/RafaelDireito_ITW_16_17_Testes.zip', 40380, 1800, 4, 8, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Bootstrap+Tes...rar</dt><dd><dd></dl><dl><dt>Teste Prático ITW</dt><dd><dd>2 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>Teste Teórico 2</dt><dd><dd>0 pastas</dd><dd>20 ficheiros</dd><dd></dl><dl><dt>Teste_Prático_ITW</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>Teste_Prático...</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>ITW-Teste Teórico</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>ITW_Teste</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 9),
-(101, 'RafaelDireito_ITW_18_19_Slides (zip)', '/notes/primeiro_ano/primeiro_semestre/itw/RafaelDireito_ITW_16_17_Slides.zip', 40380, 1800, 4, 8, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Aula 1 - Apre...pdf</dt><dd><dd></dl><dl><dt>Aula 1 -Intro...pdf</dt><dd><dd></dl><dl><dt>Aula 10 - Goo...pdf</dt><dd><dd></dl><dl><dt>Aula 11 - ITW...pdf</dt><dd><dd></dl><dl><dt>Aula 11 - Tra...pdf</dt><dd><dd></dl><dl><dt>Aula 2 - Form...pdf</dt><dd><dd></dl><dl><dt>Aula 3 - CSS.pdf</dt><dd><dd></dl><dl><dt>Aula 4 -Twitt...pdf</dt><dd><dd></dl><dl><dt>Aula 5 -Javas...pdf</dt><dd><dd></dl><dl><dt>Aula 7 -Javas...pdf</dt><dd><dd></dl><dl><dt>Aula 8 -JQuery.pdf</dt><dd><dd></dl><dl><dt>Aula 9 -JQuer...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 19),
-(102, 'RafaelDireito_ITW_18_19_Praticas (zip)', '/notes/primeiro_ano/primeiro_semestre/itw/RafaelDireito_ITW_16_17_Praticas.zip', 40380, 1800, 4, 8, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Aula 8</dt><dd><dd>3 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>Aula5-Js</dt><dd><dd>1 pastas</dd><dd>13 ficheiros</dd><dd></dl><dl><dt>Aulas Práticas</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>Bilhete-Aviao</dt><dd><dd>6 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>Calculadora-JS</dt><dd><dd>2 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Concerto- GER...</dt><dd><dd>3 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>Concerto-Jquery</dt><dd><dd>3 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>Concerto-Jque...</dt><dd><dd>3 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>Concerto-JS</dt><dd><dd>3 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>Conferencia</dt><dd><dd>6 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>Gráficos</dt><dd><dd>3 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>ITW java</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>ITW-Bootstrap_1</dt><dd><dd>20 pastas</dd><dd>26 ficheiros</dd><dd></dl><dl><dt>ITW_jQuery</dt><dd><dd>3 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>Links de Apoi...txt</dt><dd><dd></dl><dl><dt>Mapa</dt><dd><dd>3 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>Treino-ITW-2</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Weather</dt><dd><dd>3 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>GitHub-  stor.txt</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 18),
-(103, 'DS_SO_18_19_Testes (zip)', '/notes/segundo_ano/primeiro_semestre/so/DS_SO_18_19_Testes.zip', 40381, 1161, 3, 1, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Enunciados</dt><dd><dd>1 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Teorico-Pratico</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Teste 2015</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Teste 2017</dt><dd><dd>2 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 46),
-(104, 'DS_SO_18_19_SlidesTeoricos (zip)', '/notes/segundo_ano/primeiro_semestre/so/DS_SO_18_19_SlidesTeoricos.zip', 40381, 1161, 3, 1, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>sop_1819_0918...pdf</dt><dd><dd></dl><dl><dt>sop_1819_1002...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1023...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1030...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1106...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1120...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1127...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1204...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1211...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1218...ppt</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 11),
-(105, 'DS_SO_18_19_ResumosTeoricos (zip)', '/notes/segundo_ano/primeiro_semestre/so/DS_SO_18_19_ResumosTeoricos.zip', 40381, 1161, 3, 1, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Teorico</dt><dd><dd>0 pastas</dd><dd>43 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 157),
-(106, 'DS_SO_18_19_ResumosPraticos (zip)', '/notes/segundo_ano/primeiro_semestre/so/DS_SO_18_19_ResumosPraticos.zip', 40381, 1161, 3, 1, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pratico</dt><dd><dd>0 pastas</dd><dd>38 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 122),
-(107, 'DS_SO_18_19_Praticas (zip)', '/notes/segundo_ano/primeiro_semestre/so/DS_SO_18_19_Praticas.zip', 40381, 1161, 3, 1, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P01</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P02</dt><dd><dd>1 pastas</dd><dd>24 ficheiros</dd><dd></dl><dl><dt>P03</dt><dd><dd>0 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>P04</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>P05</dt><dd><dd>2 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>P06</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>P07</dt><dd><dd>0 pastas</dd><dd>10 ficheiros</dd><dd></dl><dl><dt>P08</dt><dd><dd>1 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>P09</dt><dd><dd>7 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P10</dt><dd><dd>3 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>P11</dt><dd><dd>1 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Remakes</dt><dd><dd>24 pastas</dd><dd>18 ficheiros</dd><dd></dl><dl><dt>Remakes2</dt><dd><dd>9 pastas</dd><dd>7 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 5),
-(108, 'DS_SO_18_19_Fichas (zip)', '/notes/segundo_ano/primeiro_semestre/so/DS_SO_18_19_Fichas.zip', 40381, 1161, 3, 1, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Enunciados</dt><dd><dd>10 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>Ficha 1</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>Ficha 2</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Ficha 3</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Ficha NEI 1</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Ficha NEI 2</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>Ficha NEI 4</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 51),
-(109, 'CD_18_19_Livros (zip)', '/notes/segundo_ano/segundo_semestre/cd/CD_18_19_Livros.zip', 40382, NULL, NULL, NULL, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Distributed_S...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 19),
-(110, 'DS_CD_18_19_SlidesTeoricos (zip)', '/notes/segundo_ano/segundo_semestre/cd/DS_CD_18_19_SlidesTeoricos.zip', 40382, 1161, 3, 2, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Aula 1.pdf</dt><dd><dd></dl><dl><dt>Aula 2.pdf</dt><dd><dd></dl><dl><dt>Aula 3.pdf</dt><dd><dd></dl><dl><dt>Aula 4.pdf</dt><dd><dd></dl><dl><dt>Aula 6.pdf</dt><dd><dd></dl><dl><dt>Aula 7.pdf</dt><dd><dd></dl><dl><dt>Aula 8.pdf</dt><dd><dd></dl><dl><dt>Cloud Computing.pdf</dt><dd><dd></dl><dl><dt>Flask.pdf</dt><dd><dd></dl><dl><dt>Syllabus.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 32),
-(111, 'DS_CD_18_19_Resumos (zip)', '/notes/segundo_ano/segundo_semestre/cd/DS_CD_18_19_Resumos.zip', 40382, 1161, 3, 2, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>CDresumoch6.docx</dt><dd><dd></dl><dl><dt>CDresumoch6.pdf</dt><dd><dd></dl><dl><dt>CDresumoch7.docx</dt><dd><dd></dl><dl><dt>CDresumoch7.pdf</dt><dd><dd></dl><dl><dt>CDresumoch8.docx</dt><dd><dd></dl><dl><dt>GIT 101.pdf</dt><dd><dd></dl><dl><dt>Resumo Ch1-4</dt><dd><dd>0 pastas</dd><dd>104 ficheiros</dd><dd></dl><dl><dt>Resumos Ch5-8</dt><dd><dd>0 pastas</dd><dd>34 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 309),
-(112, 'DS_CD_18_19_Projetos (zip)', '/notes/segundo_ano/segundo_semestre/cd/DS_CD_18_19_Projetos.zip', 40382, 1161, 3, 2, 0, 0, 0, 0, 0, 1, 0, '<dl><dt>/</dt><dd><dl><dt>Projeto 1</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Projeto 2</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(113, 'DS_CD_18_19_Praticas (zip)', '/notes/segundo_ano/segundo_semestre/cd/DS_CD_18_19_Praticas.zip', 40382, 1161, 3, 2, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P01</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>P02</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P03</dt><dd><dd>36 pastas</dd><dd>36 ficheiros</dd><dd></dl><dl><dt>P04</dt><dd><dd>6 pastas</dd><dd>6 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
-(114, 'DS_PDS_18_19_Testes (zip)', '/notes/segundo_ano/segundo_semestre/pds/DS_PDS_18_19_Testes.zip', 40383, 1161, 3, 12, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Teste 2019</dt><dd><dd>0 pastas</dd><dd>26 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(115, 'DS_PDS_18_19_SlidesTeoricos (zip)', '/notes/segundo_ano/segundo_semestre/pds/DS_PDS_18_19_SlidesTeoricos.zip', 40383, 1161, 3, 12, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>PDS_0.pdf</dt><dd><dd></dl><dl><dt>PDS_09_Lambda...pdf</dt><dd><dd></dl><dl><dt>PDS_1_Softwar...pdf</dt><dd><dd></dl><dl><dt>PDS_2_GRASP.pdf</dt><dd><dd></dl><dl><dt>PDS_3_Pattern...pdf</dt><dd><dd></dl><dl><dt>PDS_4_Creatio...pdf</dt><dd><dd></dl><dl><dt>PDS_5_Structu...pdf</dt><dd><dd></dl><dl><dt>PDS_6_Behavio...pdf</dt><dd><dd></dl><dl><dt>PDS_7_Softwar...pdf</dt><dd><dd></dl><dl><dt>PDS_8_Reflection.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 81),
-(116, 'DS_PDS_18_19_Resumos (zip)', '/notes/segundo_ano/segundo_semestre/pds/DS_PDS_18_19_Resumos.zip', 40383, 1161, 3, 12, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumo 1</dt><dd><dd>0 pastas</dd><dd>35 ficheiros</dd><dd></dl><dl><dt>Resumo 2</dt><dd><dd>0 pastas</dd><dd>25 ficheiros</dd><dd></dl><dl><dt>Resumo 3</dt><dd><dd>0 pastas</dd><dd>25 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 185),
-(117, 'DS_PDS_18_19_Praticas (zip)', '/notes/segundo_ano/segundo_semestre/pds/DS_PDS_18_19_Praticas.zip', 40383, 1161, 3, 12, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Guioes</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dl><dt>pds_2019_g22</dt><dd><dd>70 pastas</dd><dd>61 ficheiros</dd><dd></dl><dl><dt>PraticasRemade</dt><dd><dd>277 pastas</dd><dd>276 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
-(118, 'MAS_18_19_Bibliografia (zip)', '/notes/primeiro_ano/segundo_semestre/mas/MAS_18_19_Bibliografia.zip', 40431, NULL, NULL, NULL, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Bibliografia_...pdf</dt><dd><dd></dl><dl><dt>Bibliografia_...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
-(119, 'MAS_18_19_Topicos_Estudo_Exame (zip)', '/notes/primeiro_ano/segundo_semestre/mas/MAS_18_19_Topicos_Estudo_Exame.zip', 40431, NULL, 3, 13, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>MAS 201819 - ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(120, 'Goncalo_MAS_18_19_Resumos (zip)', '/notes/primeiro_ano/segundo_semestre/mas/Goncalo_MAS_18_19_Resumos.zip', 40431, 1275, 3, 13, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1. O que é qu...pdf</dt><dd><dd></dl><dl><dt>2. Modelos de...pdf</dt><dd><dd></dl><dl><dt>3. Modelos no...pdf</dt><dd><dd></dl><dl><dt>MAA_Resumos.pdf</dt><dd><dd></dl><dl><dt>Post-it.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 10),
-(121, 'Goncalo_MAS_18_19_Projeto (zip)', '/notes/primeiro_ano/segundo_semestre/mas/Goncalo_MAS_18_19_Projeto.zip', 40431, 1275, 3, 13, 0, 0, 0, 0, 0, 1, 0, '<dl><dt>/</dt><dd><dl><dt>AMS-E3-Visao ...docx</dt><dd><dd></dl><dl><dt>Apresentacion...pdf</dt><dd><dd></dl><dl><dt>Apresentaç?o ...odt</dt><dd><dd></dl><dl><dt>CalEntregas.png</dt><dd><dd></dl><dl><dt>Elaboration 1</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Gui?o.pdf</dt><dd><dd></dl><dl><dt>Inception1</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>JMeter</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>MAS - Projeto...pdf</dt><dd><dd></dl><dl><dt>MicroSite</dt><dd><dd>24 pastas</dd><dd>20 ficheiros</dd><dd></dl><dl><dt>Projeto.zip</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 22),
-(122, 'Goncalo_MAS_18_19_Praticas (zip)', '/notes/primeiro_ano/segundo_semestre/mas/Goncalo_MAS_18_19_Praticas.zip', 40431, 1275, 3, 13, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Lab1</dt><dd><dd>0 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>Lab2</dt><dd><dd>1 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Lab3</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>Lab5</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Lab6</dt><dd><dd>1 pastas</dd><dd>21 ficheiros</dd><dd></dl><dl><dt>Lab7</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>MAS_Práticas-...zip</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 46),
-(123, 'RafaelDireito_SMU_17_18_Praticas (zip)', '/notes/segundo_ano/primeiro_semestre/smu/RafaelDireito_SMU_17_18_Praticas.zip', 40432, 1800, 2, 15, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P</dt><dd><dd>11 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>12 pastas</dd><dd>12 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 40),
-(124, 'RafaelDireito_SMU_17_18_TP (zip)', '/notes/segundo_ano/primeiro_semestre/smu/RafaelDireito_SMU_17_18_TP.zip', 40432, 1800, 2, 15, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>TP</dt><dd><dd>0 pastas</dd><dd>10 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 68),
-(125, 'RafaelDireito_SMU_17_18_Prep2Test (zip)', '/notes/segundo_ano/primeiro_semestre/smu/RafaelDireito_SMU_17_18_Prep2Teste.zip', 40432, 1800, 2, 15, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Prep2Teste</dt><dd><dd>3 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
-(126, 'RafaelDireito_SMU_17_18_Bibliografia (zip)', '/notes/segundo_ano/primeiro_semestre/smu/RafaelDireito_SMU_17_18_Bibliografia.zip', 40432, 1800, 2, 15, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Bibliografia</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 54),
-(127, 'DS_SMU_18_19_Fichas (zip)', '/notes/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_Fichas.zip', 40432, 1161, 3, 14, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Fichas</dt><dd><dd>12 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>13 pastas</dd><dd>13 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 113),
-(128, 'DS_SMU_18_19_Livros (zip)', '/notes/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_Livros.zip', 40432, 1161, 3, 14, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Livros</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 54),
-(129, 'DS_SMU_18_19_SlidesTeoricos (zip)', '/notes/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_SlidesTeoricos.zip', 40432, 1161, 3, 14, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides Teoricos</dt><dd><dd>1 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>2 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 30),
-(130, 'DS_SMU_18_19_Praticas (zip)', '/notes/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_Praticas.zip', 40432, 1161, 3, 14, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Praticas</dt><dd><dd>19 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>20 pastas</dd><dd>20 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 26),
-(131, 'DS_SMU_18_19_Resumos (zip)', '/notes/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_Resumos.zip', 40432, 1161, 3, 14, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 181),
-(132, 'DS_SMU_18_19_Testes (zip)', '/notes/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_Testes.zip', 40432, 1161, 3, 14, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>8 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>9 pastas</dd><dd>9 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 60),
-(133, 'DS_RS_18_19_Testes (zip)', '/notes/segundo_ano/primeiro_semestre/rs/DS_RS_18_19_Testes.zip', 40433, 1161, 3, 16, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>16 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>17 pastas</dd><dd>17 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 130),
-(134, 'DS_RS_18_19_Praticas (zip)', '/notes/segundo_ano/primeiro_semestre/rs/DS_RS_18_19_Praticas.zip', 40433, 1161, 3, 16, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Praticas</dt><dd><dd>2 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>3 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
-(135, 'DS_RS_18_19_SlidesTeoricos (zip)', '/notes/segundo_ano/primeiro_semestre/rs/DS_RS_18_19_SlidesTeoricos.zip', 40433, 1161, 3, 16, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides Teoricos</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 10),
-(136, 'DS_RS_18_19_Resumos (zip)', '/notes/segundo_ano/primeiro_semestre/rs/DS_RS_18_19_Resumos.zip', 40433, 1161, 3, 16, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(137, 'DS_AED_18_19_Resumos (zip)', '/notes/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_Resumos.zip', 40437, 1161, 3, 11, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 271),
-(138, 'DS_AED_18_19_Livros (zip)', '/notes/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_Livros.zip', 40437, 1161, 3, 11, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Livros</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 20),
-(139, 'DS_AED_18_19_Testes (zip)', '/notes/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_Testes.zip', 40437, 1161, 3, 11, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>24 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>25 pastas</dd><dd>25 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 94),
-(140, 'DS_AED_18_19_Praticas (zip)', '/notes/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_Praticas.zip', 40437, 1161, 3, 11, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pr?Çáticas</dt><dd><dd>21 pastas</dd><dd>14 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>20 pastas</dd><dd>20 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 20),
-(141, 'DS_AED_18_19_SlidesTeoricos (zip)', '/notes/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_SlidesTeoricos.zip', 40437, 1161, 3, 11, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides Te?óricos</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
-(142, 'DS_AED_18_19_Fichas (zip)', '/notes/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_Fichas.zip', 40437, 1161, 3, 11, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Fichas</dt><dd><dd>2 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>3 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 16);
-INSERT INTO aauav_nei.notes (id, name, location, subject_id, author_id, school_year_id, teacher_id, summary, tests, bibliography, slides, exercises, projects, notebook, content, created_at, type_id, size) VALUES
-(143, 'RafaelDireito_AED_17_18_Praticas (zip)', '/notes/segundo_ano/primeiro_semestre/aed/RafaelDireito_AED_17_18_Praticas.zip', 40437, 1800, 2, 31, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P</dt><dd><dd>4 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>5 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(144, 'RafaelDireito_AED_17_18_Testes (zip)', '/notes/segundo_ano/primeiro_semestre/aed/RafaelDireito_AED_17_18_Testes.zip', 40437, 1800, 2, 31, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>0 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(145, 'RafaelDireito_AED_17_18_Books (zip)', '/notes/segundo_ano/primeiro_semestre/aed/RafaelDireito_AED_17_18_Praticas.zip', 40437, 1800, 2, 31, 0, 0, 1, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 2, NULL),
-(146, 'RafaelDireito_AED_17_18_LearningC (zip)', '/notes/segundo_ano/primeiro_semestre/aed/RafaelDireito_AED_17_18_LearningC.zip', 40437, 1800, 2, 31, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>LearningC</dt><dd><dd>0 pastas</dd><dd>21 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(147, 'RafaelDireito_AED_17_18_AED (pdf)', '/notes/segundo_ano/primeiro_semestre/aed/RafaelDireito_AED_17_18_AED.pdf', 40437, 1800, 2, 31, 0, 0, 0, 1, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
-(148, 'DS_Compiladores_18_19_Praticas (zip)', '/notes/segundo_ano/segundo_semestre/c/DS_Compiladores_18_19_Praticas.zip', 41469, 1161, 3, 10, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Praticas</dt><dd><dd>35 pastas</dd><dd>32 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>31 pastas</dd><dd>31 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(149, 'DS_Compiladores_18_19_Fichas (zip)', '/notes/segundo_ano/segundo_semestre/c/DS_Compiladores_18_19_Fichas.zip', 41469, 1161, 3, 10, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Fichas</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 42),
-(150, 'DS_Compiladores_18_19_Testes (zip)', '/notes/segundo_ano/segundo_semestre/c/DS_Compiladores_18_19_Testes.zip', 41469, 1161, 3, 10, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 33),
-(151, 'DS_Compiladores_18_19_Resumos (zip)', '/notes/segundo_ano/segundo_semestre/c/DS_Compiladores_18_19_Resumos.zip', 41469, 1161, 3, 10, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 242),
-(152, 'DS_Compiladores_18_19_SlidesTeoricos (zip)', '/notes/segundo_ano/segundo_semestre/c/DS_Compiladores_18_19_SlidesTeoricos.zip', 41469, 1161, 3, 10, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides Te?óricos</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 4),
-(153, 'DS_IHC_18_19_SlidesTeoricos (zip)', '/notes/segundo_ano/segundo_semestre/ihc/DS_IHC_18_19_SlidesTeoricos.zip', 41549, 1161, 3, 9, 0, 0, 0, 1, 0, 0, 0, NULL, '2021-06-14 19:17:30', 2, NULL),
-(154, 'DS_IHC_18_19_Fichas (zip)', '/notes/segundo_ano/segundo_semestre/ihc/DS_IHC_18_19_Fichas.zip', 41549, 1161, 3, 9, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Fichas</dt><dd><dd>5 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>6 pastas</dd><dd>6 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 51),
-(155, 'DS_IHC_18_19_Projetos (zip)', '/notes/segundo_ano/segundo_semestre/ihc/DS_IHC_18_19_Projetos.zip', 41549, 1161, 3, 9, 0, 0, 0, 0, 0, 1, 0, '<dl><dt>/</dt><dd><dl><dt>Projetos</dt><dd><dd>5 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>6 pastas</dd><dd>6 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 90),
-(156, 'DS_IHC_18_19_Testes (zip)', '/notes/segundo_ano/segundo_semestre/ihc/DS_IHC_18_19_SlidesTeoricos.zip', 41549, 1161, 3, 9, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 2, NULL),
-(157, 'Resumos (zip)', '/notes/terceiro_ano/primeiro_semestre/ia/resumo.zip', 40846, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumo.pdf</dt><dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(158, 'DS_EF_17_18_Resumos (zip)', '/notes/primeiro_ano/primeiro_semestre/ef/DS_EF_17_18_Resumos.zip', 41791, 1161, 2, 24, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 4),
-(159, 'DS_EF_17_18_Exercicios (zip)', '/notes/primeiro_ano/primeiro_semestre/ef/DS_EF_17_18_Exercicios.zip', 41791, 1161, 2, 24, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Exerci?ücios</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
-(160, 'DS_EF_17_18_Exames (zip)', '/notes/primeiro_ano/primeiro_semestre/ef/DS_EF_17_18_Exames.zip', 41791, 1161, 2, 24, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Exames</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
-(161, 'Exames (zip)', '/notes/primeiro_ano/segundo_semestre/iac/exames.zip', 42502, NULL, NULL, 6, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>iac_apontamen...pdf</dt><dd><dd></dl><dl><dt>iac_apontamen...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(162, 'Goncalo_IAC_18_19_Praticas (zip)', '/notes/primeiro_ano/segundo_semestre/iac/Goncalo_IAC_18_19_Praticas.zip', 42502, 1275, 3, 6, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pr?íticas</dt><dd><dd>113 pastas</dd><dd>111 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>113 pastas</dd><dd>113 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 44),
-(163, 'Goncalo_IAC_18_19_Resumos (zip)', '/notes/primeiro_ano/segundo_semestre/iac/Goncalo_IAC_18_19_Resumos.zip', 42502, 1275, 3, 6, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 17),
-(164, 'Goncalo_IAC_18_19_Apontamentos (zip)', '/notes/primeiro_ano/segundo_semestre/iac/Goncalo_IAC_18_19_Apontamentos.zip', 42502, 1275, 3, 6, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Apontamentos</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
-(165, 'Goncalo_IAC_18_19_Bibliografia (zip)', '/notes/primeiro_ano/segundo_semestre/iac/Goncalo_IAC_18_19_Bibliografia.zip', 42502, 1275, 3, 6, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Bibliografia ...pdf</dt><dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Bibliografia ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 18),
-(166, 'Goncalo_IAC_18_19_Testes (zip)', '/notes/primeiro_ano/segundo_semestre/iac/Goncalo_IAC_18_19_Testes.zip', 42502, 1275, 3, 6, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
-(167, 'RafaelDireito_IAC_16_17_Testes (zip)', '/notes/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_Testes.zip', 42502, 1800, 4, 6, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
-(168, 'RafaelDireito_IAC_16_17_Teorica (zip)', '/notes/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_Teorica.zip', 42502, 1800, 4, 6, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Te?órica</dt><dd><dd>0 pastas</dd><dd>13 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 14),
-(169, 'RafaelDireito_IAC_16_17_FolhasPraticas (zip)', '/notes/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_FolhasPraticas.zip', 42502, 1800, 4, 6, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>FolhasPr?Çáticas</dt><dd><dd>0 pastas</dd><dd>16 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 13),
-(170, 'RafaelDireito_IAC_16_17_ExerciciosResolvidos (zip)', '/notes/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_ExerciciosResolvidos.zip', 42502, 1800, 4, 6, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>ExerciciosResolvidos</dt><dd><dd>6 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>7 pastas</dd><dd>7 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(171, 'RafaelDireito_IAC_16_17_Resumos (zip)', '/notes/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_Resumos.zip', 42502, 1800, 4, 6, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...pdf</dt><dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dl><dt>RafaelDireito...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 10),
-(172, 'RafaelDireito_IAC_16_17_DossiePedagogicov2 (zip)', '/notes/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_DossiePedagogicov2.zip', 42502, 1800, 4, 6, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>DossiePedagog...pdf</dt><dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(173, 'DS_BD_18_19_SlidesTeoricos (zip)', '/notes/segundo_ano/segundo_semestre/bd/DS_BD_18_19_SlidesTeoricos.zip', 42532, 1161, 3, 7, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides Te?óricos</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 30),
-(174, 'DS_BD_18_19_Resumos (zip)', '/notes/segundo_ano/segundo_semestre/bd/DS_BD_18_19_Resumos.zip', 42532, 1161, 3, 7, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>2 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>3 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 144),
-(175, 'DS_BD_18_19_Praticas (zip)', '/notes/segundo_ano/segundo_semestre/bd/DS_BD_18_19_Praticas.zip', 42532, 1161, 3, 7, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pr?Çáticas</dt><dd><dd>48 pastas</dd><dd>34 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>45 pastas</dd><dd>45 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 81),
-(176, 'Resumos Diversos (zip)', '/notes/segundo_ano/segundo_semestre/bd/Resumos.zip', 42532, NULL, NULL, NULL, 1, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
-(177, 'Resumos EF', '/notes/primeiro_ano/primeiro_semestre/ef/CarolinaAlbuquerque_EF_Resumo.pdf', 41791, 1023, 5, 24, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 8),
-(178, 'Resolução Fichas EF', '/notes/primeiro_ano/primeiro_semestre/ef/CarolinaAlbuquerque_EF_ResolucoesFichas.zip', 41791, 1023, 5, 24, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>CarolinaAlbuq...</dt><dd><dd>6 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 169),
-(179, 'Exames SIO resolvidos', '/notes/terceiro_ano/primeiro_semestre/sio/JoaoAlegria_Exames.zip', 42573, 1455, 4, NULL, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>JoaoAlegria_Exames</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 13),
-(180, 'Resumos SIO', '/notes/terceiro_ano/primeiro_semestre/sio/JoaoAlegria_Resumos.zip', 42573, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>JoaoAlegria_Resumos</dt><dd><dd>1 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 20),
-(181, 'Exames e testes ALGA', '/notes/primeiro_ano/primeiro_semestre/alga/Rafael_Direito_Exames.zip', 42709, 1800, 4, 23, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>alga_apontame...pdf</dt><dd><dd></dl><dl><dt>alga_apontame...pdf</dt><dd><dd></dl><dl><dt>alga_apontame...pdf</dt><dd><dd></dl><dl><dt>alga_apontame...pdf</dt><dd><dd></dl><dl><dt>alga_apontame...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 9),
-(182, 'Fichas resolvidas ALGA', '/notes/primeiro_ano/primeiro_semestre/alga/RafaelDireito_Fichas.pdf', 42709, 1800, 4, 23, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 15),
-(183, 'Resumos ALGA ', '/notes/primeiro_ano/primeiro_semestre/alga/RafelDireito_Resumos.pdf', 42709, 1800, 4, 23, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 8),
-(184, 'Caderno de cálculo', '/notes/primeiro_ano/primeiro_semestre/c1/CarolinaAlbuquerque_C1_caderno.pdf', 42728, 1023, 5, 19, 0, 0, 0, 0, 0, 0, 1, NULL, '2021-06-14 19:17:30', 1, 11),
-(185, 'Fichas resolvidas CII', '/notes/primeiro_ano/segundo_semestre/c2/PedroOliveira_Fichas.zip', 42729, 1764, 3, 19, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Ficha1</dt><dd><dd>0 pastas</dd><dd>14 ficheiros</dd><dd></dl><dl><dt>Ficha2</dt><dd><dd>0 pastas</dd><dd>15 ficheiros</dd><dd></dl><dl><dt>Ficha3</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>ficha3-part2.pdf</dt><dd><dd></dl><dl><dt>ficha3.pdf</dt><dd><dd></dl><dl><dt>Ficha4_000001.pdf</dt><dd><dd></dl><dl><dt>Ficha5_000001.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 110),
-(186, 'Testes CII', '/notes/primeiro_ano/segundo_semestre/c2/PedroOliveira_testes-resol.zip', 42729, 1764, 3, 19, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>testes-resol</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 24),
-(187, 'Apontamentos Gerais ICM', '/notes/terceiro_ano/primeiro_semestre/icm/Resumo Geral Android.pdf', 45424, 1335, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
-(188, 'Resoluções material apoio MD', '/notes/primeiro_ano/segundo_semestre/md/PedroOliveira_EA.zip', 47166, 1764, 3, 20, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>EA(livro nos ...</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>EA1</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>EA1(refeito)</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>EA2(Completo)</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>EA2.pdf</dt><dd><dd></dl><dl><dt>EA2ex4.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 45),
-(189, 'Resoluções fichas MD', '/notes/primeiro_ano/segundo_semestre/md/PedroOliveira_Fichas.zip', 47166, 1764, 3, 20, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Ficha1</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>ficha2.pdf</dt><dd><dd></dl><dl><dt>ficha3_000001.pdf</dt><dd><dd></dl><dl><dt>ficha4_000001.pdf</dt><dd><dd></dl><dl><dt>ficha5-cont.pdf</dt><dd><dd></dl><dl><dt>ficha5.pdf</dt><dd><dd></dl><dl><dt>Ficha6.pdf</dt><dd><dd></dl><dl><dt>ficha7(incomp...pdf</dt><dd><dd></dl><dl><dt>Ficha8_000001.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 79),
-(190, 'Resoluções testes MD', '/notes/primeiro_ano/segundo_semestre/md/PedroOliveira_testes.zip', 47166, 1764, 3, 20, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>testes</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 33),
-(191, 'Estudo para o exame', '/notes/segundo_ano/primeiro_semestre/rs/RafaelDireito_2017_RSexame.pdf', 40433, 1800, 2, 4, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 6),
-(192, 'Exercícios TPW', '/notes/terceiro_ano/segundo_semestre/tpw/Exercicios.zip', 40551, NULL, NULL, NULL, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Exercicios</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 14),
-(193, 'Resumos 2016/2017', '/notes/mestrado/as/as_apontamentos_001.pdf', 40757, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
-(194, 'Resumos por capítulo (zip)', '/notes/mestrado/as/JoaoAlegria_ResumosPorCapitulo.zip', 40757, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 2, 2),
-(195, 'Exercícios IA', '/notes/terceiro_ano/primeiro_semestre/ia/Inês_Correia_IA_exercícios.pdf', 40846, 1335, NULL, NULL, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 7),
-(196, 'Resumos IA', '/notes/terceiro_ano/primeiro_semestre/ia/Inês_Correia_IA_resumo.pdf', 40846, 1335, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 9),
-(197, 'Caderno MD Cap. 6 e 7', '/notes/primeiro_ano/segundo_semestre/md/MarianaRosa_Caderno_Capts6e7.pdf', 47166, 2051, 7, 32, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2021-06-16 22:18:59', 1, 20),
-(198, 'Resumos 1.ª Parte MD', '/notes/primeiro_ano/segundo_semestre/md/MarianaRosa_Resumos_1aParte.pdf', 47166, 2051, 7, 32, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-06-16 22:21:33', 1, 13),
-(199, 'Práticas BD', '/notes/segundo_ano/segundo_semestre/bd/Goncalo_Praticas.zip', 42532, 1275, 7, 8, NULL, NULL, NULL, NULL, 1, 1, NULL, '<dl><dt>/</dt><dd><dl><dt>P</dt><dd><dd>11 pastas</dd><dd>6 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:27:12', 2, 23),
-(200, 'Resumos BD', '/notes/segundo_ano/segundo_semestre/bd/Goncalo_Resumos.zip', 42532, 1275, 7, 7, 1, NULL, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>TP</dt><dd><dd>0 pastas</dd><dd>14 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:28:20', 2, 20),
-(201, 'Resumos Caps. 3 e 4', '/notes/segundo_ano/segundo_semestre/c/Goncalo_TP.zip', 41469, 1275, 7, 10, 1, NULL, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>TP</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 8),
-(202, 'Resumos ANTLR4', '/notes/segundo_ano/segundo_semestre/c/Goncalo_ANTLR4.zip', 41469, 1275, 7, 10, 1, NULL, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>ANTLR4 Listeners.pdf</dt><dd><dd></dl><dl><dt>ANTLR4 Visitors.pdf</dt><dd><dd></dl><dl><dt>ANTLR4.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 1),
-(203, 'Guiões P Resolvidos', '/notes/segundo_ano/segundo_semestre/c/Goncalo_GuioesPraticos.zip', 41469, 1275, 7, 10, NULL, NULL, NULL, NULL, 1, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>P1_20fev2020</dt><dd><dd>1 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>P2_05fev2020</dt><dd><dd>35 pastas</dd><dd>37 ficheiros</dd><dd></dl><dl><dt>P3</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 2),
-(204, 'Resumos Práticos', '/notes/segundo_ano/segundo_semestre/c/Goncalo_ResumosPraticos.zip', 41469, 1275, 7, 10, 1, NULL, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>1_Compiladores.pdf</dt><dd><dd></dl><dl><dt>2_ANTLR4.pdf</dt><dd><dd></dl><dl><dt>3_Análise sem...pdf</dt><dd><dd></dl><dl><dt>5_Análise sem...pdf</dt><dd><dd></dl><dl><dt>6_Geração de ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 17),
-(205, 'Bibliografia', '/notes/segundo_ano/segundo_semestre/cd/Bibliografia.zip', 40382, 1275, 7, 2, NULL, NULL, 1, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>mvsteen-distr...pdf</dt><dd><dd></dl><dl><dt>ResolucaoPerg...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 39),
-(206, 'Cheatsheet', '/notes/segundo_ano/segundo_semestre/cd/Goncalo_CheatSheet.pdf', 40382, 1275, 7, 2, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-06-16 22:32:40', 1, 1),
-(207, 'Aulas Resolvidas', '/notes/segundo_ano/segundo_semestre/cd/Goncalo_Aulas.zip', 40382, 1275, 7, 2, NULL, NULL, NULL, NULL, 1, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>P1_11Fev2020</dt><dd><dd>138 pastas</dd><dd>140 ficheiros</dd><dd></dl><dl><dt>P2_10Fev2020</dt><dd><dd>125 pastas</dd><dd>128 ficheiros</dd><dd></dl><dl><dt>P3_28Abr2020</dt><dd><dd>103 pastas</dd><dd>104 ficheiros</dd><dd></dl><dl><dt>P4_19Mai2020</dt><dd><dd>183 pastas</dd><dd>183 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 8),
-(208, 'Projeto1', '/notes/segundo_ano/segundo_semestre/cd/Goncalo_Projeto1.zip', 40382, 1275, 7, 2, NULL, NULL, NULL, NULL, NULL, 1, NULL, '<dl><dt>/</dt><dd><dl><dt>message-broke...</dt><dd><dd>260 pastas</dd><dd>268 ficheiros</dd><dd></dl><dl><dt>Projecto 1 - ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 3),
-(209, 'Projeto2', '/notes/segundo_ano/segundo_semestre/cd/Goncalo_Projeto2.zip', 40382, 1275, 7, 2, NULL, NULL, NULL, NULL, NULL, 1, NULL, '<dl><dt>/</dt><dd><dl><dt>distributed-o...</dt><dd><dd>7 pastas</dd><dd>22 ficheiros</dd><dd></dl><dl><dt>Projecto 2 - ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 15),
-(210, 'Resumos Teóricos', '/notes/segundo_ano/segundo_semestre/cd/Goncalo_TP.pdf', 40382, 1275, 7, 2, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-06-16 22:32:40', 1, 6),
-(211, 'Paper \Help, I am stuck...\', '/notes/segundo_ano/segundo_semestre/ihc/Goncalo_Francisca_Paper.zip', 41549, 1275, 7, 9, NULL, NULL, NULL, NULL, NULL, 1, NULL, '<dl><dt>/</dt><dd><dl><dt>92972_93102_[...pdf</dt><dd><dd></dl><dl><dt>IHC_Paper.pdf</dt><dd><dd></dl><dl><dt>Paper-selecti...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 2),
-(212, 'Resumos (incompletos)', '/notes/segundo_ano/segundo_semestre/ihc/Goncalo_TP.pdf', 41549, 1275, 7, 9, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-06-16 22:32:40', 1, 1),
-(213, 'Perguntitas de preparação exame', '/notes/segundo_ano/segundo_semestre/ihc/Perguntitaspreparaçaoexame.zip', 41549, 1275, 7, 9, NULL, 1, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>(1) User prof...pdf</dt><dd><dd></dl><dl><dt>(2) User ... ...pdf</dt><dd><dd></dl><dl><dt>(3) User mode...pdf</dt><dd><dd></dl><dl><dt>(4) Input & O...pdf</dt><dd><dd></dl><dl><dt>(5) Usability...pdf</dt><dd><dd></dl><dl><dt>exam.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 1),
-(214, 'Resumos teóricos', '/notes/segundo_ano/segundo_semestre/pds/Goncalo_TP.pdf', 40383, 1275, 7, 12, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-06-16 22:32:40', 1, 11),
-(215, 'Projeto final: Padrões Bridge e Flyweight e Refactoring', '/notes/segundo_ano/segundo_semestre/pds/Goncalo_Projeto.zip', 40383, 1275, 7, 12, NULL, NULL, NULL, NULL, NULL, 1, NULL, '<dl><dt>/</dt><dd><dl><dt>Entrega</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 74),
-(216, 'Aulas P Resolvidas', '/notes/segundo_ano/segundo_semestre/pds/Goncalo_Aulas.zip', 40383, 1275, 7, 12, NULL, NULL, NULL, NULL, 1, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>P1_11fev2020</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P2_03mar2020</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P3_10mar2020</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P4_17mar2020</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>P5_24mar2020</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P6_31mar2020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P7_14abr2020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P8_21abr2020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P9_28abr2020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P10_05mai2020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P11_19mai29020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P12_26mai2020</dt><dd><dd>0 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>P13_02jun2020</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>pds_2020_g205</dt><dd><dd>482 pastas</dd><dd>481 ficheiros</dd><dd></dl><dl><dt>Readme.txt</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 38),
-(217, 'Exame final', '/notes/segundo_ano/segundo_semestre/pds/Goncalo_Exame.zip', 40383, 1275, 7, 12, NULL, 1, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>92972</dt><dd><dd>0 pastas</dd><dd>16 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 1),
-(218, 'Bibliografia', '/notes/segundo_ano/segundo_semestre/pds/Bibliografia.zip', 40383, 1275, 7, 12, NULL, NULL, 1, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>applying-uml-...pdf</dt><dd><dd></dl><dl><dt>DesignPatterns.pdf</dt><dd><dd></dl><dl><dt>kupdf.net_use...pdf</dt><dd><dd></dl><dl><dt>software-arch...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 159),
+INSERT INTO aauav_nei.note (id, name, location, subject_id, author_id, school_year_id, teacher_id, summary, tests, bibliography, slides, exercises, projects, notebook, content, created_at, type_id, size) VALUES
+(1, 'MPEI Exemplo Teste 2014', '/note/segundo_ano/primeiro_semestre/mpei/MP_Exemplo_Teste.pdf', 40337, NULL, 1, 5, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(2, 'Diversos - 2017/2018 (zip)', '/note/segundo_ano/primeiro_semestre/mpei/RafaelDireito_2017_2018_MPEI.zip', 40337, 1800, 2, 4, 1, 0, 1, 1, 1, 0, 0, NULL, '2021-06-14 19:17:30', 2, 35),
+(3, 'Resumos Teóricos (zip)', '/note/segundo_ano/primeiro_semestre/mpei/Resumos_Teoricas.zip', 40337, 1023, 1, 5, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos_Teóricas</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 8),
+(4, 'Resumos FP 2018/2019 (zip)', '/note/primeiro_ano/primeiro_semestre/fp/Goncalo_FP.zip', 40379, 1275, 3, 27, 1, 1, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Aulas Práticas</dt><dd><dd>148 pastas</dd><dd>132 ficheiros</dd><dd></dl><dl><dt>Resumos</dt><dd><dd>1 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>Testes para praticar</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>Visualize Cod...</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 30),
+(5, 'Material FP 2016/2017 (zip)', '/note/primeiro_ano/primeiro_semestre/fp/RafaelDireito_FP_16_17.zip', 40379, 1800, 4, NULL, 1, 1, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...</dt><dd><dd>34 pastas</dd><dd>30 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 14),
+(6, 'Resoluções 18/19', '/note/primeiro_ano/primeiro_semestre/fp/resolucoes18_19.zip', 40379, NULL, 3, NULL, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>18-19</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(7, 'Apontamentos Globais', '/note/primeiro_ano/primeiro_semestre/itw/apontamentos001.pdf', 40380, NULL, NULL, 8, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
+(8, 'Questões de SO (zip)', '/note/segundo_ano/primeiro_semestre/so/Questões.zip', 40381, NULL, 5, NULL, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Quest?es</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(9, 'Diversos - 2017/2018 (zip)', '/note/segundo_ano/primeiro_semestre/so/RafaelDireito_2017_2018_SO.zip', 40381, 1800, 2, 1, 1, 0, 0, 1, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...</dt><dd><dd>46 pastas</dd><dd>43 ficheiros</dd><dd></dl><dl><dt>Rafael_Diteit...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 35),
+(10, 'Apontamentos Diversos (zip)', '/note/segundo_ano/segundo_semestre/pds/JoaoAlegria_PDS.zip', 40383, 1455, 5, 12, 1, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>JoaoAlegria_R...</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>JoaoAlegria_E...</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
+(11, 'Resumos de 2015/2016', '/note/segundo_ano/segundo_semestre/pds/pds_apontamentos_001.pdf', 40383, 1455, 5, 12, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 4),
+(12, 'Apontamentos genéricos I', '/note/segundo_ano/segundo_semestre/pds/pds_apontamentos_002.pdf', 40383, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(13, 'Apontamentos genéricos II', '/note/segundo_ano/segundo_semestre/pds/pds_apontamentos_003.pdf', 40383, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(14, 'Diversos - CBD Prof. JLO (zip)', '/note/terceiro_ano/primeiro_semestre/cbd/InesCorreia_CBD(CC_JLO).zip', 40385, 1335, NULL, 12, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>InesCorreia_C...</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
+(15, 'MAS 2014/2015 (zip)', '/note/primeiro_ano/segundo_semestre/mas/BarbaraJael_14_15_MAS.zip', 40431, 963, 1, 13, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>resumo-mas.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 14),
+(16, 'Preparação para Exame Final de MAS', '/note/primeiro_ano/segundo_semestre/mas/Duarte_MAS.pdf', 40431, 1182, 3, 13, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(17, 'MAS 2016/2017 (zip)', '/note/primeiro_ano/segundo_semestre/mas/RafaelDireito_2016_2017_MAS.zip', 40431, 1800, 4, 13, 1, 0, 1, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 19),
+(18, 'Resumos_MAS', '/note/primeiro_ano/segundo_semestre/mas/Resumos_MAS_Carina.zip', 40431, 1002, 2, 13, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>MAS_Resumos.pdf</dt><dd><dd></dl><dl><dt>MAS_Resumos2.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 8),
+(19, 'Resolução das fichas (zip)', '/note/segundo_ano/primeiro_semestre/smu/Resoluçao_das_fichas.zip', 40432, NULL, NULL, NULL, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resoluçao das fichas</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 27),
+(20, 'Resumos (zip)', '/note/segundo_ano/primeiro_semestre/smu/Resumo.zip', 40432, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumo</dt><dd><dd>0 pastas</dd><dd>9 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 116),
+(21, 'Resumos de 2013/2014', '/note/segundo_ano/primeiro_semestre/smu/smu_apontamentos_001.pdf', 40432, 963, 6, 26, 1, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 11),
+(22, 'Resumos de 2016/2017', '/note/segundo_ano/primeiro_semestre/smu/smu_apontamentos_002.pdf', 40432, 1023, 4, 15, 1, 1, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
+(23, 'Resumos de 2017/2018', '/note/segundo_ano/primeiro_semestre/smu/smu_apontamentos_003.pdf', 40432, 1866, 2, 15, 1, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 7),
+(24, 'Resumos 2018/19', '/note/segundo_ano/primeiro_semestre/smu/SMU_Resumos.pdf', 40432, NULL, NULL, NULL, 1, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 4),
+(25, 'Resumos (zip)', '/note/segundo_ano/primeiro_semestre/rs/Resumo.zip', 40433, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumo</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 24),
+(26, 'Caderno', '/note/segundo_ano/primeiro_semestre/rs/rs_apontamentos_001.pdf', 40433, 963, 1, 16, 1, 0, 0, 0, 1, 0, 1, NULL, '2021-06-14 19:17:30', 1, 6),
+(27, 'Resumos_POO', '/note/primeiro_ano/segundo_semestre/poo/Carina_POO_Resumos.zip', 40436, 1002, 2, 31, 1, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>POO_Resumos_OT.pdf</dt><dd><dd></dl><dl><dt>POO_Resumos.pdf</dt><dd><dd></dl><dl><dt>POO_resumos_v2.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
+(28, 'Resumos POO 2018/2019 (zip)', '/note/primeiro_ano/segundo_semestre/poo/Goncalo_POO.zip', 40436, 1275, 3, 28, 1, 1, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Apontamentos</dt><dd><dd>1 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Aulas Práticas</dt><dd><dd>17 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 4),
+(29, 'Diversos - Prática e Teórica (zip)', '/note/primeiro_ano/segundo_semestre/poo/RafaelDireito_2016_2017_POO.zip', 40436, 1800, 4, NULL, 1, 1, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...</dt><dd><dd>495 pastas</dd><dd>492 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 43),
+(30, 'Resumos Teóricos (zip)', '/note/primeiro_ano/segundo_semestre/poo/Resumos.zip', 40436, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 22),
+(31, 'Resumos de 2016/2017', '/note/segundo_ano/primeiro_semestre/aed/aed_apontamentos_001.pdf', 40437, 1023, 4, 17, 1, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 5),
+(32, 'Bibliografia (zip)', '/note/segundo_ano/primeiro_semestre/aed/bibliografia.zip', 40437, NULL, NULL, NULL, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Linguagem C -...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 33),
+(33, 'Resumos 2016/2017', '/note/mestrado/aa/aa_apontamentos_001.pdf', 40751, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(34, 'Exames 2017/2018', '/note/mestrado/tai/tai_apontamentos_001.pdf', 40752, 1455, 2, NULL, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(35, 'Teste Modelo 2016/2017', '/note/mestrado/tai/tai_apontamentos_002.pdf', 40752, 1455, 4, NULL, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
+(36, 'Ficha de Exercícios 1 - 2016/2017', '/note/mestrado/tai/tai_apontamentos_003.pdf', 40752, 1455, 4, NULL, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 5),
+(37, 'Ficha de Exercícios 2 - 2016/2017', '/note/mestrado/tai/tai_apontamentos_004.pdf', 40752, 1455, 4, NULL, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
+(38, 'Resumos 2016/2017', '/note/mestrado/cle/cle_apontamentos_001.pdf', 40753, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 12),
+(39, 'Resumos 2016/2017', '/note/mestrado/gic/gic_apontamentos_001.pdf', 40756, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 12),
+(40, 'Resumos 2017/2018', '/note/terceiro_ano/primeiro_semestre/ia/ia_apontamentos_002.pdf', 40846, 1023, 2, 30, 1, 1, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 6),
+(41, 'Aulas Teóricas (zip)', '/note/segundo_ano/segundo_semestre/c/Aulas_Teóricas.zip', 41469, NULL, 5, 10, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Aulas Teóricas</dt><dd><dd>41 pastas</dd><dd>27 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
+(42, 'Guião de preparacao para o teste prático (zip)', '/note/segundo_ano/segundo_semestre/c/Guião_de _preparacao_para_o_teste_pratico.zip', 41469, NULL, NULL, NULL, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Gui?o de prep...</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(43, 'Apontamentos Diversos (zip)', '/note/segundo_ano/segundo_semestre/ihc/Apontamentos.zip', 41549, NULL, NULL, NULL, 1, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Apontamentos</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 16),
+(44, 'Avaliação Heurística', '/note/segundo_ano/segundo_semestre/ihc/ihc_apontamentos_001.pdf', 41549, 1455, 1, 9, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(45, 'Resumos de 2014/2015', '/note/segundo_ano/segundo_semestre/ihc/ihc_apontamentos_002.pdf', 41549, 963, 1, 9, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
+(46, 'Resolução de fichas (zip)', '/note/segundo_ano/segundo_semestre/ihc/Resolução_de_fichas.zip', 41549, NULL, NULL, 9, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resoluç?o de fichas</dt><dd><dd>2 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 14),
+(47, 'Apontamentos EF (zip)', '/note/primeiro_ano/primeiro_semestre/ef/BarbaraJael_EF.zip', 41791, 963, 1, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>BarbaraJael_1...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 4),
+(48, 'Exercícios 2017/2018', '/note/primeiro_ano/primeiro_semestre/ef/ef_apontamentos_001.pdf', 41791, 1800, 2, 24, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
+(49, 'Exercícios 2016/17', '/note/primeiro_ano/primeiro_semestre/ef/ef_apontamentos_002.pdf', 41791, 1800, 4, NULL, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 7),
+(50, 'Resumos EF 2018/2019 (zip)', '/note/primeiro_ano/primeiro_semestre/ef/Goncalo_EF.zip', 41791, 1275, 3, 29, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Documento_Obt...pdf</dt><dd><dd></dl><dl><dt>Documento_Tra...pdf</dt><dd><dd></dl><dl><dt>P4_7-12.pdf</dt><dd><dd></dl><dl><dt>PL1_Ótica.pdf</dt><dd><dd></dl><dl><dt>PL2_Pêndulo E...pdf</dt><dd><dd></dl><dl><dt>PL2_Pêndulo E...jpg</dt><dd><dd></dl><dl><dt>PL2_Pêndulo E...jpg</dt><dd><dd></dl><dl><dt>PL3_Difração.pdf</dt><dd><dd></dl><dl><dt>PL3_Difração_...jpg</dt><dd><dd></dl><dl><dt>PL3_Difração_...jpg</dt><dd><dd></dl><dl><dt>PL3_Difração_...jpg</dt><dd><dd></dl><dl><dt>PL3_Difração_...jpg</dt><dd><dd></dl><dl><dt>PL4_Relatório.pdf</dt><dd><dd></dl><dl><dt>PL_Pauta Final.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 5),
+(51, 'Exercícios 2018/19', '/note/primeiro_ano/primeiro_semestre/ef/Pedro_Oliveira_2018_2019.zip', 41791, 1764, 3, 29, 0, 1, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pedro Oliveira</dt><dd><dd>6 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 28),
+(52, 'Apontamentos e Resoluções (zip)', '/note/primeiro_ano/segundo_semestre/iac/PedroOliveira.zip', 42502, 1764, 2, 6, 0, 1, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pedro Oliveira</dt><dd><dd>10 pastas</dd><dd>7 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 23),
+(53, 'Caderno - 2016/2017', '/note/segundo_ano/segundo_semestre/bd/bd_apontamentos_001.pdf', 42532, 1023, 4, 7, 1, 0, 0, 0, 1, 0, 1, NULL, '2021-06-14 19:17:30', 1, 2),
+(54, 'Resumos - 2014/2015', '/note/segundo_ano/segundo_semestre/bd/bd_apontamentos_002.pdf', 42532, 1455, 1, 7, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(55, 'Resumos globais', '/note/segundo_ano/segundo_semestre/bd/BD_Resumos.pdf', 42532, NULL, NULL, 7, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 8),
+(56, 'Slides das Aulas Teóricas (zip)', '/note/segundo_ano/segundo_semestre/bd/Slides_Teoricas.zip', 42532, NULL, 1, 7, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides_Teoricas</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 21),
+(57, 'Outros Resumos (zip)', '/note/terceiro_ano/primeiro_semestre/sio/Outros_Resumos.zip', 42573, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Outros Resumos</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
+(58, 'Resumo geral de segurança I', '/note/terceiro_ano/primeiro_semestre/sio/sio_apontamentos_001.pdf', 42573, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
+(59, 'Resumo geral de segurança II', '/note/terceiro_ano/primeiro_semestre/sio/sio_apontamentos_002.pdf', 42573, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(60, 'Resumos de 2015/2016', '/note/terceiro_ano/primeiro_semestre/sio/sio_apontamentos_003.pdf', 42573, 963, 5, 3, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 8),
+(61, 'Resumo geral de segurança III', '/note/terceiro_ano/primeiro_semestre/sio/sio_apontamentos_004.pdf', 42573, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(62, 'Apontamentos genéricos', '/note/terceiro_ano/primeiro_semestre/sio/sio_apontamentos_005.pdf', 42573, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 1),
+(63, 'Resumos de ALGA (zip)', '/note/primeiro_ano/primeiro_semestre/alga/Carolina_Albuquerque_ALGA.zip', 42709, 1023, 5, 23, 1, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>ALGA - Resumo...pdf</dt><dd><dd></dl><dl><dt>Exemplos da i...pdf</dt><dd><dd></dl><dl><dt>Exemplos de m...pdf</dt><dd><dd></dl><dl><dt>Exemplos de m...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 59),
+(64, 'ALGA 2017/2018 (zip)', '/note/primeiro_ano/primeiro_semestre/alga/DiogoSilva_17_18_ALGA.zip', 42709, 1161, 2, 23, 0, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>DiogoSilva_17...</dt><dd><dd>0 pastas</dd><dd>26 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 21),
+(65, 'Resumos ALGA 2018/2019 (zip)', '/note/primeiro_ano/primeiro_semestre/alga/Goncalo_ALGA.zip', 42709, 1275, 3, 19, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1_Matrizes e ...pdf</dt><dd><dd></dl><dl><dt>2_Determinantes.pdf</dt><dd><dd></dl><dl><dt>3_Vetores, re...pdf</dt><dd><dd></dl><dl><dt>4_Espaços vet...pdf</dt><dd><dd></dl><dl><dt>5_Valores e v...pdf</dt><dd><dd></dl><dl><dt>6_Cónicas e q...pdf</dt><dd><dd></dl><dl><dt>7_Aplicações ...pdf</dt><dd><dd></dl><dl><dt>Complemento_C...pdf</dt><dd><dd></dl><dl><dt>Complemento_C...pdf</dt><dd><dd></dl><dl><dt>Resumo Teste ...pdf</dt><dd><dd></dl><dl><dt>Resumo Teste ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 41),
+(66, 'Resumos 2016/2017', '/note/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_001.pdf', 42728, 1719, 4, 21, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 16),
+(67, 'Resumos 2016/2017', '/note/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_002.pdf', 42728, 1866, 4, 21, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 5),
+(68, 'Teste Primitivas 2016/2017', '/note/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_003.pdf', 42728, 1800, 4, 21, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
+(69, 'Exercícios 2016/2017', '/note/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_004.pdf', 42728, 1800, 4, 21, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 5),
+(70, 'Resumos 2016/2017', '/note/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_005.pdf', 42728, 1800, 4, 21, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 11),
+(71, 'Fichas 2016/2017', '/note/primeiro_ano/primeiro_semestre/c1/calculo_apontamentos_006.pdf', 42728, 1800, 4, 21, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 22),
+(72, 'CI 2017/2018 (zip)', '/note/primeiro_ano/primeiro_semestre/c1/DiogoSilva_17_18_C1.zip', 42728, 1161, 2, 21, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>28821701_4498...jpg</dt><dd><dd></dl><dl><dt>28768155_4497...jpg</dt><dd><dd></dl><dl><dt>28927694_4497...jpg</dt><dd><dd></dl><dl><dt>28821773_4497...jpg</dt><dd><dd></dl><dl><dt>28876807_4497...jpg</dt><dd><dd></dl><dl><dt>28879472_4497...jpg</dt><dd><dd></dl><dl><dt>28822131_4497...jpg</dt><dd><dd></dl><dl><dt>28768108_4497...jpg</dt><dd><dd></dl><dl><dt>28811040_4497...jpg</dt><dd><dd></dl><dl><dt>28943154_4497...jpg</dt><dd><dd></dl><dl><dt>28879660_4497...jpg</dt><dd><dd></dl><dl><dt>28876653_4497...jpg</dt><dd><dd></dl><dl><dt>28768432_4497...jpg</dt><dd><dd></dl><dl><dt>28768056_4497...jpg</dt><dd><dd></dl><dl><dt>28877054_4497...jpg</dt><dd><dd></dl><dl><dt>28768634_4497...jpg</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
+(73, 'Resumos Cálculo I 2018/2019 (zip)', '/note/primeiro_ano/primeiro_semestre/c1/Goncalo_C1.zip', 42728, 1275, 3, 18, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>0_Formulário_...pdf</dt><dd><dd></dl><dl><dt>0_FORMULÁRIO_...pdf</dt><dd><dd></dl><dl><dt>0_Revisões se...pdf</dt><dd><dd></dl><dl><dt>1_Funções tri...pdf</dt><dd><dd></dl><dl><dt>2_Teoremas do...pdf</dt><dd><dd></dl><dl><dt>3_Integrais i...pdf</dt><dd><dd></dl><dl><dt>4_Integrais d...pdf</dt><dd><dd></dl><dl><dt>5_Integrais i...pdf</dt><dd><dd></dl><dl><dt>6_Séries numé...pdf</dt><dd><dd></dl><dl><dt>Formulário_Sé...pdf</dt><dd><dd></dl><dl><dt>Resumo_Integr...pdf</dt><dd><dd></dl><dl><dt>Tópicos_Teste 1.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 24),
+(74, 'Caderno de 2016/2017', '/note/primeiro_ano/segundo_semestre/c2/calculoii_apontamentos_003.pdf', 42729, 1719, 4, 22, 0, 0, 0, 0, 0, 0, 1, NULL, '2021-06-14 19:17:30', 1, 18),
+(75, 'Resumos Cálculo II 2018/2019 (zip)', '/note/primeiro_ano/segundo_semestre/c2/Goncalo_C2.zip', 42729, 1275, 3, 19, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>0_Revisões.pdf</dt><dd><dd></dl><dl><dt>1_Séries de p...pdf</dt><dd><dd></dl><dl><dt>2_Sucessões e...pdf</dt><dd><dd></dl><dl><dt>3.1_Funções r...pdf</dt><dd><dd></dl><dl><dt>3.2_Funções r...pdf</dt><dd><dd></dl><dl><dt>4_Equações di...pdf</dt><dd><dd></dl><dl><dt>5_Transformad...pdf</dt><dd><dd></dl><dl><dt>Detalhes para...pdf</dt><dd><dd></dl><dl><dt>Detalhes para...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 21),
+(76, 'Resumos 2016/2017', '/note/mestrado/vi/vi_apontamentos_001.pdf', 44156, 1455, 4, 9, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 4),
+(77, 'Resumos por capítulo (zip)', '/note/mestrado/ws/JoaoAlegria_ResumosPorCapítulo.zip', 44158, 1455, 4, 25, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>JoaoAlegria_R...</dt><dd><dd>0 pastas</dd><dd>10 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 8),
+(78, 'Resumos 2016/2017', '/note/mestrado/ws/web_semantica_apontamentos_001.pdf', 44158, 1455, 4, 25, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 9),
+(79, 'Apontamentos Diversos', '/note/terceiro_ano/primeiro_semestre/icm/Inês_Correia_ICM.pdf', 45424, 1335, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
+(80, 'Apontamentos Diversos', '/note/terceiro_ano/segundo_semestre/tqs/Inês_Correia_TQS.pdf', 45426, 1335, 4, 13, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 14),
+(81, 'Resumos (zip)', '/note/terceiro_ano/segundo_semestre/tqs/resumos.zip', 45426, NULL, 4, 13, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos_chave</dt><dd><dd>0 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 22),
+(82, 'Resumos 2015/2016', '/note/terceiro_ano/segundo_semestre/tqs/tqs_apontamentos_002.pdf', 45426, 1455, 5, 13, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
+(83, 'Resumos 2017/2018 - I', '/note/mestrado/ed/ed_dm_apontamentos_001.pdf', 45587, 1455, 4, 26, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 36),
+(84, 'Resumos 2017/2018 - II', '/note/mestrado/ed/ed_dm_apontamentos_002.pdf', 45587, 1455, 4, 26, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 48),
+(85, 'Resumos MD 2018/2019 (zip)', '/note/primeiro_ano/segundo_semestre/md/Goncalo_MD.zip', 47166, 1275, 3, 20, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1.1_Lógica pr...pdf</dt><dd><dd></dl><dl><dt>1.2_Conjuntos.pdf</dt><dd><dd></dl><dl><dt>1.3_Relações ...pdf</dt><dd><dd></dl><dl><dt>1.4_Funções.pdf</dt><dd><dd></dl><dl><dt>1.5_Relações ...pdf</dt><dd><dd></dl><dl><dt>1.6_Lógica de...pdf</dt><dd><dd></dl><dl><dt>2_Contextos e...pdf</dt><dd><dd></dl><dl><dt>3_Princípios ...pdf</dt><dd><dd></dl><dl><dt>4_Permutações.pdf</dt><dd><dd></dl><dl><dt>5_Agrupamento...pdf</dt><dd><dd></dl><dl><dt>6_Recorrência...pdf</dt><dd><dd></dl><dl><dt>7_Elementos d...pdf</dt><dd><dd></dl><dl><dt>Detalhes capí...pdf</dt><dd><dd></dl><dl><dt>Detalhes capí...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 27),
+(86, 'Resumos 2017/2018', '/note/primeiro_ano/segundo_semestre/md/MD_Capitulo5.pdf', 47166, 1002, 2, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 4),
+(87, 'RafaelDireito_2016_2017_MD.zip', '/note/primeiro_ano/segundo_semestre/md/RafaelDireito_2016_2017_MD.zip', 47166, 1800, 4, NULL, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...</dt><dd><dd>11 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 24),
+(88, 'RafaelDireito_MD_16_17_Apontamentos (zip)', '/note/primeiro_ano/segundo_semestre/md/RafaelDireito_MD_16_17_Apontamentos.zip', 47166, 1800, 4, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>md_apontament...pdf</dt><dd><dd></dl><dl><dt>md_apontament...pdf</dt><dd><dd></dl><dl><dt>md_apontament...pdf</dt><dd><dd></dl><dl><dt>md_apontament...pdf</dt><dd><dd></dl><dl><dt>md_apontament...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 4),
+(89, 'DS_MPEI_18_19_Testes (zip)', '/note/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Testes.zip', 40337, 1161, 3, 4, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Enunciados</dt><dd><dd>5 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>Teste 1 2015</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Teste 2 2015</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Teste 2 2017</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 23),
+(90, 'DS_MPEI_18_19_SlidesTeoricos (zip)', '/note/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_SlidesTeoricos.zip', 40337, 1161, 3, 4, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>MPEI-2017-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2017-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dl><dt>MPEI-2018-201...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 27),
+(91, 'DS_MPEI_18_19_Resumos (zip)', '/note/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Resumos.zip', 40337, 1161, 3, 4, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumo1</dt><dd><dd>0 pastas</dd><dd>39 ficheiros</dd><dd></dl><dl><dt>Resumo2</dt><dd><dd>0 pastas</dd><dd>24 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 209),
+(92, 'DS_MPEI_18_19_Projeto (zip)', '/note/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Projeto.zip', 40337, 1161, 3, 4, 0, 0, 0, 0, 0, 1, 0, '<dl><dt>/</dt><dd><dl><dt>mpei.pptx</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 16),
+(93, 'DS_MPEI_18_19_Praticas (zip)', '/note/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Praticas.zip', 40337, 1161, 3, 4, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P01</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>P02</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>P03</dt><dd><dd>0 pastas</dd><dd>14 ficheiros</dd><dd></dl><dl><dt>P04</dt><dd><dd>0 pastas</dd><dd>14 ficheiros</dd><dd></dl><dl><dt>P05</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>P06</dt><dd><dd>0 pastas</dd><dd>21 ficheiros</dd><dd></dl><dl><dt>P07</dt><dd><dd>0 pastas</dd><dd>13 ficheiros</dd><dd></dl><dl><dt>P08</dt><dd><dd>0 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>Remakes</dt><dd><dd>2 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 9),
+(94, 'DS_MPEI_18_19_Livros (zip)', '/note/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Livros.zip', 40337, 1161, 3, 4, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>estatistica-f...pdf</dt><dd><dd></dl><dl><dt>Livro.pdf</dt><dd><dd></dl><dl><dt>matlabnuminst...pdf</dt><dd><dd></dl><dl><dt>MATLAB_Starte...pdf</dt><dd><dd></dl><dl><dt>pt.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
+(95, 'DS_MPEI_18_19_Exercicios (zip)', '/note/segundo_ano/primeiro_semestre/mpei/DS_MPEI_18_19_Exercicios.zip', 40337, 1161, 3, 4, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>2</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>3</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>Slides Exercicios</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 37),
+(96, 'Goncalo_ITW_18_19_Testes (zip)', '/note/primeiro_ano/primeiro_semestre/itw/Goncalo_ITW_18_19_Testes.zip', 40380, 1275, 3, 8, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P7 05_Nov_201...</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>Teste teórico 1.zip</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(97, 'Goncalo_ITW_18_19_Resumos (zip)', '/note/primeiro_ano/primeiro_semestre/itw/Goncalo_ITW_18_19_Resumos.zip', 40380, 1275, 3, 8, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>ITW _ BOOTSTRAP.pdf</dt><dd><dd></dl><dl><dt>ITW _ CSS.pdf</dt><dd><dd></dl><dl><dt>ITW _ HTML.pdf</dt><dd><dd></dl><dl><dt>ITW _ JAVASCRIPT.pdf</dt><dd><dd></dl><dl><dt>JAVACRIPT _ E...pdf</dt><dd><dd></dl><dl><dt>JAVACRIPT _P6...pdf</dt><dd><dd></dl><dl><dt>Resumo_T10_Kn...pdf</dt><dd><dd></dl><dl><dt>Resumo_T11_Du...pdf</dt><dd><dd></dl><dl><dt>Resumo_T8_jQu...pdf</dt><dd><dd></dl><dl><dt>Resumo_T9_Goo...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 12),
+(98, 'Goncalo_ITW_18_19_Projeto (zip)', '/note/primeiro_ano/primeiro_semestre/itw/Goncalo_ITW_18_19_Projeto.zip', 40380, 1275, 3, 8, 0, 0, 0, 0, 0, 1, 0, '<dl><dt>/</dt><dd><dl><dt>P11 03_Nov_20...</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>PROJETO</dt><dd><dd>147 pastas</dd><dd>147 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 33),
+(99, 'Goncalo_ITW_18_19_Praticas (zip)', '/note/primeiro_ano/primeiro_semestre/itw/Goncalo_ITW_18_19_Praticas.zip', 40380, 1275, 3, 8, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P1 24_Set_2018</dt><dd><dd>0 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>P10 26_Nov_20...</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>P11 03_Nov_20...</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>P2 01_Out_2018</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>P3 08_Out_2018</dt><dd><dd>0 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>P4 15_Out_2018</dt><dd><dd>0 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>P5 22_Out_2018</dt><dd><dd>1 pastas</dd><dd>12 ficheiros</dd><dd></dl><dl><dt>P6 29_Out_2018</dt><dd><dd>1 pastas</dd><dd>13 ficheiros</dd><dd></dl><dl><dt>P7 05_Nov_201...</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>P8 12_Nov_2018</dt><dd><dd>0 pastas</dd><dd>21 ficheiros</dd><dd></dl><dl><dt>P9 19_Nov_201...</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 30),
+(100, 'RafaelDireito_ITW_18_19_Testes (zip)', '/note/primeiro_ano/primeiro_semestre/itw/RafaelDireito_ITW_16_17_Testes.zip', 40380, 1800, 4, 8, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Bootstrap+Tes...rar</dt><dd><dd></dl><dl><dt>Teste Prático ITW</dt><dd><dd>2 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>Teste Teórico 2</dt><dd><dd>0 pastas</dd><dd>20 ficheiros</dd><dd></dl><dl><dt>Teste_Prático_ITW</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>Teste_Prático...</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>ITW-Teste Teórico</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>ITW_Teste</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 9),
+(101, 'RafaelDireito_ITW_18_19_Slides (zip)', '/note/primeiro_ano/primeiro_semestre/itw/RafaelDireito_ITW_16_17_Slides.zip', 40380, 1800, 4, 8, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Aula 1 - Apre...pdf</dt><dd><dd></dl><dl><dt>Aula 1 -Intro...pdf</dt><dd><dd></dl><dl><dt>Aula 10 - Goo...pdf</dt><dd><dd></dl><dl><dt>Aula 11 - ITW...pdf</dt><dd><dd></dl><dl><dt>Aula 11 - Tra...pdf</dt><dd><dd></dl><dl><dt>Aula 2 - Form...pdf</dt><dd><dd></dl><dl><dt>Aula 3 - CSS.pdf</dt><dd><dd></dl><dl><dt>Aula 4 -Twitt...pdf</dt><dd><dd></dl><dl><dt>Aula 5 -Javas...pdf</dt><dd><dd></dl><dl><dt>Aula 7 -Javas...pdf</dt><dd><dd></dl><dl><dt>Aula 8 -JQuery.pdf</dt><dd><dd></dl><dl><dt>Aula 9 -JQuer...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 19),
+(102, 'RafaelDireito_ITW_18_19_Praticas (zip)', '/note/primeiro_ano/primeiro_semestre/itw/RafaelDireito_ITW_16_17_Praticas.zip', 40380, 1800, 4, 8, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Aula 8</dt><dd><dd>3 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>Aula5-Js</dt><dd><dd>1 pastas</dd><dd>13 ficheiros</dd><dd></dl><dl><dt>Aulas Práticas</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>Bilhete-Aviao</dt><dd><dd>6 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>Calculadora-JS</dt><dd><dd>2 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Concerto- GER...</dt><dd><dd>3 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>Concerto-Jquery</dt><dd><dd>3 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>Concerto-Jque...</dt><dd><dd>3 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>Concerto-JS</dt><dd><dd>3 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>Conferencia</dt><dd><dd>6 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>Gráficos</dt><dd><dd>3 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>ITW java</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>ITW-Bootstrap_1</dt><dd><dd>20 pastas</dd><dd>26 ficheiros</dd><dd></dl><dl><dt>ITW_jQuery</dt><dd><dd>3 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>Links de Apoi...txt</dt><dd><dd></dl><dl><dt>Mapa</dt><dd><dd>3 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>Treino-ITW-2</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Weather</dt><dd><dd>3 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>GitHub-  stor.txt</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 18),
+(103, 'DS_SO_18_19_Testes (zip)', '/note/segundo_ano/primeiro_semestre/so/DS_SO_18_19_Testes.zip', 40381, 1161, 3, 1, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Enunciados</dt><dd><dd>1 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Teorico-Pratico</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Teste 2015</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Teste 2017</dt><dd><dd>2 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 46),
+(104, 'DS_SO_18_19_SlidesTeoricos (zip)', '/note/segundo_ano/primeiro_semestre/so/DS_SO_18_19_SlidesTeoricos.zip', 40381, 1161, 3, 1, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>sop_1819_0918...pdf</dt><dd><dd></dl><dl><dt>sop_1819_1002...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1023...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1030...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1106...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1120...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1127...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1204...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1211...ppt</dt><dd><dd></dl><dl><dt>sop_1819_1218...ppt</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 11),
+(105, 'DS_SO_18_19_ResumosTeoricos (zip)', '/note/segundo_ano/primeiro_semestre/so/DS_SO_18_19_ResumosTeoricos.zip', 40381, 1161, 3, 1, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Teorico</dt><dd><dd>0 pastas</dd><dd>43 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 157),
+(106, 'DS_SO_18_19_ResumosPraticos (zip)', '/note/segundo_ano/primeiro_semestre/so/DS_SO_18_19_ResumosPraticos.zip', 40381, 1161, 3, 1, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pratico</dt><dd><dd>0 pastas</dd><dd>38 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 122),
+(107, 'DS_SO_18_19_Praticas (zip)', '/note/segundo_ano/primeiro_semestre/so/DS_SO_18_19_Praticas.zip', 40381, 1161, 3, 1, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P01</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P02</dt><dd><dd>1 pastas</dd><dd>24 ficheiros</dd><dd></dl><dl><dt>P03</dt><dd><dd>0 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>P04</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>P05</dt><dd><dd>2 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>P06</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>P07</dt><dd><dd>0 pastas</dd><dd>10 ficheiros</dd><dd></dl><dl><dt>P08</dt><dd><dd>1 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>P09</dt><dd><dd>7 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P10</dt><dd><dd>3 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>P11</dt><dd><dd>1 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Remakes</dt><dd><dd>24 pastas</dd><dd>18 ficheiros</dd><dd></dl><dl><dt>Remakes2</dt><dd><dd>9 pastas</dd><dd>7 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 5),
+(108, 'DS_SO_18_19_Fichas (zip)', '/note/segundo_ano/primeiro_semestre/so/DS_SO_18_19_Fichas.zip', 40381, 1161, 3, 1, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Enunciados</dt><dd><dd>10 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>Ficha 1</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>Ficha 2</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Ficha 3</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Ficha NEI 1</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Ficha NEI 2</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>Ficha NEI 4</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 51),
+(109, 'CD_18_19_Livros (zip)', '/note/segundo_ano/segundo_semestre/cd/CD_18_19_Livros.zip', 40382, NULL, NULL, NULL, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Distributed_S...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 19),
+(110, 'DS_CD_18_19_SlidesTeoricos (zip)', '/note/segundo_ano/segundo_semestre/cd/DS_CD_18_19_SlidesTeoricos.zip', 40382, 1161, 3, 2, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Aula 1.pdf</dt><dd><dd></dl><dl><dt>Aula 2.pdf</dt><dd><dd></dl><dl><dt>Aula 3.pdf</dt><dd><dd></dl><dl><dt>Aula 4.pdf</dt><dd><dd></dl><dl><dt>Aula 6.pdf</dt><dd><dd></dl><dl><dt>Aula 7.pdf</dt><dd><dd></dl><dl><dt>Aula 8.pdf</dt><dd><dd></dl><dl><dt>Cloud Computing.pdf</dt><dd><dd></dl><dl><dt>Flask.pdf</dt><dd><dd></dl><dl><dt>Syllabus.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 32),
+(111, 'DS_CD_18_19_Resumos (zip)', '/note/segundo_ano/segundo_semestre/cd/DS_CD_18_19_Resumos.zip', 40382, 1161, 3, 2, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>CDresumoch6.docx</dt><dd><dd></dl><dl><dt>CDresumoch6.pdf</dt><dd><dd></dl><dl><dt>CDresumoch7.docx</dt><dd><dd></dl><dl><dt>CDresumoch7.pdf</dt><dd><dd></dl><dl><dt>CDresumoch8.docx</dt><dd><dd></dl><dl><dt>GIT 101.pdf</dt><dd><dd></dl><dl><dt>Resumo Ch1-4</dt><dd><dd>0 pastas</dd><dd>104 ficheiros</dd><dd></dl><dl><dt>Resumos Ch5-8</dt><dd><dd>0 pastas</dd><dd>34 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 309),
+(112, 'DS_CD_18_19_Projetos (zip)', '/note/segundo_ano/segundo_semestre/cd/DS_CD_18_19_Projetos.zip', 40382, 1161, 3, 2, 0, 0, 0, 0, 0, 1, 0, '<dl><dt>/</dt><dd><dl><dt>Projeto 1</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Projeto 2</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(113, 'DS_CD_18_19_Praticas (zip)', '/note/segundo_ano/segundo_semestre/cd/DS_CD_18_19_Praticas.zip', 40382, 1161, 3, 2, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P01</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>P02</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P03</dt><dd><dd>36 pastas</dd><dd>36 ficheiros</dd><dd></dl><dl><dt>P04</dt><dd><dd>6 pastas</dd><dd>6 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
+(114, 'DS_PDS_18_19_Testes (zip)', '/note/segundo_ano/segundo_semestre/pds/DS_PDS_18_19_Testes.zip', 40383, 1161, 3, 12, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Teste 2019</dt><dd><dd>0 pastas</dd><dd>26 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(115, 'DS_PDS_18_19_SlidesTeoricos (zip)', '/note/segundo_ano/segundo_semestre/pds/DS_PDS_18_19_SlidesTeoricos.zip', 40383, 1161, 3, 12, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>PDS_0.pdf</dt><dd><dd></dl><dl><dt>PDS_09_Lambda...pdf</dt><dd><dd></dl><dl><dt>PDS_1_Softwar...pdf</dt><dd><dd></dl><dl><dt>PDS_2_GRASP.pdf</dt><dd><dd></dl><dl><dt>PDS_3_Pattern...pdf</dt><dd><dd></dl><dl><dt>PDS_4_Creatio...pdf</dt><dd><dd></dl><dl><dt>PDS_5_Structu...pdf</dt><dd><dd></dl><dl><dt>PDS_6_Behavio...pdf</dt><dd><dd></dl><dl><dt>PDS_7_Softwar...pdf</dt><dd><dd></dl><dl><dt>PDS_8_Reflection.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 81),
+(116, 'DS_PDS_18_19_Resumos (zip)', '/note/segundo_ano/segundo_semestre/pds/DS_PDS_18_19_Resumos.zip', 40383, 1161, 3, 12, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumo 1</dt><dd><dd>0 pastas</dd><dd>35 ficheiros</dd><dd></dl><dl><dt>Resumo 2</dt><dd><dd>0 pastas</dd><dd>25 ficheiros</dd><dd></dl><dl><dt>Resumo 3</dt><dd><dd>0 pastas</dd><dd>25 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 185),
+(117, 'DS_PDS_18_19_Praticas (zip)', '/note/segundo_ano/segundo_semestre/pds/DS_PDS_18_19_Praticas.zip', 40383, 1161, 3, 12, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Guioes</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dl><dt>pds_2019_g22</dt><dd><dd>70 pastas</dd><dd>61 ficheiros</dd><dd></dl><dl><dt>PraticasRemade</dt><dd><dd>277 pastas</dd><dd>276 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
+(118, 'MAS_18_19_Bibliografia (zip)', '/note/primeiro_ano/segundo_semestre/mas/MAS_18_19_Bibliografia.zip', 40431, NULL, NULL, NULL, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Bibliografia_...pdf</dt><dd><dd></dl><dl><dt>Bibliografia_...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 6),
+(119, 'MAS_18_19_Topicos_Estudo_Exame (zip)', '/note/primeiro_ano/segundo_semestre/mas/MAS_18_19_Topicos_Estudo_Exame.zip', 40431, NULL, 3, 13, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>MAS 201819 - ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(120, 'Goncalo_MAS_18_19_Resumos (zip)', '/note/primeiro_ano/segundo_semestre/mas/Goncalo_MAS_18_19_Resumos.zip', 40431, 1275, 3, 13, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1. O que é qu...pdf</dt><dd><dd></dl><dl><dt>2. Modelos de...pdf</dt><dd><dd></dl><dl><dt>3. Modelos no...pdf</dt><dd><dd></dl><dl><dt>MAA_Resumos.pdf</dt><dd><dd></dl><dl><dt>Post-it.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 10),
+(121, 'Goncalo_MAS_18_19_Projeto (zip)', '/note/primeiro_ano/segundo_semestre/mas/Goncalo_MAS_18_19_Projeto.zip', 40431, 1275, 3, 13, 0, 0, 0, 0, 0, 1, 0, '<dl><dt>/</dt><dd><dl><dt>AMS-E3-Visao ...docx</dt><dd><dd></dl><dl><dt>Apresentacion...pdf</dt><dd><dd></dl><dl><dt>Apresentaç?o ...odt</dt><dd><dd></dl><dl><dt>CalEntregas.png</dt><dd><dd></dl><dl><dt>Elaboration 1</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Gui?o.pdf</dt><dd><dd></dl><dl><dt>Inception1</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>JMeter</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>MAS - Projeto...pdf</dt><dd><dd></dl><dl><dt>MicroSite</dt><dd><dd>24 pastas</dd><dd>20 ficheiros</dd><dd></dl><dl><dt>Projeto.zip</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 22),
+(122, 'Goncalo_MAS_18_19_Praticas (zip)', '/note/primeiro_ano/segundo_semestre/mas/Goncalo_MAS_18_19_Praticas.zip', 40431, 1275, 3, 13, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Lab1</dt><dd><dd>0 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>Lab2</dt><dd><dd>1 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Lab3</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>Lab5</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>Lab6</dt><dd><dd>1 pastas</dd><dd>21 ficheiros</dd><dd></dl><dl><dt>Lab7</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>MAS_Práticas-...zip</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 46),
+(123, 'RafaelDireito_SMU_17_18_Praticas (zip)', '/note/segundo_ano/primeiro_semestre/smu/RafaelDireito_SMU_17_18_Praticas.zip', 40432, 1800, 2, 15, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P</dt><dd><dd>11 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>12 pastas</dd><dd>12 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 40),
+(124, 'RafaelDireito_SMU_17_18_TP (zip)', '/note/segundo_ano/primeiro_semestre/smu/RafaelDireito_SMU_17_18_TP.zip', 40432, 1800, 2, 15, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>TP</dt><dd><dd>0 pastas</dd><dd>10 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 68),
+(125, 'RafaelDireito_SMU_17_18_Prep2Test (zip)', '/note/segundo_ano/primeiro_semestre/smu/RafaelDireito_SMU_17_18_Prep2Teste.zip', 40432, 1800, 2, 15, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Prep2Teste</dt><dd><dd>3 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
+(126, 'RafaelDireito_SMU_17_18_Bibliografia (zip)', '/note/segundo_ano/primeiro_semestre/smu/RafaelDireito_SMU_17_18_Bibliografia.zip', 40432, 1800, 2, 15, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Bibliografia</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 54),
+(127, 'DS_SMU_18_19_Fichas (zip)', '/note/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_Fichas.zip', 40432, 1161, 3, 14, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Fichas</dt><dd><dd>12 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>13 pastas</dd><dd>13 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 113),
+(128, 'DS_SMU_18_19_Livros (zip)', '/note/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_Livros.zip', 40432, 1161, 3, 14, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Livros</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 54),
+(129, 'DS_SMU_18_19_SlidesTeoricos (zip)', '/note/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_SlidesTeoricos.zip', 40432, 1161, 3, 14, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides Teoricos</dt><dd><dd>1 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>2 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 30),
+(130, 'DS_SMU_18_19_Praticas (zip)', '/note/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_Praticas.zip', 40432, 1161, 3, 14, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Praticas</dt><dd><dd>19 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>20 pastas</dd><dd>20 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 26),
+(131, 'DS_SMU_18_19_Resumos (zip)', '/note/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_Resumos.zip', 40432, 1161, 3, 14, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 181),
+(132, 'DS_SMU_18_19_Testes (zip)', '/note/segundo_ano/primeiro_semestre/smu/DS_SMU_18_19_Testes.zip', 40432, 1161, 3, 14, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>8 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>9 pastas</dd><dd>9 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 60),
+(133, 'DS_RS_18_19_Testes (zip)', '/note/segundo_ano/primeiro_semestre/rs/DS_RS_18_19_Testes.zip', 40433, 1161, 3, 16, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>16 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>17 pastas</dd><dd>17 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 130),
+(134, 'DS_RS_18_19_Praticas (zip)', '/note/segundo_ano/primeiro_semestre/rs/DS_RS_18_19_Praticas.zip', 40433, 1161, 3, 16, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Praticas</dt><dd><dd>2 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>3 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
+(135, 'DS_RS_18_19_SlidesTeoricos (zip)', '/note/segundo_ano/primeiro_semestre/rs/DS_RS_18_19_SlidesTeoricos.zip', 40433, 1161, 3, 16, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides Teoricos</dt><dd><dd>0 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 10),
+(136, 'DS_RS_18_19_Resumos (zip)', '/note/segundo_ano/primeiro_semestre/rs/DS_RS_18_19_Resumos.zip', 40433, 1161, 3, 16, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(137, 'DS_AED_18_19_Resumos (zip)', '/note/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_Resumos.zip', 40437, 1161, 3, 11, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 271),
+(138, 'DS_AED_18_19_Livros (zip)', '/note/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_Livros.zip', 40437, 1161, 3, 11, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Livros</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 20),
+(139, 'DS_AED_18_19_Testes (zip)', '/note/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_Testes.zip', 40437, 1161, 3, 11, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>24 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>25 pastas</dd><dd>25 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 94),
+(140, 'DS_AED_18_19_Praticas (zip)', '/note/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_Praticas.zip', 40437, 1161, 3, 11, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pr?Çáticas</dt><dd><dd>21 pastas</dd><dd>14 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>20 pastas</dd><dd>20 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 20),
+(141, 'DS_AED_18_19_SlidesTeoricos (zip)', '/note/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_SlidesTeoricos.zip', 40437, 1161, 3, 11, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides Te?óricos</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
+(142, 'DS_AED_18_19_Fichas (zip)', '/note/segundo_ano/primeiro_semestre/aed/DS_AED_18_19_Fichas.zip', 40437, 1161, 3, 11, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Fichas</dt><dd><dd>2 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>3 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 16);
+INSERT INTO aauav_nei.note (id, name, location, subject_id, author_id, school_year_id, teacher_id, summary, tests, bibliography, slides, exercises, projects, notebook, content, created_at, type_id, size) VALUES
+(143, 'RafaelDireito_AED_17_18_Praticas (zip)', '/note/segundo_ano/primeiro_semestre/aed/RafaelDireito_AED_17_18_Praticas.zip', 40437, 1800, 2, 31, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>P</dt><dd><dd>4 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>5 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(144, 'RafaelDireito_AED_17_18_Testes (zip)', '/note/segundo_ano/primeiro_semestre/aed/RafaelDireito_AED_17_18_Testes.zip', 40437, 1800, 2, 31, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>0 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(145, 'RafaelDireito_AED_17_18_Books (zip)', '/note/segundo_ano/primeiro_semestre/aed/RafaelDireito_AED_17_18_Praticas.zip', 40437, 1800, 2, 31, 0, 0, 1, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 2, NULL),
+(146, 'RafaelDireito_AED_17_18_LearningC (zip)', '/note/segundo_ano/primeiro_semestre/aed/RafaelDireito_AED_17_18_LearningC.zip', 40437, 1800, 2, 31, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>LearningC</dt><dd><dd>0 pastas</dd><dd>21 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(147, 'RafaelDireito_AED_17_18_AED (pdf)', '/note/segundo_ano/primeiro_semestre/aed/RafaelDireito_AED_17_18_AED.pdf', 40437, 1800, 2, 31, 0, 0, 0, 1, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
+(148, 'DS_Compiladores_18_19_Praticas (zip)', '/note/segundo_ano/segundo_semestre/c/DS_Compiladores_18_19_Praticas.zip', 41469, 1161, 3, 10, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Praticas</dt><dd><dd>35 pastas</dd><dd>32 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>31 pastas</dd><dd>31 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(149, 'DS_Compiladores_18_19_Fichas (zip)', '/note/segundo_ano/segundo_semestre/c/DS_Compiladores_18_19_Fichas.zip', 41469, 1161, 3, 10, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Fichas</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 42),
+(150, 'DS_Compiladores_18_19_Testes (zip)', '/note/segundo_ano/segundo_semestre/c/DS_Compiladores_18_19_Testes.zip', 41469, 1161, 3, 10, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 33),
+(151, 'DS_Compiladores_18_19_Resumos (zip)', '/note/segundo_ano/segundo_semestre/c/DS_Compiladores_18_19_Resumos.zip', 41469, 1161, 3, 10, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>3 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>4 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 242),
+(152, 'DS_Compiladores_18_19_SlidesTeoricos (zip)', '/note/segundo_ano/segundo_semestre/c/DS_Compiladores_18_19_SlidesTeoricos.zip', 41469, 1161, 3, 10, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides Te?óricos</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 4),
+(153, 'DS_IHC_18_19_SlidesTeoricos (zip)', '/note/segundo_ano/segundo_semestre/ihc/DS_IHC_18_19_SlidesTeoricos.zip', 41549, 1161, 3, 9, 0, 0, 0, 1, 0, 0, 0, NULL, '2021-06-14 19:17:30', 2, NULL),
+(154, 'DS_IHC_18_19_Fichas (zip)', '/note/segundo_ano/segundo_semestre/ihc/DS_IHC_18_19_Fichas.zip', 41549, 1161, 3, 9, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Fichas</dt><dd><dd>5 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>6 pastas</dd><dd>6 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 51),
+(155, 'DS_IHC_18_19_Projetos (zip)', '/note/segundo_ano/segundo_semestre/ihc/DS_IHC_18_19_Projetos.zip', 41549, 1161, 3, 9, 0, 0, 0, 0, 0, 1, 0, '<dl><dt>/</dt><dd><dl><dt>Projetos</dt><dd><dd>5 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>6 pastas</dd><dd>6 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 90),
+(156, 'DS_IHC_18_19_Testes (zip)', '/note/segundo_ano/segundo_semestre/ihc/DS_IHC_18_19_SlidesTeoricos.zip', 41549, 1161, 3, 9, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 2, NULL),
+(157, 'Resumos (zip)', '/note/terceiro_ano/primeiro_semestre/ia/resumo.zip', 40846, NULL, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumo.pdf</dt><dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(158, 'DS_EF_17_18_Resumos (zip)', '/note/primeiro_ano/primeiro_semestre/ef/DS_EF_17_18_Resumos.zip', 41791, 1161, 2, 24, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 4),
+(159, 'DS_EF_17_18_Exercicios (zip)', '/note/primeiro_ano/primeiro_semestre/ef/DS_EF_17_18_Exercicios.zip', 41791, 1161, 2, 24, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Exerci?ücios</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
+(160, 'DS_EF_17_18_Exames (zip)', '/note/primeiro_ano/primeiro_semestre/ef/DS_EF_17_18_Exames.zip', 41791, 1161, 2, 24, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Exames</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
+(161, 'Exames (zip)', '/note/primeiro_ano/segundo_semestre/iac/exames.zip', 42502, NULL, NULL, 6, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>iac_apontamen...pdf</dt><dd><dd></dl><dl><dt>iac_apontamen...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(162, 'Goncalo_IAC_18_19_Praticas (zip)', '/note/primeiro_ano/segundo_semestre/iac/Goncalo_IAC_18_19_Praticas.zip', 42502, 1275, 3, 6, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pr?íticas</dt><dd><dd>113 pastas</dd><dd>111 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>113 pastas</dd><dd>113 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 44),
+(163, 'Goncalo_IAC_18_19_Resumos (zip)', '/note/primeiro_ano/segundo_semestre/iac/Goncalo_IAC_18_19_Resumos.zip', 42502, 1275, 3, 6, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 17),
+(164, 'Goncalo_IAC_18_19_Apontamentos (zip)', '/note/primeiro_ano/segundo_semestre/iac/Goncalo_IAC_18_19_Apontamentos.zip', 42502, 1275, 3, 6, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Apontamentos</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
+(165, 'Goncalo_IAC_18_19_Bibliografia (zip)', '/note/primeiro_ano/segundo_semestre/iac/Goncalo_IAC_18_19_Bibliografia.zip', 42502, 1275, 3, 6, 0, 0, 1, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Bibliografia ...pdf</dt><dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>Bibliografia ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 18),
+(166, 'Goncalo_IAC_18_19_Testes (zip)', '/note/primeiro_ano/segundo_semestre/iac/Goncalo_IAC_18_19_Testes.zip', 42502, 1275, 3, 6, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 2),
+(167, 'RafaelDireito_IAC_16_17_Testes (zip)', '/note/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_Testes.zip', 42502, 1800, 4, 6, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Testes</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 3),
+(168, 'RafaelDireito_IAC_16_17_Teorica (zip)', '/note/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_Teorica.zip', 42502, 1800, 4, 6, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Te?órica</dt><dd><dd>0 pastas</dd><dd>13 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 14),
+(169, 'RafaelDireito_IAC_16_17_FolhasPraticas (zip)', '/note/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_FolhasPraticas.zip', 42502, 1800, 4, 6, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>FolhasPr?Çáticas</dt><dd><dd>0 pastas</dd><dd>16 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 13),
+(170, 'RafaelDireito_IAC_16_17_ExerciciosResolvidos (zip)', '/note/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_ExerciciosResolvidos.zip', 42502, 1800, 4, 6, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>ExerciciosResolvidos</dt><dd><dd>6 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>7 pastas</dd><dd>7 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(171, 'RafaelDireito_IAC_16_17_Resumos (zip)', '/note/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_Resumos.zip', 42502, 1800, 4, 6, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>RafaelDireito...pdf</dt><dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>RafaelDiteito...pdf</dt><dd><dd></dl><dl><dt>RafaelDireito...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 10),
+(172, 'RafaelDireito_IAC_16_17_DossiePedagogicov2 (zip)', '/note/primeiro_ano/segundo_semestre/iac/RafaelDireito_IAC_16_17_DossiePedagogicov2.zip', 42502, 1800, 4, 6, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>DossiePedagog...pdf</dt><dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(173, 'DS_BD_18_19_SlidesTeoricos (zip)', '/note/segundo_ano/segundo_semestre/bd/DS_BD_18_19_SlidesTeoricos.zip', 42532, 1161, 3, 7, 0, 0, 0, 1, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Slides Te?óricos</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 30),
+(174, 'DS_BD_18_19_Resumos (zip)', '/note/segundo_ano/segundo_semestre/bd/DS_BD_18_19_Resumos.zip', 42532, 1161, 3, 7, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>2 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>3 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 144),
+(175, 'DS_BD_18_19_Praticas (zip)', '/note/segundo_ano/segundo_semestre/bd/DS_BD_18_19_Praticas.zip', 42532, 1161, 3, 7, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Pr?Çáticas</dt><dd><dd>48 pastas</dd><dd>34 ficheiros</dd><dd></dl><dl><dt>__MACOSX</dt><dd><dd>45 pastas</dd><dd>45 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 81),
+(176, 'Resumos Diversos (zip)', '/note/segundo_ano/segundo_semestre/bd/Resumos.zip', 42532, NULL, NULL, NULL, 1, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 1),
+(177, 'Resumos EF', '/note/primeiro_ano/primeiro_semestre/ef/CarolinaAlbuquerque_EF_Resumo.pdf', 41791, 1023, 5, 24, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 8),
+(178, 'Resolução Fichas EF', '/note/primeiro_ano/primeiro_semestre/ef/CarolinaAlbuquerque_EF_ResolucoesFichas.zip', 41791, 1023, 5, 24, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>CarolinaAlbuq...</dt><dd><dd>6 pastas</dd><dd>0 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 169),
+(179, 'Exames SIO resolvidos', '/note/terceiro_ano/primeiro_semestre/sio/JoaoAlegria_Exames.zip', 42573, 1455, 4, NULL, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>JoaoAlegria_Exames</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 13),
+(180, 'Resumos SIO', '/note/terceiro_ano/primeiro_semestre/sio/JoaoAlegria_Resumos.zip', 42573, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>JoaoAlegria_Resumos</dt><dd><dd>1 pastas</dd><dd>2 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 20),
+(181, 'Exames e testes ALGA', '/note/primeiro_ano/primeiro_semestre/alga/Rafael_Direito_Exames.zip', 42709, 1800, 4, 23, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>alga_apontame...pdf</dt><dd><dd></dl><dl><dt>alga_apontame...pdf</dt><dd><dd></dl><dl><dt>alga_apontame...pdf</dt><dd><dd></dl><dl><dt>alga_apontame...pdf</dt><dd><dd></dl><dl><dt>alga_apontame...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 9),
+(182, 'Fichas resolvidas ALGA', '/note/primeiro_ano/primeiro_semestre/alga/RafaelDireito_Fichas.pdf', 42709, 1800, 4, 23, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 15),
+(183, 'Resumos ALGA ', '/note/primeiro_ano/primeiro_semestre/alga/RafelDireito_Resumos.pdf', 42709, 1800, 4, 23, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 8),
+(184, 'Caderno de cálculo', '/note/primeiro_ano/primeiro_semestre/c1/CarolinaAlbuquerque_C1_caderno.pdf', 42728, 1023, 5, 19, 0, 0, 0, 0, 0, 0, 1, NULL, '2021-06-14 19:17:30', 1, 11),
+(185, 'Fichas resolvidas CII', '/note/primeiro_ano/segundo_semestre/c2/PedroOliveira_Fichas.zip', 42729, 1764, 3, 19, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Ficha1</dt><dd><dd>0 pastas</dd><dd>14 ficheiros</dd><dd></dl><dl><dt>Ficha2</dt><dd><dd>0 pastas</dd><dd>15 ficheiros</dd><dd></dl><dl><dt>Ficha3</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>ficha3-part2.pdf</dt><dd><dd></dl><dl><dt>ficha3.pdf</dt><dd><dd></dl><dl><dt>Ficha4_000001.pdf</dt><dd><dd></dl><dl><dt>Ficha5_000001.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 110),
+(186, 'Testes CII', '/note/primeiro_ano/segundo_semestre/c2/PedroOliveira_testes-resol.zip', 42729, 1764, 3, 19, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>testes-resol</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 24),
+(187, 'Apontamentos Gerais ICM', '/note/terceiro_ano/primeiro_semestre/icm/Resumo Geral Android.pdf', 45424, 1335, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 3),
+(188, 'Resoluções material apoio MD', '/note/primeiro_ano/segundo_semestre/md/PedroOliveira_EA.zip', 47166, 1764, 3, 20, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>EA(livro nos ...</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>EA1</dt><dd><dd>0 pastas</dd><dd>7 ficheiros</dd><dd></dl><dl><dt>EA1(refeito)</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>EA2(Completo)</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>EA2.pdf</dt><dd><dd></dl><dl><dt>EA2ex4.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 45),
+(189, 'Resoluções fichas MD', '/note/primeiro_ano/segundo_semestre/md/PedroOliveira_Fichas.zip', 47166, 1764, 3, 20, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Ficha1</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dl><dt>ficha2.pdf</dt><dd><dd></dl><dl><dt>ficha3_000001.pdf</dt><dd><dd></dl><dl><dt>ficha4_000001.pdf</dt><dd><dd></dl><dl><dt>ficha5-cont.pdf</dt><dd><dd></dl><dl><dt>ficha5.pdf</dt><dd><dd></dl><dl><dt>Ficha6.pdf</dt><dd><dd></dl><dl><dt>ficha7(incomp...pdf</dt><dd><dd></dl><dl><dt>Ficha8_000001.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 79),
+(190, 'Resoluções testes MD', '/note/primeiro_ano/segundo_semestre/md/PedroOliveira_testes.zip', 47166, 1764, 3, 20, 0, 1, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>testes</dt><dd><dd>0 pastas</dd><dd>8 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 33),
+(191, 'Estudo para o exame', '/note/segundo_ano/primeiro_semestre/rs/RafaelDireito_2017_RSexame.pdf', 40433, 1800, 2, 4, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 6),
+(192, 'Exercícios TPW', '/note/terceiro_ano/segundo_semestre/tpw/Exercicios.zip', 40551, NULL, NULL, NULL, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Exercicios</dt><dd><dd>0 pastas</dd><dd>12 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 2, 14),
+(193, 'Resumos 2016/2017', '/note/mestrado/as/as_apontamentos_001.pdf', 40757, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 2),
+(194, 'Resumos por capítulo (zip)', '/note/mestrado/as/JoaoAlegria_ResumosPorCapitulo.zip', 40757, 1455, 4, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 2, 2),
+(195, 'Exercícios IA', '/note/terceiro_ano/primeiro_semestre/ia/Inês_Correia_IA_exercícios.pdf', 40846, 1335, NULL, NULL, 0, 0, 0, 0, 1, 0, 0, NULL, '2021-06-14 19:17:30', 1, 7),
+(196, 'Resumos IA', '/note/terceiro_ano/primeiro_semestre/ia/Inês_Correia_IA_resumo.pdf', 40846, 1335, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1, 9),
+(197, 'Caderno MD Cap. 6 e 7', '/note/primeiro_ano/segundo_semestre/md/MarianaRosa_Caderno_Capts6e7.pdf', 47166, 2051, 7, 32, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2021-06-16 22:18:59', 1, 20),
+(198, 'Resumos 1.ª Parte MD', '/note/primeiro_ano/segundo_semestre/md/MarianaRosa_Resumos_1aParte.pdf', 47166, 2051, 7, 32, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-06-16 22:21:33', 1, 13),
+(199, 'Práticas BD', '/note/segundo_ano/segundo_semestre/bd/Goncalo_Praticas.zip', 42532, 1275, 7, 8, NULL, NULL, NULL, NULL, 1, 1, NULL, '<dl><dt>/</dt><dd><dl><dt>P</dt><dd><dd>11 pastas</dd><dd>6 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:27:12', 2, 23),
+(200, 'Resumos BD', '/note/segundo_ano/segundo_semestre/bd/Goncalo_Resumos.zip', 42532, 1275, 7, 7, 1, NULL, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>TP</dt><dd><dd>0 pastas</dd><dd>14 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:28:20', 2, 20),
+(201, 'Resumos Caps. 3 e 4', '/note/segundo_ano/segundo_semestre/c/Goncalo_TP.zip', 41469, 1275, 7, 10, 1, NULL, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>TP</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 8),
+(202, 'Resumos ANTLR4', '/note/segundo_ano/segundo_semestre/c/Goncalo_ANTLR4.zip', 41469, 1275, 7, 10, 1, NULL, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>ANTLR4 Listeners.pdf</dt><dd><dd></dl><dl><dt>ANTLR4 Visitors.pdf</dt><dd><dd></dl><dl><dt>ANTLR4.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 1),
+(203, 'Guiões P Resolvidos', '/note/segundo_ano/segundo_semestre/c/Goncalo_GuioesPraticos.zip', 41469, 1275, 7, 10, NULL, NULL, NULL, NULL, 1, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>P1_20fev2020</dt><dd><dd>1 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>P2_05fev2020</dt><dd><dd>35 pastas</dd><dd>37 ficheiros</dd><dd></dl><dl><dt>P3</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 2),
+(204, 'Resumos Práticos', '/note/segundo_ano/segundo_semestre/c/Goncalo_ResumosPraticos.zip', 41469, 1275, 7, 10, 1, NULL, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>1_Compiladores.pdf</dt><dd><dd></dl><dl><dt>2_ANTLR4.pdf</dt><dd><dd></dl><dl><dt>3_Análise sem...pdf</dt><dd><dd></dl><dl><dt>5_Análise sem...pdf</dt><dd><dd></dl><dl><dt>6_Geração de ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 17),
+(205, 'Bibliografia', '/note/segundo_ano/segundo_semestre/cd/Bibliografia.zip', 40382, 1275, 7, 2, NULL, NULL, 1, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>mvsteen-distr...pdf</dt><dd><dd></dl><dl><dt>ResolucaoPerg...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 39),
+(206, 'Cheatsheet', '/note/segundo_ano/segundo_semestre/cd/Goncalo_CheatSheet.pdf', 40382, 1275, 7, 2, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-06-16 22:32:40', 1, 1),
+(207, 'Aulas Resolvidas', '/note/segundo_ano/segundo_semestre/cd/Goncalo_Aulas.zip', 40382, 1275, 7, 2, NULL, NULL, NULL, NULL, 1, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>P1_11Fev2020</dt><dd><dd>138 pastas</dd><dd>140 ficheiros</dd><dd></dl><dl><dt>P2_10Fev2020</dt><dd><dd>125 pastas</dd><dd>128 ficheiros</dd><dd></dl><dl><dt>P3_28Abr2020</dt><dd><dd>103 pastas</dd><dd>104 ficheiros</dd><dd></dl><dl><dt>P4_19Mai2020</dt><dd><dd>183 pastas</dd><dd>183 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 8),
+(208, 'Projeto1', '/note/segundo_ano/segundo_semestre/cd/Goncalo_Projeto1.zip', 40382, 1275, 7, 2, NULL, NULL, NULL, NULL, NULL, 1, NULL, '<dl><dt>/</dt><dd><dl><dt>message-broke...</dt><dd><dd>260 pastas</dd><dd>268 ficheiros</dd><dd></dl><dl><dt>Projecto 1 - ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 3),
+(209, 'Projeto2', '/note/segundo_ano/segundo_semestre/cd/Goncalo_Projeto2.zip', 40382, 1275, 7, 2, NULL, NULL, NULL, NULL, NULL, 1, NULL, '<dl><dt>/</dt><dd><dl><dt>distributed-o...</dt><dd><dd>7 pastas</dd><dd>22 ficheiros</dd><dd></dl><dl><dt>Projecto 2 - ...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 15),
+(210, 'Resumos Teóricos', '/note/segundo_ano/segundo_semestre/cd/Goncalo_TP.pdf', 40382, 1275, 7, 2, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-06-16 22:32:40', 1, 6),
+(211, 'Paper \Help, I am stuck...\', '/note/segundo_ano/segundo_semestre/ihc/Goncalo_Francisca_Paper.zip', 41549, 1275, 7, 9, NULL, NULL, NULL, NULL, NULL, 1, NULL, '<dl><dt>/</dt><dd><dl><dt>92972_93102_[...pdf</dt><dd><dd></dl><dl><dt>IHC_Paper.pdf</dt><dd><dd></dl><dl><dt>Paper-selecti...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 2),
+(212, 'Resumos (incompletos)', '/note/segundo_ano/segundo_semestre/ihc/Goncalo_TP.pdf', 41549, 1275, 7, 9, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-06-16 22:32:40', 1, 1),
+(213, 'Perguntitas de preparação exame', '/note/segundo_ano/segundo_semestre/ihc/Perguntitaspreparaçaoexame.zip', 41549, 1275, 7, 9, NULL, 1, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>(1) User prof...pdf</dt><dd><dd></dl><dl><dt>(2) User ... ...pdf</dt><dd><dd></dl><dl><dt>(3) User mode...pdf</dt><dd><dd></dl><dl><dt>(4) Input & O...pdf</dt><dd><dd></dl><dl><dt>(5) Usability...pdf</dt><dd><dd></dl><dl><dt>exam.pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 1),
+(214, 'Resumos teóricos', '/note/segundo_ano/segundo_semestre/pds/Goncalo_TP.pdf', 40383, 1275, 7, 12, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2021-06-16 22:32:40', 1, 11),
+(215, 'Projeto final: Padrões Bridge e Flyweight e Refactoring', '/note/segundo_ano/segundo_semestre/pds/Goncalo_Projeto.zip', 40383, 1275, 7, 12, NULL, NULL, NULL, NULL, NULL, 1, NULL, '<dl><dt>/</dt><dd><dl><dt>Entrega</dt><dd><dd>0 pastas</dd><dd>4 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 74),
+(216, 'Aulas P Resolvidas', '/note/segundo_ano/segundo_semestre/pds/Goncalo_Aulas.zip', 40383, 1275, 7, 12, NULL, NULL, NULL, NULL, 1, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>P1_11fev2020</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P2_03mar2020</dt><dd><dd>0 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P3_10mar2020</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P4_17mar2020</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>P5_24mar2020</dt><dd><dd>1 pastas</dd><dd>1 ficheiros</dd><dd></dl><dl><dt>P6_31mar2020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P7_14abr2020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P8_21abr2020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P9_28abr2020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P10_05mai2020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P11_19mai29020</dt><dd><dd>0 pastas</dd><dd>3 ficheiros</dd><dd></dl><dl><dt>P12_26mai2020</dt><dd><dd>0 pastas</dd><dd>0 ficheiros</dd><dd></dl><dl><dt>P13_02jun2020</dt><dd><dd>0 pastas</dd><dd>2 ficheiros</dd><dd></dl><dl><dt>pds_2020_g205</dt><dd><dd>482 pastas</dd><dd>481 ficheiros</dd><dd></dl><dl><dt>Readme.txt</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 38),
+(217, 'Exame final', '/note/segundo_ano/segundo_semestre/pds/Goncalo_Exame.zip', 40383, 1275, 7, 12, NULL, 1, NULL, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>92972</dt><dd><dd>0 pastas</dd><dd>16 ficheiros</dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 1),
+(218, 'Bibliografia', '/note/segundo_ano/segundo_semestre/pds/Bibliografia.zip', 40383, 1275, 7, 12, NULL, NULL, 1, NULL, NULL, NULL, NULL, '<dl><dt>/</dt><dd><dl><dt>applying-uml-...pdf</dt><dd><dd></dl><dl><dt>DesignPatterns.pdf</dt><dd><dd></dl><dl><dt>kupdf.net_use...pdf</dt><dd><dd></dl><dl><dt>software-arch...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-16 22:32:40', 2, 159),
 (220, 'Projeto final \Show tracker\', 'https://github.com/gmatosferreira/show-tracker-app', 41549, 1275, 7, 9, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2021-10-18 15:00:00', 3, NULL),
-(232, 'AI: A Modern Approach', '/notes/terceiro_ano/primeiro_semestre/ia/artificial-intelligence-modern-approach.9780131038059.25368.pdf', 40846, NULL, 8, 30, 0, 0, 1, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 38),
-(238, 'Resumos', '/notes/terceiro_ano/primeiro_semestre/ia/Goncalo_IA_TP.pdf', 40846, 1275, 8, 30, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 3),
-(241, 'Notas código práticas', '/notes/terceiro_ano/primeiro_semestre/ia/Goncalo_Código_Anotado_Práticas.zip', 40846, 1275, 8, 2, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>BayesNet.pdf</dt><dd><dd></dl><dl><dt>ConstraintSearch.pdf</dt><dd><dd></dl><dl><dt>SearchTree.pdf</dt><dd><dd></dl><dl><dt>SemanticNetwork.pdf</dt><dd><dd></dl><dl><dt>Strips.pdf</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 4),
-(244, 'Código práticas', '/notes/terceiro_ano/primeiro_semestre/ia/Goncalo_Praticas.zip', 40846, 1275, 8, 2, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>guiao-de-prog...</dt><dd><dd>6 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>guiao-rc-gmat...</dt><dd><dd>6 pastas</dd><dd>13 ficheiros</dd><dd></dl><dl><dt>guiao-sobre-p...</dt><dd><dd>6 pastas</dd><dd>15 ficheiros</dd><dd></dl><dl><dt>ia-iia-tpi-1-...</dt><dd><dd>4 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>ia-iia-tpi2-g...</dt><dd><dd>1 pastas</dd><dd>10 ficheiros</dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 2),
-(247, 'Resumos', '/notes/terceiro_ano/primeiro_semestre/ge/Goncalo_GE_TP.pdf', 2450, 1275, 8, 34, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 2),
-(250, 'Post-its', '/notes/terceiro_ano/primeiro_semestre/ge/Goncalo_Postits.zip', 2450, 1275, 8, 34, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1_Introduçao ...pdf</dt><dd><dd></dl><dl><dt>2_Modelo de n...pdf</dt><dd><dd></dl><dl><dt>3_Modelo de n...pdf</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 11),
-(253, 'Post-its', '/notes/terceiro_ano/primeiro_semestre/ies/Goncalo_Postits.zip', 40384, 1275, 8, 12, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1_IES.pdf</dt><dd><dd></dl><dl><dt>2_Processo so...pdf</dt><dd><dd></dl><dl><dt>3_Desenvolvim...pdf</dt><dd><dd></dl><dl><dt>4_Devops.pdf</dt><dd><dd></dl><dl><dt>5_Padroes arq...pdf</dt><dd><dd></dl><dl><dt>6_Web framewo...pdf</dt><dd><dd></dl><dl><dt>8_Spring fram...pdf</dt><dd><dd></dl><dl><dt>9_Spring boot.pdf</dt><dd><dd></dl><dl><dt>10_Microserviços.pdf</dt><dd><dd></dl><dl><dt>11_Sistemas b...pdf</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 12),
-(256, 'Aulas práticas', '/notes/terceiro_ano/primeiro_semestre/ies/Goncalo_Práticas.zip', 40384, 1275, 8, 12, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Lab1_92972.zip</dt><dd><dd></dl><dl><dt>Lab2_92972.zip</dt><dd><dd></dl><dl><dt>Lab3_92972.zip</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 3),
-(259, 'Resumos', '/notes/terceiro_ano/primeiro_semestre/ies/Goncalo_IES_TP.pdf', 40384, 1275, 8, 12, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 5),
+(232, 'AI: A Modern Approach', '/note/terceiro_ano/primeiro_semestre/ia/artificial-intelligence-modern-approach.9780131038059.25368.pdf', 40846, NULL, 8, 30, 0, 0, 1, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 38),
+(238, 'Resumos', '/note/terceiro_ano/primeiro_semestre/ia/Goncalo_IA_TP.pdf', 40846, 1275, 8, 30, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 3),
+(241, 'Notas código práticas', '/note/terceiro_ano/primeiro_semestre/ia/Goncalo_Código_Anotado_Práticas.zip', 40846, 1275, 8, 2, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>BayesNet.pdf</dt><dd><dd></dl><dl><dt>ConstraintSearch.pdf</dt><dd><dd></dl><dl><dt>SearchTree.pdf</dt><dd><dd></dl><dl><dt>SemanticNetwork.pdf</dt><dd><dd></dl><dl><dt>Strips.pdf</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 4),
+(244, 'Código práticas', '/note/terceiro_ano/primeiro_semestre/ia/Goncalo_Praticas.zip', 40846, 1275, 8, 2, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>guiao-de-prog...</dt><dd><dd>6 pastas</dd><dd>9 ficheiros</dd><dd></dl><dl><dt>guiao-rc-gmat...</dt><dd><dd>6 pastas</dd><dd>13 ficheiros</dd><dd></dl><dl><dt>guiao-sobre-p...</dt><dd><dd>6 pastas</dd><dd>15 ficheiros</dd><dd></dl><dl><dt>ia-iia-tpi-1-...</dt><dd><dd>4 pastas</dd><dd>11 ficheiros</dd><dd></dl><dl><dt>ia-iia-tpi2-g...</dt><dd><dd>1 pastas</dd><dd>10 ficheiros</dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 2),
+(247, 'Resumos', '/note/terceiro_ano/primeiro_semestre/ge/Goncalo_GE_TP.pdf', 2450, 1275, 8, 34, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 2),
+(250, 'Post-its', '/note/terceiro_ano/primeiro_semestre/ge/Goncalo_Postits.zip', 2450, 1275, 8, 34, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1_Introduçao ...pdf</dt><dd><dd></dl><dl><dt>2_Modelo de n...pdf</dt><dd><dd></dl><dl><dt>3_Modelo de n...pdf</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 11),
+(253, 'Post-its', '/note/terceiro_ano/primeiro_semestre/ies/Goncalo_Postits.zip', 40384, 1275, 8, 12, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1_IES.pdf</dt><dd><dd></dl><dl><dt>2_Processo so...pdf</dt><dd><dd></dl><dl><dt>3_Desenvolvim...pdf</dt><dd><dd></dl><dl><dt>4_Devops.pdf</dt><dd><dd></dl><dl><dt>5_Padroes arq...pdf</dt><dd><dd></dl><dl><dt>6_Web framewo...pdf</dt><dd><dd></dl><dl><dt>8_Spring fram...pdf</dt><dd><dd></dl><dl><dt>9_Spring boot.pdf</dt><dd><dd></dl><dl><dt>10_Microserviços.pdf</dt><dd><dd></dl><dl><dt>11_Sistemas b...pdf</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 12),
+(256, 'Aulas práticas', '/note/terceiro_ano/primeiro_semestre/ies/Goncalo_Práticas.zip', 40384, 1275, 8, 12, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Lab1_92972.zip</dt><dd><dd></dl><dl><dt>Lab2_92972.zip</dt><dd><dd></dl><dl><dt>Lab3_92972.zip</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 3),
+(259, 'Resumos', '/note/terceiro_ano/primeiro_semestre/ies/Goncalo_IES_TP.pdf', 40384, 1275, 8, 12, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 5),
 (262, 'Projeto final \Store Go\', 'https://github.com/gmatosferreira/IES_Project_G31', 40384, 1275, 8, 12, 0, 0, 0, 0, 0, 1, 0, NULL, '2021-10-18 00:00:00', 3, NULL),
-(265, 'Resumos', '/notes/terceiro_ano/primeiro_semestre/sio/Goncalo_SIO_TP.pdf', 42573, 1275, 8, 3, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 4),
-(268, 'Tópicos exame', '/notes/terceiro_ano/primeiro_semestre/sio/Goncalo_Tópicos_exame.pdf', 42573, 1275, 8, 3, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 2),
-(271, 'Security in Computing', '/notes/terceiro_ano/primeiro_semestre/sio/security-in-computing-5-e.pdf', 42573, NULL, 8, 3, 0, 0, 1, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 18),
-(274, 'Projeto 1 \Exploração de vulnerabilidades\', '/notes/terceiro_ano/primeiro_semestre/sio/Goncalo_[SIO][Projeto 1]_Relatório.pdf', 42573, 1275, 8, 3, 0, 0, 0, 0, 0, 1, 0, NULL, '2021-10-18 00:00:00', 1, 1),
-(277, 'Projeto 4 \Forensics\', '/notes/terceiro_ano/primeiro_semestre/sio/Goncalo_[SIO][Projeto 4]_Relatório.pdf', 42573, 1275, 8, 3, 0, 0, 0, 0, 0, 1, 0, NULL, '2021-10-18 00:00:00', 1, 1),
+(265, 'Resumos', '/note/terceiro_ano/primeiro_semestre/sio/Goncalo_SIO_TP.pdf', 42573, 1275, 8, 3, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 4),
+(268, 'Tópicos exame', '/note/terceiro_ano/primeiro_semestre/sio/Goncalo_Tópicos_exame.pdf', 42573, 1275, 8, 3, 0, 1, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 2),
+(271, 'Security in Computing', '/note/terceiro_ano/primeiro_semestre/sio/security-in-computing-5-e.pdf', 42573, NULL, 8, 3, 0, 0, 1, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 18),
+(274, 'Projeto 1 \Exploração de vulnerabilidades\', '/note/terceiro_ano/primeiro_semestre/sio/Goncalo_[SIO][Projeto 1]_Relatório.pdf', 42573, 1275, 8, 3, 0, 0, 0, 0, 0, 1, 0, NULL, '2021-10-18 00:00:00', 1, 1),
+(277, 'Projeto 4 \Forensics\', '/note/terceiro_ano/primeiro_semestre/sio/Goncalo_[SIO][Projeto 4]_Relatório.pdf', 42573, 1275, 8, 3, 0, 0, 0, 0, 0, 1, 0, NULL, '2021-10-18 00:00:00', 1, 1),
 (280, 'Projeto 2 \Secure Media Player\', 'https://github.com/gmatosferreira/securemediaplayer', 42573, 1275, 8, 3, 0, 0, 0, 0, 0, 1, 0, NULL, '2021-10-18 00:00:00', 3, NULL),
-(283, 'Resumos', '/notes/terceiro_ano/primeiro_semestre/cbd/Goncalo_CBD_TP.pdf', 40385, 1275, 8, 12, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 3),
-(286, 'Post-its', '/notes/terceiro_ano/primeiro_semestre/cbd/Goncalo_Postits.zip', 40385, 1275, 8, 12, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1_Foco nos dados.pdf</dt><dd><dd></dl><dl><dt>2_Modelos de ...pdf</dt><dd><dd></dl><dl><dt>3_Armazenamen...pdf</dt><dd><dd></dl><dl><dt>4_Formatos do...pdf</dt><dd><dd></dl><dl><dt>5 a 8_Tipos b...pdf</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 6),
-(289, 'Práticas', '/notes/terceiro_ano/primeiro_semestre/cbd/Goncalo_Praticas.zip', 40385, 1275, 8, 12, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Lab-1_92972.zip</dt><dd><dd></dl><dl><dt>Lab2_92972.zip</dt><dd><dd></dl><dl><dt>92972_Lab3.zip</dt><dd><dd></dl><dl><dt>92972_Lab4.zip</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 4),
-(292, 'Designing Data Intensive Applications', '/notes/terceiro_ano/primeiro_semestre/cbd/Designing Data Intensive Applications.pdf', 40385, NULL, 8, 12, 0, 0, 1, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 25),
+(283, 'Resumos', '/note/terceiro_ano/primeiro_semestre/cbd/Goncalo_CBD_TP.pdf', 40385, 1275, 8, 12, 1, 0, 0, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 3),
+(286, 'Post-its', '/note/terceiro_ano/primeiro_semestre/cbd/Goncalo_Postits.zip', 40385, 1275, 8, 12, 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>1_Foco nos dados.pdf</dt><dd><dd></dl><dl><dt>2_Modelos de ...pdf</dt><dd><dd></dl><dl><dt>3_Armazenamen...pdf</dt><dd><dd></dl><dl><dt>4_Formatos do...pdf</dt><dd><dd></dl><dl><dt>5 a 8_Tipos b...pdf</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 6),
+(289, 'Práticas', '/note/terceiro_ano/primeiro_semestre/cbd/Goncalo_Praticas.zip', 40385, 1275, 8, 12, 0, 0, 0, 0, 1, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Lab-1_92972.zip</dt><dd><dd></dl><dl><dt>Lab2_92972.zip</dt><dd><dd></dl><dl><dt>92972_Lab3.zip</dt><dd><dd></dl><dl><dt>92972_Lab4.zip</dt><dd><dd></dl><dd></dl>', '2021-10-18 00:00:00', 2, 4),
+(292, 'Designing Data Intensive Applications', '/note/terceiro_ano/primeiro_semestre/cbd/Designing Data Intensive Applications.pdf', 40385, NULL, 8, 12, 0, 0, 1, 0, 0, 0, 0, NULL, '2021-10-18 00:00:00', 1, 25),
 (298, 'Projeto 2 \Secure Media Player\', 'https://github.com/margaridasmartins/digital-rights-management', 42573, 1602, 8, 3, 0, 0, 0, 0, 0, 1, 0, NULL, '2021-11-15 19:17:30', 3, NULL),
 (304, 'Práticas POO', 'https://github.com/Rui-FMF/POO', 40436, 1821, 3, 28, 0, 1, 0, 0, 1, 0, 0, '', '2021-11-15 00:00:00', 3, NULL),
 (307, 'Práticas FP', 'https://github.com/Rui-FMF/FP', 40379, 1821, 3, 27, 0, 0, 0, 0, 1, 0, 0, '', '2021-11-15 00:00:00', 3, NULL),
@@ -1460,19 +1460,19 @@ INSERT INTO aauav_nei.notes (id, name, location, subject_id, author_id, school_y
 (361, 'Projetos TPW', 'https://github.com/Rui-FMF/TPW', 40551, 1821, 8, 25, 0, 0, 0, 0, 0, 1, 0, '', '2021-11-15 00:00:00', 3, NULL),
 (364, 'Projeto de IES', 'https://github.com/margaridasmartins/IES_Project', 40384, 1602, 8, 12, 0, 0, 0, 0, 0, 1, 0, '', '2021-11-15 00:00:00', 3, NULL),
 (367, 'Guiões P e Homework TQS', 'https://github.com/margaridasmartins/TQSLabs', 45426, 1602, 8, 13, 0, 0, 0, 0, 1, 1, 0, '', '2021-11-15 00:00:00', 3, NULL),
-(370, 'Programas MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Programas.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
-(373, 'Exercícios resolvidos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_ExsResolvidos.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
-(376, 'Exercícios MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Exercicios.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
-(379, 'Guiões práticos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Ps.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
-(382, 'Slides teóricos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_TPs.zip', 14817, 2125, 8, 29, 0, 0, 0, 1, 0, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
-(385, 'Formulário MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Form.pdf', 14817, 2125, 8, 29, 1, 0, 0, 0, 0, 0, 0, NULL, '2022-01-31 20:37:14', 1, NULL);
+(370, 'Programas MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_Programas.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(373, 'Exercícios resolvidos MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_ExsResolvidos.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(376, 'Exercícios MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_Exercicios.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(379, 'Guiões práticos MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_Ps.zip', 14817, 2125, 8, 29, 0, 0, 0, 0, 1, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(382, 'Slides teóricos MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_TPs.zip', 14817, 2125, 8, 29, 0, 0, 0, 1, 0, 0, 0, NULL, '2022-01-31 20:37:14', 2, NULL),
+(385, 'Formulário MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_Form.pdf', 14817, 2125, 8, 29, 1, 0, 0, 0, 0, 0, 0, NULL, '2022-01-31 20:37:14', 1, NULL);
 
 
 --
--- Data for Name: notes_school_year; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: note_school_year; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.notes_school_year (id, year_begin, year_end) VALUES
+INSERT INTO aauav_nei.note_school_year (id, year_begin, year_end) VALUES
 (1, 2014, 2015),
 (2, 2017, 2018),
 (3, 2018, 2019),
@@ -1484,10 +1484,10 @@ INSERT INTO aauav_nei.notes_school_year (id, year_begin, year_end) VALUES
 
 
 --
--- Data for Name: notes_subject; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: note_subject; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.notes_subject (paco_code, name, year, semester, short, discontinued, optional) VALUES
+INSERT INTO aauav_nei.note_subject (paco_code, name, year, semester, short, discontinued, optional) VALUES
 (2373, 'Empreendedorismo', 3, 3, 'E', 0, 1),
 (2450, 'Gestão de Empresas', 3, 3, 'GE', 0, 0),
 (9270, 'Arquitectura e Gestão de Redes', 3, 3, 'AGR', 0, 1),
@@ -1533,10 +1533,10 @@ INSERT INTO aauav_nei.notes_subject (paco_code, name, year, semester, short, dis
 
 
 --
--- Data for Name: notes_teachers; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: note_teacher; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.notes_teachers (id, name, personal_page) VALUES
+INSERT INTO aauav_nei.note_teacher (id, name, personal_page) VALUES
 (1, 'José Nuno Panelas Nunes Lau', 'https://www.ua.pt/pt/p/10312826'),
 (2, 'Diogo Nuno Pereira Gomes', 'https://www.ua.pt/pt/p/10331537'),
 (3, 'João Paulo Silva Barraca', 'https://www.ua.pt/pt/p/10333322'),
@@ -1574,18 +1574,18 @@ INSERT INTO aauav_nei.notes_teachers (id, name, personal_page) VALUES
 
 
 --
--- Data for Name: notes_thanks; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: note_thank; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.notes_thanks (id, author_id, notes_personal_page) VALUES
+INSERT INTO aauav_nei.note_thank (id, author_id, note_personal_page) VALUES
 (1, 1161, 'https://resumosdeinformatica.netlify.app/');
 
 
 --
--- Data for Name: notes_types; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: note_types; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.notes_types (id, name, download_caption, icon_display, icon_download, external) VALUES
+INSERT INTO aauav_nei.note_type (id, name, download_caption, icon_display, icon_download, external) VALUES
 (1, 'PDF NEI', 'Descarregar', 'fas file-pdf', 'fas cloud-download-alt', 0),
 (2, 'ZIP NEI', 'Descarregar', 'fas folder', 'fas cloud-download-alt', 0),
 (3, 'Repositório', 'Repositório', 'fab github', 'fab github', 1),
@@ -1593,12 +1593,12 @@ INSERT INTO aauav_nei.notes_types (id, name, download_caption, icon_display, ico
 
 
 --
--- Data for Name: partners; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: partner; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.partners (id, header, company, description, content, link, banner_url, banner_image, banner_until) VALUES
-(1, '/partners/LavandariaFrame.jpg', 'Lavandaria Portuguesa', 'A Lavandaria Portuguesa encontra-se aliada ao NEI desde março de 2018, ajudando o núcleo na área desportiva com lavagens de equipamentos dos atletas que representam o curso.', NULL, 'https://www.facebook.com/alavandariaportuguesa.pt/', NULL, NULL, NULL),
-(2, '/partners/OlisipoFrame.jpg', 'Olisipo', 'Fundada em 1994, a Olisipo é a única empresa portuguesa com mais de 25 anos de experiência dedicada à Gestão de Profissionais na área das Tecnologias de Informação.\n\nSomos gestores de carreira de mais de 500 profissionais de TI e temos Talent Managers capazes de influenciar o sucesso da carreira dos nossos colaboradores e potenciar o crescimento dos nossos clientes.\n\nVem conhecer um Great Place to Work® e uma das 30 melhores empresas para trabalhar em Portugal.', NULL, 'https://bit.ly/3KVT8zs', 'https://bit.ly/3KVT8zs', '/partners/banners/Olisipo.png', '2023-01-31 23:59:59');
+INSERT INTO aauav_nei.partner (id, header, company, description, content, link, banner_url, banner_image, banner_until) VALUES
+(1, '/partner/LavandariaFrame.jpg', 'Lavandaria Portuguesa', 'A Lavandaria Portuguesa encontra-se aliada ao NEI desde março de 2018, ajudando o núcleo na área desportiva com lavagens de equipamentos dos atletas que representam o curso.', NULL, 'https://www.facebook.com/alavandariaportuguesa.pt/', NULL, NULL, NULL),
+(2, '/partner/OlisipoFrame.jpg', 'Olisipo', 'Fundada em 1994, a Olisipo é a única empresa portuguesa com mais de 25 anos de experiência dedicada à Gestão de Profissionais na área das Tecnologias de Informação.\n\nSomos gestores de carreira de mais de 500 profissionais de TI e temos Talent Managers capazes de influenciar o sucesso da carreira dos nossos colaboradores e potenciar o crescimento dos nossos clientes.\n\nVem conhecer um Great Place to Work® e uma das 30 melhores empresas para trabalhar em Portugal.', NULL, 'https://bit.ly/3KVT8zs', 'https://bit.ly/3KVT8zs', '/partner/banners/Olisipo.png', '2023-01-31 23:59:59');
 
 
 --
@@ -1678,21 +1678,21 @@ INSERT INTO aauav_nei.rgm (id, category, mandate, file) VALUES
 
 
 --
--- Data for Name: seniors; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: senior; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.seniors (id, year, course, image) VALUES
-(1, 2020, 'LEI', '/seniors/lei/2020_3.jpg'),
-(2, 2020, 'MEI', '/seniors/mei/2020.jpg'),
+INSERT INTO aauav_nei.senior (id, year, course, image) VALUES
+(1, 2020, 'LEI', '/senior/lei/2020_3.jpg'),
+(2, 2020, 'MEI', '/senior/mei/2020.jpg'),
 (3, 2021, 'LEI', NULL),
 (4, 2021, 'MEI', NULL);
 
 
 --
--- Data for Name: seniors_students; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: senior_student; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.seniors_students (seniors_id, user_id, quote, image) VALUES
+INSERT INTO aauav_nei.senior_student (senior_id, user_id, quote, image) VALUES
 (1, 873, NULL, NULL),
 (1, 879, NULL, NULL),
 (1, 897, NULL, NULL),
@@ -1713,18 +1713,18 @@ INSERT INTO aauav_nei.seniors_students (seniors_id, user_id, quote, image) VALUE
 (1, 1938, NULL, NULL),
 (1, 1995, NULL, NULL),
 (1, 2130, NULL, NULL),
-(2, 1059, NULL, '/seniors/mei/2020/1059.jpg'),
-(2, 2131, NULL, '/seniors/mei/2020/2131.jpg'),
-(3, 1020, 'Level up', '/seniors/lei/2021/1020.jpg'),
-(3, 1164, 'Mal posso esperar para ver o que se segue', '/seniors/lei/2021/1164.jpg'),
-(3, 1200, 'Já dizia a minha avó: \O meu neto não bebe álcool\', '/seniors/lei/2021/1200.jpg'),
-(3, 1275, NULL, '/seniors/lei/2021/1275.jpg'),
-(3, 1329, NULL, '/seniors/lei/2021/1329.jpg'),
-(3, 1461, 'Simplesmente viciado em café e futebol', '/seniors/lei/2021/1461.jpg'),
-(3, 1602, 'MD é fixe.', '/seniors/lei/2021/1602.jpg'),
-(3, 1716, 'Há tempo para tudo na vida académica!', '/seniors/lei/2021/1716.jpg'),
-(3, 1827, 'Melhorias = Mito', '/seniors/lei/2021/1827.jpg'),
-(4, 1023, '<h1>Fun fact: #EAAA00</h1>', '/seniors/mei/2021/1023.jpg');
+(2, 1059, NULL, '/senior/mei/2020/1059.jpg'),
+(2, 2131, NULL, '/senior/mei/2020/2131.jpg'),
+(3, 1020, 'Level up', '/senior/lei/2021/1020.jpg'),
+(3, 1164, 'Mal posso esperar para ver o que se segue', '/senior/lei/2021/1164.jpg'),
+(3, 1200, 'Já dizia a minha avó: \O meu neto não bebe álcool\', '/senior/lei/2021/1200.jpg'),
+(3, 1275, NULL, '/senior/lei/2021/1275.jpg'),
+(3, 1329, NULL, '/senior/lei/2021/1329.jpg'),
+(3, 1461, 'Simplesmente viciado em café e futebol', '/senior/lei/2021/1461.jpg'),
+(3, 1602, 'MD é fixe.', '/senior/lei/2021/1602.jpg'),
+(3, 1716, 'Há tempo para tudo na vida académica!', '/senior/lei/2021/1716.jpg'),
+(3, 1827, 'Melhorias = Mito', '/senior/lei/2021/1827.jpg'),
+(4, 1023, '<h1>Fun fact: #EAAA00</h1>', '/senior/mei/2021/1023.jpg');
 
 
 --
@@ -1871,10 +1871,10 @@ INSERT INTO aauav_nei.team (id, header, mandate, user_id, role_id) VALUES
 
 
 --
--- Data for Name: team_colaborators; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: team_colaborator; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.team_colaborators (user_id, mandate) VALUES
+INSERT INTO aauav_nei.team_colaborator (user_id, mandate) VALUES
 (2104, 2021),
 (2136, 2021),
 (2033, 2021),
@@ -1887,10 +1887,10 @@ INSERT INTO aauav_nei.team_colaborators (user_id, mandate) VALUES
 
 
 --
--- Data for Name: team_roles; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: team_role; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.team_roles (id, name, weight) VALUES
+INSERT INTO aauav_nei.team_role (id, name, weight) VALUES
 (1, 'Coordenador', 6),
 (2, 'Presidente da Mesa da RGM', 3),
 (3, 'Primeiro Secretário da Mesa da RGM', 1),
@@ -1912,10 +1912,10 @@ INSERT INTO aauav_nei.team_roles (id, name, weight) VALUES
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: user; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
-INSERT INTO aauav_nei.users (id, name, full_name, uu_email, uu_iupi, curriculo, linkedin, git, permission, created_at) VALUES
+INSERT INTO aauav_nei.user (id, name, full_name, uu_email, uu_iupi, curriculo, linkedin, git, permission, created_at) VALUES
 (1, 'NEI', 'Núcleo de Estudantes de Informática', '', '', '', '', '', NULL, '2021-04-26'),
 (840, 'Afonso Rodrigues', 'AFONSO ANTÓNIO MAIA RODRIGUES', 'aamrodrigues@ua.pt', '2DAF6140-A055-4F1D-BFE6-6E79D9A0B345', '', '', '', NULL, '1971-01-01'),
 (843, 'Alexandre Rodrigues', 'ALEXANDRE ANTUNES RODRIGUES', 'aarodrigues@ua.pt', '8D850DA2-EB43-4D1E-A2C9-6DD7FA1E48DD', '', '', '', NULL, '1971-01-01'),
@@ -2235,7 +2235,7 @@ INSERT INTO aauav_nei.users (id, name, full_name, uu_email, uu_iupi, curriculo, 
 (1785, 'Pedro Neves', 'PEDRO MIGUEL PEREIRA NEVES', 'pmn@ua.pt', 'BA870AB8-87E0-40D7-87F2-1C4A209DE41F', '', '', '', NULL, '2013-09-12'),
 (1788, 'Pedro Pires', 'PEDRO TEIXEIRA PIRES', 'ptpires@ua.pt', '2C9EB760-267A-4987-B926-89148B8E5DC7', '', 'https://www.linkedin.com/in/el-pires/', '', NULL, '2015-09-23'),
 (1791, 'Rui Jesus', 'RUI FILIPE RIBEIRO JESUS', 'r.jesus@ua.pt', '3E743B4C-D130-4134-8A20-08A6925623BB', '', '', '', NULL, '2015-09-23');
-INSERT INTO aauav_nei.users (id, name, full_name, uu_email, uu_iupi, curriculo, linkedin, git, permission, created_at) VALUES
+INSERT INTO aauav_nei.user (id, name, full_name, uu_email, uu_iupi, curriculo, linkedin, git, permission, created_at) VALUES
 (1794, 'Rui Melo', 'RUI FILIPE COIMBRA PEREIRA DE MELO', 'r.melo@ua.pt', '7EB9EABE-2838-4FFA-AF04-E28CC73EFF3C', '', '', '', NULL, '2017-10-23'),
 (1797, 'Ricardo Antão', 'RICARDO NUNO DE LIMA ANTÃO', 'r.n.l.a@ua.pt', '3754DDDA-7400-4964-8423-3249FDAC6B13', '', '', '', NULL, '2013-09-25'),
 (1800, 'Rafael Direito', 'RAFAEL DAS NEVES SIMÕES DIREITO', 'rafael.neves.direito@ua.pt', '841B00B4-DC68-42B4-AC21-531081E66FD3', '/upload/curriculos/1800.pdf', '', '', NULL, '2017-10-22'),
@@ -2460,17 +2460,17 @@ SELECT pg_catalog.setval('aauav_nei.faina_member_id_seq', 1, false);
 
 
 --
--- Name: faina_roles_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+-- Name: faina_role_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('aauav_nei.faina_roles_id_seq', 1, false);
+SELECT pg_catalog.setval('aauav_nei.faina_role_id_seq', 1, false);
 
 
 --
--- Name: merchandisings_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+-- Name: merch_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('aauav_nei.merchandisings_id_seq', 1, false);
+SELECT pg_catalog.setval('aauav_nei.merch_id_seq', 1, false);
 
 
 --
@@ -2481,45 +2481,45 @@ SELECT pg_catalog.setval('aauav_nei.news_id_seq', 1, false);
 
 
 --
--- Name: notes_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+-- Name: note_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('aauav_nei.notes_id_seq', 1, false);
-
-
---
--- Name: notes_school_year_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
---
-
-SELECT pg_catalog.setval('aauav_nei.notes_school_year_id_seq', 1, false);
+SELECT pg_catalog.setval('aauav_nei.note_id_seq', 1, false);
 
 
 --
--- Name: notes_teachers_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+-- Name: note_school_year_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('aauav_nei.notes_teachers_id_seq', 1, false);
-
-
---
--- Name: notes_thanks_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
---
-
-SELECT pg_catalog.setval('aauav_nei.notes_thanks_id_seq', 1, false);
+SELECT pg_catalog.setval('aauav_nei.note_school_year_id_seq', 1, false);
 
 
 --
--- Name: notes_types_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+-- Name: note_teacher_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('aauav_nei.notes_types_id_seq', 1, false);
+SELECT pg_catalog.setval('aauav_nei.note_teacher_id_seq', 1, false);
 
 
 --
--- Name: partners_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+-- Name: note_thank_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('aauav_nei.partners_id_seq', 1, false);
+SELECT pg_catalog.setval('aauav_nei.note_thank_id_seq', 1, false);
+
+
+--
+-- Name: note_types_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+--
+
+SELECT pg_catalog.setval('aauav_nei.note_type_id_seq', 1, false);
+
+
+--
+-- Name: partner_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+--
+
+SELECT pg_catalog.setval('aauav_nei.partner_id_seq', 1, false);
 
 
 --
@@ -2537,10 +2537,10 @@ SELECT pg_catalog.setval('aauav_nei.rgm_id_seq', 1, false);
 
 
 --
--- Name: seniors_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+-- Name: senior_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('aauav_nei.seniors_id_seq', 1, false);
+SELECT pg_catalog.setval('aauav_nei.senior_id_seq', 1, false);
 
 
 --
@@ -2551,17 +2551,17 @@ SELECT pg_catalog.setval('aauav_nei.team_id_seq', 1, false);
 
 
 --
--- Name: team_roles_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+-- Name: team_role_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('aauav_nei.team_roles_id_seq', 1, false);
+SELECT pg_catalog.setval('aauav_nei.team_role_id_seq', 1, false);
 
 
 --
--- Name: users_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+-- Name: user_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('aauav_nei.users_id_seq', 1, false);
+SELECT pg_catalog.setval('aauav_nei.user_id_seq', 1, false);
 
 
 --
@@ -2595,11 +2595,11 @@ ALTER TABLE ONLY aauav_nei.faina
 
 
 --
--- Name: faina_roles faina_roles_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: faina_role faina_role_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.faina_roles
-    ADD CONSTRAINT faina_roles_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY aauav_nei.faina_role
+    ADD CONSTRAINT faina_role_pkey PRIMARY KEY (id);
 
 
 --
@@ -2611,11 +2611,11 @@ ALTER TABLE ONLY aauav_nei.history
 
 
 --
--- Name: merchandisings merchandisings_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: merch merch_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.merchandisings
-    ADD CONSTRAINT merchandisings_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY aauav_nei.merch
+    ADD CONSTRAINT merch_pkey PRIMARY KEY (id);
 
 
 --
@@ -2627,59 +2627,59 @@ ALTER TABLE ONLY aauav_nei.news
 
 
 --
--- Name: notes notes_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note note_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.notes
-    ADD CONSTRAINT notes_pkey PRIMARY KEY (id);
-
-
---
--- Name: notes_school_year notes_school_year_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
---
-
-ALTER TABLE ONLY aauav_nei.notes_school_year
-    ADD CONSTRAINT notes_school_year_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY aauav_nei.note
+    ADD CONSTRAINT note_pkey PRIMARY KEY (id);
 
 
 --
--- Name: notes_subject notes_subject_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note_school_year note_school_year_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.notes_subject
-    ADD CONSTRAINT notes_subject_pkey PRIMARY KEY (paco_code);
-
-
---
--- Name: notes_teachers notes_teachers_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
---
-
-ALTER TABLE ONLY aauav_nei.notes_teachers
-    ADD CONSTRAINT notes_teachers_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY aauav_nei.note_school_year
+    ADD CONSTRAINT note_school_year_pkey PRIMARY KEY (id);
 
 
 --
--- Name: notes_thanks notes_thanks_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note_subject note_subject_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.notes_thanks
-    ADD CONSTRAINT notes_thanks_pkey PRIMARY KEY (id);
-
-
---
--- Name: notes_types notes_types_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
---
-
-ALTER TABLE ONLY aauav_nei.notes_types
-    ADD CONSTRAINT notes_types_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY aauav_nei.note_subject
+    ADD CONSTRAINT note_subject_pkey PRIMARY KEY (paco_code);
 
 
 --
--- Name: partners partners_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note_teacher note_teacher_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.partners
-    ADD CONSTRAINT partners_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY aauav_nei.note_teacher
+    ADD CONSTRAINT note_teacher_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: note_thank note_thank_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.note_thank
+    ADD CONSTRAINT note_thank_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: note_types note_types_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.note_type
+    ADD CONSTRAINT note_types_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: partner partner_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.partner
+    ADD CONSTRAINT partner_pkey PRIMARY KEY (id);
 
 
 --
@@ -2699,27 +2699,27 @@ ALTER TABLE ONLY aauav_nei.rgm
 
 
 --
--- Name: seniors seniors_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: senior senior_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.seniors
-    ADD CONSTRAINT seniors_pkey PRIMARY KEY (id);
-
-
---
--- Name: seniors_students seniors_students_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
---
-
-ALTER TABLE ONLY aauav_nei.seniors_students
-    ADD CONSTRAINT seniors_students_pkey PRIMARY KEY (seniors_id, user_id);
+ALTER TABLE ONLY aauav_nei.senior
+    ADD CONSTRAINT senior_pkey PRIMARY KEY (id);
 
 
 --
--- Name: team_colaborators team_colaborators_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: senior_student senior_student_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.team_colaborators
-    ADD CONSTRAINT team_colaborators_pkey PRIMARY KEY (user_id, mandate);
+ALTER TABLE ONLY aauav_nei.senior_student
+    ADD CONSTRAINT senior_student_pkey PRIMARY KEY (senior_id, user_id);
+
+
+--
+-- Name: team_colaborator team_colaborator_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.team_colaborator
+    ADD CONSTRAINT team_colaborator_pkey PRIMARY KEY (user_id, mandate);
 
 
 --
@@ -2731,27 +2731,27 @@ ALTER TABLE ONLY aauav_nei.team
 
 
 --
--- Name: team_roles team_roles_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: team_role team_role_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.team_roles
-    ADD CONSTRAINT team_roles_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY aauav_nei.team_role
+    ADD CONSTRAINT team_role_pkey PRIMARY KEY (id);
 
 
 --
--- Name: seniors uc_year_course; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: senior uc_year_course; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.seniors
+ALTER TABLE ONLY aauav_nei.senior
     ADD CONSTRAINT uc_year_course UNIQUE (year, course);
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: user user_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY aauav_nei.user
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
 
 
 --
@@ -2821,52 +2821,52 @@ CREATE INDEX ix_aauav_nei_news_published_by ON aauav_nei.news USING btree (publi
 
 
 --
--- Name: ix_aauav_nei_notes_author_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
+-- Name: ix_aauav_nei_note_author_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE INDEX ix_aauav_nei_notes_author_id ON aauav_nei.notes USING btree (author_id);
-
-
---
--- Name: ix_aauav_nei_notes_created_at; Type: INDEX; Schema: aauav_nei; Owner: postgres
---
-
-CREATE INDEX ix_aauav_nei_notes_created_at ON aauav_nei.notes USING btree (created_at);
+CREATE INDEX ix_aauav_nei_note_author_id ON aauav_nei.note USING btree (author_id);
 
 
 --
--- Name: ix_aauav_nei_notes_school_year_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
+-- Name: ix_aauav_nei_note_created_at; Type: INDEX; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE INDEX ix_aauav_nei_notes_school_year_id ON aauav_nei.notes USING btree (school_year_id);
-
-
---
--- Name: ix_aauav_nei_notes_subject_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
---
-
-CREATE INDEX ix_aauav_nei_notes_subject_id ON aauav_nei.notes USING btree (subject_id);
+CREATE INDEX ix_aauav_nei_note_created_at ON aauav_nei.note USING btree (created_at);
 
 
 --
--- Name: ix_aauav_nei_notes_teacher_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
+-- Name: ix_aauav_nei_note_school_year_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE INDEX ix_aauav_nei_notes_teacher_id ON aauav_nei.notes USING btree (teacher_id);
-
-
---
--- Name: ix_aauav_nei_notes_thanks_author_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
---
-
-CREATE INDEX ix_aauav_nei_notes_thanks_author_id ON aauav_nei.notes_thanks USING btree (author_id);
+CREATE INDEX ix_aauav_nei_note_school_year_id ON aauav_nei.note USING btree (school_year_id);
 
 
 --
--- Name: ix_aauav_nei_notes_type_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
+-- Name: ix_aauav_nei_note_subject_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE INDEX ix_aauav_nei_notes_type_id ON aauav_nei.notes USING btree (type_id);
+CREATE INDEX ix_aauav_nei_note_subject_id ON aauav_nei.note USING btree (subject_id);
+
+
+--
+-- Name: ix_aauav_nei_note_teacher_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
+--
+
+CREATE INDEX ix_aauav_nei_note_teacher_id ON aauav_nei.note USING btree (teacher_id);
+
+
+--
+-- Name: ix_aauav_nei_note_thank_author_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
+--
+
+CREATE INDEX ix_aauav_nei_note_thank_author_id ON aauav_nei.note_thank USING btree (author_id);
+
+
+--
+-- Name: ix_aauav_nei_note_type_id; Type: INDEX; Schema: aauav_nei; Owner: postgres
+--
+
+CREATE INDEX ix_aauav_nei_note_type_id ON aauav_nei.note USING btree (type_id);
 
 
 --
@@ -2884,10 +2884,10 @@ CREATE INDEX ix_aauav_nei_team_role_id ON aauav_nei.team USING btree (role_id);
 
 
 --
--- Name: ix_aauav_nei_team_roles_weight; Type: INDEX; Schema: aauav_nei; Owner: postgres
+-- Name: ix_aauav_nei_team_role_weight; Type: INDEX; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE INDEX ix_aauav_nei_team_roles_weight ON aauav_nei.team_roles USING btree (weight);
+CREATE INDEX ix_aauav_nei_team_role_weight ON aauav_nei.team_role USING btree (weight);
 
 
 --
@@ -2898,10 +2898,10 @@ CREATE INDEX ix_aauav_nei_team_user_id ON aauav_nei.team USING btree (user_id);
 
 
 --
--- Name: ix_aauav_nei_users_created_at; Type: INDEX; Schema: aauav_nei; Owner: postgres
+-- Name: ix_aauav_nei_user_created_at; Type: INDEX; Schema: aauav_nei; Owner: postgres
 --
 
-CREATE INDEX ix_aauav_nei_users_created_at ON aauav_nei.users USING btree (created_at);
+CREATE INDEX ix_aauav_nei_user_created_at ON aauav_nei.user USING btree (created_at);
 
 
 --
@@ -2924,7 +2924,7 @@ ALTER TABLE ONLY aauav_nei.faina_member
 --
 
 ALTER TABLE ONLY aauav_nei.faina_member
-    ADD CONSTRAINT faina_member_member_id_fkey FOREIGN KEY (member_id) REFERENCES aauav_nei.users(id);
+    ADD CONSTRAINT faina_member_member_id_fkey FOREIGN KEY (member_id) REFERENCES aauav_nei.user(id);
 
 
 --
@@ -2932,7 +2932,7 @@ ALTER TABLE ONLY aauav_nei.faina_member
 --
 
 ALTER TABLE ONLY aauav_nei.faina_member
-    ADD CONSTRAINT faina_member_role_id_fkey FOREIGN KEY (role_id) REFERENCES aauav_nei.faina_roles(id);
+    ADD CONSTRAINT faina_member_role_id_fkey FOREIGN KEY (role_id) REFERENCES aauav_nei.faina_role(id);
 
 
 --
@@ -2940,23 +2940,23 @@ ALTER TABLE ONLY aauav_nei.faina_member
 --
 
 ALTER TABLE ONLY aauav_nei.news
-    ADD CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES aauav_nei.users(id);
+    ADD CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES aauav_nei.user(id);
 
 
 --
--- Name: notes fk_author_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note fk_author_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.notes
-    ADD CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES aauav_nei.users(id);
+ALTER TABLE ONLY aauav_nei.note
+    ADD CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES aauav_nei.user(id);
 
 
 --
--- Name: notes_thanks fk_author_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note_thank fk_author_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.notes_thanks
-    ADD CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES aauav_nei.users(id);
+ALTER TABLE ONLY aauav_nei.note_thank
+    ADD CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES aauav_nei.user(id);
 
 
 --
@@ -2964,7 +2964,7 @@ ALTER TABLE ONLY aauav_nei.notes_thanks
 --
 
 ALTER TABLE ONLY aauav_nei.news
-    ADD CONSTRAINT fk_editor_id FOREIGN KEY (changed_by) REFERENCES aauav_nei.users(id);
+    ADD CONSTRAINT fk_editor_id FOREIGN KEY (changed_by) REFERENCES aauav_nei.user(id);
 
 
 --
@@ -2972,63 +2972,63 @@ ALTER TABLE ONLY aauav_nei.news
 --
 
 ALTER TABLE ONLY aauav_nei.news
-    ADD CONSTRAINT fk_publisher_id FOREIGN KEY (published_by) REFERENCES aauav_nei.users(id);
+    ADD CONSTRAINT fk_publisher_id FOREIGN KEY (published_by) REFERENCES aauav_nei.user(id);
 
 
 --
--- Name: notes fk_school_year_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note fk_school_year_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.notes
-    ADD CONSTRAINT fk_school_year_id FOREIGN KEY (school_year_id) REFERENCES aauav_nei.notes_school_year(id);
-
-
---
--- Name: notes fk_subject_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
---
-
-ALTER TABLE ONLY aauav_nei.notes
-    ADD CONSTRAINT fk_subject_id FOREIGN KEY (subject_id) REFERENCES aauav_nei.notes_subject(paco_code);
+ALTER TABLE ONLY aauav_nei.note
+    ADD CONSTRAINT fk_school_year_id FOREIGN KEY (school_year_id) REFERENCES aauav_nei.note_school_year(id);
 
 
 --
--- Name: notes fk_teacher_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note fk_subject_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.notes
-    ADD CONSTRAINT fk_teacher_id FOREIGN KEY (teacher_id) REFERENCES aauav_nei.notes_teachers(id);
-
-
---
--- Name: notes fk_type_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
---
-
-ALTER TABLE ONLY aauav_nei.notes
-    ADD CONSTRAINT fk_type_id FOREIGN KEY (type_id) REFERENCES aauav_nei.notes_types(id);
+ALTER TABLE ONLY aauav_nei.note
+    ADD CONSTRAINT fk_subject_id FOREIGN KEY (subject_id) REFERENCES aauav_nei.note_subject(paco_code);
 
 
 --
--- Name: seniors_students seniors_students_seniors_id_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note fk_teacher_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.seniors_students
-    ADD CONSTRAINT seniors_students_seniors_id_fkey FOREIGN KEY (seniors_id) REFERENCES aauav_nei.seniors(id);
-
-
---
--- Name: seniors_students seniors_students_user_id_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
---
-
-ALTER TABLE ONLY aauav_nei.seniors_students
-    ADD CONSTRAINT seniors_students_user_id_fkey FOREIGN KEY (user_id) REFERENCES aauav_nei.users(id);
+ALTER TABLE ONLY aauav_nei.note
+    ADD CONSTRAINT fk_teacher_id FOREIGN KEY (teacher_id) REFERENCES aauav_nei.note_teacher(id);
 
 
 --
--- Name: team_colaborators team_colaborators_user_id_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note fk_type_id; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
-ALTER TABLE ONLY aauav_nei.team_colaborators
-    ADD CONSTRAINT team_colaborators_user_id_fkey FOREIGN KEY (user_id) REFERENCES aauav_nei.users(id);
+ALTER TABLE ONLY aauav_nei.note
+    ADD CONSTRAINT fk_type_id FOREIGN KEY (type_id) REFERENCES aauav_nei.note_type(id);
+
+
+--
+-- Name: senior_student senior_student_senior_id_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.senior_student
+    ADD CONSTRAINT senior_student_senior_id_fkey FOREIGN KEY (senior_id) REFERENCES aauav_nei.senior(id);
+
+
+--
+-- Name: senior_student senior_student_user_id_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.senior_student
+    ADD CONSTRAINT senior_student_user_id_fkey FOREIGN KEY (user_id) REFERENCES aauav_nei.user(id);
+
+
+--
+-- Name: team_colaborator team_colaborator_user_id_fkey; Type: FK CONSTRAINT; Schema: aauav_nei; Owner: postgres
+--
+
+ALTER TABLE ONLY aauav_nei.team_colaborator
+    ADD CONSTRAINT team_colaborator_user_id_fkey FOREIGN KEY (user_id) REFERENCES aauav_nei.user(id);
 
 
 --
@@ -3036,7 +3036,7 @@ ALTER TABLE ONLY aauav_nei.team_colaborators
 --
 
 ALTER TABLE ONLY aauav_nei.team
-    ADD CONSTRAINT team_role_id_fkey FOREIGN KEY (role_id) REFERENCES aauav_nei.team_roles(id);
+    ADD CONSTRAINT team_role_id_fkey FOREIGN KEY (role_id) REFERENCES aauav_nei.team_role(id);
 
 
 --
@@ -3044,7 +3044,7 @@ ALTER TABLE ONLY aauav_nei.team
 --
 
 ALTER TABLE ONLY aauav_nei.team
-    ADD CONSTRAINT team_user_id_fkey FOREIGN KEY (user_id) REFERENCES aauav_nei.users(id);
+    ADD CONSTRAINT team_user_id_fkey FOREIGN KEY (user_id) REFERENCES aauav_nei.user(id);
 
 
 --

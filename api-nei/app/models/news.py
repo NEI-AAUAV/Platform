@@ -19,15 +19,15 @@ class News(Base):
     title = Column(String(255))
     category = Column(Enum(CategoryEnum, name="category_enum", inherit_schema=True))
     content = Column(String(20000))
-    published_by = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id", name="fk_publisher_id"), index=True)
+    published_by = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".user.id", name="fk_publisher_id"), index=True)
     created_at = Column(DateTime)
     last_change_at = Column(DateTime)
-    changed_by = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id", name="fk_editor_id"), index=True)
-    author_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".users.id", name="fk_author_id"), index=True)
+    changed_by = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".user.id", name="fk_editor_id"), index=True)
+    author_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".user.id", name="fk_author_id"), index=True)
 
-    publisher = relationship("Users", foreign_keys=[published_by])
-    editor = relationship("Users", foreign_keys=[changed_by])
-    author = relationship("Users", foreign_keys=[author_id])
+    publisher = relationship("User", foreign_keys=[published_by])
+    editor = relationship("User", foreign_keys=[changed_by])
+    author = relationship("User", foreign_keys=[author_id])
 
     @hybrid_property
     def header(self) -> Optional[AnyHttpUrl]:

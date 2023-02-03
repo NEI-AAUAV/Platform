@@ -6,7 +6,7 @@ from io import BytesIO
 
 
 client_key = '_82e3318ee5c5cf2c7d7f7a1367fd4b3ea40858f08a'
-client_secret = '_41a9634beb15a4155bd36117ea97bbb1390887707b'
+client_secret = '...'
 
 request_token_url = 'https://identity.ua.pt/oauth/request_token'
 authorize_url = 'https://identity.ua.pt/oauth/authorize'
@@ -84,4 +84,3 @@ def get_data(resource_owner_key, resource_owner_secret):
 
 
 # get_tokens()
-get_data('_b6c9f483bc2281ca4af46763c6202db4f9c8ff267e', '_534efb0b4975502c4c5bcc39f6c632d75b6358f9f0')

@@ -15,11 +15,11 @@ class Team(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     _header = Column("header", String(2048))
     mandate = Column(Integer, index=True)
-    user_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + '.users.id'), index=True)
-    role_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + '.team_roles.id'), index=True)
+    user_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + '.user.id'), index=True)
+    role_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + '.team_role.id'), index=True)
 
-    user = relationship("Users", foreign_keys=[user_id])
-    role = relationship("TeamRoles", foreign_keys=[role_id])
+    user = relationship("User", foreign_keys=[user_id])
+    role = relationship("TeamRole", foreign_keys=[role_id])
 
     @hybrid_property
     def header(self) -> Optional[AnyHttpUrl]:

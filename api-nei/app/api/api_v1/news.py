@@ -30,14 +30,13 @@ def get_news_list(
     return Page.create(total, items, page_params)
 
 
-@router.get("/categories", status_code=200, response_model=NewsCategories)
+@router.get("/category", status_code=200, response_model=NewsCategories)
 def get_news_categories(
     *, db: Session = Depends(deps.get_db),
 ) -> Any:
     """
     Return the categories
     """
-
     data = crud.news.get_news_categories(db=db)
     data = [e[0].value for e in data]
     return {"data": data}

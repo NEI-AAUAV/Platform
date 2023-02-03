@@ -6,7 +6,7 @@ from datetime import date, datetime
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.models import Users
+from app.models import User
 from app.tests.conftest import SessionTesting
 
 USERS = [
@@ -53,7 +53,7 @@ def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
     for user in USERS:
-        db.add(Users(**user))
+        db.add(User(**user))
     db.commit()
 
 def test_get_users(client: TestClient) -> None:
