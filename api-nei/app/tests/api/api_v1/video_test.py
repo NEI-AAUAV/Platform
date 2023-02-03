@@ -66,7 +66,7 @@ def setup_database(db: SessionTesting):
     db.commit()
 
 def test_get_VideoTags(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/categories/")
+    r = client.get(f"{settings.API_V1_STR}/video/category/")
     data = r.json()
     assert r.status_code == 200
     assert len(data) == 2
@@ -74,7 +74,7 @@ def test_get_VideoTags(db: SessionTesting, client: TestClient) -> None:
     assert "id" in data[0]
 
 def test_get_VideosbyCategories(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/?tag[]=0&tag[]=1&page=1")
+    r = client.get(f"{settings.API_V1_STR}/video/?tag[]=0&tag[]=1&page=1")
     data = r.json()
     assert r.status_code == 200
     assert len(data["items"]) == 3
@@ -83,7 +83,7 @@ def test_get_VideosbyCategories(db: SessionTesting, client: TestClient) -> None:
 
 def test_get_Video(db: SessionTesting, client: TestClient) -> None:
     id = (db.query(Video).first().id)
-    r = client.get(f"{settings.API_V1_STR}/videos/{id}")
+    r = client.get(f"{settings.API_V1_STR}/video/{id}")
     data = r.json()
     assert r.status_code == 200
     assert len(data) == 8
@@ -91,19 +91,19 @@ def test_get_Video(db: SessionTesting, client: TestClient) -> None:
     assert "id" in data
     
 def test_get_VideoBadRequest(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/?tag[]=-1")
+    r = client.get(f"{settings.API_V1_STR}/video/?tag[]=-1")
     data = r.json()
     assert r.status_code == 400
 
 def test_get_VideoWithPartialInfo(db: SessionTesting, client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/videos/?tag[]=0&tag[]=1")
+    r = client.get(f"{settings.API_V1_STR}/video/?tag[]=0&tag[]=1")
     data = r.json()
     assert r.status_code == 200
     assert len(data["items"]) == 3
     assert data["items"][0].keys() >= videos[0].keys()
     assert "id" in data["items"][0]
     
-    r = client.get(f"{settings.API_V1_STR}/videos/?page=1")
+    r = client.get(f"{settings.API_V1_STR}/video/?page=1")
     data = r.json()
     assert r.status_code == 200
     assert len(data["items"]) == 3

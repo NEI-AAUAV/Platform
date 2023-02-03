@@ -31,7 +31,7 @@ def create_senior_student(
     senior = crud.senior.get(db=db, year=senior_student_create_in.year, course=senior_student_create_in.course)
     if not senior:
         raise HTTPException(status_code=404, detail="Senior not found")
-    user = crud.get(db=db, id=senior_student_create_in.user_id)
+    user = crud.user.get(db=db, id=senior_student_create_in.user_id)
     if not user:
         raise HTTPException(status_code=400, detail="User not found!")
     return crud.senior_student.create(db=db, obj_in=senior_student_create_in)

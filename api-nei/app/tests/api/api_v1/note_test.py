@@ -197,6 +197,7 @@ def setup_database(db: SessionTesting):
 def test_get_note(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/note/")
     data = r.json()
+    print(data)
     assert r.status_code == 200
     assert "author" in data["items"][0]
     assert "teacher" in data["items"][0]

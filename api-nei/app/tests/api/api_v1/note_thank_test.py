@@ -81,7 +81,7 @@ def setup_database(db: SessionTesting):
 
 
 def test_get_note_thank(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/note/thanks/")
+    r = client.get(f"{settings.API_V1_STR}/note/thank/")
     data = r.json()
     assert r.status_code == 200
     assert len(data) == 2  # created 2 note subjects

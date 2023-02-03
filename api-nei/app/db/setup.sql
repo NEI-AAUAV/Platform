@@ -445,7 +445,7 @@ ALTER SEQUENCE aauav_nei.note_thank_id_seq OWNED BY aauav_nei.note_thank.id;
 
 
 --
--- Name: note_types; Type: TABLE; Schema: aauav_nei; Owner: postgres
+-- Name: note_type; Type: TABLE; Schema: aauav_nei; Owner: postgres
 --
 
 CREATE TABLE aauav_nei.note_type (
@@ -461,7 +461,7 @@ CREATE TABLE aauav_nei.note_type (
 ALTER TABLE aauav_nei.note_type OWNER TO postgres;
 
 --
--- Name: note_types_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
+-- Name: note_type_id_seq; Type: SEQUENCE; Schema: aauav_nei; Owner: postgres
 --
 
 CREATE SEQUENCE aauav_nei.note_type_id_seq
@@ -476,7 +476,7 @@ CREATE SEQUENCE aauav_nei.note_type_id_seq
 ALTER TABLE aauav_nei.note_type_id_seq OWNER TO postgres;
 
 --
--- Name: note_types_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
+-- Name: note_type_id_seq; Type: SEQUENCE OWNED BY; Schema: aauav_nei; Owner: postgres
 --
 
 ALTER SEQUENCE aauav_nei.note_type_id_seq OWNED BY aauav_nei.note_type.id;
@@ -920,7 +920,7 @@ ALTER TABLE ONLY aauav_nei.note_thank ALTER COLUMN id SET DEFAULT nextval('aauav
 
 
 --
--- Name: note_types id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
+-- Name: note_type id; Type: DEFAULT; Schema: aauav_nei; Owner: postgres
 --
 
 ALTER TABLE ONLY aauav_nei.note_type ALTER COLUMN id SET DEFAULT nextval('aauav_nei.note_type_id_seq'::regclass);
@@ -1582,7 +1582,7 @@ INSERT INTO aauav_nei.note_thank (id, author_id, note_personal_page) VALUES
 
 
 --
--- Data for Name: note_types; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
+-- Data for Name: note_type; Type: TABLE DATA; Schema: aauav_nei; Owner: postgres
 --
 
 INSERT INTO aauav_nei.note_type (id, name, download_caption, icon_display, icon_download, external) VALUES
@@ -2509,7 +2509,7 @@ SELECT pg_catalog.setval('aauav_nei.note_thank_id_seq', 1, false);
 
 
 --
--- Name: note_types_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
+-- Name: note_type_id_seq; Type: SEQUENCE SET; Schema: aauav_nei; Owner: postgres
 --
 
 SELECT pg_catalog.setval('aauav_nei.note_type_id_seq', 1, false);
@@ -2667,11 +2667,11 @@ ALTER TABLE ONLY aauav_nei.note_thank
 
 
 --
--- Name: note_types note_types_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
+-- Name: note_type note_type_pkey; Type: CONSTRAINT; Schema: aauav_nei; Owner: postgres
 --
 
 ALTER TABLE ONLY aauav_nei.note_type
-    ADD CONSTRAINT note_types_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT note_type_pkey PRIMARY KEY (id);
 
 
 --

@@ -7,4 +7,4 @@ class CRUDNoteType(CRUDBase[NoteType, NoteTypeCreate, NoteTypeUpdate]):
     ...
 
 
-note_types = CRUDNoteType(NoteType)
+note_type = CRUDNoteType(NoteType)

@@ -8,7 +8,7 @@ from app.models import Redirect
 from app.tests.conftest import SessionTesting
 
 
-redirect = [
+redirects = [
     {
         "id": 0,
         "alias": "Test1",
@@ -20,18 +20,19 @@ redirect = [
 def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
-    for redirects in redirect:
-        db.add(Redirect(**redirects))
+    for redirect in redirects:
+        db.add(Redirect(**redirect))
     db.commit()
 
-def test_get_redirect(db: SessionTesting, client: TestClient) -> None:
+def test_get_redirect(client: TestClient) -> None:
     redirectAlias = "Test1"
-    r = client.get(f"{settings.API_V1_STR}/redirects/?alias={redirectAlias}")
+    r = client.get(f"{settings.API_V1_STR}/redirect/?alias={redirectAlias}")
     data = r.json()
+    print(data)
     assert data["redirect"] == "redirecforTest1"
 
 def test_redirect_error(client: TestClient) -> None:
     redirectAlias = "Test3"
-    r = client.get(f"{settings.API_V1_STR}/redirects/?alias={redirectAlias}")
+    r = client.get(f"{settings.API_V1_STR}/redirect/?alias={redirectAlias}")
     data = r.json()
     assert r.status_code == 404

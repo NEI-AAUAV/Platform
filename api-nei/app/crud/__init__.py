@@ -13,9 +13,9 @@ from .crud_merch import merch
 from .crud_note_schoolyear import note_schoolyear
 from .crud_note_teacher import note_teacher
 from .crud_note_thank import note_thank
-from .crud_note_type import note_types
+from .crud_note_type import note_type
 from .crud_note_subject import note_subject
-from .crud_user import users
+from .crud_user import user
 from .crud_video import video
 from .crud_video_tag import videotag
 from .crud_redirect import redirect

@@ -57,7 +57,7 @@ def setup_database(db: SessionTesting):
     db.commit()
 
 def test_get_users(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/users/")
+    r = client.get(f"{settings.API_V1_STR}/user/")
     data = r.json()
     assert r.status_code == 200
     assert len(data) == 2
@@ -66,7 +66,7 @@ def test_get_users(client: TestClient) -> None:
 
 def test_get_user_by_id(client: TestClient) -> None:
     user_id = 2
-    r = client.get(f"{settings.API_V1_STR}/users/{user_id}")
+    r = client.get(f"{settings.API_V1_STR}/user/{user_id}")
     data = r.json()
     assert r.status_code == 200
     assert "id" in data
@@ -75,13 +75,13 @@ def test_get_user_by_id(client: TestClient) -> None:
 
 def test_get_inexistent_user_by_id(client: TestClient) -> None:
     inexistent_user_id = 10
-    r = client.get(f"{settings.API_V1_STR}/users/{inexistent_user_id}")
+    r = client.get(f"{settings.API_V1_STR}/user/{inexistent_user_id}")
     data = r.json()
     assert r.status_code == 404
     assert data["detail"] == "Invalid User id"
 
 def test_create_user(client: TestClient) -> None:
-    r = client.post(f"{settings.API_V1_STR}/users/", json=user)
+    r = client.post(f"{settings.API_V1_STR}/user/", json=user)
     data = r.json()
     assert r.status_code == 201
     assert "id" in data
@@ -89,7 +89,7 @@ def test_create_user(client: TestClient) -> None:
 
 def test_update_user(client: TestClient) -> None:
     user_id = 2
-    r = client.put(f"{settings.API_V1_STR}/users/{user_id}", json=user)
+    r = client.put(f"{settings.API_V1_STR}/user/{user_id}", json=user)
     data = r.json()
     assert r.status_code == 200
     assert data["id"] == user_id
@@ -97,7 +97,7 @@ def test_update_user(client: TestClient) -> None:
 
 def test_update_inexistent_user(client: TestClient) -> None:
     inexistent_user_id = 10
-    r = client.put(f"{settings.API_V1_STR}/users/{inexistent_user_id}", json=user)
+    r = client.put(f"{settings.API_V1_STR}/user/{inexistent_user_id}", json=user)
     assert r.status_code == 404
     data = r.json()
     assert data["detail"] == "Invalid User id"

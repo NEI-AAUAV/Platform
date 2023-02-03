@@ -18,7 +18,7 @@ api_v1_router.include_router(faina_role.router, prefix="/faina/role", tags=["CF 
 api_v1_router.include_router(faina_member.router, prefix="/faina/member", tags=["CF Member"])
 api_v1_router.include_router(faina.router, prefix="/faina", tags=["CF List"])
 api_v1_router.include_router(video.router, prefix="/video", tags=["Video"])
-api_v1_router.include_router(redirect.router, prefix="/redirects", tags=["Redirect"])
+api_v1_router.include_router(redirect.router, prefix="/redirect", tags=["Redirect"])
 api_v1_router.include_router(news.router, prefix="/news", tags=["News"])
 api_v1_router.include_router(note.router, prefix="/note", tags=["Note"])
 api_v1_router.include_router(history.router, prefix="/history", tags=["History"])

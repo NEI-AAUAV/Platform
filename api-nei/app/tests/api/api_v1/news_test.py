@@ -109,7 +109,7 @@ def test_get_specific_error(client:TestClient) -> None:
     assert r.status_code == 404
 
 def test_get_categories(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/news/categories")
+    r = client.get(f"{settings.API_V1_STR}/news/category")
     data = r.json()
     assert r.status_code == 200
     assert len(data['data']) == 2

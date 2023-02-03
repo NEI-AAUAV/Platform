@@ -16,7 +16,7 @@ def get_users(
 ) -> Any:
     """
     """
-    return crud.get_multi(db=db)
+    return crud.user.get_multi(db=db)
 
 
 @router.get("/{id}", status_code=200, response_model=UserInDB)
@@ -27,7 +27,7 @@ def get_user_by_id(
     """
     if not db.get(User, id):
         raise HTTPException(status_code=404, detail="Invalid User id")
-    return crud.get(db=db, id=id)
+    return crud.user.get(db=db, id=id)
 
 
 @router.post("/", status_code=201, response_model=UserInDB)
@@ -37,7 +37,7 @@ def create_user(
     """
     Create a new user in the database.
     """
-    return crud.create(db=db, obj_in=user_in)
+    return crud.user.create(db=db, obj_in=user_in)
 
 
 @router.put("/{id}", status_code=200, response_model=UserInDB)

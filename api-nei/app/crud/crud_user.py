@@ -7,4 +7,4 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     ...
 
 
-users = CRUDUser(User)
+user = CRUDUser(User)

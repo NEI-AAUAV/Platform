@@ -3,25 +3,25 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.models import NoteSchoolYear
+from app.models import NoteTeacher
 from app.tests.conftest import SessionTesting
 
-NOTES_SCHOOL_YEAR = [
+NOTES_TEACHERS = [
     {
         "id": 2,
-        "year_begin": 2020,
-        "year_end": 2023
+        'name': 'DG',
+        'personal_page': 'personalpage_dg'
     },
     {
         "id": 3,
-        "year_begin": 2020,
-        "year_end": 2023
+        'name': 'TOS',
+        'personal_page': 'personalpage_tos'
     }
 ]
 
-note_year = {
-    "year_begin": 2079,
-    "year_end": 2090
+note_teacher = {
+    'name': 'PT',
+    'personal_page': 'personalpage_pt'
 }
 
 
@@ -29,17 +29,17 @@ note_year = {
 def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
-    for subj in NOTES_SCHOOL_YEAR:
-        db.add(NoteSchoolYear(**subj))
+    for subj in NOTES_TEACHERS:
+        db.add(NoteTeacher(**subj))
     db.commit()
 
 
-def test_get_note_year(client: TestClient) -> None:
-    r = client.get(f"{settings.API_V1_STR}/note/years/")
+def test_get_note_teacher(client: TestClient) -> None:
+    r = client.get(f"{settings.API_V1_STR}/note/teacher/")
     data = r.json()
     assert r.status_code == 200
     assert len(data) == 2  # created 2 note subjects
     for lst in data:
         assert "id" in lst
-        assert "year_begin" in lst
-        assert "year_end" in lst
+        assert "name" in lst
+        assert "personal_page" in lst

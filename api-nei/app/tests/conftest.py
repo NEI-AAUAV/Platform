@@ -34,7 +34,9 @@ def connection():
     """
     connection = engine.connect()
     if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
-        event.listen(Base.metadata, "before_create", CreateSchema(settings.SCHEMA_NAME))
+        connection.execute(f'create schema if not exists {settings.SCHEMA_NAME}')
+        # event.listen(Base.metadata, "before_create", CreateSchema(settings.SCHEMA_NAME))
+        print("\n\n\n\nYOOOOOOOOOOOOOOOOOOO\n\n\n\n")
 
     Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)
