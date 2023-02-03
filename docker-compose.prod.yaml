@@ -1,0 +1,122 @@
+version: "3.9"
+
+services:
+  db_pg:
+    image: postgres:15-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: postgres_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes: 
+      - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
+      - ./api-rallytascas/app/db/setup.sql:/docker-entrypoint-initdb.d/rallytascas-0001.sql
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - net_backend
+    restart: always
+  api_nei:
+    image: neiaauav/api-nei:${TAG:-latest}
+    build:
+      context: api-nei
+      dockerfile: Dockerfile.prod
+    ports:
+      - 8000:8000
+    environment:
+      - ENV=production
+      - POSTGRES_SERVER=db_pg
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    volumes: 
+      - /api-nei/static:/api_nei/static
+    depends_on:
+      db_pg:
+        condition: service_healthy
+    networks:
+      - net_backend
+    restart: always
+  api_tacaua:
+    image: neiaauav/api-tacaua:${TAG:-latest}
+    build:
+      context: api-tacaua
+      dockerfile: Dockerfile.prod
+    ports:
+      - 8001:8001
+    environment:
+      ENV: production
+      POSTGRES_SERVER: db_pg
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes: 
+      - /api-tacaua/static:/api_tacaua/static
+    depends_on:
+      db_pg:
+        condition: service_healthy
+    networks:
+      - net_backend
+    restart: always
+    profiles:
+      - disabled
+  api_rallytascas:
+    image: neiaauav/api-rallytascas:${TAG:-latest}
+    build:
+      context: api-rallytascas
+      dockerfile: Dockerfile.prod
+    ports:
+      - 8002:8002
+    environment:
+      ENV: production
+      POSTGRES_SERVER: db_pg
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      SECRET_KEY: ${SECRET_KEY}
+    volumes: 
+      - /api-rallytascas/static:/api_rallytascas/static
+    depends_on:
+      db_pg:
+        condition: service_healthy
+    networks:
+      - net_backend
+    restart: always
+    profiles:
+      - disabled
+  webapp_nei:
+    image: neiaauav/webapp-nei:${TAG:-latest}
+    build:
+      context: webapp-nei
+      dockerfile: Dockerfile.prod
+    ports:
+      - 3000:3000
+    networks:
+      - net_frontend
+    restart: always
+  proxy:
+    image: neiaauav/proxy:${TAG:-latest}
+    build:
+      context: proxy/nei.web.ua.pt
+      # context: proxy/nei-aauav.pt
+      dockerfile: Dockerfile.prod
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      # - /proxy/nei.web.ua.pt/config:/etc/nginx
+      - /proxy/nei.web.ua.pt/ssl:/etc/ssl/private
+      # - /proxy/nei-aauav.pt/ssl:/etc/letsencrypt
+    networks:
+      - net_backend
+      - net_frontend
+    restart: always
+
+networks:
+  net_backend:
+    driver: bridge
+  net_frontend:
+    driver: bridge
+
+volumes:
+  pg_data:
+    driver: local

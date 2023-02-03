@@ -8,7 +8,7 @@ jobs:
       - run:
           name: Run NEI-API Tests
           command: |
-            cd ./nei-api
+            cd ./api-nei
             pip install --upgrade pip
             pip3 install poetry
             pip3 install -U pip virtualenv
@@ -20,7 +20,7 @@ jobs:
       - run:
           name: Run TacaUa-API Tests
           command: |
-            cd ./tacaua-api
+            cd ./api-tacaua
             pip install --upgrade pip
             pip3 install poetry
             pip3 install -U pip virtualenv
@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Run RallyTascas-API Tests
           command: |
-            cd ./rallytascas-api
+            cd ./api-rallytascas
             pip install --upgrade pip
             pip3 install poetry
             pip3 install -U pip virtualenv
