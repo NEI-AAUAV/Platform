@@ -16,6 +16,7 @@ redirects = [
     }
 ]
 
+
 @pytest.fixture(autouse=True)
 def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
@@ -24,12 +25,13 @@ def setup_database(db: SessionTesting):
         db.add(Redirect(**redirect))
     db.commit()
 
+
 def test_get_redirect(client: TestClient) -> None:
     redirectAlias = "Test1"
     r = client.get(f"{settings.API_V1_STR}/redirect/?alias={redirectAlias}")
     data = r.json()
-    print(data)
     assert data["redirect"] == "redirecforTest1"
+
 
 def test_redirect_error(client: TestClient) -> None:
     redirectAlias = "Test3"

@@ -44,7 +44,7 @@ class Note(Base):
     def location(self) -> Optional[AnyHttpUrl]:
         if not self._location:
             return None
-        if self._location.startswith('/'):
+        if str(self._location).startswith('/'):
             return settings.STATIC_URL + self._location
         return self._location
 

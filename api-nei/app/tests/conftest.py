@@ -3,7 +3,7 @@ from typing import Generator, Any
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, event, DDL
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import Connection
 from sqlalchemy.schema import CreateSchema
@@ -13,15 +13,17 @@ from app.api.api import api_v1_router
 from app.core.config import settings
 from app.db.base_class import Base
 
-# Since we import .main, the code in it will be executed,
+# Since we import app.main, the code in it will be executed,
 # including the definition of the table models.
 #
 # This hack will automatically register the tables in Base.metadata.
 import app.main
 
 
-# Create a PostgreSQL database specifically for testing and
-# keep the original database untouched.
+# Create a PostgreSQL DB specifically for testing and
+# keep the original DB untouched.
+#
+# Add echo=True in `create_engine` to log all DB commands made
 engine = create_engine(settings.TEST_SQLALCHEMY_DATABASE_URI)
 SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -34,9 +36,8 @@ def connection():
     """
     connection = engine.connect()
     if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
-        connection.execute(f'create schema if not exists {settings.SCHEMA_NAME}')
-        # event.listen(Base.metadata, "before_create", CreateSchema(settings.SCHEMA_NAME))
-        print("\n\n\n\nYOOOOOOOOOOOOOOOOOOO\n\n\n\n")
+        event.listen(Base.metadata, "before_create",
+                     CreateSchema(settings.SCHEMA_NAME), insert=True)
 
     Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)

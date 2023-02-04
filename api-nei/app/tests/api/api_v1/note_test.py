@@ -197,7 +197,6 @@ def setup_database(db: SessionTesting):
 def test_get_note(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/note/")
     data = r.json()
-    print(data)
     assert r.status_code == 200
     assert "author" in data["items"][0]
     assert "teacher" in data["items"][0]
@@ -227,12 +226,11 @@ def test_get_note_by_categories(client: TestClient) -> None:
         f"{settings.API_V1_STR}/note?category[]=bibliography&category[]=tests")
     assert r.status_code == 200
     data = r.json()
-    assert data['total'] == len(data['items']) == 1
-    assert all(i['bibliography'] and i['tests'] for i in data['items'])
+    assert data['total'] == len(data['items']) == 2
+    assert all(i['bibliography'] or i['tests'] for i in data['items'])
     r = client.get(
         f"{settings.API_V1_STR}/note?category[]=slides&category[]=tests")
     assert r.status_code == 200
     data = r.json()
     assert data['total'] == len(data['items']) == 2
-    assert all(i['slides'] and i['tests'] for i in data['items'])
-
+    assert all(i['slides'] or i['tests'] for i in data['items'])

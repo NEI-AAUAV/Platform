@@ -8,7 +8,7 @@ from app.core.config import settings
 from app.models import VideoTag, Video
 from app.tests.conftest import SessionTesting
 
-videotag = [
+videotags = [
     {
         "id": 0,
         "name": "Test1",
@@ -56,8 +56,8 @@ videos = [
 def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
-    for videotags in videotag:
-        db.add(VideoTag(**videotags))
+    for videotag in videotags:
+        db.add(VideoTag(**videotag))
     db.commit()
     for video in videos:
         v = Video(**video)
@@ -65,15 +65,15 @@ def setup_database(db: SessionTesting):
         db.add(v)
     db.commit()
 
-def test_get_VideoTags(db: SessionTesting, client: TestClient) -> None:
+def test_get_video_Tags(db: SessionTesting, client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/video/category/")
     data = r.json()
     assert r.status_code == 200
     assert len(data) == 2
-    assert data[0].items() >= videotag[0].items()
+    assert data[0].items() >= videotags[0].items()
     assert "id" in data[0]
 
-def test_get_VideosbyCategories(db: SessionTesting, client: TestClient) -> None:
+def test_get_videos_by_categories(db: SessionTesting, client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/video/?tag[]=0&tag[]=1&page=1")
     data = r.json()
     assert r.status_code == 200
@@ -81,7 +81,7 @@ def test_get_VideosbyCategories(db: SessionTesting, client: TestClient) -> None:
     assert data["items"][0].keys() >= videos[0].keys()
     assert "id" in data["items"][0]
 
-def test_get_Video(db: SessionTesting, client: TestClient) -> None:
+def test_get_video(db: SessionTesting, client: TestClient) -> None:
     id = (db.query(Video).first().id)
     r = client.get(f"{settings.API_V1_STR}/video/{id}")
     data = r.json()
@@ -90,12 +90,12 @@ def test_get_Video(db: SessionTesting, client: TestClient) -> None:
     assert data.keys() >= videos[0].keys()
     assert "id" in data
     
-def test_get_VideoBadRequest(db: SessionTesting, client: TestClient) -> None:
+def test_get_video_bad_request(db: SessionTesting, client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/video/?tag[]=-1")
     data = r.json()
     assert r.status_code == 400
 
-def test_get_VideoWithPartialInfo(db: SessionTesting, client: TestClient) -> None:
+def test_get_video_with_partial_info(db: SessionTesting, client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/video/?tag[]=0&tag[]=1")
     data = r.json()
     assert r.status_code == 200
