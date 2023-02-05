@@ -1,6 +1,6 @@
 FROM node:16-alpine
 
-WORKDIR /webapp_nei
+WORKDIR /web_nei
 
 COPY package.json yarn.lock ./
 

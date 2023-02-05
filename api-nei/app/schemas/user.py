@@ -6,6 +6,12 @@ from enum import Enum
 from typing_extensions import Annotated
 
 
+class GenderEnum(str, Enum):
+    MALE = 'Masculino'
+    FEMALE = 'Feminino'
+    OTHER = 'Outro'
+
+
 class PermissionEnum(str, Enum):
     DEFAULT = 'DEFAULT'
     FAINA = 'FAINA'

@@ -23,7 +23,7 @@ Schema-per-service – each service has a database schema that’s private to th
 
 To run the project in your host machine, read the **Local Installation** section of each service documentation.
 
-- [NEI Web App](../webapp-nei/README.md#local-installation) webapp_nei
+- [NEI Web App](../web-nei/README.md#local-installation) web_nei
 - [NEI API](../api-nei/README.md#local-installation) api_nei
 - [Taça UA API](../api-tacaua/README.md#local-installation) api_tacaua
 
@@ -47,7 +47,7 @@ docker-compose down -v
 ```
 
 To run one service individually, append the service name to the command (e.g. `api_nei`). On alternative, create the images and the container manually by reading the **Docker Installation** section in the respective service documentation.
-- [NEI Web App](../webapp-nei/README.md#docker-installation) webapp_nei
+- [NEI Web App](../web-nei/README.md#docker-installation) web_nei
 - [NEI API](../api-nei/README.md#docker-installation) api_nei
 - [Taça UA API](../api-tacaua/README.md#docker-installation) api_tacaua
 ```

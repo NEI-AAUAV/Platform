@@ -36,12 +36,12 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = os.getenv('POSTGRES_USER', "postgres")
     POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "postgres")
     POSTGRES_DB: str = os.getenv('POSTGRES_DB', "postgres")
-    SQLALCHEMY_DATABASE_URI: Optional[
+    POSTGRES_URI: Optional[
         PostgresDsn
     ] = f"postgresql://{POSTGRES_USER}" \
         f":{POSTGRES_PASSWORD}@{POSTGRES_SERVER}" \
         f":5432/{POSTGRES_DB}"
-    TEST_SQLALCHEMY_DATABASE_URI: Optional[
+    TEST_POSTGRES_URI: Optional[
         PostgresDsn
     ] = f"postgresql://{POSTGRES_USER}" \
         f":{POSTGRES_PASSWORD}@{POSTGRES_SERVER}" \
