@@ -1,7 +1,4 @@
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse
-
-from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
 
 
 class APIException(HTTPException):
@@ -24,28 +21,3 @@ class APIException(HTTPException):
 class NotFoundException(APIException):
     status_code = 404
     detail = "Result Not Found"
-
-
-class ImageFormatException(APIException):
-    status_code = 400
-    detail = "Invalid Image Format"
-
-
-class RestrictionException(APIException):
-    status_code = 400
-    detail = "Restriction Not Respected"
-
-
-class NotImplementedException(APIException):
-    status_code = 501
-    detail = "Not Implemented"
-
-
-class CardNotActiveException(APIException):
-    status_code = 400
-    detail = "Card Not Attributed"
-
-
-class CardEffectException(APIException):
-    status_code = 400
-    detail = "Card Not Applicable"

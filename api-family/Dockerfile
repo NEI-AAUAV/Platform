@@ -1,4 +1,4 @@
-FROM python:3.9-slim as requirements-stage
+FROM python:3.10-slim as requirements-stage
 
 ENV PYTHONUNBUFFERED 1
 

@@ -9,8 +9,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes: 
-      - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-nei.sql
-      - ./api-rallytascas/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-rallytascas.sql
+      - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-nei.sql:ro
+      - ./api-rallytascas/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-rallytascas.sql:ro
       - pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
@@ -30,9 +30,17 @@ services:
       MONGO_PASSWORD: mongo
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
     networks:
       - backend
     restart: unless-stopped
+    profiles:
+      - disabled
   api_nei:
     build:
       context: api-nei
@@ -63,6 +71,23 @@ services:
     networks:
       - backend
     restart: unless-stopped
+  api_family:
+    build:
+      context: api-family
+    ports:
+      - 8002:8002
+    environment:
+      MONGO_SERVER: db_mongo
+    volumes: 
+      - ./api-family:/api_family
+    # depends_on:
+    #   db_mongo:
+    #     condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+    profiles:
+      - disabled
   api_rallytascas:
     build:
       context: api-rallytascas
@@ -98,12 +123,14 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./proxy/nei.web.ua.pt/nginx.conf:/etc/nginx/nginx.conf
-      - ./proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf
-      - ./proxy/nei.web.ua.pt/locations.conf:/etc/nginx/conf.d/locations.conf
+      - ./proxy/nei.web.ua.pt/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./proxy/nei.web.ua.pt/locations.conf:/etc/nginx/conf.d/locations.conf:ro
     depends_on:
       - web_nei
       - api_nei
+      - api_tacaua
+      # - api_family
     networks:
       - backend
       - frontend

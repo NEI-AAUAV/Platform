@@ -45,8 +45,8 @@ def test_get_course(db: SessionTesting, client: TestClient) -> None:
     data = r.json()
     assert 'id' in data
     assert data['id'] == course.id
-    print(course.as_dict())
-    assert data.items() >= course.as_dict().items()
+    print(course.dict())
+    assert data.items() >= course.dict().items()
 
 
 def test_get_inexistent_course(client: TestClient) -> None:
