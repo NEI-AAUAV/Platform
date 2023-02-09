@@ -10,13 +10,17 @@ from app.db.base_class import Base
 
 
 class Team(Base):
-    __tablename__ = "team"
-
     id = Column(Integer, primary_key=True, autoincrement=True)
     _header = Column("header", String(2048))
     mandate = Column(Integer, index=True)
-    user_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + '.user.id'), index=True)
-    role_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + '.team_role.id'), index=True)
+    user_id = Column(
+        Integer,
+        ForeignKey(settings.SCHEMA_NAME + '.user.id'),
+        index=True)
+    role_id = Column(
+        Integer,
+        ForeignKey(settings.SCHEMA_NAME + '.team_role.id'),
+        index=True)
 
     user = relationship("User", foreign_keys=[user_id])
     role = relationship("TeamRole", foreign_keys=[role_id])
@@ -27,4 +31,4 @@ class Team(Base):
 
     @header.setter
     def header(self, header: Optional[AnyHttpUrl]):
-        self._header = header  
+        self._header = header

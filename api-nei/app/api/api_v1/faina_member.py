@@ -1,11 +1,13 @@
+from typing import Any, List
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import Any, List
 
 from app import crud
 from app.api import deps
 from app.schemas import FainaMemberCreate, FainaMemberInDB, FainaMemberUpdate
 from app.models.faina_member import FainaMember
+
 
 router = APIRouter()
 
@@ -40,15 +42,18 @@ def create_faina_member(
     role = crud.faina_role.get(db=db, id=faina_member_create_in.role_id)
     if not role:
         raise HTTPException(status_code=404, detail="Faina Role Not Found")
-    faina = crud.faina.get_faina(db=db, faina_id=faina_member_create_in.faina_id)
+    faina = crud.faina.get_faina(
+        db=db, faina_id=faina_member_create_in.faina_id)
     if not faina:
         raise HTTPException(status_code=404, detail="Faina Not Found")
     user = crud.user.get(db=db, id=faina_member_create_in.member_id)
     if not user:
         raise HTTPException(status_code=404, detail="User Not Found")
-    faina_member = crud.faina_member.get_faina_member(db=db, member_id=faina_member_create_in.member_id, faina_id=faina_member_create_in.faina_id, role_id=faina_member_create_in.role_id)
+    faina_member = crud.faina_member.get_faina_member(
+        db=db, member_id=faina_member_create_in.member_id, faina_id=faina_member_create_in.faina_id, role_id=faina_member_create_in.role_id)
     if faina_member:
-        raise HTTPException(status_code=400, detail="Faina Member Already Exists")
+        raise HTTPException(
+            status_code=400, detail="Faina Member Already Exists")
     return crud.faina_member.create(db=db, obj_in=faina_member_create_in)
 
 
@@ -62,7 +67,8 @@ def update_faina_member(
     role = crud.faina_role.get(db=db, id=faina_member_update_in.role_id)
     if not role:
         raise HTTPException(status_code=404, detail="Faina Role Not Found")
-    faina = crud.faina.get_faina(db=db, faina_id=faina_member_update_in.mfaina_idandate)
+    faina = crud.faina.get_faina(
+        db=db, faina_id=faina_member_update_in.mfaina_idandate)
     if not faina:
         raise HTTPException(status_code=404, detail="Faina Not Found")
     user = crud.user.get(db=db, id=faina_member_update_in.member_id)

@@ -8,17 +8,17 @@ from .user import UserInDB
 
 class NoteThankBase(BaseModel):
     author_id: int
-    note_personal_page: Annotated[Optional[str], Field(max_length=255)]
+    note_personal_page: Annotated[Optional[str], Field(max_length=256)]
     
 
 class NoteThankCreate(NoteThankBase):
     author_id: int
-    note_personal_page: Annotated[Optional[str], Field(max_length=255)]
+    note_personal_page: Annotated[Optional[str], Field(max_length=256)]
 
 
 class NoteThankUpdate(NoteThankBase):
     author_id: int
-    note_personal_page: Annotated[Optional[str], Field(max_length=255)]
+    note_personal_page: Annotated[Optional[str], Field(max_length=256)]
     
 
 class NoteThankInDB(NoteThankBase):

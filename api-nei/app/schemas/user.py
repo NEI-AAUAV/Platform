@@ -9,7 +9,6 @@ from typing_extensions import Annotated
 class GenderEnum(str, Enum):
     MALE = 'Masculino'
     FEMALE = 'Feminino'
-    OTHER = 'Outro'
 
 
 class PermissionEnum(str, Enum):
@@ -22,10 +21,10 @@ class PermissionEnum(str, Enum):
 
 
 class UserBase(BaseModel):
-    name: Annotated[Optional[str], Field(max_length=255)]
-    full_name: Annotated[Optional[str], Field(max_length=255)]
-    uu_email: Annotated[Optional[str], Field(max_length=255)]
-    uu_iupi: Annotated[Optional[str], Field(max_length=255)]
+    name: Annotated[Optional[str], Field(max_length=256)]
+    full_name: Annotated[Optional[str], Field(max_length=256)]
+    uu_email: Annotated[Optional[str], Field(max_length=256)]
+    uu_iupi: Annotated[Optional[str], Field(max_length=256)]
     curriculo: Optional[str]
     linkedin: Optional[str]
     git: Optional[str]
@@ -34,10 +33,10 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     """Properties to receive via API on create."""
-    name: Annotated[Optional[str], Field(max_length=255)]
-    full_name: Annotated[Optional[str], Field(max_length=255)]
-    uu_email: Annotated[Optional[str], Field(max_length=255)]
-    uu_iupi: Annotated[Optional[str], Field(max_length=255)]
+    name: Annotated[Optional[str], Field(max_length=256)]
+    full_name: Annotated[Optional[str], Field(max_length=256)]
+    uu_email: Annotated[Optional[str], Field(max_length=256)]
+    uu_iupi: Annotated[Optional[str], Field(max_length=256)]
     curriculo: Optional[str]
     linkedin: Optional[str]
     git: Optional[str]
@@ -46,10 +45,10 @@ class UserCreate(UserBase):
     
 class UserUpdate(UserBase):
     """Properties to receive via API on create."""
-    name: Annotated[Optional[str], Field(max_length=255)]
-    full_name: Annotated[Optional[str], Field(max_length=255)]
-    uu_email: Annotated[Optional[str], Field(max_length=255)]
-    uu_iupi: Annotated[Optional[str], Field(max_length=255)]
+    name: Annotated[Optional[str], Field(max_length=256)]
+    full_name: Annotated[Optional[str], Field(max_length=256)]
+    uu_email: Annotated[Optional[str], Field(max_length=256)]
+    uu_iupi: Annotated[Optional[str], Field(max_length=256)]
     curriculo: Optional[str]
     linkedin: Optional[str]
     git: Optional[str]

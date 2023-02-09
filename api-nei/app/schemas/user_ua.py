@@ -16,10 +16,10 @@ class PermissionEnum(str, Enum):
 
 
 class UserUABase(BaseModel):
-    name: Annotated[Optional[str], Field(max_length=255)]
-    full_name: Annotated[Optional[str], Field(max_length=255)]
-    uu_email: Annotated[Optional[str], Field(max_length=255)]
-    uu_iupi: Annotated[Optional[str], Field(max_length=255)]
+    name: Annotated[Optional[str], Field(max_length=256)]
+    full_name: Annotated[Optional[str], Field(max_length=256)]
+    uu_email: Annotated[Optional[str], Field(max_length=256)]
+    uu_iupi: Annotated[Optional[str], Field(max_length=256)]
     curriculo: Optional[str]
     linkedin: Optional[str]
     git: Optional[str]

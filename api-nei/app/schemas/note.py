@@ -18,7 +18,7 @@ note_categories = {
 
 
 class NoteBase(BaseModel):
-    name: Annotated[Optional[str], Field(max_length=255)]
+    name: Annotated[Optional[str], Field(max_length=256)]
     location: Annotated[Optional[str], Field(max_length=2048)]
     subject_id: int
     author_id: Optional[int]

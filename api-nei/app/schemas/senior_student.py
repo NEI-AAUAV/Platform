@@ -9,13 +9,13 @@ from .user import UserInDB
 class SeniorStudentBase(BaseModel):
     user_id: int
     quote: Annotated[Optional[str], Field(max_length=280)]
-    image: Annotated[Optional[str], Field(max_length=255)]
+    image: Annotated[Optional[str], Field(max_length=256)]
 
 
 class SeniorStudentCreate(SeniorStudentBase):
     """Properties to receive via API on creation."""
     user_id: int
-    image: Annotated[str, Field(max_length=255)]
+    image: Annotated[str, Field(max_length=256)]
 
 
 class SeniorStudentUpdate(SeniorStudentBase):

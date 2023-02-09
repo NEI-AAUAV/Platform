@@ -10,15 +10,11 @@ from app.db.base_class import Base
 
 
 class Faina(Base):
-    __tablename__ = "faina"
-
     id = Column(Integer, primary_key=True, autoincrement=True)
     _image = Column("image", String(2048))
     year = Column(String(9))
 
-    members = relationship(
-        "FainaMember",
-    )
+    members = relationship("FainaMember")
 
     @hybrid_property
     def image(self) -> Optional[AnyHttpUrl]:
@@ -26,4 +22,4 @@ class Faina(Base):
 
     @image.setter
     def image(self, image: Optional[AnyHttpUrl]):
-        self._image = image  
+        self._image = image

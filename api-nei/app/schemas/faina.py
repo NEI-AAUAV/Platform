@@ -6,7 +6,7 @@ from .faina_member import FainaMemberInDB
 
 
 class FainaBase(BaseModel):
-    image: Annotated[Optional[str], Field(max_length=255)]
+    image: Annotated[Optional[str], Field(max_length=256)]
     year: Annotated[str, Field(max_length=9)]
 
 
