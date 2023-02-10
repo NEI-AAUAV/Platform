@@ -5,12 +5,12 @@ from app.models.video import Video, video__video_tags
 from app.models.video_tag import VideoTag
 from app.schemas.video import VideoCreate, VideoUpdate
 
-from typing import List, Tuple
+from typing import List, Tuple, Set
 
 
 class CRUDVideo(CRUDBase[Video, VideoCreate, VideoUpdate]):
 
-    def get_video_by_categories(self, db: Session, tags: set[int], page: int, size: int) -> Tuple[int, List[Video]]:
+    def get_video_by_categories(self, db: Session, tags: Set[int], page: int, size: int) -> Tuple[int, List[Video]]:
         """
         Return list of videos by categories.
         """

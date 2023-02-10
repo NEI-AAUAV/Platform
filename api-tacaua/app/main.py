@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import ORJSONResponse
 
 from app.db.init_db import init_db
 from app.middleware import LogStatsMiddleware
@@ -10,7 +11,7 @@ from app.core.config import settings
 from .openapi import custom_openapi
 
 
-app = FastAPI(title="Taça UA API")
+app = FastAPI(title="Taça UA API", default_response_class=ORJSONResponse)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,

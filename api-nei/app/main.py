@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import ORJSONResponse
 
 from app.api.api_v1 import router as api_v1_router
 from app.db.init_db import init_db
 from app.core.logging import init_logging
 from app.core.config import settings
 
-app = FastAPI(title="NEI API")
+app = FastAPI(title="NEI API", default_response_class=ORJSONResponse)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,

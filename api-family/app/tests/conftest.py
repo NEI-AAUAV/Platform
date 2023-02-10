@@ -25,7 +25,7 @@ import app.main
 # keep the original DB untouched.
 #
 # Add echo=True in `create_engine` to log all DB commands made
-engine = create_engine(settings.TEST_POSTGRES_URI)
+engine = create_engine(settings.TEST_SQLALCHEMY_DATABASE_URI)
 SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 

@@ -25,6 +25,7 @@ h11 = "^0.14.0"
 httpcore = "^0.16.2"
 websockets = "^10.4"
 fastapi = "0.83.0"
+orjson = "^3.8.6"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^2.0.1"
