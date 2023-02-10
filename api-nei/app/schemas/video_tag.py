@@ -4,7 +4,7 @@ from typing import Optional
 from typing_extensions import Annotated
 
 class VideoTagBase(BaseModel):
-    name: Annotated[str, Field(max_length=255)]
+    name: Annotated[str, Field(max_length=256)]
     color: Color
 
 

@@ -9,7 +9,7 @@ from .senior_student import SeniorStudentInDB
 class SeniorBase(BaseModel):
     year: int
     course: Annotated[str, Field(max_length=3)]
-    image: Annotated[Optional[str], Field(max_length=255)]
+    image: Annotated[Optional[str], Field(max_length=256)]
 
 
 class SeniorCreate(SeniorBase):

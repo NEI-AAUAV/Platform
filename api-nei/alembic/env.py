@@ -25,7 +25,7 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    return settings.SQLALCHEMY_DATABASE_URI
+    return settings.POSTGRES_URI
 
 
 def run_migrations_offline():

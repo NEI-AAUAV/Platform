@@ -7,9 +7,9 @@ from typing import Optional, List
 from typing_extensions import Annotated
 
 class VideoBase(BaseModel):
-    youtube_id: Annotated[str, Field(max_length=255)]
-    title: Annotated[str, Field(max_length=255)]
-    subtitle: Annotated[Optional[str], Field(max_length=255)]
+    youtube_id: Annotated[str, Field(max_length=256)]
+    title: Annotated[str, Field(max_length=256)]
+    subtitle: Annotated[Optional[str], Field(max_length=256)]
     image: Optional[str]
     created_at: datetime
     playlist: Optional[int]
@@ -26,5 +26,5 @@ class VideoCreate(VideoBase):
 
 class VideoUpdate(VideoBase):
     """Properties to receive via API on update."""
-    youtube_id: Annotated[Optional[str], Field(max_length=255)]
-    title: Annotated[Optional[str], Field(max_length=255)]
+    youtube_id: Annotated[Optional[str], Field(max_length=256)]
+    title: Annotated[Optional[str], Field(max_length=256)]

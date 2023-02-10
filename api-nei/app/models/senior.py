@@ -10,8 +10,6 @@ from app.db.base_class import Base
 
 
 class Senior(Base):
-    __tablename__ = "senior"
-
     id = Column(Integer, primary_key=True, autoincrement=True)
     year = Column(Integer)
     course = Column(String(6))

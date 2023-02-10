@@ -9,7 +9,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.schema import CreateSchema
 
 from app.api.deps import get_db
-from app.api.api import api_v1_router
+from app.api.api_v1 import router as api_v1_router
 from app.core.config import settings
 from app.db.base_class import Base
 
@@ -24,7 +24,7 @@ import app.main
 # keep the original DB untouched.
 #
 # Add echo=True in `create_engine` to log all DB commands made
-engine = create_engine(settings.TEST_SQLALCHEMY_DATABASE_URI)
+engine = create_engine(settings.TEST_POSTGRES_URI)
 SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 

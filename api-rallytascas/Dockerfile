@@ -1,4 +1,4 @@
-FROM python:3.9-slim as requirements-stage
+FROM python:3.10-slim as requirements-stage
 
 ENV PYTHONUNBUFFERED 1
 
@@ -13,5 +13,5 @@ COPY . .
 
 RUN poetry install
 
-EXPOSE 8002
-CMD poetry run uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
+EXPOSE 8003
+CMD poetry run uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload

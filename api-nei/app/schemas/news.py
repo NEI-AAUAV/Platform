@@ -20,10 +20,10 @@ class CategoryEnum(str, Enum):
 
 
 class NewsBase(BaseModel):
-     header: Annotated[str, Field(max_length=255)]
+     header: Annotated[str, Field(max_length=256)]
      status: StatusEnum
-     title: Annotated[str, Field(max_length=255)]
-     category: Annotated[str, Field(max_length=255)]
+     title: Annotated[str, Field(max_length=256)]
+     category: Annotated[str, Field(max_length=256)]
      content: Annotated[str, Field(max_length=20000)]
      published_by: int
      created_at: datetime
