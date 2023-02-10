@@ -43,7 +43,7 @@ jobs:
             docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
             sudo apt install python3-dev libpq-dev 
             poetry install
-            poetry run uvicorn app.main:app --reload --port 8002 &
+            poetry run uvicorn app.main:app --reload --port 8003 &
             poetry run pytest
             
 workflows:

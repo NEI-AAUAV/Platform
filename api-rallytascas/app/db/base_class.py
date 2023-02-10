@@ -20,5 +20,5 @@ class Base:
         {"schema": settings.SCHEMA_NAME},
     )
 
-    def as_dict(self):
+    def dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

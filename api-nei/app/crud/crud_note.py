@@ -18,7 +18,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
 
     def get_note_by(
         self, *, db: Session, categories: List[str],
-        school_year: Optional[int] = None,
+        year: Optional[int] = None,
         subject: Optional[int] = None,
         student: Optional[int] = None,
         teacher: Optional[int] = None,
@@ -28,8 +28,8 @@ class CRUDNote(CRUDBase[Note, None, None]):
         Return filtered/unfiltered note
         """
         query = db.query(Note)
-        if school_year:
-            query = query.filter(Note.school_year_id == school_year)
+        if year:
+            query = query.filter(Note.year == year)
         if subject:
             query = query.filter(Note.subject_id == subject)
         if student:

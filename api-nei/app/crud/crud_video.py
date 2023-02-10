@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
-from app.models.video import Video, video_video_tags
+from app.models.video import Video, video__video_tags
 from app.models.video_tag import VideoTag
 from app.schemas.video import VideoCreate, VideoUpdate
 
@@ -25,7 +25,7 @@ class CRUDVideo(CRUDBase[Video, VideoCreate, VideoUpdate]):
             # query = [vid for vid in query.all(
             # ) if {tag.id for tag in vid.tags}.intersection(tags)]
             
-            query = query.join(video_video_tags).join(VideoTag).filter(
+            query = query.join(video__video_tags).join(VideoTag).filter(
                 VideoTag.id.in_(tags)
             )
         total = query.count()

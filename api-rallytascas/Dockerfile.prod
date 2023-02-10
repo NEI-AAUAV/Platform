@@ -1,4 +1,4 @@
-FROM python:3.9-slim as requirements-stage
+FROM python:3.10-slim as requirements-stage
 
 WORKDIR /tmp
 
@@ -9,7 +9,7 @@ COPY ./pyproject.toml ./poetry.lock* /tmp/
 
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.10-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -28,5 +28,5 @@ COPY ./app ./app
 
 RUN mkdir static
 
-EXPOSE 8002
-CMD gunicorn app.main:app --bind 0.0.0.0:8002 -k uvicorn.workers.UvicornWorker
+EXPOSE 8003
+CMD gunicorn app.main:app --bind 0.0.0.0:8003 -k uvicorn.workers.UvicornWorker

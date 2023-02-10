@@ -10,10 +10,14 @@ from app.db.base_class import Base
 
 
 class SeniorStudent(Base):
-    __tablename__ = "senior_student"
-
-    senior_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".senior.id"), primary_key=True)
-    user_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".user.id"), primary_key=True)
+    senior_id = Column(
+        Integer,
+        ForeignKey(settings.SCHEMA_NAME + ".senior.id"),
+        primary_key=True)
+    user_id = Column(
+        Integer,
+        ForeignKey(settings.SCHEMA_NAME + ".user.id"),
+        primary_key=True)
     quote = Column(String(280))
     _image = Column("image", String(2048))
 

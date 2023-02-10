@@ -9,15 +9,13 @@ from app.db.base_class import Base
 
 
 class Partner(Base):
-    __tablename__ = "partner"
-
     id = Column(Integer, primary_key=True, autoincrement=True)
     _header = Column("header", String(2048))
-    company = Column(String(255))
+    company = Column(String(256))
     description = Column(Text)
-    content = Column(String(255))
-    link = Column(String(255))
-    banner_url = Column(String(255))
+    content = Column(String(256))
+    link = Column(String(256))
+    banner_url = Column(String(256))
     _banner_image = Column("banner_image", String(2048))
     banner_until = Column(DateTime)
 

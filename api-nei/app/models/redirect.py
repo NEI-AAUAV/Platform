@@ -7,11 +7,10 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from app.core.config import settings
 from app.db.base_class import Base
 
-class Redirect(Base):
-    __tablename__ = "redirect"
 
+class Redirect(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
-    alias = Column(String(255))
+    alias = Column(String(256))
     _redirect = Column("redirect", String(2048))
 
     @hybrid_property

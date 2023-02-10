@@ -1,0 +1,21 @@
+[
+    {"_id": 1, "degree": "Licenciatura", "short": "LTSI", "name": "Tecnologias e Sistemas de Informação", "show": true},
+    {"_id": 2, "degree": "Licenciatura", "short": "LEI", "name": "Engenharia Informática", "show": true},
+    
+    {"_id": 3, "degree": "Mestrado", "short": "MEET", "name": "Engenharia Eletrónica e Telecomunicações"},
+    {"_id": 4, "degree": "Mestrado", "short": "MCT", "name": "Engenharia de Computadores e Telemática"},
+    {"_id": 5, "degree": "Mestrado", "short": "MEI", "name": "Engenharia Informática", "show": true},
+    {"_id": 6, "degree": "Mestrado", "short": "MEI", "name": "Robótica e Sistemas Inteligentes"},
+    {"_id": 7, "degree": "Mestrado", "short": "MC", "name": "Cibersegurança"},
+    {"_id": 8, "degree": "Mestrado", "short": "MDJD", "name": "Desenvolvimento de Jogos Digitais", "show": true},
+    {"_id": 9, "degree": "Mestrado", "short": "MEAI", "name": "Engenharia de Automação Industrial"},
+    {"_id": 10, "degree": "Mestrado", "short": "MTMI", "name": "Tecnologias da Imagem Médica"},
+    {"_id": 11, "degree": "Mestrado", "short": "MEC", "name": "Engenharia Computacional"},
+    {"_id": 12, "degree": "Mestrado", "short": "MCD", "name": "Ciência de Dados", "show": true},
+    {"_id": 13, "degree": "Mestrado", "short": "MSCA", "name": "Sistemas de Comunicação Aeroespaciais"},
+    
+    {"_id": 14, "degree": "Programa Doutoral", "short": "PDELE", "name": "Engenharia Eletrotécnica"},
+    {"_id": 15, "degree": "Programa Doutoral", "short": "PDEI", "name": "Engenharia Informática", "show": true},
+    {"_id": 16, "degree": "Programa Doutoral", "short": "MAP-tele", "name": "Telecomunicações"},
+    {"_id": 17, "degree": "Programa Doutoral", "short": "MAP-i", "name": "Informática"}
+]

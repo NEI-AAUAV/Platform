@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 
 class RedirectBase(BaseModel):
-    alias: Annotated[str, Field(max_length=255)]
+    alias: Annotated[str, Field(max_length=256)]
     redirect: str
 
 
