@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "root"
+		},
+		{
+			"path": "api-nei"
+		},
+		{
+			"path": "api-tacaua"
+		},
+		{
+			"path": "api-family"
+		},
+		{
+			"path": "api-rallytascas"
+		},
+		{
+			"path": "web-nei"
+		},
+		{
+			"path": "proxy"
+		},
+	]
+}
