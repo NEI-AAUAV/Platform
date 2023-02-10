@@ -13,7 +13,7 @@ Thumbs.db
 
 # Static files
 **/static/*
-!static/.gitkeep
+!**/static/**/.gitkeep
 
 # Node dependencies
 node_modules
