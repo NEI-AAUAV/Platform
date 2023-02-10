@@ -1,14 +1,11 @@
 from datetime import datetime
 from typing import Optional
-from typing_extensions import Annotated
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, AnyHttpUrl, constr
 
 from .user import UserInDB
-from .note_schoolyear import NoteSchoolyearInDB
-from .note_teacher import NoteTeacherInDB
-from .note_subject import NoteSubjectInDB
-from .note_type import NoteTypeInDB
+from .teacher import TeacherInDB
+from .subject import SubjectInDB
 
 
 note_categories = {
@@ -18,12 +15,14 @@ note_categories = {
 
 
 class NoteBase(BaseModel):
-    name: Annotated[Optional[str], Field(max_length=256)]
-    location: Annotated[Optional[str], Field(max_length=2048)]
-    subject_id: int
     author_id: Optional[int]
-    school_year_id: Optional[int]
+    subject_id: int
     teacher_id: Optional[int]
+
+    name: constr(max_length=256)
+    location: AnyHttpUrl
+    year: int
+
     summary: Optional[int]
     tests: Optional[int]
     bibliography: Optional[int]
@@ -31,19 +30,17 @@ class NoteBase(BaseModel):
     exercises: Optional[int]
     projects: Optional[int]
     notebook: Optional[int]
+
     content: Optional[str]
     created_at: datetime
-    type_id: int
     size: Optional[int]
 
 
 class NoteInDB(NoteBase):
     id: int
-    subject: NoteSubjectInDB
     author: Optional[UserInDB]
-    teacher: Optional[NoteTeacherInDB]
-    school_year: Optional[NoteSchoolyearInDB]
-    type: NoteTypeInDB
+    subject: SubjectInDB
+    teacher: Optional[TeacherInDB]
 
     class Config:
         orm_mode = True

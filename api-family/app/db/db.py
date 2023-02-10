@@ -18,7 +18,7 @@ Organization = db.organizations
 
 
 User.create_index("refId", unique=True)
-User.create_index("university.lastMatriculationYear")
+User.create_index("academic.lastMatriculationYear")
 User.create_index("faina.firstTrajadoYear")
 
 Patch.create_index("patcherId")

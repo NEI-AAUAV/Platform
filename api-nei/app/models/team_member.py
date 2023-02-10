@@ -9,7 +9,7 @@ from app.core.config import settings
 from app.db.base_class import Base
 
 
-class Team(Base):
+class TeamMember(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     _header = Column("header", String(2048))
     mandate = Column(Integer, index=True)

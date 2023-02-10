@@ -4,23 +4,14 @@ from datetime import datetime
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.models import Note, NoteThank, NoteType, NoteSchoolYear, NoteSubject, NoteTeacher, User
+from app.models import Note, Subject, Teacher, User
 from app.tests.conftest import SessionTesting
 
-NOTES_SCHOOL_YEAR = [
-    {
-        "year_begin": 2020,
-        "year_end": 2023
-    },
-    {
-        "year_begin": 2020,
-        "year_end": 2023
-    }
-]
 
-NOTES_SUBJECT = [
+
+SUBJECTS = [
     {
-        "paco_code": 1,
+        "code": 1,
         "name": "random name 0",
         "year": 2021,
         "semester": 2,
@@ -29,7 +20,7 @@ NOTES_SUBJECT = [
         "optional": 1
     },
     {
-        "paco_code": 2,
+        "code": 2,
         "name": "random name",
         "year": 2021,
         "semester": 2,
@@ -39,7 +30,7 @@ NOTES_SUBJECT = [
     }
 ]
 
-NOTES_TEACHERS = [
+TEACHERS = [
     {
         'name': 'DG',
         'personal_page': 'personalpage_dg'
@@ -50,34 +41,9 @@ NOTES_TEACHERS = [
     }
 ]
 
-NOTES_THANKS = [
-    {
-        "note_personal_page": "http://my-personal-page.com"
-    },
-    {
-        "note_personal_page": "http://my-personal-page.com"
-    }
-]
-
-NOTES_TYPES = [
-    {
-        "name": "name note type 0",
-        "download_caption": "download_caption",
-        "icon_display": 'display',
-        "icon_download": 'download',
-        "external": 1
-    },
-    {
-        "name": "name note type",
-        "download_caption": "download_caption",
-        "icon_display": 'display',
-        "icon_download": 'download',
-        "external": 1
-    }
-]
-
 NOTES = [
     {
+        'year': 2020,
         'name': 'note name 0',
         'location': '/path/to/note/1',
         "summary": 1,
@@ -92,6 +58,7 @@ NOTES = [
         "size": 1,
     },
     {
+        'year': 2021,
         'name': 'note name 1',
         'location': '/path/to/note/2',
         "summary": 1,
@@ -110,29 +77,32 @@ NOTES = [
 USERS = [
     {
         "name": 'Ze Pistolas',
-        "full_name": 'Ze Pistolas Pistolas',
-        "uu_email": 'zpp@ua.pt',
-        "uu_iupi": 'x1x1',
-        "curriculo": 'ze_cv',
+        "surname": 'Pistolas',
+        "email": 'zpp@ua.pt',
+        "iupi": 'x1x1',
+        "curriculum": 'ze_cv',
         "linkedin": 'ze_linkedin',
-        "git": 'ze_git',
-        "permission": 'COLABORATOR',
-        "created_at": datetime(2022, 8, 4)
+        "github": 'ze_git',
+        "scopes": ['ADMIN'],
+        "created_at": datetime(2022, 8, 4),
+        "updated_at": datetime(2022, 8, 5)
     },
     {
-        "name": "Francisco Abrantes",
-        "full_name": "Francisco Miguel Abrantes",
-        "uu_email": "fma@ua.pt",
-        "uu_iupi": 'x2x2',
-        "curriculo": 'francisco_cv',
+        "name": "Francisco",
+        "surname": "Miguel Abrantes",
+        "email": "fma@ua.pt",
+        "iupi": 'x2x2',
+        "curriculum": 'francisco_cv',
         "linkedin": 'francisco_linkedin',
-        "git": 'francisco_git',
-        "permission": 'COLABORATOR',
-        "created_at": datetime(2022, 8, 4)
+        "github": 'francisco_git',
+        "scopes": ['MANAGER_NEI', 'MANAGER_TACAUA'],
+        "created_at": datetime(2022, 8, 4),
+        "updated_at": datetime(2022, 8, 5)
     }
 ]
 
 note = {
+    'year': 2020,
     'name': 'note name 0',
     'location': 'Aveiro',
     "summary": 1,
@@ -167,30 +137,21 @@ update_note = {
 def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
-    for subj in NOTES_SUBJECT:
-        db.add(NoteSubject(**subj))
-    for type in NOTES_TYPES:
-        db.add(NoteType(**type))
-    for year in NOTES_SCHOOL_YEAR:
-        db.add(NoteSchoolYear(**year))
-    for teacher in NOTES_TEACHERS:
-        db.add(NoteTeacher(**teacher))
+    for subject in SUBJECTS:
+        db.add(Subject(**subject))
+    for teacher in TEACHERS:
+        db.add(Teacher(**teacher))
     for user in USERS:
         db.add(User(**user))
     db.commit()
 
-    for note, thanks, sid, aid, yid, tid, tyid in zip(
+    for note, sid, aid, tid in zip(
         NOTES,
-        NOTES_THANKS,
-        [s.paco_code for s in db.query(NoteSubject).all()],
+        [s.code for s in db.query(Subject).all()],
         [a.id for a in db.query(User).all()],
-        [y.id for y in db.query(NoteSchoolYear).all()],
-        [t.id for t in db.query(NoteTeacher).all()],
-        [ty.id for ty in db.query(NoteType).all()],
+        [t.id for t in db.query(Teacher).all()]
     ):
-        db.add(Note(**note, subject_id=sid, author_id=aid,
-               school_year_id=yid, teacher_id=tid, type_id=tyid))
-        db.add(NoteThank(**thanks, author_id=aid))
+        db.add(Note(**note, subject_id=sid, author_id=aid, teacher_id=tid))
     db.commit()
 
 
@@ -201,7 +162,7 @@ def test_get_note(client: TestClient) -> None:
     assert "author" in data["items"][0]
     assert "teacher" in data["items"][0]
     assert "subject" in data["items"][0]
-    assert "school_year" in data["items"][0]
+    assert "year" in data["items"][0]
 
 
 def test_get_note_by_id(client: TestClient, db: SessionTesting) -> None:

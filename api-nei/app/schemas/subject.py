@@ -4,7 +4,7 @@ from typing_extensions import Annotated
 from pydantic import BaseModel, Field
 
 
-class NoteSubjectBase(BaseModel):
+class SubjectBase(BaseModel):
     name: Annotated[Optional[str], Field(max_length=60)]
     year: int
     semester: int
@@ -13,7 +13,7 @@ class NoteSubjectBase(BaseModel):
     optional: int
     
 
-class NoteSubjectCreate(NoteSubjectBase):
+class SubjectCreate(SubjectBase):
     name: Annotated[Optional[str], Field(max_length=60)]
     year: int
     semester: int
@@ -22,7 +22,7 @@ class NoteSubjectCreate(NoteSubjectBase):
     optional: int
     
 
-class NoteSubjectUpdate(NoteSubjectBase):
+class SubjectUpdate(SubjectBase):
     name: Annotated[Optional[str], Field(max_length=60)]
     year: int
     semester: int
@@ -31,8 +31,8 @@ class NoteSubjectUpdate(NoteSubjectBase):
     optional: int
     
 
-class NoteSubjectInDB(NoteSubjectBase):
-    paco_code: int
+class SubjectInDB(SubjectBase):
+    code: int
     
     class Config:
         orm_mode = True

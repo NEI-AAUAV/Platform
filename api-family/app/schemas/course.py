@@ -3,7 +3,6 @@ from pydantic import BaseModel, constr
 
 
 class CourseBase(BaseModel):
-    initials: constr(max_length=16)
+    short: constr(max_length=8)
     name: str
-    
 

@@ -7,19 +7,19 @@ from .team_role import TeamRoleInDB
 from .user import UserInDB
 
 
-class TeamBase(BaseModel):
+class TeamMemberBase(BaseModel):
     header: Annotated[str, Field(max_length=256)]
     mandate: Optional[int]
     user_id: int
     role_id: int
 
 
-class TeamCreate(TeamBase):
+class TeamMemberCreate(TeamMemberBase):
     """Properties to receive via API on creation."""
     pass
 
 
-class TeamUpdate(TeamBase):
+class TeamMemberUpdate(TeamMemberBase):
     """Properties to receive via API on creation."""
     header: Annotated[Optional[str], Field(max_length=256)]
     mandate: Optional[int]
@@ -27,7 +27,7 @@ class TeamUpdate(TeamBase):
     role_id: Optional[int]
 
 
-class TeamInDB(TeamBase):
+class TeamMemberInDB(TeamMemberBase):
     """Properties properties stored in DB."""
     id: int
     user: UserInDB

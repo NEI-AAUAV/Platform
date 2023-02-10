@@ -44,7 +44,9 @@ class FainaBase(BaseModel):
 
     @root_validator
     def has_patrao_or_is_trajado(cls, values):
-        return values.get('patrao_id') or values.get('first_trajado_year')
+        if values.get('patrao_id') or values.get('first_trajado_year'):
+            return values
+        raise ValueError('Must have a patrão or be trajado')
 
     @validator('name', 'roles')
     def sort_ref_years(cls, v):
@@ -85,7 +87,7 @@ class FainaInDB(FainaBase):
         alias_generator = to_camel_case
 
 
-class UniversityBase(BaseModel):
+class AcademicBase(BaseModel):
     matriculations: List[RefYear[int]]
     roles: List[RefYear] = []
     # NOTE: useful for ordering users
@@ -104,12 +106,12 @@ class UniversityBase(BaseModel):
         return None
 
 
-UniversityCreate = UniversityBase
+AcademicCreate = AcademicBase
 
-UniversityUpdate = UniversityBase
+AcademicUpdate = AcademicBase
 
 
-class UniversityInDB(UniversityBase):
+class AcademicInDB(AcademicBase):
     class Config:
         # FIXME: do i need this? dataclass?
         orm = True
@@ -119,22 +121,24 @@ class UniversityInDB(UniversityBase):
 
 class UserBase(BaseModel):
     ref_id: Optional[int]      # Reference to a NEI Service user ID
-    name: constr(max_length=32)
+    name: constr(max_length=40)
     sex: Literal['M', 'F']
 
 
 class UserCreate(UserBase):
     faina: Optional[FainaCreate]
-    university: Optional[UniversityCreate]
+    academic: Optional[AcademicCreate]
 
     @root_validator
     def not_both_none(cls, values):
-        return values.get('faina') or values.get('university')
+        if values.get('faina') or values.get('academic'):
+            return values
+        raise ValueError('Must have faina or academic details')
 
 
 class UserUpdate(UserBase):
     faina: Optional[FainaUpdate]
-    university: Optional[UniversityUpdate]
+    academic: Optional[AcademicUpdate]
 
 
 class UserAdminUpdate(UserUpdate):
@@ -145,7 +149,7 @@ class UserInDB(UserBase):
     id: int
     image: Optional[str]
     faina: Optional[FainaInDB]
-    university: Optional[UniversityInDB]
+    academic: Optional[AcademicInDB]
 
     class Config:
         extra = 'forbid'

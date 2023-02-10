@@ -8,7 +8,7 @@ from app.utils import to_camel_case
 
 class RoleInDB(BaseModel):
     id: int = Field(alias='_id')
-    initials: constr(max_length=16, strip_whitespace=True)
+    short: constr(max_length=16, strip_whitespace=True)
     name: constr(max_length=128, strip_whitespace=True)
     super_roles: constr(regex=r'(,\d+,)*')
 

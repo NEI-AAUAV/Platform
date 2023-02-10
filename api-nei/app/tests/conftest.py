@@ -9,7 +9,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.schema import CreateSchema
 
 from app.api.deps import get_db
-from app.api.api import api_v1_router
+from app.api.api_v1 import router as api_v1_router
 from app.core.config import settings
 from app.db.base_class import Base
 

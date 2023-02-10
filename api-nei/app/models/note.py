@@ -11,28 +11,24 @@ from app.db.base_class import Base
 
 class Note(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(256))
-    _location = Column("location", String(2048))
-
-    subject_id = Column(
-        Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".note_subject.paco_code",
-                   name="fk_subject_id"),
-        index=True)
     author_id = Column(
         Integer,
         ForeignKey(settings.SCHEMA_NAME + ".user.id", name="fk_author_id"),
         index=True)
-    school_year_id = Column(
+    subject_id = Column(
         Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".note_school_year.id",
-                   name="fk_school_year_id"),
+        ForeignKey(settings.SCHEMA_NAME + ".subject.code",
+                   name="fk_subject_id"),
         index=True)
     teacher_id = Column(
         Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".note_teacher.id",
+        ForeignKey(settings.SCHEMA_NAME + ".teacher.id",
                    name="fk_teacher_id"),
         index=True)
+    
+    name = Column(String(256))
+    _location = Column("location", String(2048))
+    year = Column(SmallInteger, nullable=False, index=True)
 
     summary = Column(SmallInteger)
     tests = Column(SmallInteger)
@@ -44,18 +40,11 @@ class Note(Base):
 
     content = Column(Text)
     created_at = Column(DateTime, index=True)
-    type_id = Column(
-        Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".note_type.id",
-                   name="fk_type_id"),
-        index=True)
     size = Column(Integer)
 
-    subject = relationship("NoteSubject", foreign_keys=[subject_id])
     author = relationship("User", foreign_keys=[author_id])
-    school_year = relationship("NoteSchoolYear", foreign_keys=[school_year_id])
-    teacher = relationship("NoteTeacher", foreign_keys=[teacher_id])
-    type = relationship("NoteType", foreign_keys=[type_id])
+    subject = relationship("Subject", foreign_keys=[subject_id])
+    teacher = relationship("Teacher", foreign_keys=[teacher_id])
 
     @hybrid_property
     def location(self) -> Optional[AnyHttpUrl]:
