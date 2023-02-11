@@ -3,6 +3,7 @@ from typing import Generator, Any
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from fastapi.responses import ORJSONResponse
 from sqlalchemy import create_engine, event, DDL
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import Connection
@@ -64,7 +65,7 @@ def db(connection: Connection) -> Generator[SessionTesting, Any, None]:
 def app() -> Generator[FastAPI, Any, None]:
     """Create a new application for the test session."""
 
-    _app = FastAPI()
+    _app = FastAPI(default_response_class=ORJSONResponse)
     _app.include_router(api_v1_router, prefix=settings.API_V1_STR)
     yield _app
 
