@@ -1,6 +1,6 @@
-
+import config from "config";
 const WebSocketTest = () => {
-    var ws = new WebSocket("ws://localhost:8000/api/nei/v1/ws/ws");
+    var ws = new WebSocket(config.WS_URL);
     ws.onmessage = function (event) {
         
         //

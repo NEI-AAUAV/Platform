@@ -1,21 +1,33 @@
-let HOST, PRODUCTION;
+let HOST, PRODUCTION, BASE_URL;
+
+
+const scheme = {
+    WS : "ws://",
+    HTTP : "http://", // dev only
+    HTTPS : "https://",
+}
+
 
 if(process.env.NODE_ENV === 'production') {
     PRODUCTION = true;
     // HOST = 'https://nei-aauav.pt';
-    HOST = 'https://nei.web.ua.pt';
+    HOST = 'nei.web.ua.pt';
+    BASE_URL = `${scheme.HTTPS}${HOST}`;
 } else {
     PRODUCTION = false;
-    HOST = 'http://localhost';
+    HOST = 'localhost';
+    BASE_URL = `${scheme.HTTP}${HOST}`;
 }
 
 const config = {
     PRODUCTION,
-    HOST, 
-    NEI_URL: `${HOST}/api/nei/v1`,
-    TACAUA_URL: `${HOST}/api/tacaua/v1`,
-    FAMILY_URL: `${HOST}/api/family/v1`,
-    RALLYTASCAS_URL:`${HOST}/api/rallytascas/v1`,
+    HOST,
+    BASE_URL, 
+    NEI_URL: `${BASE_URL}/api/nei/v1`,
+    TACAUA_URL: `${BASE_URL}/api/tacaua/v1`,
+    FAMILY_URL: `${BASE_URL}/api/family/v1`,
+    RALLYTASCAS_URL: `${BASE_URL}/api/rallytascas/v1`,
+    WS_URL : `${scheme.WS}${HOST}/api/nei/v1`,
 }
 
 export default config;

@@ -1,6 +1,6 @@
-
+import config from "config";
 const TacaUaAdminDemo = () => {
-    var ws = new WebSocket("ws://localhost:8000/api/nei/v1/ws/ws");
+    var ws = new WebSocket(config.WS_URL);
 
     function sendMessage() {
         ws.send(document.getElementById("fname").value);
