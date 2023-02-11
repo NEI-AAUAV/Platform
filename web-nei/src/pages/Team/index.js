@@ -21,7 +21,7 @@ const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT)
 const Team = () => {
     const [years, setYears] = useState([]);
 
-    const [selectedYear, setSelectedYear] = useState(2022);
+    const [selectedYear, setSelectedYear] = useState('2022');
 
     const [people, setPeople] = useState();
     const [colaborators, setColaborators] = useState();

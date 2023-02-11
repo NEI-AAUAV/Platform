@@ -96,7 +96,7 @@ class NEIService {
     }
 
     async getTeamMandates(params) {
-        return await client.get('/team/', { params });
+        return await client.get('/team/member/', { params });
     }
 
     async getTeamRoles(params) {

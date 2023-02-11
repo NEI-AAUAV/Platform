@@ -56,6 +56,16 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
             note.exercises == "1" && note_tags.push({ "name": "Exercícios", "className": "tag-exercises" });
             note.projects == "1" && note_tags.push({ "name": "Projetos", "className": "tag-projects" });
             note.notebook == "1" && note_tags.push({ "name": "Caderno", "className": "tag-notebook" });
+
+            if (note.location.endsWith('.pdf')) {
+                note.type = {download_caption: 'Descarregar', icon_display: 'fas file-pdf', icon_download: 'fas cloud-download-alt'};
+            } else if (note.location.endsWith('.zip')) {
+                note.type = {download_caption: 'Descarregar', icon_display: 'fas folder', icon_download: 'fas cloud-download-alt'};
+            } else if (note.location.startsWith('https://github.com/')) {
+                note.type = {download_caption: 'Repositório', icon_display: 'fab github', icon_download: 'fab github'};
+            } else if (note.location.startsWith('https://drive.google.com/')) {
+                note.type = {download_caption: 'Google Drive', icon_display: 'fab google-drive', icon_download: 'fab google-drive'};
+            }
         }
         setTags(note_tags);
 
@@ -64,6 +74,7 @@ const Details = ({ note_id, close, setSelectedSubject, setSelYear, setSelStudent
             document.getElementById("apontamentosPage").scrollIntoView({ behavior: 'smooth' });
         }
     }, [note]);
+
 
     return (
         <div className={"notesDetails p-3 mb-4 animation d-flex flex-column " + className}>

@@ -10,7 +10,7 @@ class PartnerBase(BaseModel):
     company: str
     description: str
     content: Optional[str]
-    link: str
+    link: Optional[str]
     banner_url: Optional[str]
     banner_image: Optional[str]
     banner_until: Optional[datetime]

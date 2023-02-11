@@ -15,7 +15,7 @@ class CRUDPartner(CRUDBase[Partner, PartnerCreate, PartnerUpdate]):
         Select the first one that will end sooner
         """
         return db.query(Partner).order_by(Partner.banner_until)\
-            .filter(and_(Partner.banner_until > datetime.now(),
+            .filter(and_(Partner.banner_until < datetime.now(),
                          Partner.banner_image != None,
                          Partner.banner_url != None)).first()
 
