@@ -72,5 +72,5 @@ The **hotfix branch** come from the need to act immediately upon an undesired st
 
 The labels were inspired [here](https://robinpowered.com/blog/best-practice-system-for-organizing-and-tagging-github-issues).
 
-<img src="./images/issue-labels.jpeg" style="display: block; max-width: 100%; height: auto; margin: auto; float: none!important;" alt="Issue Labels" width="600" title="Issue Labeling">
+<img src="./images/issue-labels.jpeg" style="border-radius: 6px; display: block; max-width: 100%; height: auto; margin: auto; float: none!important;" alt="Issue Labels" width="600" title="Issue Labeling">
 
