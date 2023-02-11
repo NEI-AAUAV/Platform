@@ -10,6 +10,10 @@ router = APIRouter()
 class ConnectionType(Enum):
     GENERAL = 0
 
+class ConnectionType(Enum):
+    GENERAL = 0
+    LIVE_GAME = 1
+
 class ConnectionManager:
     def __init__(self):
         self.active_connections: Dict[ConnectionType , List[WebSocket]] = {ConnectionType.GENERAL: []}
