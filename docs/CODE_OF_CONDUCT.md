@@ -66,3 +66,11 @@ The **feature/issue branch** should be used when enhancing or creating a new fea
 The name shows that the branch applies to the task of adding a testing module, which is associated to the issue with the tracking ID 12. It is recommended to create these branches on the issue itself.
 
 The **hotfix branch** come from the need to act immediately upon an undesired state of a live production version.
+
+
+## Issue Labeling
+
+The labels were inspired [here](https://robinpowered.com/blog/best-practice-system-for-organizing-and-tagging-github-issues).
+
+<img src="./images/issue-labels.jpeg" style="display: block; max-width: 100%; height: auto; margin: auto; float: none!important;" alt="Issue Labels" width="600" title="Issue Labeling">
+

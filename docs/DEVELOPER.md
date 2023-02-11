@@ -12,8 +12,9 @@
 6. [Installation Troubleshooting](#6-installation-troubleshooting)
 
 ## 1. System Architecture
- to be written
+
 <!-- TODO: complete -->
+![NEI Architecture](./images/architecture.jpeg)
 
 One of the primary advantages of microservices is that teams can work independently, with their tools and in a different language from other teams. So, code reuse might not be possible.
 
