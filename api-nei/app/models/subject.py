@@ -9,7 +9,7 @@ class Subject(Base):
     course_id = Column(
         Integer,
         ForeignKey(settings.SCHEMA_NAME + '.course.code'))
-    year = Column(Integer, nullable=False)
+    curricular_year = Column(Integer, nullable=False)
     name = Column(String(128), nullable=False)
     short = Column(String(8), nullable=False)
     semester = Column(Integer)

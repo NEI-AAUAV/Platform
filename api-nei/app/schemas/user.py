@@ -34,8 +34,9 @@ class UserCreate(UserBase):
     email: str
     password: constr(min_length=8)
     password2: str
-    _created_at: datetime = Field(
-        default_factory=datetime.now, alias='created_at')
+    # TODO: do not forget, already tried this:
+    # https://github.com/tiangolo/fastapi/issues/1378
+    # created_at: datetime = Field(default_factory=datetime.now)
 
     @root_validator
     def passwords_match(cls, values):
@@ -43,19 +44,13 @@ class UserCreate(UserBase):
             raise ValueError('Passwords do not match')
         return values
 
-    class Config:
-        underscore_attrs_are_private = True
-
 
 class UserUpdate(UserBase):
     """Properties to receive via API on create."""
     name: Optional[constr(max_length=20)]
     surname: Optional[constr(max_length=20)]
-    _updated_at: datetime = Field(
-        default_factory=datetime.now, alias='updated_at')
-
-    class Config:
-        underscore_attrs_are_private = True
+    # TODO: do not forget
+    # updated_at: datetime = Field(default_factory=datetime.now)
 
 
 class UserInDB(UserBase):

@@ -12,7 +12,7 @@ from app.db.base_class import Base
 class TeamMember(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     _header = Column("header", String(2048))
-    mandate = Column(Integer, index=True)
+    mandate = Column(String(7), index=True)
     user_id = Column(
         Integer,
         ForeignKey(settings.SCHEMA_NAME + '.user.id'),

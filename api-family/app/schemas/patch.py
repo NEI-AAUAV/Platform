@@ -13,11 +13,9 @@ class MessageBase(BaseModel):
 
 
 class MessageCreate(MessageBase):
-    _sent_at: datetime = Field(
-        default_factory=datetime.now, alias='sent_at')
-
-    class Config:
-        underscore_attrs_are_private = True
+    # TODO: do not forget
+    # sent_at: datetime = Field(default_factory=datetime.now)
+    pass
 
 
 class MessageInDB(MessageBase):
@@ -36,22 +34,15 @@ class PatchBase(BaseModel):
 
 class PatchCreate(PatchBase):
     users: List[UserCreate]
-    _created_at: datetime = Field(
-        default_factory=datetime.now, alias='created_at')
-    _updated_at: datetime = Field(
-        default_factory=datetime.now, alias='updated_at')
-
-    class Config:
-        underscore_attrs_are_private = True
+    # TODO: do not forget
+    # created_at: datetime = Field(default_factory=datetime.now)
+    # updated_at: datetime = Field(default_factory=datetime.now)
 
 
 class PatchUpdate(PatchBase):
     users: List[UserAdminUpdate]
-    _updated_at: datetime = Field(
-        default_factory=datetime.now, alias='updated_at')
-
-    class Config:
-        underscore_attrs_are_private = True
+    # TODO: do not forget
+    # updated_at: datetime = Field(default_factory=datetime.now)
 
 
 class PatchInDB(PatchBase):

@@ -165,7 +165,18 @@ const Apontamentos = () => {
         else {
             service.getNotes({ ...params, page: selPage, size: 18 })
                 .then(({ items, last }) => {
-                    setData(items);
+                    setData(items.map(note => {
+                        if (note.location.endsWith('.pdf')) {
+                            note.type = {download_caption: 'Descarregar', icon_display: 'fas file-pdf', icon_download: 'fas cloud-download-alt'};
+                        } else if (note.location.endsWith('.zip')) {
+                            note.type = {download_caption: 'Descarregar', icon_display: 'fas folder', icon_download: 'fas cloud-download-alt'};
+                        } else if (note.location.startsWith('https://github.com/')) {
+                            note.type = {download_caption: 'Repositório', icon_display: 'fab github', icon_download: 'fab github'};
+                        } else if (note.location.startsWith('https://drive.google.com/')) {
+                            note.type = {download_caption: 'Google Drive', icon_display: 'fab google-drive', icon_download: 'fab google-drive'};
+                        }
+                        return note;
+                    }));
                     setPageNumber(last || 1);
                     setLoading(false);
                 })
@@ -180,7 +191,7 @@ const Apontamentos = () => {
         service.getNotesYears(params)
             .then((data) => {
                 const arr = data.map(year => {
-                    const x = { value: year.id, label: year.year_begin + "-" + year.year_end };
+                    const x = { value: year, label: year + "-" + (year + 1) };
                     if (x.value == selYear)
                         setShownYear(x);
                     return x;

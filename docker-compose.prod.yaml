@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes: 
-      # - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
+      - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
       - ./api-rallytascas/app/db/setup.sql:/docker-entrypoint-initdb.d/rallytascas-0001.sql
       - pg_data:/var/lib/postgresql/data
     healthcheck:
