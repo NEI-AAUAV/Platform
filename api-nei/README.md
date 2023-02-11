@@ -5,8 +5,9 @@ Follow one of the installation tutorials to run this service. If everything was 
 Check http://localhost:8000/docs to watch the API documentation with Swagger UI.
 
 ## DB Documentation
- to be written
+
 <!-- TODO: complete -->
+<img src="../docs/images/nei-uml.svg" style="border-radius: 6px;" alt="nei UML">
 
 ## API Documentation
  to be written
