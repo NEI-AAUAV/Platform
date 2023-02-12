@@ -61,12 +61,50 @@
     /* .menu > :where(li) > :where(ul) :where(li) > :where(:not(ul)) {
         @apply !ml-4;
     } */
+
+    .badge-outline {
+        @apply !bg-transparent;
+    }
+
+    .btn {
+        @apply !rounded-full;
+        @apply !normal-case;
+    }
+
+    .btn-outline.btn-primary {
+        background-color: hsl(var(--p) / 0.1);
+    }
+    .btn-outline.btn-secondary {
+        background-color: hsl(var(--s) / 0.1);
+
+    }
+    .btn-outline.btn-accent {
+        background-color: hsl(var(--a) / 0.1);
+
+    }
+    .btn-outline.btn-info {
+        background-color: hsl(var(--in) / 0.1);
+
+    }
+    .btn-outline.btn-success {
+        background-color: hsl(var(--su) / 0.1);
+
+    }
+    .btn-outline.btn-warning {
+        background-color: hsl(var(--wa) / 0.1);
+
+    }
+    .btn-outline.btn-error {
+        background-color: hsl(var(--er) / 0.1);
+
+    }
 }
 
 body {
     max-width: 100vw;
     overflow-x: hidden;
 }
+
 
 
 
@@ -271,18 +309,22 @@ label {color: var(--text-secondary)} */
     animation-fill-mode: forwards;
     transition: .3s ease all;
 }
+
 @keyframes fadeIn {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
 }
+
 @keyframes slideUp {
     from {
         transform: translateY(20px);
     }
+
     to {
         transform: translateY(0);
     }
@@ -296,4 +338,4 @@ label {color: var(--text-secondary)} */
     animation-delay: 0.4s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
-} 
+}

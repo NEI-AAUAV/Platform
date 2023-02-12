@@ -8,7 +8,7 @@ import {
 import TopButton from "components/TopButton";
 
 import Navbar from "../Navbar";
-import Footer from "../../components/Footer";
+import Footer from "../Footer";
 
 
 

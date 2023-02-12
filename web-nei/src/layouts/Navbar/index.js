@@ -11,7 +11,8 @@ import './index.css';
 
 
 const Navbar = () => {
-    const navbarMobileRef = useRef(null);
+    const navRef = useRef(null);
+    const navMobileRef = useRef(null);
     const location = useLocation();
     const windowSize = useWindowSize();
     const windowScroll = useWindowScroll();
@@ -20,11 +21,12 @@ const Navbar = () => {
     useEffect(() => {
         // Close navbar mobile when location changes
         setOpenMobile(false);
+        resetMenuDropdowns();
     }, [location]);
 
     useEffect(() => {
         // Dropdown animation for navbar mobile
-        const nav = navbarMobileRef.current;
+        const nav = navMobileRef.current;
         if (openMobile) {
             nav.style.maxHeight = `${nav.scrollHeight + 32}px`;
         } else {
@@ -32,9 +34,18 @@ const Navbar = () => {
         }
     }, [openMobile])
 
-    function toggleDropdown(e) {
-        // Dropdown animation for navbar mobile items
-        const nav = navbarMobileRef.current;
+    /** Ugly hack to hide menu dropdowns */
+    function resetMenuDropdowns() {
+        const d = navRef.current.querySelectorAll('.navbar-center>.menu>li>ul');
+        d.forEach((e) => { e.classList.add('hidden'); });
+        window.setTimeout(() => {
+            d.forEach((e) => { e.classList.remove('hidden'); });
+        }, 100);
+    }
+
+    /** Dropdown animation for navbar mobile items */
+    function toggleMobileDropdown(e) {
+        const nav = navMobileRef.current;
         const dropdown = e.target.nextSibling;
         if (dropdown.style.maxHeight) {
             dropdown.style.maxHeight = null;
@@ -48,10 +59,10 @@ const Navbar = () => {
         <>
             <div
                 className={classname("fixed top-0 z-40 w-full flex-wrap md:flex-nowrap text-base-300-content transition-colors transition-size ease-out",
-                    openMobile && windowSize.width < 768 ? "!bg-base-200 border border-base-300 !shadow-lg m-1 w-[calc(100%-0.5rem)] rounded-md" : "border-transparent",
+                    openMobile && windowSize.width < 768 ? "!bg-base-200 border border-base-300 !shadow-lg m-1 !w-[calc(100%-0.5rem)] rounded-md" : "border-transparent",
                     windowScroll.y > 0 ? "bg-base-100/90 shadow backdrop-blur" : "bg-transparent")}
             >
-                <div className="navbar">
+                <div ref={navRef} className="navbar">
                     <div className="navbar-start">
                         <Link to="/">
                             <img role="button" src={logo} width="60" height="60" alt="NEI" />
@@ -109,7 +120,7 @@ const Navbar = () => {
                     </div>
 
                 </div>
-                <div ref={navbarMobileRef} className="navbar-mobile transition-all ease-out overflow-hidden max-h-0 md:hidden">
+                <div ref={navMobileRef} className="navbar-mobile transition-all ease-out overflow-hidden max-h-0 md:hidden">
                     <ul className="menu menu-vertical p-5 pt-0">
                         {data.map(({ name, link, dropdown }, index) => (
                             !dropdown ? (
@@ -118,7 +129,7 @@ const Navbar = () => {
                                 </li>
                             ) : (
                                 <li key={index} tabIndex={0}>
-                                    <a className="justify-between" onClick={toggleDropdown}>
+                                    <a className="justify-between" onClick={toggleMobileDropdown}>
                                         {name}
                                         <svg className="fill-current pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
                                     </a>

@@ -22,7 +22,7 @@ const data = [
         name: "NEI",
         dropdown: [
             {
-                name: "Equipa",
+                name: "Equipas",
                 link: "/equipa",
             },
             {
@@ -48,7 +48,7 @@ const data = [
                 link: "/faina",
             },
             {
-                name: "Famílias de Faina",
+                name: "Família",
                 link: "/familias",
             },
             {
@@ -74,9 +74,22 @@ const data = [
     //   name: "Rally Tascas",
     //   link: "/breakthebars",
     // },
-    !config.PRODUCTION && {
-        name: "Components",
-        link: "/components",
+    {
+        name: "Outro",
+        dropdown: [
+            !config.PRODUCTION && {
+                name: "Components",
+                link: "/components",
+            },
+            {
+                name: "Test",
+                link: "/testing",
+            },
+            {
+                name: "TacauaAdminDemo",
+                link: "/tacaua-admin-demo",
+            }
+        ],
     },
 ];
 
