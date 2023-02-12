@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import AnyHttpUrl
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -16,7 +16,7 @@ class User(Base):
     iupi = Column(String(36), unique=True)
     nmec = Column(Integer, unique=True)
     email = Column(String(256), nullable=False, unique=True)
-    hashed_password = Column(String(60))
+    hashed_password = Column(Text)
     name = Column(String(20), nullable=False)
     surname = Column(String(20), nullable=False)
     gender = Column(

@@ -654,7 +654,7 @@ CREATE TABLE nei."user" (
     iupi character varying(36),
     nmec integer,
     email character varying(256) NOT NULL,
-    hashed_password character varying(60),
+    hashed_password text,
     name character varying(20) NOT NULL,
     surname character varying(20) NOT NULL,
     gender nei.gender_enum,
@@ -2009,7 +2009,9 @@ INSERT INTO nei."user" (id, email, name, surname, gender, iupi, nmec, image, cur
 (156, 'matilde.teixeira@ua.pt', 'Matilde', 'Teixeira', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], ''),
 (157, 'hf.correia@ua.pt', 'Hugo', 'Correia', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], ''),
 (158, '_158_', 'Mariana', 'Rosa', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
-
+-- NOTE: If more users are added to this list the 'nei.user_id_seq' sequence needs to be updated
+--       to start after the last user id otherwise the register endpoint won't work.
+--       (The value of the sequence is updated further below just search for it's name)
 
 --
 -- Data for Name: user_academic_details; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -2170,7 +2172,7 @@ SELECT pg_catalog.setval('nei.user_academic_details_id_seq', 1, false);
 -- Name: user_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.user_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.user_id_seq', 159, false);
 
 
 --
