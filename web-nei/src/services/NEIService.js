@@ -154,6 +154,10 @@ class NEIService {
     async login(data) {
         return await client.post('/auth/login/', data);
     }
+
+    async register(data) {
+        return await client.post('/auth/register/', data);
+    }
 }
 
 // Export a singleton service
