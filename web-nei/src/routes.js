@@ -28,6 +28,8 @@ import Internship from "./pages/Internship";
 import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
 import Test from "./pages/Test";
 import TacauaAdminDemo from "./pages/TacauaAdminDemo";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const routes = [
   {
@@ -65,9 +67,11 @@ const routes = [
       // { path: "/estagios", element: <Internship /> },
       !config.PRODUCTION && { path: "/desporto", element: <Sports /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
-      { path: "/testing", element: <Test />},
-      { path: "/tacaua-admin-demo", element: <TacauaAdminDemo />},
+      { path: "/testing", element: <Test /> },
+      { path: "/tacaua-admin-demo", element: <TacauaAdminDemo /> },
       { path: "/:id", element: <Error404 /> },
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
 
     ],
   },

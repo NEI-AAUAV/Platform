@@ -30,19 +30,12 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    """Properties to receive via API on create."""
+    """Properties to add to the database on create."""
     email: str
-    password: constr(min_length=8)
-    password2: str
-    # TODO: do not forget, already tried this:
-    # https://github.com/tiangolo/fastapi/issues/1378
-    # created_at: datetime = Field(default_factory=datetime.now)
-
-    @root_validator
-    def passwords_match(cls, values):
-        if values.get('password') != values.get('password2'):
-            raise ValueError('Passwords do not match')
-        return values
+    hashed_password: str
+    scopes: List[ScopeEnum] = []
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
 
 
 class UserUpdate(UserBase):

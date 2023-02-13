@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from . import (
     note, video, news, partner, merch, history, rgm, redirect, user,
     faina, senior, team,
-    tacaua_ws)
+    tacaua_ws, auth)
 
 
 router = APIRouter()
@@ -20,3 +20,4 @@ router.include_router(merch.router, prefix="/merch", tags=["Merchandising"])
 router.include_router(partner.router, prefix="/partner", tags=["Partner"])
 router.include_router(user.router, prefix="/user", tags=["User"])
 router.include_router(tacaua_ws.router, prefix="/ws", tags=["WebSocket"])
+router.include_router(auth.router, prefix="/auth", tags=["Authentication"])

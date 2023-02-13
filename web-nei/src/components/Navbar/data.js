@@ -120,6 +120,10 @@ const data = [
   {
     name: "TacauaAdminDemo",
     link: "/tacaua-admin-demo",
+  },
+  {
+    name: "Login",
+    link: "/login",
   }
 ];
 

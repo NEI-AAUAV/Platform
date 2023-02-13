@@ -1,6 +1,7 @@
 import os
 import pathlib
 
+from datetime import timedelta
 from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
 from typing import List, Optional, Union
 
@@ -46,6 +47,18 @@ class Settings(BaseSettings):
     ] = f"postgresql://{POSTGRES_USER}" \
         f":{POSTGRES_PASSWORD}@{POSTGRES_SERVER}" \
         f":5432/{POSTGRES_DB}_test"
+
+    # Auth settings
+    ## Secret key to sign JWT tokens with
+    JWT_SECRET_KEY: str | None = os.getenv(
+        "SECRET_KEY",
+        # Don't use this in production :)
+        "c35eb2f4dbfdb35f98155ae2f65625ba9470d1f204e5d5e1f020ff9fa7248e0b",
+    )
+    ## How long access tokens are valid for
+    ACCESS_TOKEN_EXPIRE: timedelta = timedelta(minutes=30)
+    ## Algorithm to use when signing JWT tokens
+    JWT_ALGORITHM: str = "HS256"
 
     class Config:
         case_sensitive = True
