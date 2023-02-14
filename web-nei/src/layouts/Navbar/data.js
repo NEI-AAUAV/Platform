@@ -91,6 +91,10 @@ const data = [
             }
         ],
     },
+    {
+        name: "Login",
+        link: "/login",
+    }
 ];
 
 export default data;

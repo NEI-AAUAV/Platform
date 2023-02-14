@@ -150,6 +150,14 @@ class NEIService {
     async getSeniorsBy(course, year) {
         return await client.get(`/senior/${course}/${year}`);
     }
+
+    async login(data) {
+        return await client.post('/auth/login/', data);
+    }
+
+    async register(data) {
+        return await client.post('/auth/register/', data);
+    }
 }
 
 // Export a singleton service
