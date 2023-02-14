@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request, Form
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request, Form, Security
 from sqlalchemy.orm import Session
 from typing import Any, Optional
 
 from app import crud
-from app.api import deps
+from app.api import deps, auth
 from app.core.logging import logger
 from app.schemas.modality import Modality, ModalityCreate, ModalityUpdate, ModalityLazyList
 
@@ -26,7 +26,8 @@ def get_multi_modality(
 async def create_modality(
     modality_in: ModalityCreate = Form(..., alias='modality'),
     image: Optional[UploadFile] = File(None),
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     modality = crud.modality.create(db, obj_in=modality_in)
     modality = await crud.modality.update_image(

@@ -1,12 +1,12 @@
 from typing import Any, List, Optional
 from datetime import datetime
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Security
 from fastapi.requests import Request
 from fastapi.responses import Response
 
 from app import crud
-from app.api import deps
+from app.api import auth, deps
 from app.exception import NotFoundException
 from app.schemas.patch import PatchInDB, PatchCreate, PatchUpdate, PatchLazyList
 from app.serializers import serializeDict
@@ -52,6 +52,7 @@ def create_patch(
 @router.put("/{id}", status_code=201, response_model=PatchInDB)
 def update_patch(
     id: int, obj_in: PatchUpdate, request: Request
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ) -> Any:
     # TODO: Only with admin permissions
 

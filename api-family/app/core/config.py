@@ -45,6 +45,12 @@ class Settings(BaseSettings):
         f":{MONGO_PASSWORD}@{MONGO_SERVER}" \
         f":27017/{MONGO_DB}_test??authSource={MONGO_USER}"
 
+    # Auth settings
+    ## Path to JWT signing keys
+    JWT_PUBLIC_KEY_PATH: str = os.getenv("PUBLIC_KEY", "/jwt.key.pub")
+    ## Algorithm to use when signing JWT tokens
+    JWT_ALGORITHM: str = "RS256"
+
     class Config:
         case_sensitive = True
 
