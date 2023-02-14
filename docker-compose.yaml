@@ -67,6 +67,7 @@ services:
       POSTGRES_SERVER: db_pg
     volumes: 
       - ./api-tacaua:/api_tacaua
+      - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:
       db_pg:
         condition: service_healthy
@@ -82,6 +83,7 @@ services:
       MONGO_SERVER: db_mongo
     volumes: 
       - ./api-family:/api_family
+      - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
     # depends_on:
     #   db_mongo:
     #     condition: service_healthy

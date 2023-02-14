@@ -1,27 +1,46 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import (
+    OAuth2PasswordBearer,
+    OAuth2PasswordRequestForm,
+    SecurityScopes,
+)
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-from pydantic import BaseModel, SecretStr, validator, AnyStrMinLengthError
+from pydantic import (
+    BaseModel,
+    SecretStr,
+    validator,
+    AnyStrMinLengthError,
+    BaseModel,
+    ValidationError,
+)
 from jose import JWTError, jwt
 from datetime import datetime
-from typing import Literal
+from typing import Literal, Any
 
 from app import crud
 from app.api import deps
 from app.models.user import User
-from app.schemas.user import UserBase, UserCreate
+from app.schemas.user import UserBase, UserCreate, ScopeEnum
 from app.core.config import settings
 
 router = APIRouter()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=settings.API_V1_STR + "/auth/login")
 with open(settings.JWT_SECRET_KEY_PATH, "r") as file:
     private_key = file.read()
 
 with open(settings.JWT_PUBLIC_KEY_PATH, "r") as file:
     public_key = file.read()
 
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl=settings.API_V1_STR + "/auth/login",
+    scopes={
+        ScopeEnum.ADMIN: "Full access to everything.",
+        ScopeEnum.MANAGER_FAMILY: "Edit faina family.",
+        ScopeEnum.MANAGER_TACAUA: "Edit data related to tacaua.",
+        ScopeEnum.MANAGER_NEI: "Edit data related to nei.",
+    },
+)
 
 pwd_context = CryptContext(
     # Algoritmos aceites para a verificação das password hashed.
@@ -112,14 +131,19 @@ def create_access_token(user: User) -> str:
     return encoded_jwt
 
 
-async def get_current_user(
-    db: Session = Depends(deps.get_db), token: str = Depends(oauth2_scheme)
-) -> User:
+async def verify_token(
+    security_scopes: SecurityScopes,
+    token: str = Depends(oauth2_scheme),
+) -> dict[str, Any]:
     """Dependency for user authentication"""
+    if security_scopes.scopes:
+        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
+    else:
+        authenticate_value = "Bearer"
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+        headers={"WWW-Authenticate": authenticate_value},
     )
     try:
         payload = jwt.decode(
@@ -127,16 +151,24 @@ async def get_current_user(
             public_key,
             algorithms=[settings.JWT_ALGORITHM],
         )
-        user_id_str: str | None = payload.get("sub")
-        if user_id_str is None:
-            raise credentials_exception
-        user_id: int = int(user_id_str)
-    except (JWTError, ValueError):
+        token_scopes = payload.get("scopes", [])
+    except JWTError:
         raise credentials_exception
-    user = crud.user.get(db, user_id)
-    if user is None:
-        raise credentials_exception
-    return user
+
+    # Bypass scopes for admin
+    if ScopeEnum.ADMIN in token_scopes:
+        return payload
+
+    # Verify that the token has all the necessary scopes
+    for scope in security_scopes.scopes:
+        if scope not in token_scopes:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not enough permissions",
+                headers={"WWW-Authenticate": authenticate_value},
+            )
+
+    return payload
 
 
 @router.post(
@@ -194,7 +226,7 @@ async def register(
         )
     create_user = UserCreate(
         **form_data.dict(),
-        hashed_password=hash_password(form_data.password.get_secret_value())
+        hashed_password=hash_password(form_data.password.get_secret_value()),
     )
     user = crud.user.create(db, obj_in=create_user)
     access_token = create_access_token(user)
