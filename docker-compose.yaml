@@ -50,6 +50,8 @@ services:
       POSTGRES_SERVER: db_pg
     volumes: 
       - ./api-nei:/api_nei
+      - ./dev-keys/jwt.key:/jwt.key:ro # Development key
+      - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:
       db_pg:
         condition: service_healthy

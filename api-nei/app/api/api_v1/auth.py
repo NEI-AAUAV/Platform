@@ -16,9 +16,12 @@ from app.core.config import settings
 router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=settings.API_V1_STR + "/auth/login")
+with open(settings.JWT_SECRET_KEY_PATH, "r") as file:
+    private_key = file.read()
 
-if settings.JWT_SECRET_KEY is None:
-    raise Exception("No JWT secret provided")
+with open(settings.JWT_PUBLIC_KEY_PATH, "r") as file:
+    public_key = file.read()
+
 
 pwd_context = CryptContext(
     # Algoritmos aceites para a verificação das password hashed.
@@ -103,7 +106,7 @@ def create_access_token(user: User) -> str:
             "scopes": user.scopes,
             "exp": expire,
         },
-        settings.JWT_SECRET_KEY,
+        private_key,
         algorithm=settings.JWT_ALGORITHM,
     )
     return encoded_jwt
@@ -121,7 +124,7 @@ async def get_current_user(
     try:
         payload = jwt.decode(
             token,
-            settings.JWT_SECRET_KEY,
+            public_key,
             algorithms=[settings.JWT_ALGORITHM],
         )
         user_id_str: str | None = payload.get("sub")

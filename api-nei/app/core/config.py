@@ -49,16 +49,13 @@ class Settings(BaseSettings):
         f":5432/{POSTGRES_DB}_test"
 
     # Auth settings
-    ## Secret key to sign JWT tokens with
-    JWT_SECRET_KEY: str | None = os.getenv(
-        "SECRET_KEY",
-        # Don't use this in production :)
-        "c35eb2f4dbfdb35f98155ae2f65625ba9470d1f204e5d5e1f020ff9fa7248e0b",
-    )
+    ## Path to JWT signing keys
+    JWT_SECRET_KEY_PATH: str = os.getenv("SECRET_KEY", "/jwt.key")
+    JWT_PUBLIC_KEY_PATH: str = os.getenv("PUBLIC_KEY", "/jwt.key.pub")
     ## How long access tokens are valid for
     ACCESS_TOKEN_EXPIRE: timedelta = timedelta(minutes=30)
     ## Algorithm to use when signing JWT tokens
-    JWT_ALGORITHM: str = "HS256"
+    JWT_ALGORITHM: str = "RS256"
 
     class Config:
         case_sensitive = True
