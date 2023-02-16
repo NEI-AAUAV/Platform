@@ -22,7 +22,6 @@ module.exports = {
                     primary: "#19a24aff",
                     secondary: "#086c2e",
                     "primary-focus": "#086c2e",
-                    error: "green",
                 },
             },
             {
