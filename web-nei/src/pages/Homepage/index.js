@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb, faFutbol } from "@fortawesome/free-regular-svg-icons";
 import { faHistory, faUsers } from "@fortawesome/free-solid-svg-icons";
 import Typist from 'react-typist';
-import { ReactTerminal } from "react-terminal-component";
 import Particles from "react-tsparticles";
 
 import service from 'services/NEIService';
