@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Cookie, status
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
     SecurityScopes,
 )
+from fastapi.responses import JSONResponse, Response
+
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from pydantic import (
@@ -12,7 +14,6 @@ from pydantic import (
     validator,
     AnyStrMinLengthError,
     BaseModel,
-    ValidationError,
 )
 from jose import JWTError, jwt
 from datetime import datetime
@@ -21,6 +22,7 @@ from typing import Literal, Any
 from app import crud
 from app.api import deps
 from app.models.user import User
+from app.models.device_login import DeviceLogin
 from app.schemas.user import UserBase, UserCreate, ScopeEnum
 from app.core.config import settings
 
@@ -105,30 +107,110 @@ def authenticate_user(db: Session, email: str, password: str) -> User | Literal[
     return user
 
 
-def create_access_token(user: User) -> str:
-    """Creates a new access token for a user
+def create_token(payload: dict[str, Any]) -> str:
+    """Creates a new token
 
     **Parameters**
-    * `user`: The user's information
+    * `payload` the token data payload
 
     **Returns**
-    A JWT encoded access token for the user
+    A JWT encoded token with the provided payload
     """
-    expire = datetime.utcnow() + settings.ACCESS_TOKEN_EXPIRE
     encoded_jwt = jwt.encode(
-        # JWT requires 'sub' to be a string
+        payload,
+        private_key,
+        algorithm=settings.JWT_ALGORITHM,
+    )
+    return encoded_jwt
+
+
+def generate_response(
+    db: Session,
+    user: User,
+    device_login: DeviceLogin | None = None,
+) -> Response:
+    """Creates a new authorization response for a user
+
+    **Parameters**
+    * `db`: A SQLAlchemy ORM session
+    * `user`: The user's information
+    * `device_login`: The device login information if refreshing the session, otherwise None
+
+    **Returns**
+    A response with the refresh token cookie set and the
+    access token in the body
+    """
+
+    # Measure once the current time, the same value must be passed to the
+    # created device login and refreshed token otherwise the token could be
+    # denied because the dates mismatch.
+    iat = datetime.utcnow()
+
+    if device_login is None:
+        # Create a new session and add it to the database if no session exists
+        device_login = DeviceLogin(
+            user_id=user.id,
+            session_id=int(iat.timestamp()),
+            refreshed_at=iat,
+            expires_at=iat + settings.REFRESH_TOKEN_EXPIRE,
+        )
+        db.add(device_login)
+    else:
+        # Update the last time the token was refreshed if the session already exists
+        device_login.refreshed_at = iat
+
+    # Flush all changes to the database to ensure consistency
+    db.commit()
+
+    access_token = create_token(
         {
+            "iat": iat,
+            "exp": iat + settings.ACCESS_TOKEN_EXPIRE,
+            # JWT requires 'sub' to be a string
             "sub": str(user.id),
             "nmec": user.nmec,
             "name": user.name,
             "surname": user.surname,
             "scopes": user.scopes,
-            "exp": expire,
-        },
-        private_key,
-        algorithm=settings.JWT_ALGORITHM,
+        }
     )
-    return encoded_jwt
+    refresh_token = create_token(
+        {
+            "iat": iat,
+            "exp": device_login.expires_at,
+            # JWT requires 'sub' and 'sid' to be a string
+            "sub": str(user.id),
+            "sid": device_login.session_id,
+        },
+    )
+
+    token_data = Token(access_token=access_token, token_type="bearer")
+
+    response = JSONResponse(content=token_data.dict())
+    response.set_cookie(
+        key="refresh",
+        value=refresh_token,
+        expires=device_login.expires_at,
+        secure=settings.PRODUCTION,
+        httponly=True,
+        samesite="strict",
+        # Only pass the cookie to the refresh endpoint
+        path=settings.API_V1_STR + "/auth/refresh",
+    )
+    return response
+
+
+def decode_token(token: str) -> dict[str, Any]:
+    return jwt.decode(
+        token,
+        public_key,
+        algorithms=[settings.JWT_ALGORITHM],
+        options={
+            "require_iat": True,
+            "require_exp": True,
+            "require_sub": True,
+        },
+    )
 
 
 async def verify_token(
@@ -146,11 +228,7 @@ async def verify_token(
         headers={"WWW-Authenticate": authenticate_value},
     )
     try:
-        payload = jwt.decode(
-            token,
-            public_key,
-            algorithms=[settings.JWT_ALGORITHM],
-        )
+        payload = decode_token(token)
         token_scopes = payload.get("scopes", [])
     except JWTError:
         raise credentials_exception
@@ -190,8 +268,7 @@ async def login(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(user)
-    return Token(access_token=access_token, token_type="bearer")
+    return generate_response(db, user)
 
 
 class UserRegisterForm(UserBase):
@@ -229,5 +306,53 @@ async def register(
         hashed_password=hash_password(form_data.password.get_secret_value()),
     )
     user = crud.user.create(db, obj_in=create_user)
-    access_token = create_access_token(user)
-    return Token(access_token=access_token, token_type="bearer")
+    return generate_response(db, user)
+
+
+@router.post(
+    "/refresh",
+    responses={401: {"description": "Invalid refresh token"}},
+    response_model=Token,
+)
+async def refresh(
+    db: Session = Depends(deps.get_db), refresh: str | None = Cookie(default=None)
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Refresh"},
+    )
+
+    if refresh is None:
+        raise credentials_exception
+
+    try:
+        payload = decode_token(refresh)
+        # Extract all needed fields inside a `try` in case a token
+        # has a bad payload.
+        user_id = int(payload["sub"])
+        session_id = int(payload["sid"])
+        issued_at = payload["iat"]
+    except (JWTError, ValueError, KeyError):
+        raise credentials_exception
+
+    # Get the token's session from the database
+    device_login = db.query(DeviceLogin).get((user_id, session_id))
+    if device_login is None:
+        raise credentials_exception
+
+    # Safety check that the session hasn't expired, the token should already
+    # encode this.
+    if device_login.expires_at < datetime.now():
+        raise credentials_exception
+
+    # Check that this token issue date isn't before the last token refresh, if
+    # this happens it might mean someone got the token and is trying to replay it
+    if int(device_login.refreshed_at.timestamp()) > issued_at:
+        raise credentials_exception
+
+    user = crud.user.get(db, user_id)
+    if user is None:
+        raise credentials_exception
+
+    return generate_response(db, user, device_login)
