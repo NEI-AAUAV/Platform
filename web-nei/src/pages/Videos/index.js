@@ -91,10 +91,7 @@ const Videos = () => {
             <h2 className="text-center">
                 <Typist>Vídeos</Typist>
             </h2>
-
-            {
-                // Filter by category
-            }
+            {/* Filter by category */}
             {
                 !loadingCategories &&
                 <div className="col-12 d-flex flex-row flex-wrap my-5">
@@ -118,17 +115,12 @@ const Videos = () => {
                     />
                 </div>
             }
-
-            {
-                // Videos list
-            }
+            {/* Videos list */}
             <Row>
-
                 {
                     (loading || loadingCategories) &&
                     <Spinner animation="grow" variant="primary" className="mx-auto mb-3" title="A carregar..." />
                 }
-
                 {
                     !loading && videos.map((video, index) => {
 
@@ -157,10 +149,7 @@ const Videos = () => {
                     })
                 }
             </Row>
-
-            {
-                // Pagination
-            }
+            {/* Pagination */}
             <Row>
                 {
                     pages > 1 &&
@@ -172,9 +161,6 @@ const Videos = () => {
                     ></PageNav>
                 }
             </Row>
-
-
-
             {
                 // Error
                 !loading && !loadingCategories && videos.length == 0 &&
@@ -183,9 +169,6 @@ const Videos = () => {
                     <h4 className="text-center">Tenta definir filtros menos restritivos</h4>
                 </div>
             }
-
-
-
         </div>
     );
 }
