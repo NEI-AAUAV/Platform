@@ -8,7 +8,6 @@ import { loadFull } from "tsparticles";
 import { loadPolygonMaskPlugin } from "tsparticles-plugin-polygon-mask";
 import { loadParticlesRepulseInteraction } from "tsparticles-interaction-particles-repulse";
 
-
 import service from 'services/NEIService';
 import MockupTerminal from 'components/MockupTerminal';
 
