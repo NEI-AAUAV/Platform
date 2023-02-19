@@ -104,7 +104,10 @@ const Navbar = () => {
                     </div>
                     <div className="navbar-end gap-x-3">
                         {true ?
-                            <a className="btn btn-sm">Sign in</a>
+                            <>
+                                <Link to="/login" className="btn btn-sm">Log in</Link>
+                                <Link to="/register" className="btn btn-primary btn-sm">Sign up</Link>
+                            </>
                             :
                             <div class="avatar">
                                 <div class="w-8 mask mask-squircle">
