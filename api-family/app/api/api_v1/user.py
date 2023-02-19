@@ -1,8 +1,9 @@
 from typing import Any, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Security
 
 from app import crud
+from app.api import auth
 from app.exception import NotFoundException
 from app.core.logging import logger
 from app.schemas.user import UserCreate, UserUpdate, UserAdminUpdate, UserInDB
@@ -22,6 +23,7 @@ def get_users(
 @router.post("/", status_code=201, response_model=UserInDB)
 def create_user(
     obj_in: UserCreate,
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ) -> Any:
     # TODO: only with admin permissions
     ...
@@ -31,6 +33,7 @@ def create_user(
 def update_user(
     id: int,
     obj_in: UserAdminUpdate,
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ) -> Any:
     # TODO: only with admin permissions
     ...
@@ -40,5 +43,6 @@ def update_user(
             description='Finds the user referenced to the active user and updates it')
 def update_own_user(
     obj_in: UserUpdate,
+    _=Security(auth.verify_scopes, scopes=[]),
 ) -> Any:
     ...

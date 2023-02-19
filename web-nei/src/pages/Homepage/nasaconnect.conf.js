@@ -1,10 +1,15 @@
-const config = {
-    // autoPlay: true,
-    background: {
-        color: {
-            value: "transparent"
-        }
-    },
+export default {
+    autoPlay: true,
+    // background: {
+    //     color: {
+    //         value: "#232741"
+    //     },
+    //     image: "url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/1237px-NASA_logo.svg.png')",
+    //     position: "50% 50%",
+    //     repeat: "no-repeat",
+    //     size: "20%",
+    //     opacity: 1
+    // },
     // backgroundMask: {
     //     composite: "destination-out",
     //     cover: {
@@ -15,31 +20,25 @@ const config = {
     //     },
     //     enable: false
     // },
-    // defaultThemes: {},
-    // delay: 0,
+    defaultThemes: {},
+    delay: 0,
     fullScreen: {
         enable: true,
-        zIndex: 0
+        zIndex: 1
     },
-    // detectRetina: true,
-    // duration: 0,
-    // fpsLimit: 120,
-    /*interactivity: {
+    detectRetina: true,
+    duration: 0,
+    fpsLimit: 60,
+    interactivity: {
         detectsOn: "window",
         events: {
             onClick: {
                 enable: true,
-                mode: "push"
-            },
-            onDiv: {
-                selectors: {},
-                enable: false,
-                mode: {},
-                type: "circle"
+                mode: "repulse"
             },
             onHover: {
                 enable: true,
-                mode: "repulse",
+                mode: "connect",
                 parallax: {
                     enable: false,
                     force: 2,
@@ -64,19 +63,27 @@ const config = {
                 distance: 200
             },
             bubble: {
-                distance: 200,
-                duration: 0.4,
-                mix: false
+                distance: 250,
+                duration: 2,
+                mix: false,
+                opacity: 0,
+                size: 0,
+                divs: {
+                    distance: 200,
+                    duration: 0.4,
+                    mix: false,
+                    // selectors: {}
+                }
             },
             connect: {
-                distance: 80,
+                distance: 150,
                 links: {
-                    opacity: 0.5
+                    opacity: 0.05
                 },
-                radius: 60
+                radius: 150
             },
             grab: {
-                distance: 100,
+                distance: 400,
                 links: {
                     blink: false,
                     consent: false,
@@ -85,7 +92,7 @@ const config = {
             },
             push: {
                 default: true,
-                groups: {},
+                // groups: {},
                 quantity: 4
             },
             remove: {
@@ -105,7 +112,7 @@ const config = {
                     speed: 1,
                     maxSpeed: 50,
                     easing: "ease-out-quad",
-                    selectors: {}
+                    // selectors: {}
                 }
             },
             slow: {
@@ -121,13 +128,13 @@ const config = {
                 area: {
                     gradient: {
                         start: {
-                            value: "#ffffff"
+                            value: "#ff00ff"
                         },
                         stop: {
                             value: "#000000"
                         }
                     },
-                    radius: 1000
+                    radius: 200
                 },
                 shadow: {
                     color: {
@@ -137,7 +144,7 @@ const config = {
                 }
             }
         }
-    },*/
+    },
     // manualParticles: {},
     particles: {
         bounce: {
@@ -183,36 +190,36 @@ const config = {
                 retries: 0
             }
         },
-        color: {
-            value: "#ff0000",
-            animation: {
-                h: {
-                    count: 0,
-                    enable: true,
-                    offset: 0,
-                    speed: 20,
-                    decay: 0,
-                    sync: true
-                },
-                s: {
-                    count: 0,
-                    enable: false,
-                    offset: 0,
-                    speed: 1,
-                    decay: 0,
-                    sync: true
-                },
-                l: {
-                    count: 0,
-                    enable: false,
-                    offset: 0,
-                    speed: 1,
-                    decay: 0,
-                    sync: true
-                }
-            }
-        },
-        groups: {},
+        // color: {
+        //     value: "#ff0000",
+        //     animation: {
+        //         h: {
+        //             count: 0,
+        //             enable: false,
+        //             offset: 0,
+        //             speed: 1,
+        //             decay: 0,
+        //             sync: true
+        //         },
+        //         s: {
+        //             count: 0,
+        //             enable: false,
+        //             offset: 0,
+        //             speed: 1,
+        //             decay: 0,
+        //             sync: true
+        //         },
+        //         l: {
+        //             count: 0,
+        //             enable: false,
+        //             offset: 0,
+        //             speed: 1,
+        //             decay: 0,
+        //             sync: true
+        //         }
+        //     }
+        // },
+        // groups: {},
         move: {
             angle: {
                 offset: 0,
@@ -222,8 +229,8 @@ const config = {
                 distance: 200,
                 enable: false,
                 rotate: {
-                    x: 3000,
-                    y: 3000
+                    x: 600,
+                    y: 600
                 }
             },
             center: {
@@ -233,7 +240,7 @@ const config = {
                 radius: 0
             },
             decay: 0,
-            distance: {},
+            // distance: {},
             direction: "none",
             drift: 0,
             enable: true,
@@ -262,9 +269,9 @@ const config = {
                 right: "out",
                 top: "out"
             },
-            random: false,
+            random: true,
             size: false,
-            speed: 6,
+            speed: 1,
             spin: {
                 acceleration: 0,
                 enable: false
@@ -273,9 +280,7 @@ const config = {
             trail: {
                 enable: false,
                 length: 10,
-                fillColor: {
-                    value: "#000000"
-                }
+                fill: {}
             },
             vibrate: false,
             warp: false
@@ -283,26 +288,30 @@ const config = {
         number: {
             density: {
                 enable: true,
-                area: 800,
-                factor: 1000
+                width: 1920,
+                height: 1080
             },
             limit: 0,
-            value: 80
+            value: 160
         },
         opacity: {
             random: {
-                enable: false,
+                enable: true,
                 minimumValue: 0.1
             },
-            value: 0.5,
+            value: {
+                min: 0,
+                max: 1
+            },
             animation: {
                 count: 0,
-                enable: false,
-                speed: 2,
+                enable: true,
+                speed: 1,
                 decay: 0,
                 sync: false,
                 destroy: "none",
-                startValue: "random"
+                startValue: "random",
+                minimumValue: 0
             }
         },
         reduceDuplicates: false,
@@ -319,25 +328,26 @@ const config = {
         },
         shape: {
             options: {},
-            type: "circle"
+            type: "triangle"
         },
         size: {
             random: {
-                enable: false,
+                enable: true,
                 minimumValue: 1
             },
             value: {
-                min: 0.1,
+                min: 1,
                 max: 3
             },
             animation: {
                 count: 0,
                 enable: false,
-                speed: 5,
+                speed: 4,
                 decay: 0,
                 sync: false,
                 destroy: "none",
-                startValue: "random"
+                startValue: "random",
+                minimumValue: 0.3
             }
         },
         stroke: {
@@ -482,11 +492,11 @@ const config = {
         links: {
             blink: false,
             color: {
-                value: "#ffffff"
+                value: "#ff0000"
             },
             consent: false,
-            distance: 100,
-            enable: true,
+            distance: 200,
+            enable: false,
             frequency: 1,
             opacity: 0.4,
             shadow: {
@@ -497,7 +507,7 @@ const config = {
                 enable: false
             },
             triangles: {
-                enable: false,
+                enable: true,
                 frequency: 1
             },
             width: 1,
@@ -516,139 +526,11 @@ const config = {
             speed: 1
         }
     },
-    // pauseOnBlur: true,
-    // pauseOnOutsideViewport: true,
+    pauseOnBlur: true,
+    pauseOnOutsideViewport: true,
     // responsive: {},
-    // smooth: false,
-    // style: {},
+    smooth: false,
+    style: {},
     // themes: {},
-    // zLayers: 100
+    zLayers: 100
 }
-
-
-
-
-
-const config2 = {
-    background: {
-        color: {
-            value: "transparent"
-        }
-    },
-    fullScreen: {
-        enable: true,
-        zIndex: 0
-    },
-    // interactivity: {
-    //     detect_on: "window",
-    //     events: {
-    //         onHover: {
-    //             enable: true,
-    //             mode: "repulse",
-    //             // parallax: {
-    //             //     force: 1
-    //             // }
-    //         },
-    //         resize: {
-    //             enable: true,
-    //             delay: 2
-    //         }
-    //     },
-    //     modes: {
-    //         repulse: {
-    //             distance: 100
-    //         }
-    //     }
-    // },
-    // motion: {
-    //     reduce: {
-    //         factor: 10,
-    //         value: false
-    //     }
-    // },
-    particles: {
-        bounce: {
-            horizontal: {
-                random: {
-                    enable: true
-                },
-                value: {
-                    min: 0.1,
-                    max: 1
-                }
-            },
-            vertical: {
-                random: {
-                    enable: true
-                },
-                value: {
-                    min: 0.1,
-                    max: 1
-                }
-            }
-        },
-        color: {
-            value: "#147a26",
-            animation: {
-                h: {
-                    speed: 20
-                }
-            }
-        },
-        links: {
-            enable: true,
-            distance: 300,
-            color: '#ffffff',
-            opacity: 0.1
-        },
-        move: {
-            enable: true,
-            gravity: {
-                acceleration: 1
-            },
-            path: {},
-            outModes: {
-                bottom: "out",
-                left: "out",
-                right: "out",
-                top: "out"
-            },
-            speed: 1
-        },
-        number: {
-            density: {
-                enable: true,
-                area: 1250
-            },
-            value: 80
-        },
-        opacity: {
-            random: {
-                enable: true,
-                minimumValue: 0.6
-            },
-            value: {
-                min: 0.6,
-                max: 1
-            },
-            animation: {
-                speed: 1
-            }
-        },
-        shape: {
-            type: "triangle"
-        },
-        size: {
-            random: {
-                enable: true,
-                minimumValue: 2
-            },
-            value: {
-                min: 2,
-                max: 3
-            }
-        }
-    }
-};
-
-export default config;

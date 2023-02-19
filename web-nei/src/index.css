@@ -46,6 +46,11 @@
         @apply max-w-[90rem] mx-auto;
     }
 
+    .footer {
+        @apply max-w-[90rem];
+        @apply mx-auto;
+    }
+
     .navbar-start {
         @apply basis-[100px] !w-fit;
     }
