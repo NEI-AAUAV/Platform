@@ -1,14 +1,29 @@
 import NEIService from "services/NEIService";
 import { Link } from "react-router-dom";
 import logo from "../../assets/icons/ua_logo.svg";
+import { useRef } from "react";
 
 const Login = () => {
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const errorMessage = useRef(null);
+
   const formSubmitted = async (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
-    const access = await NEIService.login(formData);
-    console.log(access);
+    try {
+      const access = await NEIService.login(formData);
+      console.log(access);
+
+      emailRef.current.classList.remove("input-error");
+      passwordRef.current.classList.remove("input-error");
+      errorMessage.current.classList.add("hidden");
+    } catch (error) {
+      emailRef.current.classList.add("input-error");
+      passwordRef.current.classList.add("input-error");
+      errorMessage.current.classList.remove("hidden");
+    }
   };
 
   return (
@@ -29,22 +44,30 @@ const Login = () => {
               name="username"
               placeholder="Email"
               type="email"
+              ref={emailRef}
             />
             <label className="label">
               <span className="label-text">Password</span>
             </label>
             <input
-              className="input input-bordered input-primary w-full mb-10"
+              className="input input-bordered input-primary w-full"
               name="password"
               placeholder="Password"
               type="password"
+              ref={passwordRef}
             />
             <button
-              className="btn btn-primary sm:btn-wide m-auto btn-block"
+              className="btn btn-primary sm:btn-wide m-auto btn-block mt-10"
               type="submit"
             >
               Login
             </button>
+            <p
+              className="text-xs text-error hidden mt-2 text-center"
+              ref={errorMessage}
+            >
+              Email ou Password estão incorretos
+            </p>
             <p className="mt-2 sm:text-sm text-xs m-auto">
               Não tens uma conta?{" "}
               <Link to={"/register"} className="link link-primary">
