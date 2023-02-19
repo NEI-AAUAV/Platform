@@ -35,16 +35,16 @@ const Register = () => {
       <div className="m-auto sm:max-w-xl h-fit bg-base-200 rounded-2xl py-6 px-12 drop-shadow-lg shadow-secondary z-10 flex flex-col align-middle max-w-[80%]">
         <div className="text-3xl text-center mb-8">Sign Up</div>
         <form className="flex flex-col w-full" onSubmit={formSubmitted}>
-          <div className="flex flex-row justify-between w-full mb-5">
+          <div className="flex sm:flex-row flex-col justify-between w-full mb-5">
             <input
-              className="input input-bordered input-primary max-w-xs"
+              className="input input-bordered input-primary sm:max-w-xs"
               name="name"
               placeholder="Name"
               type="text"
               required
             />
             <input
-              className="input input-bordered input-primary max-w-xs"
+              className="input input-bordered input-primary sm:max-w-xs sm:mt-0 mt-5"
               name="surname"
               placeholder="Surname"
               type="text"
