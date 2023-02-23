@@ -1818,7 +1818,21 @@ INSERT INTO nei.team_member (id, header, mandate, user_id, role_id) VALUES
 (388, '/team/2022/11.jpg', '2022', 156, 11),
 (391, '/team/2022/12.jpg', '2022', 74, 16),
 (394, '/team/2022/13.jpg', '2022', 157, 12),
-(397, '/team/2022/14.jpg', '2022', 128, 6);
+(397, '/team/2022/14.jpg', '2022', 128, 6),
+(398, '/team/2023/1.jpg', '2022-23', 139, 1), -- Pedro
+(399, '/team/2023/2.jpg', '2022-23', 156, 4), -- Matilde
+(400, '/team/2023/3.jpg', '2022-23', 74, 16), -- Leandro
+(401, '/team/2023/4.jpg', '2022-23', 153, 15), -- Vicente
+(402, '/team/2023/5.jpg', '2022-23', , 15), -- João Borges
+(403, '/team/2023/6.jpg', '2022-23', 154, 2), -- Tiago
+(404, '/team/2023/7.jpg', '2022-23', 135, 12), -- Renato
+(405, '/team/2023/8.jpg', '2022-23', 155, 3), -- Rafaela
+(406, '/team/2023/9.jpg', '2022-23', 133, 12), -- Pylance
+(407, '/team/2023/10.jpg', '2022-23', 160, 5), -- João Luís
+(408, '/team/2023/11.jpg', '2022-23', 138, 11), -- Yanis Faquir
+(409, '/team/2023/12.jpg', '2022-23', 159, 6), -- Pedro Rei
+(410, '/team/2023/13.jpg', '2022-23', 157, 6), -- Hugo
+(411, '/team/2023/14.jpg', '2022-23', 128, 6); -- Daniel
 
 
 --
@@ -2009,6 +2023,36 @@ INSERT INTO nei."user" (id, email, name, surname, gender, iupi, nmec, image, cur
 (156, 'matilde.teixeira@ua.pt', 'Matilde', 'Teixeira', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], ''),
 (157, 'hf.correia@ua.pt', 'Hugo', 'Correia', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], ''),
 (158, '_158_', 'Mariana', 'Rosa', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(159, 'pedrorrei@ua.pt', 'Pedro', 'Rei', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(160, 'jnluis@ua.pt', 'João', 'Luís', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(161, 'Tomasalmeida8@ua.pt', 'Tomás', 'Almeida', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(162, 'bernardoleandro1@ua.pt', 'Bernado', 'Leandro', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(163, 'lia.cardoso@ua.pt', 'Lia', 'Cardoso', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(164, 'dbramos@ua.pt', 'Violeta', 'Ramos', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(165, 'marta.oliveira.inacio@ua.pt', 'Marta', 'Inácio', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(166, 'barbara.galiza@ua.pt', 'Bárbara', 'Galiza', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(167, 'robertorcastro@ua.pt', 'Roberto', 'Castro', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(168, 'falcao.diogo@ua.pt', 'Diogo', 'Falcão', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(169, 'diogomiguel.fernandes@ua.pt', 'Diogo', 'Fernandes', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(170, 'san.bas@ua.pt', 'Ricardo', 'Martins', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(171, 'fabiomatias39@ua.pt', 'Fábio', 'Matias', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(172, 'carolinaspsilva@ua.pt', 'Carolina', 'Silva', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(173, 'andrevasquesdora@ua.pt', 'André', 'Dora', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(174, 'raquelvinagre@ua.pt', 'Raquel', 'Vinagre', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(175, 'hugocastro@ua.pt', 'Hugo', 'Castro', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(176, 'henrique.bmo@ua.pt', 'Henrique', 'Mendonça', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(177, 'dani.fig@ua.pt', 'Daniel', 'Figueiredo', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(178, 'aritafs@ua.pt', 'Ana Rita', 'Silva', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(179, 'jcapucho@ua.pt', 'João', 'Capucho', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(180, 'joanaagomes@ua.pt', 'Joana', 'Gomes', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(181, 'antonio.alberto@ua.pt', 'António', 'Alberto', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(182, 'regina.tavares@ua.pt', 'Regina', 'Tavares', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(183, 'marialinhares@ua.pt', 'Maria', 'Linhares', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(184, 'guilherme.rosa60@ua.pt', 'Guilherme', 'Rosa', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(185, 'henriqueft04@ua.pt', 'Henrique', 'Teixeira', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(186, 'gabrielm.teixeira@ua.pt', 'Gabriel', 'Teixeira', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+(187, 'tomasvictal@ua.pt', 'Tomás', 'Victal', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '');
+
 -- NOTE: If more users are added to this list the 'nei.user_id_seq' sequence needs to be updated
 --       to start after the last user id otherwise the register endpoint won't work.
 --       (The value of the sequence is updated further below just search for it's name)
