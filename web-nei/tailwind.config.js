@@ -9,6 +9,9 @@ module.exports = {
             },
             transitionProperty: {
                 size: 'margin, padding, height, width',
+            },
+            width: {
+                '1/7': '14.2857%',
             }
         }
     },
