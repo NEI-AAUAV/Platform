@@ -1,5 +1,5 @@
 import React from "react";
-import LinkAdapter from "components/LinkAdapter";
+import LinkAdapter from "utils/LinkAdapter";
 import { Card } from "react-bootstrap";
 import './index.css';
 
