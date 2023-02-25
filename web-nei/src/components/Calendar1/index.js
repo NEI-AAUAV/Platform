@@ -2,6 +2,7 @@ import { useState, useEffect, Fragment } from "react";
 import classname from "classname";
 
 import { useWindowSize } from "utils/hooks";
+import { AngleRightIcon } from "assets/icons/flaticon/index";
 
 
 const Calendar = () => {
@@ -169,9 +170,7 @@ const Calendar = () => {
                                     { 'cursor-not-allowed opacity-25': month == 11 })}
                                 disabled={month == 11}
                                 onClick={() => { setMonth((prevMonth) => prevMonth++); getNumOfDays() }}>
-                                <svg className="h-6 w-6 text-gray-500 inline-flex leading-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                                </svg>
+                                <AngleRightIcon/>
                             </button>
                         </div>
                     </div>

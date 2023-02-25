@@ -40,7 +40,7 @@ const Login = () => {
               <span className="label-text">Email</span>
             </label>
             <input
-              className="input input-bordered input-primary w-full mb-1"
+              className="input input-bordered w-full mb-1"
               name="username"
               placeholder="Email"
               type="email"
@@ -50,7 +50,7 @@ const Login = () => {
               <span className="label-text">Password</span>
             </label>
             <input
-              className="input input-bordered input-primary w-full"
+              className="input input-bordered w-full"
               name="password"
               placeholder="Password"
               type="password"

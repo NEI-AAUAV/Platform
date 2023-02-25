@@ -79,30 +79,82 @@
     .btn-outline.btn-primary {
         background-color: hsl(var(--p) / 0.1);
     }
+
     .btn-outline.btn-secondary {
         background-color: hsl(var(--s) / 0.1);
 
     }
+
     .btn-outline.btn-accent {
         background-color: hsl(var(--a) / 0.1);
 
     }
+
     .btn-outline.btn-info {
         background-color: hsl(var(--in) / 0.1);
 
     }
+
     .btn-outline.btn-success {
         background-color: hsl(var(--su) / 0.1);
 
     }
+
     .btn-outline.btn-warning {
         background-color: hsl(var(--wa) / 0.1);
 
     }
+
     .btn-outline.btn-error {
         background-color: hsl(var(--er) / 0.1);
 
     }
+
+    .btn-group>.btn {
+        @apply !rounded-none;
+    }
+
+    .btn-group>.btn:first-of-type {
+        @apply !rounded-l-full;
+    }
+
+    .btn-group>.btn:last-of-type {
+        @apply !rounded-r-full;
+    }
+
+    .input {
+        @apply !rounded-full;
+        transition: outline 0.3s !important;
+        outline: 2px solid transparent !important;
+    }
+
+    .input:focus {
+        outline: 2px solid hsla(var(--bc) / 0.2) !important;
+    }
+}
+
+@mixin custom-checkbox($color) {
+    --a: #{$color} !important;
+    --chkbg: var(--a) !important;
+    --chkfg: var(--ac) !important;
+
+    --tw-border-opacity: 1;
+    border-color: hsl(var(--a) / var(--tw-border-opacity)) !important;
+
+    &:checked,
+    &[checked=true],
+    &[aria-checked=true] {
+        --tw-border-opacity: 1;
+        border-color: hsl(var(--a) / var(--tw-border-opacity)) !important;
+        --tw-bg-opacity: 1;
+        background-color: hsl(var(--a) / var(--tw-bg-opacity)) !important;
+        --tw-text-opacity: 1;
+        color: hsl(var(--a) / var(--tw-text-opacity)) !important;
+    }
+}
+
+.checkbox-1ano {
+    @include custom-checkbox(187 99% 45%);
 }
 
 body {
