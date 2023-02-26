@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Cookie, status
+from fastapi import APIRouter, Depends, HTTPException, Cookie, status, BackgroundTasks
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
@@ -16,7 +16,7 @@ from pydantic import (
     BaseModel,
 )
 from jose import JWTError, jwt
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Literal, Any
 from email_validator import validate_email, caching_resolver, EmailNotValidError
 
@@ -301,6 +301,26 @@ class UserRegisterForm(UserBase):
         return v
 
 
+async def send_confirmation_token(email: str, name: str, uid: int):
+    """Generates a confirmation token and emails it
+
+    **Parameters**
+    * `email`: The email of the recipient
+    * `name`: The name of the user
+    * `uid`: The id of the user
+    """
+    iat = datetime.now()
+    confirmation_token = create_token(
+        {
+            "iat": iat,
+            "exp": iat + settings.CONFIRMATION_TOKEN_EXPIRE,
+            # JWT requires 'sub' to be a string
+            "sub": str(uid),
+        },
+    )
+    await emailUtils.send_email_confirmation(email, name, confirmation_token)
+
+
 @router.post(
     "/register",
     response_model=Token,
@@ -323,18 +343,35 @@ async def register(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    user_exists = crud.user.get_by_email(db, email)
-    if user_exists is not None:
+    user = crud.user.get_by_email(db, email)
+    if user is not None and (
+        # Check that the user is active or the account was created less than a day ago
+        user.active
+        or (datetime.utcnow() - user.created_at) < settings.CONFIRMATION_TOKEN_EXPIRE
+    ):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Email already exists",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+    if user is not None:
+        # If the user existed make sure it's properly deleted, this will also
+        # make sure that other tables referencing this user are also scrubed
+        # like for example the logins table.
+        crud.user.remove(db, id=user.id)
     create_user = UserCreate(
         **form_data.dict(),
+        active=not settings.EMAIL_ENABLED,
         hashed_password=hash_password(form_data.password.get_secret_value()),
     )
     user = crud.user.create(db, obj_in=create_user)
+
+    if settings.EMAIL_ENABLED:
+        # Schedule to send the email with confirmation link
+        background_tasks.add_task(
+            send_confirmation_token, email, form_data.name, user.id
+        )
     return generate_response(db, user)
 
 
@@ -385,3 +422,40 @@ async def refresh(
         raise credentials_exception
 
     return generate_response(db, user, device_login)
+
+
+class VerifyResponse(BaseModel):
+    status: Literal["success"]
+    message: str
+
+
+@router.get(
+    "/verify",
+    responses={401: {"description": "Invalid confirmation token"}},
+    response_model=VerifyResponse,
+)
+async def refresh(
+    token: str,
+    db: Session = Depends(deps.get_db),
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid confirmation token",
+        headers={"WWW-Authenticate": "Refresh"},
+    )
+
+    try:
+        payload = decode_token(token)
+        # Extract all needed fields inside a `try` in case a token
+        # has a bad payload.
+        user_id = int(payload["sub"])
+    except (JWTError, ValueError, KeyError):
+        raise credentials_exception
+
+    user = crud.user.get(db, user_id)
+    if user is None:
+        raise credentials_exception
+
+    crud.user.update(db, db_obj=user, obj_in={"active": True})
+
+    return VerifyResponse(status="success", message="Account verified successfully")

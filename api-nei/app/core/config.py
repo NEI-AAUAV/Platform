@@ -58,8 +58,25 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE: timedelta = timedelta(minutes=10)
     ## How long refresh tokens are valid for
     REFRESH_TOKEN_EXPIRE: timedelta = timedelta(days=7)
+    ## How long the email confirmation tokens are valid for
+    CONFIRMATION_TOKEN_EXPIRE: timedelta = timedelta(days=1)
     ## Algorithm to use when signing JWT tokens
     JWT_ALGORITHM: str = "RS256"
+
+    # Email settings
+    EMAIL_ENABLED: bool = os.getenv("EMAIL_ENABLED", "False") == "True"
+    ## The domain to add to the Message-id Header
+    EMAIL_DOMAIN: str = "nei.web.ua.pt"
+    ## Address to send email as
+    EMAIL_SENDER_ADDRESS: str = os.getenv("EMAIL_SENDER_ADDRESS")
+    ## SMTP Host address to which email requests will be made
+    EMAIL_SMTP_HOST: str = os.getenv("EMAIL_SMTP_HOST")
+    ## SMTP Host port
+    EMAIL_SMTP_PORT: int = int(os.getenv("EMAIL_SMTP_PORT", 587))
+    ## Username to use for authentication with the smtp server
+    EMAIL_SMTP_USER: str = os.getenv("EMAIL_SMTP_USER")
+    ## Password to use for authentication with the smtp server
+    EMAIL_SMTP_PASSWORD: str = os.getenv("EMAIL_SMTP_PASSWORD")
 
     class Config:
         case_sensitive = True
