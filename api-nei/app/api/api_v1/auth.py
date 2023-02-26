@@ -18,9 +18,10 @@ from pydantic import (
 from jose import JWTError, jwt
 from datetime import datetime
 from typing import Literal, Any
+from email_validator import validate_email, caching_resolver, EmailNotValidError
 
 from app import crud
-from app.api import deps
+from app.api import deps, email as emailUtils
 from app.models.user import User
 from app.models.device_login import DeviceLogin
 from app.schemas.user import UserBase, UserCreate, ScopeEnum
@@ -64,6 +65,9 @@ pwd_context = CryptContext(
     # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#implement-proper-password-strength-controls
     truncate_error=True,
 )
+
+# Create the dns resolver to use for email validation (Supports caching).
+resolver = caching_resolver(timeout=15)
 
 
 class Token(BaseModel):
@@ -257,11 +261,23 @@ async def verify_token(
 async def login(
     db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
-    # OAuth2 requires the password flow field to be named 'username' even though
-    # it's going to have an email.
-    #
-    # https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/#get-the-username-and-password
-    user = authenticate_user(db, form_data.username, form_data.password)
+    try:
+        # OAuth2 requires the password flow field to be named 'username' even though
+        # it's going to have an email.
+        #
+        # https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/#get-the-username-and-password
+        validation = validate_email(
+            form_data.username, check_deliverability=False, dns_resolver=resolver
+        )
+        email = validation.email
+    except EmailNotValidError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email is invalid",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user = authenticate_user(db, email, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -292,9 +308,22 @@ class UserRegisterForm(UserBase):
 )
 async def register(
     form_data: UserRegisterForm,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(deps.get_db),
 ):
-    user_exists = crud.user.get_by_email(db, form_data.email)
+    try:
+        validation = validate_email(
+            form_data.email, check_deliverability=True, dns_resolver=resolver
+        )
+        email = validation.email
+    except EmailNotValidError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email is invalid",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user_exists = crud.user.get_by_email(db, email)
     if user_exists is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
