@@ -7,12 +7,9 @@ from pytest import Session
 
 router = APIRouter()
 
-class ConnectionType(Enum):
-    GENERAL = 0
 
 class ConnectionType(Enum):
     GENERAL = 0
-    LIVE_GAME = 1
 
 class ConnectionManager:
     def __init__(self):
@@ -83,6 +80,7 @@ Send
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
+    logger.info("CONECTEI")
     try:
         while True:
             data = await websocket.receive_json()
