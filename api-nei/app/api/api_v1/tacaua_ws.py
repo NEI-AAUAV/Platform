@@ -2,17 +2,16 @@ from fastapi import WebSocket, APIRouter, WebSocketDisconnect
 from typing import Dict, List   
 from enum import Enum
 import json
+from loguru import logger
 
 router = APIRouter()
 
-
 class ConnectionType(Enum):
     GENERAL = 0
-    LIVE_GAME = 1
 
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: Dict[ConnectionType , List[WebSocket]] = {}
+        self.active_connections: Dict[ConnectionType , List[WebSocket]] = {ConnectionType.GENERAL: []}
 
 
     async def connect(self, websocket: WebSocket):
@@ -69,18 +68,23 @@ Message format examples:
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
+    logger.info("CONECTEI")
     try:
         while True:
             data = await websocket.receive_text()
             data = json.load(data)
-            match data["message_type"]:
-                case "change_connection_type":
-                    manager.change_connection_type(websocket, data["message"])
+            logger.info(data)
+            match data["topic"]:
+                case "LIVE_GAME":
+                    print("LIVE_GAME")
+                    logger.info("LIVE_GAME")
+                    ...
+                    break
                 case "broadcast":
                     await manager.broadcast(data["connection_type"],data["message"])
                     if data["connection_type"] == "LIVE_GAME":
                         ...
-                        # update game data in database
+                        # update game data in databases
 
     except WebSocketDisconnect:
         manager.disconnect(websocket)
