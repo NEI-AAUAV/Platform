@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Cookie, status
+from fastapi import APIRouter, Depends, HTTPException, Cookie, status, BackgroundTasks
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm,
@@ -16,11 +16,12 @@ from pydantic import (
     BaseModel,
 )
 from jose import JWTError, jwt
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Literal, Any
+from email_validator import validate_email, caching_resolver, EmailNotValidError
 
 from app import crud
-from app.api import deps
+from app.api import deps, email as emailUtils
 from app.models.user import User
 from app.models.device_login import DeviceLogin
 from app.schemas.user import UserBase, UserCreate, ScopeEnum
@@ -64,6 +65,9 @@ pwd_context = CryptContext(
     # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#implement-proper-password-strength-controls
     truncate_error=True,
 )
+
+# Create the dns resolver to use for email validation (Supports caching).
+resolver = caching_resolver(timeout=15)
 
 
 class Token(BaseModel):
@@ -257,11 +261,23 @@ async def verify_token(
 async def login(
     db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
-    # OAuth2 requires the password flow field to be named 'username' even though
-    # it's going to have an email.
-    #
-    # https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/#get-the-username-and-password
-    user = authenticate_user(db, form_data.username, form_data.password)
+    try:
+        # OAuth2 requires the password flow field to be named 'username' even though
+        # it's going to have an email.
+        #
+        # https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/#get-the-username-and-password
+        validation = validate_email(
+            form_data.username, check_deliverability=False, dns_resolver=resolver
+        )
+        email = validation.email
+    except EmailNotValidError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email is invalid",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user = authenticate_user(db, email, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -285,6 +301,26 @@ class UserRegisterForm(UserBase):
         return v
 
 
+async def send_confirmation_token(email: str, name: str, uid: int):
+    """Generates a confirmation token and emails it
+
+    **Parameters**
+    * `email`: The email of the recipient
+    * `name`: The name of the user
+    * `uid`: The id of the user
+    """
+    iat = datetime.now()
+    confirmation_token = create_token(
+        {
+            "iat": iat,
+            "exp": iat + settings.CONFIRMATION_TOKEN_EXPIRE,
+            # JWT requires 'sub' to be a string
+            "sub": str(uid),
+        },
+    )
+    await emailUtils.send_email_confirmation(email, name, confirmation_token)
+
+
 @router.post(
     "/register",
     response_model=Token,
@@ -292,20 +328,50 @@ class UserRegisterForm(UserBase):
 )
 async def register(
     form_data: UserRegisterForm,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(deps.get_db),
 ):
-    user_exists = crud.user.get_by_email(db, form_data.email)
-    if user_exists is not None:
+    try:
+        validation = validate_email(
+            form_data.email, check_deliverability=True, dns_resolver=resolver
+        )
+        email = validation.email
+    except EmailNotValidError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email is invalid",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user = crud.user.get_by_email(db, email)
+    if user is not None and (
+        # Check that the user is active or the account was created less than a day ago
+        user.active
+        or (datetime.utcnow() - user.created_at) < settings.CONFIRMATION_TOKEN_EXPIRE
+    ):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Email already exists",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+    if user is not None:
+        # If the user existed make sure it's properly deleted, this will also
+        # make sure that other tables referencing this user are also scrubed
+        # like for example the logins table.
+        crud.user.remove(db, id=user.id)
     create_user = UserCreate(
         **form_data.dict(),
+        active=not settings.EMAIL_ENABLED,
         hashed_password=hash_password(form_data.password.get_secret_value()),
     )
     user = crud.user.create(db, obj_in=create_user)
+
+    if settings.EMAIL_ENABLED:
+        # Schedule to send the email with confirmation link
+        background_tasks.add_task(
+            send_confirmation_token, email, form_data.name, user.id
+        )
     return generate_response(db, user)
 
 
@@ -356,3 +422,40 @@ async def refresh(
         raise credentials_exception
 
     return generate_response(db, user, device_login)
+
+
+class VerifyResponse(BaseModel):
+    status: Literal["success"]
+    message: str
+
+
+@router.get(
+    "/verify",
+    responses={401: {"description": "Invalid confirmation token"}},
+    response_model=VerifyResponse,
+)
+async def refresh(
+    token: str,
+    db: Session = Depends(deps.get_db),
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid confirmation token",
+        headers={"WWW-Authenticate": "Refresh"},
+    )
+
+    try:
+        payload = decode_token(token)
+        # Extract all needed fields inside a `try` in case a token
+        # has a bad payload.
+        user_id = int(payload["sub"])
+    except (JWTError, ValueError, KeyError):
+        raise credentials_exception
+
+    user = crud.user.get(db, user_id)
+    if user is None:
+        raise credentials_exception
+
+    crud.user.update(db, db_obj=user, obj_in={"active": True})
+
+    return VerifyResponse(status="success", message="Account verified successfully")
