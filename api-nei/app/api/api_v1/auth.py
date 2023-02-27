@@ -1,24 +1,49 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, Cookie, status, BackgroundTasks
+from fastapi.security import (
+    OAuth2PasswordBearer,
+    OAuth2PasswordRequestForm,
+    SecurityScopes,
+)
+from fastapi.responses import JSONResponse, Response
+
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-from pydantic import BaseModel, SecretStr, validator, AnyStrMinLengthError
+from pydantic import (
+    BaseModel,
+    SecretStr,
+    validator,
+    AnyStrMinLengthError,
+    BaseModel,
+)
 from jose import JWTError, jwt
-from datetime import datetime
-from typing import Literal
+from datetime import datetime, timedelta
+from typing import Literal, Any
+from email_validator import validate_email, caching_resolver, EmailNotValidError
 
 from app import crud
-from app.api import deps
+from app.api import deps, email as emailUtils
 from app.models.user import User
-from app.schemas.user import UserBase, UserCreate
+from app.models.device_login import DeviceLogin
+from app.schemas.user import UserBase, UserCreate, ScopeEnum
 from app.core.config import settings
 
 router = APIRouter()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=settings.API_V1_STR + "/auth/login")
+with open(settings.JWT_SECRET_KEY_PATH, "r") as file:
+    private_key = file.read()
 
-if settings.JWT_SECRET_KEY is None:
-    raise Exception("No JWT secret provided")
+with open(settings.JWT_PUBLIC_KEY_PATH, "r") as file:
+    public_key = file.read()
+
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl=settings.API_V1_STR + "/auth/login",
+    scopes={
+        ScopeEnum.ADMIN: "Full access to everything.",
+        ScopeEnum.MANAGER_FAMILY: "Edit faina family.",
+        ScopeEnum.MANAGER_TACAUA: "Edit data related to tacaua.",
+        ScopeEnum.MANAGER_NEI: "Edit data related to nei.",
+    },
+)
 
 pwd_context = CryptContext(
     # Algoritmos aceites para a verificação das password hashed.
@@ -40,6 +65,9 @@ pwd_context = CryptContext(
     # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#implement-proper-password-strength-controls
     truncate_error=True,
 )
+
+# Create the dns resolver to use for email validation (Supports caching).
+resolver = caching_resolver(timeout=15)
 
 
 class Token(BaseModel):
@@ -83,57 +111,146 @@ def authenticate_user(db: Session, email: str, password: str) -> User | Literal[
     return user
 
 
-def create_access_token(user: User) -> str:
-    """Creates a new access token for a user
+def create_token(payload: dict[str, Any]) -> str:
+    """Creates a new token
 
     **Parameters**
-    * `user`: The user's information
+    * `payload` the token data payload
 
     **Returns**
-    A JWT encoded access token for the user
+    A JWT encoded token with the provided payload
     """
-    expire = datetime.utcnow() + settings.ACCESS_TOKEN_EXPIRE
     encoded_jwt = jwt.encode(
-        # JWT requires 'sub' to be a string
-        {
-            "sub": str(user.id),
-            "nmec": user.nmec,
-            "name": user.name,
-            "surname": user.surname,
-            "scopes": user.scopes,
-            "exp": expire,
-        },
-        settings.JWT_SECRET_KEY,
+        payload,
+        private_key,
         algorithm=settings.JWT_ALGORITHM,
     )
     return encoded_jwt
 
 
-async def get_current_user(
-    db: Session = Depends(deps.get_db), token: str = Depends(oauth2_scheme)
-) -> User:
+def generate_response(
+    db: Session,
+    user: User,
+    device_login: DeviceLogin | None = None,
+) -> Response:
+    """Creates a new authorization response for a user
+
+    **Parameters**
+    * `db`: A SQLAlchemy ORM session
+    * `user`: The user's information
+    * `device_login`: The device login information if refreshing the session, otherwise None
+
+    **Returns**
+    A response with the refresh token cookie set and the
+    access token in the body
+    """
+
+    # Measure once the current time, the same value must be passed to the
+    # created device login and refreshed token otherwise the token could be
+    # denied because the dates mismatch.
+    iat = datetime.utcnow()
+
+    if device_login is None:
+        # Create a new session and add it to the database if no session exists
+        device_login = DeviceLogin(
+            user_id=user.id,
+            session_id=int(iat.timestamp()),
+            refreshed_at=iat,
+            expires_at=iat + settings.REFRESH_TOKEN_EXPIRE,
+        )
+        db.add(device_login)
+    else:
+        # Update the last time the token was refreshed if the session already exists
+        device_login.refreshed_at = iat
+
+    # Flush all changes to the database to ensure consistency
+    db.commit()
+
+    access_token = create_token(
+        {
+            "iat": iat,
+            "exp": iat + settings.ACCESS_TOKEN_EXPIRE,
+            # JWT requires 'sub' to be a string
+            "sub": str(user.id),
+            "nmec": user.nmec,
+            "name": user.name,
+            "surname": user.surname,
+            "scopes": user.scopes,
+        }
+    )
+    refresh_token = create_token(
+        {
+            "iat": iat,
+            "exp": device_login.expires_at,
+            # JWT requires 'sub' and 'sid' to be a string
+            "sub": str(user.id),
+            "sid": device_login.session_id,
+        },
+    )
+
+    token_data = Token(access_token=access_token, token_type="bearer")
+
+    response = JSONResponse(content=token_data.dict())
+    response.set_cookie(
+        key="refresh",
+        value=refresh_token,
+        expires=device_login.expires_at,
+        secure=settings.PRODUCTION,
+        httponly=True,
+        samesite="strict",
+        # Only pass the cookie to the refresh endpoint
+        path=settings.API_V1_STR + "/auth/refresh",
+    )
+    return response
+
+
+def decode_token(token: str) -> dict[str, Any]:
+    return jwt.decode(
+        token,
+        public_key,
+        algorithms=[settings.JWT_ALGORITHM],
+        options={
+            "require_iat": True,
+            "require_exp": True,
+            "require_sub": True,
+        },
+    )
+
+
+async def verify_token(
+    security_scopes: SecurityScopes,
+    token: str = Depends(oauth2_scheme),
+) -> dict[str, Any]:
     """Dependency for user authentication"""
+    if security_scopes.scopes:
+        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
+    else:
+        authenticate_value = "Bearer"
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+        headers={"WWW-Authenticate": authenticate_value},
     )
     try:
-        payload = jwt.decode(
-            token,
-            settings.JWT_SECRET_KEY,
-            algorithms=[settings.JWT_ALGORITHM],
-        )
-        user_id_str: str | None = payload.get("sub")
-        if user_id_str is None:
-            raise credentials_exception
-        user_id: int = int(user_id_str)
-    except (JWTError, ValueError):
+        payload = decode_token(token)
+        token_scopes = payload.get("scopes", [])
+    except JWTError:
         raise credentials_exception
-    user = crud.user.get(db, user_id)
-    if user is None:
-        raise credentials_exception
-    return user
+
+    # Bypass scopes for admin
+    if ScopeEnum.ADMIN in token_scopes:
+        return payload
+
+    # Verify that the token has all the necessary scopes
+    for scope in security_scopes.scopes:
+        if scope not in token_scopes:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not enough permissions",
+                headers={"WWW-Authenticate": authenticate_value},
+            )
+
+    return payload
 
 
 @router.post(
@@ -144,19 +261,30 @@ async def get_current_user(
 async def login(
     db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
-    # OAuth2 requires the password flow field to be named 'username' even though
-    # it's going to have an email.
-    #
-    # https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/#get-the-username-and-password
-    user = authenticate_user(db, form_data.username, form_data.password)
+    try:
+        # OAuth2 requires the password flow field to be named 'username' even though
+        # it's going to have an email.
+        #
+        # https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/#get-the-username-and-password
+        validation = validate_email(
+            form_data.username, check_deliverability=False, dns_resolver=resolver
+        )
+        email = validation.email
+    except EmailNotValidError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email is invalid",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user = authenticate_user(db, email, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(user)
-    return Token(access_token=access_token, token_type="bearer")
+    return generate_response(db, user)
 
 
 class UserRegisterForm(UserBase):
@@ -173,6 +301,26 @@ class UserRegisterForm(UserBase):
         return v
 
 
+async def send_confirmation_token(email: str, name: str, uid: int):
+    """Generates a confirmation token and emails it
+
+    **Parameters**
+    * `email`: The email of the recipient
+    * `name`: The name of the user
+    * `uid`: The id of the user
+    """
+    iat = datetime.now()
+    confirmation_token = create_token(
+        {
+            "iat": iat,
+            "exp": iat + settings.CONFIRMATION_TOKEN_EXPIRE,
+            # JWT requires 'sub' to be a string
+            "sub": str(uid),
+        },
+    )
+    await emailUtils.send_email_confirmation(email, name, confirmation_token)
+
+
 @router.post(
     "/register",
     response_model=Token,
@@ -180,19 +328,134 @@ class UserRegisterForm(UserBase):
 )
 async def register(
     form_data: UserRegisterForm,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(deps.get_db),
 ):
-    user_exists = crud.user.get_by_email(db, form_data.email)
-    if user_exists is not None:
+    try:
+        validation = validate_email(
+            form_data.email, check_deliverability=True, dns_resolver=resolver
+        )
+        email = validation.email
+    except EmailNotValidError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email is invalid",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user = crud.user.get_by_email(db, email)
+    if user is not None and (
+        # Check that the user is active or the account was created less than a day ago
+        user.active
+        or (datetime.utcnow() - user.created_at) < settings.CONFIRMATION_TOKEN_EXPIRE
+    ):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Email already exists",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+    if user is not None:
+        # If the user existed make sure it's properly deleted, this will also
+        # make sure that other tables referencing this user are also scrubed
+        # like for example the logins table.
+        crud.user.remove(db, id=user.id)
     create_user = UserCreate(
         **form_data.dict(),
-        hashed_password=hash_password(form_data.password.get_secret_value())
+        active=not settings.EMAIL_ENABLED,
+        hashed_password=hash_password(form_data.password.get_secret_value()),
     )
     user = crud.user.create(db, obj_in=create_user)
-    access_token = create_access_token(user)
-    return Token(access_token=access_token, token_type="bearer")
+
+    if settings.EMAIL_ENABLED:
+        # Schedule to send the email with confirmation link
+        background_tasks.add_task(
+            send_confirmation_token, email, form_data.name, user.id
+        )
+    return generate_response(db, user)
+
+
+@router.post(
+    "/refresh",
+    responses={401: {"description": "Invalid refresh token"}},
+    response_model=Token,
+)
+async def refresh(
+    db: Session = Depends(deps.get_db), refresh: str | None = Cookie(default=None)
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Refresh"},
+    )
+
+    if refresh is None:
+        raise credentials_exception
+
+    try:
+        payload = decode_token(refresh)
+        # Extract all needed fields inside a `try` in case a token
+        # has a bad payload.
+        user_id = int(payload["sub"])
+        session_id = int(payload["sid"])
+        issued_at = payload["iat"]
+    except (JWTError, ValueError, KeyError):
+        raise credentials_exception
+
+    # Get the token's session from the database
+    device_login = db.query(DeviceLogin).get((user_id, session_id))
+    if device_login is None:
+        raise credentials_exception
+
+    # Safety check that the session hasn't expired, the token should already
+    # encode this.
+    if device_login.expires_at < datetime.now():
+        raise credentials_exception
+
+    # Check that this token issue date isn't before the last token refresh, if
+    # this happens it might mean someone got the token and is trying to replay it
+    if int(device_login.refreshed_at.timestamp()) > issued_at:
+        raise credentials_exception
+
+    user = crud.user.get(db, user_id)
+    if user is None:
+        raise credentials_exception
+
+    return generate_response(db, user, device_login)
+
+
+class VerifyResponse(BaseModel):
+    status: Literal["success"]
+    message: str
+
+
+@router.get(
+    "/verify",
+    responses={401: {"description": "Invalid confirmation token"}},
+    response_model=VerifyResponse,
+)
+async def refresh(
+    token: str,
+    db: Session = Depends(deps.get_db),
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid confirmation token",
+        headers={"WWW-Authenticate": "Refresh"},
+    )
+
+    try:
+        payload = decode_token(token)
+        # Extract all needed fields inside a `try` in case a token
+        # has a bad payload.
+        user_id = int(payload["sub"])
+    except (JWTError, ValueError, KeyError):
+        raise credentials_exception
+
+    user = crud.user.get(db, user_id)
+    if user is None:
+        raise credentials_exception
+
+    crud.user.update(db, db_obj=user, obj_in={"active": True})
+
+    return VerifyResponse(status="success", message="Account verified successfully")

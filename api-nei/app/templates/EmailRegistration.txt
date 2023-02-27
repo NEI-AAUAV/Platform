@@ -1,0 +1,13 @@
+Bem-vindo {{name}}!
+
+Conclui a tua criação de conta no site do nei acedendo ao link abaixo.
+
+({{endpoint}}?token={{token}})
+
+Estás a receber este email porque tentaste criar uma conta
+no site do nei com o seguinte email: {{email}}.
+
+Se não foste tu a criar a conta podes ignorar este email.
+
+Cumprimentos,
+A equipa do nei

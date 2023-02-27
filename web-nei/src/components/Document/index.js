@@ -1,5 +1,5 @@
 import React from "react";
-import LinkAdapter from "components/LinkAdapter";
+import LinkAdapter from "utils/LinkAdapter";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';

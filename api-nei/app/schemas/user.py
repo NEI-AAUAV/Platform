@@ -36,6 +36,7 @@ class UserCreate(UserBase):
     scopes: List[ScopeEnum] = []
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
+    active: bool = Field(default=False)
 
 
 class UserUpdate(UserBase):
@@ -56,6 +57,7 @@ class UserInDB(UserBase):
     curriculum: Optional[AnyHttpUrl]
     scopes: List[ScopeEnum] = []
     academic_details: List[UserAcademicDetailsInBD]
+    active: bool
 
     class Config:
         orm_mode = True
