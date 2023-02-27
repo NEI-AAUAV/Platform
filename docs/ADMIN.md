@@ -5,6 +5,41 @@
  to be written
 <!-- TODO: complete -->
 
+## JWT Keys
+
+All APIs use Json Web Tokens ([JWT](https://jwt.io)) to authenticate user
+requests, the keys need to be signed with a key, the APIs use a asymmetric
+signing scheme in order to allow only the main API (`api-nei`) to generate
+new tokens (using the private key) and all others APIs to validate those
+tokens (using only the public key).
+
+The signing algorithm currently used is `ES512`, this requires generating
+a pair of `secp521r1` (521-bit prime field Weierstrass curve) keys this can
+be done with openssl:
+
+```bash
+# For generating private keys
+openssl ecparam -genkey -name secp521r1 -noout -out <path to private key>
+# For generating public keys
+openssl ec -in <path to private key> -pubout -out <path to public key> 
+```
+
+Afterwards the APIs can be configured with the path to the public key through
+the `JWT_PUBLIC_KEY_PATH` environment variable, additionally the private key
+can be configured trough the `JWT_SECRET_KEY_PATH` environment variable.
+
+### For the crypto nerds 🤓
+
+ECDSA can be broken if the nonce is reused between messages, but this shouldn't
+be an issue because the library we are using generates the nonce according to
+[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979) which is a deterministic
+procedure which also takes into account the message so the generated values
+should always be different for different messages.
+
+A better option would be to use EdDSA key like Ed25519 which is designed in a
+way that doesn't present this issue, but the library we use for generating tokens
+doesn't support these keys.
+
 ## Emails
 
 The main api (`api-nei`) can be configured to send emails, currently they are used for:
