@@ -61,7 +61,7 @@ class Settings(BaseSettings):
     ## How long the email confirmation tokens are valid for
     CONFIRMATION_TOKEN_EXPIRE: timedelta = timedelta(days=1)
     ## Algorithm to use when signing JWT tokens
-    JWT_ALGORITHM: str = "RS256"
+    JWT_ALGORITHM: str = "ES512"
 
     # Email settings
     EMAIL_ENABLED: bool = os.getenv("EMAIL_ENABLED", "False") == "True"
