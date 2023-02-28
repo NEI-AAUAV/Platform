@@ -1,4 +1,5 @@
 from sqlalchemy.schema import CreateSchema, DropSchema
+from sqlalchemy.sql import text
 from sqlalchemy import event
 
 from app.core.config import settings
@@ -17,8 +18,15 @@ def init_db() -> None:
     # But if you don't want to use migrations, create
     # the tables with Base.metadata.create_all(bind=engine)
 
-    if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
-        engine.execute(CreateSchema(settings.SCHEMA_NAME))
+    with engine.connect() as conn:
+        if not engine.dialect.has_schema(conn, schema=settings.SCHEMA_NAME):
+            event.listen(Base.metadata, "before_create", CreateSchema(settings.SCHEMA_NAME), insert=True)
 
-    Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
-    Base.metadata.create_all(bind=engine, checkfirst=True)
+            Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
+            Base.metadata.create_all(bind=engine, checkfirst=True)
+
+            # Populate Database
+            file = open("./app/db/backup-0001.sql")
+            stmts = text(file.read())
+            conn.execute(stmts)
+            conn.commit()

@@ -52,8 +52,8 @@ class Settings(BaseSettings):
 
     # Auth settings
     ## Path to JWT signing keys
-    JWT_SECRET_KEY_PATH: str = os.getenv("SECRET_KEY", "/jwt.key")
-    JWT_PUBLIC_KEY_PATH: str = os.getenv("PUBLIC_KEY", "/jwt.key.pub")
+    JWT_SECRET_KEY_PATH: str = os.getenv("SECRET_KEY", "../dev-keys/jwt.key")
+    JWT_PUBLIC_KEY_PATH: str = os.getenv("PUBLIC_KEY", "../dev-keys/jwt.key.pub")
     ## How long access tokens are valid for
     ACCESS_TOKEN_EXPIRE: timedelta = timedelta(minutes=10)
     ## How long refresh tokens are valid for

@@ -3,7 +3,7 @@
 --
 
 INSERT INTO nei."user" (id, email, name, surname, gender, iupi, nmec, image, curriculum, linkedin, github, updated_at, created_at, scopes, hashed_password, active) VALUES
-(1, 'nei@aauav.pt', 'NEI', 'AAUAv', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY['ADMIN']::nei.scope_enum[], '', FALSE),
+(1, 'nei@aauav.pt', 'NEI', 'AAUAv', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY['ADMIN']::nei.scope_enum[], '$argon2id$v=19$m=65536,t=3,p=4$Tumdc87ZG4PQmtP6f8+5Fw$g1qvQyunD053z1FJiX91OGocYeas4IwHUBW2CqtEgAU', TRUE),
 (2, 'abbm@ua.pt', 'Beatriz', 'Marques', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', FALSE),
 (3, 'afmoleirinho@ua.pt', 'André', 'Moleirinho', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', FALSE),
 (4, 'alexandrejflopes@ua.pt', 'Alexandre', 'Lopes', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', FALSE),

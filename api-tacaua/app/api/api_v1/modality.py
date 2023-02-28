@@ -53,7 +53,8 @@ async def update_modality(
     request: Request,
     modality_in: ModalityUpdate = Form(..., alias='modality'),
     image: Optional[UploadFile] = File(None),
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     modality = crud.modality.update(db, id=id, obj_in=modality_in)
     form = await request.form()
@@ -66,6 +67,7 @@ async def update_modality(
 @router.delete("/{id}", status_code=200, response_model=Modality,
                responses=responses)
 def remove_modality(
-    id: int, db: Session = Depends(deps.get_db)
+    id: int, db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     return crud.modality.remove(db, id=id)

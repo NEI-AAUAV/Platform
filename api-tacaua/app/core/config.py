@@ -50,7 +50,7 @@ class Settings(BaseSettings):
 
     # Auth settings
     ## Path to JWT signing keys
-    JWT_PUBLIC_KEY_PATH: str = os.getenv("PUBLIC_KEY", "/jwt.key.pub")
+    JWT_PUBLIC_KEY_PATH: str = os.getenv("PUBLIC_KEY", "../dev-keys/jwt.key.pub")
     ## Algorithm to use when signing JWT tokens
     JWT_ALGORITHM: str = "RS256"
 

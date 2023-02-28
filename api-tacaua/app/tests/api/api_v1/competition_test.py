@@ -12,6 +12,7 @@ URL_PREFIX = f"{settings.API_V1_STR}/competition"
 
 modality_data = {
     "year": 0,
+    "type": "Individual",
     "frame": "Misto",
     "sport": "Atletismo",
 }

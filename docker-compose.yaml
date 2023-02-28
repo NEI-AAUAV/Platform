@@ -48,9 +48,11 @@ services:
       - 8000:8000
     environment:
       POSTGRES_SERVER: db_pg
+      SECRET_KEY: /jwt.key
+      PUBLIC_KEY: /jwt.key.pub
     volumes: 
       - ./api-nei:/api_nei
-      - ./dev-keys/jwt.key:/jwt.key:ro # Development key
+      - ./dev-keys/jwt.key:/jwt.key:ro
       - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:
       db_pg:
@@ -65,6 +67,7 @@ services:
       - 8001:8001
     environment:
       POSTGRES_SERVER: db_pg
+      PUBLIC_KEY: /jwt.key.pub
     volumes: 
       - ./api-tacaua:/api_tacaua
       - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
@@ -74,8 +77,6 @@ services:
     networks:
       - backend
     restart: unless-stopped
-    profiles:
-      - disabled
   api_family:
     build:
       context: api-family
@@ -83,6 +84,7 @@ services:
       - 8002:8002
     environment:
       MONGO_SERVER: db_mongo
+      PUBLIC_KEY: /jwt.key.pub
     volumes: 
       - ./api-family:/api_family
       - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
@@ -135,7 +137,7 @@ services:
     depends_on:
       - web_nei
       - api_nei
-      # - api_tacaua
+      - api_tacaua
       # - api_family
     networks:
       - backend

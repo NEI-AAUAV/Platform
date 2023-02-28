@@ -1,5 +1,7 @@
-from operator import gt
-from sqlalchemy import Column, SmallInteger, Integer, String, Text, ForeignKey
+from typing import Optional
+from pydantic import AnyHttpUrl
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.db.base_class import Base
 
@@ -15,4 +17,12 @@ class Participant(Base):
         index=True
     )
     name = Column(String(50), nullable=False)
-    number = Column(SmallInteger)
+    _image = Column("image", String(2048))
+
+    @hybrid_property
+    def image(self) -> Optional[AnyHttpUrl]:
+        return self._image and settings.STATIC_URL + self._image
+
+    @image.setter
+    def image(self, image: Optional[AnyHttpUrl]):
+        self._image = image
