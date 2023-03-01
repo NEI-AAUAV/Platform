@@ -122,7 +122,7 @@ const Seniors = () => {
                                         <Fragment key={index}>
                                             <TextList
                                                 colSize={3}
-                                                text={person.user?.name}
+                                                text={person.user?.name + ' ' + person.user?.surname}
                                                 className="slideUpFade"
                                                 style={{
                                                     animationDelay: animationBase + animationIncrement * 0 + "s"
@@ -134,7 +134,7 @@ const Seniors = () => {
                                     people?.map((person, index) =>
                                         <Fragment key={index}>
                                             <SeniorsCard
-                                                name={person.user?.name}
+                                                name={person.user?.name + ' ' + person.user?.surname}
                                                 quote={person.quote}
                                                 image={person.image}
                                                 colSizeXs="12"

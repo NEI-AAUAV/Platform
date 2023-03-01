@@ -28,7 +28,7 @@ class Note(Base):
     
     name = Column(String(256))
     _location = Column("location", String(2048))
-    year = Column(SmallInteger, nullable=False, index=True)
+    year = Column(SmallInteger, index=True)
 
     summary = Column(SmallInteger)
     tests = Column(SmallInteger)

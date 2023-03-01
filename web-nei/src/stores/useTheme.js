@@ -1,6 +1,6 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
-const defaultTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
+const defaultTheme = 'light';// localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
 document.body.setAttribute('data-theme', defaultTheme);
 
 export const useTheme = create((set) => ({

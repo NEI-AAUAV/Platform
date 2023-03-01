@@ -12,6 +12,7 @@ URL_PREFIX = f"{settings.API_V1_STR}/group"
 
 modality_data = {
     "year": 0,
+    "type": "Individual",
     "frame": "Misto",
     "sport": "Atletismo",
 }
@@ -29,7 +30,7 @@ competition_data = {
 
 course_data = {
     "name": "Eng. Informática",
-    "initials": "NEI",
+    "short": "NEI",
     "color": "rgb(0,0,0)",
 }
 

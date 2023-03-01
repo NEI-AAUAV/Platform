@@ -1,62 +1,28 @@
-.section {
-    padding-top: 4em;
-    padding-bottom: 4em;
-    position: relative;
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
-.section-dark {
-    padding-top: 4em;
-    padding-bottom: 4em;
-    background-color: #222222;
-    position: relative;
+.gradient-blur {
+    --size: 250px;
+    --speed: 50s;
+    --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
+    width: var(--size);
+    height: var(--size);
+    filter: blur(calc(var(--size) / 5));
+    background-image: linear-gradient(hsla(var(--in) / .5), hsl(var(--suc)));
+    animation: rotate var(--speed) var(--easing) alternate infinite;
+    border-radius: 30% 70% 70% 30%/30% 30% 70% 70%;
 }
 
-.header-dark {
-    color: white;
-}
-
-.header-dark::after {
-    content: "";
-    display: block;
-    width: 1.2em;
-    height: 5px;
-    background-color: white;
-    position: absolute;
-    left: 50%;
-    margin-left: -0.6em;
-}
-
-.btn-outline-dark {
-    border: white solid 2px !important;
-    background-color: transparent !important;
-    color: white !important;
-    padding-left: 1em !important;
-    padding-right: 1em !important;
-}
-
-.btn-outline-dark:hover {
-    background-color: white !important;
-    color: black !important;
-}
-
-.terminalContainer {
-    padding-left: 6px;
-    padding-right: 6px;
-}
-
-
-/*
-    Turn the columns into flex containers
-    All this really does is align the links at the bottom,
-    is this worth it?
-*/
-.home-info-col {
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-}
-
-.home-info-col svg {
-    display: inline-block !important;
-    width: 100% !important;
+@media (min-width: 1024px) {
+    .gradient-blur {
+        --size: 500px;
+    }
 }

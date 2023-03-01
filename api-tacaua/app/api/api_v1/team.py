@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request, Form
+from fastapi import APIRouter, Depends, HTTPException, Security, UploadFile, File, Request, Form
 from sqlalchemy.orm import Session
 from typing import Any, Optional
 
 from app import crud
 from app.exception import NotFoundException
-from app.api import deps
+from app.api import auth, deps
 from app.core.logging import logger
 from app.schemas.team import Team, TeamCreate, TeamUpdate
 
@@ -20,7 +20,8 @@ responses = {
 async def create_team(
     team_in: TeamCreate = Form(..., alias='team'),
     image: Optional[UploadFile] = File(None),
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     course = crud.course.get(db=db, id=team_in.course_id)
     if not course:
@@ -38,7 +39,8 @@ async def update_team(
     request: Request,
     team_in: TeamUpdate = Form(..., alias='team'),
     image: Optional[UploadFile] = File(None),
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     team = crud.team.update(db, id=id, obj_in=team_in)
     form = await request.form()
@@ -51,6 +53,7 @@ async def update_team(
 @router.delete("/{id}", status_code=200, response_model=Team,
                responses=responses)
 def remove_team(
-    id: int, db: Session = Depends(deps.get_db)
+    id: int, db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     return crud.team.remove(db, id=id)

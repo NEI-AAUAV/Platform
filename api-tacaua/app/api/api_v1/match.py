@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Security
 from sqlalchemy.orm import Session
 from typing import Any, Optional
 
 from app import crud
-from app.api import deps
+from app.api import auth, deps
 from app.core.logging import logger
 from app.schemas.match import Match, MatchCreate, MatchUpdate
 
@@ -21,6 +21,7 @@ responses = {
 async def update_match(
     id: int,
     match_in: MatchUpdate,
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     return crud.match.update(db, id=id, obj_in=match_in)

@@ -1,13 +1,11 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, AnyHttpUrl, constr
 
 from typing import Optional, List
-from typing_extensions import Annotated
 from .faina_member import FainaMemberInDB
 
 
 class FainaBase(BaseModel):
-    image: Annotated[Optional[str], Field(max_length=256)]
-    year: Annotated[str, Field(max_length=9)]
+    year: constr(max_length=7)
 
 
 class FainaCreate(FainaBase):
@@ -17,12 +15,13 @@ class FainaCreate(FainaBase):
 
 class FainaUpdate(FainaBase):
     """Properties to receive via API on update."""
-    year: Annotated[Optional[str], Field(max_length=9)]
+    year: Optional[constr(max_length=7)]
 
 
 class FainaInDB(FainaBase):
     """Properties properties stored in DB."""
     id: int
+    image: AnyHttpUrl
     members: List[FainaMemberInDB]
 
     class Config:

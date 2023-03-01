@@ -1,11 +1,9 @@
-import React from "react";
-
 import { useRoutes } from 'react-router-dom';
-import routes from './routes';
-
-import { library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core';
 import { faFilePdf, faFolder, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons';
+
+import routes from './routes';
 
 import { getSocket } from "services/SocketService"; 
 
@@ -16,14 +14,8 @@ library.add(fab, faFilePdf, faFolder, faCloudDownloadAlt);
 let ws = getSocket();
 
 const App = () => {
-    let buffer = "";
     const routing = useRoutes(routes);
-
-    return (
-        <div>
-            {routing}
-        </div>
-    );
+    return routing;
 }
 
 export default App;

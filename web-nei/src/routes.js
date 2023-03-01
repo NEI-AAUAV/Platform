@@ -25,17 +25,47 @@ import Video from "./pages/Video";
 import Sports from "./pages/Sports";
 import FainaTree from "./pages/FainaTree";
 import Internship from "./pages/Internship";
+import Components from "./pages/Components";
 import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
 import Test from "./pages/Test";
 import TacauaAdminDemo from "./pages/TacauaAdminDemo";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const routes = [
   {
     path: "/",
-    element: <CleanLayout />,
+    element: <MainLayout />,
     children: [
       { path: "/", element: <Homepage /> },
+      { path: "/noticias", element: <News /> },
+      { path: "/noticia/:id", element: <NewsArticle /> },
+      { path: "/apontamentos", element: <Apontamentos /> },
+      { path: "/equipa", element: <Team /> },
+      { path: "/parceiros", element: <Partners /> },
+      { path: "/calendario", element: <Calendar /> },
+      { path: "/rgm/:id", element: <RGM /> },
+      { path: "/historia", element: <History /> },
+      { path: "/seniors/:id", element: <Seniors /> },
       { path: "/merch", element: <Merchandising /> },
+      { path: "/faina", element: <Faina /> },
+      { path: "/videos", element: <Videos /> },
+      { path: "/videos/:id", element: <Video /> },
+      // { path: "/estagios", element: <Internship /> },
+      !config.PRODUCTION && { path: "/desporto", element: <Sports /> },
+      !config.PRODUCTION && { path: "/components", element: <Components /> },
+      // { path: "/forms/feedback", element: <FeedbackForm /> },
+      { path: "/testing", element: <Test />},
+      { path: "/tacaua-admin-demo", element: <TacauaAdminDemo />},
+      { path: "/:id", element: <Error404 /> },
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
+    ],
+  },
+  {
+    path: "/",
+    element: <CleanLayout />,
+    children: [
       { path: "/familias", element: <FainaTree /> },
     ],
   },
@@ -46,31 +76,6 @@ const routes = [
   //     { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
   //   ],
   // },
-  {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      { path: "/noticias", element: <News /> },
-      { path: "/noticia/:id", element: <NewsArticle /> },
-      { path: "/apontamentos", element: <Apontamentos /> },
-      { path: "/equipa", element: <Team /> },
-      { path: "/parceiros", element: <Partners /> },
-      { path: "/calendario", element: <Calendar /> },
-      { path: "/rgm/:id", element: <RGM /> },
-      { path: "/historia", element: <History /> },
-      { path: "/seniors/:id", element: <Seniors /> },
-      { path: "/faina", element: <Faina /> },
-      { path: "/videos", element: <Videos /> },
-      { path: "/videos/:id", element: <Video /> },
-      // { path: "/estagios", element: <Internship /> },
-      !config.PRODUCTION && { path: "/desporto", element: <Sports /> },
-      // { path: "/forms/feedback", element: <FeedbackForm /> },
-      { path: "/testing", element: <Test />},
-      { path: "/tacaua-admin-demo", element: <TacauaAdminDemo />},
-      { path: "/:id", element: <Error404 /> },
-
-    ],
-  },
 ];
 
 export default routes;

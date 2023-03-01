@@ -1,4 +1,4 @@
-# TaçaUA-API Service
+# Taça UA Service
 
 Follow one of the installation tutorials to run this service. If everything was successful, the server should be up on http://localhost:8001/.
 
@@ -43,7 +43,7 @@ docker run -d -p 0.0.0.0:5432:5432 -e POSTGRES_DB="postgres_test" -e POSTGRES_PA
 
 On the service's root directory, build the image that will be used to create the service container. The flag `--no-cache` can be useful in some situations that require to not use cache when building the image.
 ```
-docker build . -f Dockerfile.dev -t api_tacaua [--no-cache]
+docker build . -t api_tacaua [--no-cache]
 ```
 
 Create the NEI-API service.

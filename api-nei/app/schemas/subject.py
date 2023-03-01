@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 class SubjectBase(BaseModel):
     name: Annotated[Optional[str], Field(max_length=60)]
-    year: int
+    curricular_year: int
     semester: int
     short: Annotated[Optional[str], Field(max_length=5)]
     discontinued: int
@@ -15,7 +15,7 @@ class SubjectBase(BaseModel):
 
 class SubjectCreate(SubjectBase):
     name: Annotated[Optional[str], Field(max_length=60)]
-    year: int
+    curricular_year: int
     semester: int
     short: Annotated[Optional[str], Field(max_length=5)]
     discontinued: int
@@ -24,7 +24,7 @@ class SubjectCreate(SubjectBase):
 
 class SubjectUpdate(SubjectBase):
     name: Annotated[Optional[str], Field(max_length=60)]
-    year: int
+    curricular_year: int
     semester: int
     short: Annotated[Optional[str], Field(max_length=5)]
     discontinued: int

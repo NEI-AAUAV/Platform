@@ -30,32 +30,21 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    """Properties to receive via API on create."""
+    """Properties to add to the database on create."""
     email: str
-    password: constr(min_length=8)
-    password2: str
-    _created_at: datetime = Field(
-        default_factory=datetime.now, alias='created_at')
-
-    @root_validator
-    def passwords_match(cls, values):
-        if values.get('password') != values.get('password2'):
-            raise ValueError('Passwords do not match')
-        return values
-
-    class Config:
-        underscore_attrs_are_private = True
+    hashed_password: str
+    scopes: List[ScopeEnum] = []
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
+    active: bool = Field(default=False)
 
 
 class UserUpdate(UserBase):
     """Properties to receive via API on create."""
     name: Optional[constr(max_length=20)]
     surname: Optional[constr(max_length=20)]
-    _updated_at: datetime = Field(
-        default_factory=datetime.now, alias='updated_at')
-
-    class Config:
-        underscore_attrs_are_private = True
+    # TODO: do not forget
+    # updated_at: datetime = Field(default_factory=datetime.now)
 
 
 class UserInDB(UserBase):
@@ -68,6 +57,7 @@ class UserInDB(UserBase):
     curriculum: Optional[AnyHttpUrl]
     scopes: List[ScopeEnum] = []
     academic_details: List[UserAcademicDetailsInBD]
+    active: bool
 
     class Config:
         orm_mode = True

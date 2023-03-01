@@ -41,7 +41,7 @@ ul.slideUpFade {
     height: 500px;
 }
 
-ul.slideUpFade li{
+ul.slideUpFade li {
     position: relative;
     text-align: center;
 }
@@ -56,13 +56,13 @@ li.act::after {
     height: 3px;
     width: 65%;
     background-color: green;
-    left:12px;
+    left: 12px;
     bottom: -5px;
     border-radius: 2px;
     animation: appear 0.3s linear;
 }
 
-@media screen and (max-width: 960px) { 
+@media screen and (max-width: 960px) {
     .lista ul.slideUpFade {
         display: flex;
         flex-direction: column;
@@ -99,6 +99,7 @@ li.act::after {
     from {
         width: 0;
     }
+
     to {
         width: 65%;
     }

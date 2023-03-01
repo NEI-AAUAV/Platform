@@ -96,7 +96,7 @@ class NEIService {
     }
 
     async getTeamMandates(params) {
-        return await client.get('/team/', { params });
+        return await client.get('/team/member/', { params });
     }
 
     async getTeamRoles(params) {
@@ -149,6 +149,14 @@ class NEIService {
 
     async getSeniorsBy(course, year) {
         return await client.get(`/senior/${course}/${year}`);
+    }
+
+    async login(data) {
+        return await client.post('/auth/login/', data);
+    }
+
+    async register(data) {
+        return await client.post('/auth/register/', data);
     }
 }
 

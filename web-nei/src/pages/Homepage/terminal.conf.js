@@ -1,5 +1,4 @@
 import { CommandMapping, EmulatorState, FileSystem, OutputFactory, defaultCommandMapping, Outputs, hasFile } from "javascript-terminal";
-
 // TODO: update prompt with current working directory,
 //       more easter eggs
 

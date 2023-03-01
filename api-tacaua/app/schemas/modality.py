@@ -33,6 +33,7 @@ class SportEnum(str, EnumList):
 
 class ModalityBase(BaseModel):
     year: int
+    type: TypeEnum
     frame: FrameEnum
     sport: SportEnum
 
@@ -45,6 +46,7 @@ class ModalityCreate(ModalityBase):
 @validate_to_json
 class ModalityUpdate(ModalityBase):
     year: Optional[int]
+    type: Optional[TypeEnum]
     frame: Optional[FrameEnum]
     sport: Optional[SportEnum]
 

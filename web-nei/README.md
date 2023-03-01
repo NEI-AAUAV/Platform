@@ -1,4 +1,4 @@
-# Web-App Service
+# NEI Web-App
 
 It is important to keep the number of dependencies as few as possible. If there is one that makes the job easier and that is foreseeable to be used in the future, then it is recommended.
 
@@ -32,19 +32,14 @@ yarn start
 
 ## Docker Installation
 
-Create the container for the PostgreSQL database.
-```
-docker run -d -p 0.0.0.0:5432:5432 -e POSTGRES_PASSWORD="postgres" --name pg_db postgres
-```
-
 On the service's root directory, build the image that will be used to create the service container. The flag `--no-cache` can be useful in some situations that require to not use cache when building the image.
 ```
-docker build . -f Dockerfile.dev -t api_nei [--no-cache]
+docker build . -t web_nei [--no-cache]
 ```
 
-Create the NEI-API service.
+Create the NEI WebApp service.
 ```
-docker run -it -v ${PWD}:/web_app -v /web_app/node_modules --network host --name api_nei api_nei
+docker run -it -v ${PWD}:/web_nei -v /web_nei/node_modules --network host --name web_nei web_nei
 ```
 
-With this latter step, everything is setup. To restart the service afterwards, simply run `docker start pg_db` and `docker start -i api_nei` (the -i flag runs the container in interactive mode).
+With this latter step, everything is setup. To restart the service afterwards, simply run `docker start -i web_nei` (the -i flag runs the container in interactive mode).

@@ -38,14 +38,14 @@ const Sports = () => {
     />);*/
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API + "/sports/modalities")
-      .then(response => response.json())
-      .then((response) => {
-        if ('data' in response) {
-          setData(response["data"]);
-          //console.log(data);
-        }
-      });
+    // fetch(process.env.REACT_APP_API + "/sports/modalities")
+    //   .then(response => response.json())
+    //   .then((response) => {
+    //     if ('data' in response) {
+    //       setData(response["data"]);
+    //       //console.log(data);
+    //     }
+    //   });
   }, []);
 
   /*

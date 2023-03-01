@@ -21,7 +21,7 @@ class NoteBase(BaseModel):
 
     name: constr(max_length=256)
     location: AnyHttpUrl
-    year: int
+    year: Optional[int]
 
     summary: Optional[int]
     tests: Optional[int]

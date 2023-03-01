@@ -48,6 +48,12 @@ class Settings(BaseSettings):
         f":{POSTGRES_PASSWORD}@{POSTGRES_SERVER}" \
         f":5432/{POSTGRES_DB}_test"
 
+    # Auth settings
+    ## Path to JWT signing keys
+    JWT_PUBLIC_KEY_PATH: str = os.getenv("PUBLIC_KEY", "../dev-keys/jwt.key.pub")
+    ## Algorithm to use when signing JWT tokens
+    JWT_ALGORITHM: str = "ES512"
+
     class Config:
         case_sensitive = True
 

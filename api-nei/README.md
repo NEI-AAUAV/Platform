@@ -1,12 +1,13 @@
-# NEI-API Service
+# NEI Service
 
 Follow one of the installation tutorials to run this service. If everything was successful, the server should be up on http://localhost:8000/.
 
 Check http://localhost:8000/docs to watch the API documentation with Swagger UI.
 
 ## DB Documentation
- to be written
+
 <!-- TODO: complete -->
+<img src="../docs/images/nei-uml.svg" style="border-radius: 6px;" alt="nei UML">
 
 ## API Documentation
  to be written
@@ -43,7 +44,7 @@ docker run -d -p 0.0.0.0:5432:5432 -e POSTGRES_DB="postgres_test" -e POSTGRES_PA
 
 On the service's root directory, build the image that will be used to create the service container. The flag `--no-cache` can be useful in some situations that require to not use cache when building the image.
 ```
-docker build . -f Dockerfile.dev -t api_nei [--no-cache]
+docker build . -t api_nei [--no-cache]
 ```
 
 Create the NEI-API service.
