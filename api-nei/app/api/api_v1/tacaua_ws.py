@@ -1,8 +1,9 @@
-from fastapi import WebSocket, APIRouter, WebSocketDisconnect
-from typing import Dict, List   
+from fastapi import Body, WebSocket, APIRouter, WebSocketDisconnect
+from typing import Any, Dict, List   
 from enum import Enum
 import json
 from loguru import logger
+from pytest import Session
 
 router = APIRouter()
 
@@ -36,9 +37,9 @@ class ConnectionManager:
         await websocket.send_text(message)
 
 
-    async def broadcast(self, connection_type, message: str):
-        for websocket in self.active_connections[ConnectionType[connection_type]]:
-            await websocket.send_text(message)
+    async def broadcast(self, connection_type: ConnectionType, message: dict):
+        for websocket in self.active_connections[connection_type]:
+            await websocket.send_json(message)
 
 
     async def change_connection_type(self, websocket: WebSocket, new_type: ConnectionType):
@@ -52,16 +53,25 @@ manager = ConnectionManager()
 
 """
 Message format examples:
+Receive
 {
-    "connection_type": "GENERAL",
-    "message_type": "change_connection_type",
-    "message": "LIVE_GAME"
+    "topic": "GET_LIVE_GAMES",
+}
+Send
+{
+    "topic": "GET_LIVE_GAMES",
+    "games": JSON with live games data
 }
 
+Receive 
+HTTP POST /ws/broadcast {
+    "topic": "UPDATE_LIVE_GAME",
+    "game": JSON with live game data
+}
+Send
 {
-    "connection_type": "LIVE_GAME",
-    "message_type": "broadcast",
-    "message": JSON with game data
+    "topic": "UPDATE_LIVE_GAME",
+    "game": JSON with live game data
 }
 """
 
@@ -71,20 +81,20 @@ async def websocket_endpoint(websocket: WebSocket):
     logger.info("CONECTEI")
     try:
         while True:
-            data = await websocket.receive_text()
-            data = json.load(data)
+            data = await websocket.receive_json()
             logger.info(data)
             match data["topic"]:
                 case "LIVE_GAME":
                     print("LIVE_GAME")
-                    logger.info("LIVE_GAME")
-                    ...
-                    break
-                case "broadcast":
-                    await manager.broadcast(data["connection_type"],data["message"])
-                    if data["connection_type"] == "LIVE_GAME":
-                        ...
-                        # update game data in databases
+                    logger.info("LIVE_GAME", data)
+                    await websocket.send_json({"topic": "LIVE_GAMES", "game": {"id": 1, "team1": 'NEI', "team2": "NEEET"}})
 
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+
+
+@router.post("/ws/broadcast", status_code=200)
+async def websocket_broadcast(*, data_in: dict = Body()):
+    await manager.broadcast(connection_type=ConnectionType.GENERAL, message=data_in)
+    return {"status": "success", "message": "All websockets were notified."}
+   
