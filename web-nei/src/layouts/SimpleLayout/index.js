@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 const SimpleLayout = () => {
 
     return (
-        <div className="mhvh-100 d-flex flex-column justify-content-between position-relative">
+        <div className="pt-20 min-h-screen flex flex-col justify-between relative">
             <Outlet />
         </div>
     );

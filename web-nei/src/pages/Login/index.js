@@ -2,14 +2,21 @@ import NEIService from "services/NEIService";
 import { Link } from "react-router-dom";
 import logo from "../../assets/icons/ua_logo.svg";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserStore } from "stores/useUserStore";
 
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const errorMessage = useRef(null);
+  const navigate = useNavigate();
 
   const formSubmitted = async (event) => {
     event.preventDefault();
+
+    // TODO: redirect only on success
+    useUserStore.getState().login();
+    navigate("/");
 
     const formData = new FormData(event.target);
     try {

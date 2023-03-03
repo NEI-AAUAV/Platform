@@ -1,5 +1,16 @@
+export { ReactComponent as ArrowBackIcon } from "./arrow-back.svg";
+export { ReactComponent as ArrowForwardIcon } from "./arrow-forward.svg";
 export { ReactComponent as CalendarViewMonthIcon} from "./calendar-view-month.svg";
+export { ReactComponent as ExpandLessIcon } from "./expand-less.svg";
+export { ReactComponent as ExpandMoreIcon } from "./expand-more.svg";
 export { ReactComponent as GridViewIcon } from "./grid-view.svg";
 export { ReactComponent as ViewAgendaIcon } from "./view-agenda.svg";
+export { ReactComponent as OpenInNewIcon } from "./open-in-new.svg";
 export { ReactComponent as ViewListIcon } from "./view-list.svg";
 export { ReactComponent as FilterIcon } from "./filter.svg";
+export { ReactComponent as LogoutIcon } from "./logout.svg";
+export { ReactComponent as PersonIcon } from "./person.svg";
+export { ReactComponent as LightModeIcon } from "./light-mode.svg";
+export { ReactComponent as DarkModeIcon } from "./dark-mode.svg";
+export { ReactComponent as MenuIcon } from "./menu.svg";
+export { ReactComponent as CloseIcon } from "./close.svg";

@@ -1,13 +1,20 @@
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import { css, jsx } from '@emotion/react';
 import { useState, useEffect, Fragment } from "react";
 import classname from "classname";
 
 import { useWindowSize } from "utils/hooks";
-import { AngleRightIcon } from "assets/icons/flaticon/index";
+import { ArrowForwardIcon } from "assets/icons/google";
+
+import service from "services/GoogleCalendarService";
+
+const selection = ["[1A]", "2A", "[NEI]", "3A"];
 
 
 const Calendar = () => {
-    const MONTH_NAMES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    const DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const WEEK_DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
     const windowSize = useWindowSize();
     const [month, setMonth] = useState('');
@@ -15,62 +22,107 @@ const Calendar = () => {
     const [numOfDays, setNumOfDays] = useState([]);
     const [blankDays, setBlankDays] = useState([]);
 
+    const [calendarSince, setCalendarSince] = useState(null);
+    const [calendarTo, setCalendarTo] = useState(null);
+
     const [events, setEvents] = useState([
-        {
-            date: new Date(2023, 1, 1),
-            title: "April Fool's Day",
-            theme: 'blue'
-        },
-
-        {
-            date: new Date(2023, 1, 10),
-            title: "Birthday",
-            theme: 'red'
-        },
-
-        {
-            date: new Date(2023, 1, 16),
-            title: "Upcoming Event",
-            theme: 'green'
-        }
+        { date: new Date(2023, 1, 1), title: "April Fool's Day", theme: '187 99% 45%' },
+        { date: new Date(2023, 1, 10), title: "Birthday", theme: '187 98% 20%' },
+        { date: new Date(2023, 1, 16), title: "Upcoming Event", theme: '38 100% 50%' }
     ]);
 
-    const [event, setEvent] = useState({
-        title: '',
-        date: '',
-        theme: 'blue',
-    })
+    const [event, setEvent] = useState({ title: '', date: '', theme: 'blue', })
 
     const themes = [
-        {
-            value: "blue",
-            label: "Blue Theme"
-        },
-        {
-            value: "red",
-            label: "Red Theme"
-        },
-        {
-            value: "yellow",
-            label: "Yellow Theme"
-        },
-        {
-            value: "green",
-            label: "Green Theme"
-        },
-        {
-            value: "purple",
-            label: "Purple Theme"
-        }
+        { value: "blue", label: "Blue Theme" },
+        { value: "red", label: "Red Theme" },
+        { value: "yellow", label: "Yellow Theme" },
+        { value: "green", label: "Green Theme" },
+        { value: "purple", label: "Purple Theme" }
     ];
 
     const [openEventModal, setOpenEventModal] = useState(false);
 
+
+
+    // On render, initialize calendarSince and calendarTo based on current moment
+    // Also initialize categories
     useEffect(() => {
         initDate();
         getNumOfDays();
-    }, [])
+        timespanChanged(new Date());
+    }, []);
 
+    useEffect(() => {
+        if (calendarSince === null || calendarTo === null) {
+            return;
+        }
+        const timeMin = `${calendarSince.getFullYear()}-${calendarSince.getMonth() + 1}-${calendarSince.getDate()}T00:00:00+01:00`;
+        const timeMax = `${calendarTo.getFullYear()}-${calendarTo.getMonth() + 1}-${calendarTo.getDate()}T00:00:00+01:00`;
+
+        service.getEvents({ timeMin, timeMax })
+            .then(({ data }) => {
+                console.log(data)
+                let apiEvents = [];
+                data.items.forEach(e => {
+                    // Check that event matches selection
+                    let matchAny = true;
+                    let matchSelected = true;
+                    // Object.entries(categoriesTypes).forEach(([key, c]) => {
+                    //     c['filters'].forEach(f => {
+                    //         if (e['summary'].toLowerCase().indexOf(f.toLowerCase()) >= 0) {
+                    //             matchAny = true;
+                    //             matchSelected = selection.indexOf(key) >= 0;
+                    //         }
+                    //     });
+                    // });
+                    // It must match any filter, if not, is considered NEI event (default) and to be showed NEI must be in selection
+                    if (matchSelected == false && (matchAny && selection.indexOf('NEI') >= 0 || selection.indexOf('NEI') < 0)) {
+                        return;
+                    }
+                    // If so, compute object to add to events list
+                    const start = 'date' in e['start'] ? e['start']['date'] : e['start']['dateTime'];
+                    let end = 'date' in e['end'] ? e['end']['date'] : e['end']['dateTime'];
+                    if ('date' in e['end']) {
+                        let endDate = new Date(end);
+                        endDate = endDate.setDate(endDate.getDate() - 1);
+                        end = endDate;
+                    }
+                    apiEvents.push({
+                        'id': e['id'],
+                        'title': e['summary'],
+                        'start': new Date(start),
+                        'end': new Date(end),
+                        'allDay': 'date' in e['start']
+                    });
+                });
+                setEvents(apiEvents);
+                console.log(apiEvents)
+            });
+    }, [selection, calendarSince, calendarTo]);
+
+
+    // On navigate, update next and prev moments and recall API
+    function timespanChanged(date) {
+        let next = new Date(date);
+        let prev = new Date(date);
+
+        if (date.getMonth() == 11) {
+            next.setMonth(0);
+            next.setYear(date.getFullYear() + 1);
+            prev.setMonth(date.getMonth() - 1);
+        } else if (date.getMonth() == 0) {
+            next.setMonth(date.getMonth() + 1);
+            prev.setMonth(11);
+            prev.setYear(date.getFullYear() - 1);
+        } else {
+            next.setMonth(date.getMonth() + 1);
+            prev.setMonth(date.getMonth() - 1);
+        }
+
+        setCalendarSince(prev);
+        setCalendarTo(next);
+    }
 
     function initDate() {
         let today = new Date();
@@ -149,7 +201,7 @@ const Calendar = () => {
                 <div className="bg-base-200 rounded-lg shadow overflow-hidden">
                     <div className="flex items-center justify-between py-2 px-6">
                         <div>
-                            <span className="text-lg font-bold text-base-content">{MONTH_NAMES[month]}</span>
+                            <span className="text-lg font-bold text-base-content">{MONTHS[month]}</span>
                             <span className="ml-1 text-lg text-base-content font-normal">{year}</span>
                         </div>
                         <div className="border rounded-lg px-1" style={{ paddingTop: "2px" }}>
@@ -170,7 +222,7 @@ const Calendar = () => {
                                     { 'cursor-not-allowed opacity-25': month == 11 })}
                                 disabled={month == 11}
                                 onClick={() => { setMonth((prevMonth) => prevMonth++); getNumOfDays() }}>
-                                <AngleRightIcon/>
+                                <ArrowForwardIcon />
                             </button>
                         </div>
                     </div>
@@ -178,7 +230,7 @@ const Calendar = () => {
                     <div className="-mx-1 -mb-1">
                         <div className="flex flex-wrap">
                             {
-                                DAYS.map((day, index) => (
+                                WEEK_DAYS.map((day, index) => (
                                     <div className="w-1/7 py-2" key={index}>
                                         <div className="text-gray-600 text-sm uppercase tracking-wide font-bold text-center">{windowSize.width < 768 ? day[0] : day}</div>
                                     </div>
@@ -208,13 +260,9 @@ const Calendar = () => {
                                                 {
                                                     events.filter(e => new Date(e.date).toDateString() === new Date(year, month, date).toDateString()).map((event, index) => (
                                                         <div key={index}
-                                                            className={classname("px-2 py-1 rounded-lg mt-1 overflow-hidden border", {
-                                                                'border-blue-200 text-blue-800 bg-blue-100': event.theme === 'blue',
-                                                                'border-red-200 text-red-800 bg-red-100': event.theme === 'red',
-                                                                'border-yellow-200 text-yellow-800 bg-yellow-100': event.theme === 'yellow',
-                                                                'border-green-200 text-green-800 bg-green-100': event.theme === 'green',
-                                                                'border-purple-200 text-purple-800 bg-purple-100': event.theme === 'purple'
-                                                            })}
+                                                            css={css`
+                                                                background-color: hsl(${event.theme});
+                                                                `}
                                                         >
                                                             <p className="text-sm truncate font-bold leading-tight">{event.title}</p>
                                                         </div>

@@ -1,10 +1,2 @@
-export { ReactComponent as AngleRightIcon} from "./angle-right.svg";
 export { ReactComponent as FilePDFIcon } from "./file-pdf.svg";
-export { ReactComponent as FacebookIcon } from "./facebook.svg";
-export { ReactComponent as ListIcon } from "./list.svg";
-export { ReactComponent as LinktreeIcon } from "./linktree.svg";
-export { ReactComponent as GithubIcon } from "./github.svg";
-export { ReactComponent as GridIcon } from "./grid.svg";
 export { ReactComponent as FolderIcon } from "./folder.svg";
-export { ReactComponent as InstagramIcon } from "./instagram.svg";
-export { ReactComponent as LinkedinIcon } from "./linkedin.svg";
