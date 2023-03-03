@@ -5,7 +5,6 @@ import React from "react";
 const SportClassification = (props) => {
   return (
     <div>
-      SportTable
       <SportTable />
     </div>
   );
