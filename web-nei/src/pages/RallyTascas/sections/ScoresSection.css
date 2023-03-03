@@ -1,0 +1,9 @@
+tr {
+  line-height:35px;
+}
+
+tr>td {
+  color: white;
+  font-size: 1.2em;
+  font-weight: 600;
+}

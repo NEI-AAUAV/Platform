@@ -1,0 +1,22 @@
+.game {
+    margin-top: 2rem;
+    border-radius: 15px;
+    background-color: rgb(250, 250, 250);
+}
+
+.game-date {
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+
+.logo {
+    height: 5rem;
+    width: 5rem;
+}
+
+.game-result {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
