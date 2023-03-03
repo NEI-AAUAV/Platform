@@ -10,6 +10,7 @@ import img from './components/football.png';
 import "./index.css";
 import GameFilter from "./components/GameFilter";
 import SportClassification from "./SportClassification";
+import SportTeam from "./SportTeam";
 
 
 const Sports = () => {
@@ -106,11 +107,8 @@ const Sports = () => {
           {active === "classification" &&
             <SportClassification />
           }
-          {console.log(active)}
           {active === "team" &&
-            <div>
-              <p>team</p>
-            </div>
+            <SportTeam />
           }
         </div>
       </div>
