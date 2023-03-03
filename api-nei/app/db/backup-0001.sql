@@ -1169,13 +1169,13 @@ INSERT INTO nei.team_member (id, header, mandate, user_id, role_id) VALUES
 --
 
 INSERT INTO nei.video (id, youtube_id, title, subtitle, image, created_at, playlist) VALUES
-(1, 'PL0-X-dbGZUABPg-FWm3tT7rCVh6SESK2d', 'FP', 'Fundamentos de Programação', '/videos/FP_2020.jpg', '2020-12-09 00:00:00', 1),
-(2, 'PL0-X-dbGZUAA8rQm4klslEksHCrb3EIDG', 'IAC', 'Introdução à Arquitetura de Computadores', '/videos/IAC_2020.jpg', '2020-06-10 00:00:00', 1),
-(3, 'PL0-X-dbGZUABp2uATg_-lqfT4FTFlyNir', 'ITW', 'Introdução às Tecnologias Web', '/videos/ITW_2020.jpg', '2020-12-17 00:00:00', 1),
-(4, 'PL0-X-dbGZUACS3EkepgT7DOf287MiTzp0', 'POO', 'Programação Orientada a Objetos', '/videos/POO_2020.jpg', '2020-11-16 00:00:00', 1),
-(5, 'ips-tkEr_pM', 'Discord Bot', 'Workshop', '/videos/discord.jpg', '2021-07-14 00:00:00', 0),
-(6, '3hjRgoIItYk', 'Anchorage', 'Palestra', '/videos/anchorage.jpg', '2021-04-01 00:00:00', 0),
-(7, 'GmNvZC6iv1Y', 'Git', 'Workshop', '/videos/git.jpg', '2020-04-28 00:00:00', 0);
+(1, 'PL0-X-dbGZUABPg-FWm3tT7rCVh6SESK2d', 'FP', 'Fundamentos de Programação', '/video/FP_2020.jpg', '2020-12-09 00:00:00', 1),
+(2, 'PL0-X-dbGZUAA8rQm4klslEksHCrb3EIDG', 'IAC', 'Introdução à Arquitetura de Computadores', '/video/IAC_2020.jpg', '2020-06-10 00:00:00', 1),
+(3, 'PL0-X-dbGZUABp2uATg_-lqfT4FTFlyNir', 'ITW', 'Introdução às Tecnologias Web', '/video/ITW_2020.jpg', '2020-12-17 00:00:00', 1),
+(4, 'PL0-X-dbGZUACS3EkepgT7DOf287MiTzp0', 'POO', 'Programação Orientada a Objetos', '/video/POO_2020.jpg', '2020-11-16 00:00:00', 1),
+(5, 'ips-tkEr_pM', 'Discord Bot', 'Workshop', '/video/discord.jpg', '2021-07-14 00:00:00', 0),
+(6, '3hjRgoIItYk', 'Anchorage', 'Palestra', '/video/anchorage.jpg', '2021-04-01 00:00:00', 0),
+(7, 'GmNvZC6iv1Y', 'Git', 'Workshop', '/video/git.jpg', '2020-04-28 00:00:00', 0);
 
 
 --
