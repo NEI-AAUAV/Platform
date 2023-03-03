@@ -1,66 +1,71 @@
-## Code of Conduct
+# NEI-AAUAv Platform
 
-The following is a set of guidelines and standards for contributing to the NEI website.
+## Documentation
 
-### General
+- [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+- [Developer Documentation](docs/DEVELOPER.md)
+- [Administrator Documentation](docs/ADMIN.md)
 
-Code and name everything in English. Only use Portuguese for terms that are more easily understood in Portuguese than in English.
+## Installation
 
-### Branching
+- [Local Installation](docs/DEVELOPER.md#2-local-installation)
+- [Docker Installation](docs/DEVELOPER.md#3-docker-installation)
+- [Docker Deployement](docs/DEVELOPER.md#4-docker-deployment)
 
-These are some branching name conventions to keep the consistency and improve team production. For starters, the branch names are all separeted by hyphens.
+## Contributors
 
-For more information, check [Git/GitHub branching standards & conventions](https://gist.github.com/digitaljhelms/4287848) from where these practices were based on.
+**2021 Mandate**
+
+Vogal:
+[Gonçalo Matos](https://github.com/gmatosferreira) gmatosferreira
+
+<details open>
+<summary>Collaborators:</summary>
+
+- [Diogo Monteiro](https://github.com/diomont) diomont
+- [Fábio Martins](https://github.com/fMart8421) fMart8421
+- [Lucius Vinicius](https://github.com/luciusvinicius) luciusvinicius
+- [Pedro Duarte](https://github.com/PedroDuarte536) PedroDuarte536
+</details>
 
 
-<table>
-  <thead>
-    <tr>
-      <th>Instance</th>
-      <th>Branch</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Production</td>
-      <td><code>deploy</code></td>
-      <td>Accepts merges from Working and Hotfixes</td>
-    </tr>
-    <tr>
-      <td>Working</td>
-      <td><code>main</code></td>
-      <td>Accepts merges from Features/Issues and Hotfixes</td>
-    </tr>
-    <tr>
-      <td>Features/Issues</td>
-      <td><code>dev-*</code> <code>&lt;tid>-*</code></td>
-      <td>Always branch off HEAD of Working</td>
-    </tr>
-    <tr>
-      <td>Hotfix</td>
-      <td><code>hotfix-*</code></td>
-      <td>Always branch off Production</td>
-    </tr>
-  </tbody>
-</table>
+**2022 Mandate (Semester 1)**
 
-The main repository will always hold two evergreen branches:
+Vogal:
+[Leandro Silva](https://github.com/leand12) leand12
 
-- `main`
-- `deploy`
+<details open>
+<summary>Collaborators:</summary>
 
-The remaining are supporting branches, which are used to aid parallel development between team members, ease tracking of features, and to assist in quickly fixing live production problems. Each of these branches have a specific purpose and are bound to strict rules as to which branches may be their originating branch and which branches must be their merge targets, as explained on the table above.
+- [Alexandre Cotorobai](https://github.com/AlexandreCotorobai) AlexandreCotorobai
+- [Bernardo Figueiredo](https://github.com/LeikRad) LeikRad
+- [Daniel Madureira](https://github.com/Dan1m4D) Dan1m4D
+- [Diana Miranda](https://github.com/dianarrmiranda) dianarrmiranda
+- [Eduardo Fernandes](https://github.com/eduardofernandes11) eduardofernandes11
+- [João Luís](https://github.com/jnluis) jnluis
+- [José Gameiro](https://github.com/zegameiro) zegameiro
+- [Pedro Monteiro](https://github.com/pedromonteiro01) pedromonteiro01
+</details>
 
-The different types of branches we may use are:
+**2022 Mandate**
 
-- `dev-*` or `<tid>-*` - feature/issue branches
-- `hotfix-*` - hotfix branches
+Vogal:
+[Leandro Silva](https://github.com/leand12) leand12
 
-The **feature/issue branch** should be used when enhancing or creating a new feature. If its task is meant to resolve an issue, its name should be prefixed with the issue tracker ID `<tid>` instead of the `dev` prefix, for instance:
+<details open>
+<summary>Collaborators:</summary>
 
-`12-add-testing-module`
-
-The name shows that the branch applies to the task of adding a testing module, which is associated to the issue with the tracking ID 12. It is recommended to create these branches on the issue itself.
-
-The **hotfix branch** come from the need to act immediately upon an undesired state of a live production version.
+- [Alexandre Cotorobai](https://github.com/AlexandreCotorobai) AlexandreCotorobai
+- [Bárbara Galiza](https://github.com/Barb02) Barb02
+- [Bernardo Figueiredo](https://github.com/LeikRad) LeikRad
+- [Dani Figueiredo](https://github.com/daniff15) daniff15
+- [Daniel Madureira](https://github.com/Dan1m4D) Dan1m4D
+- [Diana Miranda](https://github.com/dianarrmiranda) dianarrmiranda
+- [Eduardo Fernandes](https://github.com/eduardofernandes11) eduardofernandes11
+- [Guilherme Rosa](https://github.com/guilherme096) guilherme096
+- [João Capucho](https://github.com/JCapucho) JCapucho
+- [João Luís](https://github.com/jnluis) jnluis
+- [José Gameiro](https://github.com/zegameiro) zegameiro
+- [Pedro Monteiro](https://github.com/pedromonteiro01) pedromonteiro01
+- [Tomás Victal](https://github.com/fungame2270) fungame2270
+</details>

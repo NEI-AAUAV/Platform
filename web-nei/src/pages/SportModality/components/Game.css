@@ -1,0 +1,29 @@
+.game {
+    background-color: rgb(249, 236, 236);
+}
+
+.logo {
+    height: 5rem;
+    width: 5rem;
+}
+
+.game-result {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-result h4 {
+    text-transform: uppercase;
+}
+
+.game-data h4 {
+    text-align: center;
+}
+
+.game-number p{
+    font-weight: bold;
+    margin: 0;
+    padding: 0.5rem 0 0 0;
+}
