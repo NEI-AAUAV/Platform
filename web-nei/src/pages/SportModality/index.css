@@ -37,3 +37,68 @@
 .games-list {
     margin-bottom: 1rem;
 }
+
+.top-bar {
+    background-color: rgb(249, 236, 236);
+    width: 100%;
+    height: 11rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-left: 2rem;
+}
+
+.top-bar-image-wrapper {
+    width: 8rem;
+    height: 8rem;
+}
+
+.top-bar-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.top-bar-items {
+display: flex;
+align-items: center;
+}
+
+.top-bar-items-header .top-bar-items-header-dropdown, .top-bar-items-header h3 {
+    padding-left: 2rem;
+}
+
+.top-bar-items-list ul {
+    list-style-type: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+}
+
+.top-bar-items-list ul li {
+    position: relative;
+    font-weight: 600;
+    padding-bottom: 0.2rem;
+    text-transform: uppercase;
+}
+
+.top-bar-items-list ul li:hover {
+    cursor: pointer;
+    color: green;
+    transition: 0.2s;
+}
+
+.top-bar-item-active {
+    color: green;
+}
+
+.top-bar-item-active::after {
+    display: block;
+      content: '';
+     width: 100%;
+     height: 2px;
+     background: green;
+     position: absolute;
+     bottom: 0;
+     left: 0;
+   }
