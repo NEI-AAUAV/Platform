@@ -1,0 +1,48 @@
+name: Push to Docker Hub
+
+on:
+  push:
+    branches:
+      - deploy
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker login
+      env:
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        docker login -u neiaauav -p $DOCKER_PASSWORD
+    - name: Docker build 
+      run: |
+        docker-compose -f docker-compose.prod.yaml build
+    - name: Docker push
+      run: |
+        docker-compose -f docker-compose.prod.yaml push --ignore-push-failures
+    - name: Docker tag
+      run: |
+        export TAG=${GITHUB_SHA:0:7}
+        docker-compose -f docker-compose.prod.yaml build
+        docker-compose -f docker-compose.prod.yaml push --ignore-push-failures
+  
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    timeout-minutes: 5
+    env:
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker pull
+      run: |
+        docker-compose -f docker-compose.prod.yaml down
+        docker rmi $(docker images -aq)
+        docker-compose -f docker-compose.prod.yaml pull
+    - name: Docker deploy
+      run: |
+        docker-compose -f docker-compose.prod.yaml up -d --remove-orphans --force-recreate

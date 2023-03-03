@@ -1,0 +1,16 @@
+.leaderboard-page-btn {
+    background-color: #ED7F38;
+    color: black;
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    padding: 0 6px;
+    margin: 0 5px;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+.leaderboard-page-btn:hover,
+.leaderboard-page-btn:active {
+    background-color: #FF4646;
+}

@@ -1,0 +1,6 @@
+# docker
+Dockerfile*
+
+# static files
+static/*
+!static/.gitkeep
