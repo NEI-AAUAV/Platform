@@ -15,8 +15,9 @@ URL_PREFIX = f"{settings.API_V1_STR}/modality"
 
 modality_data = {
     "year": 0,
-    "frame": "Misto",
-    "sport": "Atletismo",
+    "type": "Coletiva",
+    "frame": "Masculino",
+    "sport": "Voleibol 4x4",
 }
 
 competition_data = {

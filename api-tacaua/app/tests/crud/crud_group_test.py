@@ -32,6 +32,7 @@ def setup_teams(connection: Connection):
 
     modality = Modality(
         year=0,
+        type="Individual",
         frame="Misto",
         sport="Atletismo",
     )
@@ -51,7 +52,7 @@ def setup_teams(connection: Connection):
 
     course = Course(
         name="Eng. Informática",
-        initials="NEI",
+        short="NEI",
     )
     db.add(course)
     db.commit()

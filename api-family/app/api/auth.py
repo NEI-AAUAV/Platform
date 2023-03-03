@@ -56,7 +56,7 @@ async def verify_scopes(
 
     # Bypass scopes for admin
     if ScopeEnum.ADMIN in scopes:
-        return
+        return payload
 
     # Verify that the token has all the necessary scopes
     for scope in security_scopes.scopes:
@@ -66,3 +66,4 @@ async def verify_scopes(
                 detail="Not enough permissions",
                 headers={"WWW-Authenticate": authenticate_value},
             )
+    return payload

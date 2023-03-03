@@ -11,7 +11,7 @@ SUBJECTS = [
     {
         "code": 2,
         "name": "random name 0",
-        "year": 2021,
+        "curricular_year": 2021,
         "semester": 2,
         "short": "short",
         "discontinued": 1,
@@ -20,7 +20,7 @@ SUBJECTS = [
     {
         "code": 3,
         "name": "random name",
-        "year": 2021,
+        "curricular_year": 2021,
         "semester": 2,
         "short": "short",
         "discontinued": 1,
@@ -30,7 +30,7 @@ SUBJECTS = [
 
 subject = {
     "name": "random name name",
-    "year": 2021,
+    "curricular_year": 2021,
     "semester": 2,
     "short": "short",
     "discontinued": 1,
@@ -55,5 +55,5 @@ def test_get_subject(client: TestClient) -> None:
     for lst in data:
         assert "code" in lst
         assert "name" in lst
-        assert "year" in lst
+        assert "curricular_year" in lst
         assert "semester" in lst

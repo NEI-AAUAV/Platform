@@ -51,7 +51,7 @@ def create_patch(
 
 @router.put("/{id}", status_code=201, response_model=PatchInDB)
 def update_patch(
-    id: int, obj_in: PatchUpdate, request: Request
+    id: int, obj_in: PatchUpdate, request: Request,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ) -> Any:
     # TODO: Only with admin permissions

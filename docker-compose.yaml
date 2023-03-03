@@ -9,8 +9,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes: 
-      - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-nei.sql:ro
-      - ./api-rallytascas/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-rallytascas.sql:ro
+      # - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-nei.sql:ro
+      # - ./api-rallytascas/app/db/setup.sql:/docker-entrypoint-initdb.d/setup-rallytascas.sql:ro
       - pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
@@ -48,9 +48,11 @@ services:
       - 8000:8000
     environment:
       POSTGRES_SERVER: db_pg
+      SECRET_KEY: /jwt.key
+      PUBLIC_KEY: /jwt.key.pub
     volumes: 
       - ./api-nei:/api_nei
-      - ./dev-keys/jwt.key:/jwt.key:ro # Development key
+      - ./dev-keys/jwt.key:/jwt.key:ro
       - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:
       db_pg:
@@ -65,6 +67,7 @@ services:
       - 8001:8001
     environment:
       POSTGRES_SERVER: db_pg
+      PUBLIC_KEY: /jwt.key.pub
     volumes: 
       - ./api-tacaua:/api_tacaua
       - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
@@ -81,6 +84,7 @@ services:
       - 8002:8002
     environment:
       MONGO_SERVER: db_mongo
+      PUBLIC_KEY: /jwt.key.pub
     volumes: 
       - ./api-family:/api_family
       - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro

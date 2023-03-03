@@ -10,6 +10,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.schema import CreateSchema
 
 from app.api.deps import get_db
+from app.api.auth import verify_scopes
 from app.api.api import api_v1_router
 from app.core.config import settings
 from app.db.base_class import Base
@@ -36,12 +37,13 @@ def connection():
     This only executes once for all tests.
     """
     connection = engine.connect()
-    if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
+    if not engine.dialect.has_schema(connection, schema=settings.SCHEMA_NAME):
         event.listen(Base.metadata, "before_create",
                      CreateSchema(settings.SCHEMA_NAME), insert=True)
 
     Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)
+    connection.commit()
     yield connection
     Base.metadata.drop_all(engine)
     connection.close()
@@ -86,7 +88,19 @@ def client(
         finally:
             pass
 
+    def _verify_scopes():
+        return {
+            "iat": 0,
+            "exp": 600,
+            "sub": 1,
+            "nmec": None,
+            "name": "NEI",
+            "surname": "AAUAv",
+            "scopes": ["admin"],
+        }
+
     app.dependency_overrides[get_db] = _get_test_db
+    app.dependency_overrides[verify_scopes] = _verify_scopes
     with TestClient(app) as client:
         yield client
     app.dependency_overrides.clear()

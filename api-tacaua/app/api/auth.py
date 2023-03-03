@@ -34,6 +34,7 @@ async def verify_scopes(
     security_scopes: SecurityScopes,
     token: str = Depends(oauth2_scheme),
 ):
+    return {} # Bypass authentication
     """Dependency for user authentication"""
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
@@ -56,7 +57,7 @@ async def verify_scopes(
 
     # Bypass scopes for admin
     if ScopeEnum.ADMIN in scopes:
-        return
+        return payload
 
     # Verify that the token has all the necessary scopes
     for scope in security_scopes.scopes:
@@ -66,3 +67,4 @@ async def verify_scopes(
                 detail="Not enough permissions",
                 headers={"WWW-Authenticate": authenticate_value},
             )
+    return payload

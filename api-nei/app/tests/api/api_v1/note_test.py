@@ -13,7 +13,7 @@ SUBJECTS = [
     {
         "code": 1,
         "name": "random name 0",
-        "year": 2021,
+        "curricular_year": 2021,
         "semester": 2,
         "short": "short",
         "discontinued": 1,
@@ -22,7 +22,7 @@ SUBJECTS = [
     {
         "code": 2,
         "name": "random name",
-        "year": 2021,
+        "curricular_year": 2021,
         "semester": 2,
         "short": "short",
         "discontinued": 1,

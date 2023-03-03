@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.db.base_class import Base
-from app.schemas.modality import FrameEnum, SportEnum
+from app.schemas.modality import TypeEnum, FrameEnum, SportEnum
 from app.core.config import settings
 from app.core.logging import logger
 
@@ -13,6 +13,10 @@ from app.core.logging import logger
 class Modality(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     year = Column(SmallInteger, nullable=False, index=True)
+    type = Column(
+        Enum(TypeEnum, name="type_enum", inherit_schema=True),
+        nullable=False
+    )
     frame = Column(
         Enum(FrameEnum, name="frame_enum", inherit_schema=True),
         nullable=False

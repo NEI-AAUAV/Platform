@@ -11,7 +11,7 @@ from app.core.config import settings
 class Course(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(60), nullable=False)
-    initials = Column(String(16), nullable=False)
+    short = Column(String(16), nullable=False)
     color = Column(String(30), default="white")
     _image = Column("image", String(2048))
 

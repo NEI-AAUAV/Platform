@@ -20,6 +20,11 @@ class EnumList(Enum):
 
 
 def validate_to_json(cls: Type[BaseModel]):
+    """Validates schemas that are stringified.
+
+    This is useful to validate requests with a form data containing an image
+    file and a schema stringified.
+    """
     def __get_validators__(cls):
         yield cls.validate_to_json
 

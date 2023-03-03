@@ -14,13 +14,14 @@ URL_PREFIX = f"{settings.API_V1_STR}/team"
 
 modality_data = {
     "year": 0,
+    "type": "Individual",
     "frame": "Misto",
     "sport": "Atletismo",
 }
 
 course_data = {
     "name": "Eng. Informática",
-    "initials": "NEI",
+    "short": "NEI",
     "color": "rgb(0,0,0)",
 }
 
@@ -30,7 +31,6 @@ team_data = {
 
 participant_data = {
     "name": "Name",
-    "number": 1,
 }
 
 
@@ -97,7 +97,7 @@ def test_update_team(db: SessionTesting, client: TestClient) -> None:
 
     course_data = {
         "name": "Eng. Mecânica",
-        "initials": "NEEMec",
+        "short": "NEEMec",
         "color": "orange",
     }
     course = Course(**course_data)
