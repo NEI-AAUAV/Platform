@@ -17,7 +17,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-import { useTheme } from "stores/useTheme";
+import { useUserStore } from "stores/useUserStore";
 
 import data from "assets/db.json";
 import femalePic from "assets/default_profile/female.svg";
@@ -605,7 +605,7 @@ function FainaTree() {
   const [insignias, setInsignias] = useState([]);
   const [year, setYear] = useState(MAX_YEAR);
   const [fainaNames, setFainaNames] = useState(false);
-  const theme = useTheme(state => state.theme);
+  const theme = useUserStore(state => state.theme);
 
   const validatePass = () => {
     if (pass.toLowerCase() === 'ei2022') {

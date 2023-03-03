@@ -37,14 +37,14 @@ const Register = () => {
         <form className="flex flex-col w-full" onSubmit={formSubmitted}>
           <div className="flex sm:flex-row flex-col justify-between w-full mb-5">
             <input
-              className="input input-bordered input-primary sm:w-1/2 sm:mr-2"
+              className="input input-bordered sm:w-1/2 sm:mr-2"
               name="name"
               placeholder="Name"
               type="text"
               required
             />
             <input
-              className="input input-bordered input-primary sm:w-1/2 sm:ml-2 sm:mt-0 mt-5"
+              className="input input-bordered sm:w-1/2 sm:ml-2 sm:mt-0 mt-5"
               name="surname"
               placeholder="Surname"
               type="text"
@@ -52,14 +52,14 @@ const Register = () => {
             />
           </div>
           <input
-            className="input input-bordered input-primary mb-5"
+            className="input input-bordered mb-5"
             name="email"
             placeholder="Email"
             type="email"
             required
           />
           <input
-            className="input input-bordered input-primary mb-5"
+            className="input input-bordered mb-5"
             name="password"
             placeholder="Password"
             type="password"
@@ -67,7 +67,7 @@ const Register = () => {
             ref={passwordRef}
           />
           <input
-            className="input input-bordered input-primary mb-5"
+            className="input input-bordered mb-5"
             name="confirm_password"
             placeholder="Repeat password"
             type="password"

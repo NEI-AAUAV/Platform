@@ -517,7 +517,7 @@ const Apontamentos = () => {
                                     <div key={index} className="mx-auto my-3">
                                         <h4 className="">{t.author?.name}</h4>
                                         <div className="small">
-                                            <a href={'/apontamentos?author=' + t.author_id}>Os seus apontamentos no site do NEI</a>
+                                            <a href={'/notes?author=' + t.author_id}>Os seus apontamentos no site do NEI</a>
                                             <br />
                                             {
                                                 !!t.author?.personal_page && <a href={t.author?.personal_page} target="_blank">Website de apontamentos</a>
