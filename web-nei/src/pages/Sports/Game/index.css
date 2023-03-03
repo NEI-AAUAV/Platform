@@ -20,9 +20,3 @@
     flex-direction: column;
     align-items: center;
 }
-
-.col-image-wrapper {
-    background-color: yellow;
-    min-height: 100%;
-    width: 100%;
-}

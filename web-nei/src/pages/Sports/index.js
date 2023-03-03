@@ -9,6 +9,7 @@ import img1 from "./img/unknown.png";
 import img2 from "./img/unknown2.png";
 import img3 from "./img/unknown3.png";
 import equipa from "./img/equipa.jpg";
+import { useNavigate } from "react-router";
 
 import { ReactComponent as Futsal } from "../../assets/icons/tacaua/high_contrast/voleibol.svg";
 
@@ -30,6 +31,7 @@ const Sports = () => {
   const [anos /* , setAnos */] = useState([]);
   /* const [selectedYear, setSelectedYear] = useState(); */
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
 
   /*setImg(<Image
         src={equipa} rounded fluid
@@ -184,7 +186,7 @@ const Sports = () => {
 
       <div className="d-flex flex-column flex-wrap team-wrapper" y>
         <Row className="modalidades">
-          <div className="modalidade">
+          <div className="modalidade" onClick={() => navigate("/taca-ua/1")}>
             <Image
               src={equipa}
               alt=""
@@ -202,7 +204,7 @@ const Sports = () => {
               <Futsal className="icon" />
             </div>
           </div>
-          <div className="modalidade">
+          <div className="modalidade" onClick={() => navigate("/taca-ua/1")}>
             <Image
               src={equipa}
               alt=""
@@ -220,7 +222,7 @@ const Sports = () => {
               <Futsal className="icon" />
             </div>
           </div>
-          <div className="modalidade">
+          <div className="modalidade" onClick={() => navigate("/taca-ua/1")}>
             <Image
               src={equipa}
               alt=""
@@ -238,7 +240,7 @@ const Sports = () => {
               <Futsal className="icon" />
             </div>
           </div>
-          <div className="modalidade">
+          <div className="modalidade" onClick={() => navigate("/taca-ua/1")}>
             <Image
               src={equipa}
               alt=""
@@ -256,7 +258,7 @@ const Sports = () => {
               <Futsal className="icon" />
             </div>
           </div>
-          <div className="modalidade">
+          <div className="modalidade" onClick={() => navigate("/taca-ua/1")}>
             <Image
               src={equipa}
               alt=""

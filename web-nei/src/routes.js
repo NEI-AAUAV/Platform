@@ -23,6 +23,7 @@ import FeedbackForm from "./pages/Forms/FeedbackForm";
 import Videos from "./pages/Videos";
 import Video from "./pages/Video";
 import Sports from "./pages/Sports";
+import SportModality from "./pages/SportModality";
 import FainaTree from "./pages/FainaTree";
 import Internship from "./pages/Internship";
 import Components from "./pages/Components";
@@ -52,7 +53,8 @@ const routes = [
       { path: "/videos", element: <Videos /> },
       { path: "/videos/:id", element: <Video /> },
       // { path: "/estagios", element: <Internship /> },
-      !config.PRODUCTION && { path: "/taca-ua", element: <Sports /> },
+      { path: "/taca-ua", element: <Sports /> },
+      { path: "/taca-ua/:id", element: <SportModality /> },
       !config.PRODUCTION && { path: "/components", element: <Components /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
       { path: "/testing", element: <Test />},
