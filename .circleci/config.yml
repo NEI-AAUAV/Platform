@@ -6,16 +6,44 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Run Poetry Tests
+          name: Run NEI-API Tests
           command: |
-            cd ./backend
+            cd ./api-nei
             pip install --upgrade pip
             pip3 install poetry
             pip3 install -U pip virtualenv
-            docker run -d -p 0.0.0.0:5432:5432 -e POSTGRES_DB="postgres_test" -e POSTGRES_PASSWORD="postgres" --name pg_db postgres:15-alpine
+            docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
             sudo apt install python3-dev libpq-dev 
             poetry install
-            poetry run uvicorn app.main:app --reload &
+            poetry run uvicorn app.main:app --reload --port 8000 &
+            poetry run pytest
+      - run:
+          name: Run TacaUa-API Tests
+          command: |
+            cd ./api-tacaua
+            pip install --upgrade pip
+            pip3 install poetry
+            pip3 install -U pip virtualenv
+            docker stop pg
+            docker rm pg
+            docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
+            sudo apt install python3-dev libpq-dev 
+            poetry install
+            poetry run uvicorn app.main:app --reload --port 8001 &
+            poetry run pytest
+      - run:
+          name: Run RallyTascas-API Tests
+          command: |
+            cd ./api-rallytascas
+            pip install --upgrade pip
+            pip3 install poetry
+            pip3 install -U pip virtualenv
+            docker stop pg
+            docker rm pg
+            docker run -d -p 127.0.0.1:5432:5432 -e POSTGRES_PASSWORD="postgres" -e POSTGRES_DB="postgres_test" --name pg postgres
+            sudo apt install python3-dev libpq-dev 
+            poetry install
+            poetry run uvicorn app.main:app --reload --port 8003 &
             poetry run pytest
             
 workflows:

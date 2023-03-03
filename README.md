@@ -62,9 +62,10 @@ Vogal:
 - [Daniel Madureira](https://github.com/Dan1m4D) Dan1m4D
 - [Diana Miranda](https://github.com/dianarrmiranda) dianarrmiranda
 - [Eduardo Fernandes](https://github.com/eduardofernandes11) eduardofernandes11
+- [Guilherme Rosa](https://github.com/guilherme096) guilherme096
 - [João Capucho](https://github.com/JCapucho) JCapucho
 - [João Luís](https://github.com/jnluis) jnluis
 - [José Gameiro](https://github.com/zegameiro) zegameiro
 - [Pedro Monteiro](https://github.com/pedromonteiro01) pedromonteiro01
-- [fungame2270](https://github.com/fungame2270) fungame2270
+- [Tomás Victal](https://github.com/fungame2270) fungame2270
 </details>
