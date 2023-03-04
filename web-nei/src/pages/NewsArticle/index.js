@@ -27,7 +27,7 @@ const NewsArticle = () => {
         !isLoading && article != undefined &&
         <div id="article-body">
             <Row className="text-left small text-primary mb-3">
-                <Link to="/noticias">&#10094; Voltar às notícias</Link>
+                <Link to="/news">&#10094; Voltar às notícias</Link>
             </Row>
 
             <Row>
@@ -43,7 +43,7 @@ const NewsArticle = () => {
                 <Col md={4} sm={12}>
                     <h5>
                         <b>Autor: </b>
-                        <a href={"/noticias?author=" + article.author_id} title="Mais deste autor">
+                        <a href={"/news?author=" + article.author_id} title="Mais deste autor">
                             {article.author?.name}
                         </a>
                     </h5>

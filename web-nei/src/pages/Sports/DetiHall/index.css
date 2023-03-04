@@ -1,0 +1,42 @@
+.hallContainer {
+    margin-top: 2rem;
+    width: 100%;
+    background-color: bown;
+}
+
+.game-date {
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+
+.hallHeader {
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.trophies {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.trophy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.trophy-class {
+    margin-top: 0.5rem;
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+
+.trophy-year {
+    font-size: 15px;
+}

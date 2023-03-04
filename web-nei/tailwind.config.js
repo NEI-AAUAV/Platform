@@ -1,19 +1,26 @@
 module.exports = {
+    mode: 'jit',
     content: [
         "./src/**/*.{js,jsx,ts,tsx}",
     ],
     theme: {
         extend: {
+            screens: {
+                'xs': '576px',
+            },
             transitionDuration: {
                 DEFAULT: '250ms',
             },
             transitionProperty: {
                 size: 'margin, padding, height, width',
+            },
+            width: {
+                '1/7': '14.2857%',
             }
         }
     },
-    plugins: [require("daisyui")],
-
+    variants: {},
+    plugins: [require("daisyui"), require("@emotion/react")],
     daisyui: {
         themes: [
             {
@@ -29,9 +36,10 @@ module.exports = {
                     ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
                     "base-100": "#0f0f0f",
                     "base-200": "#161616",
-                    "base-300": "#2f2f2f"
+                    "base-300": "#2f2f2f",
                 },
             },
+
         ],
     },
 }

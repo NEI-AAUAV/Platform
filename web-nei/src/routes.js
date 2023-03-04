@@ -23,6 +23,7 @@ import FeedbackForm from "./pages/Forms/FeedbackForm";
 import Videos from "./pages/Videos";
 import Video from "./pages/Video";
 import Sports from "./pages/Sports";
+import SportModality from "./pages/SportModality";
 import FainaTree from "./pages/FainaTree";
 import Internship from "./pages/Internship";
 import Components from "./pages/Components";
@@ -38,21 +39,22 @@ const routes = [
     element: <MainLayout />,
     children: [
       { path: "/", element: <Homepage /> },
-      { path: "/noticias", element: <News /> },
-      { path: "/noticia/:id", element: <NewsArticle /> },
-      { path: "/apontamentos", element: <Apontamentos /> },
-      { path: "/equipa", element: <Team /> },
+      { path: "/news", element: <News /> },
+      { path: "/news/:id", element: <NewsArticle /> },
+      { path: "/notes", element: <Apontamentos /> },
+      { path: "/teams", element: <Team /> },
       { path: "/parceiros", element: <Partners /> },
-      { path: "/calendario", element: <Calendar /> },
+      { path: "/calendar", element: <Calendar /> },
       { path: "/rgm/:id", element: <RGM /> },
-      { path: "/historia", element: <History /> },
+      { path: "/history", element: <History /> },
       { path: "/seniors/:id", element: <Seniors /> },
       { path: "/merch", element: <Merchandising /> },
       { path: "/faina", element: <Faina /> },
       { path: "/videos", element: <Videos /> },
       { path: "/videos/:id", element: <Video /> },
       // { path: "/estagios", element: <Internship /> },
-      !config.PRODUCTION && { path: "/desporto", element: <Sports /> },
+      { path: "/taca-ua", element: <Sports /> },
+      { path: "/taca-ua/:id", element: <SportModality /> },
       !config.PRODUCTION && { path: "/components", element: <Components /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
       { path: "/testing", element: <Test />},
@@ -66,7 +68,7 @@ const routes = [
     path: "/",
     element: <CleanLayout />,
     children: [
-      { path: "/familias", element: <FainaTree /> },
+      { path: "/family", element: <FainaTree /> },
     ],
   },
   // {

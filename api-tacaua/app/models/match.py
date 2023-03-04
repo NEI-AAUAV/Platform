@@ -1,33 +1,29 @@
-from sqlalchemy import Column, Boolean, SmallInteger, Integer, DateTime, ForeignKey, ForeignKeyConstraint
+from sqlalchemy import Column, Boolean, SmallInteger, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from app.core.config import settings
 from app.db.base_class import Base
 
+from app.models.team import Team
+from app.models.group import Group
+
 
 class Match(Base):
     id = Column(Integer, primary_key=True)
     round = Column(SmallInteger, nullable=False)
     group_id = Column(
-        Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".group.id", ondelete='CASCADE'),
-        nullable=False,
-        index=True
+        Integer, ForeignKey(Group.id, ondelete="CASCADE"), nullable=False, index=True
     )
     team1_id = Column(
         Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".team.id",
-                   ondelete='SET NULL',
-                   name="match_team1_id_fkey"),
-        index=True
+        ForeignKey(Team.id, ondelete="SET NULL", name="match_team1_id_fkey"),
+        index=True,
     )
     team2_id = Column(
         Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".team.id",
-                   ondelete='SET NULL',
-                   name="match_team2_id_fkey"),
-        index=True
+        ForeignKey(Team.id, ondelete="SET NULL", name="match_team2_id_fkey"),
+        index=True,
     )
     score1 = Column(SmallInteger)
     score2 = Column(SmallInteger)
@@ -39,17 +35,21 @@ class Match(Base):
     date = Column(DateTime, index=True)
     team1_prereq_match_id = Column(
         Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".match.id",  # TODO: needs ondelete for when round deletes??
-                   ondelete='SET NULL',
-                   name="match_team1_prereq_match_id_fkey"),
-        index=True
+        ForeignKey(
+            id,  # TODO: needs ondelete for when round deletes??
+            ondelete="SET NULL",
+            name="match_team1_prereq_match_id_fkey",
+        ),
+        index=True,
     )
     team2_prereq_match_id = Column(
         Integer,
-        ForeignKey(settings.SCHEMA_NAME + ".match.id",
-                   ondelete='SET NULL',
-                   name="match_team2_prereq_match_id_fkey"),
-        index=True
+        ForeignKey(
+            id,
+            ondelete="SET NULL",
+            name="match_team2_prereq_match_id_fkey",
+        ),
+        index=True,
     )
     # team1_placeholder_text = Column(String) computed
     team1_is_prereq_match_winner = Column(Boolean, default=True)

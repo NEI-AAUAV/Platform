@@ -67,109 +67,113 @@ const Homepage = () => {
             </div> */}
 
             {/* <BackgroundImage className="w-[10rem] md:w-[30rem] lg:w-[60rem]" /> */}
-            <div className="gradient-blur absolute top-[-50px] transition-size duration-500" />
-            <div className="gradient-blur absolute bottom-0 right-[-150px] transition-size duration-500" />
+
 
 
             {/* <img className="absolute left-0 w-[850px]" style={{filter: "brightness(0.1) invert(1)", opacity: 0.2}} src={bg} />
             <img className="absolute left-0 w-[850px]" src={bg2} /> */}
-
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-10 lg:mt-20 mb-72">
-                <div className="flex flex-col justify-between">
-                    <div className="relative hidden lg:block top-[-80px] transition-opacity opacity-0 lg:opacity-80">
-                        <Particles className="absolute w-[500px] h-[500px]" id="particles1" options={particlesConf1} init={particlesInit} />
-                        <Particles className="absolute w-[500px] h-[500px]" id="particles2" options={particlesConf2} init={particlesInit} />
+            <div className="absolute truncate top-0 left-0 bottom-0 right-0 pointer-events-none">
+                <div className="gradient-blur absolute top-[-50px] left-[100px] transition-size duration-500" />
+                <div className="gradient-blur absolute top-[50vh] right-[-150px] transition-size duration-500" />
+            </div>
+            <div className="relative">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-10 lg:mt-20 mb-72">
+                    <div className="flex flex-col justify-between">
+                        <div className="relative hidden lg:block top-[-80px] transition-opacity opacity-0 lg:opacity-80">
+                            <Particles className="absolute w-[500px] h-[500px]" id="particles1" options={particlesConf1} init={particlesInit} />
+                            <Particles className="absolute w-[500px] h-[500px]" id="particles2" options={particlesConf2} init={particlesInit} />
+                        </div>
+                        <div className="relative z-1 text-4xl lg:text-5xl leading-tight">
+                            <span className="text-3xl lg:text-4xl">Bem-vindo ao</span>
+                            <br />
+                            <span className="font-extrabold">Núcleo de Estudantes de{' '}</span>
+                            <span className="drop-shadow-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-success to-[#548786]">Informática</span>{' '}
+                            <span className="font-extrabold">da AAUAv</span>
+                        </div>
                     </div>
-                    <div className="relative z-1 text-4xl lg:text-5xl leading-tight">
-                        <span className="text-3xl lg:text-4xl">Bem-vindo ao</span>
-                        <br />
-                        <span className="font-extrabold">Núcleo de Estudantes de{' '}</span>
-                        <span className="drop-shadow-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-success to-[#548786]">Informática</span>{' '}
-                        <span className="font-extrabold">da AAUAv</span>
+                    <div className="slideUpFade" style={{ animationDelay: animationBase + 1 * animationIncrement }}>
+                        <MockupTerminal />
                     </div>
                 </div>
-                <div className="slideUpFade" style={{ animationDelay: animationBase + 1 * animationIncrement }}>
-                    <MockupTerminal />
+
+                {
+                    !!banner &&
+                    <div xs={11} sm={10} className="mx-auto col-xxl-9 my-3">
+                        <a href={banner.banner_url} target="_blank">
+                            <img
+                                src={banner.banner_image}
+                                className="w-100"
+                            />
+                            <p className="mb-0 text-primary text-center small">O NEI é apoiado pela {banner.company}</p>
+                        </a>
+                    </div>
+                }
+
+                <div className="section-dark">
+                    <div xs={11} sm={10} className="d-flex flex-column flex-wrap mx-auto col-xxl-9 text-center">
+                        <h2 className="header-dark mb-4">Notícias</h2>
+                        {
+                            !!isLoading
+                                ?
+                                <div animation="grow" variant="primary" className="mx-auto mb-3 loading" title="A carregar..." />
+                                :
+                                <NewsList news={news}></NewsList>
+                        }
+                        <div
+                            variant="outline-dark"
+                            className="btn rounded-pill mx-auto"
+                            size="lg"
+                            href="/news"
+                        >Ver Todas
+                        </div>
+                    </div>
+                </div>
+
+                <div className="section">
+                    <div xs={11} sm={10} className="mx-auto col-xxl-9 text-center">
+                        <h2 className="mb-3">NEI</h2>
+                        <h4 className="text-secondary px-lg-5 mb-5">
+                            Criado a 24 de janeiro de 2013, o Núcleo de Estudantes de Informática da Associação Académica da Universidade de Aveiro (NEI-AAUAv), surgiu com o intuito de ajudar, incentivar e apoiar em diversas áreas os alunos do curso de Engenharia Informática, que havia sido recentemente criado. Desde então, têm sido inúmeras as atividades proporcionadas por este, envolvendo não só os alunos do respetivo curso, mas também toda a comunidade académica, contribuindo, desta forma, para uma melhor formação e desenvolvimento pessoal dos seus estudantes.
+                        </h4>
+
+                        <div>
+                            <div xs="12" sm="6" lg="3" className="mb-5">
+                                <FontAwesomeIcon icon={faHistory} size="4x" className="text-primary mb-4" />
+                                <h3>História do NEI</h3>
+                                <p className="text-secondary flex-grow-1">
+                                    Apesar de ser relativamente recente o NEI já conta com alguns feitos de relevância que vão desde bons resultados na Taça UA nas diversas modalidades que participou como a participação e candidaturas ao ENEI.
+                                </p>
+                                <a className="font-weight-bold" href="/history">Ver história</a>
+                            </div>
+                            <div xs="12" sm="6" lg="3" className="mb-5">
+                                <FontAwesomeIcon icon={faUsers} size="4x" className="text-primary mb-4" />
+                                <h3>Comissões de Faina</h3>
+                                <p className="text-secondary flex-grow-1">
+                                    Responsáveis por guiar a Faina do nosso curso, uma importante faceta do percurso académico com o intuito de dinamizar e integrar os novos estudantes. Encarregam-se também de organizar certos eventos lúdicos como Jantares e Festas de Curso.
+                                </p>
+                                <a className="font-weight-bold" href="/faina">Ver comissões</a>
+                            </div>
+                            <div xs="12" sm="6" lg="3" className="mb-5">
+                                <FontAwesomeIcon icon={faLightbulb} size="4x" className="text-primary mb-4" />
+                                <h3>Novos Alunos</h3>
+                                <p className="text-secondary flex-grow-1">
+                                    Estás interessado no curso? Precisas de ajuda? Temos aqui tudo o que tu precisas, todas as informações do curso. Se tiveres dúvidas, podes entrar em contacto connosco via facebook ou email!
+                                </p>
+                                <a className="font-weight-bold" href="http://deti-cdn.clients.ua.pt/lei/">Mais informações</a>
+                            </div>
+                            <div xs="12" sm="6" lg="3" className="mb-5">
+                                <FontAwesomeIcon icon={faFutbol} size="4x" className="text-primary mb-4" />
+                                <h3>Taça UA</h3>
+                                <p className="text-secondary flex-grow-1">
+                                    Sabemos que por vezes é dificil acompanhar a Taça UA sem te perderes, como não queremos que estejas fora do acontecimento, temos uma nova plataforma para acompanhares tudo o que se passa!
+                                </p>
+                                <p className="font-weight-bold text-secondary mb-0">Brevemente disponível</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {
-                !!banner &&
-                <div xs={11} sm={10} className="mx-auto col-xxl-9 my-3">
-                    <a href={banner.banner_url} target="_blank">
-                        <img
-                            src={banner.banner_image}
-                            className="w-100"
-                        />
-                        <p className="mb-0 text-primary text-center small">O NEI é apoiado pela {banner.company}</p>
-                    </a>
-                </div>
-            }
-
-            <div className="section-dark">
-                <div xs={11} sm={10} className="d-flex flex-column flex-wrap mx-auto col-xxl-9 text-center">
-                    <h2 className="header-dark mb-4">Notícias</h2>
-                    {
-                        !!isLoading
-                            ?
-                            <div animation="grow" variant="primary" className="mx-auto mb-3 loading" title="A carregar..." />
-                            :
-                            <NewsList news={news}></NewsList>
-                    }
-                    <div
-                        variant="outline-dark"
-                        className="btn rounded-pill mx-auto"
-                        size="lg"
-                        href="/noticias"
-                    >Ver Todas
-                    </div>
-                </div>
-            </div>
-
-            <div className="section">
-                <div xs={11} sm={10} className="mx-auto col-xxl-9 text-center">
-                    <h2 className="mb-3">NEI</h2>
-                    <h4 className="text-secondary px-lg-5 mb-5">
-                        Criado a 24 de janeiro de 2013, o Núcleo de Estudantes de Informática da Associação Académica da Universidade de Aveiro (NEI-AAUAv), surgiu com o intuito de ajudar, incentivar e apoiar em diversas áreas os alunos do curso de Engenharia Informática, que havia sido recentemente criado. Desde então, têm sido inúmeras as atividades proporcionadas por este, envolvendo não só os alunos do respetivo curso, mas também toda a comunidade académica, contribuindo, desta forma, para uma melhor formação e desenvolvimento pessoal dos seus estudantes.
-                    </h4>
-
-                    <div>
-                        <div xs="12" sm="6" lg="3" className="mb-5">
-                            <FontAwesomeIcon icon={faHistory} size="4x" className="text-primary mb-4" />
-                            <h3>História do NEI</h3>
-                            <p className="text-secondary flex-grow-1">
-                                Apesar de ser relativamente recente o NEI já conta com alguns feitos de relevância que vão desde bons resultados na Taça UA nas diversas modalidades que participou como a participação e candidaturas ao ENEI.
-                            </p>
-                            <a className="font-weight-bold" href="/historia">Ver história</a>
-                        </div>
-                        <div xs="12" sm="6" lg="3" className="mb-5">
-                            <FontAwesomeIcon icon={faUsers} size="4x" className="text-primary mb-4" />
-                            <h3>Comissões de Faina</h3>
-                            <p className="text-secondary flex-grow-1">
-                                Responsáveis por guiar a Faina do nosso curso, uma importante faceta do percurso académico com o intuito de dinamizar e integrar os novos estudantes. Encarregam-se também de organizar certos eventos lúdicos como Jantares e Festas de Curso.
-                            </p>
-                            <a className="font-weight-bold" href="/faina">Ver comissões</a>
-                        </div>
-                        <div xs="12" sm="6" lg="3" className="mb-5">
-                            <FontAwesomeIcon icon={faLightbulb} size="4x" className="text-primary mb-4" />
-                            <h3>Novos Alunos</h3>
-                            <p className="text-secondary flex-grow-1">
-                                Estás interessado no curso? Precisas de ajuda? Temos aqui tudo o que tu precisas, todas as informações do curso. Se tiveres dúvidas, podes entrar em contacto connosco via facebook ou email!
-                            </p>
-                            <a className="font-weight-bold" href="http://deti-cdn.clients.ua.pt/lei/">Mais informações</a>
-                        </div>
-                        <div xs="12" sm="6" lg="3" className="mb-5">
-                            <FontAwesomeIcon icon={faFutbol} size="4x" className="text-primary mb-4" />
-                            <h3>Taça UA</h3>
-                            <p className="text-secondary flex-grow-1">
-                                Sabemos que por vezes é dificil acompanhar a Taça UA sem te perderes, como não queremos que estejas fora do acontecimento, temos uma nova plataforma para acompanhares tudo o que se passa!
-                            </p>
-                            <p className="font-weight-bold text-secondary mb-0">Brevemente disponível</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </>
     );
 }

@@ -1,0 +1,106 @@
+{
+  
+      "groups": [
+        {
+          "name": "Grupo A",
+          "id": 0,
+          "competition_id": 0,
+          "number": 0,
+          "matches": [
+            {
+              "team1_id": 0,
+              "team2_id": 0,
+              "score1": 0,
+              "score2": 0,
+              "games1": [],
+              "games2": [],
+              "winner": 0,
+              "forfeiter": 1,
+              "live": false,
+              "date": "2022-10-18T10:59:26.031Z",
+              "round": 0,
+              "team1_prereq_match_id": 0,
+              "team2_prereq_match_id": 0,
+              "team1_is_prereq_match_winner": true,
+              "team2_is_prereq_match_winner": true,
+              "id": 0,
+              "team1": {
+                "name": null,
+                "course_id": 0,
+                "id": 0,
+                "modality_id": 0,
+                "image": "",
+                "course": {
+                  "name": "Eng. Informática",
+                  "initials": "NEI",
+                  "color": "#0C813B",
+                  "id": 0,
+                  "image": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fnei.web.ua.pt%2F&psig=AOvVaw16YcrrWCh805OLvc_g702P&ust=1666177518586000&source=images&cd=vfe&ved=0CA0QjRxqFwoTCLjElIvR6foCFQAAAAAdAAAAABAE"
+                },
+                "participants": [
+                  {
+                    "name": "string",
+                    "number": 99,
+                    "id": 0,
+                    "team_id": 0
+                  }
+                ]
+              },
+              "team2": {
+                "name": null,
+                "course_id": 0,
+                "id": 1,
+                "modality_id": 0,
+                "image": "",
+                "course": {
+                  "name": "Eng. Mecânica",
+                  "initials": "NEMec",
+                  "color": "#EC681B",
+                  "id": 1,
+                  "image": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.ua.pt%2Fpt%2Fdem%2Fneemec&psig=AOvVaw3sbJa2iOQOzXHFqkKS7x_k&ust=1666177540864000&source=images&cd=vfe&ved=0CA0QjRxqFwoTCPjxz5XR6foCFQAAAAAdAAAAABAE"
+                }
+              }
+            }
+          ],
+          "standings": [
+            {
+                "pts": 0,
+                "matches": 0,
+                "wins": 0,
+                "ties": 0,
+                "losses": 0,
+                "ff": 0,
+                "score_for": 0,
+                "score_agst": 0,
+                "score_diff": 0,
+                "math_history": ["V", "D", "E"]
+            },
+            {
+                "pts": 0,
+                "matches": 0,
+                "wins": 0,
+                "ties": 0,
+                "losses": 0,
+                "ff": 0,
+                "score_for": 0,
+                "score_agst": 0,
+                "score_diff": 0,
+                "math_history": ["V", "V", "V", "E", "D"]
+            }
+          ],
+          "teams": [
+            {
+              "name": "Eng. Informática",
+              "course_id": 0,
+              "id": 0
+            },
+            {
+              "name": "Eng. Mecânica",
+              "course_id": 1,
+              "id": 1
+            }
+          ]
+        }
+      ]
+  
+}
