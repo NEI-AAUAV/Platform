@@ -11,7 +11,7 @@ const CleanLayout = () => (
 );
 
 const Layout = () => (
-  <div className="flex-column relative flex min-h-screen justify-between pt-20">
+  <div className="relative flex min-h-screen flex-col justify-between pt-20">
     <Navbar />
     <Outlet />
     <Footer />
