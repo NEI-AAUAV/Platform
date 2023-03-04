@@ -1,0 +1,5 @@
+[
+    {"_id": "courses", "seq_value": 17},
+    {"_id": "roles", "seq_value": 68},
+    {"_id": "users", "seq_value": 1}
+]

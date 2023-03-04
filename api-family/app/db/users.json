@@ -1,0 +1,22 @@
+[
+    {
+        "_id": 1, 
+        "ref_id": null, 
+        "name": "Eduardo Santos", 
+        "sex": "M", 
+        "image": null,
+        "faina": {
+            "name": [{"name": "Edu", "until": null}],
+            "baptism_name": null,
+            "baptism_year": 19,
+            "patrao_id": null,
+            "first_trajado_year": 19,
+            "roles": [{"ref_id": ".1.", "year": 19, "end_year": 21}, {"ref_id": ".1.5.", "year": 22, "end_year": null}]
+        },
+        "academic": {
+            "matriculations": [{"ref_id": 2, "year": 18, "end_year": 20}, {"ref_id": 5, "year": 21, "end_year": null}],
+            "roles": [{"ref_id": ".4.49.62.", "year": 19, "end_year": 19}, {"ref_id": ".4.48.51.", "year": 20, "end_year": 20}],
+            "last_matriculation_year": null
+        }
+    }
+]

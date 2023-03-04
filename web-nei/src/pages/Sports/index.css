@@ -1,0 +1,171 @@
+.bars {
+    width: 100%;
+    display: flex;
+}
+
+.games-and-top-bar {
+    width: 79.5%;
+}
+
+.games-section {
+    margin: 0 auto;
+    width: 100%;
+    margin-top: 6rem;
+}
+
+.column {
+    text-align: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.column-header {
+    margin-bottom: 2rem;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.modalidades {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.modalidade {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    position: relative;
+    opacity: 0.8;
+}
+
+.modalidade:hover {
+    opacity: 1;
+}
+
+.gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background-color: black;
+    background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.modalidadeText {
+    font-weight: bold;
+    font-size: 19px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.5rem;
+    color: white;
+}
+
+.icon {
+    width: 60px;
+    height: 60px;
+}
+
+.games {
+    margin: 0;
+    padding: 0;
+    padding-left: 4rem;
+}
+
+.row-game {
+    margin-top: 2rem;
+}
+
+.games-header,
+.games-day {
+    font-weight: 600;
+}
+
+.games-filters {
+    margin-top: 2rem;
+    display: flex;
+    gap: 2rem;
+}
+
+.games-list {
+    margin-bottom: 1rem;
+}
+
+.carousel-image-wrapper {
+    height: 500px;
+}
+
+ul.slideUpFade li {
+    position: relative;
+    text-align: center;
+}
+
+ul.slideUpFade li:hover {
+    cursor: pointer;
+}
+
+li.act::after {
+    position: absolute;
+    content: "";
+    height: 3px;
+    width: 65%;
+    background-color: green;
+    left: 12px;
+    bottom: -5px;
+    border-radius: 2px;
+    animation: appear 0.3s linear;
+}
+
+@media screen and (max-width: 960px) {
+    .lista ul.slideUpFade {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    ul.slideUpFade {
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .gender-list .slideUpFade {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin: 0 !important;
+        padding: 1rem 0 0 0 !important;
+    }
+
+    .carousel-image-wrapper {
+        height: 400px;
+    }
+}
+
+@keyframes appear {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 65%;
+    }
+}
