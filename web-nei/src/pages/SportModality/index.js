@@ -3,30 +3,38 @@ import React, { useState, useEffect } from "react";
 import Typist from "react-typist";
 import SideBar from "./components/SideBar";
 import { Row, Col } from "react-bootstrap";
-import Game from './components/Game';
-import Dropdown from 'react-bootstrap/Dropdown';
-import img from './components/football.png';
+import Game from "./components/Game";
+import Dropdown from "react-bootstrap/Dropdown";
+import img from "./components/football.png";
 
 import "./index.css";
 import GameFilter from "./components/GameFilter";
 import SportClassification from "./SportClassification";
+import SportBracket from "./SportBracket"
 import SportTeam from "./SportTeam";
+import { useParams, useNavigate } from "react-router";
 
+const SportModality = () => {
+  const navigate = useNavigate();
+  const params = useParams();
 
-const Sports = () => {
-
-  const [active, setActive] = useState("games");
+  useEffect(() => {
+    if (!params.view) {
+      navigate("games")
+    }
+  }, [params])
 
   const selectChange = (value) => {
+    const url = `/taca-ua/${params.id}/`;
     switch (value) {
       case "games":
-        setActive("games");
+        navigate(url + "games");
         break;
       case "classification":
-        setActive("classification");
+        navigate(url + "classification");
         break;
       case "team":
-        setActive("team");
+        navigate(url + "team");
         break;
       default:
         return;
@@ -43,15 +51,25 @@ const Sports = () => {
       <div className="bars">
         <SideBar />
         <div className="games-and-top-bar">
-          <div className='top-bar'>
-            <div className='top-bar-items'>
-              <div className='top-bar-image-wrapper'>
+          <div className="top-bar">
+            <div className="top-bar-items">
+              <div className="top-bar-image-wrapper">
                 <img src={img}></img>
               </div>
-              <div className='top-bar-items-header'>
+              <div className="top-bar-items-header">
                 <h3>Futsal Masculino</h3>
-                <Dropdown className='top-bar-items-header-dropdown' style={{ outline: 'none' }}>
-                  <Dropdown.Toggle id="dropdown-basic" style={{ border: 'none', background: 'none', color: '#000' }}>
+                <Dropdown
+                  className="top-bar-items-header-dropdown"
+                  style={{ outline: "none" }}
+                >
+                  <Dropdown.Toggle
+                    id="dropdown-basic"
+                    style={{
+                      border: "none",
+                      background: "none",
+                      color: "#000",
+                    }}
+                  >
                     2019
                   </Dropdown.Toggle>
 
@@ -62,15 +80,42 @@ const Sports = () => {
                 </Dropdown>
               </div>
             </div>
-            <div className='top-bar-items-list'>
+            <div className="top-bar-items-list">
               <ul>
-                <li className={active === "games" ? "top-bar-item-active" : "top-bar-list-item"} onClick={() => selectChange("games")}>Jogos</li>
-                <li className={active === "classification" ? "top-bar-item-active" : "top-bar-list-item"} onClick={() => selectChange("classification")}>Classificações</li>
-                <li className={active === "team" ? "top-bar-item-active" : "top-bar-list-item"} onClick={() => selectChange("team")}>Equipa</li>
+                <li
+                  className={
+                    params.view === "games"
+                      ? "top-bar-item-active"
+                      : "top-bar-list-item"
+                  }
+                  onClick={() => selectChange("games")}
+                >
+                  Jogos
+                </li>
+                <li
+                  className={
+                    params.view === "classification"
+                      ? "top-bar-item-active"
+                      : "top-bar-list-item"
+                  }
+                  onClick={() => selectChange("classification")}
+                >
+                  Classificações
+                </li>
+                <li
+                  className={
+                    params.view === "team"
+                      ? "top-bar-item-active"
+                      : "top-bar-list-item"
+                  }
+                  onClick={() => selectChange("team")}
+                >
+                  Equipa
+                </li>
               </ul>
             </div>
           </div>
-          {active === "games" &&
+          {params.view === "games" && (
             <div className="games">
               <div className="games-filters">
                 <GameFilter text="Fase de Grupos - 1ª Div" />
@@ -103,17 +148,18 @@ const Sports = () => {
                 </Row>
               </div>
             </div>
-          }
-          {active === "classification" &&
-            <SportClassification />
-          }
-          {active === "team" &&
-            <SportTeam />
-          }
+          )}
+          {params.view === "classification" && (
+            <>
+              <SportClassification />
+              <SportBracket />
+            </>
+          )}
+          {params.view === "team" && <SportTeam />}
         </div>
       </div>
     </>
   );
 };
 
-export default Sports;
+export default SportModality;

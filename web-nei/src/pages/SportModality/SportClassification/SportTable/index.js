@@ -15,8 +15,8 @@ const SportTable = (props) => {
   const UpArrow = <FontAwesomeIcon icon={faAngleUp} className="up" />;
   const DownArrow = <FontAwesomeIcon icon={faAngleDown} className="down" />;
   const GameDraw = <FontAwesomeIcon icon={faMinusCircle} className="draw" />;
-  const GameWon = <FontAwesomeIcon icon={faCheckCircle} className="win"/>;
-  const GameLost = <FontAwesomeIcon icon={faTimesCircle} className="lose"/>;
+  const GameWon = <FontAwesomeIcon icon={faCheckCircle} className="win" />;
+  const GameLost = <FontAwesomeIcon icon={faTimesCircle} className="lose" />;
   const DoubleDownArrow = (
     <FontAwesomeIcon icon={faAngleDoubleDown} className="down" />
   );
@@ -25,20 +25,20 @@ const SportTable = (props) => {
     {
       head_team: "Equipa",
       head_games: "Jogos",
-      head_points: "Pontos", 
+      head_points: "Pontos",
       head_vict: "Vitórias",
-      head_draws: "Empates", 
-      head_defeats: "Derrotas", 
-      head_scoredg: "Golos Marcados", 
-      head_soufferedg: "Golos Sofridos", 
+      head_draws: "Empates",
+      head_defeats: "Derrotas",
+      head_scoredg: "Golos Marcados",
+      head_soufferedg: "Golos Sofridos",
       head_divison: "Divisão",
-      head_lastgames: "Últimos 5 jogos"
-    }
+      head_lastgames: "Últimos 5 jogos",
+    },
   ];
 
   const data = [
     {
-      position_team: {icon: UpArrow,pos: 1,team: "Eng. Informática"},
+      position_team: { icon: UpArrow, pos: 1, team: "Eng. Informática" },
       games: "test",
       points: "test1",
       victories: "test2",
@@ -47,10 +47,10 @@ const SportTable = (props) => {
       scored_goals: "test5",
       souffered_goals: "test6",
       divison_group: "test7",
-      last_games: [GameWon,GameDraw,GameWon,GameLost,GameWon]
+      last_games: [GameWon, GameDraw, GameWon, GameLost, GameWon],
     },
     {
-      position_team: {icon: DownArrow,pos: 2,team: "Matemática"},
+      position_team: { icon: DownArrow, pos: 2, team: "Matemática" },
       games: "test9",
       points: "test10",
       victories: "test11",
@@ -59,10 +59,10 @@ const SportTable = (props) => {
       scored_goals: "test14",
       souffered_goals: "test15",
       divison_group: "test16",
-      last_games: [GameLost,GameWon,GameWon,GameDraw,GameLost]
+      last_games: [GameLost, GameWon, GameWon, GameDraw, GameLost],
     },
     {
-      position_team: {icon: DoubleDownArrow,pos: 3,team: "Biologia"},
+      position_team: { icon: DoubleDownArrow, pos: 3, team: "Biologia" },
       games: "test18",
       points: "test19",
       victories: "test20",
@@ -71,7 +71,7 @@ const SportTable = (props) => {
       scored_goals: "test23",
       souffered_goals: "test24",
       divison_group: "test25",
-      last_games: [GameDraw,GameWon,GameLost,GameDraw,GameWon]
+      last_games: [GameDraw, GameWon, GameLost, GameDraw, GameWon],
     },
   ];
 
@@ -80,7 +80,7 @@ const SportTable = (props) => {
       <div className="divcss">
         <Table className={"mb-5 tablecss"}>
           <thead>
-            {header.map((row,index) => 
+            {header.map((row, index) => (
               <tr className="tableheader" key={index}>
                 <td className="headcol">{row.head_team}</td>
                 <td>{row.head_games}</td>
@@ -93,10 +93,10 @@ const SportTable = (props) => {
                 <td>{row.head_divison}</td>
                 <td>{row.head_lastgames}</td>
               </tr>
-            )}
+            ))}
           </thead>
           <tbody>
-            {data.map((row,index) =>
+            {data.map((row, index) => (
               <tr key={index}>
                 <td className="headcol">
                   <span className="iconcss">{row.position_team.icon}</span>
@@ -113,7 +113,7 @@ const SportTable = (props) => {
                 <td>{row.divison_group}</td>
                 <td>{row.last_games}</td>
               </tr>
-            )}
+            ))}
           </tbody>
         </Table>
       </div>
@@ -121,4 +121,4 @@ const SportTable = (props) => {
   );
 };
 
- export default SportTable;
+export default SportTable;
