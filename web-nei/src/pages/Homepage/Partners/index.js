@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ImageCard from "../../components/ImageCard"
+import ImageCard from "components/ImageCard"
 import { Col, Row } from "react-bootstrap";
 import Typist from 'react-typist';
 

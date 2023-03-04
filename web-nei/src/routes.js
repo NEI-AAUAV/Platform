@@ -2,13 +2,10 @@ import React from "react";
 
 import config from "config";
 
-import MainLayout from "./layouts/MainLayout";
-import CleanLayout from "./layouts/CleanLayout";
-import SimpleLayout from "./layouts/SimpleLayout";
+import Layout, { MainLayout, CleanLayout } from "./layouts/Layout";
 
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
-import Partners from "./pages/Partners";
 import Error404 from "./pages/Error404";
 import Seniors from "./pages/Seniors";
 import Faina from "./pages/Faina";
@@ -17,7 +14,6 @@ import NewsArticle from "./pages/NewsArticle";
 import RGM from "./pages/RGM";
 import Calendar from "./pages/Calendar";
 import History from "./pages/History";
-import Merchandising from "./pages/Merchandising";
 import Apontamentos from "./pages/Apontamentos";
 import FeedbackForm from "./pages/Forms/FeedbackForm";
 import Videos from "./pages/Videos";
@@ -43,12 +39,10 @@ const routes = [
       { path: "/news/:id", element: <NewsArticle /> },
       { path: "/notes", element: <Apontamentos /> },
       { path: "/teams", element: <Team /> },
-      { path: "/parceiros", element: <Partners /> },
       { path: "/calendar", element: <Calendar /> },
       { path: "/rgm/:id", element: <RGM /> },
       { path: "/history", element: <History /> },
       { path: "/seniors/:id", element: <Seniors /> },
-      { path: "/merch", element: <Merchandising /> },
       { path: "/faina", element: <Faina /> },
       { path: "/videos", element: <Videos /> },
       { path: "/videos/:id", element: <Video /> },
@@ -57,8 +51,8 @@ const routes = [
       { path: "/taca-ua/:id", element: <SportModality /> },
       !config.PRODUCTION && { path: "/components", element: <Components /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
-      { path: "/testing", element: <Test />},
-      { path: "/tacaua-admin-demo", element: <TacauaAdminDemo />},
+      { path: "/testing", element: <Test /> },
+      { path: "/tacaua-admin-demo", element: <TacauaAdminDemo /> },
       { path: "/:id", element: <Error404 /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
@@ -66,14 +60,12 @@ const routes = [
   },
   {
     path: "/",
-    element: <CleanLayout />,
-    children: [
-      { path: "/family", element: <FainaTree /> },
-    ],
+    element: <Layout />,
+    children: [{ path: "/family", element: <FainaTree /> }],
   },
   // {
   //   path: "/",
-  //   element: <SimpleLayout />,
+  //   element: <CleanLayout />,
   //   children: [
   //     { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
   //   ],
