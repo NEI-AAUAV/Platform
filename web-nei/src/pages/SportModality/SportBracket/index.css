@@ -1,5 +1,5 @@
 svg.bracket-svg .link {
-    stroke: var(--border);
+    stroke: hsl(var(--bc));
     stroke-width: 2;
     fill: none;
 }
@@ -15,8 +15,8 @@ svg.bracket-svg {
 }
 
 .match--base-background {
-    fill: var(--background);
-    stroke: var(--border);
+    fill: hsl(var(--b2) / 0.8);
+    stroke: hsl(var(--b2));
     /* changes background to below cards */
 }
 
@@ -119,14 +119,14 @@ svg.match--player:not(:root) {
 }
 
 .match--team-name {
-    fill: var(--text-primary);
+    fill: hsl(var(--pc));
     font-size: 14px;
     text-shadow: 1px 1px 1px #222
     /*changes text font and*/
 }
 
 .match--score {
-    fill: var(--text-primary);
+    fill: hsl(var(--pc));
     font-size: 18px;
     font-weight: bold;
     text-shadow: 1px 1px 1px #222

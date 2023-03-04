@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Navigate } from "react-router-dom";
+
 import config from "config";
 
 import Layout, { MainLayout, CleanLayout } from "./layouts/Layout";
@@ -48,7 +50,7 @@ const routes = [
       { path: "/videos/:id", element: <Video /> },
       // { path: "/estagios", element: <Internship /> },
       { path: "/taca-ua", element: <Sports /> },
-      { path: "/taca-ua/:id", element: <SportModality /> },
+      { path: "/taca-ua/:id/:view?", element: <SportModality /> },
       !config.PRODUCTION && { path: "/components", element: <Components /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
       { path: "/testing", element: <Test /> },
