@@ -10,22 +10,23 @@ import img from "./components/football.png";
 import "./index.css";
 import GameFilter from "./components/GameFilter";
 import SportClassification from "./SportClassification";
-import SportBracket from "./SportBracket"
+import SportBracket from "./SportBracket";
 import SportTeam from "./SportTeam";
 import { useParams, useNavigate } from "react-router";
 
 const SportModality = () => {
   const navigate = useNavigate();
-  const params = useParams();
+  const { id, view } = useParams();
 
   useEffect(() => {
-    if (!params.view) {
-      navigate("games")
+    if (!view) {
+      navigate("games");
+      return;
     }
-  }, [params])
+  }, [id, view]);
 
   const selectChange = (value) => {
-    const url = `/taca-ua/${params.id}/`;
+    const url = `/taca-ua/${id}/`;
     switch (value) {
       case "games":
         navigate(url + "games");
@@ -84,7 +85,7 @@ const SportModality = () => {
               <ul>
                 <li
                   className={
-                    params.view === "games"
+                    view === "games"
                       ? "top-bar-item-active"
                       : "top-bar-list-item"
                   }
@@ -94,7 +95,7 @@ const SportModality = () => {
                 </li>
                 <li
                   className={
-                    params.view === "classification"
+                    view === "classification"
                       ? "top-bar-item-active"
                       : "top-bar-list-item"
                   }
@@ -104,7 +105,7 @@ const SportModality = () => {
                 </li>
                 <li
                   className={
-                    params.view === "team"
+                    view === "team"
                       ? "top-bar-item-active"
                       : "top-bar-list-item"
                   }
@@ -115,7 +116,7 @@ const SportModality = () => {
               </ul>
             </div>
           </div>
-          {params.view === "games" && (
+          {view === "games" && (
             <div className="games">
               <div className="games-filters">
                 <GameFilter text="Fase de Grupos - 1ª Div" />
@@ -149,13 +150,13 @@ const SportModality = () => {
               </div>
             </div>
           )}
-          {params.view === "classification" && (
+          {view === "classification" && (
             <>
               <SportClassification />
               <SportBracket />
             </>
           )}
-          {params.view === "team" && <SportTeam />}
+          {view === "team" && <SportTeam />}
         </div>
       </div>
     </>

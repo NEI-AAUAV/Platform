@@ -1,4 +1,5 @@
 import {
+  DiscordIcon,
   FacebookIcon,
   InstagramIcon,
   LinkedinIcon,
@@ -11,6 +12,10 @@ export const data = [
   {
     icon: <YoutubeIcon />,
     url: "https://www.youtube.com/@neiaauav2598",
+  },
+  {
+    icon: <DiscordIcon />,
+    url: "https://discord.gg/JpWwJc8Suv",
   },
   {
     icon: <GithubIcon />,

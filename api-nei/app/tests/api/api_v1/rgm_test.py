@@ -13,7 +13,7 @@ RGM = [
     {
         "id": 1,
         "category": "pao",
-        "mandate": 4,
+        "mandate": "2020/21",
         "file": "/nei.png"
     },
     {
