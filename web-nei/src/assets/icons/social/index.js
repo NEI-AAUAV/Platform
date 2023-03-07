@@ -1,3 +1,4 @@
+export { ReactComponent as DiscordIcon } from "./discord.svg";
 export { ReactComponent as GithubIcon } from "./github.svg";
 export { ReactComponent as FacebookIcon } from "./facebook.svg";
 export { ReactComponent as LinktreeIcon } from "./linktree.svg";

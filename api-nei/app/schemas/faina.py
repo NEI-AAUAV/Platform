@@ -5,7 +5,8 @@ from .faina_member import FainaMemberInDB
 
 
 class FainaBase(BaseModel):
-    year: constr(max_length=7)
+    # Validate mandate to only allow 2020 or 2020/21
+    mandate: constr(regex=r"^\d{4}(\/\d{2})?$")
 
 
 class FainaCreate(FainaBase):
@@ -15,13 +16,13 @@ class FainaCreate(FainaBase):
 
 class FainaUpdate(FainaBase):
     """Properties to receive via API on update."""
-    year: Optional[constr(max_length=7)]
+    mandate: Optional[constr(regex=r"^\d{4}(\/\d{2})?$")]
 
 
 class FainaInDB(FainaBase):
     """Properties properties stored in DB."""
     id: int
-    image: AnyHttpUrl
+    image: Optional[AnyHttpUrl]
     members: List[FainaMemberInDB]
 
     class Config:

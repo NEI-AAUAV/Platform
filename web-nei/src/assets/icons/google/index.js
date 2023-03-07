@@ -13,6 +13,7 @@ export { ReactComponent as LogoutIcon } from "./logout.svg";
 export { ReactComponent as MailIcon } from "./mail.svg";
 export { ReactComponent as MenuIcon } from "./menu.svg";
 export { ReactComponent as OpenInNewIcon } from "./open-in-new.svg";
+export { ReactComponent as PersonPinIcon } from "./person-pin.svg";
 export { ReactComponent as PersonIcon } from "./person.svg";
 export { ReactComponent as ViewAgendaIcon } from "./view-agenda.svg";
 export { ReactComponent as ViewListIcon } from "./view-list.svg";

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 
 from typing import Optional
 
@@ -18,7 +18,8 @@ class TeamColaboratorCreate(TeamColaboratorBase):
 class TeamColaboratorUpdate(TeamColaboratorBase):
     """Properties to receive via API on creation."""
     user_id: Optional[int]
-    mandate: Optional[int]
+    # Validate mandate to only allow 2020 or 2020/21
+    mandate: Optional[constr(regex=r"^\d{4}(\/\d{2})?$")]
 
 
 class TeamColaboratorInDB(TeamColaboratorBase):
