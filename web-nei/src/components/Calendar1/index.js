@@ -196,8 +196,7 @@ const Calendar = () => {
 
     return (
         <div>
-            <div className="container mx-auto py-2 md:py-24">
-
+            <div className="container mx-auto mt-4">
                 <div className="bg-base-200 rounded-lg shadow overflow-hidden">
                     <div className="flex items-center justify-between py-2 px-6">
                         <div>

@@ -2,130 +2,133 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css?family=Azeret+Mono:100,200,300,regular,500,600,700,800,900,100italic,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic");
 
-
 @layer base {
-    html {
-        font-family: 'Ubuntu', sans-serif;
-    }
+  html {
+    font-family: "Ubuntu", sans-serif;
+  }
 
-    body {
-        max-width: 100vw;
-        overflow-x: hidden;
-    }
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        @apply font-bold;
-    }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
 
-    h1 {
-        @apply text-4xl;
-    }
+  h1 {
+    @apply text-4xl;
+  }
 
-    h2 {
-        @apply text-3xl;
-    }
+  h2 {
+    @apply text-3xl;
+  }
 
-    h3 {
-        @apply text-2xl;
-    }
+  h3 {
+    @apply text-2xl;
+  }
 
-    h4 {
-        @apply text-xl;
-    }
+  h4 {
+    @apply text-xl;
+  }
 
-    h5 {
-        @apply text-lg;
-    }
+  h5 {
+    @apply text-lg;
+  }
 
-    h6 {
-        @apply text-sm;
-    }
+  h6 {
+    @apply text-sm;
+  }
 
-    .modal {
-        @apply !z-30;
-    }
+  .modal {
+    @apply !z-30;
+  }
 
-    .menu :where(li)> :where(*:not(ul)) {
-        @apply !px-3 !py-2;
-    }
+  .menu :where(li) > :where(*:not(ul)) {
+    @apply !px-3 !py-2;
+  }
 
-    .badge-outline {
-        @apply !bg-transparent;
-    }
+  .badge-outline {
+    @apply !bg-transparent;
+  }
 
-    .btn {
-        @apply !rounded-full;
-        @apply !normal-case;
-    }
+  .btn {
+    @apply !rounded-full;
+    @apply !normal-case;
+  }
 
-    .btn-outline.btn-primary {
-        background-color: hsl(var(--p) / 0.1);
-    }
+  .btn-outline.btn-primary {
+    background-color: hsl(var(--p) / 0.1);
+  }
 
-    .btn-outline.btn-secondary {
-        background-color: hsl(var(--s) / 0.1);
+  .btn-outline.btn-secondary {
+    background-color: hsl(var(--s) / 0.1);
+  }
 
-    }
+  .btn-outline.btn-accent {
+    background-color: hsl(var(--a) / 0.1);
+  }
 
-    .btn-outline.btn-accent {
-        background-color: hsl(var(--a) / 0.1);
+  .btn-outline.btn-info {
+    background-color: hsl(var(--in) / 0.1);
+  }
 
-    }
+  .btn-outline.btn-success {
+    background-color: hsl(var(--su) / 0.1);
+  }
 
-    .btn-outline.btn-info {
-        background-color: hsl(var(--in) / 0.1);
+  .btn-outline.btn-warning {
+    background-color: hsl(var(--wa) / 0.1);
+  }
 
-    }
+  .btn-outline.btn-error {
+    background-color: hsl(var(--er) / 0.1);
+  }
 
-    .btn-outline.btn-success {
-        background-color: hsl(var(--su) / 0.1);
+  .btn-group > .btn {
+    @apply !rounded-none;
+  }
 
-    }
+  .btn-group > .btn:first-of-type {
+    @apply !rounded-l-full;
+  }
 
-    .btn-outline.btn-warning {
-        background-color: hsl(var(--wa) / 0.1);
+  .btn-group > .btn:last-of-type {
+    @apply !rounded-r-full;
+  }
 
-    }
+  .input {
+    @apply !rounded-full;
+    transition: outline 0.3s !important;
+    outline: 2px solid transparent !important;
+  }
 
-    .btn-outline.btn-error {
-        background-color: hsl(var(--er) / 0.1);
+  .input:focus {
+    outline: 2px solid hsla(var(--bc) / 0.2) !important;
+  }
 
-    }
+  /* For Webkit-based browsers (Chrome, Safari and Opera) */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    scroll-padding: 10px;
+  }
 
-    .btn-group>.btn {
-        @apply !rounded-none;
-    }
-
-    .btn-group>.btn:first-of-type {
-        @apply !rounded-l-full;
-    }
-
-    .btn-group>.btn:last-of-type {
-        @apply !rounded-r-full;
-    }
-
-    .input {
-        @apply !rounded-full;
-        transition: outline 0.3s !important;
-        outline: 2px solid transparent !important;
-    }
-
-    .input:focus {
-        outline: 2px solid hsla(var(--bc) / 0.2) !important;
-    }
+  /* For IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    scroll-margin: 20px;
+  }
 }
-
-
-
 
 /* 
 .menu > :where(li) > :where(ul) :where(li) > :where(:not(ul))::before {
@@ -145,7 +148,6 @@
 * {
     transition: all 0.25s ease-out;
 } */
-
 
 /* :root,
 :root::after,
@@ -325,40 +327,40 @@ label {color: var(--text-secondary)} */
 
 /* animations */
 .animation {
-    opacity: 0;
-    animation-name: fadeIn;
-    animation-duration: 1s;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-    transition: .3s ease all;
+  opacity: 0;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  transition: 0.3s ease all;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
+  from {
+    opacity: 0;
+  }
 
-    to {
-        opacity: 1;
-    }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-    from {
-        transform: translateY(20px);
-    }
+  from {
+    transform: translateY(20px);
+  }
 
-    to {
-        transform: translateY(0);
-    }
+  to {
+    transform: translateY(0);
+  }
 }
 
 .slideUpFade {
-    transform: translateY(20px);
-    opacity: 0;
-    animation-name: slideUp, fadeIn;
-    animation-duration: 0.7s;
-    animation-delay: 0.4s;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
+  transform: translateY(20px);
+  opacity: 0;
+  animation-name: slideUp, fadeIn;
+  animation-duration: 0.7s;
+  animation-delay: 0.4s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }

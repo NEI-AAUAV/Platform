@@ -8,7 +8,8 @@ from .user import UserInDB
 
 
 class TeamMemberBase(BaseModel):
-    mandate: constr(max_length=7)
+    # Validate mandate to only allow 2020 or 2020/21
+    mandate: constr(regex=r"^\d{4}(\/\d{2})?$")
     user_id: int
     role_id: int
 
@@ -20,7 +21,7 @@ class TeamMemberCreate(TeamMemberBase):
 
 class TeamMemberUpdate(TeamMemberBase):
     """Properties to receive via API on creation."""
-    mandate: Optional[constr(max_length=7)]
+    mandate: Optional[constr(regex=r"^\d{4}(\/\d{2})?$")]
     user_id: Optional[int]
     role_id: Optional[int]
 

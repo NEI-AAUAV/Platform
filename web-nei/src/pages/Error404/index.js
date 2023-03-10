@@ -6,28 +6,28 @@ import service from 'services/NEIService';
 
 
 const Error404 = () => {
-    let { id } = useParams();
+    let { alias } = useParams();
 
     const [loading, setLoading] = useState(true);
     const [redirect, setRedirect] = useState(undefined);
 
     // On component render...
     useEffect(() => {
-        if (id === "404") {
+        if (!alias || alias === "404") {
             setLoading(false);
             return;
         }
 
         // Call /redirects API to check if it is an alias
         // Fetch API if valid
-        service.getRedirects({ alias: id })
+        service.getRedirects({ alias })
             .then(data => {
                 setRedirect(data.redirect);
                 setLoading(false);
             }).catch(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [alias]);
 
     // On redirect set, redirect to page
     useEffect(() => {
