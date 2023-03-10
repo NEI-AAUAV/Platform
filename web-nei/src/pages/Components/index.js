@@ -111,6 +111,21 @@ const Components = () => {
             <ViewAgendaIcon /> Agenda
           </button>
         </div>
+        <CardMerch
+          img="https://nei.web.ua.pt/nei/static/merch/sweat.png"
+          title="Sweat"
+          price={18}
+        />
+        <CardMerch
+          img="https://nei.web.ua.pt/nei/static/merch/casaco.png"
+          title="Casaco"
+          price={16}
+        />
+        <CardMerch
+          img="https://nei.web.ua.pt/nei/static/merch/scarf.png"
+          title="Cachecol"
+          price={3}
+        />
       </div>
       
 
