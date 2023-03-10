@@ -57,7 +57,7 @@ const routes = [
       { path: "/tacaua-admin-demo", element: <TacauaAdminDemo /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
-      { path: "/:redirect", element: <Error404 /> },
+      { path: "/:alias", element: <Error404 /> },
     ],
   },
   {
