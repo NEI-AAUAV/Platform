@@ -59,7 +59,7 @@ const routes = [
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
       { path: "/auth/verify", element: <EmailVerify /> },
-      { path: "/:alias", element: <Error404 /> },
+      { path: "/*", element: <Error404 /> },
     ],
   },
   {
