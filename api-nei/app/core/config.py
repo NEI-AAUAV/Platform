@@ -77,6 +77,10 @@ class Settings(BaseSettings):
     EMAIL_SMTP_USER: str = os.getenv("EMAIL_SMTP_USER")
     ## Password to use for authentication with the smtp server
     EMAIL_SMTP_PASSWORD: str = os.getenv("EMAIL_SMTP_PASSWORD")
+    ## The endpoint to point account verifications links to
+    EMAIL_ACCOUNT_VERIFY_ENDPOINT: str = os.getenv(
+        "EMAIL_ACCOUNT_VERIFY_ENDPOINT", "/auth/verify"
+    )
 
     class Config:
         case_sensitive = True

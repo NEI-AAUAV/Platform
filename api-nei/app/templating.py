@@ -24,7 +24,7 @@ def render_email_registration_templates(
     **Returns**
     A tuple with the rendered html email and the text email
     """
-    endpoint = settings.HOST + settings.API_V1_STR + "/auth/verify"
+    endpoint = settings.HOST + settings.EMAIL_ACCOUNT_VERIFY_ENDPOINT
     renderData = {"email": email, "name": name, "token": token, "endpoint": endpoint}
     return (
         _emailRegistrationTemplateHtml.render(renderData),
