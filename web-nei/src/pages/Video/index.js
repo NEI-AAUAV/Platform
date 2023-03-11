@@ -53,7 +53,7 @@ const Video = () => {
 
                     <YoutubeEmbed
                         embedId={video.youtube_id}
-                        playlist={video.playlist === "1"}
+                        playlist={video.playlist === 1}
                         className="my-4 slideUpFade"
                     />
 
