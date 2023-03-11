@@ -3,7 +3,7 @@ name: Build and Test api-tacaua
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - '.github/workflows/api-tacaua.yaml'
       - 'api-tacaua/*'

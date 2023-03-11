@@ -3,7 +3,7 @@ name: Build and Test api-nei
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - '.github/workflows/api-nei.yaml'
       - 'api-nei/*'

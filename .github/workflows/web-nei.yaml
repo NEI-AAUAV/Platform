@@ -3,7 +3,7 @@ name: Build and Test web-nei
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - '.github/workflows/web-nei.yaml'
       - 'web-nei/*'
