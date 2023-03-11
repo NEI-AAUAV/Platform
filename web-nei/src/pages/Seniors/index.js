@@ -80,7 +80,7 @@ const Seniors = () => {
           throw new Error("Not available");
         }
         setNamesOnly(
-          data.students[0]["quote"] == null && data.students[0]["image"] == null
+          data.students[0]["quote"] === null && data.students[0]["image"] === null
         );
         setPeople(data.students);
         setImg(

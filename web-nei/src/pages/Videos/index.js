@@ -1,6 +1,7 @@
 import React, { useEffect, useState, Fragment } from "react";
 import Typist from 'react-typist';
 
+import { CardVideo } from '../../components';
 import Filters from '../../components/Filters';
 import Document from '../../components/Document';
 import PageNav from '../../components/PageNav';
@@ -149,6 +150,15 @@ const Videos = () => {
                     })
                 }
             </Row>
+            <div className="grid grid-cols-2 gap-3">
+                {videos.map((video) => {
+                    return (<Fragment key={video.id}>
+                        <CardVideo
+                            video={video}
+                        />
+                    </Fragment>)
+                })}
+            </div>
             {/* Pagination */}
             <Row>
                 {
