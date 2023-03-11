@@ -30,6 +30,7 @@ def setup_database(db: SessionTesting):
         db.add(Rgm(**rgms))
     db.commit()
 
+
 def test_category(client: TestClient) -> None:
     category = 'pao'
     r = client.get(f"{settings.API_V1_STR}/rgm/{category}")

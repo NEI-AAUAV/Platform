@@ -202,6 +202,7 @@ INSERT INTO nei."user" (id, email, name, surname, gender, iupi, nmec, image, cur
 (197, 'alexandrecotorobai@ua.pt', 'Alexandre', 'Cotorobai', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', FALSE),
 (198, 'borgesjps@ua.pt', 'João', 'Borges', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', FALSE);
 
+SELECT pg_catalog.setval('nei.user_id_seq', 198, false);
 
 --
 -- Data for Name: faina_role; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -219,10 +220,13 @@ INSERT INTO nei.faina_role (id, name, weight) VALUES
 (9, 'Varina', 6),
 (10, 'Mestre de Curso', 6);
 
+SELECT pg_catalog.setval('nei.faina_role_id_seq', 10, false);
+
 
 --
 -- Data for Name: faina; Type: TABLE DATA; Schema: nei; Owner: postgres
 --
+
 
 INSERT INTO nei.faina (id, image, mandate) VALUES
 (1, NULL, '2012/13'),
@@ -236,10 +240,12 @@ INSERT INTO nei.faina (id, image, mandate) VALUES
 (9, '/faina/team/2020.jpg', '2020/21'),
 (10, '/faina/team/2021.jpg', '2021/22');
 
+SELECT pg_catalog.setval('nei.faina_id_seq', 10, false);
 
 --
 -- Data for Name: subject; Type: TABLE DATA; Schema: nei; Owner: postgres
 --
+
 
 INSERT INTO nei.subject (code, name, curricular_year, semester, short, discontinued, optional) VALUES
 (2373, 'Empreendedorismo', 3, 3, 'E', 0, 1),
@@ -310,6 +316,9 @@ INSERT INTO nei.team_role (id, name, weight) VALUES
 (17, 'Vogal da Secção da Administração Interna e Merchandising', 4),
 (18, 'Vogal da Secção da Comunicação e Imagem', 4);
 
+SELECT pg_catalog.setval('nei.team_role_id_seq', 18, false);
+
+
 --
 -- Data for Name: teacher; Type: TABLE DATA; Schema: nei; Owner: postgres
 --
@@ -350,6 +359,8 @@ INSERT INTO nei.teacher (id, name, personal_page) VALUES
 (34, 'Cristina Isabel Assis de Morais Miguéns', 'https://www.ua.pt/pt/p/10333350'),
 (40, 'Pétia Georgieva Georgieva', 'https://www.ua.pt/pt/p/10321408');
 
+SELECT pg_catalog.setval('nei.teacher_id_seq', 40, false);
+
 
 --
 -- Data for Name: senior; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -360,6 +371,8 @@ INSERT INTO nei.senior (id, year, course, image) VALUES
 (2, 2020, 'MEI', '/senior/mei/2020.jpg'),
 (3, 2021, 'LEI', NULL),
 (4, 2021, 'MEI', NULL);
+
+SELECT pg_catalog.setval('nei.senior_id_seq', 4, false);
 
 
 --
@@ -483,6 +496,8 @@ INSERT INTO nei.faina_member (id, member_id, faina_id, role_id) VALUES
 (106, 134, 10, 3),
 (107, 158, 10, 4);
 
+SELECT pg_catalog.setval('nei.faina_member_id_seq', 107, false);
+
 
 --
 -- Data for Name: history; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -508,6 +523,8 @@ INSERT INTO nei.merch (id, name, image, price, number_of_items) VALUES
 (3, 'Casaco de curso', '/merch/casaco.png', 16.5, 0),
 (4, 'Sweat de curso', '/merch/sweat.png', 18, 0),
 (5, 'Emblema NEI', '/merch/emblemanei.png', 2.5, 0);
+
+SELECT pg_catalog.setval('nei.merch_id_seq', 5, false);
 
 
 --
@@ -542,11 +559,13 @@ INSERT INTO nei.news (id, header, status, title, category, content, published_by
 (25, '/news/nei_lol.png', 'ACTIVE', 'Torneio Nacional de LoL', 'EVENT', 'Como a vida não é só trabalho, vem divertir-te a jogar e representar a Universidade de Aveiro em simultâneo! O NEEEC-FEUP está a organizar um torneio de League of Legends inter-universidades a nível nacional, e a UA está apta para participar.<br/>Existirá uma ronda de qualificação em Aveiro para determinar as 2 equipas que participam nacionalmente. O torneio é de inscrição gratuita e garante prémios para as equipas que conquistem o 1º e 2º lugar!<br/>Forma equipa e mostra o que vales!<br/><a href=\http://tiny.cc/torneioLOL\ target=\_blank\>Inscreve-te</a>!', 94, '2020-05-13', NULL, NULL, 1),
 (26, '/news/202122/96.jpg', 'ACTIVE', 'Roots Beach Club', 'EVENT', '<p>A primeira semana de aulas vai terminar em grande!</p><p>Na sexta-feira vem ao Roots Beach Club para uma beach party incrível.</p><p>A pulseira do evento garante o transporte desde Aveiro até à Praia da Barra, um teste antigénio à covid e a entrada no bar com uma bebida incluída!</p><p>Reserva a tua pulseira terça feira das 16h às 19h na sala 4.1.32.</p>', 83, '2021-10-10', NULL, NULL, 1);
 
+SELECT pg_catalog.setval('nei.news_id_seq', 26, false);
 
 
 --
 -- Data for Name: note; Type: TABLE DATA; Schema: nei; Owner: postgres
 --
+
 
 INSERT INTO nei.note (id, subject_id, author_id, teacher_id, year, name, location, summary, tests, bibliography, slides, exercises, projects, notebook, content, created_at, size) VALUES
 (1, 40337, NULL, 5, 2014, 'MPEI Exemplo Teste 2014', '/note/segundo_ano/primeiro_semestre/mpei/MP_Exemplo_Teste.pdf', 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1),
@@ -817,6 +836,7 @@ INSERT INTO nei.note (id, subject_id, author_id, teacher_id, year, name, locatio
 (382, 14817, 140, 29, 2020, 'Slides teóricos MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_TPs.zip', 0, 0, 0, 1, 0, 0, 0, NULL, '2022-01-31 20:37:14', NULL),
 (385, 14817, 140, 29, 2020, 'Formulário MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_Form.pdf', 1, 0, 0, 0, 0, 0, 0, NULL, '2022-01-31 20:37:14', NULL);
 
+SELECT pg_catalog.setval('nei.note_id_seq', 385, false);
 
 
 --
@@ -827,6 +847,7 @@ INSERT INTO nei.partner (id, header, company, description, content, link, banner
 (1, '/partner/LavandariaFrame.jpg', 'Lavandaria Portuguesa', 'A Lavandaria Portuguesa encontra-se aliada ao NEI desde março de 2018, ajudando o núcleo na área desportiva com lavagens de equipamentos dos atletas que representam o curso.', NULL, 'https://www.facebook.com/alavandariaportuguesa.pt/', NULL, NULL, NULL),
 (2, '/partner/OlisipoFrame.jpg', 'Olisipo', 'Fundada em 1994, a Olisipo é a única empresa portuguesa com mais de 25 anos de experiência dedicada à Gestão de Profissionais na área das Tecnologias de Informação.\n\nSomos gestores de carreira de mais de 500 profissionais de TI e temos Talent Managers capazes de influenciar o sucesso da carreira dos nossos colaboradores e potenciar o crescimento dos nossos clientes.\n\nVem conhecer um Great Place to Work® e uma das 30 melhores empresas para trabalhar em Portugal.', NULL, 'https://bit.ly/3KVT8zs', 'https://bit.ly/3KVT8zs', '/partner/banners/Olisipo.png', '2023-01-31 23:59:59');
 
+SELECT pg_catalog.setval('nei.partner_id_seq', 3, false);
 
 
 --
@@ -843,6 +864,8 @@ INSERT INTO nei.redirect (id, alias, redirect) VALUES
 (7, 'convivio', '/integracao/202122/peddypaper/convivio.jpg'),
 (8, 'be', '/integracao/202122/peddypaper/be.jpg'),
 (9, 'socorro', '/integracao/202122/guiasobrevivencia.pdf');
+
+SELECT pg_catalog.setval('nei.redirect_id_seq', 9, false);
 
 
 --
@@ -903,6 +926,8 @@ INSERT INTO nei.rgm (id, category, mandate, file) VALUES
 (51, 'ATAS', '2022', '/rgm/ATAS/2022/2.pdf'),
 (52, 'RAC', '2022', '/rgm/RAC/2022/RAC_NEI2022.pdf'),
 (53, 'PAO', '2022/23', '/rgm/PAO/2022/PAO_NEI2022/23.pdf');
+
+SELECT pg_catalog.setval('nei.rgm_id_seq', 53, false);
 
 
 --
@@ -1006,6 +1031,7 @@ INSERT INTO nei.team_colaborator (user_id, mandate) VALUES
 (195, '2022/23'),
 (196, '2022/23'),
 (197, '2022/23');
+
 
 --
 -- Data for Name: team_member; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -1163,19 +1189,23 @@ INSERT INTO nei.team_member (id, header, mandate, user_id, role_id) VALUES
 (410, '/team/2022/23/13.jpg', '2022/23', 157, 6),
 (411, '/team/2022/23/14.jpg', '2022/23', 128, 6);
 
+SELECT pg_catalog.setval('nei.team_member_id_seq', 411, false);
+
 
 --
 -- Data for Name: video; Type: TABLE DATA; Schema: nei; Owner: postgres
 --
 
 INSERT INTO nei.video (id, youtube_id, title, subtitle, image, created_at, playlist) VALUES
-(1, 'PL0-X-dbGZUABPg-FWm3tT7rCVh6SESK2d', 'FP', 'Fundamentos de Programação', '/video/FP_2020.jpg', '2020-12-09 00:00:00', 1),
-(2, 'PL0-X-dbGZUAA8rQm4klslEksHCrb3EIDG', 'IAC', 'Introdução à Arquitetura de Computadores', '/video/IAC_2020.jpg', '2020-06-10 00:00:00', 1),
-(3, 'PL0-X-dbGZUABp2uATg_-lqfT4FTFlyNir', 'ITW', 'Introdução às Tecnologias Web', '/video/ITW_2020.jpg', '2020-12-17 00:00:00', 1),
-(4, 'PL0-X-dbGZUACS3EkepgT7DOf287MiTzp0', 'POO', 'Programação Orientada a Objetos', '/video/POO_2020.jpg', '2020-11-16 00:00:00', 1),
-(5, 'ips-tkEr_pM', 'Discord Bot', 'Workshop', '/video/discord.jpg', '2021-07-14 00:00:00', 0),
-(6, '3hjRgoIItYk', 'Anchorage', 'Palestra', '/video/anchorage.jpg', '2021-04-01 00:00:00', 0),
-(7, 'GmNvZC6iv1Y', 'Git', 'Workshop', '/video/git.jpg', '2020-04-28 00:00:00', 0);
+(1, 'PL0-X-dbGZUABPg-FWm3tT7rCVh6SESK2d', 'FP', 'Fundamentos de Programação', '/videos/FP_2020.jpg', '2020-12-09 00:00:00', 1),
+(2, 'PL0-X-dbGZUAA8rQm4klslEksHCrb3EIDG', 'IAC', 'Introdução à Arquitetura de Computadores', '/videos/IAC_2020.jpg', '2020-06-10 00:00:00', 1),
+(3, 'PL0-X-dbGZUABp2uATg_-lqfT4FTFlyNir', 'ITW', 'Introdução às Tecnologias Web', '/videos/ITW_2020.jpg', '2020-12-17 00:00:00', 1),
+(4, 'PL0-X-dbGZUACS3EkepgT7DOf287MiTzp0', 'POO', 'Programação Orientada a Objetos', '/videos/POO_2020.jpg', '2020-11-16 00:00:00', 1),
+(5, 'ips-tkEr_pM', 'Discord Bot', 'Workshop', '/videos/discord.jpg', '2021-07-14 00:00:00', 0),
+(6, '3hjRgoIItYk', 'Anchorage', 'Palestra', '/videos/anchorage.jpg', '2021-04-01 00:00:00', 0),
+(7, 'GmNvZC6iv1Y', 'Git', 'Workshop', '/videos/git.jpg', '2020-04-28 00:00:00', 0);
+
+SELECT pg_catalog.setval('nei.video_id_seq', 7, false);
 
 
 --
@@ -1189,6 +1219,8 @@ INSERT INTO nei.video_tag (id, name, color) VALUES
 (4, 'MEI', 'rgb(1, 90, 101)'),
 (5, 'Workshops', 'rgb(11, 66, 21)'),
 (6, 'Palestras', 'rgb(20, 122, 38)');
+
+SELECT pg_catalog.setval('nei.video_tag_id_seq', 6, false);
 
 
 --

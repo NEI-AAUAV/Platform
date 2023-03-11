@@ -31,7 +31,7 @@ function FailedVerification() {
 
 function EmailVerify() {
 	const [searchParams] = useSearchParams();
-	const [state, setState] = useState("success");
+	const [state, setState] = useState("loading");
 
 	useEffect(() => {
 		if (!searchParams) return;
