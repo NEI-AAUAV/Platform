@@ -16,6 +16,11 @@ from app.schemas.user import ScopeEnum
 from app.core.config import settings
 
 
+ACCESS_TOKEN_TYPE: str = "access"
+REFRESH_TOKEN_TYPE: str = "refresh"
+VERIFICATION_TOKEN_TYPE: str = "verification"
+
+
 with open(settings.JWT_SECRET_KEY_PATH, "r") as file:
     private_key = file.read()
 
@@ -124,8 +129,13 @@ async def verify_token(
     )
     try:
         payload = decode_token(token)
+        token_type = payload["type"]
         token_scopes = payload.get("scopes", [])
     except JWTError:
+        raise credentials_exception
+
+    # Check that the token is an access token
+    if token_type != ACCESS_TOKEN_TYPE:
         raise credentials_exception
 
     # Bypass scopes for admin
@@ -188,6 +198,7 @@ def generate_response(
             "exp": iat + settings.ACCESS_TOKEN_EXPIRE,
             # JWT requires 'sub' to be a string
             "sub": str(user.id),
+            "type": ACCESS_TOKEN_TYPE,
             "nmec": user.nmec,
             "name": user.name,
             "surname": user.surname,
@@ -200,6 +211,7 @@ def generate_response(
             "exp": device_login.expires_at,
             # JWT requires 'sub' and 'sid' to be a string
             "sub": str(user.id),
+            "type": REFRESH_TOKEN_TYPE,
             "sid": device_login.session_id,
         },
     )

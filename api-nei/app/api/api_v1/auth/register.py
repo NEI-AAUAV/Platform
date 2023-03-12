@@ -10,7 +10,14 @@ from app.api import deps, email as emailUtils
 from app.schemas.user import UserBase, UserCreate
 from app.core.config import settings
 
-from ._deps import Token, resolver, hash_password, generate_response, create_token
+from ._deps import (
+    Token,
+    resolver,
+    hash_password,
+    generate_response,
+    create_token,
+    VERIFICATION_TOKEN_TYPE,
+)
 
 router = APIRouter()
 
@@ -31,6 +38,7 @@ def _create_email_verification_token(uid: int) -> str:
             "exp": iat + settings.CONFIRMATION_TOKEN_EXPIRE,
             # JWT requires 'sub' to be a string
             "sub": str(uid),
+            "type": VERIFICATION_TOKEN_TYPE,
         },
     )
 

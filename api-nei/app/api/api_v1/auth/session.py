@@ -10,7 +10,13 @@ from app import crud
 from app.api import deps
 from app.models.device_login import DeviceLogin
 
-from ._deps import Token, generate_response, decode_token
+from ._deps import (
+    Token,
+    generate_response,
+    decode_token,
+    REFRESH_TOKEN_TYPE,
+    VERIFICATION_TOKEN_TYPE,
+)
 
 router = APIRouter()
 
@@ -39,7 +45,12 @@ async def refresh(
         user_id = int(payload["sub"])
         session_id = int(payload["sid"])
         issued_at = payload["iat"]
+        token_type = payload["type"]
     except (JWTError, ValueError, KeyError):
+        raise credentials_exception
+
+    # Check that the token is a refresh token
+    if token_type != REFRESH_TOKEN_TYPE:
         raise credentials_exception
 
     # Get the token's session from the database
@@ -89,7 +100,12 @@ async def verify(
         # Extract all needed fields inside a `try` in case a token
         # has a bad payload.
         user_id = int(payload["sub"])
+        token_type = payload["type"]
     except (JWTError, ValueError, KeyError):
+        raise credentials_exception
+
+    # Check that the token is a verification token
+    if token_type != VERIFICATION_TOKEN_TYPE:
         raise credentials_exception
 
     user = crud.user.get(db, user_id)
