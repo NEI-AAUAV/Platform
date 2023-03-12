@@ -57,6 +57,10 @@
     @apply !px-3 !py-2;
   }
 
+  /* .menu > :where(li:focus) > :where(ul) {
+    display: list-item !important;
+  } */
+
   .badge-outline {
     @apply !bg-transparent;
   }

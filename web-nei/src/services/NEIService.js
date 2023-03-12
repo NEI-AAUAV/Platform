@@ -55,10 +55,6 @@ class NEIService {
         return await client.get(`/note/${id}`);
     }
 
-    async getNotesThanks() {
-        return await client.get('/note/thank');
-    }
-
     async getNotesYears(params) {
         return await client.get('/note/year', { params });
     }

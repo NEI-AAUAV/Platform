@@ -109,7 +109,7 @@ const Navbar = () => {
                                         <LinkAdapter to={link}>{name}</LinkAdapter>
                                     </li>
                                 ) : (
-                                    <li key={index} tabIndex={0}>
+                                    <li key={index} tabIndex={0} onMouseDown={e => e.preventDefault()}>
                                         <a className="gap-1">
                                             {name}
                                             <ExpandMoreIcon />

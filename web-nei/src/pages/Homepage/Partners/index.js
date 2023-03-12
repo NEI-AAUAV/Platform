@@ -28,23 +28,10 @@ const Partners = () => {
         <div>
             <h2 className="text-center mb-4"><Typist>Parceiros</Typist></h2>
 
-            {
-                !!banner &&
-                <Col xs={12} className="my-3 p-0">
-                    <a href={banner.banner_url} target="_blank">
-                        <img
-                            src={banner.banner_image}
-                            className="w-100"
-                        />
-                        <p className="mb-0 text-primary text-center small">O NEI é apoiado pela {banner.company}</p>
-                    </a>
-                </Col>
-            }
-
-            <Row>
+            <div className="flex flex-row gap-20">
                 {partners.map((partner, index) => {
                     return (
-                        <Col md={6} key={index}>
+                        <div key={index}>
                             <ImageCard
                                 image={partner.header && partner.header}
                                 title={partner.company}
@@ -52,10 +39,10 @@ const Partners = () => {
                                 anchor={partner.link}
                                 darkMode="on"
                             ></ImageCard>
-                        </Col>
+                        </div>
                     );
                 })}
-            </Row>
+            </div>
         </div>
     );
 }
