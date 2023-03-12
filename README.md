@@ -68,4 +68,5 @@ Vogal:
 - [José Gameiro](https://github.com/zegameiro) zegameiro
 - [Pedro Monteiro](https://github.com/pedromonteiro01) pedromonteiro01
 - [Tomás Victal](https://github.com/fungame2270) fungame2270
+- [Zakhar Kruptsala](https://github.com/Blosuhm) Blosuhm
 </details>

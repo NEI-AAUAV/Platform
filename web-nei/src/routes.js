@@ -30,6 +30,7 @@ import Test from "./pages/Test";
 import TacauaAdminDemo from "./pages/TacauaAdminDemo";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import EmailVerify from "./pages/EmailVerify";
 
 const routes = [
   {
@@ -57,7 +58,8 @@ const routes = [
       { path: "/tacaua-admin-demo", element: <TacauaAdminDemo /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
-      { path: "/:redirect", element: <Error404 /> },
+      { path: "/auth/verify", element: <EmailVerify /> },
+      { path: "/*", element: <Error404 /> },
     ],
   },
   {

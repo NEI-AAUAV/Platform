@@ -1,33 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 
 import service from 'services/NEIService';
 
 
 const Error404 = () => {
-    let { id } = useParams();
+    let { pathname } = useLocation();
 
     const [loading, setLoading] = useState(true);
     const [redirect, setRedirect] = useState(undefined);
 
     // On component render...
     useEffect(() => {
-        if (id === "404") {
+        if (!pathname) return;
+
+        const alias = pathname.substring(1);
+
+        if (alias === "404") {
             setLoading(false);
             return;
         }
 
         // Call /redirects API to check if it is an alias
         // Fetch API if valid
-        service.getRedirects({ alias: id })
+        service.getRedirects({ alias })
             .then(data => {
                 setRedirect(data.redirect);
                 setLoading(false);
             }).catch(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [pathname]);
 
     // On redirect set, redirect to page
     useEffect(() => {

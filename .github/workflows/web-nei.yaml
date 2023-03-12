@@ -1,0 +1,40 @@
+name: Build and Test web-nei
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/web-nei.yaml'
+      - 'web-nei/*'
+  pull_request:
+    paths:
+      - '.github/workflows/web-nei.yaml'
+      - 'web-nei/*'
+  workflow_dispatch:
+
+jobs:
+  web-nei:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository files
+        uses: actions/checkout@v3
+
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+          cache-dependency-path: web-nei/yarn.lock
+
+      - name: Install project dependencies
+        working-directory: ./web-nei
+        run: yarn install --frozen-lockfile
+
+      - name: Run tests
+        working-directory: ./web-nei
+        run: yarn test --passWithNoTests # We don't have tests so `passWithNoTests` is necessary
+
+      - name: Build
+        working-directory: ./web-nei
+        run: CI=false yarn build # Set CI to false because otherwise react treats warnings as errors

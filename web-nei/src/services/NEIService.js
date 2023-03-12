@@ -154,6 +154,10 @@ class NEIService {
     async register(data) {
         return await client.post('/auth/register/', data);
     }
+
+    async verifyEmail(params) {
+        return await client.get('/auth/verify/', { params });
+    }
 }
 
 // Export a singleton service

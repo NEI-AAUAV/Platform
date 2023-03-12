@@ -94,8 +94,6 @@ services:
     networks:
       - backend
     restart: unless-stopped
-    profiles:
-      - disabled
   api_rallytascas:
     build:
       context: api-rallytascas
@@ -138,7 +136,7 @@ services:
       - web_nei
       - api_nei
       - api_tacaua
-      # - api_family
+      - api_family
     networks:
       - backend
       - frontend
