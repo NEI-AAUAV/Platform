@@ -15,16 +15,17 @@ from ._deps import Token, resolver, hash_password, generate_response, create_tok
 router = APIRouter()
 
 
-async def _send_confirmation_token(email: str, name: str, uid: int):
-    """Generates a confirmation token and emails it
+def _create_email_verification_token(uid: int) -> str:
+    """Generates a verification token
 
     **Parameters**
-    * `email`: The email of the recipient
-    * `name`: The name of the user
     * `uid`: The id of the user
+
+    **Returns**
+    The generated email verification token
     """
     iat = datetime.now()
-    confirmation_token = create_token(
+    return create_token(
         {
             "iat": iat,
             "exp": iat + settings.CONFIRMATION_TOKEN_EXPIRE,
@@ -32,6 +33,17 @@ async def _send_confirmation_token(email: str, name: str, uid: int):
             "sub": str(uid),
         },
     )
+
+
+async def _send_verification_token(email: str, name: str, uid: int):
+    """Generates a verification token and emails it
+
+    **Parameters**
+    * `email`: The email of the recipient
+    * `name`: The name of the user
+    * `uid`: The id of the user
+    """
+    confirmation_token = _create_email_verification_token(uid)
     await emailUtils.send_email_confirmation(email, name, confirmation_token)
 
 
@@ -61,7 +73,9 @@ async def register(
 ):
     try:
         validation = validate_email(
-            form_data.email, check_deliverability=True, dns_resolver=resolver
+            form_data.email,
+            check_deliverability=settings.PRODUCTION,
+            dns_resolver=resolver,
         )
         email = validation.email
     except EmailNotValidError:
@@ -98,6 +112,6 @@ async def register(
     if settings.EMAIL_ENABLED:
         # Schedule to send the email with confirmation link
         background_tasks.add_task(
-            _send_confirmation_token, email, form_data.name, user.id
+            _send_verification_token, email, form_data.name, user.id
         )
     return generate_response(db, user)
