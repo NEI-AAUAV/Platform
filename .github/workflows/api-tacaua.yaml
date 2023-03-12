@@ -6,11 +6,11 @@ on:
       - main
     paths:
       - '.github/workflows/api-tacaua.yaml'
-      - 'api-tacaua/*'
+      - 'api-tacaua/**/*'
   pull_request:
     paths:
       - '.github/workflows/api-tacaua.yaml'
-      - 'api-tacaua/*'
+      - 'api-tacaua/**/*'
   workflow_dispatch:
 
 jobs:

@@ -6,11 +6,11 @@ on:
       - main
     paths:
       - '.github/workflows/api-family.yaml'
-      - 'api-family/*'
+      - 'api-family/**/*'
   pull_request:
     paths:
       - '.github/workflows/api-family.yaml'
-      - 'api-family/*'
+      - 'api-family/**/*'
   workflow_dispatch:
 
 jobs:

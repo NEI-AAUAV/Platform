@@ -6,11 +6,11 @@ on:
       - main
     paths:
       - '.github/workflows/api-nei.yaml'
-      - 'api-nei/*'
+      - 'api-nei/**/*'
   pull_request:
     paths:
       - '.github/workflows/api-nei.yaml'
-      - 'api-nei/*'
+      - 'api-nei/**/*'
   workflow_dispatch:
 
 jobs:
