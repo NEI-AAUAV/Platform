@@ -86,6 +86,7 @@ const RGM = () => {
 
   const changeTab = (t) => {
     // Change tab and simulate loading from API
+    // This is done to avoid the user seeing the animation of the documents changing???? nah
     setLoading(true);
     setTab(t);
     setTimeout(function () {

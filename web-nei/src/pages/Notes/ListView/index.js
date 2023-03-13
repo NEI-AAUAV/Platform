@@ -1,5 +1,4 @@
 import React from 'react';
-import { Row, Col, Accordion, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faFilter, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
 import "./index.css";
@@ -30,46 +29,46 @@ const ListView = (props) => {
 
     return (
         <div className="mx-3">
-            <Row className="list-view-header">
-                <Col md="4" className="list-view-name">
+            <div className="list-view-header">
+                <div md="4" className="list-view-name">
                     Ficheiro
-                </Col>
-                <Col md="4" className="list-view-subject-name">
+                </div>
+                <div md="4" className="list-view-subject-name">
                     Cadeira
-                </Col>
-                <Col md="1" className="list-view-subject-short">
+                </div>
+                <div md="1" className="list-view-subject-short">
                     Sigla
-                </Col>
-                <Col md="3" className="list-view-subject-name">
+                </div>
+                <div md="3" className="list-view-subject-name">
                     Autor
-                </Col>
-            </Row>
+                </div>
+            </div>
 
-            <Accordion>
+            <div>
                 {
                     props.data.map((item, index) => {
                         return (
                             <React.Fragment key={index}>
-                                <Card
+                                <div
                                     className="list-view-item mx-n3 px-3 slideUpFade"
                                     style={{ animationDelay: animKey++ * 0.1 + "s" }}
                                 >
-                                    <Accordion.Toggle as={Card.Header} eventKey={item.id}>
-                                        <Row>
-                                            <Col md="4" className="list-view-name">
+                                    <div>
+                                        <div>
+                                            <div md="4" className="list-view-name">
                                                 {item.name}
-                                            </Col>
-                                            <Col md="4" className="list-view-subject-name">
+                                            </div>
+                                            <div md="4" className="list-view-subject-name">
                                                 {item.subject?.name}
-                                            </Col>
-                                            <Col md="1" className="list-view-subject-short">
+                                            </div>
+                                            <div md="1" className="list-view-subject-short">
                                                 {item.subject?.short}
-                                            </Col>
-                                            <Col md="3" className="list-view-subject-name">
+                                            </div>
+                                            <div md="3" className="list-view-subject-name">
                                                 {authorNameProcessing(item.author?.name)}
-                                            </Col>
-                                        </Row>
-                                        <Row className="pl-2 mt-1">
+                                            </div>
+                                        </div>
+                                        <div className="pl-2 mt-1">
                                             {monthsPassed(new Date(item.created_at)) < 3 && <span className="badge mr-0 ml-1 badge-pill tag-new"  >Novo!</span>}
                                             {item.summary === "1" && <span className="badge mr-0 ml-1 badge-pill tag-summary"  >Resumos</span>}
                                             {item.tests === "1" && <span className="badge mr-0 ml-1 badge-pill tag-tests"    >Testes e exames</span>}
@@ -78,13 +77,12 @@ const ListView = (props) => {
                                             {item.exercises === "1" && <span className="badge mr-0 ml-1 badge-pill tag-exercises">Exercícios</span>}
                                             {item.projects === "1" && <span className="badge mr-0 ml-1 badge-pill tag-projects" >Projetos</span>}
                                             {item.notebook === "1" && <span className="badge mr-0 ml-1 badge-pill tag-notebook" >Caderno</span>}
-                                        </Row>
-                                    </Accordion.Toggle>
-
-                                    <Accordion.Collapse eventKey={item.id}>
-                                        <Card.Body>
-                                            <Row>
-                                                <Col sm="12" lg="8">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <div>
+                                                <div sm="12" lg="8">
                                                     <dl className="mb-2">
                                                         {
                                                             !!item.school_year?.year_begin && !!item.school_year?.year_end &&
@@ -153,8 +151,8 @@ const ListView = (props) => {
                                                             </>
                                                         }
                                                     </dl>
-                                                </Col>
-                                                <Col sm="12" lg="4">
+                                                </div>
+                                                <div sm="12" lg="4">
                                                     <a
                                                         href={item.location}
                                                         target="_blank" rel="noreferrer"
@@ -164,16 +162,16 @@ const ListView = (props) => {
                                                             <span className="ml-1">{item.type?.download_caption}</span>
                                                         </button>
                                                     </a>
-                                                </Col>
-                                            </Row>
-                                        </Card.Body>
-                                    </Accordion.Collapse>
-                                </Card>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </React.Fragment>
                         )
                     })
                 }
-            </Accordion>
+            </div>
         </div>
     );
 }
