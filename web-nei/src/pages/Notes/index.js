@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Tab, Nav, Spinner } from "react-bootstrap";
+import { Tab, Nav, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTh,
@@ -9,58 +9,22 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ListView from "./ListView";
 import GridView from "./GridView";
-import "./index.css";
 import PageNav from "../../components/PageNav";
-import Filters from "../../components/Filters";
 import Alert from "../../components/Alert";
 import Details from "./Details";
-import Select from "components/Select";
 import Typist from "react-typist";
 import CheckboxFilter from "components/CheckboxFilter";
 import data from "./data";
 
+import Autocomplete from "components/Autocomplete";
+
 import service from "services/NEIService";
 
-const customStyles = {
-  menu: (provided) => ({
-    ...provided,
-    backgroundColor: "var(--background)",
-    color: "var(--text-primary)",
-  }),
 
-  control: (provided) => ({
-    //   width: width
-    ...provided,
-    backgroundColor: "var(--background)",
-    color: "var(--text-primary)",
-  }),
 
-  placeholder: (provided, state) => ({
-    ...provided,
-    opacity: 1,
-    color: "var(--text-primary)",
-  }),
-
-  option: (provided, state) => ({
-    ...provided,
-    // borderBottom: '1px dotted pink',
-    //color: state.isSelected ? 'red' : 'blue',
-    // padding: 20,
-    backgroundColor: "var(--background)",
-    color: "var(--text-primary)",
-  }),
-
-  singleValue: (provided, state) => {
-    const opacity = state.isDisabled ? 0.5 : 1;
-    const transition = "opacity 300ms";
-    const color = "var(--text-primary)";
-    return { ...provided, opacity, transition, color };
-  },
-};
-
-const Apontamentos = () => {
+const Notes = () => {
   const [categories, setCategories] = useState(
-    data.categories.map((c) => ({...c, checked: true }))
+    data.categories.map((c) => ({ ...c, checked: true }))
   );
 
   // Grid view selected note
@@ -69,21 +33,19 @@ const Apontamentos = () => {
   // useStates and other variables
   const [notes, setNotes] = useState([]);
 
-  // const [data, setData] = useState([]);
   const [filters, setFilters] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
-  const [selection, setSelection] = useState([]);
 
   const [subjects, setSubjects] = useState([]); // todos os subjects
+  const [years, setYears] = useState([]);
+  const [student, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+
   const [selectedSubject, setSelectedSubject] = useState("");
-  const [subjectName, setSubjectName] = useState("");
-  const [years, setYears] = useState("");
   const [selYear, setSelYear] = useState("");
-  //const [selSemester, setSelSemester] = useState(""); // Will we use this? --> no :P
-  const [student, setStudents] = useState("");
   const [selStudent, setSelStudent] = useState("");
-  const [teachers, setTeachers] = useState("");
   const [selTeacher, setSelTeacher] = useState("");
+
   const [pageNumber, setPageNumber] = useState(1);
   const [selPage, setSelPage] = useState(1);
 
@@ -143,10 +105,7 @@ const Apontamentos = () => {
     };
 
     for (var i = 0; i < activeFilters.length; i++) {
-      console.log(filters, activeFilters)
-      const cat = filters.filter((f) => f["name"] == activeFilters[i])[0][
-        "db"
-      ];
+      const cat = filters.filter((f) => f["name"] == activeFilters[i])[0]["db"];
       params.category.push(cat);
     }
 
@@ -333,15 +292,15 @@ const Apontamentos = () => {
 
   return (
     <div id="apontamentosPage">
-      <div className="d-flex flex-column mb-5">
+      <div className="flex flex-col mb-5">
         <h2 className="mb-2 text-center">
           <Typist>Apontamentos</Typist>
         </h2>
         <Alert alert={alert} setAlert={setAlert} />
       </div>
 
-      <Row className="mt-4">
-        <Col className="d-flex flex-column" lg="4" xl="3">
+      <div className="flex gap-8 mt-4">
+        <div className="flex flex-col w-full max-w-[18rem]" lg="4" xl="3">
           {selectedNote && selectedNote.id && (
             <Details
               className="order-lg-0 order-2"
@@ -356,10 +315,37 @@ const Apontamentos = () => {
             />
           )}
 
-          <div className="filtros order-0 order-lg-1">
+          <div className="flex flex-col gap-4">
             <h4>Filtros</h4>
-            {(selectedSubject || selStudent || selTeacher || selYear) && (
-              <div className="d-flex mb-2 flex-row flex-wrap">
+
+            <Autocomplete
+              items={years.map((y) => y.label)}
+              value={selYear}
+              onChange={setSelYear}
+              placeholder="Ano"
+            />
+            <Autocomplete
+              items={subjects.map((y) => y.label)}
+              value={selectedSubject}
+              onChange={setSelectedSubject}
+              placeholder="Disciplina"
+            />
+            <Autocomplete
+              items={student.map((y) => y.label)}
+              value={selStudent}
+              onChange={setSelStudent}
+              placeholder="Autor"
+            />
+            <Autocomplete
+              items={teachers.map((y) => y.label)}
+              value={selTeacher}
+              onChange={setSelTeacher}
+              placeholder="Professor"
+            />
+          </div>
+
+          {(selectedSubject || selStudent || selTeacher || selYear) && (
+              <div className="flex mb-2 flex-row flex-wrap">
                 <button
                   className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
                   onClick={() => linkShare()}
@@ -379,68 +365,6 @@ const Apontamentos = () => {
               </div>
             )}
 
-            <Select
-              id="teste"
-              styles={customStyles}
-              className="react-select"
-              options={years}
-              onChange={(e) => {
-                if (e == null) {
-                  setSelYear("");
-                  setShownYear("");
-                } else setSelYear(e.value);
-              }}
-              placeholder="Ano Letivo..."
-              isClearable={true}
-              value={shownYear}
-            />
-
-            <Select
-              className="react-select"
-              styles={customStyles}
-              options={subjects}
-              onChange={(e) => {
-                if (e == null) {
-                  setSelectedSubject("");
-                  setShownSubj("");
-                } else setSelectedSubject(e.value);
-              }}
-              placeholder="Cadeira..."
-              isClearable={true}
-              value={shownSubj}
-            />
-
-            <Select
-              className="react-select"
-              styles={customStyles}
-              options={student}
-              onChange={(e) => {
-                if (e == null) {
-                  setSelStudent("");
-                  setShownAuth("");
-                } else setSelStudent(e.value);
-              }}
-              placeholder="Autor..."
-              isClearable={true}
-              value={shownAuth}
-            />
-
-            <Select
-              className="react-select"
-              styles={customStyles}
-              options={teachers}
-              onChange={(e) => {
-                if (e == null) {
-                  setSelTeacher("");
-                  setShownTeacher("");
-                } else setSelTeacher(e.value);
-              }}
-              placeholder="Professor..."
-              isClearable={true}
-              value={shownTeacher}
-            />
-          </div>
-
           <CheckboxFilter values={categories} onChange={setCategories} />
 
           {/* <div className="order-lg-3 order-1">
@@ -452,17 +376,17 @@ const Apontamentos = () => {
               setActiveFilters={setActiveFilters}
               className="mb-5"
               btnClass="btn-sm"
-              listClass="d-flex flex-column"
+              listClass="flex flex-col"
               allBtnClass="mb-2 p-0 col-12"
             />
           </div> */}
-        </Col>
+        </div>
 
         {/* The two views are controlled by a bootstrap tabs component,
          ** using a custom layout. The Nav element contains the buttons that switch
          ** the views, which are specified in each Tab.Pane element.
          */}
-        <Col lg="8" xl="9">
+        <div className="">
           <Tab.Container
             defaultActiveKey={window.innerWidth >= 992 ? "grid" : "list"}
           >
@@ -491,7 +415,7 @@ const Apontamentos = () => {
 
             <Tab.Content>
               <Tab.Pane eventKey="grid">
-                <div className="d-flex">
+                <div className="flex">
                   {loading ? (
                     <Spinner
                       animation="grow"
@@ -500,14 +424,14 @@ const Apontamentos = () => {
                       title="A carregar..."
                     />
                   ) : notes.length == 0 ? (
-                    <Col sm={12}>
+                    <div sm={12}>
                       <h3 className="mt-3 text-center">
                         Nenhum apontamento encontrado
                       </h3>
                       <h4 className="text-center">
                         Tente definir filtros menos restritivos
                       </h4>
-                    </Col>
+                    </div>
                   ) : (
                     <GridView
                       data={notes}
@@ -517,7 +441,7 @@ const Apontamentos = () => {
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="list">
-                <div className="d-flex flex-column">
+                <div className="flex flex-col">
                   {!!loading ? (
                     <Spinner
                       animation="grow"
@@ -526,14 +450,14 @@ const Apontamentos = () => {
                       title="A carregar..."
                     />
                   ) : notes.length === 0 ? (
-                    <Col sm={12}>
+                    <div sm={12}>
                       <h3 className="mt-3 text-center">
                         Nenhum apontamento encontrado
                       </h3>
                       <h4 className="text-center">
                         Tente definir filtros menos restritivos
                       </h4>
-                    </Col>
+                    </div>
                   ) : (
                     <ListView
                       data={notes}
@@ -553,9 +477,9 @@ const Apontamentos = () => {
             handler={fetchPage}
             className="d-lg-none mx-auto mt-3"
           ></PageNav>
-        </Col>
-      </Row>
-      <div className="card bg-base-200/80 shadow-md mt-5 text-center">
+        </div>
+      </div>
+      <div className="card mt-5 bg-base-200/80 text-center shadow-md">
         <h3>
           Foi graças a pessoas como tu que esta página se tornou possível!
         </h3>
@@ -595,4 +519,4 @@ const Apontamentos = () => {
   );
 };
 
-export default Apontamentos;
+export default Notes;

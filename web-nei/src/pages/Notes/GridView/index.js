@@ -22,7 +22,7 @@ const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT)
 const GridView = ({ data, setSelected }) => {
 
     return (
-        <div className="d-flex flex-row flex-wrap col-12 mx-0 p-0">
+        <div className="grid grid-cols-3 mx-0 p-0">
             {
                 data.map((note, i) =>
                     <Fragment key={i}>

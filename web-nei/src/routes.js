@@ -16,7 +16,7 @@ import NewsArticle from "./pages/NewsArticle";
 import RGM from "./pages/RGM";
 import Calendar from "./pages/Calendar";
 import History from "./pages/History";
-import Apontamentos from "./pages/Apontamentos";
+import Notes from "./pages/Notes";
 import FeedbackForm from "./pages/Forms/FeedbackForm";
 import Videos from "./pages/Videos";
 import Video from "./pages/Video";
@@ -40,7 +40,7 @@ const routes = [
       { path: "/", element: <Homepage /> },
       { path: "/news", element: <News /> },
       { path: "/news/:id", element: <NewsArticle /> },
-      { path: "/notes", element: <Apontamentos /> },
+      { path: "/notes", element: <Notes /> },
       { path: "/teams", element: <Team /> },
       { path: "/calendar", element: <Calendar /> },
       { path: "/rgm/:category?", element: <RGM /> },

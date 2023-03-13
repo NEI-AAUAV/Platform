@@ -27,7 +27,6 @@ const CheckboxFilter = ({ values, onChange, children }) => {
         tabIndex={0}
         className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-200 p-2 font-medium shadow"
       >
-        {console.log(options)}
         {options?.map(
           ({ name, checked, color = "211, 100%, 44%" /* blue */ }, index) => (
             <li key={index}>

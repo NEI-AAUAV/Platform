@@ -23,13 +23,19 @@ const Tabs = ({ tabs, value, onChange, displayAs, underlineColor }) => {
   }, [value]);
 
   useEffect(() => {
+    /**
+     * Sets the scroll percentage of the tabs container to
+     * disable the scroll buttons when the tabs are at the end.
+     */
     const setScrollPercentage = () => {
       setScrollPos(
         tabsRef.current.scrollLeft /
           (tabsRef.current.scrollWidth - tabsRef.current.clientWidth)
       );
     };
+
     if (tabsRef.current) {
+      setScrollPercentage();
       tabsRef.current.addEventListener("scroll", () => {
         setScrollPercentage();
       });
@@ -37,6 +43,7 @@ const Tabs = ({ tabs, value, onChange, displayAs, underlineColor }) => {
         setScrollPercentage();
       });
     }
+
     return () => {
       if (tabsRef.current) {
         tabsRef.current.removeEventListener("scroll", null);
@@ -69,7 +76,7 @@ const Tabs = ({ tabs, value, onChange, displayAs, underlineColor }) => {
           className="my-1 flex w-fit list-none items-center bg-base-200/80 px-4 py-1"
           onMouseLeave={() => setFocused(null)}
         >
-          {tabs.map((item) => (
+          {tabs?.map((item) => (
             <li
               className="relative flex cursor-pointer items-center"
               key={item}
