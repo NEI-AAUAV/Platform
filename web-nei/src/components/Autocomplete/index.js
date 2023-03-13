@@ -6,9 +6,9 @@ import { CloseIcon, ExpandMoreIcon } from "assets/icons/google";
 /**
  * Autocomplete input.
  *
- * @param {String[]} items
- * @param {String} value
- * @param {Function} onChange
+ * @param {Array[{key: String, label: String}]} items
+ * @param {String} value the selected item's key
+ * @param {Function} onChange callback to be called when an item is selected
  */
 const Autocomplete = ({ items, value, onChange, placeholder }) => {
   const ref = useRef(null);
@@ -16,24 +16,35 @@ const Autocomplete = ({ items, value, onChange, placeholder }) => {
   const [options, setOptions] = useState(items);
   const [open, setOpen] = useState(false);
 
+  console.log(open)
+
+  // TODO: this makes the dropwdown remain open after a selection, fix it
+  useEffect(() => {
+    setOptions(items);
+  }, [items]);
+
   useEffect(() => {
     if (!text) {
       setOptions(items);
       return;
     }
-    const newItems = items.filter((i) =>
-      i.toLowerCase().includes(text.toLowerCase())
+    const newItems = items.filter(({ label }) =>
+      label.toLowerCase().includes(text.toLowerCase())
     );
 
     setOptions(newItems);
   }, [text]);
 
   useEffect(() => {
-    setText(value);
+    resetToValue();
   }, [value]);
 
+  function resetToValue() {
+    setText(items.find((item) => item.key === value)?.label || "");
+  }
+
   function reset(e) {
-    onChange("");
+    onChange(null);
     e.preventDefault();
   }
 
@@ -51,7 +62,7 @@ const Autocomplete = ({ items, value, onChange, placeholder }) => {
         value={text}
         onChange={(e) => setText(e.target.value)}
         // Reset text to selected value
-        onBlur={() => setText(value)}
+        onBlur={resetToValue}
         placeholder={placeholder}
         tabIndex={0}
       />
@@ -81,12 +92,16 @@ const Autocomplete = ({ items, value, onChange, placeholder }) => {
                 <span
                   // Hack to prevent calling onBlur on input
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={(e) => onChange(item)}
+                  onClick={(e) => {
+                    onChange(item.key);
+                    // TODO: this hack does not work fix it
+                    // setOpen(false);
+                  }}
                   className={classname({
-                    "btn-disabled font-bold": item === value,
+                    "btn-disabled font-bold": item.key === value,
                   })}
                 >
-                  {item}
+                  {item.label}
                 </span>
               </li>
             ))}
