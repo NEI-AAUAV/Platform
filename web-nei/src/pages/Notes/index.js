@@ -20,39 +20,27 @@ import Autocomplete from "components/Autocomplete";
 
 import service from "services/NEIService";
 
-
-
 const Notes = () => {
   const [categories, setCategories] = useState(
     data.categories.map((c) => ({ ...c, checked: true }))
   );
-
-  // Grid view selected note
-  const [selectedNote, setSelectedNote] = useState(null);
-
-  // useStates and other variables
-  const [notes, setNotes] = useState([]);
-
   const [filters, setFilters] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
 
+  const [notes, setNotes] = useState([]);
   const [subjects, setSubjects] = useState([]); // todos os subjects
   const [years, setYears] = useState([]);
-  const [student, setStudents] = useState([]);
+  const [students, setStudents] = useState([]);
   const [teachers, setTeachers] = useState([]);
+  const [page, setPage] = useState(1);
 
-  const [selectedSubject, setSelectedSubject] = useState("");
+  // Grid view selected note
+  const [selNote, setSelNote] = useState(null);
+  const [selSubject, setSelSubject] = useState("");
   const [selYear, setSelYear] = useState("");
   const [selStudent, setSelStudent] = useState("");
   const [selTeacher, setSelTeacher] = useState("");
-
-  const [pageNumber, setPageNumber] = useState(1);
   const [selPage, setSelPage] = useState(1);
-
-  const [shownYear, setShownYear] = useState();
-  const [shownSubj, setShownSubj] = useState();
-  const [shownAuth, setShownAuth] = useState();
-  const [shownTeacher, setShownTeacher] = useState();
 
   const [loading, setLoading] = useState(true);
 
@@ -74,7 +62,7 @@ const Notes = () => {
     // Get parameters and apply to filters
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("year")) setSelYear(urlParams.get("year"));
-    if (urlParams.get("subject")) setSelectedSubject(urlParams.get("subject"));
+    if (urlParams.get("subject")) setSelSubject(urlParams.get("subject"));
     if (urlParams.get("author")) setSelStudent(urlParams.get("author"));
     if (urlParams.get("teacher")) setSelTeacher(urlParams.get("teacher"));
     let active = [];
@@ -94,11 +82,11 @@ const Notes = () => {
     setLoading(true);
 
     // Every time a new call is made to the API, close details
-    setSelectedNote(null);
+    setSelNote(null);
 
     const params = {
-      school_year: selYear || null,
-      subject: selectedSubject || null,
+      year: selYear || null,
+      subject: selSubject || null,
       student: selStudent || null,
       teacher: selTeacher || null,
       category: [],
@@ -112,7 +100,7 @@ const Notes = () => {
     if (activeFilters.length == 0) {
       setNotes([]);
       setSelPage(1);
-      setPageNumber(1);
+      setPage(1);
       setLoading(false);
       return;
     }
@@ -155,7 +143,7 @@ const Notes = () => {
               return note;
             })
           );
-          setPageNumber(last || 1);
+          setPage(last || 1);
           setLoading(false);
         })
         .catch(() => {
@@ -170,8 +158,7 @@ const Notes = () => {
       .getNotesYears(params)
       .then((data) => {
         const arr = data.map((year) => {
-          const x = { value: year, label: year + "-" + (year + 1) };
-          if (x.value == selYear) setShownYear(x);
+          const x = { key: year, label: year + "-" + (year + 1) };
           return x;
         });
         setYears(arr);
@@ -189,8 +176,7 @@ const Notes = () => {
       .getNotesSubjects(params)
       .then((data) => {
         const arr = data.map((subj) => {
-          const x = { value: subj.paco_code, label: subj.short };
-          if (x.value == selectedSubject) setShownSubj(x);
+          const x = { key: subj.code, label: subj.short };
           return x;
         });
         setSubjects(arr);
@@ -208,8 +194,7 @@ const Notes = () => {
       .getNotesStudents(params)
       .then((data) => {
         const arr = data.map((t) => {
-          const x = { value: t.id, label: t.name };
-          if (x.value == selStudent) setShownAuth(x);
+          const x = { key: t.id, label: t.name + " " + t.surname };
           return x;
         });
         setStudents(arr);
@@ -227,8 +212,7 @@ const Notes = () => {
       .getNotesTeachers(params)
       .then((data) => {
         const arr = data.map((t) => {
-          const x = { value: t.id, label: t.name };
-          if (x.value == selTeacher) setShownTeacher(x);
+          const x = { key: t.id, label: t.name };
           return x;
         });
         setTeachers(arr);
@@ -241,25 +225,18 @@ const Notes = () => {
           text: "Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.",
         });
       });
-  }, [
-    activeFilters,
-    selectedSubject,
-    selStudent,
-    selYear,
-    selPage,
-    selTeacher,
-  ]);
+  }, [activeFilters, selSubject, selStudent, selYear, selPage, selTeacher]);
 
   useEffect(() => {
     setSelPage(1);
-  }, [activeFilters, selectedSubject, selStudent, selYear, selTeacher]);
+  }, [activeFilters, selSubject, selStudent, selYear, selTeacher]);
 
   // This method allows user to share the filtering parameters through a parameterized URL
-  let linkShare = () => {
+  function linkShare () {
     // Build URL
     let url = window.location.origin + window.location.pathname + "?";
     if (selYear != "") url += `year=${selYear}&`;
-    if (selectedSubject != "") url += `subject=${selectedSubject}&`;
+    if (selSubject != "") url += `subject=${selSubject}&`;
     if (selStudent != "") url += `author=${selStudent}&`;
     if (selTeacher != "") url += `teacher=${selTeacher}&`;
     // Only include filters tags if not all selected (because if missing from url, all will be selected by default)
@@ -279,35 +256,31 @@ const Notes = () => {
     });
   };
 
-  let resetFilters = () => {
-    setSelectedSubject("");
+  function resetFilters() {
+    setSelSubject("");
     setSelStudent("");
     setSelTeacher("");
     setSelYear("");
-    setShownYear("");
-    setShownSubj("");
-    setShownAuth("");
-    setShownTeacher("");
   };
 
   return (
     <div id="apontamentosPage">
-      <div className="flex flex-col mb-5">
+      <div className="mb-5 flex flex-col">
         <h2 className="mb-2 text-center">
           <Typist>Apontamentos</Typist>
         </h2>
         <Alert alert={alert} setAlert={setAlert} />
       </div>
 
-      <div className="flex gap-8 mt-4">
-        <div className="flex flex-col w-full max-w-[18rem]" lg="4" xl="3">
-          {selectedNote && selectedNote.id && (
+      <div className="mt-4 flex gap-8">
+        <div className="flex w-full max-w-[18rem] flex-col" lg="4" xl="3">
+          {selNote && selNote.id && (
             <Details
               className="order-lg-0 order-2"
-              note_id={selectedNote.id}
-              close={() => setSelectedNote(null)}
+              note_id={selNote.id}
+              close={() => setSelNote(null)}
               setSelYear={setSelYear}
-              setSelectedSubject={setSelectedSubject}
+              setSelSubject={setSelSubject}
               setSelStudent={setSelStudent}
               setSelTeacher={setSelTeacher}
               setSelPage={setSelPage}
@@ -319,51 +292,51 @@ const Notes = () => {
             <h4>Filtros</h4>
 
             <Autocomplete
-              items={years.map((y) => y.label)}
+              items={years}
               value={selYear}
               onChange={setSelYear}
               placeholder="Ano"
             />
             <Autocomplete
-              items={subjects.map((y) => y.label)}
-              value={selectedSubject}
-              onChange={setSelectedSubject}
+              items={subjects}
+              value={selSubject}
+              onChange={setSelSubject}
               placeholder="Disciplina"
             />
             <Autocomplete
-              items={student.map((y) => y.label)}
+              items={students}
               value={selStudent}
               onChange={setSelStudent}
               placeholder="Autor"
             />
             <Autocomplete
-              items={teachers.map((y) => y.label)}
+              items={teachers}
               value={selTeacher}
               onChange={setSelTeacher}
               placeholder="Professor"
             />
           </div>
 
-          {(selectedSubject || selStudent || selTeacher || selYear) && (
-              <div className="flex mb-2 flex-row flex-wrap">
-                <button
-                  className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
-                  onClick={() => linkShare()}
-                  title="Copiar link com filtros"
-                >
-                  <span className="mr-1">Partilhar</span>
-                  <FontAwesomeIcon className="link my-auto" icon={faShareAlt} />
-                </button>
-                <button
-                  className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
-                  onClick={() => resetFilters()}
-                  title="Remover filtros"
-                >
-                  <span className="mr-1">Limpar</span>
-                  <FontAwesomeIcon className="link my-auto" icon={faTimes} />
-                </button>
-              </div>
-            )}
+          {(selSubject || selStudent || selTeacher || selYear) && (
+            <div className="mb-2 flex flex-row flex-wrap">
+              <button
+                className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
+                onClick={() => linkShare()}
+                title="Copiar link com filtros"
+              >
+                <span className="mr-1">Partilhar</span>
+                <FontAwesomeIcon className="link my-auto" icon={faShareAlt} />
+              </button>
+              <button
+                className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
+                onClick={() => resetFilters()}
+                title="Remover filtros"
+              >
+                <span className="mr-1">Limpar</span>
+                <FontAwesomeIcon className="link my-auto" icon={faTimes} />
+              </button>
+            </div>
+          )}
 
           <CheckboxFilter values={categories} onChange={setCategories} />
 
@@ -391,7 +364,7 @@ const Notes = () => {
             defaultActiveKey={window.innerWidth >= 992 ? "grid" : "list"}
           >
             <div>
-              <Nav onSelect={() => setSelectedNote(null)}>
+              <Nav onSelect={() => setSelNote(null)}>
                 <Nav.Item className="mx-lg-0 ml-lg-0 d-none d-lg-block mx-auto">
                   <Nav.Link eventKey="grid" className="h5">
                     <FontAwesomeIcon icon={faTh} />
@@ -406,7 +379,7 @@ const Notes = () => {
                 </Nav.Item>
                 <PageNav
                   page={selPage}
-                  total={pageNumber}
+                  total={page}
                   handler={fetchPage}
                   className="mx-lg-0 ml-lg-auto mx-auto"
                 ></PageNav>
@@ -433,10 +406,7 @@ const Notes = () => {
                       </h4>
                     </div>
                   ) : (
-                    <GridView
-                      data={notes}
-                      setSelected={setSelectedNote}
-                    ></GridView>
+                    <GridView data={notes} setSelected={setSelNote}></GridView>
                   )}
                 </div>
               </Tab.Pane>
@@ -462,7 +432,7 @@ const Notes = () => {
                     <ListView
                       data={notes}
                       setSelYear={setSelYear}
-                      setSelectedSubject={setSelectedSubject}
+                      setSelSubject={setSelSubject}
                       setSelStudent={setSelStudent}
                       setSelTeacher={setSelTeacher}
                     ></ListView>
@@ -473,7 +443,7 @@ const Notes = () => {
           </Tab.Container>
           <PageNav
             page={selPage}
-            total={pageNumber}
+            total={page}
             handler={fetchPage}
             className="d-lg-none mx-auto mt-3"
           ></PageNav>
