@@ -63,6 +63,9 @@ const Login = () => {
               type="password"
               ref={passwordRef}
             />
+            <Link to={"/auth/forgot"} className="text-sm link link-primary ml-2">
+              Esqueceste-te da tua password?
+            </Link>
             <button
               className="btn btn-primary sm:btn-wide m-auto btn-block mt-10"
               type="submit"

@@ -16,6 +16,7 @@ from ._deps import (
     decode_token,
     REFRESH_TOKEN_TYPE,
     VERIFICATION_TOKEN_TYPE,
+    OperationSuccessfulResponse,
 )
 
 router = APIRouter()
@@ -75,15 +76,10 @@ async def refresh(
     return generate_response(db, user, device_login)
 
 
-class VerifyResponse(BaseModel):
-    status: Literal["success"]
-    message: str
-
-
 @router.get(
     "/verify",
     responses={401: {"description": "Invalid confirmation token"}},
-    response_model=VerifyResponse,
+    response_model=OperationSuccessfulResponse,
 )
 async def verify(
     token: str,
@@ -114,4 +110,6 @@ async def verify(
 
     crud.user.update(db, db_obj=user, obj_in={"active": True})
 
-    return VerifyResponse(status="success", message="Account verified successfully")
+    return OperationSuccessfulResponse(
+        status="success", message="Account verified successfully"
+    )
