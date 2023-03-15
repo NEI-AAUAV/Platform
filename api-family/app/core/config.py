@@ -14,12 +14,17 @@ class Settings(BaseSettings):
     PRODUCTION: bool = os.getenv("ENV") == "production"
 
     API_V1_STR: str = "/api/family/v1"
+    STATIC_STR: str = "/static/family"
 
     HOST: AnyHttpUrl = ("https://nei.web.ua.pt" if PRODUCTION else
                         "http://localhost:8000")
+    STATIC_URL: AnyHttpUrl = HOST + STATIC_STR
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["https://nei.web.ua.pt" if PRODUCTION else
-                                              "http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = (
+        ["https://nei.web.ua.pt"]
+        if PRODUCTION
+        else ["http://localhost", "http://localhost:8001", "http://localhost:8002"]
+    )
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:

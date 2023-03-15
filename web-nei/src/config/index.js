@@ -28,6 +28,7 @@ const config = {
     FAMILY_URL: `${BASE_URL}/api/family/v1`,
     RALLYTASCAS_URL: `${BASE_URL}/api/rallytascas/v1`,
     WS_URL : `${scheme.WS}${HOST}/api/nei/v1`,
+    GOOGLE_CALENDAR_URL: `https://www.googleapis.com/calendar/v3`
 }
 
 export default config;

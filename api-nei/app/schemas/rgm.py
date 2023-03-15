@@ -1,11 +1,14 @@
 from typing import Optional
 
 from pydantic import BaseModel
+from .types import MandateStr
+
 
 
 class RgmBase(BaseModel):
     category: str
-    mandate: Optional[int]
+    # Validate mandate to only allow 2020 or 2020/21
+    mandate: Optional[MandateStr]
     file: Optional[str]
 
 
@@ -21,7 +24,7 @@ class RgmUpdate():
 
 class RgmInDB(RgmBase):
     id: int
-    mandate: int
+    mandate: MandateStr
 
     class Config:
         orm_mode = True

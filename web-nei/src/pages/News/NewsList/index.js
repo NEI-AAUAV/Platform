@@ -30,7 +30,7 @@ const NewsList = (props) => {
                                 title={article.title}
                                 preTitle={article.category}
                                 text={article.created_at?.split('T').at(0)}
-                                anchor={"/noticia/" + article.id}
+                                anchor={"/news/" + article.id}
                                 animKey={animKey++}
                             ></ImageCard>
                         </Col>

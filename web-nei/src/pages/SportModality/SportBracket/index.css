@@ -1,0 +1,171 @@
+svg.bracket-svg .link {
+    stroke: hsl(var(--bc));
+    stroke-width: 2;
+    fill: none;
+}
+
+
+svg.bracket-svg {
+    position: absolute;
+    -webkit-transform-origin: top left;
+    transform-origin: top left;
+    overflow: visible;
+    user-select:none ;
+    /* needed to show footer */
+}
+
+.match--base-background {
+    fill: hsl(var(--b2) / 0.8);
+    stroke: hsl(var(--b2));
+    /* changes background to below cards */
+}
+
+.match--wrapper-background {
+    fill-opacity: 0;
+    shape-rendering: auto
+    /* adds no strong border to cards */
+}
+
+.match--wrapper-background.-underway {
+    fill: #ff0000;
+    fill-opacity: 1;
+    animation-name: pulse;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    /* needed to pulse animation work */
+}
+
+@keyframes pulse {/* animation while live */
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.match--identifier {
+    fill: #999;
+    font-size: 12px
+    /* Changes match ID*/
+}
+
+.match--seed {
+    fill: #23252d;
+    font-size: 10px;
+    letter-spacing: -0.5px;
+    text-shadow: none
+    /* Numbers corresponding to team
+    ID. They are going to be replaced by Logos images */
+}
+
+.match--seed-background {
+    fill: #787a80
+    /* Baackground color where should be Logos images*/
+}
+
+.match--player-score-background {
+    fill: #787a80
+    /* Baackground color of score*/
+}
+
+.match--player-score-background.-winner {
+    fill: #FF7324
+    /* color of winner in result*/ 
+}
+
+.match--station-background {
+    fill: #47484b;
+    opacity: 0.5
+    /* background color from element behind*/ 
+}
+
+.match--station-link:hover {
+    text-decoration: none
+    /* removes underlined from hours in next games*/ 
+}
+
+.match--station {
+    fill: #EEE;
+    font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    pointer-events: none
+    /* changes font to next games*/
+}
+
+.match--station .match--fa-icon {
+    font-size: 11px;
+    fill: #929499
+    /* influentiates hours written aboce next game
+    Probably because retires space from fa-icon
+    conclusion: Probably this is doing nothing*/
+}
+
+svg.match--player:not(:root) {
+    overflow: visible
+    /* add a strong line between teams inside match*/
+}
+
+.match--player-divider {
+    stroke: #444549;
+    stroke-width: 1px
+    /* add a strong line between teams inside match
+    didn't found differences between the above CSS and this one*/
+}
+
+.match--team-name {
+    fill: hsl(var(--pc));
+    font-size: 14px;
+    text-shadow: 1px 1px 1px #222
+    /*changes text font and*/
+}
+
+.match--score {
+    fill: hsl(var(--pc));
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #222
+     /*changes score font and color */
+}
+
+.match--player-score {
+    fill: #23252d;
+    font-size: 12px;
+    /*changes font of only above cards*/
+}
+
+.match--player-background {
+    fill: #58595e
+    /*changes color of only above cards*/
+}
+
+.match--fa-icon {
+    font-family: FontAwesome;
+    fill: #929499;
+    text-shadow: 1px 1px 1px #222;
+    font-size: 18px;
+    cursor: pointer
+    /*add a random square next to text written. Probably not necessary*/
+}
+
+.round-header-label text {
+    fill: #fff;
+    font-size: 16px;
+    font-weight: bold
+    /*changes font of header*/
+}
+
+.round-header-label.-editable:hover {
+    cursor: pointer
+    /*Transforms cursor on a pointer when hovering header*/
+}
+
+.round-header-label.-editable:hover text {
+    fill: #626262
+    /*Changes header color when hovering*/
+}

@@ -10,6 +10,6 @@ class TeamColaborator(Base):
         Integer,
         ForeignKey(settings.SCHEMA_NAME + '.user.id'),
         primary_key=True)
-    mandate = Column(Integer, primary_key=True)
+    mandate = Column(String(7), primary_key=True)
 
     user = relationship("User")

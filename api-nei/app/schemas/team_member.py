@@ -5,10 +5,13 @@ from typing_extensions import Annotated
 
 from .team_role import TeamRoleInDB
 from .user import UserInDB
+from .types import MandateStr
+
 
 
 class TeamMemberBase(BaseModel):
-    mandate: constr(max_length=7)
+    # Validate mandate to only allow 2020 or 2020/21
+    mandate: MandateStr
     user_id: int
     role_id: int
 
@@ -20,7 +23,7 @@ class TeamMemberCreate(TeamMemberBase):
 
 class TeamMemberUpdate(TeamMemberBase):
     """Properties to receive via API on creation."""
-    mandate: Optional[constr(max_length=7)]
+    mandate: Optional[MandateStr]
     user_id: Optional[int]
     role_id: Optional[int]
 

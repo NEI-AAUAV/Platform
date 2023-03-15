@@ -13,7 +13,7 @@ RGM = [
     {
         "id": 1,
         "category": "pao",
-        "mandate": 4,
+        "mandate": "2020/21",
         "file": "/nei.png"
     },
     {
@@ -29,6 +29,7 @@ def setup_database(db: SessionTesting):
     for rgms in RGM:
         db.add(Rgm(**rgms))
     db.commit()
+
 
 def test_category(client: TestClient) -> None:
     category = 'pao'

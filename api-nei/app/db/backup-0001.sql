@@ -202,6 +202,7 @@ INSERT INTO nei."user" (id, email, name, surname, gender, iupi, nmec, image, cur
 (197, 'alexandrecotorobai@ua.pt', 'Alexandre', 'Cotorobai', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', FALSE),
 (198, 'borgesjps@ua.pt', 'João', 'Borges', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', FALSE);
 
+SELECT pg_catalog.setval('nei.user_id_seq', 198, false);
 
 --
 -- Data for Name: faina_role; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -219,12 +220,15 @@ INSERT INTO nei.faina_role (id, name, weight) VALUES
 (9, 'Varina', 6),
 (10, 'Mestre de Curso', 6);
 
+SELECT pg_catalog.setval('nei.faina_role_id_seq', 10, false);
+
 
 --
 -- Data for Name: faina; Type: TABLE DATA; Schema: nei; Owner: postgres
 --
 
-INSERT INTO nei.faina (id, image, year) VALUES
+
+INSERT INTO nei.faina (id, image, mandate) VALUES
 (1, NULL, '2012/13'),
 (2, NULL, '2013/14'),
 (3, NULL, '2014/15'),
@@ -236,10 +240,12 @@ INSERT INTO nei.faina (id, image, year) VALUES
 (9, '/faina/team/2020.jpg', '2020/21'),
 (10, '/faina/team/2021.jpg', '2021/22');
 
+SELECT pg_catalog.setval('nei.faina_id_seq', 10, false);
 
 --
 -- Data for Name: subject; Type: TABLE DATA; Schema: nei; Owner: postgres
 --
+
 
 INSERT INTO nei.subject (code, name, curricular_year, semester, short, discontinued, optional) VALUES
 (2373, 'Empreendedorismo', 3, 3, 'E', 0, 1),
@@ -310,6 +316,9 @@ INSERT INTO nei.team_role (id, name, weight) VALUES
 (17, 'Vogal da Secção da Administração Interna e Merchandising', 4),
 (18, 'Vogal da Secção da Comunicação e Imagem', 4);
 
+SELECT pg_catalog.setval('nei.team_role_id_seq', 18, false);
+
+
 --
 -- Data for Name: teacher; Type: TABLE DATA; Schema: nei; Owner: postgres
 --
@@ -350,6 +359,8 @@ INSERT INTO nei.teacher (id, name, personal_page) VALUES
 (34, 'Cristina Isabel Assis de Morais Miguéns', 'https://www.ua.pt/pt/p/10333350'),
 (40, 'Pétia Georgieva Georgieva', 'https://www.ua.pt/pt/p/10321408');
 
+SELECT pg_catalog.setval('nei.teacher_id_seq', 40, false);
+
 
 --
 -- Data for Name: senior; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -360,6 +371,8 @@ INSERT INTO nei.senior (id, year, course, image) VALUES
 (2, 2020, 'MEI', '/senior/mei/2020.jpg'),
 (3, 2021, 'LEI', NULL),
 (4, 2021, 'MEI', NULL);
+
+SELECT pg_catalog.setval('nei.senior_id_seq', 4, false);
 
 
 --
@@ -483,6 +496,8 @@ INSERT INTO nei.faina_member (id, member_id, faina_id, role_id) VALUES
 (106, 134, 10, 3),
 (107, 158, 10, 4);
 
+SELECT pg_catalog.setval('nei.faina_member_id_seq', 107, false);
+
 
 --
 -- Data for Name: history; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -508,6 +523,8 @@ INSERT INTO nei.merch (id, name, image, price, number_of_items) VALUES
 (3, 'Casaco de curso', '/merch/casaco.png', 16.5, 0),
 (4, 'Sweat de curso', '/merch/sweat.png', 18, 0),
 (5, 'Emblema NEI', '/merch/emblemanei.png', 2.5, 0);
+
+SELECT pg_catalog.setval('nei.merch_id_seq', 5, false);
 
 
 --
@@ -542,11 +559,13 @@ INSERT INTO nei.news (id, header, status, title, category, content, published_by
 (25, '/news/nei_lol.png', 'ACTIVE', 'Torneio Nacional de LoL', 'EVENT', 'Como a vida não é só trabalho, vem divertir-te a jogar e representar a Universidade de Aveiro em simultâneo! O NEEEC-FEUP está a organizar um torneio de League of Legends inter-universidades a nível nacional, e a UA está apta para participar.<br/>Existirá uma ronda de qualificação em Aveiro para determinar as 2 equipas que participam nacionalmente. O torneio é de inscrição gratuita e garante prémios para as equipas que conquistem o 1º e 2º lugar!<br/>Forma equipa e mostra o que vales!<br/><a href=\http://tiny.cc/torneioLOL\ target=\_blank\>Inscreve-te</a>!', 94, '2020-05-13', NULL, NULL, 1),
 (26, '/news/202122/96.jpg', 'ACTIVE', 'Roots Beach Club', 'EVENT', '<p>A primeira semana de aulas vai terminar em grande!</p><p>Na sexta-feira vem ao Roots Beach Club para uma beach party incrível.</p><p>A pulseira do evento garante o transporte desde Aveiro até à Praia da Barra, um teste antigénio à covid e a entrada no bar com uma bebida incluída!</p><p>Reserva a tua pulseira terça feira das 16h às 19h na sala 4.1.32.</p>', 83, '2021-10-10', NULL, NULL, 1);
 
+SELECT pg_catalog.setval('nei.news_id_seq', 26, false);
 
 
 --
 -- Data for Name: note; Type: TABLE DATA; Schema: nei; Owner: postgres
 --
+
 
 INSERT INTO nei.note (id, subject_id, author_id, teacher_id, year, name, location, summary, tests, bibliography, slides, exercises, projects, notebook, content, created_at, size) VALUES
 (1, 40337, NULL, 5, 2014, 'MPEI Exemplo Teste 2014', '/note/segundo_ano/primeiro_semestre/mpei/MP_Exemplo_Teste.pdf', 0, 1, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 1),
@@ -817,6 +836,7 @@ INSERT INTO nei.note (id, subject_id, author_id, teacher_id, year, name, locatio
 (382, 14817, 140, 29, 2020, 'Slides teóricos MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_TPs.zip', 0, 0, 0, 1, 0, 0, 0, NULL, '2022-01-31 20:37:14', NULL),
 (385, 14817, 140, 29, 2020, 'Formulário MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_Form.pdf', 1, 0, 0, 0, 0, 0, 0, NULL, '2022-01-31 20:37:14', NULL);
 
+SELECT pg_catalog.setval('nei.note_id_seq', 385, false);
 
 
 --
@@ -827,6 +847,7 @@ INSERT INTO nei.partner (id, header, company, description, content, link, banner
 (1, '/partner/LavandariaFrame.jpg', 'Lavandaria Portuguesa', 'A Lavandaria Portuguesa encontra-se aliada ao NEI desde março de 2018, ajudando o núcleo na área desportiva com lavagens de equipamentos dos atletas que representam o curso.', NULL, 'https://www.facebook.com/alavandariaportuguesa.pt/', NULL, NULL, NULL),
 (2, '/partner/OlisipoFrame.jpg', 'Olisipo', 'Fundada em 1994, a Olisipo é a única empresa portuguesa com mais de 25 anos de experiência dedicada à Gestão de Profissionais na área das Tecnologias de Informação.\n\nSomos gestores de carreira de mais de 500 profissionais de TI e temos Talent Managers capazes de influenciar o sucesso da carreira dos nossos colaboradores e potenciar o crescimento dos nossos clientes.\n\nVem conhecer um Great Place to Work® e uma das 30 melhores empresas para trabalhar em Portugal.', NULL, 'https://bit.ly/3KVT8zs', 'https://bit.ly/3KVT8zs', '/partner/banners/Olisipo.png', '2023-01-31 23:59:59');
 
+SELECT pg_catalog.setval('nei.partner_id_seq', 3, false);
 
 
 --
@@ -844,65 +865,69 @@ INSERT INTO nei.redirect (id, alias, redirect) VALUES
 (8, 'be', '/integracao/202122/peddypaper/be.jpg'),
 (9, 'socorro', '/integracao/202122/guiasobrevivencia.pdf');
 
+SELECT pg_catalog.setval('nei.redirect_id_seq', 9, false);
+
 
 --
 -- Data for Name: rgm; Type: TABLE DATA; Schema: nei; Owner: postgres
 --
 
 INSERT INTO nei.rgm (id, category, mandate, file) VALUES
-(1, 'RAC', 2013, '/rgm/RAC/2013/RAC_NESI2013.pdf'),
-(2, 'RAC', 2014, '/rgm/RAC/2014/RAC_NEI2014.pdf'),
-(3, 'RAC', 2015, '/rgm/RAC/2015/RAC_NEI2015.pdf'),
-(4, 'RAC', 2016, '/rgm/RAC/2016/RAC_NEI2016.pdf'),
-(5, 'RAC', 2017, '/rgm/RAC/2017/RAC_NEI2017.pdf'),
-(6, 'RAC', 2018, '/rgm/RAC/2018/RAC_NEI2018.pdf'),
-(7, 'RAC', 2019, '/rgm/RAC/2019/RAC_NEI2019.pdf'),
-(8, 'PAO', 2013, '/rgm/PAO/2013/PAO_NESI2013.pdf'),
-(9, 'PAO', 2014, '/rgm/PAO/2014/PAO_NESI2014.pdf'),
-(10, 'PAO', 2015, '/rgm/PAO/2015/PAO_NEI2015.pdf'),
-(11, 'PAO', 2016, '/rgm/PAO/2016/PAO_NEI2016.pdf'),
-(12, 'PAO', 2017, '/rgm/PAO/2017/PAO_NEI2017.pdf'),
-(13, 'PAO', 2018, '/rgm/PAO/2018/PAO_NEI2018.pdf'),
-(14, 'PAO', 2019, '/rgm/PAO/2019/PAO_NEI2019.pdf'),
-(15, 'PAO', 2020, '/rgm/PAO/2020/PAO_NEI2020.pdf'),
-(16, 'ATAS', 2013, '/rgm/ATAS/2013/5.pdf'),
-(17, 'ATAS', 2013, '/rgm/ATAS/2013/3.pdf'),
-(18, 'ATAS', 2013, '/rgm/ATAS/2013/1.pdf'),
-(19, 'ATAS', 2013, '/rgm/ATAS/2013/4.pdf'),
-(20, 'ATAS', 2013, '/rgm/ATAS/2013/2.pdf'),
-(21, 'ATAS', 2014, '/rgm/ATAS/2014/2.pdf'),
-(22, 'ATAS', 2014, '/rgm/ATAS/2014/4.pdf'),
-(23, 'ATAS', 2014, '/rgm/ATAS/2014/3.pdf'),
-(24, 'ATAS', 2014, '/rgm/ATAS/2014/1.pdf'),
-(25, 'ATAS', 2014, '/rgm/ATAS/2014/5.pdf'),
-(26, 'ATAS', 2015, '/rgm/ATAS/2015/2.pdf'),
-(27, 'ATAS', 2015, '/rgm/ATAS/2015/3.pdf'),
-(28, 'ATAS', 2015, '/rgm/ATAS/2015/1.pdf'),
-(29, 'ATAS', 2016, '/rgm/ATAS/2016/2.pdf'),
-(30, 'ATAS', 2016, '/rgm/ATAS/2016/1.pdf'),
-(31, 'ATAS', 2017, '/rgm/ATAS/2017/3.pdf'),
-(32, 'ATAS', 2017, '/rgm/ATAS/2017/2.pdf'),
-(33, 'ATAS', 2017, '/rgm/ATAS/2017/1.pdf'),
-(34, 'ATAS', 2018, '/rgm/ATAS/2018/4.pdf'),
-(35, 'ATAS', 2018, '/rgm/ATAS/2018/2.pdf'),
-(36, 'ATAS', 2018, '/rgm/ATAS/2018/1.pdf'),
-(37, 'ATAS', 2018, '/rgm/ATAS/2018/3.pdf'),
-(38, 'ATAS', 2019, '/rgm/ATAS/2019/1.pdf'),
-(39, 'ATAS', 2019, '/rgm/ATAS/2019/2.pdf'),
-(40, 'ATAS', 2019, '/rgm/ATAS/2019/3.pdf'),
-(41, 'ATAS', 2019, '/rgm/ATAS/2019/4.pdf'),
-(42, 'ATAS', 2020, '/rgm/ATAS/2020/1.pdf'),
-(43, 'RAC', 2020, '/rgm/RAC/2020/RAC_NEI2020.pdf'),
-(44, 'ATAS', 2020, '/rgm/ATAS/2020/2.pdf'),
-(45, 'PAO', 2021, '/rgm/PAO/2021/PAO_NEI2021.pdf'),
-(46, 'ATAS', 2021, '/rgm/ATAS/2021/1.pdf'),
-(47, 'RAC', 2021, '/rgm/RAC/2021/RAC_NEI2021.pdf'),
-(48, 'ATAS', 2021, '/rgm/ATAS/2021/2.pdf'),
-(49, 'PAO', 2022, '/rgm/PAO/2022/PAO_NEI2022.pdf'),
-(50, 'ATAS', 2022, '/rgm/ATAS/2022/1.pdf'),
-(51, 'ATAS', 2022, '/rgm/ATAS/2022/2.pdf'),
-(52, 'PAO', 2022, '/rgm/PAO/2022/PAO_NEI2022-23.pdf'),
-(53, 'RAC', 2022, '/rgm/RAC/2022/RAC_NEI2022.pdf');
+(1, 'RAC', '2013', '/rgm/RAC/2013/RAC_NESI2013.pdf'),
+(2, 'RAC', '2014', '/rgm/RAC/2014/RAC_NEI2014.pdf'),
+(3, 'RAC', '2015', '/rgm/RAC/2015/RAC_NEI2015.pdf'),
+(4, 'RAC', '2016', '/rgm/RAC/2016/RAC_NEI2016.pdf'),
+(5, 'RAC', '2017', '/rgm/RAC/2017/RAC_NEI2017.pdf'),
+(6, 'RAC', '2018', '/rgm/RAC/2018/RAC_NEI2018.pdf'),
+(7, 'RAC', '2019', '/rgm/RAC/2019/RAC_NEI2019.pdf'),
+(8, 'PAO', '2013', '/rgm/PAO/2013/PAO_NESI2013.pdf'),
+(9, 'PAO', '2014', '/rgm/PAO/2014/PAO_NESI2014.pdf'),
+(10, 'PAO', '2015', '/rgm/PAO/2015/PAO_NEI2015.pdf'),
+(11, 'PAO', '2016', '/rgm/PAO/2016/PAO_NEI2016.pdf'),
+(12, 'PAO', '2017', '/rgm/PAO/2017/PAO_NEI2017.pdf'),
+(13, 'PAO', '2018', '/rgm/PAO/2018/PAO_NEI2018.pdf'),
+(14, 'PAO', '2019', '/rgm/PAO/2019/PAO_NEI2019.pdf'),
+(15, 'PAO', '2020', '/rgm/PAO/2020/PAO_NEI2020.pdf'),
+(16, 'ATAS', '2013', '/rgm/ATAS/2013/5.pdf'),
+(17, 'ATAS', '2013', '/rgm/ATAS/2013/3.pdf'),
+(18, 'ATAS', '2013', '/rgm/ATAS/2013/1.pdf'),
+(19, 'ATAS', '2013', '/rgm/ATAS/2013/4.pdf'),
+(20, 'ATAS', '2013', '/rgm/ATAS/2013/2.pdf'),
+(21, 'ATAS', '2014', '/rgm/ATAS/2014/2.pdf'),
+(22, 'ATAS', '2014', '/rgm/ATAS/2014/4.pdf'),
+(23, 'ATAS', '2014', '/rgm/ATAS/2014/3.pdf'),
+(24, 'ATAS', '2014', '/rgm/ATAS/2014/1.pdf'),
+(25, 'ATAS', '2014', '/rgm/ATAS/2014/5.pdf'),
+(26, 'ATAS', '2015', '/rgm/ATAS/2015/2.pdf'),
+(27, 'ATAS', '2015', '/rgm/ATAS/2015/3.pdf'),
+(28, 'ATAS', '2015', '/rgm/ATAS/2015/1.pdf'),
+(29, 'ATAS', '2016', '/rgm/ATAS/2016/2.pdf'),
+(30, 'ATAS', '2016', '/rgm/ATAS/2016/1.pdf'),
+(31, 'ATAS', '2017', '/rgm/ATAS/2017/3.pdf'),
+(32, 'ATAS', '2017', '/rgm/ATAS/2017/2.pdf'),
+(33, 'ATAS', '2017', '/rgm/ATAS/2017/1.pdf'),
+(34, 'ATAS', '2018', '/rgm/ATAS/2018/4.pdf'),
+(35, 'ATAS', '2018', '/rgm/ATAS/2018/2.pdf'),
+(36, 'ATAS', '2018', '/rgm/ATAS/2018/1.pdf'),
+(37, 'ATAS', '2018', '/rgm/ATAS/2018/3.pdf'),
+(38, 'ATAS', '2019', '/rgm/ATAS/2019/1.pdf'),
+(39, 'ATAS', '2019', '/rgm/ATAS/2019/2.pdf'),
+(40, 'ATAS', '2019', '/rgm/ATAS/2019/3.pdf'),
+(41, 'ATAS', '2019', '/rgm/ATAS/2019/4.pdf'),
+(42, 'ATAS', '2020', '/rgm/ATAS/2020/1.pdf'),
+(43, 'RAC', '2020', '/rgm/RAC/2020/RAC_NEI2020.pdf'),
+(44, 'ATAS', '2020', '/rgm/ATAS/2020/2.pdf'),
+(45, 'PAO', '2021', '/rgm/PAO/2021/PAO_NEI2021.pdf'),
+(46, 'ATAS', '2021', '/rgm/ATAS/2021/1.pdf'),
+(47, 'RAC', '2021', '/rgm/RAC/2021/RAC_NEI2021.pdf'),
+(48, 'ATAS', '2021', '/rgm/ATAS/2021/2.pdf'),
+(49, 'PAO', '2022', '/rgm/PAO/2022/PAO_NEI2022.pdf'),
+(50, 'ATAS', '2022', '/rgm/ATAS/2022/1.pdf'),
+(51, 'ATAS', '2022', '/rgm/ATAS/2022/2.pdf'),
+(52, 'RAC', '2022', '/rgm/RAC/2022/RAC_NEI2022.pdf'),
+(53, 'PAO', '2022/23', '/rgm/PAO/2022/PAO_NEI2022/23.pdf');
+
+SELECT pg_catalog.setval('nei.rgm_id_seq', 53, false);
 
 
 --
@@ -949,63 +974,64 @@ INSERT INTO nei.senior_student (senior_id, user_id, quote, image) VALUES
 --
 
 INSERT INTO nei.team_colaborator (user_id, mandate) VALUES
-(137, 2021),
-(150, 2021),
-(126, 2021),
-(127, 2021),
-(148, 2021),
-(132, 2021),
-(149, 2021),
-(133, 2021),
-(147, 2021),
-(83, 2022),
-(160, 2022),
-(188, 2022),
-(189, 2022),
-(190, 2022),
-(191, 2022),
-(192, 2022),
-(193, 2022),
-(194, 2022),
-(195, 2022),
-(196, 2022),
-(197, 2022),
-(198, 2022),
-(161, 2022-23),
-(162, 2022-23),
-(163, 2022-23),
-(164, 2022-23),
-(165, 2022-23),
-(166, 2022-23),
-(167, 2022-23),
-(168, 2022-23),
-(169, 2022-23),
-(170, 2022-23),
-(171, 2022-23),
-(172, 2022-23),
-(173, 2022-23),
-(174, 2022-23),
-(175, 2022-23),
-(176, 2022-23),
-(177, 2022-23),
-(178, 2022-23),
-(179, 2022-23),
-(180, 2022-23),
-(181, 2022-23),
-(182, 2022-23),
-(183, 2022-23),
-(184, 2022-23),
-(185, 2022-23),
-(186, 2022-23),
-(187, 2022-23),
-(190, 2022-23),
-(191, 2022-23),
-(192, 2022-23),
-(193, 2022-23),
-(194, 2022-23),
-(195, 2022-23),
-(196, 2022-23),
-(197, 2022-23);
+(137, '2021'),
+(150, '2021'),
+(126, '2021'),
+(127, '2021'),
+(148, '2021'),
+(132, '2021'),
+(149, '2021'),
+(133, '2021'),
+(147, '2021'),
+(83, '2022'),
+(160, '2022'),
+(188, '2022'),
+(189, '2022'),
+(190, '2022'),
+(191, '2022'),
+(192, '2022'),
+(193, '2022'),
+(194, '2022'),
+(195, '2022'),
+(196, '2022'),
+(197, '2022'),
+(198, '2022'),
+(161, '2022/23'),
+(162, '2022/23'),
+(163, '2022/23'),
+(164, '2022/23'),
+(165, '2022/23'),
+(166, '2022/23'),
+(167, '2022/23'),
+(168, '2022/23'),
+(169, '2022/23'),
+(170, '2022/23'),
+(171, '2022/23'),
+(172, '2022/23'),
+(173, '2022/23'),
+(174, '2022/23'),
+(175, '2022/23'),
+(176, '2022/23'),
+(177, '2022/23'),
+(178, '2022/23'),
+(179, '2022/23'),
+(180, '2022/23'),
+(181, '2022/23'),
+(182, '2022/23'),
+(183, '2022/23'),
+(184, '2022/23'),
+(185, '2022/23'),
+(186, '2022/23'),
+(187, '2022/23'),
+(190, '2022/23'),
+(191, '2022/23'),
+(192, '2022/23'),
+(193, '2022/23'),
+(194, '2022/23'),
+(195, '2022/23'),
+(196, '2022/23'),
+(197, '2022/23');
+
 
 --
 -- Data for Name: team_member; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -1148,20 +1174,22 @@ INSERT INTO nei.team_member (id, header, mandate, user_id, role_id) VALUES
 (391, '/team/2022/12.jpg', '2022', 74, 16),
 (394, '/team/2022/13.jpg', '2022', 157, 12),
 (397, '/team/2022/14.jpg', '2022', 128, 6),
-(398, '/team/2022-23/1.jpg', '2022-23', 139, 1),
-(399, '/team/2022-23/2.jpg', '2022-23', 156, 4), 
-(400, '/team/2022-23/3.jpg', '2022-23', 74, 16), 
-(401, '/team/2022-23/4.jpg', '2022-23', 153, 15),
-(402, '/team/2022-23/5.jpg', '2022-23', 198, 15),
-(403, '/team/2022-23/6.jpg', '2022-23', 154, 2),
-(404, '/team/2022-23/7.jpg', '2022-23', 135, 12), 
-(405, '/team/2022-23/8.jpg', '2022-23', 155, 3), 
-(406, '/team/2022-23/9.jpg', '2022-23', 133, 12), 
-(407, '/team/2022-23/10.jpg', '2022-23', 160, 5), 
-(408, '/team/2022-23/11.jpg', '2022-23', 138, 11),
-(409, '/team/2022-23/12.jpg', '2022-23', 159, 6),
-(410, '/team/2022-23/13.jpg', '2022-23', 157, 6),
-(411, '/team/2022-23/14.jpg', '2022-23', 128, 6);
+(398, '/team/2022/23/1.jpg', '2022/23', 139, 1),
+(399, '/team/2022/23/2.jpg', '2022/23', 156, 4), 
+(400, '/team/2022/23/3.jpg', '2022/23', 74, 16), 
+(401, '/team/2022/23/4.jpg', '2022/23', 153, 15),
+(402, '/team/2022/23/5.jpg', '2022/23', 198, 15),
+(403, '/team/2022/23/6.jpg', '2022/23', 154, 2),
+(404, '/team/2022/23/7.jpg', '2022/23', 135, 12), 
+(405, '/team/2022/23/8.jpg', '2022/23', 155, 3), 
+(406, '/team/2022/23/9.jpg', '2022/23', 133, 12), 
+(407, '/team/2022/23/10.jpg', '2022/23', 160, 5), 
+(408, '/team/2022/23/11.jpg', '2022/23', 138, 11),
+(409, '/team/2022/23/12.jpg', '2022/23', 159, 6),
+(410, '/team/2022/23/13.jpg', '2022/23', 157, 6),
+(411, '/team/2022/23/14.jpg', '2022/23', 128, 6);
+
+SELECT pg_catalog.setval('nei.team_member_id_seq', 411, false);
 
 
 --
@@ -1177,6 +1205,8 @@ INSERT INTO nei.video (id, youtube_id, title, subtitle, image, created_at, playl
 (6, '3hjRgoIItYk', 'Anchorage', 'Palestra', '/videos/anchorage.jpg', '2021-04-01 00:00:00', 0),
 (7, 'GmNvZC6iv1Y', 'Git', 'Workshop', '/videos/git.jpg', '2020-04-28 00:00:00', 0);
 
+SELECT pg_catalog.setval('nei.video_id_seq', 7, false);
+
 
 --
 -- Data for Name: video_tag; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -1189,6 +1219,8 @@ INSERT INTO nei.video_tag (id, name, color) VALUES
 (4, 'MEI', 'rgb(1, 90, 101)'),
 (5, 'Workshops', 'rgb(11, 66, 21)'),
 (6, 'Palestras', 'rgb(20, 122, 38)');
+
+SELECT pg_catalog.setval('nei.video_tag_id_seq', 6, false);
 
 
 --

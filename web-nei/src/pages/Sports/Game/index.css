@@ -1,5 +1,7 @@
 .game {
     margin-top: 2rem;
+    border-radius: 15px;
+    background-color: rgb(250, 250, 250);
 }
 
 .game-date {
@@ -17,10 +19,4 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
-}
-
-.col-image-wrapper {
-    background-color: yellow;
-    min-height: 100%;
-    width: 100%;
 }

@@ -30,7 +30,7 @@ def create_senior(
     """
     senior = crud.senior.get(
         db=db, year=senior_create_in.year, course=senior_create_in.course)
-    if (senior):
+    if senior:
         raise HTTPException(status_code=400, detail="Senior already exist!")
     return crud.senior.create(db=db, obj_in=senior_create_in)
 
@@ -42,7 +42,7 @@ def update_senior(
     """
     Update a senior row in the database.
     """
-    return crud.senior.update(db=db, obj_in=senior_update_in, db_obj=db.get(Senior, (year, course)))
+    return crud.senior.update(db=db, obj_in=senior_update_in, db_obj=db.get(Senior, (year, course.upper())))
 
 
 @router.get("/course", status_code=200, response_model=List[str])
@@ -57,8 +57,7 @@ def get_senior_course_years(
     *, db: Session = Depends(deps.get_db),
     course: str
 ) -> Any:
-    return crud.senior.get_course_year(db=db, course=course)
-
+    return crud.senior.get_course_year(db=db, course=course.upper())
 
 
 @router.get("/{course}/{year}", status_code=200, response_model=SeniorInDB)
@@ -69,4 +68,4 @@ def get_senior_by(
     """
     Return senior information from a specific `course` and `year`.
     """
-    return crud.senior.get_by(db=db, course=course, year=year)
+    return crud.senior.get_by(db=db, course=course.upper(), year=year)

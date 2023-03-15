@@ -60,6 +60,8 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE: timedelta = timedelta(days=7)
     ## How long the email confirmation tokens are valid for
     CONFIRMATION_TOKEN_EXPIRE: timedelta = timedelta(days=1)
+    ## How long the password reset tokens are valid for
+    PASSWORD_RESET_TOKEN_EXPIRE = timedelta(hours=1)
     ## Algorithm to use when signing JWT tokens
     JWT_ALGORITHM: str = "ES512"
 
@@ -77,6 +79,12 @@ class Settings(BaseSettings):
     EMAIL_SMTP_USER: str = os.getenv("EMAIL_SMTP_USER")
     ## Password to use for authentication with the smtp server
     EMAIL_SMTP_PASSWORD: str = os.getenv("EMAIL_SMTP_PASSWORD")
+    ## The endpoint to point account verifications links to
+    EMAIL_ACCOUNT_VERIFY_ENDPOINT: str = os.getenv(
+        "EMAIL_ACCOUNT_VERIFY_ENDPOINT", "/auth/verify"
+    )
+    ## The endpoint to point password reset links to
+    PASSWORD_RESET_ENDPOINT: str = os.getenv("PASSWORD_RESET_ENDPOINT", "/auth/reset")
 
     class Config:
         case_sensitive = True
