@@ -80,7 +80,6 @@ Send
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
-    logger.info("CONECTEI")
     try:
         while True:
             data = await websocket.receive_json()
