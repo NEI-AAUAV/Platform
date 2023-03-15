@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi import APIRouter, Depends, HTTPException, Security, BackgroundTasks
+import requests
 from sqlalchemy.orm import Session
 from typing import Any, Optional
 
@@ -24,4 +25,11 @@ async def update_match(
     db: Session = Depends(deps.get_db),
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
-    return crud.match.update(db, id=id, obj_in=match_in)
+    data = crud.match.update(db, id=id, obj_in=match_in)
+    BackgroundTasks.add_task(ws_send_update, data)
+    return data
+
+
+def ws_send_update(data):
+    requests.post("http://localhost:8000/api/nei/v1/ws/broadcast")
+    
