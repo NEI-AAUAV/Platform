@@ -93,6 +93,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 @router.post("/ws/broadcast", status_code=200)
 async def websocket_broadcast(*, data_in: dict = Body()):
+    logger.info(data_in)
     await manager.broadcast(connection_type=ConnectionType.GENERAL, message=data_in)
     return {"status": "success", "message": "All websockets were notified."}
    

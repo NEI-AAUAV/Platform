@@ -7,6 +7,9 @@ from app import crud
 from app.api import auth, deps
 from app.schemas.match import Match, MatchUpdate, MatchList
 from typing import Any
+import orjson
+from app.core.config import settings
+
 router = APIRouter()
 
 
@@ -31,12 +34,14 @@ async def update_match(
     background_tasks: BackgroundTasks,
 ) -> any:
     data = MatchList(data = crud.match.update(db, id=id, obj_in=match_in))
-    background_tasks.add_task(ws_send_update, data.dict())
+                                                # not my fault we're using datetime
+    background_tasks.add_task(ws_send_update, orjson.loads(orjson.dumps(data.dict()).decode()))
     return data
 
 
 def ws_send_update(data):
-    requests.post("http://api_nei:8000/api/nei/v1/ws/broadcast", json=data)
+    print(type(data))
+    requests.post(f"http://{settings.API_NEI_SERVER}:8000/api/nei/v1/ws/broadcast", json=data)
     
 """ jic
 
@@ -50,6 +55,7 @@ async def test(
     match_in: dict,
     background_tasks: BackgroundTasks,
 ) -> Any:
+    logger.info(match_in)
     background_tasks.add_task(ws_send_update, match_in)
     return match_in
 """
