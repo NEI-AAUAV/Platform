@@ -1,6 +1,6 @@
 import pytest
 from typing import Generator, Any
-
+import requests
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from fastapi.responses import ORJSONResponse
@@ -14,6 +14,7 @@ from app.api.auth import verify_scopes
 from app.api.api import api_v1_router
 from app.core.config import settings
 from app.db.base_class import Base
+from app.api.api_v1.match import ws_send_update
 
 # Since we import app.main, the code in it will be executed,
 # including the definition of the table models.
@@ -99,8 +100,15 @@ def client(
             "scopes": ["admin"],
         }
 
+    def _ws_send_update(data):
+        data = requests.post("http://localhost:8000/api/nei/v1/ws/broadcast", data)
+        print(data)
+        assert data["status"] == "success"
+
     app.dependency_overrides[get_db] = _get_test_db
     app.dependency_overrides[verify_scopes] = _verify_scopes
+    app.dependency_overrides[ws_send_update] = _ws_send_update
+
     with TestClient(app) as client:
         yield client
     app.dependency_overrides.clear()

@@ -2,18 +2,18 @@ from fastapi import APIRouter, Depends, HTTPException, Security, BackgroundTasks
 import requests
 from sqlalchemy.orm import Session
 from typing import List
-
+from loguru import logger
 from app import crud
 from app.api import auth, deps
-from app.schemas.match import Match, MatchUpdate
-
+from app.schemas.match import Match, MatchUpdate, MatchList
+from typing import Any
 router = APIRouter()
 
 
 @router.put(
     "/{id}",
     status_code=200,
-    response_model=List[Match],
+    response_model=MatchList,
     responses={
         404: {
             "description": "Match Not Found / "
@@ -30,11 +30,26 @@ async def update_match(
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
     background_tasks: BackgroundTasks,
 ) -> any:
-    data = crud.match.update(db, id=id, obj_in=match_in)
-    background_tasks.add_task(ws_send_update, data)
+    data = MatchList(data = crud.match.update(db, id=id, obj_in=match_in))
+    background_tasks.add_task(ws_send_update, data.dict())
     return data
 
 
 def ws_send_update(data):
-    requests.post("http://localhost:8000/api/nei/v1/ws/broadcast")
+    requests.post("http://api_nei:8000/api/nei/v1/ws/broadcast", json=data)
     
+""" jic
+
+@router.post(
+    "/test",
+    status_code=200,
+    response_model=Any,
+)
+async def test(
+    *,
+    match_in: dict,
+    background_tasks: BackgroundTasks,
+) -> Any:
+    background_tasks.add_task(ws_send_update, match_in)
+    return match_in
+"""

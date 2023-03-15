@@ -78,14 +78,12 @@ Send
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
-    logger.info("CONECTEI")
     try:
         while True:
             data = await websocket.receive_json()
             logger.info(data)
             match data["topic"]:
                 case "LIVE_GAME":
-                    print("LIVE_GAME")
                     logger.info("LIVE_GAME", data)
                     await websocket.send_json({"topic": "LIVE_GAMES", "game": {"id": 1, "team1": 'NEI', "team2": "NEEET"}})
 
