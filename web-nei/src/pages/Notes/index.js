@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Tab, Nav, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faTh,
-  faThList,
   faTimes,
   faShareAlt,
 } from "@fortawesome/free-solid-svg-icons";
@@ -18,9 +16,18 @@ import data from "./data";
 
 import Autocomplete from "components/Autocomplete";
 
+import classname from "classname";
 import service from "services/NEIService";
+import { FilePDFIcon, FolderZipIcon, GridViewIcon, ViewListIcon } from "assets/icons/google";
+import { GithubIcon, GoogleDriveIcon } from "assets/icons/social";
+
+const VIEWS = {
+  GRID: 1,
+  LIST: 2,
+};
 
 const Notes = () => {
+  const [view, setView] = useState(VIEWS.GRID);
   const [categories, setCategories] = useState(
     data.categories.map((c) => ({ ...c, checked: true }))
   );
@@ -115,29 +122,29 @@ const Notes = () => {
             items.map((note) => {
               if (note.location.endsWith(".pdf")) {
                 note.type = {
-                  download_caption: "Descarregar",
-                  icon_display: "fas file-pdf",
-                  icon_download: "fas cloud-download-alt",
+                  caption: "Descarregar",
+                  Icon: FilePDFIcon,
+                  download: true,
                 };
               } else if (note.location.endsWith(".zip")) {
                 note.type = {
-                  download_caption: "Descarregar",
-                  icon_display: "fas folder",
-                  icon_download: "fas cloud-download-alt",
+                  caption: "Descarregar",
+                  Icon: FolderZipIcon,
+                  download: true,
                 };
               } else if (note.location.startsWith("https://github.com/")) {
                 note.type = {
-                  download_caption: "Repositório",
-                  icon_display: "fab github",
-                  icon_download: "fab github",
+                  caption: "Repositório",
+                  Icon: GithubIcon,
+                  download: false,
                 };
               } else if (
                 note.location.startsWith("https://drive.google.com/")
               ) {
                 note.type = {
-                  download_caption: "Google Drive",
-                  icon_display: "fab google-drive",
-                  icon_download: "fab google-drive",
+                  caption: "Google Drive",
+                  Icon: GoogleDriveIcon,
+                  download: false,
                 };
               }
               return note;
@@ -232,7 +239,7 @@ const Notes = () => {
   }, [activeFilters, selSubject, selStudent, selYear, selTeacher]);
 
   // This method allows user to share the filtering parameters through a parameterized URL
-  function linkShare () {
+  function linkShare() {
     // Build URL
     let url = window.location.origin + window.location.pathname + "?";
     if (selYear != "") url += `year=${selYear}&`;
@@ -254,14 +261,14 @@ const Notes = () => {
       type: "info",
       text: "O URL foi copiado para a área de transferência! :)",
     });
-  };
+  }
 
   function resetFilters() {
     setSelSubject("");
     setSelStudent("");
     setSelTeacher("");
     setSelYear("");
-  };
+  }
 
   return (
     <div id="apontamentosPage">
@@ -273,74 +280,75 @@ const Notes = () => {
       </div>
 
       <div className="mt-4 flex gap-8">
-        <div className="flex w-full max-w-[18rem] flex-col" lg="4" xl="3">
-          {selNote && selNote.id && (
-            <Details
-              className="order-lg-0 order-2"
-              note_id={selNote.id}
-              close={() => setSelNote(null)}
-              setSelYear={setSelYear}
-              setSelSubject={setSelSubject}
-              setSelStudent={setSelStudent}
-              setSelTeacher={setSelTeacher}
-              setSelPage={setSelPage}
-              setAlert={setAlert}
-            />
-          )}
+        <div className=" flex w-[18rem] flex-col">
+          <div className="sticky top-[5rem] w-[inherit]">
+            <div className="flex flex-col gap-4">
+              <h4>Filtros</h4>
 
-          <div className="flex flex-col gap-4">
-            <h4>Filtros</h4>
-
-            <Autocomplete
-              items={years}
-              value={selYear}
-              onChange={setSelYear}
-              placeholder="Ano"
-            />
-            <Autocomplete
-              items={subjects}
-              value={selSubject}
-              onChange={setSelSubject}
-              placeholder="Disciplina"
-            />
-            <Autocomplete
-              items={students}
-              value={selStudent}
-              onChange={setSelStudent}
-              placeholder="Autor"
-            />
-            <Autocomplete
-              items={teachers}
-              value={selTeacher}
-              onChange={setSelTeacher}
-              placeholder="Professor"
-            />
-          </div>
-
-          {(selSubject || selStudent || selTeacher || selYear) && (
-            <div className="mb-2 flex flex-row flex-wrap">
-              <button
-                className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
-                onClick={() => linkShare()}
-                title="Copiar link com filtros"
-              >
-                <span className="mr-1">Partilhar</span>
-                <FontAwesomeIcon className="link my-auto" icon={faShareAlt} />
-              </button>
-              <button
-                className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
-                onClick={() => resetFilters()}
-                title="Remover filtros"
-              >
-                <span className="mr-1">Limpar</span>
-                <FontAwesomeIcon className="link my-auto" icon={faTimes} />
-              </button>
+              <Autocomplete
+                items={years}
+                value={selYear}
+                onChange={setSelYear}
+                placeholder="Ano"
+              />
+              <Autocomplete
+                items={subjects}
+                value={selSubject}
+                onChange={setSelSubject}
+                placeholder="Disciplina"
+              />
+              <Autocomplete
+                items={students}
+                value={selStudent}
+                onChange={setSelStudent}
+                placeholder="Autor"
+              />
+              <Autocomplete
+                items={teachers}
+                value={selTeacher}
+                onChange={setSelTeacher}
+                placeholder="Professor"
+              />
             </div>
-          )}
 
-          <CheckboxFilter values={categories} onChange={setCategories} />
+            {selNote && selNote.id && (
+              <Details
+                className="order-lg-0 order-2"
+                note_id={selNote.id}
+                close={() => setSelNote(null)}
+                setSelYear={setSelYear}
+                setSelSubject={setSelSubject}
+                setSelStudent={setSelStudent}
+                setSelTeacher={setSelTeacher}
+                setSelPage={setSelPage}
+                setAlert={setAlert}
+              />
+            )}
 
-          {/* <div className="order-lg-3 order-1">
+            {(selSubject || selStudent || selTeacher || selYear) && (
+              <div className="mb-2 flex flex-row flex-wrap">
+                <button
+                  className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
+                  onClick={() => linkShare()}
+                  title="Copiar link com filtros"
+                >
+                  <span className="mr-1">Partilhar</span>
+                  <FontAwesomeIcon className="link my-auto" icon={faShareAlt} />
+                </button>
+                <button
+                  className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
+                  onClick={() => resetFilters()}
+                  title="Remover filtros"
+                >
+                  <span className="mr-1">Limpar</span>
+                  <FontAwesomeIcon className="link my-auto" icon={faTimes} />
+                </button>
+              </div>
+            )}
+
+            <CheckboxFilter values={categories} onChange={setCategories} />
+
+            {/* <div className="order-lg-3 order-1">
             <h4 className="mt-3">Categorias</h4>
             <Filters
               accordion={true}
@@ -353,6 +361,7 @@ const Notes = () => {
               allBtnClass="mb-2 p-0 col-12"
             />
           </div> */}
+          </div>
         </div>
 
         {/* The two views are controlled by a bootstrap tabs component,
@@ -360,87 +369,85 @@ const Notes = () => {
          ** the views, which are specified in each Tab.Pane element.
          */}
         <div className="">
-          <Tab.Container
-            defaultActiveKey={window.innerWidth >= 992 ? "grid" : "list"}
-          >
-            <div>
-              <Nav onSelect={() => setSelNote(null)}>
-                <Nav.Item className="mx-lg-0 ml-lg-0 d-none d-lg-block mx-auto">
-                  <Nav.Link eventKey="grid" className="h5">
-                    <FontAwesomeIcon icon={faTh} />
-                    <span className="ml-3">Grid</span>
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item className="mx-lg-0 mr-lg-auto d-none d-lg-block mx-auto">
-                  <Nav.Link eventKey="list" className="h5">
-                    <FontAwesomeIcon icon={faThList} />
-                    <span className="ml-3">List</span>
-                  </Nav.Link>
-                </Nav.Item>
-                <PageNav
-                  page={selPage}
-                  total={page}
-                  handler={fetchPage}
-                  className="mx-lg-0 ml-lg-auto mx-auto"
-                ></PageNav>
-              </Nav>
-            </div>
+          <div class="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
+            <button
+              className={classname(
+                "btn-sm btn gap-2 border-none bg-accent py-1",
+                view === VIEWS.GRID
+                  ? "no-animation shadow hover:bg-accent"
+                  : "bg-transparent hover:bg-base-300 hover:opacity-75"
+              )}
+              onClick={() => setView(VIEWS.GRID)}
+            >
+              <GridViewIcon />
+            </button>
+            <button
+              className={classname(
+                "btn-sm btn gap-2 border-none bg-accent py-1",
+                view === VIEWS.LIST
+                  ? "no-animation shadow hover:bg-accent"
+                  : "bg-transparent hover:bg-base-300 hover:opacity-75"
+              )}
+              onClick={() => setView(VIEWS.LIST)}
+            >
+              <ViewListIcon />
+            </button>
+          </div>
 
-            <Tab.Content>
-              <Tab.Pane eventKey="grid">
-                <div className="flex">
-                  {loading ? (
-                    <Spinner
-                      animation="grow"
-                      variant="primary"
-                      className="mx-auto mt-3"
-                      title="A carregar..."
-                    />
-                  ) : notes.length == 0 ? (
-                    <div sm={12}>
-                      <h3 className="mt-3 text-center">
-                        Nenhum apontamento encontrado
-                      </h3>
-                      <h4 className="text-center">
-                        Tente definir filtros menos restritivos
-                      </h4>
-                    </div>
-                  ) : (
-                    <GridView data={notes} setSelected={setSelNote}></GridView>
-                  )}
-                </div>
-              </Tab.Pane>
-              <Tab.Pane eventKey="list">
-                <div className="flex flex-col">
-                  {!!loading ? (
-                    <Spinner
-                      animation="grow"
-                      variant="primary"
-                      className="mx-auto mt-3"
-                      title="A carregar..."
-                    />
-                  ) : notes.length === 0 ? (
-                    <div sm={12}>
-                      <h3 className="mt-3 text-center">
-                        Nenhum apontamento encontrado
-                      </h3>
-                      <h4 className="text-center">
-                        Tente definir filtros menos restritivos
-                      </h4>
-                    </div>
-                  ) : (
-                    <ListView
-                      data={notes}
-                      setSelYear={setSelYear}
-                      setSelSubject={setSelSubject}
-                      setSelStudent={setSelStudent}
-                      setSelTeacher={setSelTeacher}
-                    ></ListView>
-                  )}
-                </div>
-              </Tab.Pane>
-            </Tab.Content>
-          </Tab.Container>
+          <div>
+            {view === VIEWS.GRID && (
+              <div className="flex">
+                {loading ? (
+                  <Spinner
+                    animation="grow"
+                    variant="primary"
+                    className="mx-auto mt-3"
+                    title="A carregar..."
+                  />
+                ) : notes.length == 0 ? (
+                  <div sm={12}>
+                    <h3 className="mt-3 text-center">
+                      Nenhum apontamento encontrado
+                    </h3>
+                    <h4 className="text-center">
+                      Tente definir filtros menos restritivos
+                    </h4>
+                  </div>
+                ) : (
+                  <GridView data={notes} setSelected={setSelNote}></GridView>
+                )}
+              </div>
+            )}
+            {view === VIEWS.LIST && (
+              <div className="flex flex-col">
+                {!!loading ? (
+                  <Spinner
+                    animation="grow"
+                    variant="primary"
+                    className="mx-auto mt-3"
+                    title="A carregar..."
+                  />
+                ) : notes.length === 0 ? (
+                  <div sm={12}>
+                    <h3 className="mt-3 text-center">
+                      Nenhum apontamento encontrado
+                    </h3>
+                    <h4 className="text-center">
+                      Tente definir filtros menos restritivos
+                    </h4>
+                  </div>
+                ) : (
+                  <ListView
+                    data={notes}
+                    setSelYear={setSelYear}
+                    setSelSubject={setSelSubject}
+                    setSelStudent={setSelStudent}
+                    setSelTeacher={setSelTeacher}
+                  ></ListView>
+                )}
+              </div>
+            )}
+          </div>
           <PageNav
             page={selPage}
             total={page}

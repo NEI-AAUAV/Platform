@@ -1,15 +1,10 @@
-import React from "react";
 import LinkAdapter from "utils/LinkAdapter";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
-
-import "./index.css";
-
+import { motion } from "framer-motion";
 
 /**
  * Component for document
- * 
+ *
  * Arguments
  *  name            File name
  *  description     File description
@@ -26,48 +21,119 @@ import "./index.css";
  *                  NOTE: Make sure all images have the same dimensions, otherwise the cards won't be aligned!
  *  style (Optional)
  */
-const Document = ({ name, description, link, blank, className, icon, size, onClick, title, tags, style, image, iconColor }) => {
-    return (
-        <LinkAdapter
-            to={link}
-            onClick={onClick}
-            title={title ? title : ""}
-            style={style}
-            className={"m-0 p-0 document-container " + className}
-        >
-            <div className="document">
-                {
-                    image &&
-                    <img src={image} className="w-100" />
-                }
-                <div
-                    className={"d-flex text-left p-3 "}
-                >
-                    <FontAwesomeIcon
-                        className={iconColor ? "mr-3" : "text-primary mr-3"}
-                        icon={icon ? icon : faFilePdf}
-                        size={size ? size : "3x"}
-                        style={iconColor ? { color: iconColor } : {}}
-                    />
-                    <div>
-                        <h4 className="mb-0 break-all">{name}</h4>
-                        <p className="small text-secondary mb-0" dangerouslySetInnerHTML={{ __html: description }}></p>
-                        <div className="row mx-0 mt-1">
-                            {
-                                tags && tags.map((tag, index) =>
-                                    <span
-                                        key={index}
-                                        className={"ml-0 mb-1 mr-1 badge badge-pill " + tag.className}
-                                        style={tag.color ? { backgroundColor: tag.color } : {}}
-                                    >{tag.name}</span>
-                                )
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </LinkAdapter>
-    );
-}
 
-export default Document;
+/**
+ *
+ * @param {ReactElement} Icon optional
+ * @returns
+ */
+const Document = ({
+  name,
+  description,
+  link,
+  className,
+  Icon,
+  onClick,
+  title,
+  tags,
+  style,
+  iconColor,
+}) => {
+  return (
+    <LinkAdapter
+      to={link}
+      onClick={onClick}
+      title={title ? title : ""}
+      style={style}
+      className={"no-underline " + className}
+    >
+      <div className="h-full rounded-md transition-hover duration-300 hover:-translate-y-1.5 hover:shadow-md hover:brightness-125">
+        <div className="flex p-3 text-left">
+          {!!Icon && <Icon className="min-h-[40px] min-w-[40px]" />}
+          <div className="flex w-[calc(100%-40px)] flex-col pl-4">
+            <h5 className="w-full overflow-hidden text-ellipsis break-keep">
+              {name}
+            </h5>
+            <p className="overflow-hidden text-ellipsis text-sm text-secondary">
+              {description}
+            </p>
+            <div className="">
+              {tags &&
+                tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className={"badge my-1 ml-0 mr-2 " + tag.className}
+                    style={tag.color ? { backgroundColor: tag.color } : {}}
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </LinkAdapter>
+  );
+};
+
+/**
+ *
+ * @param {ReactElement} Icon optional
+ * @returns
+ */
+const Document2 = ({
+  name,
+  description,
+  link,
+  className,
+  Icon,
+  onClick,
+  title,
+  tags,
+  style,
+  iconColor,
+}) => {
+  return (
+    <LinkAdapter
+      to={link}
+      onClick={onClick}
+      title={title ? title : ""}
+      style={style}
+      className={"p-1 no-underline " + className}
+    >
+      <div className="h-full cursor-pointer rounded-md border border-base-content/10 !bg-base-200 p-4 shadow-sm transition-hover duration-300 hover:-translate-y-1 hover:shadow-md hover:brightness-110">
+        <div className="flex items-center text-left">
+          {!!Icon && <Icon className="min-h-[30px] min-w-[30px]" />}
+          <p className=" ml-3 overflow-hidden text-ellipsis text-sm text-secondary">
+            {description}
+          </p>
+          <div className="avatar mr-1 ml-auto">
+            <div className="mask mask-circle w-6">
+              <img src="https://placeimg.com/192/192/people" />
+            </div>
+          </div>
+        </div>
+        <div className="flex w-[calc(100%-40px)] flex-col">
+          <h5 className="w-full overflow-hidden text-ellipsis break-keep">
+            {name}
+          </h5>
+
+          <div className="mt-2 flex flex-wrap gap-1">
+            {tags &&
+              tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="badge badge-sm"
+                  style={tag.color ? { backgroundColor: tag.color } : {}}
+                >
+                  {tag.name}
+                </span>
+              ))}
+          </div>
+        </div>
+      </div>
+    </LinkAdapter>
+  );
+};
+
+export default Document2;

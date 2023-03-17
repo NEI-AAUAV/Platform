@@ -65,7 +65,7 @@ const RGM = () => {
       window.location.href = "/404";
     }
     category = category.toUpperCase();
-    setTitle(validCategories[category]["plural"]);
+    setTitle(validCategories[category].plural);
     // Fetch API if valid
     service
       .getRGM(category)
@@ -161,7 +161,7 @@ const RGM = () => {
                         : category.toUpperCase() + " " + doc.mandate
                     }
                     description={
-                      validCategories[category.toUpperCase()]["singular"] +
+                      validCategories[category.toUpperCase()].singular +
                       " de " +
                       doc.mandate
                     }

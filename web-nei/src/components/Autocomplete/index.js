@@ -14,11 +14,7 @@ const Autocomplete = ({ items, value, onChange, placeholder }) => {
   const ref = useRef(null);
   const [text, setText] = useState("");
   const [options, setOptions] = useState(items);
-  const [open, setOpen] = useState(false);
 
-  console.log(open)
-
-  // TODO: this makes the dropwdown remain open after a selection, fix it
   useEffect(() => {
     setOptions(items);
   }, [items]);
@@ -28,41 +24,43 @@ const Autocomplete = ({ items, value, onChange, placeholder }) => {
       setOptions(items);
       return;
     }
-    const newItems = items.filter(({ label }) =>
-      label.toLowerCase().includes(text.toLowerCase())
-    );
-
-    setOptions(newItems);
+    if (text !== getLabelSelected()) {
+      const newItems = items.filter(({ label }) =>
+        label.toLowerCase().includes(text.toLowerCase())
+      );
+      setOptions(newItems);
+    } else {
+      setOptions(items);
+    }
   }, [text]);
 
   useEffect(() => {
-    resetToValue();
+    resetText();
   }, [value]);
 
-  function resetToValue() {
-    setText(items.find((item) => item.key === value)?.label || "");
+  function getLabelSelected() {
+    return items.find((item) => item.key === value)?.label;
   }
 
-  function reset(e) {
-    onChange(null);
-    e.preventDefault();
+  function resetText() {
+    setText(getLabelSelected() || "");
+  }
+
+  function setValue(value) {
+    onChange(value);
+    // Hack to close dropdown when item is selected
+    document.activeElement.blur();
   }
 
   return (
-    <div
-      className={classname("text-left font-medium", {
-        "dropdown w-full": true,
-        "dropdown-open": open,
-      })}
-      ref={ref}
-    >
+    <div className="dropdown w-full text-left font-medium" ref={ref}>
       <input
         type="text"
-        className="input-bordered input w-full placeholder:font-normal placeholder:text-base-content/50"
+        className="input-bordered input w-full pr-[4.5rem] placeholder:font-normal placeholder:text-base-content/50"
         value={text}
         onChange={(e) => setText(e.target.value)}
         // Reset text to selected value
-        onBlur={resetToValue}
+        onBlur={resetText}
         placeholder={placeholder}
         tabIndex={0}
       />
@@ -70,7 +68,9 @@ const Autocomplete = ({ items, value, onChange, placeholder }) => {
         {!!value && (
           <button
             className="btn-ghost btn-xs btn-circle btn text-base-content"
-            onClick={reset}
+            // Hack to prevent calling focus on input
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => setValue(null)}
           >
             <CloseIcon />
           </button>
@@ -90,13 +90,9 @@ const Autocomplete = ({ items, value, onChange, placeholder }) => {
             {options?.map((item, index) => (
               <li key={index} tabIndex={index + 1}>
                 <span
-                  // Hack to prevent calling onBlur on input
+                  // Hack to prevent calling blur on input
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={(e) => {
-                    onChange(item.key);
-                    // TODO: this hack does not work fix it
-                    // setOpen(false);
-                  }}
+                  onClick={() => setValue(item.key)}
                   className={classname({
                     "btn-disabled font-bold": item.key === value,
                   })}

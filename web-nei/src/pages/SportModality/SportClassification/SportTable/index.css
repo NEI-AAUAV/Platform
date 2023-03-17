@@ -6,9 +6,9 @@
   margin-left: 50px;
 }
 
-tr td:nth-child(1) {
-  background-color: #66666666; /* this changes first column color. If you change (1) to odd or even, you have a striped column*/
-}
+/* tr td:nth-child(1) {
+  background-color: #66666666;
+} */
 
 .divcss::-webkit-scrollbar {
   height: 5px;
@@ -19,13 +19,13 @@ tr td:nth-child(1) {
   border-radius: 20px;
 }
 
-td,th {
+/* td,th {
   margin: 0px;
   white-space: nowrap;
   color: white;
   border-width: 0px;
   text-align: center;
-}
+} */
 
 .divcss {
   width: 80%;
@@ -35,7 +35,7 @@ td,th {
   padding-right: 30px;
 }
 
-span {
+/* span {
   font-weight: bold;
 }
 
@@ -43,7 +43,7 @@ span {
 tr:hover {
   background-color: rgba(6, 153, 6, 0.828);
   transition: all 0.125s ease-in-out;
-}
+} */
 
 .up {
   color: rgb(132, 234, 132);
