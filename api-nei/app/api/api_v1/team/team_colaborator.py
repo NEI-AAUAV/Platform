@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -12,12 +12,21 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[TeamColaboratorInDB])
 def get_team_colaborators(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response : Response,
 ) -> Any:
     """
-    Return faina information.
+    Return colaborator information.
     """
+    response.headers["cache-control"] = "public, max-age=15552000"
     return crud.team_colaborator.get_multi(db=db)
+
+
+@router.get("/{mandate}", status_code=200, response_model=List[TeamColaboratorInDB])
+def get_team_colaborators_by_mandate(
+    *, db: Session = Depends(deps.get_db), mandate: str, response : Response
+) -> Any:
+    response.headers["cache-control"] = "public, max-age=15552000"
+    return crud.team_colaborator.get_colaborators_by_mandate(db=db, mandate=mandate)
 
 
 @router.post("/", status_code=201, response_model=TeamColaboratorInDB)
@@ -25,7 +34,7 @@ def create_team(
     *, team_colaborator_create_in: TeamColaboratorCreate, db: Session = Depends(deps.get_db)
 ) -> dict:
     """
-    Create a new faina row in the database.
+    Create a new colaborator row in the database.
     """
     return crud.team_colaborator.create(db=db, obj_in=team_colaborator_create_in)
 
@@ -35,6 +44,6 @@ def update_team_colaborator(
     *, team_colaborator_update_in: TeamColaboratorUpdate, db: Session = Depends(deps.get_db), id: int
 ) -> dict:
     """
-    Update a faina row in the database.
+    Update a colaborator row in the database.
     """
     return crud.team_colaborator.update(db=db, obj_in=team_colaborator_update_in, db_obj=db.get(TeamColaborator, id))

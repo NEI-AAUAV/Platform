@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -12,15 +12,17 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[TeamMemberInDB])
 def get_team_members(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response : Response
 ) -> Any:
+    response.headers["cache-control"] = "public, max-age=15552000"
     return crud.team_member.get_multi(db=db)
 
 
 @router.get("/{mandate}", status_code=200, response_model=List[TeamMemberInDB])
 def get_team_members_by_mandate(
-    *, db: Session = Depends(deps.get_db), mandate: int
+    *, db: Session = Depends(deps.get_db), mandate: str, response : Response
 ) -> Any:
+    response.headers["cache-control"] = "public, max-age=15552000"
     return crud.team_member.get_team_by_mandate(db=db, mandate=mandate)
 
 
