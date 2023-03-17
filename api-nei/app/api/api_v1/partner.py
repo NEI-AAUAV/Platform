@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
 
 from app import crud
@@ -12,13 +12,15 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[PartnerInDB])
 def get_partners(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response: Response,
 ) -> Any:
+    response.headers["cache-control"] = "private, max-age=604800, no-cache"
     return crud.partner.get_multi(db=db)
 
 
 @router.get("/banner", status_code=200, response_model=PartnerInDB)
 def get_partner_banner(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response: Response,
 ) -> Any:
+    response.headers["cache-control"] = "private, max-age=604800, no-cache"
     return crud.partner.get_banner(db=db)

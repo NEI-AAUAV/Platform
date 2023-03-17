@@ -31,7 +31,7 @@ const Team = () => {
     let anos = new Set();
     service.getTeamMandates().then((response) => {
       for (var i = 0; i < response.length; i++) {
-        anos.add(response[i].mandate);
+        anos.add(response[i]);
       }
       setYears(
         Array.from(anos.values())
@@ -54,7 +54,7 @@ const Team = () => {
       let colabs = [];
       setPeople(team);
       setColaborators(colabs);
-      service.getTeamMandates({ ...params }).then((response) => {
+      service.getTeamMembers({ ...params }).then((response) => {
         for (var i = 0; i < response.length; i++) {
           if (response[i].mandate === selectedYear) {
             team.push({
