@@ -1,11 +1,13 @@
 import NEIService from "services/NEIService";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
+import { useReCaptcha } from "utils/hooks";
 
 const Register = () => {
   const passwordRef = useRef(null);
   const confirmRef = useRef(null);
   const errorMessage = useRef(null);
+  const { reCaptchaLoaded, generateReCaptchaToken } = useReCaptcha();
 
   const formSubmitted = async (event) => {
     event.preventDefault();
@@ -26,6 +28,8 @@ const Register = () => {
 
     delete data.confirm_password;
 
+    const token = await generateReCaptchaToken("register");
+    data.recaptcha_token = token;
     const access = await NEIService.register(data);
     console.log(access);
   };
@@ -76,15 +80,18 @@ const Register = () => {
           <p className="text-xs text-error hidden" ref={errorMessage}>
             Passwords não são iguais
           </p>
-          <button className="btn sm:btn-wide m-auto btn-block mt-2">
-            captcha
-          </button>
           <button
             className="btn btn-primary sm:btn-wide m-auto btn-block mt-5"
+            disabled={reCaptchaLoaded ? null : ""}
             type="submit"
           >
             Register
           </button>
+          <p className="mt-2 sm:text-sm text-xs m-auto max-w-xs">
+            This site is protected by reCAPTCHA and the Google{" "}
+            <a className="link link-primary" href="https://policies.google.com/privacy">Privacy Policy</a> and{" "}
+            <a className="link link-primary" href="https://policies.google.com/terms">Terms of Service</a> apply.
+          </p>
         </form>
         <p className="mt-2 sm:text-sm text-xs m-auto">
           Já tens uma conta?{" "}
