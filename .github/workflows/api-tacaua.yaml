@@ -7,10 +7,12 @@ on:
     paths:
       - '.github/workflows/api-tacaua.yaml'
       - 'api-tacaua/**/*'
+      - 'api-nei/**/*'
   pull_request:
     paths:
       - '.github/workflows/api-tacaua.yaml'
       - 'api-tacaua/**/*'
+      - 'api-nei/**/*'
   workflow_dispatch:
 
 jobs:
@@ -47,6 +49,14 @@ jobs:
 
       - name: Install system libraries
         run: sudo apt-get -y install libpq-dev gcc
+
+      - name: Install dependencies for api-nei
+        working-directory: ./api-nei
+        run: poetry install --no-interaction --no-root
+
+      - name: Start api-nei in the background
+        working-directory: ./api-nei
+        run: poetry run uvicorn app.main:app --port 8000 &
 
       - name: Install dependencies
         working-directory: ./api-tacaua
