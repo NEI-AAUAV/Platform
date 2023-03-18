@@ -86,6 +86,19 @@ class Settings(BaseSettings):
     ## The endpoint to point password reset links to
     PASSWORD_RESET_ENDPOINT: str = os.getenv("PASSWORD_RESET_ENDPOINT", "/auth/reset")
 
+    # reCaptcha settings
+    RECAPTCHA_ENABLED: bool = os.getenv("RECAPTCHA_ENABLED", "False") == "True"
+    ## The reCaptcha endpoint to validate tokens
+    RECAPTCHA_VERIFY_URL: str = os.getenv(
+        "RECAPTCHA_VERIFY_URL", "https://www.google.com/recaptcha/api/siteverify"
+    )
+    ## The reCaptcha secret key to authenticate the backend
+    RECAPTCHA_SECRET_KEY: str = os.getenv("RECAPTCHA_SECRET_KEY")
+    ## The reCaptcha threshold for registering
+    RECAPTCHA_REGISTER_THRESHOLD: float = float(
+        os.getenv("RECAPTCHA_REGISTER_THRESHOLD", 0.5)
+    )
+
     class Config:
         case_sensitive = True
 
