@@ -368,3 +368,5 @@ label {color: var(--text-secondary)} */
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 }
+
+.grecaptcha-badge { visibility: hidden; }

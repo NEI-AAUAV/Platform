@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import config from "config";
 
 export const useWindowSize = () => {
     const [windowSize, setWindowSize] = useState({
@@ -40,4 +41,52 @@ export const useWindowScroll = () => {
     }, []);
 
     return windowScroll;
+}
+
+export const useReCaptcha = () => {
+    const [reCaptchaLoaded, setReCaptchaLoaded] = useState(false);
+
+    useEffect(() => {
+        function reCaptchaLoad() {
+            setReCaptchaLoaded(true);
+        }
+
+        // Check that we aren't in a worker or that the reCaptcha was already loaded
+        if (typeof window === 'undefined' || reCaptchaLoaded) return;
+
+        // Check that the reCaptcha wasn't already loaded by someone else
+        if (window.grecaptcha) {
+            setReCaptchaLoaded(true);
+            return;
+        }
+
+        // Create a new script node for the reCaptcha script
+        const script = document.createElement('script');
+        script.async = true; // Don't stall the page load
+        script.src = `${config.GOOGLE_RECAPTCHA_CDN}?render=${config.GOOGLE_RECAPTCHA_KEY}`;
+        script.addEventListener('load', reCaptchaLoad);
+        // Add the script node to the DOM
+        document.body.appendChild(script);
+
+        // Remove the event listener in order to not leak memory
+        return () => window.removeEventListener('load', reCaptchaLoad);
+    }, [reCaptchaLoaded]);
+
+    // Get token
+    const generateReCaptchaToken = (action) => {
+        return new Promise((resolve, reject) => {
+            if (!reCaptchaLoaded) return reject(new Error('ReCaptcha not loaded'));
+
+            if (typeof window === 'undefined' || !window.grecaptcha) {
+                setReCaptchaLoaded(false);
+                return reject(new Error('ReCaptcha not loaded'));
+            }
+
+            window.grecaptcha.ready(() => {
+                window.grecaptcha.execute(config.GOOGLE_RECAPTCHA_KEY, { action }).then(resolve);
+            });
+        });
+    }
+
+    return { reCaptchaLoaded, generateReCaptchaToken };
 }

@@ -152,7 +152,8 @@ class NEIService {
     }
 
     async register(data) {
-        return await client.post('/auth/register/', data);
+        // Increase timeout because the reCaptcha takes a while
+        return await client.post('/auth/register/', data, { timeout: 15000 });
     }
 
     async verifyEmail(params) {
