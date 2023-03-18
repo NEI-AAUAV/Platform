@@ -202,7 +202,7 @@ INSERT INTO nei."user" (id, email, name, surname, gender, iupi, nmec, image, cur
 (197, 'alexandrecotorobai@ua.pt', 'Alexandre', 'Cotorobai', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', FALSE),
 (198, 'borgesjps@ua.pt', 'João', 'Borges', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', FALSE);
 
-SELECT pg_catalog.setval('nei.user_id_seq', 198, false);
+SELECT pg_catalog.setval('nei.user_id_seq', 199, false);
 
 --
 -- Data for Name: faina_role; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -220,7 +220,7 @@ INSERT INTO nei.faina_role (id, name, weight) VALUES
 (9, 'Varina', 6),
 (10, 'Mestre de Curso', 6);
 
-SELECT pg_catalog.setval('nei.faina_role_id_seq', 10, false);
+SELECT pg_catalog.setval('nei.faina_role_id_seq', 11, false);
 
 
 --
@@ -240,7 +240,7 @@ INSERT INTO nei.faina (id, image, mandate) VALUES
 (9, '/faina/team/2020.jpg', '2020/21'),
 (10, '/faina/team/2021.jpg', '2021/22');
 
-SELECT pg_catalog.setval('nei.faina_id_seq', 10, false);
+SELECT pg_catalog.setval('nei.faina_id_seq', 11, false);
 
 --
 -- Data for Name: subject; Type: TABLE DATA; Schema: nei; Owner: postgres
@@ -316,7 +316,7 @@ INSERT INTO nei.team_role (id, name, weight) VALUES
 (17, 'Vogal da Secção da Administração Interna e Merchandising', 4),
 (18, 'Vogal da Secção da Comunicação e Imagem', 4);
 
-SELECT pg_catalog.setval('nei.team_role_id_seq', 18, false);
+SELECT pg_catalog.setval('nei.team_role_id_seq', 19, false);
 
 
 --
@@ -359,7 +359,7 @@ INSERT INTO nei.teacher (id, name, personal_page) VALUES
 (34, 'Cristina Isabel Assis de Morais Miguéns', 'https://www.ua.pt/pt/p/10333350'),
 (40, 'Pétia Georgieva Georgieva', 'https://www.ua.pt/pt/p/10321408');
 
-SELECT pg_catalog.setval('nei.teacher_id_seq', 40, false);
+SELECT pg_catalog.setval('nei.teacher_id_seq', 41, false);
 
 
 --
@@ -372,7 +372,7 @@ INSERT INTO nei.senior (id, year, course, image) VALUES
 (3, 2021, 'LEI', NULL),
 (4, 2021, 'MEI', NULL);
 
-SELECT pg_catalog.setval('nei.senior_id_seq', 4, false);
+SELECT pg_catalog.setval('nei.senior_id_seq', 5, false);
 
 
 --
@@ -496,7 +496,7 @@ INSERT INTO nei.faina_member (id, member_id, faina_id, role_id) VALUES
 (106, 134, 10, 3),
 (107, 158, 10, 4);
 
-SELECT pg_catalog.setval('nei.faina_member_id_seq', 107, false);
+SELECT pg_catalog.setval('nei.faina_member_id_seq', 108, false);
 
 
 --
@@ -524,7 +524,7 @@ INSERT INTO nei.merch (id, name, image, price, number_of_items) VALUES
 (4, 'Sweat de curso', '/merch/sweat.png', 18, 0),
 (5, 'Emblema NEI', '/merch/emblemanei.png', 2.5, 0);
 
-SELECT pg_catalog.setval('nei.merch_id_seq', 5, false);
+SELECT pg_catalog.setval('nei.merch_id_seq', 6, false);
 
 
 --
@@ -559,7 +559,7 @@ INSERT INTO nei.news (id, header, status, title, category, content, published_by
 (25, '/news/nei_lol.png', 'ACTIVE', 'Torneio Nacional de LoL', 'EVENT', 'Como a vida não é só trabalho, vem divertir-te a jogar e representar a Universidade de Aveiro em simultâneo! O NEEEC-FEUP está a organizar um torneio de League of Legends inter-universidades a nível nacional, e a UA está apta para participar.<br/>Existirá uma ronda de qualificação em Aveiro para determinar as 2 equipas que participam nacionalmente. O torneio é de inscrição gratuita e garante prémios para as equipas que conquistem o 1º e 2º lugar!<br/>Forma equipa e mostra o que vales!<br/><a href=\http://tiny.cc/torneioLOL\ target=\_blank\>Inscreve-te</a>!', 94, '2020-05-13', NULL, NULL, 1),
 (26, '/news/202122/96.jpg', 'ACTIVE', 'Roots Beach Club', 'EVENT', '<p>A primeira semana de aulas vai terminar em grande!</p><p>Na sexta-feira vem ao Roots Beach Club para uma beach party incrível.</p><p>A pulseira do evento garante o transporte desde Aveiro até à Praia da Barra, um teste antigénio à covid e a entrada no bar com uma bebida incluída!</p><p>Reserva a tua pulseira terça feira das 16h às 19h na sala 4.1.32.</p>', 83, '2021-10-10', NULL, NULL, 1);
 
-SELECT pg_catalog.setval('nei.news_id_seq', 26, false);
+SELECT pg_catalog.setval('nei.news_id_seq', 27, false);
 
 
 --
@@ -836,7 +836,7 @@ INSERT INTO nei.note (id, subject_id, author_id, teacher_id, year, name, locatio
 (382, 14817, 140, 29, 2020, 'Slides teóricos MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_TPs.zip', 0, 0, 0, 1, 0, 0, 0, NULL, '2022-01-31 20:37:14', NULL),
 (385, 14817, 140, 29, 2020, 'Formulário MSF', '/note/primeiro_ano/segundo_semestre/msf/20_21_Artur_Form.pdf', 1, 0, 0, 0, 0, 0, 0, NULL, '2022-01-31 20:37:14', NULL);
 
-SELECT pg_catalog.setval('nei.note_id_seq', 385, false);
+SELECT pg_catalog.setval('nei.note_id_seq', 386, false);
 
 
 --
@@ -865,7 +865,7 @@ INSERT INTO nei.redirect (id, alias, redirect) VALUES
 (8, 'be', '/integracao/202122/peddypaper/be.jpg'),
 (9, 'socorro', '/integracao/202122/guiasobrevivencia.pdf');
 
-SELECT pg_catalog.setval('nei.redirect_id_seq', 9, false);
+SELECT pg_catalog.setval('nei.redirect_id_seq', 10, false);
 
 
 --
@@ -927,7 +927,7 @@ INSERT INTO nei.rgm (id, category, mandate, file) VALUES
 (52, 'RAC', '2022', '/rgm/RAC/2022/RAC_NEI2022.pdf'),
 (53, 'PAO', '2022/23', '/rgm/PAO/2022/PAO_NEI2022/23.pdf');
 
-SELECT pg_catalog.setval('nei.rgm_id_seq', 53, false);
+SELECT pg_catalog.setval('nei.rgm_id_seq', 54, false);
 
 
 --
@@ -1189,7 +1189,7 @@ INSERT INTO nei.team_member (id, header, mandate, user_id, role_id) VALUES
 (410, '/team/2022/23/13.jpg', '2022/23', 157, 6),
 (411, '/team/2022/23/14.jpg', '2022/23', 128, 6);
 
-SELECT pg_catalog.setval('nei.team_member_id_seq', 411, false);
+SELECT pg_catalog.setval('nei.team_member_id_seq', 412, false);
 
 
 --
@@ -1205,7 +1205,7 @@ INSERT INTO nei.video (id, youtube_id, title, subtitle, image, created_at, playl
 (6, '3hjRgoIItYk', 'Anchorage', 'Palestra', '/videos/anchorage.jpg', '2021-04-01 00:00:00', 0),
 (7, 'GmNvZC6iv1Y', 'Git', 'Workshop', '/videos/git.jpg', '2020-04-28 00:00:00', 0);
 
-SELECT pg_catalog.setval('nei.video_id_seq', 7, false);
+SELECT pg_catalog.setval('nei.video_id_seq', 8, false);
 
 
 --
@@ -1220,7 +1220,7 @@ INSERT INTO nei.video_tag (id, name, color) VALUES
 (5, 'Workshops', 'rgb(11, 66, 21)'),
 (6, 'Palestras', 'rgb(20, 122, 38)');
 
-SELECT pg_catalog.setval('nei.video_tag_id_seq', 6, false);
+SELECT pg_catalog.setval('nei.video_tag_id_seq', 7, false);
 
 
 --
