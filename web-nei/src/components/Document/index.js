@@ -54,7 +54,7 @@ const Document = ({
             <h5 className="w-full overflow-hidden text-ellipsis break-keep">
               {name}
             </h5>
-            <p className="overflow-hidden text-ellipsis text-sm text-secondary">
+            <p className="overflow-hidden text-ellipsis text-sm text-base-content/50">
               {description}
             </p>
             <div className="">
@@ -91,6 +91,7 @@ const Document2 = ({
   title,
   tags,
   style,
+  author,
   iconColor,
 }) => {
   return (
@@ -104,17 +105,20 @@ const Document2 = ({
       <div className="h-full cursor-pointer rounded-md border border-base-content/10 !bg-base-200 p-4 shadow-sm transition-hover duration-300 hover:-translate-y-1 hover:shadow-md hover:brightness-110">
         <div className="flex items-center text-left">
           {!!Icon && <Icon className="min-h-[30px] min-w-[30px]" />}
-          <p className=" ml-3 overflow-hidden text-ellipsis text-sm text-secondary">
+          <p className="ml-3 overflow-hidden text-ellipsis text-sm text-base-content/50">
             {description}
           </p>
-          <div className="avatar mr-1 ml-auto">
+          <div
+            className="tooltip avatar mr-1 ml-auto"
+            data-tip={`Feito por ${author?.name || ""} ${author?.surname || ""}`}
+          >
             <div className="mask mask-circle w-6">
               <img src="https://placeimg.com/192/192/people" />
             </div>
           </div>
         </div>
         <div className="flex w-[calc(100%-40px)] flex-col">
-          <h5 className="w-full overflow-hidden text-ellipsis break-keep">
+          <h5 className="w-full mt-2 overflow-hidden text-ellipsis break-keep">
             {name}
           </h5>
 
@@ -126,7 +130,7 @@ const Document2 = ({
                   className="badge badge-sm"
                   style={tag.color ? { backgroundColor: tag.color } : {}}
                 >
-                  {tag.name}
+                  {tag.name} {tag.color}
                 </span>
               ))}
           </div>

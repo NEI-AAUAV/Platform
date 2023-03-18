@@ -43,7 +43,7 @@ const routes = [
       { path: "/notes", element: <Notes /> },
       { path: "/teams", element: <Team /> },
       { path: "/calendar", element: <Calendar /> },
-      { path: "/rgm/:category?", element: <RGM /> },
+      { path: "/rgm", element: <RGM /> },
       { path: "/history", element: <History /> },
       { path: "/seniors/:course?", element: <Seniors /> },
       { path: "/faina", element: <Faina /> },

@@ -11,7 +11,7 @@ import { FilterIcon } from "assets/icons/google";
  * @param {Array[{name: String, checked: Boolean}]} values list of options to display
  * @param {Function} onChange callback to be called when a checkbox is checked/unchecked
  */
-const CheckboxFilter = ({ values, onChange, children }) => {
+const CheckboxFilter = ({ values, onChange, children, className }) => {
   const [options, setOptions] = useState(values);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const CheckboxFilter = ({ values, onChange, children }) => {
   }, [values]);
 
   return (
-    <div className="dropdown-end dropdown">
+    <div className={`dropdown-end dropdown ${className}`}>
       <label tabIndex={0} className="btn-sm btn m-1 gap-2">
         Filter <FilterIcon />
       </label>

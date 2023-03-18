@@ -75,8 +75,12 @@ class NEIService {
         return await client.get('/history/');
     }
 
-    async getRGM(category) {
-        return await client.get(`/rgm/${category}`)
+    async getRGM(params) {
+        return await client.get(`/rgm/`, { params });
+    }
+
+    async getRGMMandates() {
+        return await client.get(`/rgm/mandates/`);
     }
 
     async getMerch() {

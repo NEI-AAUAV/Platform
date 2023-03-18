@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTimes,
-  faShareAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faShareAlt } from "@fortawesome/free-solid-svg-icons";
 import ListView from "./ListView";
 import GridView from "./GridView";
 import PageNav from "../../components/PageNav";
@@ -18,7 +15,12 @@ import Autocomplete from "components/Autocomplete";
 
 import classname from "classname";
 import service from "services/NEIService";
-import { FilePDFIcon, FolderZipIcon, GridViewIcon, ViewListIcon } from "assets/icons/google";
+import {
+  FilePDFIcon,
+  FolderZipIcon,
+  GridViewIcon,
+  ViewListIcon,
+} from "assets/icons/google";
 import { GithubIcon, GoogleDriveIcon } from "assets/icons/social";
 
 const VIEWS = {
@@ -29,7 +31,7 @@ const VIEWS = {
 const Notes = () => {
   const [view, setView] = useState(VIEWS.GRID);
   const [categories, setCategories] = useState(
-    data.categories.map((c) => ({ ...c, checked: true }))
+    Object.values(data.categories).map((c) => ({ ...c, checked: true }))
   );
   const [filters, setFilters] = useState([]);
   const [activeFilters, setActiveFilters] = useState([]);
@@ -116,7 +118,7 @@ const Notes = () => {
       setNotes([]);
     } else {
       service
-        .getNotes({ ...params, page: selPage, size: 18 })
+        .getNotes({ ...params, page: selPage, size: 24 })
         .then(({ items, last }) => {
           setNotes(
             items.map((note) => {
@@ -280,7 +282,7 @@ const Notes = () => {
       </div>
 
       <div className="mt-4 flex gap-8">
-        <div className=" flex w-[18rem] flex-col">
+        <div className=" flex w-64 flex-col">
           <div className="sticky top-[5rem] w-[inherit]">
             <div className="flex flex-col gap-4">
               <h4>Filtros</h4>
@@ -311,6 +313,37 @@ const Notes = () => {
               />
             </div>
 
+            <div className="w-full flex justify-end">
+              {(selSubject || selStudent || selTeacher || selYear) && (
+                <div className="mb-2 flex flex-row flex-wrap">
+                  <button
+                    className="animation btn-sm btn mr-2"
+                    onClick={() => linkShare()}
+                    title="Copiar link com filtros"
+                  >
+                    <span className="mr-1">Partilhar</span>
+                    <FontAwesomeIcon
+                      className="link my-auto"
+                      icon={faShareAlt}
+                    />
+                  </button>
+                  <button
+                    className="animation btn-sm btn mr-2"
+                    onClick={() => resetFilters()}
+                    title="Remover filtros"
+                  >
+                    <span className="mr-1">Limpar</span>
+                    <FontAwesomeIcon className="link my-auto" icon={faTimes} />
+                  </button>
+                </div>
+              )}
+
+              <CheckboxFilter
+                values={categories}
+                onChange={setCategories}
+              />
+            </div>
+
             {selNote && selNote.id && (
               <Details
                 className="order-lg-0 order-2"
@@ -324,43 +357,6 @@ const Notes = () => {
                 setAlert={setAlert}
               />
             )}
-
-            {(selSubject || selStudent || selTeacher || selYear) && (
-              <div className="mb-2 flex flex-row flex-wrap">
-                <button
-                  className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
-                  onClick={() => linkShare()}
-                  title="Copiar link com filtros"
-                >
-                  <span className="mr-1">Partilhar</span>
-                  <FontAwesomeIcon className="link my-auto" icon={faShareAlt} />
-                </button>
-                <button
-                  className="rounded-pill btn-outline-primary pill animation btn-sm btn mr-2"
-                  onClick={() => resetFilters()}
-                  title="Remover filtros"
-                >
-                  <span className="mr-1">Limpar</span>
-                  <FontAwesomeIcon className="link my-auto" icon={faTimes} />
-                </button>
-              </div>
-            )}
-
-            <CheckboxFilter values={categories} onChange={setCategories} />
-
-            {/* <div className="order-lg-3 order-1">
-            <h4 className="mt-3">Categorias</h4>
-            <Filters
-              accordion={true}
-              filterList={filters}
-              activeFilters={activeFilters}
-              setActiveFilters={setActiveFilters}
-              className="mb-5"
-              btnClass="btn-sm"
-              listClass="flex flex-col"
-              allBtnClass="mb-2 p-0 col-12"
-            />
-          </div> */}
           </div>
         </div>
 

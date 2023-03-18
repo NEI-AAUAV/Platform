@@ -8,7 +8,7 @@ import "./index.css";
 
 import { DownloadIcon, OpenInNewIcon } from "assets/icons/google";
 
-import { authorNameProcessing, monthsPassed } from "../utils";
+import { monthsPassed } from "utils";
 
 function titleCase(str) {
   var splitStr = str.toLowerCase().split(" ");
@@ -70,7 +70,7 @@ const ListView = (props) => {
                       {item.subject?.short}
                     </div>
                     <div md="3" className="list-view-subject-name">
-                      {authorNameProcessing(item.author?.name)}
+                      {item.author?.name}
                     </div>
                   </div>
                   <div className="mt-1 pl-2">
@@ -200,7 +200,7 @@ const ListView = (props) => {
                           target="_blank"
                           rel="noreferrer"
                         >
-                          <button className="btn-outline-primary btn-sm btn mb-3 ml-0">
+                          <button className="btn-sm btn mb-3 ml-0">
                             {!item.type?.download ? (
                               <>
                                 <OpenInNewIcon />

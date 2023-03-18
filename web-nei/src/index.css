@@ -53,6 +53,10 @@
     @apply !z-30;
   }
 
+  .tooltip {
+    @apply !z-30;
+  }
+
   .menu :where(li) > :where(*:not(ul)) {
     @apply !px-3 !py-2;
   }

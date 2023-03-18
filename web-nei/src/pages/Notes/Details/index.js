@@ -154,7 +154,7 @@ const Details = ({
             ))}
           </div>
           <a href={note.location} target="_blank" rel="noreferrer">
-            <button className="btn-outline-primary btn-sm btn mb-3 ml-0">
+            <button className="btn-sm btn mb-3 ml-0">
               {!note.type?.download ? (
                 <>
                   <OpenInNewIcon />
