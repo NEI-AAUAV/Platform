@@ -18,7 +18,10 @@ def get_team_members(
     Return all mandates.
     """
     response.headers["cache-control"] = "private, max-age=15552000"
-    return crud.team_member.get_team_mandates(db=db)
+    data = crud.team_member.get_team_mandates(db=db)
+    print(data)
+    data = [e[0] for e in data]
+    return {"data": data}
 
 
 @router.get("/{mandate}", status_code=200, response_model=List[TeamMemberInDB])
