@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List, Optional
 
@@ -18,7 +18,7 @@ router = APIRouter()
 
 @router.get("/subject", status_code=200, response_model=List[SubjectInDB])
 def get_subjects(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response : Response,
     year: Optional[int] = None,
     student: Optional[int] = None,
     teacher: Optional[int] = None,
@@ -26,12 +26,13 @@ def get_subjects(
     """
     Get all subjects that are associated with a `year`, `student` and `teacher`.
     """
+    response.headers["cache-control"] = "private, max-age=86400, no-cache"
     return crud.subject.get_multi(db=db)
 
 
 @router.get("/teacher", status_code=200, response_model=List[TeacherInDB])
 def get_teachers(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response : Response,
     year: Optional[int] = None,
     subject: Optional[int] = None,
     student: Optional[int] = None,
@@ -40,12 +41,13 @@ def get_teachers(
     Get all teachers that are associated with a
     `year`, `subject` and `student`.
     """
+    response.headers["cache-control"] = "private, max-age=86400, no-cache"
     return crud.teacher.get_multi(db=db)
 
 
 @router.get("/year", status_code=200, response_model=List[int])
 def get_note_years(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response : Response,
     subject: Optional[int] = None,
     student: Optional[int] = None,
     teacher: Optional[int] = None,
@@ -54,12 +56,13 @@ def get_note_years(
     Get all years that are associated with a
     `subject`, `student` and `teacher`.
     """
+    response.headers["cache-control"] = "private, max-age=86400, no-cache"
     return list(range(2013, 2021))
 
 
 @router.get("/student", status_code=200, response_model=List[UserInDB])
 def get_note_students(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response : Response,
     year: Optional[int] = None,
     subject: Optional[int] = None,
     teacher: Optional[int] = None,
@@ -68,6 +71,7 @@ def get_note_students(
     Get all students that are associated with a
     `year`, `subject` and `teacher`.
     """
+    response.headers["cache-control"] = "private, max-age=86400, no-cache"
     return crud.note.get_note_students(db=db)
 
 
@@ -82,7 +86,7 @@ def get_notes(
     subject: Optional[int] = None,
     student: Optional[int] = None,
     teacher: Optional[int] = None,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db), response : Response,
 ) -> Any:
     if not note_categories.issuperset(categories):
         raise HTTPException(status_code=400, detail="Invalid category")
@@ -96,13 +100,17 @@ def get_notes(
         student=student,
         teacher=teacher,
         page=page_params.page, size=page_params.size)
+    
+    response.headers["cache-control"] = "private, max-age=86400, no-cache"
     return Page.create(total, items, page_params)
 
 
 @router.get("/{id}", status_code=200, response_model=NoteInDB)
 def get_note_by_id(
-    *, id: int, db: Session = Depends(deps.get_db),
+    *, id: int, db: Session = Depends(deps.get_db), response : Response,
 ) -> Any:
     if not db.get(Note, id):
         raise HTTPException(status_code=404, detail="Invalid Note id")
+    
+    response.headers["cache-control"] = "private, max-age=2592000, no-cache"
     return crud.note.get(db=db, id=id)

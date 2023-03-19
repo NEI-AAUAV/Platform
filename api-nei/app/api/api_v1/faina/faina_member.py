@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from app import crud
@@ -14,21 +14,23 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[FainaMemberInDB])
 def get_faina_member(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response: Response
 ) -> Any:
     """
     Return faina information.
     """
+    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.faina_member.get_multi(db=db)
 
 
 @router.get("/{id}", status_code=200, response_model=FainaMemberInDB)
 def get_faina_member_by_id(
-    *, db: Session = Depends(deps.get_db), id: int
+    *, db: Session = Depends(deps.get_db), id: int, response: Response
 ) -> Any:
     """
     Return faina information.
     """
+    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.faina_member.get(db=db, id=id)
 
 

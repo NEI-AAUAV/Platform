@@ -17,7 +17,7 @@ def get_team_colaborators(
     """
     Return colaborator information.
     """
-    response.headers["cache-control"] = "public, max-age=15552000"
+    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.team_colaborator.get_multi(db=db)
 
 
@@ -25,7 +25,7 @@ def get_team_colaborators(
 def get_team_colaborators_by_mandate(
     *, db: Session = Depends(deps.get_db), mandate: str, response : Response
 ) -> Any:
-    response.headers["cache-control"] = "public, max-age=15552000"
+    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.team_colaborator.get_colaborators_by_mandate(db=db, mandate=mandate)
 
 

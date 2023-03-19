@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List, Union
 
@@ -13,13 +13,14 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=Page[VideoInDB])
 def get_video(
-    *, page_params: PageParams = Depends(PageParams),
+    *, page_params: PageParams = Depends(PageParams), response: Response,
     tags: List[int] = Query(
         default=[], alias='tag[]',
         description="List of Tags"
     ),
     db: Session = Depends(deps.get_db)
 ) -> Any:
+    response.headers["cache-control"] = "private, max-age=604800, no-cache"
 
     all_cat = set(e.id for e in crud.videotag.get_multi(db=db))
 
@@ -33,16 +34,18 @@ def get_video(
 
 @router.get("/{id}", status_code=200, response_model=VideoInDB)
 def get_video(
-    *, id: int, db: Session = Depends(deps.get_db)
+    *, id: int, db: Session = Depends(deps.get_db), response: Response,
 ) -> Any:
+    response.headers["cache-control"] = "private, max-age=604800, no-cache"
     return crud.video.get(db=db, id=id)
 
 
 @router.get("/category/", status_code=200, response_model=List[VideoTagInDB])
 def get_categories(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response: Response,
 ) -> Any:
     """"
     Return the categories
     """
+    response.headers["cache-control"] = "private, max-age=2592000, no-cache"
     return (crud.videotag.get_multi(db=db))

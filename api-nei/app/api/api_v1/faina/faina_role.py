@@ -1,5 +1,5 @@
 from app.models import faina_role
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -13,21 +13,23 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[FainaRoleInDB])
 def get_faina_role(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response : Response
 ) -> Any:
     """
     Return faina information.
     """
+    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.faina_role.get_multi(db=db)
 
 
 @router.get("/{id}", status_code=200, response_model=FainaRoleInDB)
 def get_faina_role_by_id(
-    *, db: Session = Depends(deps.get_db), id: int
+    *, db: Session = Depends(deps.get_db), id: int, response : Response
 ) -> Any:
     """
     Return faina information.
     """
+    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     faina_role = crud.faina_role.get(db=db, id=id)
     if not faina_role:
         raise HTTPException(status_code=404, detail="Faina Role Not Found")

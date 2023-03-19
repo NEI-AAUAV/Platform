@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Security, UploadFile, File, Request, Form
+from fastapi import APIRouter, Depends, HTTPException, Security, UploadFile, File, Request, Form, Response
 from sqlalchemy.orm import Session
 
 from app import crud
@@ -18,8 +18,10 @@ responses = {
 
 @router.get("/", status_code=200, response_model=CourseList)
 def get_multi_course(
-    db: Session = Depends(deps.get_db)
+    response: Response,
+    db: Session = Depends(deps.get_db), 
 ) -> Any:
+    response.headers["cache-control"] = "private, max-age=3600, no-cache"
     courses = crud.course.get_multi(db)
     return CourseList(courses=courses)
 
@@ -41,8 +43,10 @@ async def create_course(
 @router.get("/{id}", status_code=200, response_model=Course,
             responses=responses)
 def get_course(
+    response: Response,
     id: int, db: Session = Depends(deps.get_db)
 ) -> Any:
+    response.headers["cache-control"] = "private, max-age=3600, no-cache"
     return crud.course.get(db, id=id)
 
 

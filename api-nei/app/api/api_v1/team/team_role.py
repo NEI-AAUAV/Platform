@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -12,21 +12,23 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[TeamRoleInDB])
 def get_team_roles(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), response : Response
 ) -> Any:
     """
-    Return faina information.
+    Return team roles information.
     """
+    response.headers["cache-control"] = "private, max-age=, no-cache"
     return crud.team_role.get_multi(db=db)
 
 
 @router.get("/{id}", status_code=200, response_model=TeamRoleInDB)
 def get_team_role_by_id(
-    *, db: Session = Depends(deps.get_db), id: int
+    *, db: Session = Depends(deps.get_db), id: int, response : Response
 ) -> Any:
     """
-    Return faina information.
+    Return specific team role information.
     """
+    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.team_role.get(db=db, id=id)
 
 

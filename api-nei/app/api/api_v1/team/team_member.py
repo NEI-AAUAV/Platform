@@ -17,7 +17,7 @@ def get_team_members(
     """
     Return all mandates.
     """
-    response.headers["cache-control"] = "private, max-age=15552000"
+    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     data = crud.team_member.get_team_mandates(db=db)
     print(data)
     data = [e[0] for e in data]
@@ -28,7 +28,7 @@ def get_team_members(
 def get_team_members_by_mandate(
     *, db: Session = Depends(deps.get_db), mandate: str, response : Response
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=15552000" 
+    response.headers["cache-control"] = "private, max-age=15552000, no-cache" 
     return crud.team_member.get_team_by_mandate(db=db, mandate=mandate)
 
 
