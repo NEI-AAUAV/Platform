@@ -1,12 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 
-from sqlalchemy.orm import Session
-from pydantic import SecretStr, validator, AnyStrMinLengthError
+from typing import Optional
 from datetime import datetime
+from sqlalchemy.orm import Session
+from pydantic import SecretStr, validator, AnyStrMinLengthError, MissingError
 from email_validator import validate_email, EmailNotValidError
 
 from app import crud
 from app.api import deps, email as emailUtils
+from app.api.recaptcha import verify_reCaptcha
 from app.schemas.user import UserBase, UserCreate
 from app.core.config import settings
 
@@ -60,12 +62,19 @@ class UserRegisterForm(UserBase):
 
     email: str
     password: SecretStr
+    recaptcha_token: Optional[str]
 
     @validator("password")
     def has_min_length(cls, v):
         min_length = 8
         if len(v.get_secret_value()) < min_length:
             raise AnyStrMinLengthError(limit_value=min_length)
+        return v
+
+    @validator("recaptcha_token")
+    def has_recaptcha_token(cls, v):
+        if v is None and settings.RECAPTCHA_ENABLED:
+            raise MissingError
         return v
 
 
@@ -79,6 +88,15 @@ async def register(
     background_tasks: BackgroundTasks,
     db: Session = Depends(deps.get_db),
 ):
+    score = await verify_reCaptcha(form_data.recaptcha_token)
+
+    if score < settings.RECAPTCHA_REGISTER_THRESHOLD:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Slow down",
+            headers={"WWW-Authenticate": "reCaptcha"},
+        )
+
     try:
         validation = validate_email(
             form_data.email,

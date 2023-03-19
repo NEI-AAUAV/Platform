@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 from jose import JWTError, jwt
 from datetime import datetime
-from typing import Any
+from typing import Any, Literal
 from email_validator import caching_resolver
 
 from app.models.user import User
@@ -19,6 +19,7 @@ from app.core.config import settings
 ACCESS_TOKEN_TYPE: str = "access"
 REFRESH_TOKEN_TYPE: str = "refresh"
 VERIFICATION_TOKEN_TYPE: str = "verification"
+PASSWORD_RESET_TOKEN_TYPE: str = "reset"
 
 
 with open(settings.JWT_SECRET_KEY_PATH, "r") as file:
@@ -230,3 +231,8 @@ def generate_response(
         path=settings.API_V1_STR + "/auth/refresh",
     )
     return response
+
+
+class OperationSuccessfulResponse(BaseModel):
+    status: Literal["success"]
+    message: str
