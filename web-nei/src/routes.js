@@ -22,7 +22,7 @@ import Videos from "./pages/Videos";
 import Video from "./pages/Video";
 import Sports from "./pages/Sports";
 import SportModality from "./pages/SportModality";
-import FainaTree from "./pages/FainaTree";
+import Family from "./pages/Family";
 import Internship from "./pages/Internship";
 import Components from "./pages/Components";
 import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
@@ -69,7 +69,7 @@ const routes = [
   {
     path: "/",
     element: <Layout />,
-    children: [{ path: "/family", element: <FainaTree /> }],
+    children: [{ path: "/family", element: <Family /> }],
   },
   // {
   //   path: "/",

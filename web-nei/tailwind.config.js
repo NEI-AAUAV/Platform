@@ -30,9 +30,9 @@ module.exports = {
                     primary: "#19a24aff",
                     secondary: "#086c2e",
                     "primary-focus": "#086c2e",
-                    "base-100": "#f0f0f5",
-                    "base-200": "#f5f5fa",
-                    "base-300": "#f6f8fa",
+                    "base-100": "#e6e6eb",
+                    "base-200": "#f0f0f5",
+                    "base-300": "#f5f5fa",
                 },
             },
             {

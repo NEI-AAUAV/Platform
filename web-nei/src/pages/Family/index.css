@@ -15,7 +15,7 @@
 }
 
 #treeei {
-    max-height: calc(100vh - 10rem);
+    height: calc(100vh - 9rem); /* 9rem = 5rem (header) + 4rem (footer) */
     position: relative;
     overflow: hidden;
     
@@ -41,20 +41,21 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-    box-shadow: inset 0 0 12px 12px hsl(var(--b1));
+    box-shadow: inset 0 0 4px 0 rgb(0 0 0 / 0.1), 0 0 3px -1px rgb(0 0 0 / 0.1);
     z-index: 2;
 }
 
 #treeei svg.treeei {
     position: absolute;
-    top: -6rem;
+    top: -5rem; /* 5rem = 5rem (header) */
     left: 0;
     height: 100vh;
     width: 100vw;
-    background: radial-gradient(circle at center, hsl(var(--b1)) 50%, transparent);
+    /* background: radial-gradient(circle at center, hsl(var(--b1)) 50%, transparent);
     background-size: 100% 100%;
-    background-position: center;
+    background-position: center; */
     color: hsl(var(--bc));
+    z-index: -1;
 }
 
 #treeei.expand svg.treeei {
@@ -101,9 +102,7 @@
 
 #treeei .side-bar .side-bar-body .side-bar-content {
     width: 200px;
-
 }
-
 
 #treeei.expand>.side-bar {
     border-radius: 0 0 0 10px;
@@ -229,6 +228,7 @@
 
 #treeei svg.treeei path {
     fill: none;
+    stroke: silver;
 }
 
 #treeei svg.treeei g.label text {
@@ -239,13 +239,15 @@
     -ms-user-select: none;
     -o-user-select: none;
     user-select: none;
-    font-family: 'Source Sans Pro', sans-serif;
-    font-size: 1em;
+
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 0.75em;
     -webkit-transition: font-size 0.3s;
     -moz-transition: font-size 0.3s;
     -o-transition: font-size 0.3s;
     transition: font-size 0.3s;
-    fill: hsl(var(--bc));
+    fill: hsl(var(--bc) / .9);
+    font-weight: medium;
 }
 
 #treeei svg.treeei g.label.label-small text {
@@ -290,4 +292,8 @@
     fill: hsl(var(--b1));
     stroke: silver;
     stroke-width: 1.5;
+}
+
+#treeei svg.treeei defs marker#dot circle {
+    fill: silver;
 }

@@ -364,8 +364,8 @@ const Notes = () => {
          ** using a custom layout. The Nav element contains the buttons that switch
          ** the views, which are specified in each Tab.Pane element.
          */}
-        <div className="">
-          <div class="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
+        <div>
+          <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
             <button
               className={classname(
                 "btn-sm btn gap-2 border-none bg-accent py-1",
