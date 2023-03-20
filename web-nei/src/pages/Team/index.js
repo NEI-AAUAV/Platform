@@ -28,15 +28,9 @@ const Team = () => {
 
   useEffect(() => {
     setLoading(true);
-    let anos = new Set();
-    service.getTeamMandates().then((response) => {
-      for (var i = 0; i < response.length; i++) {
-        anos.add(response[i]);
-      }
+    service.getTeamMandates().then(({ data }) => {
       setYears(
-        Array.from(anos.values())
-          .sort((a, b) => a - b)
-          .reverse()
+        data.sort().reverse()
       );
       setLoading(false);
     });
