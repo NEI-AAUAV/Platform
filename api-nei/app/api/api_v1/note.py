@@ -117,9 +117,10 @@ def get_note_students(
     `year`, `subject` and `teacher`.
     """
     # return crud.note.get_note_students(db=db)
-    data = crud.note.get_note_students(db=db, year=year, subject_code=subject, teacher_id=teacher, curricular_year=curricular_year)
-    
-    return data 
+    data = crud.note.get_note_students(
+        db=db, year=year, subject_code=subject, teacher_id=teacher, curricular_year=curricular_year)
+
+    return data
 
 @router.get("/", status_code=200, response_model=Page[NoteInDB])
 def get_notes(
