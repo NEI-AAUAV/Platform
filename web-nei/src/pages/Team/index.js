@@ -19,7 +19,7 @@ const animationIncrement = parseFloat(
 const Team = () => {
   const [years, setYears] = useState([]);
 
-  const [selectedYear, setSelectedYear] = useState("2022");
+  const [selectedYear, setSelectedYear] = useState(null);
 
   const [people, setPeople] = useState();
   const [colaborators, setColaborators] = useState();
@@ -29,9 +29,9 @@ const Team = () => {
   useEffect(() => {
     setLoading(true);
     service.getTeamMandates().then(({ data }) => {
-      setYears(
-        data.sort().reverse()
-      );
+      const years = data.sort().reverse();
+      setYears(years);
+      setSelectedYear(years[0]);
       setLoading(false);
     });
   }, []);
@@ -39,58 +39,58 @@ const Team = () => {
   useEffect(() => {
     setLoading(true);
 
-    if (selectedYear != null) {
-      const params = {
-        mandate: selectedYear,
-      };
+    if (!selectedYear) return;
+    const params = {
+      mandate: selectedYear,
+    };
 
-      let team = [];
-      let colabs = [];
-      setPeople(team);
-      setColaborators(colabs);
-      service.getTeamMembers({ ...params }).then((response) => {
-        for (var i = 0; i < response.length; i++) {
-          if (response[i].mandate === selectedYear) {
-            team.push({
-              id: response[i].user.id,
-              name: response[i].user.name,
-              role: response[i].role.name,
-              header: response[i].header,
-              linkedIn: response[i].user.linkedin,
-            });
-          }
+    let team = [];
+    let colabs = [];
+    setPeople(team);
+    setColaborators(colabs);
+    service.getTeamMembers({ ...params }).then((response) => {
+      for (var i = 0; i < response.length; i++) {
+        if (response[i].mandate === selectedYear) {
+          team.push({
+            id: response[i].user.id,
+            name: response[i].user.name,
+            role: response[i].role.name,
+            header: response[i].header,
+            linkedIn: response[i].user.linkedin,
+          });
         }
-        setPeople(
-          team.map((person, i) => (
-            <Person
-              key={person.id}
-              img={person.header}
-              name={person.name}
-              description={person.role}
-              linke={person.linkedIn}
-              className="slideUpFade"
-              style={{
-                animationDelay: animationBase + animationIncrement * i + "s",
-              }}
-            />
-          ))
-        );
-      });
+      }
+      setPeople(
+        team.map((person, i) => (
+          <Person
+            key={person.id}
+            img={person.header}
+            name={person.name}
+            description={person.role}
+            linke={person.linkedIn}
+            className="slideUpFade"
+            style={{
+              animationDelay: animationBase + animationIncrement * i + "s",
+            }}
+          />
+        ))
+      );
+    });
 
-      service.getTeamColaborators({ ...params }).then((response) => {
-        for (var i = 0; i < response.length; i++) {
-          if (response[i].mandate === selectedYear) {
-            colabs.push({
-              id: response[i].user.id,
-              name: response[i].user.name,
-            });
-          }
+    service.getTeamColaborators({ ...params }).then((response) => {
+      for (var i = 0; i < response.length; i++) {
+        if (response[i].mandate === selectedYear) {
+          colabs.push({
+            id: response[i].user.id,
+            name: response[i].user.name,
+          });
         }
-        setColaborators(
-          colabs.map((person, i) => <TextList colSize={4} text={person.name} />)
-        );
-      });
-    }
+      }
+      setColaborators(
+        colabs.map((person, i) => <TextList colSize={4} text={person.name} />)
+      );
+    });
+    
     setLoading(false);
   }, [selectedYear]);
 
