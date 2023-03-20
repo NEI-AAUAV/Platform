@@ -24,6 +24,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
         subject: Optional[int] = None,
         student: Optional[int] = None,
         teacher: Optional[int] = None,
+        curricular_year: Optional[int] = None,
         page: int, size: int
     ) -> Tuple[int, List[Note]]:
         """
@@ -38,6 +39,9 @@ class CRUDNote(CRUDBase[Note, None, None]):
             query = query.filter(Note.author_id == student)
         if teacher:
             query = query.filter(Note.teacher_id == teacher)
+        if curricular_year:
+            query = query.join(Note.subject)\
+                    .filter_by(curricular_year=curricular_year)
         if categories:
             query = query.filter(
                 or_(getattr(Note, cat) == 1 for cat in categories))

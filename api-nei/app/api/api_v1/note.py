@@ -28,7 +28,8 @@ def get_subjects(
     Get all subjects that are associated with a `year`, `student` and `teacher`.
     """
 
-    data = crud.note.get_note_subjects(db=db, year=year, teacher_id=teacher, student_id=student, curricular_year=curricular_year)
+    data = crud.note.get_note_subjects(
+        db=db, year=year, teacher_id=teacher, student_id=student, curricular_year=curricular_year)
 
     return data
 
@@ -47,13 +48,14 @@ def get_teachers(
     `year`, `subject` and `student`.
     """
     # return crud.teacher.get_multi(db=db)
-    data = crud.note.get_note_teachers(db=db, year=year, subject_code=subject, student_id=student, curricular_year=curricular_year)
-    
-    return data 
+    data = crud.note.get_note_teachers(
+        db=db, year=year, subject_code=subject, student_id=student, curricular_year=curricular_year)
+
+    return data
 
 
-
-@router.get("/year", status_code=200) # Retirado response_model=List[int] pq existe valor null
+# Retirado response_model=List[int] pq existe valor null
+@router.get("/year", status_code=200)
 def get_note_years(
     *, db: Session = Depends(deps.get_db),
     subject_id: Optional[int] = None,
@@ -81,9 +83,10 @@ def get_note_students(
     `year`, `subject` and `teacher`.
     """
     # return crud.note.get_note_students(db=db)
-    data = crud.note.get_note_students(db=db, year=year, subject_code=subject, teacher_id=teacher, curricular_year=curricular_year)
-    
-    return data 
+    data = crud.note.get_note_students(
+        db=db, year=year, subject_code=subject, teacher_id=teacher, curricular_year=curricular_year)
+
+    return data
 
 
 @router.get("/", status_code=200, response_model=Page[NoteInDB])
@@ -97,6 +100,7 @@ def get_notes(
     subject: Optional[int] = None,
     student: Optional[int] = None,
     teacher: Optional[int] = None,
+    curricular_year: Optional[int] = None,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     if not note_categories.issuperset(categories):
@@ -110,6 +114,7 @@ def get_notes(
         subject=subject,
         student=student,
         teacher=teacher,
+        curricular_year=curricular_year,
         page=page_params.page, size=page_params.size)
     return Page.create(total, items, page_params)
 
