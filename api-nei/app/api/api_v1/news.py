@@ -12,7 +12,8 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=Page[NewsInDB])
 def get_news_list(
-    *, page_params: PageParams = Depends(PageParams), response: Response,
+    *, page_params: PageParams = Depends(PageParams),
+    _ = Depends(deps.short_cache),
     categories: List[str] = Query(
         default=[], alias='category[]',
         description="List of categories",
@@ -28,18 +29,17 @@ def get_news_list(
     total, items = crud.news.get_news_by_categories(
         db=db, categories=categories, page=page_params.page, size=page_params.size)
     
-    response.headers["cache-control"] = "private, max-age=86400, no-cache"
     return Page.create(total, items, page_params)
 
 
 @router.get("/category", status_code=200, response_model=NewsCategories)
 def get_news_categories(
-    *, db: Session = Depends(deps.get_db), response: Response,
+    *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return the categories
     """
-    response.headers["cache-control"] = "private, max-age=2592000, no-cache"
     data = crud.news.get_news_categories(db=db)
     data = [e[0].value for e in data]
     return {"data": data}
@@ -47,9 +47,9 @@ def get_news_categories(
 
 @router.get("/{id}", status_code=200, response_model=NewsInDB)
 def get_news(
-    *, id: int, db: Session = Depends(deps.get_db), response: Response,
+    *, id: int, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=86400, no-cache"
 
     item = crud.news.get(db=db, id=id)
     if item == None:

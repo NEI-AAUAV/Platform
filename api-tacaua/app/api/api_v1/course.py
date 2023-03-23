@@ -18,10 +18,9 @@ responses = {
 
 @router.get("/", status_code=200, response_model=CourseList)
 def get_multi_course(
-    response: Response,
-    db: Session = Depends(deps.get_db), 
+    db: Session = Depends(deps.get_db),
+    _ = Depends(deps.short_cache),
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=3600, no-cache"
     courses = crud.course.get_multi(db)
     return CourseList(courses=courses)
 
@@ -43,10 +42,9 @@ async def create_course(
 @router.get("/{id}", status_code=200, response_model=Course,
             responses=responses)
 def get_course(
-    response: Response,
-    id: int, db: Session = Depends(deps.get_db)
+    id: int, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.short_cache),
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=3600, no-cache"
     return crud.course.get(db, id=id)
 
 

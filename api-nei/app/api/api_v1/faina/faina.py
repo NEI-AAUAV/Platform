@@ -12,12 +12,12 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[FainaInDB])
 def get_faina(
-    *, db: Session = Depends(deps.get_db), response : Response
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return faina information.
     """
-    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.faina.get_multi(db=db)
 
 

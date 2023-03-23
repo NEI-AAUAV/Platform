@@ -13,14 +13,14 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=Page[VideoInDB])
 def get_video(
-    *, page_params: PageParams = Depends(PageParams), response: Response,
+    *, page_params: PageParams = Depends(PageParams),
+    _ = Depends(deps.short_cache),
     tags: List[int] = Query(
         default=[], alias='tag[]',
         description="List of Tags"
     ),
     db: Session = Depends(deps.get_db)
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=604800, no-cache"
 
     all_cat = set(e.id for e in crud.videotag.get_multi(db=db))
 
@@ -34,18 +34,18 @@ def get_video(
 
 @router.get("/{id}", status_code=200, response_model=VideoInDB)
 def get_video(
-    *, id: int, db: Session = Depends(deps.get_db), response: Response,
+    *, id: int, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.short_cache),
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=604800, no-cache"
     return crud.video.get(db=db, id=id)
 
 
 @router.get("/category/", status_code=200, response_model=List[VideoTagInDB])
 def get_categories(
-    *, db: Session = Depends(deps.get_db), response: Response,
+    *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """"
     Return the categories
     """
-    response.headers["cache-control"] = "private, max-age=2592000, no-cache"
     return (crud.videotag.get_multi(db=db))

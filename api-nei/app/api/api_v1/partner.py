@@ -12,15 +12,15 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[PartnerInDB])
 def get_partners(
-    *, db: Session = Depends(deps.get_db), response: Response,
+    *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.short_cache),
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=604800, no-cache"
     return crud.partner.get_multi(db=db)
 
 
 @router.get("/banner", status_code=200, response_model=PartnerInDB)
 def get_partner_banner(
-    *, db: Session = Depends(deps.get_db), response: Response,
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.short_cache),
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=604800, no-cache"
     return crud.partner.get_banner(db=db)

@@ -13,12 +13,12 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[SeniorInDB])
 def get_seniors(
-    *, db: Session = Depends(deps.get_db), response : Response,
+    *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return senior information.
     """
-    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.senior.get_multi(db=db)
 
 
@@ -48,30 +48,29 @@ def update_senior(
 
 @router.get("/course", status_code=200, response_model=List[str])
 def get_senior_courses(
-    *, db: Session = Depends(deps.get_db), response : Response,
+    *, db: Session = Depends(deps.get_db),
+        _ = Depends(deps.long_cache),
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.senior.get_course(db=db)
 
 
 @router.get("/{course}/year", status_code=200, response_model=List[int])
 def get_senior_course_years(
     *, db: Session = Depends(deps.get_db), 
-    response : Response,
+    _ = Depends(deps.long_cache),
     course: str
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.senior.get_course_year(db=db, course=course.upper())
 
 
 @router.get("/{course}/{year}", status_code=200, response_model=SeniorInDB)
 def get_senior_by(
-    *, db: Session = Depends(deps.get_db), 
+    *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
     response : Response,
     course: str, year: int,
 ) -> Any:
     """
     Return senior information from a specific `course` and `year`.
     """
-    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.senior.get_by(db=db, course=course.upper(), year=year)

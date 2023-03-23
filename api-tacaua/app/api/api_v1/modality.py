@@ -16,11 +16,10 @@ responses = {
 
 @router.get("/", status_code=200, response_model=ModalityLazyList)
 def get_multi_modality(
-    response: Response,
     db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.long_cache),
 ) -> Any:
     modalities = crud.modality.get_multi(db)
-    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return ModalityLazyList(modalities=modalities)
 
 
@@ -40,11 +39,10 @@ async def create_modality(
 @router.get("/{id}", status_code=200, response_model=Modality,
             responses=responses)
 def get_modality(
-    response: Response,
-    id: int, db: Session = Depends(deps.get_db)
+    id: int, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.shorter_cache),
 ) -> Any:
     modality = crud.modality.get(db, id=id)
-    response.headers["cache-control"] = "private, max-age=3600, no-cache"
     if not modality:
         raise HTTPException(status_code=404, detail="Modality Not Found")
     return crud.modality.get(db, id=id)

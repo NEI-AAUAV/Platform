@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = (
         ["https://nei.web.ua.pt"]
         if PRODUCTION
-        else ["http://localhost", "http://localhost:8001", "http://localhost:8002"]
+        else ["http://localhost", "http://localhost:8001", "http://localhost:8002", "http://localhost:3000"]
     )
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)

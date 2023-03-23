@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[MerchInDB])
 def get(
-    *, db: Session = Depends(deps.get_db), response : Response,
+    *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache)
 ) -> Any:
-    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.merch.get_multi(db=db)

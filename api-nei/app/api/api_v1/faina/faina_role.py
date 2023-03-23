@@ -24,12 +24,12 @@ def get_faina_role(
 
 @router.get("/{id}", status_code=200, response_model=FainaRoleInDB)
 def get_faina_role_by_id(
-    *, db: Session = Depends(deps.get_db), id: int, response : Response
+    *, db: Session = Depends(deps.get_db), id: int, 
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return faina information.
     """
-    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     faina_role = crud.faina_role.get(db=db, id=id)
     if not faina_role:
         raise HTTPException(status_code=404, detail="Faina Role Not Found")

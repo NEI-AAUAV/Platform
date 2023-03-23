@@ -14,23 +14,24 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[FainaMemberInDB])
 def get_faina_member(
-    *, db: Session = Depends(deps.get_db), response: Response
+    *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return faina information.
     """
-    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.faina_member.get_multi(db=db)
 
 
 @router.get("/{id}", status_code=200, response_model=FainaMemberInDB)
 def get_faina_member_by_id(
-    *, db: Session = Depends(deps.get_db), id: int, response: Response
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.long_cache),
+    id: int, 
 ) -> Any:
     """
     Return faina information.
     """
-    response.headers["cache-control"] = "private, max-age=15552000, no-cache"
     return crud.faina_member.get(db=db, id=id)
 
 
