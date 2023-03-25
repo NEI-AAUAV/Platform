@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, AnyHttpUrl, constr
 
-from typing import Optional
+from typing import Optional, List
 from typing_extensions import Annotated
 
 from .team_role import TeamRoleInDB
@@ -14,6 +14,10 @@ class TeamMemberBase(BaseModel):
     mandate: MandateStr
     user_id: int
     role_id: int
+
+
+class TeamMandates(BaseModel):
+     data: List[str]
 
 
 class TeamMemberCreate(TeamMemberBase):

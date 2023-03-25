@@ -1,5 +1,5 @@
 import string
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -14,6 +14,7 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=List[SeniorStudentInDB])
 def get_senior_students(
     *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return senior students information.

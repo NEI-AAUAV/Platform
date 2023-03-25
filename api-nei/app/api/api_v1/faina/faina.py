@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -12,7 +12,8 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[FainaInDB])
 def get_faina(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return faina information.
