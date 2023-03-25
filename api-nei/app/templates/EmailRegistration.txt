@@ -1,13 +1,12 @@
-Bem-vindo {{name}}!
+Olá {{name}}!
 
-Conclui a tua criação de conta no site do nei acedendo ao link abaixo.
+O registo da tua conta foi bem sucedido, mas antes de começar precisamos de confirmar o teu email. 
 
 ({{endpoint}}?token={{token}})
 
-Estás a receber este email porque tentaste criar uma conta
-no site do nei com o seguinte email: {{email}}.
+Estás a receber este email porque tentaste criar uma conta no site do NEI com o seguinte email: {{email}}. 
 
-Se não foste tu a criar a conta podes ignorar este email.
+Se não foste tu a criar a conta podes ignorar este email. 
 
 Cumprimentos,
-A equipa do nei
+A equipa do NEI
