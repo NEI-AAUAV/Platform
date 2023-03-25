@@ -1,53 +1,32 @@
-import { useState } from "react";
+import { Fragment, useState, useCallback } from "react";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCompress,
-  faExpand,
-  faSitemap,
-  faGripHorizontal,
-  faChevronDown,
-  faChevronUp,
-  faArrowUp,
-  faArrowDown,
-  faAngleLeft,
-  faAngleRight,
-} from "@fortawesome/free-solid-svg-icons";
-
-import { MAX_YEAR, MIN_YEAR, handleSearchChange, organizations, colors, searchData, changeLabels } from "../data";
+  MAX_YEAR,
+  MIN_YEAR,
+  handleSearchChange,
+  organizations,
+  colors,
+  searchData,
+  changeLabels,
+} from "../data";
 
 import { useUserStore } from "stores/useUserStore";
 
 import classNames from "classnames";
 
-import Autocomplete from "@mui/material/Autocomplete";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
+import Autocomplete from "components/Autocomplete";
+import { ExpandMoreIcon, ExpandLessIcon } from "assets/icons/google";
 
-
-const Modes = {
-  TREE: 1,
-  YEAR: 2,
-};
-
-const FamilySidebar = ({ insignias, year, expanded, setInsignias, setYear, setExpanded }) => {
-  const [showInfo, setShowInfo] = useState(false);
-  const [mode, setMode] = useState(Modes.TREE);
+const FamilySidebar = ({
+  insignias,
+  year,
+  setInsignias,
+  setYear,
+}) => {
   const [endYear, setEndYear] = useState(MAX_YEAR);
   const [fainaNames, setFainaNames] = useState(false);
-  const theme = useUserStore(state => state.theme);
-
-  const toggleShowInfo = () => {
-    setShowInfo(!showInfo);
-  };
-
-  const toggleExpand = () => {
-    setExpanded(!expanded);
-  };
-
-  const toggleMode = () => {
-    setMode(mode === Modes.TREE ? Modes.FAINA : Modes.TREE);
-  };
+  const [selName, setSelName] = useState(null);
+  const theme = useUserStore((state) => state.theme);
 
   const toggeFainaNames = () => {
     changeLabels(!fainaNames);
@@ -63,43 +42,59 @@ const FamilySidebar = ({ insignias, year, expanded, setInsignias, setYear, setEx
     setInsignias([...insignias]);
   };
 
-  
+  const customRenderOption = (item) => (
+    <>
+      <div
+        className="inline-block h-3 w-3 rounded-full"
+        style={{ backgroundColor: item.color }}
+      />
+      {item.label}
+    </>
+  );
+
+  const BulletYear = useCallback(
+    ({ color, index }) => (
+      <div
+        className={classNames(
+          "cursor-pointer py-0.5",
+          index > year ? "font-normal opacity-70" : "font-medium"
+        )}
+        onClick={() => setYear(index)}
+      >
+        <div
+          className="ml-1.5 mr-2 inline-block h-3 w-3 rounded-full p-1"
+          style={{ backgroundColor: color }}
+        ></div>
+        {2000 + index}
+      </div>
+    ),
+    [year]
+  );
+
+  function handleChange(key) {
+    setSelName(key);
+    handleSearchChange(searchData.find((item) => item.id === key));
+  }
 
   return (
     <>
-      <button className="side-bar-button" onClick={toggleShowInfo}>
-        <span>
-          <FontAwesomeIcon
-            icon={showInfo ? faAngleLeft : faAngleRight}
-            size={"sm"}
-          />
-        </span>
-      </button>
-      <div className={classNames("side-bar-body", { hide: !showInfo })}>
-        <div className="side-bar-content">
-          <div className="mb-3">
-            <div
-              className="d-flex align-items-center justify-content-around"
-              style={{ minHeight: 32 }}
-            >
-              <FontAwesomeIcon
-                onClick={toggleExpand}
-                className="menu-icon"
-                icon={expanded ? faCompress : faExpand}
-                size="lg"
-              />
-              <FontAwesomeIcon
-                style={{ cursor: "not-allowed", opacity: 0.25 }}
-                onClick={toggleMode}
-                className="menu-icon"
-                icon={mode === Modes.TREE ? faGripHorizontal : faSitemap}
-                size={mode === Modes.TREE ? "2x" : "lg"}
-              />
-            </div>
-          </div>
-
-          <h4>Procurar</h4>
+      <h5 className="px-3 pt-3 opacity-80">Procurar</h5>
+      <div className="px-3 py-3">
+        <div className="w-56">
           <Autocomplete
+            items={searchData.map((item) => ({
+              key: item.id,
+              label: item.name,
+              color: item.color
+            }))}
+            value={selName}
+            onChange={handleChange}
+            placeholder="Nome"
+            renderOption={customRenderOption}
+          />
+        </div>
+      </div>
+      {/* <Autocomplete
             id="country-select-demo"
             sx={{ width: 200 }}
             options={searchData}
@@ -107,10 +102,10 @@ const FamilySidebar = ({ insignias, year, expanded, setInsignias, setYear, setEx
             autoHighlight
             freeSolo
             getOptionLabel={(option) => `${option.name}`}
-            renderOption={(props, option) => (
+            renderTab={(props, option) => (
               <Box {...props} key={`${option.id}`} component="li">
                 <div
-                  className="color-bullet"
+                  className="color-bulletYear"
                   style={{ backgroundColor: option.color }}
                 ></div>
                 {option.name}
@@ -136,119 +131,94 @@ const FamilySidebar = ({ insignias, year, expanded, setInsignias, setYear, setEx
                 InputLabelProps={{ className: "autocompleteLabel" }}
                 inputProps={{
                   ...params.inputProps,
-                  autoComplete: "off", // disable autocomplete and autofill
+                  autoComplete: "off",
                 }}
               />
             )}
-          />
+          /> */}
 
-          <h4>Nomes</h4>
-          <div className="mt-3">
-            <div
-              className="mb-2"
-              style={{
-                fontWeight: fainaNames ? 400 : 300,
-                opacity: fainaNames ? 1 : 0.7,
-                cursor: "pointer",
-              }}
-              onClick={toggeFainaNames}
-            >
-              Mostrar nomes de faina
-            </div>
-          </div>
+      <h5 className="px-3 pt-3 opacity-80">Nomes</h5>
+      <div className="px-5 py-3">
+        <div
+          className={classNames(
+            "mb-2 cursor-pointer",
+            fainaNames ? "font-medium" : "font-normal opacity-70"
+          )}
+          onClick={toggeFainaNames}
+        >
+          Mostrar nomes de faina
+        </div>
+      </div>
 
-          <h4>Matrículas</h4>
-          <div className="d-flex justify-content-between my-3 p-1">
-            <div className="mr-3">
-              <div style={{ marginBottom: "0.2em" }}>
-                <FontAwesomeIcon
-                  onClick={() =>
-                    setEndYear((endYear) => Math.max(--endYear, MIN_YEAR + 9))
-                  }
-                  style={
-                    endYear === MIN_YEAR + 9
-                      ? { opacity: 0.5 }
-                      : { cursor: "pointer" }
-                  }
-                  icon={faArrowUp}
-                  size="sm"
-                />
-              </div>
-              {[...Array(5).keys()]
-                .map((i) => endYear - 9 + i)
-                .map((i) => (
-                  <div
-                    key={i}
-                    className={classNames("color-legend", {
-                      inactive: i > year,
-                    })}
-                    onClick={() => setYear(i)}
-                  >
-                    <div
-                      className="color-bullet"
-                      style={{ backgroundColor: colors[i % colors.length] }}
-                    ></div>
-                    {2000 + i}
-                  </div>
-                ))}
-            </div>
-            <div className="mr-3">
-              {[...Array(5).keys()]
-                .map((i) => endYear - 4 + i)
-                .map((i) => (
-                  <div
-                    key={i}
-                    className={classNames("color-legend", {
-                      inactive: i > year,
-                    })}
-                    onClick={() => setYear(i)}
-                  >
-                    <div
-                      className="color-bullet"
-                      style={{ backgroundColor: colors[i % colors.length] }}
-                    ></div>
-                    {2000 + i}
-                  </div>
-                ))}
-              <div style={{ marginBottom: "0.2em" }}>
-                <FontAwesomeIcon
-                  onClick={() =>
-                    setEndYear((endYear) => Math.min(++endYear, MAX_YEAR))
-                  }
-                  style={
-                    endYear === MAX_YEAR
-                      ? { opacity: 0.5 }
-                      : { cursor: "pointer" }
-                  }
-                  icon={faArrowDown}
-                  size="sm"
-                />
-              </div>
-            </div>
+      <h5 className="px-3 pt-3 opacity-80">Matrículas</h5>
+      <div className="flex justify-start gap-10 px-5 py-3">
+        <div>
+          <div
+            className={classNames(
+              "btn-xs btn-circle btn mx-auto",
+              endYear === MIN_YEAR + 9 ? "btn-disabled" : "cursor-pointer"
+            )}
+            onClick={() =>
+              setEndYear((endYear) => Math.max(--endYear, MIN_YEAR + 9))
+            }
+          >
+            <ExpandLessIcon />
           </div>
-          <h4>Insígnias</h4>
-          <div className="mr-auto mt-3">
-            {Object.entries(organizations).map(([key, org]) => (
-              <div
-                key={key}
-                className={classNames("insignia", {
-                  inactive: insignias.length !== 0 && !insignias.includes(key),
-                })}
-                onClick={() => toggleInsignias(key)}
-              >
-                <img
-                  src={org.insignia}
-                  style={
-                    org.changeColor && theme === "dark"
-                      ? { filter: "invert(1)" }
-                      : {}
-                  }
-                />
-                <div>{org.name}</div>
-              </div>
+          {[...Array(5).keys()]
+            .map((i) => endYear - 9 + i)
+            .map((i) => (
+              <Fragment key={i}>
+                <BulletYear color={colors[i % colors.length]} index={i} />
+              </Fragment>
             ))}
+        </div>
+        <div>
+          {[...Array(5).keys()]
+            .map((i) => endYear - 4 + i)
+            .map((i) => (
+              <Fragment key={i}>
+                <BulletYear color={colors[i % colors.length]} index={i} />
+              </Fragment>
+            ))}
+          <div
+            className={classNames(
+              "btn-xs btn-circle btn mx-auto",
+              endYear === MAX_YEAR ? "btn-disabled" : "cursor-pointer"
+            )}
+            onClick={() =>
+              setEndYear((endYear) => Math.min(++endYear, MAX_YEAR))
+            }
+          >
+            <ExpandMoreIcon />
           </div>
         </div>
+      </div>
+      <h5 className="px-3 pt-3 opacity-80">Insígnias</h5>
+      <div className="px-5 py-3">
+        {Object.entries(organizations).map(([key, org]) => (
+          <div
+            key={key}
+            className={classNames(
+              "mb-1 flex cursor-pointer items-center gap-3 font-medium",
+              {
+                "!font-normal opacity-70":
+                  insignias.length !== 0 && !insignias.includes(key),
+              }
+            )}
+            onClick={() => toggleInsignias(key)}
+          >
+            <img
+              src={org.insignia}
+              className="h-4 w-4"
+              style={
+                org.changeColor && theme === "dark"
+                  ? { filter: "invert(1)" }
+                  : {}
+              }
+            />
+            <div>{org.name}</div>
+          </div>
+        ))}
       </div>
     </>
   );

@@ -10,7 +10,7 @@ import { CloseIcon, ExpandMoreIcon } from "assets/icons/google";
  * @param {String} value the selected item's key
  * @param {Function} onChange callback to be called when an item is selected
  */
-const Autocomplete = ({ items, value, onChange, placeholder }) => {
+const Autocomplete = ({ items, value, onChange, placeholder, renderOption }) => {
   const ref = useRef(null);
   const [text, setText] = useState("");
   const [options, setOptions] = useState(items);
@@ -97,7 +97,7 @@ const Autocomplete = ({ items, value, onChange, placeholder }) => {
                     "btn-disabled font-bold": item.key === value,
                   })}
                 >
-                  {item.label}
+                  {renderOption?.(item) || item.label}
                 </span>
               </li>
             ))}

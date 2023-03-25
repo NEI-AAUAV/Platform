@@ -12,7 +12,8 @@ module.exports = {
                 DEFAULT: '250ms',
             },
             transitionProperty: {
-                size: 'margin, padding, height, width',
+                background: 'color, background-color',
+                size: 'margin, padding, height, width, color, background-color, transform',
                 hover: 'box-shadow, transform, filter',
             },
             width: {

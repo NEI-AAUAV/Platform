@@ -59,7 +59,7 @@ const RGM = () => {
     }, 300);
   };
 
-  function customTab(tab) {
+  function customRender(tab) {
     const t = tab.split("/");
     return (
       <>
@@ -84,7 +84,7 @@ const RGM = () => {
         tabs={mandates.sort().reverse()}
         value={tab}
         onChange={changeTab}
-        displayAs={customTab}
+        renderTab={customRender}
         className="my-8"
       />
       {!!loading && (

@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 
 import config from "config";
 
-import Layout, { MainLayout, CleanLayout } from "./layouts/Layout";
+import Layout, { FullLayout, CleanLayout } from "./layouts/Layout";
 
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
@@ -37,7 +37,7 @@ import ResetPassword from "./pages/ResetPassword";
 const routes = [
   {
     path: "/",
-    element: <MainLayout />,
+    element: <Layout />,
     children: [
       { path: "/", element: <Homepage /> },
       { path: "/news", element: <News /> },
@@ -68,7 +68,7 @@ const routes = [
   },
   {
     path: "/",
-    element: <Layout />,
+    element: <FullLayout />,
     children: [{ path: "/family", element: <Family /> }],
   },
   // {

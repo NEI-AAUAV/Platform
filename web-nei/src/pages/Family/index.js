@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 
-import { TuneIcon, CloseIcon } from "assets/icons/google";
+import { motion } from "framer-motion";
+
+import {
+  TuneIcon,
+  CloseIcon,
+  FullScreenIcon,
+  FullScreenExitIcon,
+  FamilyIcon,
+  FainaFamilyIcon,
+} from "assets/icons/google";
 
 import classNames from "classnames";
-
-import TextField from "@mui/material/TextField";
 
 import { MAX_YEAR } from "./data";
 
@@ -16,6 +23,7 @@ function Family() {
   const [auth, setAuth] = useState(!!localStorage.getItem("treeei"));
   const [pass, setPass] = useState("");
   const [expanded, setExpanded] = useState(false);
+  const [sidebarOpened, setSidebarOpened] = useState(false);
 
   const [insignias, setInsignias] = useState([]);
   const [year, setYear] = useState(MAX_YEAR);
@@ -30,33 +38,13 @@ function Family() {
   if (!auth) {
     return (
       <div
-        style={{
-          display: "flex",
-          zIndex: 1000,
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          height: "80vh",
-        }}
+        className="flex grow items-center justify-center"
       >
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <TextField
-            id="pass"
-            placeholder="Password"
+          <input
             type="password"
-            label={null}
-            variant="outlined"
-            sx={{
-              mt: 1,
-              flex: 1,
-              "& legend": { display: "none" },
-              "& fieldset": { top: 0, borderColor: "var(--border) !important" },
-              "& .MuiInputBase-input": { p: 1 },
-              "& .MuiOutlinedInput-root": {
-                padding: "4px",
-                color: "var(--text-primary)",
-              },
-            }}
+            className="input-bordered input w-56 pr-[4.5rem] placeholder:font-normal placeholder:text-base-content/50"
+            placeholder="Password"
             onChange={(e) => setPass(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && validatePass()}
             value={pass}
@@ -66,49 +54,97 @@ function Family() {
     );
   }
   return (
-    <div
-      id="treeei"
-      className={classNames("flex-grow-1 flex after:shadow-inner", {
+    <motion.div
+      className={classNames("w-full ", {
         expand: expanded,
       })}
+      id="treeei"
+      animate={expanded ? "expand" : "normal"}
+      transition={{ duration: 0.15 }}
+      variants={{
+        expand: { y: -80, height: "100vh", zIndex: 1000 },
+        normal: {
+          y: 0,
+          height: "calc(100vh - 9rem)",
+          zIndex: 0,
+          transition: {
+            duration: 0.15,
+            zIndex: { delay: 0.15 },
+          },
+        },
+      }}
     >
       <div className="drawer h-full">
-        <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+        <input
+          type="checkbox"
+          className="drawer-toggle"
+          checked={sidebarOpened}
+          onChange={(e) => setSidebarOpened(e.target.checked)}
+        />
         <div className="drawer-content !overflow-hidden">
           <FamilyContent insignias={insignias} year={year} auth={auth} />
         </div>
-        <div className="drawer-side w-80">
+        <div
+          className={classNames(
+            "drawer-side pointer-events-none relative !flex h-full !overflow-hidden py-5",
+            { "px-1": sidebarOpened }
+          )}
+        >
           <div className="drawer-overlay hidden" />
-          <ul className="relative mr-10 flex h-[calc(100vh-9rem)] grow bg-base-200 text-base-content ">
-            <div className="w-full overflow-y-auto p-4">
-              <FamilySidebar insignias={insignias} year={year} expanded={expanded} setInsignias={setInsignias} setYear={setYear} setExpanded={setExpanded} />
+          <div
+            className={classNames(
+              "rounded-l-box relative mr-12 !flex h-full w-80 text-base-content !transition-size",
+              sidebarOpened
+                ? "pointer-events-auto border border-r-0 border-base-content/10 bg-base-200 shadow-[0_1px_3px_-1px_rgba(0,0,0,0.1)]"
+                : "bg-transparent"
+            )}
+          >
+            <div className="rounded-box my-2 ml-2 w-full overflow-hidden border-base-content/10 bg-base-300">
+              <div className="h-full overflow-y-auto">
+                <FamilySidebar
+                  insignias={insignias}
+                  year={year}
+                  setInsignias={setInsignias}
+                  setYear={setYear}
+                />
+              </div>
             </div>
-
-            <div className="rounded-r-box absolute left-full top-0 h-full w-10 overflow-hidden border-r border-base-content/10 bg-base-200">
-              <label
-                htmlFor="my-drawer"
-                className="indicator rounded-r-box h-full w-full cursor-pointer transition-colors duration-300 hover:bg-base-content/10"
-              >
-                <span
-                  className="mx-auto my-4 flex rotate-180 items-center justify-end gap-3 text-xs font-medium uppercase tracking-widest text-base-content/60"
-                  style={{
-                    writingMode: "vertical-rl",
-                    textOrientation: "mixed",
-                  }}
-                >
-                  Configurações
-                  <div className="drawer-swap swap">
-                    <TuneIcon className="swap-off" />
-                    <CloseIcon className="swap-on" />
-                  </div>
-                </span>
-                <span className="badge indicator-center indicator-middle indicator-item h-10 w-1 border-0 bg-base-content/40 p-0"></span>
+            <div
+              className={classNames(
+                "rounded-r-box absolute left-full -top-px -bottom-px flex w-12 flex-col items-center gap-3 overflow-hidden py-3 !transition-size",
+                sidebarOpened
+                  ? "border  border-l-0 border-base-content/10 bg-base-200 shadow-[1px_1px_3px_-1px_rgba(0,0,0,0.1)]"
+                  : "bg-transparent"
+              )}
+            >
+              <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
+                <input
+                  type="checkbox"
+                  checked={sidebarOpened}
+                  onChange={(e) => setSidebarOpened(e.target.checked)}
+                />
+                <CloseIcon className="swap-on" />
+                <TuneIcon className="swap-off" />
+              </label>
+              <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
+                <input
+                  type="checkbox"
+                  checked={expanded}
+                  onChange={(e) => setExpanded(e.target.checked)}
+                />
+                <FullScreenExitIcon className="swap-on" />
+                <FullScreenIcon className="swap-off" />
+              </label>
+              <label className="pointer-events-auto swap-rotate swap btn-disabled btn-sm btn-circle btn">
+                <input type="checkbox" />
+                <FamilyIcon className="swap-on" />
+                <FainaFamilyIcon className="swap-off" />
               </label>
             </div>
-          </ul>
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

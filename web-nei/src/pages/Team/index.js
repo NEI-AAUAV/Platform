@@ -100,7 +100,7 @@ const Team = () => {
     setLoading(false);
   }, [selectedYear]);
 
-  function customTab(tab) {
+  function customRender(tab) {
     const t = tab.split("/");
     return (
       <>
@@ -120,7 +120,7 @@ const Team = () => {
         tabs={years}
         value={selectedYear}
         onChange={setSelectedYear}
-        displayAs={customTab}
+        renderTab={customRender}
       />
       {loading ? (
         <Spinner

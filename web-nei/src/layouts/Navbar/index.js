@@ -90,7 +90,7 @@ const Navbar = () => {
     return (
         <>
             <nav
-                className={classname("fixed text-sm font-bold top-0 z-40 w-full flex-wrap md:flex-nowrap text-base-300-content transition-colors transition-size ease-out",
+                className={classname("fixed text-sm font-bold top-0 z-40 w-full text-base-300-content transition-size ease-out",
                     openMobile && windowSize.width < 768 ? "!bg-base-200 border border-base-300 !shadow-lg m-1 !w-[calc(100%-0.5rem)] rounded-md" : "border-transparent",
                     windowScroll.y > 0 ? "bg-base-100/80 shadow backdrop-blur" : "bg-transparent")}
             >

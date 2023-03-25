@@ -137,13 +137,13 @@
     scroll-margin: 20px;
   }
 
-  .drawer-toggle:checked ~ .drawer-side .drawer-swap {
+  /* .drawer-toggle:checked ~ .drawer-side .drawer-swap {
     @apply swap-active;
   }
 
   .drawer-toggle:checked ~ .drawer-side .drawer-swap .swap-off {
     opacity: 0;
-  }
+  } */
 }
 
 /* 

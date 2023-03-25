@@ -58,7 +58,7 @@ const Faina = () => {
     setLoading(false);
   }, [selectedTab]);
 
-  function customTab(tab) {
+  function customTabRender(tab) {
     const t = tab.split("/");
     return (
       <>
@@ -81,7 +81,7 @@ const Faina = () => {
           tabs={tabs}
           value={selectedTab}
           onChange={setSelectedTab}
-          displayAs={customTab}
+          renderTab={customTabRender}
           underlineColor="bg-[#D7A019]"
         />
       </div>

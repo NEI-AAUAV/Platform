@@ -615,7 +615,7 @@ export const patterns = [
   { id: "salgado", image: pa },
 ];
 
-export const handleSearchChange = (event, value) => {
+export const handleSearchChange = (value) => {
   if (!value) return;
   // TODO: join transitions
   d3.select("svg.treeei").call(zoom.scaleTo, 2.5);

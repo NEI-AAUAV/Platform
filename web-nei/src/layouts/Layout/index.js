@@ -4,13 +4,15 @@ import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../Navbar";
 import Footer, { MainFooter } from "../Footer";
 
+/** A clean layout without navbar and a footer. */
 const CleanLayout = () => (
   <div className="relative flex min-h-screen flex-col justify-between pt-20">
     <Outlet />
   </div>
 );
 
-const Layout = () => (
+/** A layout that expands to the full available width. */
+const FullLayout = () => (
   <div className="relative flex min-h-screen flex-col justify-between pt-20">
     <Navbar />
     <Outlet />
@@ -18,7 +20,7 @@ const Layout = () => (
   </div>
 );
 
-const MainLayout = () => {
+const Layout = () => {
   const location = useLocation();
   return (
     <div className="relative flex min-h-screen flex-col justify-between pt-20">
@@ -31,4 +33,4 @@ const MainLayout = () => {
   );
 };
 
-export { Layout as default, MainLayout, CleanLayout };
+export { Layout as default, FullLayout, CleanLayout };

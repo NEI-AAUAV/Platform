@@ -19,7 +19,7 @@ const FamilyContent = ({ insignias, year, auth }) => {
   }, [insignias, year, auth]);
 
   return (
-    <svg className="treeei">
+    <svg className="treeei" width="100%" height="100%" viewBox="0 0 800 600">
       <defs>
         <marker
           id="dot"
