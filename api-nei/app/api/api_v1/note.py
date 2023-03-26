@@ -17,7 +17,7 @@ router = APIRouter()
 
 
 @router.get("/subject", status_code=200, response_model=List[SubjectInDB])
-def get_subjects(
+def get_note_subjects(
     *, db: Session = Depends(deps.get_db),
     _=Depends(deps.short_cache),
     year: Optional[int] = None,
@@ -34,7 +34,7 @@ def get_subjects(
 
 
 @router.get("/teacher", status_code=200, response_model=List[TeacherInDB])
-def get_teachers(
+def get_note_teachers(
     *, db: Session = Depends(deps.get_db),
     _=Depends(deps.short_cache),
     year: Optional[int] = None,
@@ -89,7 +89,7 @@ def get_note_students(
 
 
 @router.get("/curricular-year", status_code=200)
-def get_note_students(
+def get_note_curricular_years(
     *, db: Session = Depends(deps.get_db),
     year: Optional[int] = None,
     subject: Optional[int] = None,
@@ -104,23 +104,6 @@ def get_note_students(
         db=db, year=year, subject_code=subject, teacher_id=teacher,
         student_id=student)
 
-@router.get("/curricularyear", status_code=200)
-def get_note_students(
-    *, db: Session = Depends(deps.get_db),
-    year: Optional[int] = None,
-    subject: Optional[int] = None,
-    teacher: Optional[int] = None,
-    curricular_year: Optional[int] = None,
-) -> Any:
-    """
-    Get all students that are associated with a
-    `year`, `subject` and `teacher`.
-    """
-    # return crud.note.get_note_students(db=db)
-    data = crud.note.get_note_students(
-        db=db, year=year, subject_code=subject, teacher_id=teacher, curricular_year=curricular_year)
-
-    return data
 
 @router.get("/", status_code=200, response_model=Page[NoteInDB])
 def get_notes(
