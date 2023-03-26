@@ -122,7 +122,7 @@ const UserTooltip = ({ user, className, children }) => {
         <div
           role="tooltip"
           className={classname(
-            "UserTooltip rounded-box invisible absolute z-50 w-80 border border-base-300 bg-base-200 p-4 shadow transition duration-150 ease-in-out sm:!visible",
+            "UserTooltip rounded-lg invisible absolute z-50 w-80 border border-base-300 bg-base-200 p-4 shadow transition duration-150 ease-in-out sm:!visible",
             `UserTooltip--${tooptipPos}`,
             hidden && "hidden"
           )}

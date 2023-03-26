@@ -9,10 +9,11 @@ import { ArrowBackIcon, ArrowForwardIcon } from "assets/icons/google";
  * @param {Array} tabs
  * @param {Any} value
  * @param {Function} onChange
- * @param {String} displayAs optional
+ * @param {String} renderOption optional
  * @param {String} underlineColor optional
+ * @param {String} className optional
  */
-const Tabs = ({ tabs, value, onChange, displayAs, underlineColor }) => {
+const Tabs = ({ tabs, value, onChange, renderOption, underlineColor, className }) => {
   const tabsRef = useRef(null);
   const [scrollPos, setScrollPos] = React.useState(null);
   const [focused, setFocused] = React.useState(null);
@@ -23,13 +24,19 @@ const Tabs = ({ tabs, value, onChange, displayAs, underlineColor }) => {
   }, [value]);
 
   useEffect(() => {
+    /**
+     * Sets the scroll percentage of the tabs container to
+     * disable the scroll buttons when the tabs are at the end.
+     */
     const setScrollPercentage = () => {
       setScrollPos(
         tabsRef.current.scrollLeft /
           (tabsRef.current.scrollWidth - tabsRef.current.clientWidth)
       );
     };
+
     if (tabsRef.current) {
+      setScrollPercentage();
       tabsRef.current.addEventListener("scroll", () => {
         setScrollPercentage();
       });
@@ -37,6 +44,7 @@ const Tabs = ({ tabs, value, onChange, displayAs, underlineColor }) => {
         setScrollPercentage();
       });
     }
+
     return () => {
       if (tabsRef.current) {
         tabsRef.current.removeEventListener("scroll", null);
@@ -50,7 +58,7 @@ const Tabs = ({ tabs, value, onChange, displayAs, underlineColor }) => {
   }
 
   return (
-    <div className="flex justify-center">
+    <div className={`flex justify-center ${className}`}>
       <div className="rounded-l-box my-1 flex items-center justify-center bg-base-200/80 px-2">
         <div
           className={classname("btn-ghost btn-sm btn-circle btn", {
@@ -63,13 +71,13 @@ const Tabs = ({ tabs, value, onChange, displayAs, underlineColor }) => {
       </div>
       <div
         ref={tabsRef}
-        className="scrollbar-hide w-fit max-w-[900px] overflow-y-scroll scroll-smooth"
+        className="scrollbar-hide w-fit max-w-3xl overflow-y-scroll scroll-smooth"
       >
         <ul
           className="my-1 flex w-fit list-none items-center bg-base-200/80 px-4 py-1"
           onMouseLeave={() => setFocused(null)}
         >
-          {tabs.map((item) => (
+          {tabs?.map((item) => (
             <li
               className="relative flex cursor-pointer items-center"
               key={item}
@@ -82,11 +90,14 @@ const Tabs = ({ tabs, value, onChange, displayAs, underlineColor }) => {
               tabIndex={0}
             >
               <span
-                className={classname("relative z-10 select-none px-6 py-2", {
-                  "opacity-75": selected !== item,
-                })}
+                className={classname(
+                  "relative z-10 select-none px-6 py-2 font-bold",
+                  {
+                    "opacity-75": selected !== item,
+                  }
+                )}
               >
-                {displayAs?.(item) || item}
+                {renderOption?.(item) || item}
               </span>
 
               {selected === item ? (

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request, Form, Security
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request, Form, Security, Response
 from sqlalchemy.orm import Session
 from typing import Any, Optional
 
@@ -16,7 +16,8 @@ responses = {
 
 @router.get("/", status_code=200, response_model=ModalityLazyList)
 def get_multi_modality(
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.long_cache),
 ) -> Any:
     modalities = crud.modality.get_multi(db)
     return ModalityLazyList(modalities=modalities)
@@ -38,7 +39,8 @@ async def create_modality(
 @router.get("/{id}", status_code=200, response_model=Modality,
             responses=responses)
 def get_modality(
-    id: int, db: Session = Depends(deps.get_db)
+    id: int, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.shorter_cache),
 ) -> Any:
     modality = crud.modality.get(db, id=id)
     if not modality:

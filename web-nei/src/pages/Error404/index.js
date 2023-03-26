@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 
 import service from 'services/NEIService';
 
 
 const Error404 = () => {
-    let { alias } = useParams();
+    let { pathname } = useLocation();
 
     const [loading, setLoading] = useState(true);
     const [redirect, setRedirect] = useState(undefined);
 
     // On component render...
     useEffect(() => {
-        if (!alias || alias === "404") {
+        if (!pathname) return;
+
+        const alias = pathname.substring(1);
+
+        if (alias === "404") {
             setLoading(false);
             return;
         }
@@ -27,7 +31,7 @@ const Error404 = () => {
             }).catch(() => {
                 setLoading(false);
             });
-    }, [alias]);
+    }, [pathname]);
 
     // On redirect set, redirect to page
     useEffect(() => {

@@ -8,13 +8,13 @@ const client = axios.create({
 });
 
 
-client.interceptors.request.use(function (config) {
+client.interceptors.request.use(function(config) {
     // Do something before request is sent
 
     // Inject here authorization token in request header
 
     return config;
-}, function (error) {
+}, function(error) {
     // Do something with request error
     console.error(error);
 
@@ -22,13 +22,13 @@ client.interceptors.request.use(function (config) {
 });
 
 
-client.interceptors.response.use(function (response) {
+client.interceptors.response.use(function(response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     // console.log(response)
 
     return response.data;
-}, function (error) {
+}, function(error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
 
@@ -55,10 +55,6 @@ class NEIService {
         return await client.get(`/note/${id}`);
     }
 
-    async getNotesThanks() {
-        return await client.get('/note/thank');
-    }
-
     async getNotesYears(params) {
         return await client.get('/note/year', { params });
     }
@@ -79,8 +75,12 @@ class NEIService {
         return await client.get('/history/');
     }
 
-    async getRGM(category) {
-        return await client.get(`/rgm/${category}`)
+    async getRGM(params) {
+        return await client.get(`/rgm/`, { params });
+    }
+
+    async getRGMMandates() {
+        return await client.get(`/rgm/mandates/`);
     }
 
     async getMerch() {
@@ -95,8 +95,12 @@ class NEIService {
         return await client.get(`/partner/banner/`)
     }
 
-    async getTeamMandates(params) {
+    async getTeamMembers(params) {
         return await client.get('/team/member/', { params });
+    }
+
+    async getTeamMandates(params) {
+        return await client.get('/team/member/mandates');
     }
 
     async getTeamRoles(params) {
@@ -156,7 +160,20 @@ class NEIService {
     }
 
     async register(data) {
-        return await client.post('/auth/register/', data);
+        // Increase timeout because the reCaptcha takes a while
+        return await client.post('/auth/register/', data, { timeout: 15000 });
+    }
+
+    async verifyEmail(params) {
+        return await client.get('/auth/verify/', { params });
+    }
+
+    async forgotPassword(data) {
+        return await client.post('/auth/forgot/', data);
+    }
+
+    async resetPassword(data, params) {
+        return await client.post('/auth/reset/', data, { params });
     }
 }
 

@@ -12,7 +12,7 @@ const SportMatch = ({
   score1,
   score2,
   live,
-  horizontal,
+  horizontal = true,
 }) => (
   <g
     transform={`translate(${y - 160},${x - 35})`}

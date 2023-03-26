@@ -1,7 +1,7 @@
 from .faina import FainaBase, FainaCreate, FainaInDB, FainaUpdate
 from .faina_role import FainaRoleBase, FainaRoleCreate, FainaRoleInDB, FainaRoleUpdate
 from .faina_member import FainaMemberBase, FainaMemberInDB, FainaMemberUpdate, FainaMemberCreate
-from .team_member import TeamMemberBase, TeamMemberCreate, TeamMemberInDB, TeamMemberUpdate
+from .team_member import TeamMemberBase, TeamMemberCreate, TeamMemberInDB, TeamMemberUpdate, TeamMandates
 from .team_colaborator import TeamColaboratorBase, TeamColaboratorCreate, TeamColaboratorInDB, TeamColaboratorUpdate
 from .team_role import TeamRoleBase, TeamRoleCreate, TeamRoleInDB, TeamRoleUpdate
 from .senior import SeniorBase, SeniorCreate, SeniorInDB, SeniorUpdate

@@ -56,7 +56,7 @@ const FeedbackForm = () => {
                     Vamos analisá-la e entraremos em contacto em breve!
                 </p>
                 <button
-                    className="btn btn-outline-primary mx-auto mt-5"
+                    className="btn mx-auto mt-5"
                     onClick={() => window.history.back()}
                 >
                     Voltar
