@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List, Union
 
@@ -14,6 +14,7 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=Page[VideoInDB])
 def get_video(
     *, page_params: PageParams = Depends(PageParams),
+    _ = Depends(deps.short_cache),
     tags: List[int] = Query(
         default=[], alias='tag[]',
         description="List of Tags"
@@ -33,7 +34,8 @@ def get_video(
 
 @router.get("/{id}", status_code=200, response_model=VideoInDB)
 def get_video(
-    *, id: int, db: Session = Depends(deps.get_db)
+    *, id: int, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.short_cache),
 ) -> Any:
     return crud.video.get(db=db, id=id)
 
@@ -41,6 +43,7 @@ def get_video(
 @router.get("/category/", status_code=200, response_model=List[VideoTagInDB])
 def get_categories(
     *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """"
     Return the categories

@@ -1,5 +1,5 @@
 from app.schemas.pagination import Page, PageParams
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -13,6 +13,7 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=Page[NewsInDB])
 def get_news_list(
     *, page_params: PageParams = Depends(PageParams),
+    _ = Depends(deps.short_cache),
     categories: List[str] = Query(
         default=[], alias='category[]',
         description="List of categories",
@@ -27,12 +28,14 @@ def get_news_list(
 
     total, items = crud.news.get_news_by_categories(
         db=db, categories=categories, page=page_params.page, size=page_params.size)
+    
     return Page.create(total, items, page_params)
 
 
 @router.get("/category", status_code=200, response_model=NewsCategories)
 def get_news_categories(
     *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return the categories
@@ -44,7 +47,8 @@ def get_news_categories(
 
 @router.get("/{id}", status_code=200, response_model=NewsInDB)
 def get_news(
-    *, id: int, db: Session = Depends(deps.get_db)
+    *, id: int, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
 
     item = crud.news.get(db=db, id=id)

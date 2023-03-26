@@ -12,20 +12,23 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[TeamRoleInDB])
 def get_team_roles(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.long_cache)
 ) -> Any:
     """
-    Return faina information.
+    Return team roles information.
     """
     return crud.team_role.get_multi(db=db)
 
 
 @router.get("/{id}", status_code=200, response_model=TeamRoleInDB)
 def get_team_role_by_id(
-    *, db: Session = Depends(deps.get_db), id: int
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.long_cache),
+    id: int, 
 ) -> Any:
     """
-    Return faina information.
+    Return specific team role information.
     """
     return crud.team_role.get(db=db, id=id)
 

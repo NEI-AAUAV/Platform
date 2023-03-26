@@ -75,8 +75,12 @@ class NEIService {
         return await client.get('/history/');
     }
 
-    async getRGM(category) {
-        return await client.get(`/rgm/${category}`)
+    async getRGM(params) {
+        return await client.get(`/rgm/`, { params });
+    }
+
+    async getRGMMandates() {
+        return await client.get(`/rgm/mandates/`);
     }
 
     async getMerch() {
@@ -91,8 +95,12 @@ class NEIService {
         return await client.get(`/partner/banner/`)
     }
 
-    async getTeamMandates(params) {
+    async getTeamMembers(params) {
         return await client.get('/team/member/', { params });
+    }
+
+    async getTeamMandates(params) {
+        return await client.get('/team/member/mandates');
     }
 
     async getTeamRoles(params) {
@@ -152,7 +160,8 @@ class NEIService {
     }
 
     async register(data) {
-        return await client.post('/auth/register/', data);
+        // Increase timeout because the reCaptcha takes a while
+        return await client.post('/auth/register/', data, { timeout: 15000 });
     }
 
     async verifyEmail(params) {

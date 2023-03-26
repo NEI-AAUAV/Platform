@@ -91,7 +91,7 @@ async def forgot(
     user = crud.user.get_by_email(db, email)
     if user is None:
         raise HTTPException(
-            status_code=status.HTTP_404_UNAUTHORIZED,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="The provided email is not associated with an user",
         )
 

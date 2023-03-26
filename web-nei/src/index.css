@@ -53,6 +53,10 @@
     @apply !z-30;
   }
 
+  .tooltip {
+    @apply !z-30;
+  }
+
   .menu :where(li) > :where(*:not(ul)) {
     @apply !px-3 !py-2;
   }
@@ -132,6 +136,14 @@
     scrollbar-width: none; /* Firefox */
     scroll-margin: 20px;
   }
+
+  /* .drawer-toggle:checked ~ .drawer-side .drawer-swap {
+    @apply swap-active;
+  }
+
+  .drawer-toggle:checked ~ .drawer-side .drawer-swap .swap-off {
+    opacity: 0;
+  } */
 }
 
 /* 
@@ -368,3 +380,5 @@ label {color: var(--text-secondary)} */
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 }
+
+.grecaptcha-badge { visibility: hidden; }
