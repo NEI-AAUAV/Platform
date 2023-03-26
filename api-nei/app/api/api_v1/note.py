@@ -94,14 +94,14 @@ def get_note_students(
     year: Optional[int] = None,
     subject: Optional[int] = None,
     teacher: Optional[int] = None,
-    curricular_year: Optional[int] = None,
+    student: Optional[int] = None,
 ) -> Any:
     """
     Get all students that are associated with a
     `year`, `subject` and `teacher`.
     """
     # return crud.note.get_note_students(db=db)
-    data = crud.note.get_note_students(db=db, year=year, subject_code=subject, teacher_id=teacher, curricular_year=curricular_year)
+    data = crud.note.get_note_curricular_year(db=db, year=year, subject_code=subject, teacher_id=teacher, student_id=student)
     
     return data 
 

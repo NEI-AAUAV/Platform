@@ -8,6 +8,7 @@ from app.models.note import Note
 from app.models import User
 from app.models.subject import Subject
 from app.models.teacher import Teacher
+from app.schemas.note import NoteInDB
 
 
 class CRUDNote(CRUDBase[Note, None, None]):
@@ -136,11 +137,15 @@ class CRUDNote(CRUDBase[Note, None, None]):
             query = query.filter(Note.author_id == student_id)
         if subject_code:
             query = query.filter(Note.subject_id == subject_code)
-        else:
-            data = query.distinct(Note.subject_id).all()
         
-        data = [e.subject_id for e in data]
+        # data = query.distinct(Note.subject_id).all()
+        data = query.join(Subject).all()
 
-        return db.query(Subject).filter(Subject.code.in_(data)).all()
+        # data = query.join(Subject, Note.subject_id==Subject.code).all()
+        for e in data:
+            print(NoteInDB.from_orm(e))
+        # data = [e.curricular_year for e in data]
+
+        return list(set(data))
     
 note = CRUDNote(Note)
