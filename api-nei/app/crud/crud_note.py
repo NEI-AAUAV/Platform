@@ -83,6 +83,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
 
         data = set(e.teacher_id for e in data)
         
+        
         return db.query(Teacher).filter(Teacher.id.in_(data)).all()
     
     def get_note_subjects(self, db: Session, year: int, teacher_id: int, student_id: int, curricular_year: int) -> List[str]:
