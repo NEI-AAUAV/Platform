@@ -195,3 +195,24 @@ def test_get_note_by_categories(client: TestClient) -> None:
     data = r.json()
     assert data['total'] == len(data['items']) == 2
     assert all(i['slides'] or i['tests'] for i in data['items'])
+
+def test_get_teacher(client: TestClient) -> None:
+    r = client.get(f"{settings.API_V1_STR}/note/teacher/")
+    data = r.json()
+    assert r.status_code == 200
+    assert len(data) == 2  # created 2 note subjects
+    for lst in data:
+        assert "id" in lst
+        assert "name" in lst
+        assert "personal_page" in lst
+
+def test_get_subject(client: TestClient) -> None:
+    r = client.get(f"{settings.API_V1_STR}/note/subject/")
+    data = r.json()
+    assert r.status_code == 200
+    assert len(data) == 2  # created 2 note subjects
+    for lst in data:
+        assert "code" in lst
+        assert "name" in lst
+        assert "curricular_year" in lst
+        assert "semester" in lst

@@ -58,12 +58,10 @@ class CRUDNote(CRUDBase[Note, None, None]):
         if teacher_id:
             query = query.filter(Note.teacher_id == teacher_id)
         if curricular_year:
-            data = query.join(Note.subject)\
-                    .filter_by(curricular_year=curricular_year).all()
-        else:
-            data = query.distinct(Note.author_id).all()
-
-        # data = query.distinct(Note.author_id).all()
+            query = query.join(Note.subject)\
+                    .filter_by(curricular_year=curricular_year)
+        
+        data = query.all()
 
         data = [e.author_id for e in data]
 
@@ -78,14 +76,15 @@ class CRUDNote(CRUDBase[Note, None, None]):
         if student_id:
             query = query.filter(Note.author_id == student_id)
         if curricular_year:
-            data = query.join(Note.subject)\
-                    .filter_by(curricular_year=curricular_year).all()
-        else:
-            data = query.distinct(Note.teacher_id).all()
+            query = query.join(Note.subject)\
+                    .filter_by(curricular_year=curricular_year)
+        
+        data = query.all()
 
         # data = query.distinct(Note.teacher_id).all()
 
         data = [e.teacher_id for e in data]
+        
         
         return db.query(Teacher).filter(Teacher.id.in_(data)).all()
     
@@ -98,10 +97,10 @@ class CRUDNote(CRUDBase[Note, None, None]):
         if student_id:
             query = query.filter(Note.author_id == student_id)
         if curricular_year:
-            data = query.join(Note.subject)\
-                    .filter_by(curricular_year=curricular_year).all()
-        else:
-            data = query.distinct(Note.subject_id).all()
+            query = query.join(Note.subject)\
+                    .filter_by(curricular_year=curricular_year)
+
+        data = query.all()
         
         data = [e.subject_id for e in data]
 
@@ -116,10 +115,10 @@ class CRUDNote(CRUDBase[Note, None, None]):
         if student_id:
             query = query.filter(Note.author_id == student_id)
         if curricular_year:
-            data = query.join(Note.subject)\
-                    .filter_by(curricular_year=curricular_year).all()
-        else:
-            data = query.distinct(Note.year).all()
+            query = query.join(Note.subject)\
+                    .filter_by(curricular_year=curricular_year)
+            
+        data = query.all()
 
         # data = query.distinct(Note.year).all()
 
@@ -138,13 +137,9 @@ class CRUDNote(CRUDBase[Note, None, None]):
         if subject_code:
             query = query.filter(Note.subject_id == subject_code)
         
-        # data = query.distinct(Note.subject_id).all()
-        data = query.join(Subject).all()
-
-        # data = query.join(Subject, Note.subject_id==Subject.code).all()
-        for e in data:
-            print(NoteInDB.from_orm(e))
-        # data = [e.curricular_year for e in data]
+        data = query.all()
+        
+        data = [e.subject.curricular_year for e in data]
 
         return list(set(data))
     
