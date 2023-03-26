@@ -1,9 +1,9 @@
 import { useEffect, useState, Fragment } from "react";
 import Typist from "react-typist";
 
+import PageNav from '../../components/PageNav';
+import service from 'services/NEIService';
 import Document from "components/Document";
-import PageNav from "components/PageNav";
-import service from "services/NEIService";
 
 import CheckboxFilter from "components/CheckboxFilter";
 

@@ -15,7 +15,6 @@ import MockupTerminal from "components/MockupTerminal";
 import NewsList from "../News/NewsList";
 import Partners from "./Partners";
 import Merchandising from "./Merchandising";
-import terminalConf from "./terminal.conf";
 import particlesConf1 from "./particles1.config";
 import particlesConf2 from "./particles2.config";
 import "./index.css";
