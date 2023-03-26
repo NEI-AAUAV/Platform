@@ -9,6 +9,12 @@ from typing import List
 
 class CRUDTeamMember(CRUDBase[TeamMember, TeamMemberCreate, TeamMemberUpdate]):
 
+    def get_team_mandates(self, db: Session) -> List[str]:
+        """
+        Return every distinct mandate
+        """
+        return db.query(TeamMember.mandate).distinct().all()
+
     def get_team_by_mandate(self, db: Session, mandate: int) -> List[TeamMember]:
         """
         Return team_member for a certain mandate

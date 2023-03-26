@@ -1,5 +1,5 @@
 import string
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -14,6 +14,7 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=List[SeniorInDB])
 def get_seniors(
     *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return senior information.
@@ -48,13 +49,15 @@ def update_senior(
 @router.get("/course", status_code=200, response_model=List[str])
 def get_senior_courses(
     *, db: Session = Depends(deps.get_db),
+        _ = Depends(deps.long_cache),
 ) -> Any:
     return crud.senior.get_course(db=db)
 
 
 @router.get("/{course}/year", status_code=200, response_model=List[int])
 def get_senior_course_years(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.long_cache),
     course: str
 ) -> Any:
     return crud.senior.get_course_year(db=db, course=course.upper())
@@ -63,6 +66,8 @@ def get_senior_course_years(
 @router.get("/{course}/{year}", status_code=200, response_model=SeniorInDB)
 def get_senior_by(
     *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
+    response : Response,
     course: str, year: int,
 ) -> Any:
     """

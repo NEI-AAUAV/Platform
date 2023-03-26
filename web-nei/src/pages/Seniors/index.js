@@ -9,8 +9,8 @@ import Typist from "react-typist";
 
 import service from "services/NEIService";
 
-import YearTabs from "components/YearTabs";
-import Box from "@mui/material/Box";
+import Tabs from "components/Tabs";
+
 
 // Animation
 const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
@@ -70,6 +70,10 @@ const Seniors = () => {
   }, [course]);
 
   useEffect(() => {
+    if (!course) {
+      navigate("lei");
+      return;
+    }
     if (selectedYear === undefined) return;
     setLoading(true);
 
@@ -80,7 +84,7 @@ const Seniors = () => {
           throw new Error("Not available");
         }
         setNamesOnly(
-          data.students[0]["quote"] == null && data.students[0]["image"] == null
+          data.students[0]["quote"] === null && data.students[0]["image"] === null
         );
         setPeople(data.students);
         setImg(
@@ -107,19 +111,12 @@ const Seniors = () => {
       <h2 className="mb-5 text-center">
         {years && <Typist>{"Finalistas de " + course?.toUpperCase()}</Typist>}
       </h2>
-      <Box
-        sx={{
-          maxWidth: { xs: "100%", md: "900px" },
-          margin: "auto",
-          marginBottom: "50px",
-        }}
-      >
-        <YearTabs
-          years={years}
-          value={selectedYear}
-          onChange={setSelectedYear}
-        />
-      </Box>
+  
+      <Tabs
+        tabs={years}
+        value={selectedYear}
+        onChange={setSelectedYear}
+      />
       {loading ? (
         <Spinner
           animation="grow"

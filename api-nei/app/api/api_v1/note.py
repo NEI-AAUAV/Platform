@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List, Optional
 
@@ -18,7 +18,8 @@ router = APIRouter()
 
 @router.get("/subject", status_code=200, response_model=List[SubjectInDB])
 def get_subjects(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.short_cache),
     year: Optional[int] = None,
     teacher: Optional[int] = None,
     student: Optional[int] = None,
@@ -36,7 +37,8 @@ def get_subjects(
 
 @router.get("/teacher", status_code=200, response_model=List[TeacherInDB])
 def get_teachers(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.short_cache),
     year: Optional[int] = None,
     subject: Optional[int] = None,
     student: Optional[int] = None,
@@ -58,10 +60,12 @@ def get_teachers(
 @router.get("/year", status_code=200)
 def get_note_years(
     *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.short_cache),
     subject_id: Optional[int] = None,
     student_id: Optional[int] = None,
     teacher_id: Optional[int] = None,
     curricular_year: Optional[int] = None,
+
 ) -> Any:
     """
     Get all years that are associated with a
@@ -72,7 +76,8 @@ def get_note_years(
 
 @router.get("/student", status_code=200, response_model=List[UserInDB])
 def get_note_students(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.short_cache),
     year: Optional[int] = None,
     subject: Optional[int] = None,
     teacher: Optional[int] = None,
@@ -118,6 +123,7 @@ def get_notes(
     teacher: Optional[int] = None,
     curricular_year: Optional[int] = None,
     db: Session = Depends(deps.get_db),
+    _ = Depends(deps.short_cache),
 ) -> Any:
     if not note_categories.issuperset(categories):
         raise HTTPException(status_code=400, detail="Invalid category")
@@ -132,13 +138,16 @@ def get_notes(
         teacher=teacher,
         curricular_year=curricular_year,
         page=page_params.page, size=page_params.size)
+    
     return Page.create(total, items, page_params)
 
 
 @router.get("/{id}", status_code=200, response_model=NoteInDB)
 def get_note_by_id(
     *, id: int, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache)
 ) -> Any:
     if not db.get(Note, id):
         raise HTTPException(status_code=404, detail="Invalid Note id")
+    
     return crud.note.get(db=db, id=id)

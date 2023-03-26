@@ -97,3 +97,19 @@ configuration becomes:
 - `EMAIL_SMTP_PORT` 587 (default)
 - `EMAIL_SMTP_USER` the email address of the gmail account
 - `EMAIL_SMTP_PASSWORD` the generated app password
+
+## reCaptcha
+
+The main api (`api-nei`) can be configured to validate reCaptcha tokens emitted by the frontend,
+currently only the following operations support reCaptchas:
+
+- Account registration (threshold set trough the `RECAPTCHA_REGISTER_THRESHOLD` environment variable)
+
+(All operations have by default their thresholds set to `0.5`)
+
+By default reCaptchas are disabled in order to enable them the `RECAPTCHA_ENABLED`
+environment enabled needs to be set to `True` (case-sensitive), furthermore
+the following environment variables need to be configured in order to authenticate
+with google's reCaptcha v3 api:
+
+- `RECAPTCHA_SECRET_KEY` should be set to the reCaptcha's secret key for the site

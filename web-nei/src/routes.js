@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 
 import config from "config";
 
-import Layout, { MainLayout, CleanLayout } from "./layouts/Layout";
+import Layout, { FullLayout, CleanLayout } from "./layouts/Layout";
 
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
@@ -16,13 +16,13 @@ import NewsArticle from "./pages/NewsArticle";
 import RGM from "./pages/RGM";
 import Calendar from "./pages/Calendar";
 import History from "./pages/History";
-import Apontamentos from "./pages/Apontamentos";
+import Notes from "./pages/Notes";
 import FeedbackForm from "./pages/Forms/FeedbackForm";
 import Videos from "./pages/Videos";
 import Video from "./pages/Video";
 import Sports from "./pages/Sports";
 import SportModality from "./pages/SportModality";
-import FainaTree from "./pages/FainaTree";
+import Family from "./pages/Family";
 import Internship from "./pages/Internship";
 import Components from "./pages/Components";
 import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
@@ -30,19 +30,22 @@ import Test from "./pages/Test";
 import TacauaAdminDemo from "./pages/TacauaAdminDemo";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import EmailVerify from "./pages/EmailVerify";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const routes = [
   {
     path: "/",
-    element: <MainLayout />,
+    element: <Layout />,
     children: [
       { path: "/", element: <Homepage /> },
       { path: "/news", element: <News /> },
       { path: "/news/:id", element: <NewsArticle /> },
-      { path: "/notes", element: <Apontamentos /> },
+      { path: "/notes", element: <Notes /> },
       { path: "/teams", element: <Team /> },
       { path: "/calendar", element: <Calendar /> },
-      { path: "/rgm/:category?", element: <RGM /> },
+      { path: "/rgm", element: <RGM /> },
       { path: "/history", element: <History /> },
       { path: "/seniors/:course?", element: <Seniors /> },
       { path: "/faina", element: <Faina /> },
@@ -57,13 +60,16 @@ const routes = [
       { path: "/tacaua-admin-demo", element: <TacauaAdminDemo /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
-      { path: "/:redirect", element: <Error404 /> },
+      { path: "/auth/verify", element: <EmailVerify /> },
+      { path: "/auth/forgot", element: <ForgotPassword /> },
+      { path: "/auth/reset", element: <ResetPassword /> },
+      { path: "/*", element: <Error404 /> },
     ],
   },
   {
     path: "/",
-    element: <Layout />,
-    children: [{ path: "/family", element: <FainaTree /> }],
+    element: <FullLayout />,
+    children: [{ path: "/family", element: <Family /> }],
   },
   // {
   //   path: "/",

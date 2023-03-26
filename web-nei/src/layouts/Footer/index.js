@@ -12,8 +12,8 @@ import { useUserStore } from "stores/useUserStore";
 import { data } from "./data";
 
 const Footer = () => (
-  <footer className="relative">
-    <div className="footer mx-auto flex w-full max-w-[90rem] flex-col-reverse items-center justify-center gap-2 p-4 xs:flex-row xs:justify-between">
+  <footer className="relative mt-auto">
+    <div className="h-16 footer mx-auto flex w-full max-w-[90rem] flex-col-reverse items-center justify-center gap-1 p-4 xs:flex-row xs:justify-between">
       <div className="grid-flow-col items-center">
         <p className="xs:ml-2"> 
           &copy; {new Date().getFullYear()} - All right reserved by NEI-AAUAv.
@@ -39,7 +39,7 @@ const MainFooter = () => {
   const theme = useUserStore((state) => state.theme);
   return (
     <footer
-      className="relative bg-cover bg-center shadow-inner"
+      className="relative mt-auto bg-cover bg-center shadow-inner"
       style={{
         backgroundImage:
           theme === "dark" ? `url(${blackMapBg})` : `url(${whiteMapBg})`,

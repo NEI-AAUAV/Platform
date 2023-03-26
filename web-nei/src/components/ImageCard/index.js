@@ -1,22 +1,22 @@
 import React from "react";
 import LinkAdapter from "utils/LinkAdapter";
 import { Card } from "react-bootstrap";
-import './index.css';
+import "./index.css";
 
 const ImageCard = (props) => {
   /* Prop list:
-  **  preTitle (optional): plain text on top
-  **  title: large colored anchor text in middle
-  **  text: plain text on bottom
-  **  image: card image
-  **  anchor: link associated with image and title
-  **  darkMode (optional): set to a non-false value (e.g. "on" or True) to use a dark color scheme
-  **  animKey (optional): integer that increases delay on entrance animation
-  */
+   **  preTitle (optional): plain text on top
+   **  title: large colored anchor text in middle
+   **  text: plain text on bottom
+   **  image: card image
+   **  anchor: link associated with image and title
+   **  darkMode (optional): set to a non-false value (e.g. "on" or True) to use a dark color scheme
+   **  animKey (optional): integer that increases delay on entrance animation
+   */
 
-  var color_class = "";
+  let color_class = "";
   if (props.darkMode) {
-    color_class = " dark"
+    color_class = " dark";
   }
 
   return (
@@ -34,9 +34,7 @@ const ImageCard = (props) => {
 
       <div className={"plus-button" + color_class}>
         <span>
-          <LinkAdapter to={props.anchor}>
-            +
-          </LinkAdapter>
+          <LinkAdapter to={props.anchor}>+</LinkAdapter>
         </span>
       </div>
 
@@ -51,6 +49,6 @@ const ImageCard = (props) => {
       </Card.Body>
     </Card>
   );
-}
+};
 
 export default ImageCard;
