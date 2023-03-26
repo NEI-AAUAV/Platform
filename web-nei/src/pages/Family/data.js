@@ -556,14 +556,14 @@ export function centerTree() {
   const rect = d3.select("svg.treeei").node().getBoundingClientRect();
   const { x, y, width, height } = svg.node().getBBox();
 
-  let offsetY =
-    (rect.height - height * lastTransform.k) / 2 - y * lastTransform.k;
+  // let offsetY =
+  //   (rect.height - height * lastTransform.k) / 2 - y * lastTransform.k;
   let offsetX =
     (rect.width - width * lastTransform.k) / 2 - x * lastTransform.k;
 
   d3.select("svg.treeei").call(
     zoom.transform,
-    d3.zoomIdentity.translate(offsetX, offsetY).scale(0.5)
+    d3.zoomIdentity.translate(offsetX, 0).scale(0.5)
   );
 }
 
