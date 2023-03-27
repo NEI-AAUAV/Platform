@@ -63,7 +63,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
         
         data = query.all()
 
-        data = [e.author_id for e in data]
+        data = set(e.author_id for e in data)
 
         return db.query(User).filter(User.id.in_(data)).all()
 
@@ -81,10 +81,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
         
         data = query.all()
 
-        # data = query.distinct(Note.teacher_id).all()
-
-        data = [e.teacher_id for e in data]
-        
+        data = set(e.teacher_id for e in data)
         
         return db.query(Teacher).filter(Teacher.id.in_(data)).all()
     
@@ -102,7 +99,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
 
         data = query.all()
         
-        data = [e.subject_id for e in data]
+        data = set(e.subject_id for e in data)
 
         return db.query(Subject).filter(Subject.code.in_(data)).all()
     
@@ -120,11 +117,10 @@ class CRUDNote(CRUDBase[Note, None, None]):
             
         data = query.all()
 
-        # data = query.distinct(Note.year).all()
+        data = set(e.year for e in data if e.year)
+        data.discard(None)
 
-        data = [e.year for e in data]
-
-        return list(set(data))
+        return list(data)
 
     def get_note_curricular_year(self, db: Session, year: int, teacher_id: int, student_id: int, subject_code: int) -> List[str]:
         query = db.query(Note)
@@ -139,8 +135,9 @@ class CRUDNote(CRUDBase[Note, None, None]):
         
         data = query.all()
         
-        data = [e.subject.curricular_year for e in data]
+        data = set(e.subject.curricular_year for e in data)
+        data.discard(None)
 
-        return list(set(data))
+        return list(data)
     
 note = CRUDNote(Note)

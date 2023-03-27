@@ -41,6 +41,7 @@ const Notes = () => {
   const [years, setYears] = useState([]);
   const [students, setStudents] = useState([]);
   const [teachers, setTeachers] = useState([]);
+  const [curricularYears, setCurricularYears] = useState([]);
   const [page, setPage] = useState(1);
 
   // Grid view selected note
@@ -49,6 +50,7 @@ const Notes = () => {
   const [selYear, setSelYear] = useState("");
   const [selStudent, setSelStudent] = useState("");
   const [selTeacher, setSelTeacher] = useState("");
+  const [selCurricularYear, setSelCurricularYear] = useState("");
   const [selPage, setSelPage] = useState(1);
 
   const [loading, setLoading] = useState(true);
@@ -98,8 +100,10 @@ const Notes = () => {
       subject: selSubject || null,
       student: selStudent || null,
       teacher: selTeacher || null,
+      curricular_year: selCurricularYear || null,
       category: [],
     };
+    console.log(params)
 
     for (var i = 0; i < activeFilters.length; i++) {
       const cat = filters.filter((f) => f["name"] == activeFilters[i])[0]["db"];
@@ -169,7 +173,7 @@ const Notes = () => {
         const arr = data.map((year) => {
           const x = { key: year, label: year + "-" + (year + 1) };
           return x;
-        });
+        }).sort((a, b) => b?.label?.localeCompare(a?.label));
         setYears(arr);
       })
       .catch(() => {
@@ -187,7 +191,7 @@ const Notes = () => {
         const arr = data.map((subj) => {
           const x = { key: subj.code, label: subj.short };
           return x;
-        });
+        }).sort((a, b) => a?.label?.localeCompare(b?.label));
         setSubjects(arr);
       })
       .catch(() => {
@@ -205,11 +209,29 @@ const Notes = () => {
         const arr = data.map((t) => {
           const x = { key: t.id, label: t.name + " " + t.surname };
           return x;
-        });
+        }).sort((a, b) => a?.label?.localeCompare(b?.label));
         setStudents(arr);
       })
       .catch(() => {
         console.error('Invalid parameters (no "students" matching)!');
+        resetFilters();
+        setAlert({
+          type: "alert",
+          text: "Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.",
+        });
+      });
+
+    service
+      .getNotesCurricularYears(params)
+      .then((data) => {
+        const arr = data.map((year) => {
+          const x = { key: year, label: `${year}º ano` };
+          return x;
+        }).sort((a, b) => a?.label?.localeCompare(b?.label));
+        setCurricularYears(arr);
+      })
+      .catch(() => {
+        console.error('Invalid parameters (no "curricular years" matching)!');
         resetFilters();
         setAlert({
           type: "alert",
@@ -223,7 +245,7 @@ const Notes = () => {
         const arr = data.map((t) => {
           const x = { key: t.id, label: t.name };
           return x;
-        });
+        }).sort((a, b) => a?.label?.localeCompare(b?.label));
         setTeachers(arr);
       })
       .catch(() => {
@@ -234,11 +256,11 @@ const Notes = () => {
           text: "Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.",
         });
       });
-  }, [activeFilters, selSubject, selStudent, selYear, selPage, selTeacher]);
+  }, [activeFilters, selSubject, selStudent, selYear, selPage, selTeacher, selCurricularYear]);
 
   useEffect(() => {
     setSelPage(1);
-  }, [activeFilters, selSubject, selStudent, selYear, selTeacher]);
+  }, [activeFilters, selSubject, selStudent, selYear, selTeacher, selCurricularYear]);
 
   // This method allows user to share the filtering parameters through a parameterized URL
   function linkShare() {
@@ -291,7 +313,13 @@ const Notes = () => {
                 items={years}
                 value={selYear}
                 onChange={setSelYear}
-                placeholder="Ano"
+                placeholder="Ano Letivo"
+              />
+              <Autocomplete
+                items={curricularYears}
+                value={selCurricularYear}
+                onChange={setSelCurricularYear}
+                placeholder="Ano Curricular"
               />
               <Autocomplete
                 items={subjects}
@@ -364,7 +392,7 @@ const Notes = () => {
          ** using a custom layout. The Nav element contains the buttons that switch
          ** the views, which are specified in each Tab.Pane element.
          */}
-        <div>
+        <div className="w-full">
           <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
             <button
               className={classname(
