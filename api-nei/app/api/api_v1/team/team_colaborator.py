@@ -12,22 +12,15 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[TeamColaboratorInDB])
 def get_team_colaborators(
-    *, db: Session = Depends(deps.get_db), 
-    _ = Depends(deps.long_cache)
+    *, mandate: str | None = None,
+    db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return colaborator information.
     """
-    return crud.team_colaborator.get_multi(db=db)
-
-
-@router.get("/", status_code=200, response_model=List[TeamColaboratorInDB])
-def get_team_colaborators_by_mandate(
-    *, db: Session = Depends(deps.get_db),
-    _ = Depends(deps.long_cache)
-    , mandate: str
-) -> Any:
-    return crud.team_colaborator.get_colaborators_by_mandate(db=db, mandate=mandate)
+    print(mandate)
+    return crud.team_colaborator.get_colaborators_by(db=db, mandate=mandate)
 
 
 @router.post("/", status_code=201, response_model=TeamColaboratorInDB)

@@ -107,7 +107,7 @@ class NEIService {
         return await client.get('/team/role', { params });
     }
 
-    async getTeamColaborators(params) {
+    async getTeamCollaborators(params) {
         return await client.get('/team/colaborator/', { params });
     }
 

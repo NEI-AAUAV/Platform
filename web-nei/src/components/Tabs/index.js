@@ -9,11 +9,11 @@ import { ArrowBackIcon, ArrowForwardIcon } from "assets/icons/google";
  * @param {Array} tabs
  * @param {Any} value
  * @param {Function} onChange
- * @param {String} renderOption optional
+ * @param {String} renderTab optional
  * @param {String} underlineColor optional
  * @param {String} className optional
  */
-const Tabs = ({ tabs, value, onChange, renderOption, underlineColor, className }) => {
+const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) => {
   const tabsRef = useRef(null);
   const [scrollPos, setScrollPos] = React.useState(null);
   const [focused, setFocused] = React.useState(null);
@@ -97,7 +97,7 @@ const Tabs = ({ tabs, value, onChange, renderOption, underlineColor, className }
                   }
                 )}
               >
-                {renderOption?.(item) || item}
+                {renderTab?.(item) || item}
               </span>
 
               {selected === item ? (
