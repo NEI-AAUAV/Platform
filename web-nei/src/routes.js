@@ -26,7 +26,7 @@ import Family from "./pages/Family";
 import Internship from "./pages/Internship";
 import Components from "./pages/Components";
 import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
-import Test from "./pages/Test";
+import Test from "./pages/WSTest";
 import TacauaAdminDemo from "./pages/TacauaAdminDemo";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -56,8 +56,8 @@ const routes = [
       { path: "/taca-ua/:id/:view?", element: <SportModality /> },
       !config.PRODUCTION && { path: "/components", element: <Components /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
-      { path: "/testing", element: <Test /> },
-      { path: "/tacaua-admin-demo", element: <TacauaAdminDemo /> },
+      { path: "/WSTest", element: <Test /> },
+      { path: "/WStacaua-admin-demo", element: <TacauaAdminDemo /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
       { path: "/auth/verify", element: <EmailVerify /> },

@@ -38,3 +38,6 @@ class MatchLazy(MatchCreate, MatchUpdate):
 class Match(MatchLazy):
     team1: Optional[Team]
     team2: Optional[Team]
+
+class MatchList(BaseModel):
+    data: List[Match]

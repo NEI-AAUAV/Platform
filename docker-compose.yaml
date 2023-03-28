@@ -66,6 +66,7 @@ services:
     ports:
       - 8001:8001
     environment:
+      API_NEI_SERVER: api_nei
       POSTGRES_SERVER: db_pg
       PUBLIC_KEY: /jwt.key.pub
     volumes: 
