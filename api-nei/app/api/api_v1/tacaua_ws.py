@@ -21,7 +21,8 @@ class ConnectionManager:
         for key in self.active_connections:
             if websocket in self.active_connections[key]:
                 return
-        
+        logger.info("New connection")
+        logger.info(self.active_connections)
         self.active_connections[ConnectionType.GENERAL].append(websocket)
 
 
@@ -85,7 +86,8 @@ async def websocket_endpoint(websocket: WebSocket):
             match data["topic"]:
                 case "LIVE_GAME":
                     logger.info("LIVE_GAME", data)
-                    await websocket.send_json({"topic": "LIVE_GAMES", "game": {"id": 1, "team1": 'NEI', "team2": "NEEET"}})
+                    data = {"topic": "LIVE_GAMES", "game": {"id": 1, "team1": 'NEI', "team2": "NEEET"}}
+                    await manager.broadcast(connection_type=ConnectionType.GENERAL, message=data)
 
     except WebSocketDisconnect:
         manager.disconnect(websocket)
