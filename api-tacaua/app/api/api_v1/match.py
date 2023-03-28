@@ -40,7 +40,6 @@ async def update_match(
 
 
 def ws_send_update(data):
-    print(type(data))
     requests.post(f"http://{settings.API_NEI_SERVER}:8000/api/nei/v1/ws/broadcast", json=data)
     
 """ jic

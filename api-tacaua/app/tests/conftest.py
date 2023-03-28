@@ -101,8 +101,8 @@ def client(
         }
 
     def _ws_send_update(data):
-        data = requests.post("http://localhost:8000/api/nei/v1/ws/broadcast", data)
-        print(data)
+        
+        data = requests.post(f"http://{settings.API_NEI_SERVER}:8000/api/nei/v1/ws/broadcast", data)
         assert data["status"] == "success"
 
     app.dependency_overrides[get_db] = _get_test_db
