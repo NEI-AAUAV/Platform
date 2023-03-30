@@ -33,7 +33,11 @@ import SportModality from "./pages/SportModality";
 import Family from "./pages/Family";
 import Internship from "./pages/Internship";
 import Components from "./pages/Components";
+<<<<<<< HEAD
 import Test from "./pages/WSTest";
+=======
+import Test from "./pages/Test";
+>>>>>>> 59c5b83a (de nada)
 import TacauaAdminDemo from "./pages/TacauaAdminDemo";
 import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
 
