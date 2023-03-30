@@ -17,3 +17,4 @@ from .crud_video import video
 from .crud_video_tag import videotag
 from .crud_redirect import redirect
 from .crud_news import news
+from .crud_course import course

@@ -6,7 +6,7 @@ from io import BytesIO
 
 
 client_key = '_82e3318ee5c5cf2c7d7f7a1367fd4b3ea40858f08a'
-client_secret = '...'
+client_secret = '_41a9634beb15a4155bd36117ea97bbb1390887707b'
 
 request_token_url = 'https://identity.ua.pt/oauth/request_token'
 authorize_url = 'https://identity.ua.pt/oauth/authorize'
@@ -33,20 +33,22 @@ def get_tokens():
     resource_owner_secret = fetch_response.get('oauth_token_secret')
 
     # Step 2: Authorize
+
     authorization_url = oauth.authorization_url(authorize_url)
     print('Please go here and authorize:', authorization_url)
     ...
     redirect_response = input('Paste redirect URL response: ')
     oauth_response = oauth.parse_authorization_response(redirect_response)
     print('oauth_response\n', oauth_response)
-    verifier = oauth_response.get('oauth_verifier')
 
+    verifier = oauth_response.get('oauth_verifier') 
     # Step 3: Access Token
     oauth = OAuth1Session(client_key,
                           client_secret=client_secret,
                           resource_owner_key=resource_owner_key,
                           resource_owner_secret=resource_owner_secret,
                           verifier=verifier)
+    print("oauth\n", oauth.__dict__)
     oauth_tokens = oauth.fetch_access_token(access_token_url)
     print('oauth_tokens\n', oauth_tokens)
     resource_owner_key = oauth_tokens.get('oauth_token')
@@ -61,7 +63,10 @@ def get_data(resource_owner_key, resource_owner_secret):
                           client_secret=client_secret,
                           resource_owner_key=resource_owner_key,
                           resource_owner_secret=resource_owner_secret)
-    scope = 'student_courses'
+    print("get data")
+    print('oauth\n', oauth.__dict__)
+
+    scopes = ['student_info']
     '''
     scopes:
     - uu
@@ -69,18 +74,12 @@ def get_data(resource_owner_key, resource_owner_secret):
     - student_info
     - student_courses
     '''
-    r = oauth.get(f'{get_data_url}?scope={scope}&format=json')
-    
-    try:
-        # Save photo as JPEG image
+    for s in scopes:
+        r = oauth.get(f'{get_data_url}?scope={s}&format=json')
         data = r.json()
-        print('data\n', data)
-        img_data = data['NewDataSet']['ObterDadosAluno']['Foto']
-        img = Image.open(BytesIO(base64.b64decode(img_data)))
-        img.save('image.jpeg', 'JPEG')
-    except:
-        # Some error occurred
-        pass
+        if s == 'student_info':
+            print(data['NewDataSet']['ObterDadosAluno']['Curso'])
+            print(data['NewDataSet']['ObterDadosAluno']['NMec'])
+            print(data['NewDataSet']['ObterDadosAluno']['AnoCurricular'])
 
-
-# get_tokens()
+get_tokens()

@@ -32,7 +32,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     """Properties to add to the database on create."""
     email: str
-    hashed_password: str
+    hashed_password: Optional[str]
     scopes: List[ScopeEnum] = []
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
