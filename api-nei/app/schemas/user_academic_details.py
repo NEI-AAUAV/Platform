@@ -28,5 +28,17 @@ class UserAcademicDetailsInBD(UserAcademicDetailsBase):
     id: int
     subjects: List[SubjectInDB]
 
+
+class UserAcademicDetailsCreate(UserAcademicDetailsBase):
+    pass
+
+
+class UserAcademicDetailsUpdate(UserAcademicDetailsBase):
+    pass
+
+
+class UserAcademicDetailsInBD(UserAcademicDetailsBase):
+    id: int
+
     class Config:
         orm = True
