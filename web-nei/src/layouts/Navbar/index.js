@@ -137,8 +137,8 @@ const Navbar = () => {
                             </label>
                             {!loggedIn ?
                                 <>
-                                    <Link to="/login" className="btn btn-sm">Log in</Link>
-                                    <Link to="/register" className="btn btn-primary btn-sm">Sign up</Link>
+                                    <Link to="/auth/login" className="btn btn-sm">Log in</Link>
+                                    <Link to="/auth/register" className="btn btn-primary btn-sm">Sign up</Link>
                                 </>
                                 :
                                 <div className="dropdown dropdown-end">

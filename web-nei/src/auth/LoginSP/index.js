@@ -5,7 +5,10 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "stores/useUserStore";
 
-const Login = () => {
+/**
+ * Login page for Service provider-initiated SSO
+ */
+const LoginSP = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const errorMessage = useRef(null);
@@ -80,7 +83,7 @@ const Login = () => {
             </p>
             <p className="mt-2 sm:text-sm text-xs m-auto">
               Não tens uma conta?{" "}
-              <Link to={"/register"} className="link link-primary">
+              <Link to={"/auth/register"} className="link link-primary">
                 Regista-te
               </Link>
             </p>
@@ -91,4 +94,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginSP;
