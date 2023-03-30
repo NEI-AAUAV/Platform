@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import classname from "classname";
+import classNames from "classnames";
 
 import Typist from "react-typist";
 import Calendar2 from "components/Calendar2";
@@ -30,7 +30,7 @@ const Calendar = () => {
       <div className="flex justify-between">
         <div class="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
           <button
-            className={classname(
+            className={classNames(
               "btn-sm btn gap-2 border-none bg-accent py-1",
               view === VIEWS.CALENDAR
                 ? "no-animation shadow hover:bg-accent"
@@ -41,7 +41,7 @@ const Calendar = () => {
             <CalendarViewMonthIcon /> Mês
           </button>
           <button
-            className={classname(
+            className={classNames(
               "btn-sm btn gap-2 border-none bg-accent py-1",
               view === VIEWS.AGENDA
                 ? "no-animation shadow hover:bg-accent"

@@ -13,7 +13,7 @@ import data from "./data";
 
 import Autocomplete from "components/Autocomplete";
 
-import classname from "classname";
+import classNames from "classnames";
 import service from "services/NEIService";
 import {
   FilePDFIcon,
@@ -395,7 +395,7 @@ const Notes = () => {
         <div className="w-full">
           <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
             <button
-              className={classname(
+              className={classNames(
                 "btn-sm btn gap-2 border-none bg-accent py-1",
                 view === VIEWS.GRID
                   ? "no-animation shadow hover:bg-accent"
@@ -406,7 +406,7 @@ const Notes = () => {
               <GridViewIcon />
             </button>
             <button
-              className={classname(
+              className={classNames(
                 "btn-sm btn gap-2 border-none bg-accent py-1",
                 view === VIEWS.LIST
                   ? "no-animation shadow hover:bg-accent"
