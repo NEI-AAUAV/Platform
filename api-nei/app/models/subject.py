@@ -12,6 +12,5 @@ class Subject(Base):
     curricular_year = Column(Integer, nullable=False)
     name = Column(String(128), nullable=False)
     short = Column(String(8), nullable=False)
-    semester = Column(Integer)
     discontinued = Column(SmallInteger)
     optional = Column(SmallInteger)

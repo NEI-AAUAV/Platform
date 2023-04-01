@@ -7,7 +7,7 @@ export const useUserStore = create((set) => ({
     theme: defaultTheme,
     name: "Jorden",
     surname: "Foreest",
-    loggedIn: true,
+    loggedIn: false,
     setTheme: (theme) => {
         localStorage.setItem('th', theme);
         document.body.setAttribute('data-theme', theme);

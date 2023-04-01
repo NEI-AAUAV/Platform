@@ -6,7 +6,7 @@ from io import BytesIO
 
 
 client_key = '_82e3318ee5c5cf2c7d7f7a1367fd4b3ea40858f08a'
-client_secret = '_41a9634beb15a4155bd36117ea97bbb1390887707b'
+client_secret = '...'
 
 request_token_url = 'https://identity.ua.pt/oauth/request_token'
 authorize_url = 'https://identity.ua.pt/oauth/authorize'
@@ -66,7 +66,7 @@ def get_data(resource_owner_key, resource_owner_secret):
     print("get data")
     print('oauth\n', oauth.__dict__)
 
-    scopes = ['student_info']
+    scopes = ['student_info','student_courses']
     '''
     scopes:
     - uu
@@ -81,5 +81,6 @@ def get_data(resource_owner_key, resource_owner_secret):
             print(data['NewDataSet']['ObterDadosAluno']['Curso'])
             print(data['NewDataSet']['ObterDadosAluno']['NMec'])
             print(data['NewDataSet']['ObterDadosAluno']['AnoCurricular'])
-
+        if s == 'student_courses':
+            print(data['NewDataSet'].keys())
 get_tokens()

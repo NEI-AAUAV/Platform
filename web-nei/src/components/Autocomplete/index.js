@@ -1,4 +1,4 @@
-import classname from "classnames";
+import classNames from "classnames";
 import React, { memo, useRef, useState, useEffect } from "react";
 
 import { CloseIcon, ExpandMoreIcon } from "assets/icons/google";
@@ -93,7 +93,7 @@ const Autocomplete = ({ items, value, onChange, placeholder, renderOption }) => 
                   // Hack to prevent calling blur on input
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => setValue(item.key)}
-                  className={classname({
+                  className={classNames({
                     "btn-disabled font-bold": item.key === value,
                   })}
                 >

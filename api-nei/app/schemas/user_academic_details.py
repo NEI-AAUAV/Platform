@@ -3,15 +3,17 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+from app.utils import include
+
 from .subject import SubjectInDB
 
 
+@include(['created_at'])
 class UserAcademicDetailsBase(BaseModel):
     user_id: int
     course_id: int
     curricular_year: int
     created_at: datetime = Field(default_factory=datetime.now)
-    subjects: List[SubjectInDB]
 
 
 class UserAcademicDetailsCreate(UserAcademicDetailsBase):
@@ -24,6 +26,7 @@ class UserAcademicDetailsUpdate(UserAcademicDetailsBase):
 
 class UserAcademicDetailsInBD(UserAcademicDetailsBase):
     id: int
+    subjects: List[SubjectInDB]
 
     class Config:
         orm = True

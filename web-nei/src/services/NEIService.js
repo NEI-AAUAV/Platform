@@ -81,6 +81,14 @@ class NEIService {
   async getRGM(params) {
     return await client.get(`/rgm/`, { params });
   }
+  
+  async getNotesCurricularYears(params) {
+    return await client.get("/note/curricular-year", { params });
+  }
+
+  async getHistory() {
+    return await client.get("/history/");
+  }
 
   async getRGMMandates() {
     return await client.get(`/rgm/mandates/`);
@@ -116,6 +124,10 @@ class NEIService {
 
   async getFainaMandates(params) {
     return await client.get("/faina/", { params });
+  }
+
+  async getTeamCollaborators(params) {
+    return await client.get("/team/colaborator/", { params });
   }
 
   async getNewsCategories(params) {
@@ -163,11 +175,11 @@ class NEIService {
   }
 
   async loginIdP() {
-    return await client.get("/token");
+    return await client.get("/auth/token");
   }
 
   async redirectIdP({ oauthToken, oauthVerifier }) {
-    return await client.get("/token/", {
+    return await client.get("/auth/token/", {
       params: { oauth_token: oauthToken, oauth_verifier: oauthVerifier },
     });
   }

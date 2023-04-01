@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Spinner } from "react-bootstrap";
 
-import classname from "classnames";
 import Tabs from "components/Tabs";
 
 import Typist from "react-typist";

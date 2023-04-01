@@ -4,6 +4,8 @@ from typing import Optional, List
 
 from pydantic import BaseModel, constr, AnyHttpUrl, root_validator, Field
 
+from app.utils import include
+
 from .user_academic_details import UserAcademicDetailsInBD
 
 
@@ -29,6 +31,7 @@ class UserBase(BaseModel):
     github: Optional[constr(max_length=39)]
 
 
+@include(['created_at', 'updated_at'])
 class UserCreate(UserBase):
     """Properties to add to the database on create."""
     email: str
@@ -39,11 +42,11 @@ class UserCreate(UserBase):
     active: bool = Field(default=False)
 
 
+@include(['updated_at'])
 class UserUpdate(UserBase):
     """Properties to receive via API on create."""
     name: Optional[constr(max_length=20)]
     surname: Optional[constr(max_length=20)]
-    # TODO: do not forget
     updated_at: datetime = Field(default_factory=datetime.now)
 
 
@@ -55,6 +58,8 @@ class UserInDB(UserBase):
     nmec: Optional[int]
     image: Optional[AnyHttpUrl]
     curriculum: Optional[AnyHttpUrl]
+    created_at: datetime
+    updated_at: datetime
     scopes: List[ScopeEnum] = []
     academic_details: List[UserAcademicDetailsInBD]
     active: bool

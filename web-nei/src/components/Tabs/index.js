@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import React, { useEffect, useRef } from "react";
-import classname from "classname";
+import classNames from "classnames";
 
 import { ArrowBackIcon, ArrowForwardIcon } from "assets/icons/google";
 
@@ -9,11 +9,11 @@ import { ArrowBackIcon, ArrowForwardIcon } from "assets/icons/google";
  * @param {Array} tabs
  * @param {Any} value
  * @param {Function} onChange
- * @param {String} renderOption optional
+ * @param {String} renderTab optional
  * @param {String} underlineColor optional
  * @param {String} className optional
  */
-const Tabs = ({ tabs, value, onChange, renderOption, underlineColor, className }) => {
+const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) => {
   const tabsRef = useRef(null);
   const [scrollPos, setScrollPos] = React.useState(null);
   const [focused, setFocused] = React.useState(null);
@@ -61,7 +61,7 @@ const Tabs = ({ tabs, value, onChange, renderOption, underlineColor, className }
     <div className={`flex justify-center ${className}`}>
       <div className="rounded-l-box my-1 flex items-center justify-center bg-base-200/80 px-2">
         <div
-          className={classname("btn-ghost btn-sm btn-circle btn", {
+          className={classNames("btn-ghost btn-sm btn-circle btn", {
             "btn-disabled bg-transparent": isNaN(scrollPos) || scrollPos < 0.01,
           })}
           onClick={() => scroll(-300)}
@@ -90,14 +90,14 @@ const Tabs = ({ tabs, value, onChange, renderOption, underlineColor, className }
               tabIndex={0}
             >
               <span
-                className={classname(
+                className={classNames(
                   "relative z-10 select-none px-6 py-2 font-bold",
                   {
                     "opacity-75": selected !== item,
                   }
                 )}
               >
-                {renderOption?.(item) || item}
+                {renderTab?.(item) || item}
               </span>
 
               {selected === item ? (
@@ -119,7 +119,7 @@ const Tabs = ({ tabs, value, onChange, renderOption, underlineColor, className }
 
               {selected === item ? (
                 <motion.div
-                  className={classname(
+                  className={classNames(
                     "absolute bottom-[-6px] left-1/4 z-0 h-1 w-1/2 rounded-lg",
                     underlineColor ? underlineColor : "!bg-accent"
                   )}
@@ -132,7 +132,7 @@ const Tabs = ({ tabs, value, onChange, renderOption, underlineColor, className }
       </div>
       <div className="rounded-r-box my-1 flex items-center justify-center bg-base-200/80 px-2">
         <div
-          className={classname("btn-ghost btn-sm btn-circle btn", {
+          className={classNames("btn-ghost btn-sm btn-circle btn", {
             "btn-disabled bg-transparent": isNaN(scrollPos) || scrollPos > 0.99,
           })}
           name="forward"

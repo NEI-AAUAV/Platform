@@ -18,3 +18,4 @@ from .crud_video_tag import videotag
 from .crud_redirect import redirect
 from .crud_news import news
 from .crud_course import course
+from .crud_user_academic import user_academic
