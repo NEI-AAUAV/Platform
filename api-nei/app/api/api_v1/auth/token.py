@@ -6,7 +6,7 @@ from PIL import Image
 from io import BytesIO
 from loguru import logger
 from app import crud
-from schemas import CourseCreate, SubjectCreate, UserCreate, UserAcademicCreate
+from schemas import CourseCreate, SubjectCreate, UserCreate, UserAcademicDetailsCreate, UserUpdate
 router = APIRouter()
 # Can me moved after its working
 
@@ -87,23 +87,35 @@ async def get_token(
         if user is None:
             user_in = UserCreate(
                 iupi=uu['iupi'],
-                nmec=student_info['NMEC'],
+                nmec=student_info['NMec'],
                 email=uu['email'],
                 name=name['name'],
                 surname=name['surname'],                
             )
             user = crud.user.create(db, obj_in=user_in)
             userid = user.id
+            createImg(user.id, data['Foto'])
             subList = []
             for subject in student_courses:
                 subList.append(crud.get_by_code(db, code=int(subject['CodDisciplina'])))
-            userAc = UserAcademicCreate(
+            userAc = UserAcademicDetailsCreate(
                 user_id=userid,
                 course_id=int(courseInfo[0].strip()),
                 year=student_info['AnoCurricular'],
                 subjects=subList,
             )
             crud.user_academic.create(db, obj_in=userAc)
+        else:
+            # update user
+
+            user_up = UserUpdate(
+                id=user.id,
+                iupi=uu['iupi'],
+                nmec=student_info['NMec'],
+                email=uu['email'],
+                name=name['name'],
+                surname=name['surname'],
+            )
 
 
 
@@ -138,3 +150,13 @@ def get_data(resource_owner_key, resource_owner_secret):
             returndata['uu'] = r.json()
     
     return returndata
+
+def createImg(id, img):
+    try:
+        # Save photo as JPEG image
+        imgEnc = Image.open(BytesIO(base64.b64decode(img)))
+        imgEnc.save('../static/img/' + str(id) + '/ pfpUA.jpg', 'JPEG')
+        userup = UserUpdate()
+    except:
+        # Some error occurred
+        pass

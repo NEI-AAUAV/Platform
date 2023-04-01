@@ -44,7 +44,7 @@ class UserUpdate(UserBase):
     name: Optional[constr(max_length=20)]
     surname: Optional[constr(max_length=20)]
     # TODO: do not forget
-    # updated_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
 
 
 class UserInDB(UserBase):

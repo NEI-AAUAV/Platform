@@ -8,4 +8,4 @@ class CRUDCourse(CRUDBase[Course, CourseCreate, CourseUpdate]):
         return db_session.query(Course).filter(Course.code == code).first()
 
 
-course = CRUDFainaRole(Course)
+course = CRUDCourse(Course)
