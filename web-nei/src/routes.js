@@ -6,6 +6,14 @@ import config from "config";
 
 import Layout, { FullLayout, CleanLayout } from "./layouts/Layout";
 
+import LoginSP from "./auth/LoginSP";
+import Register from "./auth/Register";
+import LoginIdP from "./auth/LoginIdP";
+import RedirectIdP from "./auth/RedirectIdP";
+import EmailVerify from "./auth/EmailVerify";
+import ForgotPassword from "./auth/ForgotPassword";
+import ResetPassword from "./auth/ResetPassword";
+
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
 import Error404 from "./pages/Error404";
@@ -25,14 +33,9 @@ import SportModality from "./pages/SportModality";
 import Family from "./pages/Family";
 import Internship from "./pages/Internship";
 import Components from "./pages/Components";
-import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
-import Test from "./pages/WSTest";
+import Test from "./pages/Test";
 import TacauaAdminDemo from "./pages/TacauaAdminDemo";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import EmailVerify from "./pages/EmailVerify";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
+import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
 
 const routes = [
   {
@@ -58,8 +61,10 @@ const routes = [
       // { path: "/forms/feedback", element: <FeedbackForm /> },
       { path: "/WSTest", element: <Test /> },
       { path: "/WStacaua-admin-demo", element: <TacauaAdminDemo /> },
-      { path: "/login", element: <Login /> },
-      { path: "/register", element: <Register /> },
+      { path: "/redirect", element: <RedirectIdP /> },
+      { path: "/auth/register", element: <Register /> },
+      { path: "/auth/login", element: <LoginSP /> },
+      { path: "/auth/idp", element: <LoginIdP /> },
       { path: "/auth/verify", element: <EmailVerify /> },
       { path: "/auth/forgot", element: <ForgotPassword /> },
       { path: "/auth/reset", element: <ResetPassword /> },
