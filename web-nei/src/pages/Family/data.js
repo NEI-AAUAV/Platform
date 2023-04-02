@@ -14,7 +14,7 @@ import pa from "assets/icons/pa.svg";
 import heartBorder from "assets/icons/heart_border.svg";
 
 export const MIN_YEAR = 8;
-export const MAX_YEAR = 21;
+export const MAX_YEAR = 22;
 
 export const colors = [
   "#006600",
