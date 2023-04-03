@@ -29,7 +29,7 @@ function Family() {
   const [year, setYear] = useState(MAX_YEAR);
 
   const validatePass = () => {
-    if (pass.toLowerCase() === "ei2022") {
+    if (pass.toLowerCase()) {
       localStorage.setItem("treeei", true);
       setAuth(true);
     }

@@ -168,7 +168,7 @@ export function buildTree() {
     elem.names = separateName(elem.name);
     if (elem.faina && elem.faina[0]?.name) {
       elem.fainaNames = separateName(
-        getFainaHierarchy(elem, MAX_YEAR) + " " + elem.faina?.[0].name
+        getFainaHierarchy(elem, MAX_YEAR) + " " + (elem.faina.find((f) => f.year === MAX_YEAR)?.name || elem.faina[0].name)
       );
     }
 
@@ -580,8 +580,9 @@ export function filterTree(names, end_year) {
       const n = d3.select(this);
       if (showLabelFaina(d.data, end_year)) {
         const hierarchy = getFainaHierarchy(d.data, end_year);
+        console.log(d.data.faina, end_year)
         d.data.fainaNames = separateName(
-          hierarchy + " " + d.data.faina?.[0].name
+          hierarchy + " " + (d.data.faina.find((f) => f.year === end_year)?.name || d.data.faina[0].name)
         );
         n.classed("label-faina", true);
         return true;

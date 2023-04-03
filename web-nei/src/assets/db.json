@@ -705,6 +705,7 @@
             "faina": [{"year": 22, "name": "Espírito Santo"}]},
         {"id": "066", "nmec": 107298, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Rodrigo Azevedo", "image": "", "patrao": "ESSUA 99619",
             "faina": [{"year": 22, "name": null}]},
+        {"id": "X00", "nmec": 99619, "sex": "F", "parent": "000", "name": "Raquel Santos", "image": "", "course": "from ESSUA" },
         {"id": "067", "nmec": 107634, "start_year": 21, "end_year": null, "sex": "M", "parent": "A87", "name": "Rodrigo Graça", "image": "",
             "faina": [{"year": 22, "name": "Graça"}]},
         {"id": "068", "nmec": 108969, "start_year": 21, "end_year": null, "sex": "M", "parent": "A70", "name": "Rodrigo Aguiar", "image": "",

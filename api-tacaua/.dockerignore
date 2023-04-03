@@ -3,4 +3,4 @@ Dockerfile*
 
 # static files
 static/*
-!static/.gitkeep
+!static/**/.gitkeep
