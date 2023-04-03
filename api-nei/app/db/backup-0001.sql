@@ -132,7 +132,7 @@ INSERT INTO nei."user" (id, email, name, surname, gender, iupi, nmec, image, cur
 (127, 'diogo.mo.monteiro@ua.pt', 'Diogo', 'Monteiro', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (128, 'fabio.m@ua.pt', 'Fábio', 'Martins', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (129, 'joaoreis16@ua.pt', 'João', 'Reis', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
-(130, 'marianarosa@ua.pt', 'Mariana', 'Sousa', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
+(130, 'marianarosa@ua.pt', 'Mariana', 'Rosa', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (131, 'martafradique@ua.pt', 'Marta', 'Fradique', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (132, 'miguel.r.ferreira@ua.pt', 'Miguel', 'Ferreira', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (133, 'paulogspereira@ua.pt', 'Paulo', 'Pereira', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
@@ -160,7 +160,6 @@ INSERT INTO nei."user" (id, email, name, surname, gender, iupi, nmec, image, cur
 (155, 'maria.abrunhosa@ua.pt', 'Rafaela', 'Abrunhosa', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (156, 'matilde.teixeira@ua.pt', 'Matilde', 'Teixeira', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (157, 'hf.correia@ua.pt', 'Hugo', 'Correia', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
-(158, 'marianarosa@ua.pt', 'Mariana', 'Rosa', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (159, 'pedrorrei@ua.pt', 'Pedro', 'Rei', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (160, 'jnluis@ua.pt', 'João', 'Luís', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (161, 'Tomasalmeida8@ua.pt', 'Tomás', 'Almeida', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
@@ -285,7 +284,7 @@ INSERT INTO nei.subject (code, name, curricular_year, semester, short, discontin
 (42728, 'Cálculo I', 1, 1, 'C1', 0, 0),
 (42729, 'Cálculo II', 1, 2, 'C2', 0, 0),
 (44156, 'Visualização de Informação', 4, 1, 'VI', 0, 0),
-(44158, 'Web Semântica', 4, 2, 'WS', 0, 0),
+(44130, 'Web Semântica', 4, 2, 'WS', 0, 0),
 (45424, 'Introdução à Computação Móvel', 3, 3, 'ICM', 0, 0),
 (45426, 'Teste e Qualidade de Software', 3, 2, 'TQS', 0, 0),
 (45587, 'Exploração de Dados', 4, 1, 'ED', 0, 0),
@@ -494,7 +493,7 @@ INSERT INTO nei.faina_member (id, member_id, faina_id, role_id) VALUES
 (104, 129, 10, 3),
 (105, 133, 10, 3),
 (106, 134, 10, 3),
-(107, 158, 10, 4);
+(107, 130, 10, 4);
 
 SELECT pg_catalog.setval('nei.faina_member_id_seq', 108, false);
 
@@ -644,8 +643,8 @@ INSERT INTO nei.note (id, subject_id, author_id, teacher_id, year, name, locatio
 (74, 42729, 94, 22, 2016, 'Caderno de 2016/2017', '/notes/primeiro_ano/segundo_semestre/c2/calculoii_apontamentos_003.pdf', 0, 0, 0, 0, 0, 0, 1, NULL, '2021-06-14 19:17:30', 18),
 (75, 42729, 49, 19, 2018, 'Resumos Cálculo II 2018/2019 (zip)', '/notes/primeiro_ano/segundo_semestre/c2/Goncalo_C2.zip', 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>0_Revisões.pdf</dt><dd><dd></dl><dl><dt>1_Séries de p...pdf</dt><dd><dd></dl><dl><dt>2_Sucessões e...pdf</dt><dd><dd></dl><dl><dt>3.1_Funções r...pdf</dt><dd><dd></dl><dl><dt>3.2_Funções r...pdf</dt><dd><dd></dl><dl><dt>4_Equações di...pdf</dt><dd><dd></dl><dl><dt>5_Transformad...pdf</dt><dd><dd></dl><dl><dt>Detalhes para...pdf</dt><dd><dd></dl><dl><dt>Detalhes para...pdf</dt><dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 21),
 (76, 44156, 66, 9, 2016, 'Resumos 2016/2017', '/notes/mestrado/vi/vi_apontamentos_001.pdf', 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 4),
-(77, 44158, 66, 25, 2016, 'Resumos por capítulo (zip)', '/notes/mestrado/ws/JoaoAlegria_ResumosPorCapítulo.zip', 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>JoaoAlegria_R...</dt><dd><dd>0 pastas</dd><dd>10 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 8),
-(78, 44158, 66, 25, 2016, 'Resumos 2016/2017', '/notes/mestrado/ws/web_semantica_apontamentos_001.pdf', 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 9),
+(77, 44130, 66, 25, 2016, 'Resumos por capítulo (zip)', '/notes/mestrado/ws/JoaoAlegria_ResumosPorCapítulo.zip', 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>JoaoAlegria_R...</dt><dd><dd>0 pastas</dd><dd>10 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 8),
+(78, 44130, 66, 25, 2016, 'Resumos 2016/2017', '/notes/mestrado/ws/web_semantica_apontamentos_001.pdf', 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 9),
 (79, 45424, 54, NULL, 2016, 'Apontamentos Diversos', '/notes/terceiro_ano/primeiro_semestre/icm/Inês_Correia_ICM.pdf', 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 2),
 (80, 45426, 54, 13, 2016, 'Apontamentos Diversos', '/notes/terceiro_ano/segundo_semestre/tqs/Inês_Correia_TQS.pdf', 1, 0, 0, 0, 0, 0, 0, NULL, '2021-06-14 19:17:30', 14),
 (81, 45426, NULL, 13, 2016, 'Resumos (zip)', '/notes/terceiro_ano/segundo_semestre/tqs/resumos.zip', 1, 0, 0, 0, 0, 0, 0, '<dl><dt>/</dt><dd><dl><dt>Resumos_chave</dt><dd><dd>0 pastas</dd><dd>6 ficheiros</dd><dd></dl><dl><dt>Resumos</dt><dd><dd>0 pastas</dd><dd>5 ficheiros</dd><dd></dl><dd></dl>', '2021-06-14 19:17:30', 22),
