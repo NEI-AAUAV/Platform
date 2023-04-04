@@ -693,7 +693,7 @@ const Components = () => {
         >
           <div className="bg-base-100 rounded-box col-span-3 row-span-3 mx-2 grid w-72 flex-shrink-0 place-items-center items-center gap-4 p-4 py-8 shadow-xl xl:mx-0 xl:w-full svelte-1n6ue57">
             <div className="dropdown">
-              <div tabindex="0">
+              <div tabIndex="0">
                 <div className="online avatar">
                   <div className="mask mask-squircle bg-base-content h-24 w-24 bg-opacity-10 p-px">
                     <img
@@ -709,7 +709,7 @@ const Components = () => {
             </div>{" "}
             <div>
               <div className="dropdown w-full">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="text-center">
                     <div className="text-lg font-extrabold">Betsy Braddock</div>
                     <div className="text-base-content/70 my-3 text-sm">
@@ -723,7 +723,7 @@ const Components = () => {
                 </div>
               </div>{" "}
               <div className="dropdown w-full">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="mt-2 text-center">
                     <div className="badge badge-ghost">Design</div>{" "}
                     <div className="badge badge-ghost">Art</div>{" "}
@@ -733,7 +733,7 @@ const Components = () => {
               </div>
             </div>{" "}
             <div className="dropdown dropdown-top">
-              <div tabindex="0">
+              <div tabIndex="0">
                 <div className="btn-group">
                   <button className="btn btn-accent btn-sm">Follow</button>{" "}
                   <button
@@ -747,9 +747,9 @@ const Components = () => {
                       className="h-6 w-6 stroke-current"
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
                       ></path>
                     </svg>
@@ -765,7 +765,7 @@ const Components = () => {
                 Enable your favorite superpowers. Terms and conditions apply
               </div>{" "}
               <div className="dropdown w-full flex-1">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="form-control">
                     <label className="label cursor-pointer">
                       <span className="label-text">Enable teleportation</span>{" "}
@@ -801,7 +801,7 @@ const Components = () => {
             </div>{" "}
             <div className="form-control">
               <div className="dropdown dropdown-top dropdown-end">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <button className="btn btn-secondary btn-block space-x-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -810,9 +810,9 @@ const Components = () => {
                       className="h-6 w-6 stroke-current"
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       ></path>
                     </svg>{" "}
@@ -824,7 +824,7 @@ const Components = () => {
           </div>{" "}
           <div className="card card-compact xl:card-normal bg-base-100 col-span-3 row-span-4 mx-2 w-72 flex-shrink-0 overflow-visible shadow-xl xl:mx-0 xl:w-auto svelte-1n6ue57">
             <div className="dropdown">
-              <div tabindex="0">
+              <div tabIndex="0">
                 <figure>
                   <img
                     src="/tailwind-css-component-card-1.jpg"
@@ -840,9 +840,9 @@ const Components = () => {
               <div className="card-title flex items-center font-extrabold">
                 Card Component
                 <div className="dropdown dropdown-top dropdown-end">
-                  <div tabindex="0">
+                  <div tabIndex="0">
                     <div
-                      tabindex="0"
+                      tabIndex="0"
                       className="btn btn-ghost text-info btn-xs btn-circle mx-1 inline-block"
                     >
                       <svg
@@ -854,9 +854,9 @@ const Components = () => {
                         className="inline h-5 w-5 stroke-current"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
                       </svg>
@@ -865,7 +865,7 @@ const Components = () => {
                 </div>
               </div>{" "}
               <div className="dropdown w-full">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="mb-2">
                     <div className="badge badge-ghost">May 14th</div>
                   </div>
@@ -877,7 +877,7 @@ const Components = () => {
               </p>{" "}
               <div className="card-actions justify-end">
                 <div className="dropdown dropdown-top dropdown-end">
-                  <div tabindex="0">
+                  <div tabIndex="0">
                     <button className="btn btn-primary">Get Started</button>
                   </div>
                 </div>
@@ -886,7 +886,7 @@ const Components = () => {
           </div>{" "}
           <div className="col-span-3 row-span-3 mx-2 flex w-72 flex-shrink-0 flex-col xl:mx-0 xl:w-full svelte-1n6ue57">
             <div className="dropdown">
-              <div tabindex="0" className="bg-opacity-100">
+              <div tabIndex="0" className="bg-opacity-100">
                 <div className="tabs w-full flex-grow-0">
                   <button className="tab tab-lifted tab-active tab-border-none tab-lg flex-1">
                     Stats
@@ -903,7 +903,7 @@ const Components = () => {
             <div className="bg-base-100 grid w-full flex-grow gap-3 rounded-xl rounded-tl-none p-6 shadow-xl">
               <div className="flex items-center space-x-2">
                 <div className="dropdown">
-                  <div tabindex="0">
+                  <div tabIndex="0">
                     <div className="online avatar">
                       <div className="mask mask-hexagon bg-base-content h-16 w-16 bg-opacity-10 p-px">
                         <img
@@ -923,7 +923,7 @@ const Components = () => {
                 </div>
               </div>{" "}
               <div className="dropdown">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="divider text-base-content/60 m-0">
                     Reports
                   </div>
@@ -932,7 +932,7 @@ const Components = () => {
               <div className="text-lg font-extrabold">Audience Report</div>{" "}
               <div className="grid gap-3">
                 <div className="dropdown dropdown-top">
-                  <div tabindex="0">
+                  <div tabIndex="0">
                     <div className="flex items-center p-1">
                       <span className="text-base-content/70 w-48 text-xs">
                         Search Engines
@@ -990,7 +990,7 @@ const Components = () => {
           </div>{" "}
           <div className="col-span-3 row-span-1 mx-2 flex w-72 flex-shrink-0 flex-col justify-center xl:mx-0 xl:w-auto svelte-1n6ue57">
             <div className="dropdown dropdown-end w-full">
-              <div tabindex="0">
+              <div tabIndex="0">
                 <div className="flex items-center justify-between">
                   <div className="online avatar">
                     <div className="mask mask-squircle bg-base-100 h-16 w-16 p-1">
@@ -1035,7 +1035,7 @@ const Components = () => {
           <div className="bg-base-100 text-base-content rounded-box col-span-3 row-span-4 mx-2 grid w-72 flex-shrink-0 shadow-xl xl:mx-0 xl:w-auto xl:place-self-stretch svelte-1n6ue57">
             <div className="grid w-full grid-cols-1 gap-4 p-4">
               <div className="dropdown">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="grid w-full grid-cols-2 gap-4">
                     <button className="btn btn-block">Neutral</button>{" "}
                     <button className="btn btn-primary btn-block">
@@ -1053,7 +1053,7 @@ const Components = () => {
                 </div>
               </div>{" "}
               <div className="dropdown dropdown-top">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="grid w-full grid-cols-2 gap-4">
                     <button className="btn btn-warning btn-block">
                       warning
@@ -1080,7 +1080,7 @@ const Components = () => {
           </div>{" "}
           <div className="col-span-3 row-span-2 mx-2 grid w-72 flex-shrink-0 gap-4 xl:mx-0 xl:w-auto svelte-1n6ue57">
             <div className="dropdown dropdown-end dropdown-top">
-              <div tabindex="0">
+              <div tabIndex="0">
                 <div className="grid gap-4">
                   <div className="btn-group flex">
                     <button className="btn flex-1">1</button>{" "}
@@ -1100,7 +1100,7 @@ const Components = () => {
               </div>
             </div>{" "}
             <div className="dropdown dropdown-end dropdown-top">
-              <div tabindex="0">
+              <div tabIndex="0">
                 <div className="tabs tabs-boxed items-center">
                   <button className="tab flex-1">Tab 1</button>{" "}
                   <button className="tab tab-active flex-1">Tab 2</button>{" "}
@@ -1112,7 +1112,7 @@ const Components = () => {
           <div className="bg-base-100 text-base-content rounded-box col-span-3 row-span-3 mx-2 grid w-72 flex-shrink-0 items-stretch shadow-xl xl:mx-0 xl:w-auto xl:place-self-stretch svelte-1n6ue57">
             <div className="grid place-content-center gap-4 p-4">
               <div className="dropdown dropdown-end">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="alert flex-col space-y-2">
                     <div className="flex-1">
                       <span className="mx-3 text-sm">
@@ -1129,7 +1129,7 @@ const Components = () => {
                 </div>
               </div>{" "}
               <div className="dropdown dropdown-end dropdown-top">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="alert alert-info">
                     <div className="flex-1">
                       <svg
@@ -1141,9 +1141,9 @@ const Components = () => {
                         className="mx-2 h-6 w-6 stroke-current"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
                       </svg>{" "}
@@ -1155,7 +1155,7 @@ const Components = () => {
                 </div>
               </div>{" "}
               <div className="dropdown dropdown-end dropdown-top">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="alert alert-success">
                     <div className="flex-1">
                       <svg
@@ -1167,9 +1167,9 @@ const Components = () => {
                         className="mx-2 h-6 w-6 stroke-current"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
                         ></path>
                       </svg>{" "}
@@ -1185,7 +1185,7 @@ const Components = () => {
           <div className="col-span-3 row-span-2 mx-2 grid w-72 flex-shrink-0 gap-4 xl:mx-0 xl:w-auto xl:place-self-stretch svelte-1n6ue57">
             <div className="bg-base-100 text-base-content rounded-box shadow-xl">
               <div className="dropdown dropdown-end w-full">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <ul className="menu overflow-visible p-3">
                     <li className="menu-title">
                       <span>Menu Title</span>
@@ -1201,9 +1201,9 @@ const Components = () => {
                           className="mr-2 inline-block h-5 w-5 stroke-current"
                         >
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
                             d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
                           ></path>
                         </svg>
@@ -1221,9 +1221,9 @@ const Components = () => {
                           className="mr-2 inline-block h-5 w-5 stroke-current"
                         >
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
                             d="M13 10V3L4 14h7v7l9-11h-7z"
                           ></path>
                         </svg>
@@ -1241,9 +1241,9 @@ const Components = () => {
                           className="mr-2 inline-block h-5 w-5 stroke-current"
                         >
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
                           ></path>
                         </svg>
@@ -1259,7 +1259,7 @@ const Components = () => {
           <div className="col-span-3 row-span-1 mx-2 grid w-72 flex-shrink-0 gap-4 xl:mx-0 xl:w-auto svelte-1n6ue57">
             <div className="bg-base-100 text-base-content rounded-box shadow-xl">
               <div className="dropdown dropdown-end dropdown-top w-full">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="flex justify-center gap-8 p-4">
                     <label aria-label="checkbox CSS component">
                       <input type="checkbox" className="checkbox" />
@@ -1286,7 +1286,7 @@ const Components = () => {
                 </div>
               </div>{" "}
               <div className="dropdown dropdown-end w-full">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="rating rating-lg rating-half w-full justify-center px-4 pb-4">
                     <input
                       type="radio"
@@ -1366,7 +1366,7 @@ const Components = () => {
           <div className="col-span-3 row-span-1 mx-2 grid w-72 flex-shrink-0 gap-4 xl:mx-0 xl:w-auto svelte-1n6ue57">
             <div className="bg-neutral text-neutral-content rounded-box flex items-center shadow-xl">
               <div className="dropdown dropdown-top">
-                <div tabindex="0">
+                <div tabIndex="0">
                   <div className="breadcrumbs px-4 text-sm">
                     <ul>
                       <li>
@@ -1380,9 +1380,9 @@ const Components = () => {
                             className="mr-2 h-4 w-4 stroke-current"
                           >
                             <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
                               d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
                             ></path>
                           </svg>
@@ -1400,9 +1400,9 @@ const Components = () => {
                             className="mr-2 h-4 w-4 stroke-current"
                           >
                             <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
                               d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                             ></path>
                           </svg>
@@ -1421,7 +1421,7 @@ const Components = () => {
               </div>{" "}
               <div className="flex-0">
                 <div className="dropdown dropdown-top dropdown-end">
-                  <div tabindex="0">
+                  <div tabIndex="0">
                     <div className="flex space-x-1">
                       <button
                         aria-label="button component"
@@ -1434,15 +1434,15 @@ const Components = () => {
                           className="inline-block h-6 w-6 stroke-current"
                         >
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                           ></path>
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
                             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                           ></path>
                         </svg>
@@ -1458,9 +1458,9 @@ const Components = () => {
                           className="inline-block h-6 w-6 stroke-current"
                         >
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
                             d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
                           ></path>
                         </svg>
@@ -1476,7 +1476,7 @@ const Components = () => {
               <div className="flex-1">
                 <h2 className="card-title mb-0 flex">
                   <div className="dropdown dropdown-top">
-                    <div tabindex="0">
+                    <div tabIndex="0">
                       <button
                         aria-label="loading button"
                         className="btn btn-ghost loading btn-sm btn-circle"
@@ -1486,7 +1486,7 @@ const Components = () => {
                   Downloading...
                 </h2>{" "}
                 <div className="dropdown dropdown-top w-full">
-                  <div tabindex="0">
+                  <div tabIndex="0">
                     <progress
                       value="70"
                       max="100"
@@ -1497,7 +1497,7 @@ const Components = () => {
               </div>{" "}
               <div className="flex-0">
                 <div className="dropdown dropdown-top dropdown-end">
-                  <div tabindex="0">
+                  <div tabIndex="0">
                     <button
                       aria-label="circle button component"
                       className="btn btn-circle"
@@ -1509,9 +1509,9 @@ const Components = () => {
                         className="inline-block h-6 w-6 stroke-current"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
                           d="M6 18L18 6M6 6l12 12"
                         ></path>
                       </svg>
