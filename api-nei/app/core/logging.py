@@ -95,3 +95,7 @@ def init_logging():
     logger.configure(
         handlers=[{"sink": sys.stdout, "level": level_log, "format": format_record}]
     )
+    logger.level("INFO", color="<blue>")
+    logger.level("WARNING", color="<yellow>")
+    logger.level("ERROR", color="<red>")
+

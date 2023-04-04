@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import classname from 'classname';
 import './index.css';
 
 const terminalHistory = [

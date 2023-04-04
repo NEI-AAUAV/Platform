@@ -11,19 +11,17 @@ from app.tests.conftest import SessionTesting
 
 SUBJECTS = [
     {
-        "code": 1,
+        "code": 9000,
         "name": "random name 0",
-        "curricular_year": 2021,
-        "semester": 2,
+        "curricular_year": 1,
         "short": "short",
         "discontinued": 1,
         "optional": 1
     },
     {
-        "code": 2,
+        "code": 9001,
         "name": "random name",
-        "curricular_year": 2021,
-        "semester": 2,
+        "curricular_year": 2,
         "short": "short",
         "discontinued": 1,
         "optional": 1
@@ -215,4 +213,3 @@ def test_get_subject(client: TestClient) -> None:
         assert "code" in lst
         assert "name" in lst
         assert "curricular_year" in lst
-        assert "semester" in lst

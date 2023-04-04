@@ -8,11 +8,15 @@ from typing import List
 
 
 class CRUDTeamColaborator(CRUDBase[TeamColaborator, TeamColaboratorCreate, TeamColaboratorUpdate]):
-    def get_colaborators_by_mandate(self, db: Session, mandate: int) -> List[TeamColaborator]:
+
+    def get_colaborators_by(self, *, db: Session, mandate: str = None) -> List[TeamColaborator]:
         """
         Return team_colaborator for a certain mandate
         """
-        return db.query(TeamColaborator).filter(TeamColaborator.mandate == mandate).all()
+        query = db.query(TeamColaborator)
+        if mandate:
+            query = query.filter_by(mandate=mandate)
+        return query.all()
 
 
 team_colaborator = CRUDTeamColaborator(TeamColaborator)

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import classname from 'classname';
+import classNames from 'classnames';
 import './index.css';
 
 
@@ -75,8 +75,8 @@ const MultipleRangeInput = ({ min = 0, max = 150, step = 25, defaultValues = [[0
     }
 
     return <>
-        <div className={classname('mulrange', size && `mulrange-${size}`, color && `mulrange-${color}`)}>
-            <input className={classname('mulrange-control range', size && `range-${size}`)} type="range" min={min} max={max}
+        <div className={classNames('mulrange', size && `mulrange-${size}`, color && `mulrange-${color}`)}>
+            <input className={classNames('mulrange-control range', size && `range-${size}`)} type="range" min={min} max={max}
                 onInput={handleInput} onPointerDown={() => { pointerDown.current = true }} />
             <div className='mulrange-slider'></div>
             <div className='mulrange-ranges'>

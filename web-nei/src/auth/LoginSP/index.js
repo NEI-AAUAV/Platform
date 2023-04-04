@@ -1,11 +1,14 @@
 import NEIService from "services/NEIService";
 import { Link } from "react-router-dom";
-import logo from "../../assets/icons/ua_logo.svg";
+import logo from "assets/icons/ua_logo.svg";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "stores/useUserStore";
 
-const Login = () => {
+/**
+ * Login page for Service provider-initiated SSO
+ */
+const LoginSP = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const errorMessage = useRef(null);
@@ -37,9 +40,9 @@ const Login = () => {
     <>
       <div className="m-auto sm:max-w-md h-fit bg-base-200 rounded-2xl py-6 px-14 drop-shadow-lg shadow-secondary z-10 flex flex-col align-middle max-w-[80%]">
         <div className="text-3xl text-center">Log in</div>
-        <button className="btn btn-lg m-auto mt-8 mb-3 py-3 sm:px-6 px-8">
+        <Link to={"/auth/idp"} className="btn btn-lg m-auto mt-8 mb-3 py-3 sm:px-6 px-8">
           <img src={logo} className="object-fit bg-center max-h-full" />
-        </button>
+        </Link>
         <div className="divider">OR</div>
         <form onSubmit={formSubmitted}>
           <div className="flex flex-col">
@@ -80,7 +83,7 @@ const Login = () => {
             </p>
             <p className="mt-2 sm:text-sm text-xs m-auto">
               Não tens uma conta?{" "}
-              <Link to={"/register"} className="link link-primary">
+              <Link to={"/auth/register"} className="link link-primary">
                 Regista-te
               </Link>
             </p>
@@ -91,4 +94,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginSP;

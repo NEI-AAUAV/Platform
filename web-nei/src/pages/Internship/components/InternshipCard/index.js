@@ -13,7 +13,7 @@ const InternshipCard = (props) => {
       >
         <Card.Body>
           <Card.Title className="card-title">{props.title}</Card.Title>
-          <span classname="card-link">
+          <span className="card-link">
             <a href={props.link} target="_blank" rel="noreferrer">
               <FontAwesomeIcon className="icon" icon={faExternalLinkAlt} />
             </a>

@@ -67,7 +67,7 @@ const data = [
     //   link: "/breakthebars",
     // },
     {
-        name: "Família",
+        name: "Famílias",
         link: "/family",
     },
     {

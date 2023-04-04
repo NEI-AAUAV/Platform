@@ -1,7 +1,7 @@
 import { GithubIcon, LinkedinIcon } from "assets/icons/social";
 import { PersonPinIcon } from "assets/icons/google";
 import { useState, useRef, useEffect } from "react";
-import classname from "classname";
+import classNames from "classnames";
 
 import "./index.css";
 
@@ -63,7 +63,7 @@ const UserCard = ({ user }) => {
             )}
           </ul>
           <button
-            className={classname(
+            className={classNames(
               "btn-xs btn gap-2",
               loading && "loading disabled before:!mx-1"
             )}
@@ -121,7 +121,7 @@ const UserTooltip = ({ user, className, children }) => {
         </div>
         <div
           role="tooltip"
-          className={classname(
+          className={classNames(
             "UserTooltip rounded-lg invisible absolute z-50 w-80 border border-base-300 bg-base-200 p-4 shadow transition duration-150 ease-in-out sm:!visible",
             `UserTooltip--${tooptipPos}`,
             hidden && "hidden"
