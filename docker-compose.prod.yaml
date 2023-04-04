@@ -49,6 +49,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes: 
       - /api-nei/static:/api_nei/static
+      - /api-nei/dev-keys:/api_nei/dev-keys
     depends_on:
       db_pg:
         condition: service_healthy
@@ -117,9 +118,9 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./proxy/nei.web.ua.pt/nginx.conf:/etc/nginx/nginx.conf
-      - ./proxy/nei.web.ua.pt/default.prod.conf:/etc/nginx/conf.d/default.conf
-      - ./proxy/nei.web.ua.pt/locations.conf:/etc/nginx/conf.d/locations.conf
+      - /proxy/nei.web.ua.pt/nginx.conf:/etc/nginx/nginx.conf
+      - /proxy/nei.web.ua.pt/default.prod.conf:/etc/nginx/conf.d/default.conf
+      - /proxy/nei.web.ua.pt/locations.conf:/etc/nginx/conf.d/locations.conf
     depends_on:
       - web_nei
       - api_nei
