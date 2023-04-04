@@ -30,7 +30,7 @@ const Navbar = () => {
     const windowSize = useWindowSize();
     const windowScroll = useWindowScroll();
     const [openMobile, setOpenMobile] = useState(false);
-    const { theme, loggedIn } = useUserStore(state => state);
+    const { theme, token, name, surname } = useUserStore(state => state);
     const [navItems, setNavItems] = useState(data);
 
     useEffect(() => {
@@ -135,10 +135,10 @@ const Navbar = () => {
                                 <DarkModeIcon className="swap-on" />
                                 <LightModeIcon className="swap-off" />
                             </label>
-                            {!loggedIn ?
+                            {!token ?
                                 <>
-                                    <Link to="/login" className="btn btn-sm">Log in</Link>
-                                    <Link to="/register" className="btn btn-primary btn-sm">Sign up</Link>
+                                    <Link to="/auth/login" className="btn btn-sm">Log in</Link>
+                                    <Link to="/auth/register" className="btn btn-primary btn-sm">Sign up</Link>
                                 </>
                                 :
                                 <div className="dropdown dropdown-end">
@@ -149,7 +149,7 @@ const Navbar = () => {
                                             </div>
                                         </div>
                                         <span>
-                                            Jorden Foreest
+                                            {name} {surname}
                                         </span>
                                         <label className="swap swap-rotate ">
                                             <input type="checkbox" />

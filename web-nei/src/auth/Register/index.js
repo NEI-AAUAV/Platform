@@ -95,7 +95,7 @@ const Register = () => {
         </form>
         <p className="mt-2 sm:text-sm text-xs m-auto">
           Já tens uma conta?{" "}
-          <Link to={"/login"} className="link link-primary">
+          <Link to={"/auth/login"} className="link link-primary">
             Faz login
           </Link>
         </p>

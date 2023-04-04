@@ -84,11 +84,11 @@ const data = [
     },
     {
         name: "Test",
-        link: "/testing",
+        link: "/WSTest",
     },
     {
         name: "TacauaAdminDemo",
-        link: "/tacaua-admin-demo",
+        link: "/WStacaua-admin-demo",
     }
 ];
 
