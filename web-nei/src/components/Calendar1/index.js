@@ -47,6 +47,7 @@ const Calendar = () => {
   }, []);
 
   useEffect(() => {
+    console.log(month)
     if (calendarSince === null || calendarTo === null) {
       return;
     }
@@ -86,9 +87,8 @@ const Calendar = () => {
 
   function isToday(date) {
     const today = new Date();
-    const d = new Date(year, month, date);
 
-    return today.toLocaleDateString() === d.toLocaleDateString();
+    return today.toLocaleDateString('en-US') === date;
   }
 
   function showEventModal(date) {
@@ -107,6 +107,7 @@ const Calendar = () => {
   }
 
   const initDayEvents = useCallback(() => {
+    console.log(month)
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const firstMonthDay = new Date(year, month, 1).getDay();
     const lastMonthDay = new Date(year, month + 1, 0).getDay();
@@ -192,6 +193,7 @@ const Calendar = () => {
           }
         }
       }
+      setDayEvents(dayEvents);
     });
 
     // setEvents((events) => {
@@ -234,7 +236,7 @@ const Calendar = () => {
                   "cursor-not-allowed opacity-25": month == 0,
                 })}
                 disabled={month == 0}
-                onClick={() => setMonth((month) => month--)}
+                onClick={() => setMonth(month - 1)}
               >
                 <ArrowBackIcon />
               </button>
@@ -244,7 +246,7 @@ const Calendar = () => {
                   "btn-disabled": month == 11,
                 })}
                 disabled={month == 11}
-                onClick={() => setMonth((month) => month++)}
+                onClick={() => setMonth(month + 1)}
               >
                 <ArrowForwardIcon />
               </button>
@@ -263,33 +265,39 @@ const Calendar = () => {
             </div>
 
             <div className="flex flex-wrap border-t border-l">
-              {blankDays.map((blankday) => {
-                <div
-                  key={blankday}
-                  style={{ height: "120px" }}
-                  className="border-r border-b px-2 pt-2 text-center"
-                ></div>;
-              })}
-              {numOfDays.map((date, dateIndex) => (
-                <Fragment key={dateIndex}>
+              {Object.entries(dayEvents).map(([day, events], index) => (
+                <Fragment key={index}>
                   <div
                     style={{ height: "120px" }}
                     className="relative w-1/7 border-r border-b pt-2 text-center md:px-2 md:text-left"
                   >
-                    {console.log(date)}
-                    <div className="absolute top-0 left-0 h-2 w-[50%] bg-red-200"></div>
+                    {
+                      events.map((event, index) => {
+                        if (event) {
+                          return (
+                            <div
+                              key={index}
+                              className="absolute table rounded left-0 h-[24px] z-10 bg-red-200 hover:bg-red-600"
+                              style={{top: 40 + index * 28 + 'px', width: event.duration * 100 - 5 + '%'}}
+                            >
+                              <p className="text-sm pl-1 table-cell align-middle">{event.title}</p>
+                            </div>
+                          );
+                        }
+                      })
+                    }
 
                     <div
-                      onClick={() => showEventModal(date)}
+                      onClick={() => showEventModal(day)}
                       className={classNames(
                         "inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-full leading-none transition duration-100 ease-in-out",
                         {
-                          "bg-blue-500 text-white": isToday(date),
-                          "hover:bg-blue-200": !isToday(date),
+                          "bg-blue-500 text-white": isToday(day),
+                          "hover:bg-blue-200": !isToday(day),
                         }
                       )}
                     >
-                      {date}
+                      {new Date(day).getDate()}
                     </div>
                     <div
                       style={{ height: "80px" }}
