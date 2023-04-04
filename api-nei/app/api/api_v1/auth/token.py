@@ -189,8 +189,6 @@ async def get_token(
         del tokens[oauth_token]
         return generate_response(db, user)
 
-            # get user academic details
-            userAc = crud.user_academic.get_by_user_id(db, user_id=user.id)
 
 def get_data(resource_owner_key, resource_owner_secret):
     """

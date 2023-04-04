@@ -74,14 +74,10 @@ class NEIService {
     return await client.get("/note/teacher", { params });
   }
 
-  async getHistory() {
-    return await client.get("/history/");
-  }
-
   async getRGM(params) {
     return await client.get(`/rgm/`, { params });
   }
-  
+
   async getNotesCurricularYears(params) {
     return await client.get("/note/curricular-year", { params });
   }
@@ -118,7 +114,7 @@ class NEIService {
     return await client.get("/team/role", { params });
   }
 
-  async getTeamColaborators(params) {
+  async getTeamCollaborators(params) {
     return await client.get("/team/colaborator/", { params });
   }
 
