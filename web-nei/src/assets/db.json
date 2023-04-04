@@ -719,9 +719,8 @@
             "faina": [{"year": 22, "name": "Cinta"}]},
         {"id": "065", "nmec": 108782, "start_year": 21, "end_year": null, "sex": "F", "parent": "A61", "name": "Rafaela Dias", "image": "",
             "faina": [{"year": 22, "name": "Espírito Santo"}]},
-        {"id": "066", "nmec": 107298, "start_year": 21, "end_year": null, "sex": "M", "parent": "000", "name": "Rodrigo Azevedo", "image": "", "patrao": "ESSUA 99619",
+        {"id": "066", "nmec": 107298, "start_year": 21, "end_year": null, "sex": "M", "parent": "X00", "name": "Rodrigo Azevedo", "image": "", "patrao": "X00",
             "faina": [{"year": 22, "name": null}]},
-        {"id": "X00", "nmec": 99619, "sex": "F", "parent": "000", "name": "Raquel Santos", "image": "", "course": "from ESSUA" },
         {"id": "067", "nmec": 107634, "start_year": 21, "end_year": null, "sex": "M", "parent": "A87", "name": "Rodrigo Graça", "image": "",
             "faina": [{"year": 22, "name": "Graça"}]},
         {"id": "068", "nmec": 108969, "start_year": 21, "end_year": null, "sex": "M", "parent": "A70", "name": "Rodrigo Aguiar", "image": "",
@@ -783,11 +782,11 @@
             "faina": [{"year": 23, "name": null}]},
         {"id": "119", "nmec": 114588, "start_year": 22, "end_year": null, "sex": "M", "parent": "083", "name": "Henrique Teixeira", "image": "",
             "faina": [{"year": 23, "name": null}]},
-        {"id": "120", "nmec": 113889, "start_year": 22, "end_year": null, "sex": "M", "parent": "000", "name": "Hugo Castro", "image": "", "patrao": "MS DEP 79647",
+        {"id": "120", "nmec": 113889, "start_year": 22, "end_year": null, "sex": "M", "parent": "X01", "name": "Hugo Castro", "image": "", "patrao": "MS DEP 79647",
             "faina": [{"year": 23, "name": null}]},
         {"id": "121", "nmec": 113402, "start_year": 22, "end_year": null, "sex": "M", "parent": "A96", "name": "Hugo Ribeiro", "image": "",
             "faina": [{"year": 23, "name": null}]},
-        {"id": "122", "nmec": 113532, "start_year": 22, "end_year": null, "sex": "M", "parent": "000", "name": "Igor Coelho", "image": "", "patrao": "MS DEP 79647",
+        {"id": "122", "nmec": 113532, "start_year": 22, "end_year": null, "sex": "M", "parent": "X01", "name": "Igor Coelho", "image": "", "patrao": "MS DEP 79647",
             "faina": [{"year": 23, "name": null}]},
         {"id": "123", "nmec": 113920, "start_year": 22, "end_year": null, "sex": "M", "parent": "083", "name": "João Roldão", "image": "",
             "faina": [{"year": 23, "name": null}]},
@@ -818,6 +817,10 @@
         {"id": "136", "nmec": 112981, "start_year": 22, "end_year": null, "sex": "M", "parent": "B25", "name": "Tomás Fernandes", "image": "",
             "faina": [{"year": 23, "name": null}]},   
         {"id": "138", "nmec": 114478, "start_year": 22, "end_year": null, "sex": "M", "parent": "A96", "name": "Zakhar Kruptsala", "image": "",
-            "faina": [{"year": 23, "name": null}]}
+            "faina": [{"year": 23, "name": null}]},
+
+        {"id": "X00", "nmec": 99619, "sex": "F", "parent": "000", "name": "Raquel Santos", "image": "", "course": "from ESSUA" },
+        {"id": "X01", "nmec": null, "sex": "F", "parent": "000", "name": "Moitinho", "image": "", "course": null,
+            "organizations": [{"year": 23, "name": "ST", "role": "Mestre do Salgado"}] }
     ]
 }

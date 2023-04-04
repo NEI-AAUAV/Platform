@@ -137,8 +137,8 @@ const Navbar = () => {
                             </label>
                             {!token ?
                                 <>
-                                    <Link to="/auth/login" className="btn btn-sm">Log in</Link>
-                                    <Link to="/auth/register" className="btn btn-primary btn-sm">Sign up</Link>
+                                    <Link to="/auth/login" className="btn btn-sm btn-outline btn-neutral">Entrar</Link>
+                                    <Link to="/auth/register" className="btn btn-primary btn-sm">Registar</Link>
                                 </>
                                 :
                                 <div className="dropdown dropdown-end">

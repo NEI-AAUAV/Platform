@@ -124,6 +124,10 @@
     outline: 2px solid hsla(var(--bc) / 0.2) !important;
   }
 
+  .input-error {
+    @apply animate-wiggle;
+  }
+
   /* For Webkit-based browsers (Chrome, Safari and Opera) */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -137,13 +141,7 @@
     scroll-margin: 20px;
   }
 
-  /* .drawer-toggle:checked ~ .drawer-side .drawer-swap {
-    @apply swap-active;
-  }
 
-  .drawer-toggle:checked ~ .drawer-side .drawer-swap .swap-off {
-    opacity: 0;
-  } */
 }
 
 /* 

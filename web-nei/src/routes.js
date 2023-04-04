@@ -1,15 +1,11 @@
 import React from "react";
 
-import { Navigate } from "react-router-dom";
-
 import config from "config";
 
 import Layout, { FullLayout, CleanLayout } from "./layouts/Layout";
 
-import LoginSP from "./auth/LoginSP";
+import Login from "./auth/Login";
 import Register from "./auth/Register";
-import LoginIdP from "./auth/LoginIdP";
-import RedirectIdP from "./auth/RedirectIdP";
 import EmailVerify from "./auth/EmailVerify";
 import ForgotPassword from "./auth/ForgotPassword";
 import ResetPassword from "./auth/ResetPassword";
@@ -61,10 +57,9 @@ const routes = [
       // { path: "/forms/feedback", element: <FeedbackForm /> },
       { path: "/WSTest", element: <Test /> },
       { path: "/WStacaua-admin-demo", element: <TacauaAdminDemo /> },
-      { path: "/redirect", element: <RedirectIdP /> },
+      { path: "/redirect", element: <Login onRedirect /> },
       { path: "/auth/register", element: <Register /> },
-      { path: "/auth/login", element: <LoginSP /> },
-      { path: "/auth/idp", element: <LoginIdP /> },
+      { path: "/auth/login", element: <Login /> },
       { path: "/auth/verify", element: <EmailVerify /> },
       { path: "/auth/forgot", element: <ForgotPassword /> },
       { path: "/auth/reset", element: <ResetPassword /> },

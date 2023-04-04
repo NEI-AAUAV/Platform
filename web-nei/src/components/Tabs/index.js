@@ -37,18 +37,14 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
 
     if (tabsRef.current) {
       setScrollPercentage();
-      tabsRef.current.addEventListener("scroll", () => {
-        setScrollPercentage();
-      });
-      window.addEventListener("resize", () => {
-        setScrollPercentage();
-      });
+      tabsRef.current.addEventListener("scroll", setScrollPercentage);
+      window.addEventListener("resize", setScrollPercentage);
     }
 
     return () => {
       if (tabsRef.current) {
-        tabsRef.current.removeEventListener("scroll", null);
-        window.removeEventListener("resize", null);
+        tabsRef.current.removeEventListener("scroll", setScrollPercentage);
+        window.removeEventListener("resize", setScrollPercentage);
       }
     };
   }, [tabsRef]);

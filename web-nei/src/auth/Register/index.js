@@ -36,67 +36,98 @@ const Register = () => {
 
   return (
     <>
-      <div className="m-auto sm:max-w-xl h-fit bg-base-200 rounded-2xl py-6 px-12 drop-shadow-lg shadow-secondary z-10 flex flex-col align-middle max-w-[80%]">
-        <div className="text-3xl text-center mb-8">Sign Up</div>
-        <form className="flex flex-col w-full" onSubmit={formSubmitted}>
-          <div className="flex sm:flex-row flex-col justify-between w-full mb-5">
-            <input
-              className="input input-bordered sm:w-1/2 sm:mr-2"
-              name="name"
-              placeholder="Name"
-              type="text"
-              required
-            />
-            <input
-              className="input input-bordered sm:w-1/2 sm:ml-2 sm:mt-0 mt-5"
-              name="surname"
-              placeholder="Surname"
-              type="text"
-              required
-            />
+      <div className="z-10 m-auto flex h-fit max-w-lg flex-col rounded-2xl bg-base-200 py-6 px-6 align-middle shadow-md sm:max-w-xl sm:px-12">
+        <div className="mb-2 text-center text-3xl">Criar Conta</div>
+        <p className="m-auto mb-8 max-w-sm text-xs sm:text-sm">
+          Este site é protegido pelo reCAPTCHA e aplicam-se a{" "}
+          <a
+            className="link-primary link whitespace-nowrap"
+            href="https://policies.google.com/privacy"
+          >
+            Política de Privacidade
+          </a>{" "}
+          e os{" "}
+          <a
+            className="link-primary link whitespace-nowrap"
+            href="https://policies.google.com/terms"
+          >
+            Termos de Serviço
+          </a>{" "}
+          do Google.
+        </p>
+        <form className="flex w-full flex-col" onSubmit={formSubmitted}>
+          <div className="mb-1 flex w-full flex-col justify-between sm:flex-row">
+            <div className="grow sm:mr-2">
+              <label className="label">
+                <span className="label-text">Nome</span>
+              </label>
+              <input
+                className="input-bordered input w-full"
+                name="name"
+                placeholder="Nome"
+                type="text"
+                required
+              />
+            </div>
+            <div className="grow mt-5 sm:ml-2 sm:mt-0">
+              <label className="label">
+                <span className="label-text">Sobrenome</span>
+              </label>
+              <input
+                className="input-bordered input w-full"
+                name="surname"
+                placeholder="Sobrenome"
+                type="text"
+                required
+              />
+            </div>
           </div>
+          <label className="label">
+            <span className="label-text">Email</span>
+          </label>
           <input
-            className="input input-bordered mb-5"
+            className="input-bordered input mb-1"
             name="email"
             placeholder="Email"
             type="email"
             required
           />
+          <label className="label">
+            <span className="label-text">Palavra-passe</span>
+          </label>
           <input
-            className="input input-bordered mb-5"
+            className="input-bordered input mb-1"
             name="password"
-            placeholder="Password"
+            placeholder="Palavra-passe"
             type="password"
             required
             ref={passwordRef}
           />
+          <label className="label">
+            <span className="label-text">Confirmar Palavra-passe</span>
+          </label>
           <input
-            className="input input-bordered mb-5"
+            className="input-bordered input mb-1"
             name="confirm_password"
-            placeholder="Repeat password"
+            placeholder="Confirmar Palavra-passe"
             type="password"
             ref={confirmRef}
           />
-          <p className="text-xs text-error hidden" ref={errorMessage}>
-            Passwords não são iguais
+          <p className="hidden text-xs text-error" ref={errorMessage}>
+            As palavra-passes não são iguais.
           </p>
           <button
-            className="btn btn-primary sm:btn-wide m-auto btn-block mt-5"
+            className="btn-primary btn-block btn m-auto mt-8 sm:btn-wide"
             disabled={reCaptchaLoaded ? null : ""}
             type="submit"
           >
-            Register
+            Registar
           </button>
-          <p className="mt-2 sm:text-sm text-xs m-auto max-w-xs">
-            This site is protected by reCAPTCHA and the Google{" "}
-            <a className="link link-primary" href="https://policies.google.com/privacy">Privacy Policy</a> and{" "}
-            <a className="link link-primary" href="https://policies.google.com/terms">Terms of Service</a> apply.
-          </p>
         </form>
-        <p className="mt-2 sm:text-sm text-xs m-auto">
-          Já tens uma conta?{" "}
-          <Link to={"/auth/login"} className="link link-primary">
-            Faz login
+        <p className="m-auto mt-2 text-xs sm:text-sm">
+          Já estás registado?{" "}
+          <Link to={"/auth/login"} className="link-primary link">
+            Inicia sessão aqui.
           </Link>
         </p>
       </div>

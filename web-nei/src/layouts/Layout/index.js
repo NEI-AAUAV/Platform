@@ -25,7 +25,7 @@ const Layout = () => {
   return (
     <div className="relative flex min-h-screen flex-col justify-between pt-20">
       <Navbar />
-      <div className="mx-auto w-full max-w-[90rem] px-1 py-8 sm:px-5 md:py-16">
+      <div className="mx-auto flex w-full max-w-[90rem] grow flex-col px-1 py-8 sm:px-5 md:py-16">
         <Outlet />
       </div>
       {location.pathname === "/" ? <MainFooter /> : <Footer />}
