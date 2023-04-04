@@ -41,8 +41,6 @@
  *
  */
 
-import { Fragment } from "react";
-
 const GRADIENTS = {
   Atletismo: "bg-gradient-to-r from-blue-400 to-blue-500",
   Andebol: "bg-gradient-to-r from-red-400 to-red-500",
