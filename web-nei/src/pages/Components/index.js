@@ -51,36 +51,43 @@ const Components = () => {
               { name: "error-content", key: "erc" },
             ],
           ].map((colors) => (
-            <tbody className="min-w-[425px] flex flex-col">
-              {colors.map(({ name, key, required }) => (
-                <tr className="flex grow">
-                  <td className="w-1/2">
-                    <span className="ml-2 font-mono font-bold">{name}</span>
-                    <br />
-                    <span
-                      className={`badge bg-${name} w-[3rem]`}
-                      style={{ backgroundColor: `hsl(var(--${key}))` }}
-                    ></span>
-                    <span
-                      className={classNames("float-right m-2 badge badge-sm", {
-                        "badge-ghost": !required,
-                      })}
-                    >
-                      {required ? "required" : "optional"}
-                    </span>
-                  </td>
-                  <td className="w-1/2">
-                    <span className="text-xs opacity-60 font-mono">
-                      CSS var: <code>hsl(var(--{key}))</code>
-                    </span>
-                    <br />
-                    <span className="font-mono text-xs opacity-60">
-                      Class: <code>bg-{name}</code>
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            <Fragment key={colors.map((color) => color.key).join("")}>
+              <tbody className="min-w-[425px] flex flex-col">
+                {colors.map(({ name, key, required }) => (
+                  <Fragment key={key}>
+                    <tr className="flex grow">
+                      <td className="w-1/2">
+                        <span className="ml-2 font-mono font-bold">{name}</span>
+                        <br />
+                        <span
+                          className={`badge bg-${name} w-[3rem]`}
+                          style={{ backgroundColor: `hsl(var(--${key}))` }}
+                        ></span>
+                        <span
+                          className={classNames(
+                            "float-right m-2 badge badge-sm",
+                            {
+                              "badge-ghost": !required,
+                            }
+                          )}
+                        >
+                          {required ? "required" : "optional"}
+                        </span>
+                      </td>
+                      <td className="w-1/2">
+                        <span className="text-xs opacity-60 font-mono">
+                          CSS var: <code>hsl(var(--{key}))</code>
+                        </span>
+                        <br />
+                        <span className="font-mono text-xs opacity-60">
+                          Class: <code>bg-{name}</code>
+                        </span>
+                      </td>
+                    </tr>
+                  </Fragment>
+                ))}
+              </tbody>
+            </Fragment>
           ))}
         </table>
       </div>
