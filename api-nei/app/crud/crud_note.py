@@ -138,6 +138,25 @@ class CRUDNote(CRUDBase[Note, None, None]):
         data = set(e.subject.curricular_year for e in data)
         data.discard(None)
 
+<<<<<<< HEAD
         return list(data)
+=======
+    def get_note_curricular_year(self, db: Session, year: int, teacher_id: int, student_id: int, subject_code: int) -> List[str]:
+        query = db.query(Note)
+        if year:
+            query = query.filter(Note.year == year)
+        if teacher_id:
+            query = query.filter(Note.teacher_id == teacher_id)
+        if student_id:
+            query = query.filter(Note.author_id == student_id)
+        if subject_code:
+            query = query.filter(Note.subject_id == subject_code)
+        else:
+            data = query.distinct(Note.subject_id).all()
+        
+        data = [e.subject_id for e in data]
+
+        return db.query(Subject).filter(Subject.code.in_(data)).all()
+>>>>>>> 005fad55 (.)
     
 note = CRUDNote(Note)
