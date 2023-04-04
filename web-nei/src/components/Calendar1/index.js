@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { css, jsx } from "@emotion/react";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useCallback } from "react";
 import classNames from "classnames";
 
 import { useWindowSize } from "utils/hooks";
@@ -16,15 +16,15 @@ const selection = ["[1A]", "2A", "[NEI]", "3A"];
 
 const Calendar = () => {
   const windowSize = useWindowSize();
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState("");
+  const [month, setMonth] = useState(3);
+  const [year, setYear] = useState(2023);
   const [numOfDays, setNumOfDays] = useState([]);
   const [blankDays, setBlankDays] = useState([]);
 
   const [calendarSince, setCalendarSince] = useState(null);
   const [calendarTo, setCalendarTo] = useState(null);
 
-  const [events, setEvents] = useState([]);
+  const [dayEvents, setDayEvents] = useState([]);
 
   const [event, setEvent] = useState({ title: "", date: "", theme: "blue" });
 
@@ -42,7 +42,7 @@ const Calendar = () => {
   // Also initialize categories
   useEffect(() => {
     initDate();
-    getNumOfDays();
+    initDayEvents();
     timespanChanged(new Date());
   }, []);
 
@@ -50,69 +50,10 @@ const Calendar = () => {
     if (calendarSince === null || calendarTo === null) {
       return;
     }
-    const timeMin =
-      `${calendarSince.getFullYear()}-` +
-      `${calendarSince.getMonth() + 1}-` +
-      `${calendarSince.getDate()}T00:00:00+01:00`;
-    const timeMax =
-      `${calendarTo.getFullYear()}-` +
-      `${calendarTo.getMonth() + 1}-` +
-      `${calendarTo.getDate()}T00:00:00+01:00`;
 
-    service.getEvents({ timeMin, timeMax }).then(({ data }) => {
-      let apiEvents = [];
-      data.items.forEach((e) => {
-        // Check that event matches selection
-        let matchAny = true;
-        let matchSelected = true;
-        // Object.entries(categoriesTypes).forEach(([key, c]) => {
-        //     c['filters'].forEach(f => {
-        //         if (e['summary'].toLowerCase().indexOf(f.toLowerCase()) >= 0) {
-        //             matchAny = true;
-        //             matchSelected = selection.indexOf(key) >= 0;
-        //         }
-        //     });
-        // });
-        // It must match any filter, if not, is considered NEI event (default) and to be showed NEI must be in selection
-        if (
-          matchSelected == false &&
-          ((matchAny && selection.indexOf("NEI") >= 0) ||
-            selection.indexOf("NEI") < 0)
-        ) {
-          return;
-        }
-        // If so, compute object to add to events list
-        const start =
-          "date" in e["start"] ? e["start"]["date"] : e["start"]["dateTime"];
-        let end = "date" in e["end"] ? e["end"]["date"] : e["end"]["dateTime"];
-        if ("date" in e["end"]) {
-          let endDate = new Date(end);
-          endDate = endDate.setDate(endDate.getDate() - 1);
-          end = endDate;
-        }
-       
-        apiEvents = apiEvents.concat(
-          getWeeklyIntervals(new Date(start), new Date(end)).map(
-            ({ start, end }) => ({
-              id: e["id"],
-              title: e["summary"],
-              allDay: "date" in e["start"],
-              start,
-              end,
-            })
-          )
-        );
-      });
-
-      apiEvents.sort((a, b) => a.start - b.start);
-      console.log(apiEvents)
-      for (const i = 1; i < apiEvents.length; i++) {
-        apiEvents[i].start.getDate()
-      }
-
-      setEvents(apiEvents);
-    });
-  }, [selection, calendarSince, calendarTo]);
+    initDayEvents();
+    fetchEvents();
+  }, [calendarSince, calendarTo, month, year]);
 
   // On navigate, update next and prev moments and recall API
   function timespanChanged(date) {
@@ -140,14 +81,14 @@ const Calendar = () => {
     let today = new Date();
     setMonth(today.getMonth());
     setYear(today.getFullYear());
-    // datepickerValue = new Date(year, month, today.getDate()).toDateString();
+    // datepickerValue = new Date(year, month, today.getDate()).toLocaleDateString();
   }
 
   function isToday(date) {
     const today = new Date();
     const d = new Date(year, month, date);
 
-    return today.toDateString() === d.toDateString();
+    return today.toLocaleDateString() === d.toLocaleDateString();
   }
 
   function showEventModal(date) {
@@ -155,7 +96,7 @@ const Calendar = () => {
     setOpenEventModal(true);
     setEvent({
       ...event,
-      date: new Date(year, month, date).toDateString(),
+      date: new Date(year, month, date).toLocaleDateString(),
     });
   }
 
@@ -165,26 +106,113 @@ const Calendar = () => {
     setOpenEventModal(false);
   }
 
-  function getNumOfDays() {
-    let daysInMonth = new Date(year, month + 1, 0).getDate();
+  const initDayEvents = useCallback(() => {
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstMonthDay = new Date(year, month, 1).getDay();
+    const lastMonthDay = new Date(year, month + 1, 0).getDay();
 
-    // Find where to start calendar day of week
-    let dayOfWeek = new Date(year, month).getDay();
-    let blankDaysArray = [];
-    for (var i = 1; i <= dayOfWeek; i++) {
-      blankDaysArray.push(i);
+    const dayEvents = {};
+
+    for (
+      let day = 1 - firstMonthDay;
+      day < daysInMonth + 7 - lastMonthDay;
+      day++
+    ) {
+      const date = new Date(year, month, day);
+      dayEvents[date.toLocaleDateString('en-US')] = [];
     }
+    setDayEvents(dayEvents);
+  }, [year, month]);
 
-    let daysArray = [];
-    for (var i = 1; i <= daysInMonth; i++) {
-      daysArray.push(i);
-    }
+  const fetchEvents = () => {
+    const timeMin =
+      `${calendarSince.getFullYear()}-` +
+      `${calendarSince.getMonth() + 1}-` +
+      `${calendarSince.getDate()}T00:00:00+01:00`;
+    const timeMax =
+      `${calendarTo.getFullYear()}-` +
+      `${calendarTo.getMonth() + 1}-` +
+      `${calendarTo.getDate()}T00:00:00+01:00`;
 
-    setBlankDays(blankDaysArray);
-    setNumOfDays(daysArray);
-  }
+    service.getEvents({ timeMin, timeMax }).then(({ data }) => {
+      let events = [];
+      data.items.forEach((e) => {
+        // Check that event matches selection
+        let matchAny = true;
+        let matchSelected = true;
+        // Object.entries(categoriesTypes).forEach(([key, c]) => {
+        //     c['filters'].forEach(f => {
+        //         if (e['summary'].toLowerCase().indexOf(f.toLowerCase()) >= 0) {
+        //             matchAny = true;
+        //             matchSelected = selection.indexOf(key) >= 0;
+        //         }
+        //     });
+        // });
+        // It must match any filter, if not, is considered NEI event (default) and to be showed NEI must be in selection
+        if (
+          matchSelected == false &&
+          ((matchAny && selection.indexOf("NEI") >= 0) ||
+            selection.indexOf("NEI") < 0)
+        ) {
+          return;
+        }
+        // If so, compute object to add to events list
+        let start = new Date(e.start.date || e.start.dateTime);
+        let end = new Date(e.end.date || e.end.dateTime);
+        if (e.end.date) {
+          // Google API considers end date as the day after the event at midnight,
+          // so one day is substracted
+          end.setDate(end.getDate() - 1);
+        }
+        events = events.concat(
+          getWeeklyIntervals(start, end).map(({ start, end }) => ({
+            id: e["id"],
+            title: e["summary"],
+            allDay: "date" in e["start"],
+            start,
+            end,
+            duration:
+              Math.ceil(
+                (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+              ) + 1,
+          }))
+        );
+      });
+      events.sort((a, b) => a.start - b.start);
+      console.log(events);
 
-  
+      for (const e of events) {
+        if (e.start.toLocaleDateString('en-US') in dayEvents) {
+          console.log(dayEvents, e.start.toLocaleDateString());
+          dayEvents[e.start.toLocaleDateString('en-US')].push(e);
+          for (let i = 1; i < e.duration; i++) {
+            const date = new Date(e.start);
+            date.setDate(date.getDate() + i);
+            dayEvents[date.toLocaleDateString('en-US')].push(null);
+          }
+        }
+      }
+    });
+
+    // setEvents((events) => {
+    //   return events.map((event) => {
+    //     const start = new Date(event.start);
+    //     const end = new Date(event.end);
+    //     return { ...event };
+    //   });
+    // })
+
+    // for (const event of events) {
+
+    //   if (event.start.getDate() === date.getDate()) {
+    //     for (const eventDay = day; eventDay < day + event.duration; d++) {
+    //       events[eventDay].push(event);
+    //     }
+    //   }
+    // }
+
+    // setEvents(apiEvents);
+  };
 
   return (
     <div>
@@ -206,10 +234,7 @@ const Calendar = () => {
                   "cursor-not-allowed opacity-25": month == 0,
                 })}
                 disabled={month == 0}
-                onClick={() => {
-                  setMonth((prevMonth) => prevMonth--);
-                  getNumOfDays();
-                }}
+                onClick={() => setMonth((month) => month--)}
               >
                 <ArrowBackIcon />
               </button>
@@ -219,10 +244,7 @@ const Calendar = () => {
                   "btn-disabled": month == 11,
                 })}
                 disabled={month == 11}
-                onClick={() => {
-                  setMonth((prevMonth) => prevMonth++);
-                  getNumOfDays();
-                }}
+                onClick={() => setMonth((month) => month++)}
               >
                 <ArrowForwardIcon />
               </button>
@@ -273,11 +295,11 @@ const Calendar = () => {
                       style={{ height: "80px" }}
                       className="mt-1 overflow-y-auto"
                     >
-                      {events
+                      {/* {events
                         .filter(
                           (e) =>
-                            new Date(e.date).toDateString() ===
-                            new Date(year, month, date).toDateString()
+                            new Date(e.date).toLocaleDateString() ===
+                            new Date(year, month, date).toLocaleDateString()
                         )
                         .map((event, index) => (
                           <div
@@ -290,7 +312,7 @@ const Calendar = () => {
                               {event.title}
                             </p>
                           </div>
-                        ))}
+                        ))} */}
                     </div>
                   </div>
                 </Fragment>

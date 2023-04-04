@@ -580,6 +580,7 @@ export function filterTree(names, end_year) {
       const n = d3.select(this);
       if (showLabelFaina(d.data, end_year)) {
         const hierarchy = getFainaHierarchy(d.data, end_year);
+        console.log(d.data.faina, end_year)
         d.data.fainaNames = separateName(
           hierarchy + " " + (d.data.faina.find((f) => f.year === end_year)?.name || d.data.faina[0].name)
         );

@@ -6,7 +6,7 @@ from pydantic import BaseModel
 class MerchBase(BaseModel):
     name: str
     image: str
-    price: Optional[int]
+    price: Optional[float]
     number_of_items: Optional[int]
 
 class MerchCreate(MerchBase):

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import classname from 'classname';
+import classNames from 'classnames';
 import {
   Alert,
   Document,
@@ -64,7 +64,7 @@ const Components = () => {
                         <span className={`badge bg-${name} w-[3rem]`} style={{ backgroundColor: `hsl(var(--${key}))` }}>
 
                         </span>
-                        <span className={classname("float-right m-2 badge badge-sm", { "badge-ghost": !required })}>{required ? 'required' : 'optional'}</span>
+                        <span className={classNames("float-right m-2 badge badge-sm", { "badge-ghost": !required })}>{required ? 'required' : 'optional'}</span>
                       </td>
                       <td className='w-1/2'>
                         <span className="text-xs opacity-60 font-mono">CSS var: <code>hsl(var(--{key}))</code>
@@ -96,7 +96,7 @@ const Components = () => {
         <div className="btn-group m-1">
           <button
             onClick={() => setBtnActive(false)}
-            className={classname("btn btn-sm gap-2", {
+            className={classNames("btn btn-sm gap-2", {
             "btn-active": !btnActive,
             })}
           >
@@ -104,7 +104,7 @@ const Components = () => {
           </button>
           <button
             onClick={() => setBtnActive(true)}
-            className={classname("btn btn-sm gap-2", {
+            className={classNames("btn btn-sm gap-2", {
             "btn-active": btnActive,
             })}
           >
