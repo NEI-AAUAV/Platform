@@ -96,7 +96,7 @@ const Merchandising = () => {
 
       <Row className="text-center mx-0" style={{ position: "relative" }}>
         <a
-          href="https://forms.gle/pWNPzNi1LV59iSsAA"
+          href="https://orders.winrestbooking.com/StoreMenu/Index/4968"
           target="_blank"
           className="mx-auto"
         >

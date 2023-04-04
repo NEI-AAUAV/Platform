@@ -329,7 +329,7 @@ const Calendar = () => {
       >
         {" "}
         {/*x-show.transition.opacity="openEventModal"*/}
-        <div className="absolute relative left-0 right-0 mx-auto mt-24 max-w-xl overflow-hidden p-4">
+        <div className="absolute left-0 right-0 mx-auto mt-24 max-w-xl overflow-hidden p-4">
           <div
             className="absolute right-0 top-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white text-gray-500 shadow hover:text-gray-800"
             onClick={() => setOpenEventModal(!openEventModal)}
@@ -343,7 +343,7 @@ const Calendar = () => {
             </svg>
           </div>
 
-          <div className="block w-full w-full overflow-hidden rounded-lg bg-white p-8 shadow">
+          <div className="block w-full overflow-hidden rounded-lg bg-white p-8 shadow">
             <h2 className="mb-6 border-b pb-2 text-2xl font-bold text-gray-800">
               Add Event Details
             </h2>

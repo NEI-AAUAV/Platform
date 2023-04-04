@@ -160,6 +160,7 @@ INSERT INTO nei."user" (id, email, name, surname, gender, iupi, nmec, image, cur
 (155, 'maria.abrunhosa@ua.pt', 'Rafaela', 'Abrunhosa', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (156, 'matilde.teixeira@ua.pt', 'Matilde', 'Teixeira', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (157, 'hf.correia@ua.pt', 'Hugo', 'Correia', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
+-- empty id: 158
 (159, 'pedrorrei@ua.pt', 'Pedro', 'Rei', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (160, 'jnluis@ua.pt', 'João', 'Luís', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
 (161, 'Tomasalmeida8@ua.pt', 'Tomás', 'Almeida', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-01-01T00:00:00', '2023-01-01T00:00:00', ARRAY[]::nei.scope_enum[], '', TRUE),
