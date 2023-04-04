@@ -101,7 +101,6 @@ def client(
         }
 
     def _ws_send_update(data):
-        
         data = requests.post(f"http://{settings.API_NEI_SERVER}:8000/api/nei/v1/ws/broadcast", data)
         assert data["status"] == "success"
 

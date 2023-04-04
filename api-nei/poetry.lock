@@ -1930,4 +1930,8 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
+<<<<<<< HEAD
 content-hash = "3ec0499a9b79a0c320d4d192c6726aed1ea9d7e77f0b65d0e7fd73fdce3b8600"
+=======
+content-hash = "f09f1496ee4293af15d21612b30619b7e302f5a6712aee358955aefe2bc1b431"
+>>>>>>> 2ba3374b (poetry.lock was changed again MONKAW, also latest update)

@@ -7,6 +7,7 @@ from pytest import Session
 
 router = APIRouter()
 
+
 class ConnectionType(Enum):
     GENERAL = 0
 
