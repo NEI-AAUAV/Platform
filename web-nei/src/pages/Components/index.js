@@ -131,7 +131,192 @@ const Components = () => {
         />
 
         <h2>Sports Card Test</h2>
-        <SportsCard image="" frame="women" type="bananas" sport="sitting" />
+        <div className="flex flex-wrap gap-8 [&>*]:grow [&>*]:shrink [&>*]:basis-96 [&>*]:flex [&>*]:justify-center [&>*>*]:grow [&>*>*]:shrink rounded-xl bg-base-200 p-4">
+          <div>
+            <SportsCard
+              modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "Atletismo",
+                frame: "Masculino",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Fase de Grupos",
+                    division: 1,
+                    id: 1,
+                  },
+                  {
+                    name: "Playoffs",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div>
+            <SportsCard
+              modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "Andebol",
+                frame: "Masculino",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Fase de Grupos",
+                    division: 2,
+                    id: 1,
+                  },
+                  {
+                    name: "Playoffs",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div>
+            <SportsCard
+              modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "Basquetebol",
+                frame: "Masculino",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Fase de Grupos",
+                    division: 10,
+                    id: 1,
+                  },
+                  {
+                    name: "Playoffs",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div>
+            <SportsCard
+              modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "Futsal",
+                frame: "Masculino",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Fase de Bananas",
+                    division: 1,
+                    id: 1,
+                  },
+                  {
+                    name: "Playoffs",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div>
+            <SportsCard
+              modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "Futebol 7",
+                frame: "Monkey",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Ooga Booga",
+                    division: 1,
+                    id: 1,
+                  },
+                  {
+                    name: "Aaa ooh",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div>
+            <SportsCard
+              modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "Voleibol 4x4",
+                frame: "Masculino",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Fase de Grupos",
+                    division: 1,
+                    id: 1,
+                  },
+                  {
+                    name: "Playoffs",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div>
+            <SportsCard
+              modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "E-Sports LOL",
+                frame: "Masculino",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Fase de Grupos",
+                    division: 1,
+                    id: 1,
+                  },
+                  {
+                    name: "Playoffs",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}
+            />
+          </div>
+          <div>
+            <SportsCard
+              modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "E-Sports CS:GO",
+                frame: "Masculino",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Fase de Grupos",
+                    division: 1,
+                    id: 1,
+                  },
+                  {
+                    name: "Playoffs",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}
+            />
+          </div>
+        </div>
       </div>
 
       <h1>DaisyUI Components</h1>
