@@ -43,6 +43,8 @@ services:
       - 8000:8000
     environment:
       ENV: production
+      RECAPTCHA_ENABLED: True
+      EMAIL_ENABLED: True
       POSTGRES_SERVER: db_pg
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes: 
