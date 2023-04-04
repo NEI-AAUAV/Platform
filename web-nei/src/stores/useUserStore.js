@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+import { parseJWT } from "utils";
+
 const defaultTheme =
   localStorage.getItem("th") ||
   (window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -17,9 +19,11 @@ export const useUserStore = create((set) => ({
     document.body.setAttribute("data-theme", theme);
     set(() => ({ theme }));
   },
-  login: ({ token, name, surname }) => {
-    set(() => ({ token, name, surname }));
+  login: ({ token }) => {
+    const payload = parseJWT(token);
+    set(() => ({ token, ...payload }));
   },
+  
   logout: () => {
     set(() => ({ token: null }));
   },
