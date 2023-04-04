@@ -11,7 +11,7 @@ class SubjectBase(BaseModel):
     short: Annotated[Optional[str], Field(max_length=5)]
     discontinued: int
     optional: int
-    course_id: int
+    # course_id: int
 
 class SubjectCreate(SubjectBase):
     pass

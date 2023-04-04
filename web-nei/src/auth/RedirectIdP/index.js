@@ -4,6 +4,10 @@ import { useSearchParams } from "react-router-dom";
 
 import service from "services/NEIService";
 
+import { useUserStore } from "stores/useUserStore";
+
+import { parseJWT } from "utils";
+
 /**
  * Login page for Identiy provider-initiated SSO
  */
@@ -22,7 +26,9 @@ export default function ConfirmEmail() {
 
     service
       .redirectIdP(params)
-      .then(() => {
+      .then(({ access_token }) => {
+        const payload = parseJWT(access_token);
+        useUserStore.getState().login({token: access_token, ...payload});
         setSuccess(true);
         setLoading(false);
       })

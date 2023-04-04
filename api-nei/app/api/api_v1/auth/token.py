@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.responses import JSONResponse, RedirectResponse
 from app.core.config import settings
+from ._deps import generate_response
 import requests
 
 import base64
@@ -55,7 +56,8 @@ async def get_token(
 ) -> Response:
     if oauth_token is None:
         # Step 1: Request Token
-        oauth = OAuth1Session(settings.IDP_KEY, client_secret=settings.IDP_SECRET_KEY)
+        oauth = OAuth1Session(
+            settings.IDP_KEY, client_secret=settings.IDP_SECRET_KEY)
 
         fetch_response = oauth.fetch_request_token(request_token_url)
 
@@ -102,12 +104,13 @@ async def get_token(
             crud.course.create(db, obj_in=course_in)
 
         for subject in student_courses:
-            subjectInDb = crud.subject.get_by_code(db, code=int(subject["CodDisciplina"]))
+            subjectInDb = crud.subject.get_by_code(
+                db, code=int(subject["CodDisciplina"]))
             if subjectInDb is None:
                 subject_in = SubjectCreate(
                     name=subject["NomeDisciplina"],
                     code=subject["CodDisciplina"],
-                    short="",   
+                    short="",
                     discontinued=0,
                     optional=0,
                     curricular_year=student_info["AnoCurricular"],
@@ -130,7 +133,8 @@ async def get_token(
             createImg(user.id, student_info["Foto"], db)
             subList = []
             for subject in student_courses:
-                subList.append(crud.subject.get_by_code(db, code=int(subject["CodDisciplina"])))
+                subList.append(crud.subject.get_by_code(
+                    db, code=int(subject["CodDisciplina"])))
             userAc = UserAcademicDetailsCreate(
                 user_id=userid,
                 course_id=int(courseInfo[0].strip()),
@@ -162,7 +166,8 @@ async def get_token(
             # check if subjects are the same
             subList = []
             for subject in student_courses:
-                subList.append(crud.subject.get_by_code(db, code=int(subject["CodDisciplina"])))
+                subList.append(crud.subject.get_by_code(
+                    db, code=int(subject["CodDisciplina"])))
 
             userAc_up = UserAcademicDetailsCreate(
                 user_id=user.id,
@@ -173,7 +178,8 @@ async def get_token(
             if userAc is None:
                 userAc = crud.user_academic.create(db, obj_in=userAc_up)
             else:
-                userAc = crud.user_academic.update(db, db_obj=userAc, obj_in=userAc_up)
+                userAc = crud.user_academic.update(
+                    db, db_obj=userAc, obj_in=userAc_up)
 
             userAc.subjects = subList
             db.add(userAc)
@@ -181,7 +187,7 @@ async def get_token(
             db.commit()
 
         del tokens[oauth_token]
-        return JSONResponse(status_code=200, content={"message": "Success"})
+        return generate_response(db, user)
 
 
 def get_data(resource_owner_key, resource_owner_secret):
@@ -203,7 +209,8 @@ def get_data(resource_owner_key, resource_owner_secret):
     for s in scopes:
         r = oauth.get(f"{get_data_url}?scope={s}&format=json")
         if s == "student_info":
-            returndata["student_info"] = r.json()["NewDataSet"]["ObterDadosAluno"]
+            returndata["student_info"] = r.json(
+            )["NewDataSet"]["ObterDadosAluno"]
         elif s == "student_courses":
             returndata["student_courses"] = r.json()["NewDataSet"][
                 "ObterListaDisciplinasAluno"
