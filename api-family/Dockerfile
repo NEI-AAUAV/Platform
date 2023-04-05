@@ -14,4 +14,4 @@ COPY . .
 RUN poetry install
 
 EXPOSE 8002
-CMD poetry run uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload --proxy-headers
+CMD poetry run uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
