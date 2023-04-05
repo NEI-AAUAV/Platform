@@ -302,8 +302,8 @@ const Notes = () => {
         <Alert alert={alert} setAlert={setAlert} />
       </div>
 
-      <div className="mt-4 flex gap-8">
-        <div className=" flex w-64 flex-col">
+      <div className="mt-4 flex flex-col sm:flex-row gap-8">
+        <div className="flex mx-auto w-64 flex-col">
           <div className="sticky top-[5rem] w-[inherit]">
             <div className="flex flex-col gap-4">
               <h4>Filtros</h4>
