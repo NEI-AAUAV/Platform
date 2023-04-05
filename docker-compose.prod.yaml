@@ -47,8 +47,8 @@ services:
       EMAIL_ENABLED: "True"
       POSTGRES_SERVER: db_pg
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      JWT_SECRET_KEY_PATH: /api-nei/jwt-keys/jwt.key
-      JWT_PUBLIC_KEY_PATH: /api-nei/jwt-keys/jwt.key.pub
+      JWT_SECRET_KEY_PATH: /api_nei/jwt-keys/jwt.key
+      JWT_PUBLIC_KEY_PATH: /api_nei/jwt-keys/jwt.key.pub
     volumes: 
       - /api-nei/static:/api_nei/static
       - /api-nei/jwt-keys:/api_nei/jwt-keys
