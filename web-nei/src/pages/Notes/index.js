@@ -471,14 +471,14 @@ const Notes = () => {
               </div>
             )}
           </div>
-          <PageNav
-            page={selPage}
-            total={page}
-            handler={fetchPage}
-            className="d-lg-none mx-auto mt-3"
-          ></PageNav>
         </div>
       </div>
+      <PageNav
+        numPages={page}
+        currentPage={selPage}
+        handler={fetchPage}
+        className="mx-auto mt-3"
+      ></PageNav>
       <div className="card mt-5 bg-base-200/80 text-center shadow-md">
         <h3>
           Foi graças a pessoas como tu que esta página se tornou possível!
