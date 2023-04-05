@@ -94,15 +94,17 @@ const data = [
 
 
 const dataCompacted = (size) => {
-    const items = [...data];
+    const items = data.filter(Boolean);
     const otherItems = items.splice(size - 1);
-    return [
-        ...items,
-        {
+
+    if (otherItems.length !== 0) {
+        items.push({
             name: "Outro",
             dropdown: otherItems
-        },
-    ];
+        });
+    }
+
+    return items;
 }
 
 export { data, dataCompacted };
