@@ -49,6 +49,13 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       JWT_SECRET_KEY_PATH: /api_nei/jwt-keys/jwt.key
       JWT_PUBLIC_KEY_PATH: /api_nei/jwt-keys/jwt.key.pub
+      SECRET_KEY: ${SECRET_KEY}
+      EMAIL_SENDER_ADDRESS: ${EMAIL_SENDER_ADDRESS}
+      EMAIL_SMTP_HOST: ${EMAIL_SMTP_HOST}
+      EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
+      EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
+      IDP_SECRET_KEY: ${IDP_SECRET_KEY}
+      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
     volumes: 
       - /api-nei/static:/api_nei/static
       - /api-nei/jwt-keys:/api_nei/jwt-keys
