@@ -41,6 +41,8 @@ services:
       dockerfile: Dockerfile.prod
     ports:
       - 8000:8000
+      - 587:587
+      - 25:25
     environment:
       ENV: production
       RECAPTCHA_ENABLED: "True"
