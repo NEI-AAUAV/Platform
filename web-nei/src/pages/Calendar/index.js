@@ -17,7 +17,7 @@ const VIEWS = {
 const Calendar = () => {
   const [categories, setCategories] = useState(
     // TODO: change active state according to user information
-    data.categories.map((c) => ({...c, checked: true }))
+    data.categories.map((c) => ({ ...c, checked: true }))
   );
   const [view, setView] = useState(VIEWS.CALENDAR);
 
@@ -28,7 +28,7 @@ const Calendar = () => {
       </h2>
 
       <div className="flex justify-between">
-        <div class="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
+        <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
           <button
             className={classNames(
               "btn-sm btn gap-2 border-none bg-accent py-1",

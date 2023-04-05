@@ -21,6 +21,7 @@ const Merchandising = () => {
       setImgs(
         data.map((img, idx) => (
           <div
+            key={img.id}
             className={
               idx % 2 === 0
                 ? "impar text-center slideUpFade"
@@ -55,8 +56,8 @@ const Merchandising = () => {
                 sm={12}
                 className={idx % 2 == 0 ? "order-1" : "order-0"}
               >
-                <h22>{img.name}</h22>
-                <h55>Preço: {img.price}€</h55>
+                <h2>{img.name}</h2>
+                <h5>Preço: {img.price}€</h5>
               </Col>
             </Row>
           </div>
