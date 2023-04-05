@@ -47,7 +47,6 @@ const Calendar = () => {
   }, []);
 
   useEffect(() => {
-    console.log(month)
     if (calendarSince === null || calendarTo === null) {
       return;
     }
@@ -107,7 +106,6 @@ const Calendar = () => {
   }
 
   const initDayEvents = useCallback(() => {
-    console.log(month)
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const firstMonthDay = new Date(year, month, 1).getDay();
     const lastMonthDay = new Date(year, month + 1, 0).getDay();
@@ -180,11 +178,9 @@ const Calendar = () => {
         );
       });
       events.sort((a, b) => a.start - b.start);
-      console.log(events);
 
       for (const e of events) {
         if (e.start.toLocaleDateString('en-US') in dayEvents) {
-          console.log(dayEvents, e.start.toLocaleDateString());
           dayEvents[e.start.toLocaleDateString('en-US')].push(e);
           for (let i = 1; i < e.duration; i++) {
             const date = new Date(e.start);

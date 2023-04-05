@@ -103,7 +103,6 @@ const Notes = () => {
       curricular_year: selCurricularYear || null,
       category: [],
     };
-    console.log(params)
 
     for (var i = 0; i < activeFilters.length; i++) {
       const cat = filters.filter((f) => f["name"] == activeFilters[i])[0]["db"];

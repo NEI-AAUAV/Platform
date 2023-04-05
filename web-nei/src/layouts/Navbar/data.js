@@ -70,7 +70,7 @@ const data = [
         name: "Famílias",
         link: "/family",
     },
-    {
+    !config.PRODUCTION && {
         name: "Finalistas",
         link: "/seniors",
     },
@@ -82,11 +82,11 @@ const data = [
         name: "Components",
         link: "/components",
     },
-    {
+    !config.PRODUCTION && {
         name: "Test",
         link: "/WSTest",
     },
-    {
+    !config.PRODUCTION && {
         name: "TacauaAdminDemo",
         link: "/WStacaua-admin-demo",
     }
