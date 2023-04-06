@@ -24,28 +24,26 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
   }, [value]);
 
   useEffect(() => {
+    const ele = tabsRef.current;
+
+    if (!ele) return;
+
     /**
      * Sets the scroll percentage of the tabs container to
      * disable the scroll buttons when the tabs are at the end.
      */
     const setScrollPercentage = () => {
-      setScrollPos(
-        tabsRef.current.scrollLeft /
-          (tabsRef.current.scrollWidth - tabsRef.current.clientWidth)
-      );
+      const pos = ele.scrollLeft / (ele.scrollWidth - ele.clientWidth);
+      setScrollPos(pos);
     };
 
-    if (tabsRef.current) {
-      setScrollPercentage();
-      tabsRef.current.addEventListener("scroll", setScrollPercentage);
-      window.addEventListener("resize", setScrollPercentage);
-    }
+    setScrollPercentage();
+    ele.addEventListener("scroll", setScrollPercentage);
+    window.addEventListener("resize", setScrollPercentage);
 
     return () => {
-      if (tabsRef.current) {
-        tabsRef.current.removeEventListener("scroll", setScrollPercentage);
-        window.removeEventListener("resize", setScrollPercentage);
-      }
+      ele.removeEventListener("scroll", setScrollPercentage);
+      window.removeEventListener("resize", setScrollPercentage);
     };
   }, [tabsRef]);
 

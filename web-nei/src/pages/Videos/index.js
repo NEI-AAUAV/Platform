@@ -134,16 +134,12 @@ const Videos = () => {
           })}
       </Row>
       {/* Pagination */}
-      <Row>
-        {pages > 1 && (
-          <PageNav
-            page={selPage}
-            total={pages}
-            handler={setSelPage}
-            className="mx-auto mt-3"
-          ></PageNav>
-        )}
-      </Row>
+      <PageNav
+        currentPage={selPage}
+        numPages={pages}
+        handler={setSelPage}
+        className="mx-auto mt-3"
+      ></PageNav>
       {
         // Error
         !loading && !loadingCategories && videos.length == 0 && (

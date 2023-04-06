@@ -302,8 +302,8 @@ const Notes = () => {
         <Alert alert={alert} setAlert={setAlert} />
       </div>
 
-      <div className="mt-4 flex gap-8">
-        <div className=" flex w-64 flex-col">
+      <div className="mt-4 flex flex-col sm:flex-row gap-8">
+        <div className="flex mx-auto w-64 flex-col">
           <div className="sticky top-[5rem] w-[inherit]">
             <div className="flex flex-col gap-4">
               <h4>Filtros</h4>
@@ -471,14 +471,14 @@ const Notes = () => {
               </div>
             )}
           </div>
-          <PageNav
-            page={selPage}
-            total={page}
-            handler={fetchPage}
-            className="d-lg-none mx-auto mt-3"
-          ></PageNav>
         </div>
       </div>
+      <PageNav
+        numPages={page}
+        currentPage={selPage}
+        handler={fetchPage}
+        className="mx-auto mt-3"
+      ></PageNav>
       <div className="card mt-5 bg-base-200/80 text-center shadow-md">
         <h3>
           Foi graças a pessoas como tu que esta página se tornou possível!

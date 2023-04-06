@@ -17,7 +17,7 @@ const News = () => {
     const [totalPages, setTotalPages] = useState(1);        // total number of pages
 
     const getNews = async (p_num, newsTypes) => {
-        service.getNews({page: p_num, category: newsTypes, size: 9})
+        service.getNews({ page: p_num, category: newsTypes, size: 9 })
             .then((data) => {
                 setIsLoading(false);
                 setCurrPage(p_num);
@@ -67,7 +67,7 @@ const News = () => {
                 className="mb-3"
                 btnClass="mr-2"
             >
-                <PageNav className="col-12 col-lg ml-auto p-0" page={currPage} total={totalPages} handler={fetchPage}></PageNav>
+                <PageNav className="col-12 col-lg ml-auto p-0" currentPage={currPage} numPages={totalPages} handler={fetchPage}></PageNav>
             </FilterSelect>
             {
                 isLoading
