@@ -15,7 +15,7 @@ URL_PREFIX = f"{settings.API_V1_STR}/course"
 
 course_data = {
     "name": "Eng. Informática",
-    "initials": "NEI",
+    "short": "NEI",
     "color": "rgb(0,0,0)"
 }
 
@@ -86,7 +86,7 @@ def test_update_course(db: SessionTesting, client: TestClient) -> None:
     }
     course = db.query(Course).first()
     course_partial_data = {
-        "initials": "NEEMec",
+        "short": "NEEMec",
         "color": "orange"
     }
     r = client.put(f"{URL_PREFIX}/{course.id}",

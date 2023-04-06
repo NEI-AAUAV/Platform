@@ -1,43 +1,148 @@
-import React, { useEffect, useState } from "react";
-import { Button } from 'react-bootstrap'
-import { Container, Row, Col } from 'react-bootstrap';
-import Tab from './Tab/index.js'
+import { motion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
+import classname from "classname";
 
-import "./index.css"
+import { ArrowBackIcon, ArrowForwardIcon } from "assets/icons/google";
 
-/*
-Tabs é um componente em que é um "pseudo navbar" para acessar um conjunto de valores, dado em um array.
+/**
+ * Receives an array of strings and renders a tab for each one of them.
+ * @param {Array} tabs
+ * @param {Any} value
+ * @param {Function} onChange
+ * @param {String} renderOption optional
+ * @param {String} underlineColor optional
+ * @param {String} className optional
+ */
+const Tabs = ({ tabs, value, onChange, renderOption, underlineColor, className }) => {
+  const tabsRef = useRef(null);
+  const [scrollPos, setScrollPos] = React.useState(null);
+  const [focused, setFocused] = React.useState(null);
+  const [selected, setSelected] = React.useState(value || tabs?.[0]);
 
-Props:
-tabs -> array que contém os valores das quais queres navegar.
-_default -> valor que começa selecionado.
-onChange -> função setState que altera o valor de um state.
+  useEffect(() => {
+    setSelected(value);
+  }, [value]);
 
-*/
+  useEffect(() => {
+    /**
+     * Sets the scroll percentage of the tabs container to
+     * disable the scroll buttons when the tabs are at the end.
+     */
+    const setScrollPercentage = () => {
+      setScrollPos(
+        tabsRef.current.scrollLeft /
+          (tabsRef.current.scrollWidth - tabsRef.current.clientWidth)
+      );
+    };
 
-const Tabs = ({ tabs, _default, onChange }) => {
+    if (tabsRef.current) {
+      setScrollPercentage();
+      tabsRef.current.addEventListener("scroll", () => {
+        setScrollPercentage();
+      });
+      window.addEventListener("resize", () => {
+        setScrollPercentage();
+      });
+    }
 
-    const [selectedElement, setSelectedElement] = useState(null);
+    return () => {
+      if (tabsRef.current) {
+        tabsRef.current.removeEventListener("scroll", null);
+        window.removeEventListener("resize", null);
+      }
+    };
+  }, [tabsRef]);
 
-    const tab = tabs.map((tab, index) => (
-        <div key={index}>
-            <Tab func={onChange} val={tab}
-                selectedElement={selectedElement} update={setSelectedElement} />
+  function scroll(value) {
+    tabsRef.current.scrollBy(value, 0);
+  }
+
+  return (
+    <div className={`flex justify-center ${className}`}>
+      <div className="rounded-l-box my-1 flex items-center justify-center bg-base-200/80 px-2">
+        <div
+          className={classname("btn-ghost btn-sm btn-circle btn", {
+            "btn-disabled bg-transparent": isNaN(scrollPos) || scrollPos < 0.01,
+          })}
+          onClick={() => scroll(-300)}
+        >
+          <ArrowBackIcon />
         </div>
-    ));
+      </div>
+      <div
+        ref={tabsRef}
+        className="scrollbar-hide w-fit max-w-3xl overflow-y-scroll scroll-smooth"
+      >
+        <ul
+          className="my-1 flex w-fit list-none items-center bg-base-200/80 px-4 py-1"
+          onMouseLeave={() => setFocused(null)}
+        >
+          {tabs?.map((item) => (
+            <li
+              className="relative flex cursor-pointer items-center"
+              key={item}
+              onClick={() => onChange(item)}
+              onKeyDown={(event) =>
+                event.key === "Enter" ? onChange(item) : null
+              }
+              onFocus={() => setFocused(item)}
+              onMouseEnter={() => setFocused(item)}
+              tabIndex={0}
+            >
+              <span
+                className={classname(
+                  "relative z-10 select-none px-6 py-2 font-bold",
+                  {
+                    "opacity-75": selected !== item,
+                  }
+                )}
+              >
+                {renderOption?.(item) || item}
+              </span>
 
-    useEffect(() => {
-        setSelectedElement(_default)
-    }, [_default])
+              {selected === item ? (
+                <div className="absolute left-0 right-0 top-0 bottom-0 z-0 rounded-lg bg-base-300/80 shadow" />
+              ) : null}
 
+              {focused === item ? (
+                <motion.div
+                  transition={{
+                    layout: {
+                      duration: 0.2,
+                      ease: "easeOut",
+                    },
+                  }}
+                  className="absolute left-0 right-0 top-0 bottom-0 z-0 rounded-lg bg-base-300/80"
+                  layoutId="highlight"
+                />
+              ) : null}
 
-    return (
-        <Container className="tab-container">
-            <Row className="justify-content-center">
-                {tab}
-            </Row>
-        </Container>
-    )
-}
+              {selected === item ? (
+                <motion.div
+                  className={classname(
+                    "absolute bottom-[-6px] left-1/4 z-0 h-1 w-1/2 rounded-lg",
+                    underlineColor ? underlineColor : "!bg-accent"
+                  )}
+                  layoutId="underline"
+                />
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="rounded-r-box my-1 flex items-center justify-center bg-base-200/80 px-2">
+        <div
+          className={classname("btn-ghost btn-sm btn-circle btn", {
+            "btn-disabled bg-transparent": isNaN(scrollPos) || scrollPos > 0.99,
+          })}
+          name="forward"
+          onClick={() => scroll(300)}
+        >
+          <ArrowForwardIcon />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Tabs;

@@ -36,12 +36,13 @@ def connection():
     This only executes once for all tests.
     """
     connection = engine.connect()
-    if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
+    if not engine.dialect.has_schema(connection, schema=settings.SCHEMA_NAME):
         event.listen(Base.metadata, "before_create",
                      CreateSchema(settings.SCHEMA_NAME), insert=True)
 
     Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)
+    connection.commit()
     yield connection
     Base.metadata.drop_all(engine)
     connection.close()

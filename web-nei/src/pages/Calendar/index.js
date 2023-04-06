@@ -1,57 +1,77 @@
-import React, {useEffect, useState} from "react";
-import NEICalendar from "./NEICalendar";
-import Filters from "../../components/Filters";
-import Typist from 'react-typist';
+import React, { useState } from "react";
+import classname from "classname";
+
+import Typist from "react-typist";
+import Calendar2 from "components/Calendar2";
+import Calendar1 from "components/Calendar1";
+import CheckboxFilter from "components/CheckboxFilter";
+import { CalendarViewMonthIcon, ViewAgendaIcon } from "assets/icons/google";
+
+import data from "./data";
+
+const VIEWS = {
+  CALENDAR: 1,
+  AGENDA: 2,
+};
 
 const Calendar = () => {
+  const [categories, setCategories] = useState(
+    // TODO: change active state according to user information
+    data.categories.map((c) => ({...c, checked: true }))
+  );
+  const [view, setView] = useState(VIEWS.CALENDAR);
 
-    // Animation
-    const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
-    const animationIncrement = parseFloat(process.env.REACT_APP_ANIMATION_INCREMENT);
+  return (
+    <div>
+      <h2 className="text-center">
+        <Typist>Calendário</Typist>
+      </h2>
 
-    const [filters, setFilters] = useState([]);
-    const [selection, setSelection] = useState([]);    
+      <div className="flex justify-between">
+        <div class="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
+          <button
+            className={classname(
+              "btn-sm btn gap-2 border-none bg-accent py-1",
+              view === VIEWS.CALENDAR
+                ? "no-animation shadow hover:bg-accent"
+                : "bg-transparent hover:bg-base-300 hover:opacity-75"
+            )}
+            onClick={() => setView(VIEWS.CALENDAR)}
+          >
+            <CalendarViewMonthIcon /> Mês
+          </button>
+          <button
+            className={classname(
+              "btn-sm btn gap-2 border-none bg-accent py-1",
+              view === VIEWS.AGENDA
+                ? "no-animation shadow hover:bg-accent"
+                : "bg-transparent hover:bg-base-300 hover:opacity-75"
+            )}
+            onClick={() => setView(VIEWS.AGENDA)}
+          >
+            <ViewAgendaIcon /> Agenda
+          </button>
+        </div>
 
-    return (
-        <div>
-            <h2 className="text-center">
-                <Typist>Calendário</Typist>
-            </h2>
+        <CheckboxFilter values={categories} onChange={setCategories} />
+      </div>
 
-            <div className="col-12 d-flex flex-row flex-wrap my-5">
-                <div 
-                    className="mb-2 col-12 col-md-4 d-flex"
-                    style={{
-                        animationDelay: animationBase + animationIncrement*0 + "s",
-                    }}
-                >
-                    <p className="slideUpFade col-12 text-primary mb-3 my-md-auto ml-auto pr-3 text-center text-md-right">Categorias</p>
-                </div>
-                <Filters 
-                    filterList={filters}
-                    activeFilters={selection}
-                    setActiveFilters={setSelection}
-                    className="slideUpFade mr-auto col-12 col-md-8 d-flex flex-row flex-wrap"
-                    btnClass="mx-auto mr-md-2 ml-md-0 mb-2"
-                    style={{
-                        animationDelay: animationBase + animationIncrement*1 + "s",
-                    }}
-                />
-            </div>
-
-            <NEICalendar 
+      {/* <NEICalendar
                 selection={selection}
                 setInitialCategories={(fs) => {
                     setFilters(fs);
                     setSelection(fs.map(f => f['filter']));
                 }}
-                className="slideUpFade"
+
                 style={{
-                    animationDelay: animationBase + animationIncrement*2 + "s",
+                    animationDelay: animationBase + animationIncrement * 2 + "s",
                 }}
-            />
-        </div>
-    );
-}
+            /> */}
+      <div className="slideUpFade">
+        <Calendar1 />
+      </div>
+    </div>
+  );
+};
 
 export default Calendar;

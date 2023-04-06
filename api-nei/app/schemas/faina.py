@@ -1,11 +1,13 @@
-from pydantic import BaseModel, AnyHttpUrl, constr
+from pydantic import BaseModel, AnyHttpUrl
 
 from typing import Optional, List
 from .faina_member import FainaMemberInDB
+from .types import MandateStr
 
 
 class FainaBase(BaseModel):
-    year: constr(max_length=7)
+    # Validate mandate to only allow 2020 or 2020/21
+    mandate: MandateStr
 
 
 class FainaCreate(FainaBase):
@@ -15,13 +17,13 @@ class FainaCreate(FainaBase):
 
 class FainaUpdate(FainaBase):
     """Properties to receive via API on update."""
-    year: Optional[constr(max_length=7)]
+    mandate: Optional[MandateStr]
 
 
 class FainaInDB(FainaBase):
     """Properties properties stored in DB."""
     id: int
-    image: AnyHttpUrl
+    image: Optional[AnyHttpUrl]
     members: List[FainaMemberInDB]
 
     class Config:

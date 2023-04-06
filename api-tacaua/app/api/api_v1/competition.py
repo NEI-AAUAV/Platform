@@ -1,11 +1,11 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Security
 from sqlalchemy.orm import Session
 
 from app import crud
 from app.exception import NotFoundException
-from app.api import deps
+from app.api import auth, deps
 from app.schemas.competition import Competition, CompetitionCreate, CompetitionUpdate
 
 
@@ -19,7 +19,8 @@ responses = {
 @router.post("/", status_code=201, response_model=Competition,
     responses={404: {'description': "Modality Not Found"}})
 def create_competition(
-    competition_in: CompetitionCreate, db: Session = Depends(deps.get_db)
+    competition_in: CompetitionCreate, db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     modality = crud.modality.get(db=db, id=competition_in.modality_id)
     if not modality:
@@ -30,7 +31,8 @@ def create_competition(
 @router.put("/{id}", status_code=200, response_model=Competition,
             responses=responses)
 def update_competition(
-    id: int, competition_in: CompetitionUpdate, db: Session = Depends(deps.get_db)
+    id: int, competition_in: CompetitionUpdate, db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     return crud.competition.update(db, id=id, obj_in=competition_in)
 
@@ -38,6 +40,7 @@ def update_competition(
 @router.delete("/{id}", status_code=200, response_model=Competition,
                responses=responses)
 def remove_competition(
-    id: int, db: Session = Depends(deps.get_db)
+    id: int, db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     return crud.competition.remove(db, id=id)

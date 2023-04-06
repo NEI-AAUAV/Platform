@@ -20,7 +20,7 @@ class NoteBase(BaseModel):
     teacher_id: Optional[int]
 
     name: constr(max_length=256)
-    location: AnyHttpUrl
+    location: str ##AnyHttpUrl
     year: Optional[int]
 
     summary: Optional[int]

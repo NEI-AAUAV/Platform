@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import AnyHttpUrl
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, DateTime, Enum, Text, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -29,6 +29,8 @@ class User(Base):
         ARRAY(Enum(ScopeEnum, name="scope_enum", inherit_schema=True)))
     updated_at = Column(DateTime, nullable=False, index=True)
     created_at = Column(DateTime, nullable=False, index=True)
+
+    active = Column(Boolean, nullable=False, default=False)
 
     academic_details = relationship("UserAcademicDetails")
 

@@ -1,7 +1,7 @@
 import bg from 'assets/images/nei-outline.svg';
 
 export default {
-    autoPlay: true,
+    autoPlay: false,
     // background: {
     //     color: {
     //         value: "transparent"
@@ -21,7 +21,7 @@ export default {
     },
     detectRetina: false,
     duration: 0,
-    fpsLimit: 60,
+    fpsLimit: 30,
     pauseOnBlur: true,
     interactivity: {
         detectsOn: "window",

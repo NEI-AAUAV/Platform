@@ -26,7 +26,7 @@ const Badges = {
 export default function DCard(props) {
   switch (props.type) {
     case "news":
-      return <NewsCard data={props} openModal={props.openModal} />;
+      return <NewsCard data={props.data} openModal={props.openModal} />;
     case "partner":
       return (
         <PartnerCard
@@ -41,44 +41,56 @@ export default function DCard(props) {
 }
 
 function NewsCard(props) {
-  const [isSelected, setIsSelected] = useState(false);
-  let { title, description, link, header, date, category } = props.data;
+  const formatDate = (date) => {
+    const d = new Date(date);
+    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+  };
+  const data = props.data;
+  const date = formatDate(data.created_at);
+
+
   const openModalCallback = () => props.openModal();
   return (
-    <div
-      className="tooltip tooltip-primary w-96 h-96 m-4"
+    <motion.div
+      className="tooltip tooltip-primary w-96 h-96 m-4 py-4"
       data-tip="Saber mais"
       onClick={() => {
         console.log("clicked");
         openModalCallback();
       }}
     >
-      <motion.div className="card rounded-xl w-96 h-96 bg-base-200 shadow-xl hover:-translate-y-2 transition duration-200 ease-in-out">
-        <motion.div className="h-3/5">
-          <img className="object-cover w-full" src={header} alt={title} />
-        </motion.div>
+      <motion.div className="card rounded-xl w-96 h-96 bg-base-200 shadow-xl hover:-translate-y-2 transition duration-200 ease-in-out" >
+        <motion.figure className="h-3/5"
+          layoutId={`card-${data.id}`}
+        >
+          <img className="object-cover w-full h-full" src={data.header} alt={data.title} />
+        </motion.figure>
         <div className="card-body">
-          <h2 className="card-title">{title}</h2>
+          <h2 className="card-title">{data.title}</h2>
           {
-            // if card is new show new badge
+            //if createdAt is from less then a month ago show "new"" badge"
+            data.created_at > new Date().setMonth(new Date().getMonth() - 1) && (
+              <div className="badge badge-accent">Novo</div>
+
+            )
           }
 
           <p className="text-sm text-left">{date}</p>
 
           <div className="card-actions justify-end">
             <div
-            /* className={
-                  Badges[category.toLowerCase()]
-                    ? Badges[category.toLowerCase()]
-                    : "badge badge-outline"
-                } */
+              className={
+                Badges[data.category.toLowerCase()]
+                  ? Badges[data.category.toLowerCase()]
+                  : "badge badge-outline"
+              }
             >
-              {category}
+              {data.category}
             </div>
           </div>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
 

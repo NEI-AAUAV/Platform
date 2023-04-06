@@ -8,7 +8,7 @@ from .course import Course
 
 
 class TeamBase(BaseModel):
-    name: constr(max_length=50)
+    name: Optional[constr(max_length=50)]
     course_id: int
 
 
@@ -20,7 +20,6 @@ class TeamCreate(TeamBase):
 
 @validate_to_json
 class TeamUpdate(TeamBase):
-    name: Optional[constr(max_length=50)]
     course_id: Optional[int]
 
 

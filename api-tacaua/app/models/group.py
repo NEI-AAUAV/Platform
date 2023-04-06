@@ -25,9 +25,9 @@ class Group(Base):
         nullable=False,
         index=True
     )
-    number = Column(SmallInteger)
+    number = Column(SmallInteger)   # Used to order groups
     name = Column(String(20), Computed(
-        "CASE WHEN number IS NULL THEN null ELSE 'Grupo ' || CHR(number) END"))
+        "CASE WHEN number IS NULL THEN null ELSE 'Grupo ' || CHR(number) END"))  # Computes 'Grupo A' for number '1'
 
     matches = relationship(
         "Match",

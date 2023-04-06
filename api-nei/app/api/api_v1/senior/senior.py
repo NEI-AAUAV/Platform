@@ -1,5 +1,5 @@
 import string
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -14,6 +14,7 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=List[SeniorInDB])
 def get_seniors(
     *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
 ) -> Any:
     """
     Return senior information.
@@ -30,7 +31,7 @@ def create_senior(
     """
     senior = crud.senior.get(
         db=db, year=senior_create_in.year, course=senior_create_in.course)
-    if (senior):
+    if senior:
         raise HTTPException(status_code=400, detail="Senior already exist!")
     return crud.senior.create(db=db, obj_in=senior_create_in)
 
@@ -42,31 +43,34 @@ def update_senior(
     """
     Update a senior row in the database.
     """
-    return crud.senior.update(db=db, obj_in=senior_update_in, db_obj=db.get(Senior, (year, course)))
+    return crud.senior.update(db=db, obj_in=senior_update_in, db_obj=db.get(Senior, (year, course.upper())))
 
 
 @router.get("/course", status_code=200, response_model=List[str])
 def get_senior_courses(
     *, db: Session = Depends(deps.get_db),
+        _ = Depends(deps.long_cache),
 ) -> Any:
     return crud.senior.get_course(db=db)
 
 
 @router.get("/{course}/year", status_code=200, response_model=List[int])
 def get_senior_course_years(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db), 
+    _ = Depends(deps.long_cache),
     course: str
 ) -> Any:
-    return crud.senior.get_course_year(db=db, course=course)
-
+    return crud.senior.get_course_year(db=db, course=course.upper())
 
 
 @router.get("/{course}/{year}", status_code=200, response_model=SeniorInDB)
 def get_senior_by(
     *, db: Session = Depends(deps.get_db),
+    _ = Depends(deps.long_cache),
+    response : Response,
     course: str, year: int,
 ) -> Any:
     """
     Return senior information from a specific `course` and `year`.
     """
-    return crud.senior.get_by(db=db, course=course, year=year)
+    return crud.senior.get_by(db=db, course=course.upper(), year=year)

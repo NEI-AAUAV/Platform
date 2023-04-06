@@ -18,10 +18,14 @@ export const NewsModal = (props) => {
   const mid = props.newsKey;
   return (
     <>
-      <motion.div className="fixed inset-0 bg-black/50 z-50 cursor-pointer overflow-y-scroll ">
-        <motion.div className="modal-box left-1/2 top-1/2 absolute -translate-y-1/2 -translate-x-1/2">
+      <div className="fixed inset-0 bg-black/50 z-50 cursor-pointer overflow-y-scroll ">
+
+        <motion.div className="modal-box left-1/2 top-1/2 absolute -translate-y-1/2 -translate-x-1/2 "
+          transition={{ duration: 0.5 }}
+        >
           <motion.div
             className="h-3/5"
+            layoutId={`card-${props.data.id}`}
             initial={{
               opacity: 0,
               y: 50,
@@ -31,12 +35,13 @@ export const NewsModal = (props) => {
               y: 0,
             }}
             transition={{
-              duration: 0.5,
+              duration: 0.3,
             }}
+
           >
             <img className="object-cover w-full" src={header} alt={title} />
           </motion.div>
-          <motion.div className="card-body">
+          <div className="card-body">
             <h2 className="card-title">ooga booga</h2>
             {
               // if card is new show new badge
@@ -46,9 +51,9 @@ export const NewsModal = (props) => {
             ) : (
               <p className="text-sm text-left">{date}</p>
             )}
-            <motion.div className="card-actions justify-end">
+            <div className="card-actions justify-end">
               {props.type === "news" ? (
-                <motion.div
+                <div
                   className={
                     Badges[category.toLowerCase()]
                       ? Badges[category.toLowerCase()]
@@ -56,14 +61,14 @@ export const NewsModal = (props) => {
                   }
                 >
                   {category}
-                </motion.div>
+                </div>
               ) : (
                 <></>
               )}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </motion.div>
-      </motion.div>
+      </div>
     </>
   );
 };

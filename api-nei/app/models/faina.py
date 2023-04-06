@@ -12,7 +12,7 @@ from app.db.base_class import Base
 class Faina(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     _image = Column("image", String(2048))
-    year = Column(String(7))
+    mandate = Column(String(7))
 
     members = relationship("FainaMember")
 

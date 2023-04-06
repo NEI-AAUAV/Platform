@@ -1,8 +1,8 @@
-tr:nth-child(even) { 
+tr:nth-child(even) {
   background-color: #66666666;
 }
 
 .tablecss {
   width: 100%;
   background-color: #ffffffff;
-  }
+}

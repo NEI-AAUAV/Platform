@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Security
 from sqlalchemy.orm import Session
 from typing import Any, Optional
 
 from app import crud
-from app.api import deps
+from app.api import auth, deps
 from app.core.logging import logger
 from app.schemas.group import Group, GroupCreate, GroupUpdate
 
@@ -17,7 +17,8 @@ responses = {
 @router.post("/", status_code=201, response_model=Group)
 async def create_group(
     group_in: GroupCreate,
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     return crud.group.create(db, obj_in=group_in)
 
@@ -29,7 +30,8 @@ async def create_group(
 async def update_group(
     id: int,
     group_in: GroupUpdate,
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     return crud.group.update(db, id=id, obj_in=group_in)
 
@@ -37,6 +39,7 @@ async def update_group(
 @router.delete("/{id}", status_code=200, response_model=Group,
                responses=responses)
 def remove_group(
-    id: int, db: Session = Depends(deps.get_db)
+    id: int, db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     return crud.group.remove(db, id=id)

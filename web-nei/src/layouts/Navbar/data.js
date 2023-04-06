@@ -6,11 +6,11 @@ const data = [
         dropdown: [
             {
                 name: "Calendário",
-                link: "/calendario",
+                link: "/calendar",
             },
             {
                 name: "Apontamentos",
-                link: "/apontamentos",
+                link: "/notes",
             },
             {
                 name: "Vídeos",
@@ -23,11 +23,11 @@ const data = [
         dropdown: [
             {
                 name: "Equipas",
-                link: "/equipa",
+                link: "/teams",
             },
             {
                 name: "História",
-                link: "/historia",
+                link: "/history",
             },
             {
                 name: "RGM",
@@ -48,8 +48,8 @@ const data = [
                 link: "/faina",
             },
             {
-                name: "Família",
-                link: "/familias",
+                name: "Diário do Tux",
+                link: "/tux",
             },
             {
                 name: "Código de Faina",
@@ -60,7 +60,15 @@ const data = [
     },
     !config.PRODUCTION && {
         name: "Taça UA",
-        link: "/desporto",
+        link: "/taca-ua",
+    },
+    // {
+    //   name: "Rally Tascas",
+    //   link: "/breakthebars",
+    // },
+    {
+        name: "Família",
+        link: "/family",
     },
     {
         name: "Finalistas",
@@ -70,27 +78,31 @@ const data = [
     //   name: "Estágios",
     //   link: "/estagios",
     // },
-    // {
-    //   name: "Rally Tascas",
-    //   link: "/breakthebars",
-    // },
+    !config.PRODUCTION && {
+        name: "Components",
+        link: "/components",
+    },
     {
-        name: "Outro",
-        dropdown: [
-            !config.PRODUCTION && {
-                name: "Components",
-                link: "/components",
-            },
-            {
-                name: "Test",
-                link: "/testing",
-            },
-            {
-                name: "TacauaAdminDemo",
-                link: "/tacaua-admin-demo",
-            }
-        ],
+        name: "Test",
+        link: "/testing",
+    },
+    {
+        name: "TacauaAdminDemo",
+        link: "/tacaua-admin-demo",
     }
 ];
 
-export default data;
+
+const dataCompacted = (size) => {
+    const items = [...data];
+    const otherItems = items.splice(size - 1);
+    return [
+        ...items,
+        {
+            name: "Outro",
+            dropdown: otherItems
+        },
+    ];
+}
+
+export { data, dataCompacted };
