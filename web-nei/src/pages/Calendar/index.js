@@ -5,7 +5,11 @@ import Typist from "react-typist";
 import NEICalendar from "./NEICalendar";
 
 import CheckboxDropdown from "components/CheckboxDropdown";
-import { CalendarViewMonthIcon, FilterIcon, ViewAgendaIcon } from "assets/icons/google";
+import {
+  CalendarViewMonthIcon,
+  FilterIcon,
+  ViewAgendaIcon,
+} from "assets/icons/google";
 
 import data from "./data";
 
@@ -57,7 +61,11 @@ const Calendar = () => {
           </button>
         </div>
 
-        <CheckboxDropdown className="btn-sm m-1" values={categories} onChange={setCategories}>
+        <CheckboxDropdown
+          className="btn-sm m-1"
+          values={categories}
+          onChange={setCategories}
+        >
           Filter <FilterIcon />
         </CheckboxDropdown>
       </div>

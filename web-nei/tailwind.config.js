@@ -129,6 +129,7 @@ module.exports = {
           "--ds-base-secondary": "#F2F2F2",
           // Content
           "primary-content": "#141414",
+          "base-content": "#2A2A2A",
           "secondary-content": "#666666",
           "neutral-content": "#AAAAAA",
         },
@@ -150,6 +151,7 @@ module.exports = {
           "--ds-base-secondary": "#161616",
           // Content
           "primary-content": "#FFFFFF",
+          "base-content": "#F0F0F0",
           "secondary-content": "#909090",
           "neutral-content": "#7A7A7A",
         },
