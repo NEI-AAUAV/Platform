@@ -83,10 +83,10 @@ const SportsCard = ({ modality, className }) => {
         <span className="ml-auto text-sm text-neutral-content">{type}</span>
       </div>
       <div
-        className={`relative text-blue-400 border-none h-1 ${gradient} transition-[filter] transition-duration-400`}
+        className={`relative text-blue-400 border-none brightness-75 group-hover:brightness-110 h-1 ${gradient} transition-[filter] transition-duration-400`}
       >
         <div
-          className={`absolute opacity-0 -inset-[1px] blur-lg ${gradient} group-hover:opacity-100 brightness-120 transition-opacity transition-duration-400 `}
+          className={`absolute opacity-0 -inset-[1px] blur-lg ${gradient} group-hover:opacity-100 brightness-110 transition-opacity transition-duration-400 `}
         ></div>
       </div>
 
