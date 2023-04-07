@@ -46,14 +46,14 @@ client.interceptors.response.use(function (response) {
 
 
 class TacaUAService {
-    //----Modalidade---- IMAGE??
+    //----Modalidade----
     async getModalitys(){
         return await client.get('/modality/');
     }
     async createModality(params,image){
         let data = new FormData();
         data.append('image',image,image.name);
-        data.append('modality',{params})
+        data.append('modality',params)
         return await client.post('/modality',data);
     }
     async getModalitybyId(id){
@@ -62,7 +62,7 @@ class TacaUAService {
     async updateModality(id,params,image){
         let data = new FormData();
         data.append('image',image,image.name);
-        data.append('modality',{params})
+        data.append('modality',params)
         return await client.put(`/modality/${id}`,data);
     }
     async removeModality(id){
@@ -80,17 +80,17 @@ class TacaUAService {
         return await client.delete(`/competition/${id}`);
     }
 
-    //----Equipa---- IMAGE??
+    //----Equipa----
     async createTeam(params,image){
         let data = new FormData();
         data.append('image',image,image.name);
-        data.append('team',{params})
+        data.append('team',params)
         return await client.post('/team/',data);
     }
     async updateTeam(id,params,image){
         let data = new FormData();
         data.append('image',image,image.name);
-        data.append('team',{params})
+        data.append('team',params)
         return await client.put(`/team/${id}`,data)
     }
     async removeTeam(id){
