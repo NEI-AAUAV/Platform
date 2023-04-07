@@ -38,21 +38,15 @@ const Merchandising = () => {
         {imgs}
       </div>
 
-      <Row className="text-center mx-0" style={{ position: "relative" }}>
+      <div className="flex justify-center">
         <a
           href="https://orders.winrestbooking.com/StoreMenu/Index/4968"
           target="_blank"
-          className="mx-auto"
+          className="btn btn-lg mx-auto"
         >
-          <Button
-            variant="outline-primary"
-            className="rounded-pill btn-outline-primary-force"
-            size="lg"
-          >
-            Comprar
-          </Button>
+          Comprar
         </a>
-      </Row>
+      </div>
     </div>
   );
 };
