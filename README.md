@@ -1,16 +1,21 @@
 # NEI-AAUAv Platform
 
-## Documentation
+<a class="button" href="https://nei-aauav.github.io/Platform-Documentation">
+    NEI Platform Documentation
+</a>
 
-- [Code of Conduct](docs/CODE_OF_CONDUCT.md)
-- [Developer Documentation](docs/DEVELOPER.md)
-- [Administrator Documentation](docs/ADMIN.md)
-
-## Installation
-
-- [Local Installation](docs/DEVELOPER.md#2-local-installation)
-- [Docker Installation](docs/DEVELOPER.md#3-docker-installation)
-- [Docker Deployement](docs/DEVELOPER.md#4-docker-deployment)
+<style>
+.button {
+  display: inline-block;
+  font-weight: 500;
+  padding: 0.5em 1em;
+  margin: 2em 0;
+  background-color: #0D873E;
+  color: #fff !important;
+  text-decoration: none !important;
+  border-radius: 3px;
+}
+</style>
 
 ## Contributors
 
@@ -27,7 +32,6 @@ Vogal:
 - [Lucius Vinicius](https://github.com/luciusvinicius) luciusvinicius
 - [Pedro Duarte](https://github.com/PedroDuarte536) PedroDuarte536
 </details>
-
 
 **2022 Mandate (Semester 1)**
 
