@@ -25,14 +25,19 @@ def _authenticate_user(db: Session, email: str, password: str) -> User | Literal
     **Returns**
     The User information if the login was successful otherwise False
     """
-    user = crud.user.get_by_email(db, email)
-    if user is None:
+    maybe_user = crud.user.get_by_email(db, email)
+    if maybe_user is None:
         return False
+
+    user, _ = maybe_user
+
     if not pwd_context.verify(password, user.hashed_password):
         return False
+
     if pwd_context.needs_update(user.hashed_password):
         new_hash = pwd_context.hash(password)
         crud.user.update(db, db_obj=user, obj_in={"hashed_password": new_hash})
+
     return user
 
 

@@ -24,11 +24,12 @@ from ._deps import (
 router = APIRouter()
 
 
-def _create_email_verification_token(uid: int) -> str:
+def _create_email_verification_token(uid: int, email: str) -> str:
     """Generates a verification token
 
     **Parameters**
     * `uid`: The id of the user
+    * `email`: The email the user used to register
 
     **Returns**
     The generated email verification token
@@ -40,6 +41,7 @@ def _create_email_verification_token(uid: int) -> str:
             "exp": iat + settings.CONFIRMATION_TOKEN_EXPIRE,
             # JWT requires 'sub' to be a string
             "sub": str(uid),
+            "email": email,
             "type": VERIFICATION_TOKEN_TYPE,
         },
     )
@@ -53,7 +55,7 @@ async def _send_verification_token(email: str, name: str, uid: int):
     * `name`: The name of the user
     * `uid`: The id of the user
     """
-    confirmation_token = _create_email_verification_token(uid)
+    confirmation_token = _create_email_verification_token(uid, email)
     await emailUtils.send_email_confirmation(email, name, confirmation_token)
 
 
@@ -111,11 +113,12 @@ async def register(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    user = crud.user.get_by_email(db, email)
-    if user is not None and (
+    maybe_user = crud.user.get_by_email(db, email)
+    if maybe_user is not None and (
         # Check that the user is active or the account was created less than a day ago
-        user.active
-        or (datetime.utcnow() - user.created_at) < settings.CONFIRMATION_TOKEN_EXPIRE
+        maybe_user[1].active
+        or (datetime.utcnow() - maybe_user[0].created_at)
+        < settings.CONFIRMATION_TOKEN_EXPIRE
     ):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -123,17 +126,17 @@ async def register(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    if user is not None:
+    if maybe_user is not None:
         # If the user existed make sure it's properly deleted, this will also
         # make sure that other tables referencing this user are also scrubed
         # like for example the logins table.
-        crud.user.remove(db, id=user.id)
+        crud.user.remove(db, id=maybe_user[0].id)
+
     create_user = UserCreate(
         **form_data.dict(),
-        active=not settings.EMAIL_ENABLED,
         hashed_password=hash_password(form_data.password.get_secret_value()),
     )
-    user = crud.user.create(db, obj_in=create_user)
+    user = crud.user.create(db, obj_in=create_user, email=email)
 
     if settings.EMAIL_ENABLED:
         # Schedule to send the email with confirmation link

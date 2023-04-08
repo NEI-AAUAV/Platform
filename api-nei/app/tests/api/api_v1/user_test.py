@@ -13,42 +13,39 @@ from app.tests.conftest import SessionTesting
 USERS = [
     {
         "id": 2,
-        "name": 'Ze Pistolas',
-        "surname": 'Pistolas',
-        "email": 'zpp@ua.pt',
-        "iupi": 'x1x1',
-        "curriculum": 'ze_cv',
-        "linkedin": 'ze_linkedin',
-        "github": 'ze_git',
-        "scopes": ['ADMIN'],
+        "name": "Ze Pistolas",
+        "surname": "Pistolas",
+        "iupi": "x1x1",
+        "curriculum": "ze_cv",
+        "linkedin": "ze_linkedin",
+        "github": "ze_git",
+        "scopes": ["ADMIN"],
         "created_at": datetime(2022, 8, 4),
-        "updated_at": datetime(2022, 8, 5)
+        "updated_at": datetime(2022, 8, 5),
     },
     {
         "id": 3,
         "name": "Francisco",
         "surname": "Abrantes",
-        "email": "fma@ua.pt",
-        "iupi": 'x2x2',
-        "curriculum": 'francisco_cv',
-        "linkedin": 'francisco_linkedin',
-        "github": 'francisco_git',
+        "iupi": "x2x2",
+        "curriculum": "francisco_cv",
+        "linkedin": "francisco_linkedin",
+        "github": "francisco_git",
         "scopes": [],
         "created_at": datetime(2022, 8, 4),
-        "updated_at": datetime(2022, 8, 5)
-    }
+        "updated_at": datetime(2022, 8, 5),
+    },
 ]
 
 user = {
     "name": "nome alterado",
     "surname": "string",
-    "email": "string",
     "iupi": "string",
     "curriculum": "string",
     "linkedin": "string",
     "github": "string",
     "scopes": [],
-    "created_at": "2022-10-02T21:31:48.217Z"
+    "created_at": "2022-10-02T21:31:48.217Z",
 }
 
 
@@ -111,7 +108,8 @@ def test_update_user(client: TestClient) -> None:
 def test_update_inexistent_user(client: TestClient) -> None:
     inexistent_user_id = 0
     r = client.put(
-        f"{settings.API_V1_STR}/user/{inexistent_user_id}", json={'name': 'Teste'})
+        f"{settings.API_V1_STR}/user/{inexistent_user_id}", json={"name": "Teste"}
+    )
     data = r.json()
     print(data)
     assert r.status_code == 404
