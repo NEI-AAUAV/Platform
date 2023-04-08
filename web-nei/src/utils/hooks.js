@@ -107,7 +107,6 @@ export const useLoading = (value) => {
     if (loading === null) {
       return;
     }
-    console.log('use', remainingTime.current)
     let timeoutId = setTimeout(() => {
       setDeferLoading(loading);
       setLoading(null);
@@ -120,7 +119,6 @@ export const useLoading = (value) => {
 
   function setLoadingWithDelay(value, delay = 0) {
     remainingTime.current = Math.max(0, delay - (Date.now() - startTime));
-    console.log('set', delay, remainingTime.current)
     startTime = Date.now();
     setLoading(value);
   }

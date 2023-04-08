@@ -1,0 +1,181 @@
+.Popover:after,
+.Popover:before {
+  content: "";
+  display: inline-block;
+  left: 50%;
+  position: absolute;
+}
+
+.Popover:before {
+  border: 8px solid #0000;
+  border-bottom: 8px solid hsl(var(--bc) / .1);
+  margin-left: -9px;
+  top: -16px;
+}
+
+.Popover:after {
+  border: 7px solid #0000;
+  border-bottom: 7px solid hsl(var(--b3));
+  margin-left: -8px;
+  top: -14px;
+}
+
+.Popover--bottom-left:after,
+.Popover--bottom-left:before,
+.Popover--bottom-right:after,
+.Popover--bottom-right:before,
+.Popover--bottom:after,
+.Popover--bottom:before {
+  border-bottom-color: #0000;
+  top: auto;
+}
+
+.Popover--bottom-left:before,
+.Popover--bottom-right:before,
+.Popover--bottom:before {
+  border-top-color: hsl(var(--bc) / .1);
+  bottom: -16px;
+}
+
+.Popover--bottom-left:after,
+.Popover--bottom-right:after,
+.Popover--bottom:after {
+  border-top-color: hsl(var(--b3));
+  bottom: -14px;
+}
+
+.Popover--bottom-right,
+.Popover--top-right {
+  margin-right: 0;
+  right: -9px;
+}
+
+.Popover--bottom-right:after,
+.Popover--bottom-right:before,
+.Popover--top-right:after,
+.Popover--top-right:before {
+  left: auto;
+  margin-left: 0;
+}
+
+.Popover--bottom-right:before,
+.Popover--top-right:before {
+  right: 20px;
+}
+
+.Popover--bottom-right:after,
+.Popover--top-right:after {
+  right: 21px;
+}
+
+.Popover--bottom-left,
+.Popover--top-left {
+  left: -9px;
+  margin-left: 0;
+}
+
+.Popover--bottom-left,
+.Popover--bottom-right {
+  bottom: 100%;
+}
+
+.Popover--bottom-left:before,
+.Popover--top-left:before {
+  left: 24px;
+  margin-left: 0;
+}
+
+.Popover--bottom-left:after,
+.Popover--top-left:after {
+  left: 25px;
+  margin-left: 0;
+}
+
+/* 
+.Popover--left-bottom:after,
+.Popover--left-bottom:before,
+.Popover--left-top:after,
+.Popover--left-top:before,
+.Popover--left:after,
+.Popover--left:before,
+.Popover--right-bottom:after,
+.Popover--right-bottom:before,
+.Popover--right-top:after,
+.Popover--right-top:before,
+.Popover--right:after,
+.Popover--right:before {
+  border-bottom-color: #0000;
+  left: auto;
+  margin-left: 0;
+  top: 50%;
+}
+
+.Popover--left-bottom:before,
+.Popover--left-top:before,
+.Popover--left:before,
+.Popover--right-bottom:before,
+.Popover--right-top:before,
+.Popover--right:before {
+  margin-top: -9px;
+}
+
+.Popover--left-bottom:after,
+.Popover--left-top:after,
+.Popover--left:after,
+.Popover--right-bottom:after,
+.Popover--right-top:after,
+.Popover--right:after {
+  margin-top: -8px;
+}
+
+.Popover--right-bottom:before,
+.Popover--right-top:before,
+.Popover--right:before {
+  border-left-color: hsl(var(--bc) / .1);
+  right: -16px;
+}
+
+.Popover--right-bottom:after,
+.Popover--right-top:after,
+.Popover--right:after {
+  border-left-color: hsl(var(--b3));
+  right: -14px;
+}
+
+.Popover--left-bottom:before,
+.Popover--left-top:before,
+.Popover--left:before {
+  border-right-color: hsl(var(--bc) / .1);
+  left: -16px;
+}
+
+.Popover--left-bottom:after,
+.Popover--left-top:after,
+.Popover--left:after {
+  border-right-color: hsl(var(--b3));
+  left: -14px;
+}
+
+.Popover--left-top:after,
+.Popover--left-top:before,
+.Popover--right-top:after,
+.Popover--right-top:before {
+  top: 24px;
+}
+
+.Popover--left-bottom:after,
+.Popover--left-bottom:before,
+.Popover--right-bottom:after,
+.Popover--right-bottom:before {
+  top: auto;
+}
+
+.Popover--left-bottom:before,
+.Popover--right-bottom:before {
+  bottom: 16px;
+}
+
+.Popover--left-bottom:after,
+.Popover--right-bottom:after {
+  bottom: 17px;
+} */

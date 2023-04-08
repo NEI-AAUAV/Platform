@@ -12,48 +12,42 @@ import service from "services/GoogleCalendarService";
 import data from "./data";
 import { getWeeklyIntervals } from "./utils";
 
+import { EventDialog } from "components/Dialog";
+
+import { LayoutGroup } from "framer-motion";
+
 const selection = ["[1A]", "2A", "[NEI]", "3A"];
 
 const Calendar = () => {
   const windowSize = useWindowSize();
   const [month, setMonth] = useState(3);
   const [year, setYear] = useState(2023);
-  const [numOfDays, setNumOfDays] = useState([]);
-  const [blankDays, setBlankDays] = useState([]);
-
-  const [calendarSince, setCalendarSince] = useState(null);
-  const [calendarTo, setCalendarTo] = useState(null);
 
   const [dayEvents, setDayEvents] = useState([]);
+  const [selEvent, setSelEvent] = useState(null);
 
   const [event, setEvent] = useState({ title: "", date: "", theme: "blue" });
-
-  const themes = [
-    { value: "blue", label: "Blue Theme" },
-    { value: "red", label: "Red Theme" },
-    { value: "yellow", label: "Yellow Theme" },
-    { value: "green", label: "Green Theme" },
-    { value: "purple", label: "Purple Theme" },
-  ];
-
   const [openEventModal, setOpenEventModal] = useState(false);
 
   // On render, initialize calendarSince and calendarTo based on current moment
   // Also initialize categories
   useEffect(() => {
+    setDayEvents([]);
     initDate();
     initDayEvents();
-    timespanChanged(new Date());
+    // timespanChanged(new Date());
   }, []);
 
   useEffect(() => {
-    if (calendarSince === null || calendarTo === null) {
-      return;
-    }
-
+    console.log(month);
     initDayEvents();
-    fetchEvents();
-  }, [calendarSince, calendarTo, month, year]);
+  }, [month, year]);
+
+  useEffect(() => {
+    if (Object.keys(dayEvents).length > 0) {
+      fetchEvents();
+    }
+  }, [dayEvents]);
 
   // On navigate, update next and prev moments and recall API
   function timespanChanged(date) {
@@ -73,8 +67,8 @@ const Calendar = () => {
       prev.setMonth(date.getMonth() - 1);
     }
 
-    setCalendarSince(prev);
-    setCalendarTo(next);
+    // setCalendarSince(prev);
+    // setCalendarTo(next);
   }
 
   function initDate() {
@@ -87,7 +81,7 @@ const Calendar = () => {
   function isToday(date) {
     const today = new Date();
 
-    return today.toLocaleDateString('en-US') === date;
+    return today.toLocaleDateString("en-US") === date;
   }
 
   function showEventModal(date) {
@@ -105,7 +99,7 @@ const Calendar = () => {
     setOpenEventModal(false);
   }
 
-  const initDayEvents = useCallback(() => {
+  const initDayEvents = useCallback(async () => {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const firstMonthDay = new Date(year, month, 1).getDay();
     const lastMonthDay = new Date(year, month + 1, 0).getDay();
@@ -118,12 +112,20 @@ const Calendar = () => {
       day++
     ) {
       const date = new Date(year, month, day);
-      dayEvents[date.toLocaleDateString('en-US')] = [];
+      dayEvents[date.toLocaleDateString("en-US")] = [];
     }
+    console.log(dayEvents);
     setDayEvents(dayEvents);
   }, [year, month]);
 
   const fetchEvents = () => {
+    // pode have eventos de 2 meses e apanhar 1 diazito
+
+    const calendarSince = new Date(Object.keys(dayEvents).at(0)),
+      calendarTo = new Date(Object.keys(dayEvents).at(-1));
+
+    console.log(Object.keys(dayEvents).at(0), calendarSince, calendarTo);
+
     const timeMin =
       `${calendarSince.getFullYear()}-` +
       `${calendarSince.getMonth() + 1}-` +
@@ -132,6 +134,8 @@ const Calendar = () => {
       `${calendarTo.getFullYear()}-` +
       `${calendarTo.getMonth() + 1}-` +
       `${calendarTo.getDate()}T00:00:00+01:00`;
+
+    console.log(timeMin, timeMax);
 
     service.getEvents({ timeMin, timeMax }).then(({ data }) => {
       let events = [];
@@ -177,15 +181,21 @@ const Calendar = () => {
           }))
         );
       });
-      events.sort((a, b) => a.start - b.start);
 
+      // Assign events to a day slot in a way that they don't overlap
+      // and fit the free slots efficiently
+      events.sort((a, b) => a.start - b.start);
       for (const e of events) {
-        if (e.start.toLocaleDateString('en-US') in dayEvents) {
-          dayEvents[e.start.toLocaleDateString('en-US')].push(e);
+        if (e.start.toLocaleDateString("en-US") in dayEvents) {
+          const arr = dayEvents[e.start.toLocaleDateString("en-US")];
+          // Find first free slot
+          const index = [...arr, undefined].findIndex((e) => e === undefined);
+          arr[index] = e;
           for (let i = 1; i < e.duration; i++) {
             const date = new Date(e.start);
             date.setDate(date.getDate() + i);
-            dayEvents[date.toLocaleDateString('en-US')].push(null);
+            // Occupy the next slots adjacent
+            dayEvents[date.toLocaleDateString("en-US")][index] = null;
           }
         }
       }
@@ -216,7 +226,7 @@ const Calendar = () => {
     <div>
       <div className="container mx-auto mt-4">
         <div className="overflow-hidden rounded-lg bg-base-200 shadow">
-          <div className="flex items-center justify-between py-2 px-6">
+          <div className="flex items-center justify-between px-6 py-2">
             <div>
               <span className="text-lg font-bold text-base-content">
                 {data.months[month]}
@@ -249,57 +259,78 @@ const Calendar = () => {
             </div>
           </div>
 
-          <div className="-mx-1 -mb-1">
-            <div className="flex flex-wrap">
+          <div className="-mx-px -mb-px">
+            <div className="grid grid-cols-7">
               {data.weekDays.map((day, index) => (
-                <div className="w-1/7 py-2" key={index}>
+                <div className="py-2" key={index}>
                   <div className="text-center text-sm font-bold uppercase tracking-wide text-gray-600">
                     {windowSize.width < 768 ? day[0] : day}
                   </div>
                 </div>
               ))}
             </div>
-
-            <div className="flex flex-wrap border-t border-l">
+            <div className="grid grid-cols-7 border-l border-t border-base-content/10">
               {Object.entries(dayEvents).map(([day, events], index) => (
                 <Fragment key={index}>
-                  <div
-                    style={{ height: "120px" }}
-                    className="relative w-1/7 border-r border-b pt-2 text-center md:px-2 md:text-left"
-                  >
-                    {
-                      events.map((event, index) => {
-                        if (event) {
-                          return (
-                            <div
-                              key={index}
-                              className="absolute table rounded left-0 h-[24px] z-10 bg-red-200 hover:bg-red-600"
-                              style={{top: 40 + index * 28 + 'px', width: event.duration * 100 - 5 + '%'}}
-                            >
-                              <p className="text-sm pl-1 table-cell align-middle">{event.title}</p>
-                            </div>
-                          );
-                        }
-                      })
-                    }
-
+                  <div className="min-h-[120px] border-b border-r border-base-content/10">
                     <div
                       onClick={() => showEventModal(day)}
                       className={classNames(
-                        "inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-full leading-none transition duration-100 ease-in-out",
+                        "m-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-full leading-none transition duration-100 ease-in-out",
                         {
                           "bg-blue-500 text-white": isToday(day),
                           "hover:bg-blue-200": !isToday(day),
+                          "text-base-content/50":
+                            new Date(day).getMonth() !== month,
                         }
                       )}
                     >
                       {new Date(day).getDate()}
                     </div>
-                    <div
+                    <div className="">
+                      {[...events].map((event, index) => {
+                        const selected = !!event && event.id === selEvent?.id;
+                        return (
+                          <Fragment key={index}>
+                            <EventDialog
+                              event={event}
+                              className="w-full"
+                              layoutId="event-dialog"
+                              onShowChange={(show) =>
+                                !show && setSelEvent(null)
+                              }
+                            >
+                              <div
+                                className={classNames(
+                                  "relative left-0 z-10 mb-2 cursor-pointer rounded bg-red-500/70 font-medium text-white hover:bg-red-500/80",
+                                  { invisible: !event },
+                                  {
+                                    "!bg-red-500 shadow-md": selected,
+                                  }
+                                )}
+                                style={{
+                                  width: `calc(${event?.duration * 100}% + ${
+                                    event?.duration - 1
+                                  }px - 0.4rem)`,
+                                  marginLeft: "0.2rem",
+                                }}
+                                onClick={() => setSelEvent(event)}
+                              >
+                                <p className="h-[24px] overflow-hidden truncate text-clip px-1 text-xs !leading-[24px] sm:text-sm">
+                                  {event?.title}
+                                </p>
+                              </div>
+                            </EventDialog>
+                          </Fragment>
+                        );
+                      })}
+                    </div>
+                    {/* <div
                       style={{ height: "80px" }}
                       className="mt-1 overflow-y-auto"
                     >
-                      {/* {events
+                      
+                      {events
                         .filter(
                           (e) =>
                             new Date(e.date).toLocaleDateString() ===
@@ -316,8 +347,8 @@ const Calendar = () => {
                               {event.title}
                             </p>
                           </div>
-                        ))} */}
-                    </div>
+                        ))} 
+                    </div>*/}
                   </div>
                 </Fragment>
               ))}
@@ -329,7 +360,7 @@ const Calendar = () => {
       {/* Modal */}
       <div
         style={{ backgroundColor: "rgba(0, 0, 0, 0.8)", display: "none" }}
-        className="fixed top-0 right-0 left-0 bottom-0 z-40 h-full w-full"
+        className="fixed bottom-0 left-0 right-0 top-0 z-40 h-full w-full"
       >
         {" "}
         {/*x-show.transition.opacity="openEventModal"*/}
@@ -357,7 +388,7 @@ const Calendar = () => {
                 Event title
               </label>
               <input
-                className="w-full appearance-none rounded-lg border-2 border-gray-200 bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-blue-500 focus:bg-white focus:outline-none"
+                className="w-full appearance-none rounded-lg border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-blue-500 focus:bg-white focus:outline-none"
                 type="text"
                 value={event.title}
                 onChange={(e) => setEvent({ ...event, title: e.target.value })}
@@ -369,7 +400,7 @@ const Calendar = () => {
                 Event date
               </label>
               <input
-                className="w-full appearance-none rounded-lg border-2 border-gray-200 bg-gray-200 py-2 px-4 leading-tight text-gray-700 focus:border-blue-500 focus:bg-white focus:outline-none"
+                className="w-full appearance-none rounded-lg border-2 border-gray-200 bg-gray-200 px-4 py-2 leading-tight text-gray-700 focus:border-blue-500 focus:bg-white focus:outline-none"
                 type="text"
                 value={event.date}
                 readOnly
@@ -388,7 +419,7 @@ const Calendar = () => {
                   value={event.theme}
                   className="block w-full appearance-none rounded-lg border-2 border-gray-200 bg-gray-200 px-4 py-2 pr-8 leading-tight text-gray-700 hover:border-gray-500 focus:border-blue-500 focus:bg-white focus:outline-none"
                 >
-                  {themes.map((theme, index) => (
+                  {[1, 2].map((theme, index) => (
                     <option key={index} value={theme.value}>
                       {theme.label}
                     </option>
@@ -409,14 +440,14 @@ const Calendar = () => {
             <div className="mt-8 text-right">
               <button
                 type="button"
-                className="mr-2 rounded-lg border border-gray-300 bg-white py-2 px-4 font-semibold text-gray-700 shadow-sm hover:bg-gray-100"
+                className="mr-2 rounded-lg border border-gray-300 bg-white px-4 py-2 font-semibold text-gray-700 shadow-sm hover:bg-gray-100"
                 onClick={() => setOpenEventModal(!openEventModal)}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="rounded-lg border border-gray-700 bg-gray-800 py-2 px-4 font-semibold text-white shadow-sm hover:bg-gray-700"
+                className="rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 font-semibold text-white shadow-sm hover:bg-gray-700"
                 onClick={addEvent}
               >
                 Save Event

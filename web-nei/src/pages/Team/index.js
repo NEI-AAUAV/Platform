@@ -49,7 +49,7 @@ const Team = () => {
             b?.weight - a?.weight || a?.name?.localeCompare(b?.name)
         );
         setTeam([
-          { members: members.slice(0, 2), title: "Direção" },
+          { members: members.slice(0, 2), title: "Coordenação" },
           { members: members.slice(2, -3), title: "Vogais" },
           { members: members.slice(-3), title: "Mesa da RGM" },
         ]);

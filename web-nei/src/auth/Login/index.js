@@ -177,6 +177,7 @@ const Login = ({ onRedirect }) => {
             placeholder="Email"
             type="email"
             ref={emailRef}
+            required
           />
           <label className="label">
             <span className="label-text">Palavra-passe</span>
@@ -187,6 +188,7 @@ const Login = ({ onRedirect }) => {
             placeholder="Palavra-passe"
             type="password"
             ref={passwordRef}
+            required
           />
           <Link to={"/auth/forgot"} className="label link-primary link text-sm">
             Esqueceste-te da tua password?

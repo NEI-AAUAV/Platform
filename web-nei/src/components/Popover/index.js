@@ -2,12 +2,14 @@ import { GithubIcon, LinkedinIcon } from "assets/icons/social";
 import { PersonPinIcon } from "assets/icons/google";
 import { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
+import { useWindowSize } from "utils/hooks";
 
 import "./index.css";
 
-const UserCard = ({ user }) => {
+export const UserPopover = ({ user, ...popoverProps }) => {
   const [loading, setLoading] = useState(false);
-  user = {
+
+  user = user || {
     name: "Leandro",
     surname: "Silva",
     course: "Mestrado em Engenharia Informática",
@@ -21,7 +23,7 @@ const UserCard = ({ user }) => {
     setTimeout(() => setLoading(false), 3000);
   }
 
-  return (
+  const User = () => (
     <div className="flex items-start gap-4">
       <div className="mask mask-circle w-16 shrink-0">
         <img
@@ -75,20 +77,33 @@ const UserCard = ({ user }) => {
       </div>
     </div>
   );
+
+  return <Popover {...popoverProps} popover={<User user={user} />} />;
 };
 
-const UserTooltip = ({ user, className, children }) => {
-  const [hidden, setHidden] = useState(true);
-  const [tooptipPos, setTooltipPos] = useState("top-right");
+/**
+ * A popover to display additional information when hovering a component.
+ *
+ * @param {ReactNode} popover - the content of the popover
+ * @param {ReactNode} children - the component that triggers the popover on hover
+ * @param {string} className - the class name of the popover
+ */
+const Popover = ({ popover, children, className }) => {
+  const [visible, setVisible] = useState(false);
+  const [popoverPos, setPopoverPos] = useState("top-right");
 
   const childrenRef = useRef(null);
 
-  useEffect(() => {
-    if (hidden) return;
-    setTooltipPos(findBestTooltipPosition());
-  }, [hidden]);
+  const windowSize = useWindowSize();
 
-  function findBestTooltipPosition() {
+  useEffect(() => {
+    if (!visible) {
+      return;
+    }
+    setPopoverPos(findBestPopoverPosition());
+  }, [visible]);
+
+  function findBestPopoverPosition() {
     if (!childrenRef.current) return "top-right";
 
     const { top, bottom, left, right } =
@@ -108,29 +123,35 @@ const UserTooltip = ({ user, className, children }) => {
   }
 
   return (
+    <div
+      className={`relative w-fit ${className}`}
+      onFocus={() => setVisible(true)}
+      onMouseOver={() => setVisible(true)}
+      onMouseOut={() => setVisible(false)}
+    >
       <div
+        ref={childrenRef}
         tabIndex="0"
         role="link"
-        className={`relative w-fit ${className}`}
-        onMouseOver={() => setHidden(false)}
-        onFocus={() => setHidden(false)}
-        onMouseOut={() => setHidden(true)}
+        className="sm:cursor-pointer"
       >
-        <div ref={childrenRef} className="sm:cursor-pointer">
-          {children}
-        </div>
+        {children}
+      </div>
+      {visible && (
         <div
-          role="tooltip"
+          role="popover"
           className={classNames(
-            "UserTooltip rounded-lg invisible absolute z-50 w-80 border border-base-300 bg-base-200 p-4 shadow transition duration-150 ease-in-out sm:!visible",
-            `UserTooltip--${tooptipPos}`,
-            hidden && "hidden"
+            "invisible absolute z-50 min-w-[320px] rounded-lg border border-base-content/10 bg-base-300 p-4 sm:visible",
+            windowSize.width >= 640
+              ? `Popover Popover--${popoverPos}`
+              : "left-1/2 right-1/2 top-10 -translate-x-1/2"
           )}
         >
-          <UserCard />
+          {popover}
         </div>
-      </div>
+      )}
+    </div>
   );
 };
 
-export default UserTooltip;
+export default Popover;
