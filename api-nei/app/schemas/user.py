@@ -31,20 +31,20 @@ class UserBase(BaseModel):
     github: Optional[constr(max_length=39)]
 
 
-@include(['created_at', 'updated_at'])
+@include(["created_at", "updated_at"])
 class UserCreate(UserBase):
     """Properties to add to the database on create."""
-    email: str
+
     hashed_password: Optional[str]
     scopes: List[ScopeEnum] = []
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
-    active: bool = Field(default=False)
 
 
-@include(['updated_at'])
+@include(["updated_at"])
 class UserUpdate(UserBase):
     """Properties to receive via API on create."""
+
     name: Optional[constr(max_length=20)]
     surname: Optional[constr(max_length=20)]
     updated_at: datetime = Field(default_factory=datetime.now)
@@ -52,8 +52,8 @@ class UserUpdate(UserBase):
 
 class UserInDB(UserBase):
     """Properties properties stored in DB."""
+
     id: int
-    email: str
     iupi: Optional[constr(max_length=36)]
     nmec: Optional[int]
     image: Optional[AnyHttpUrl]
@@ -62,7 +62,6 @@ class UserInDB(UserBase):
     updated_at: datetime
     scopes: List[ScopeEnum] = []
     academic_details: List[UserAcademicDetailsInBD]
-    active: bool
 
     class Config:
         orm_mode = True

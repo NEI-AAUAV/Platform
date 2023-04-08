@@ -96,6 +96,7 @@ async def verify(
         # Extract all needed fields inside a `try` in case a token
         # has a bad payload.
         user_id = int(payload["sub"])
+        email = payload["email"]
         token_type = payload["type"]
     except (JWTError, ValueError, KeyError):
         raise credentials_exception
@@ -108,7 +109,7 @@ async def verify(
     if user is None:
         raise credentials_exception
 
-    crud.user.update(db, db_obj=user, obj_in={"active": True})
+    crud.user.activate_email(db, user=user, email=email)
 
     return OperationSuccessfulResponse(
         status="success", message="Account verified successfully"
