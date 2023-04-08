@@ -1,21 +1,6 @@
 # NEI-AAUAv Platform
 
-<a class="button" href="https://nei-aauav.github.io/Platform-Documentation">
-    NEI Platform Documentation
-</a>
-
-<style>
-.button {
-  display: inline-block;
-  font-weight: 500;
-  padding: 0.5em 1em;
-  margin: 2em 0;
-  background-color: #0D873E;
-  color: #fff !important;
-  text-decoration: none !important;
-  border-radius: 3px;
-}
-</style>
+**[NEI Platform Documentation](https://nei-aauav.github.io/Platform-Documentation)**
 
 ## Contributors
 
