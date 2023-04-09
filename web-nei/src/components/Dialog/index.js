@@ -6,7 +6,7 @@ import { useWindowSize } from "utils/hooks";
 
 import { motion } from "framer-motion";
 
-import { CloseIcon } from "assets/icons/google";
+import { EventIcon, CloseIcon } from "assets/icons/google";
 
 import "./index.css";
 
@@ -36,30 +36,59 @@ export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
     }
   }
 
-  event = event || {
-    name: "Leandro",
-    surname: "Silva",
-    course: "Mestrado em Engenharia Informática",
-    curricular_year: 3,
-    github: "https://github/leand12",
-    linkedin: "https://github/leand12",
-  };
+  function formatDateRange(start, end) {
+    const startMonthYear = start.toLocaleString("pt-PT", {
+      month: "long",
+      year: "numeric",
+    });
+    const endMonthYear = end.toLocaleString("pt-PT", {
+      month: "long",
+      year: "numeric",
+    });
+    const startDay = start.getDate();
+    const endDay = end.getDate();
+
+    return startMonthYear !== endMonthYear
+      ? `${startDay} de ${startMonthYear} – ${endDay} de ${endMonthYear}`
+      : startDay !== endDay
+      ? `${startDay} – ${endDay} de ${startMonthYear}`
+      : `${startDay} de ${startMonthYear}`;
+  }
 
   const Event = () => (
-    <div>
-      <div className="btn btn-circle btn-ghost" onClick={() => handleVisible(false)}> <CloseIcon /> </div>
+    <>
+      <div className="flex items-start gap-3">
+        <div
+          className="mr-1 rounded-full p-1 text-base-300"
+          style={{ background: `hsl(${event.category?.color})` }}
+        >
+          <EventIcon />
+        </div>
+        <h5 className="font-medium">{event.category?.name}</h5>
 
-      <h5>{event.title}</h5>
-      <p className="mt-1 text-sm">
-        {event.start?.toLocaleDateString("pt-PT")}
-        {" - "}
-        {event.end?.toLocaleDateString("pt-PT")}
+        <div className="ml-auto gap-3">
+          <div
+            className="btn-ghost btn-sm btn-circle btn"
+            onClick={() => handleVisible(false)}
+          >
+            <CloseIcon />
+          </div>
+        </div>
+      </div>
+      <h4 className="mt-2 font-semibold">{event.title}</h4>
+      <p className="mt-2 opacity-80 sm:whitespace-nowrap">
+        {formatDateRange(event.start, event.end)}
       </p>
-    </div>
+    </>
   );
 
   return (
-    <Dialog {...dialogProps} dialog={<Event />} show={visible} onShowChange={handleVisible} />
+    <Dialog
+      {...dialogProps}
+      dialog={<Event />}
+      show={visible}
+      onShowChange={handleVisible}
+    />
   );
 };
 
@@ -73,7 +102,14 @@ export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
  * @param {boolean} [show] - used to control the dialog visibility outside
  * @param {function} [onShowChange] - used to propagate visible state outside
  */
-const Dialog = ({ dialog, children, className, layoutId, show, onShowChange }) => {
+const Dialog = ({
+  dialog,
+  children,
+  className,
+  layoutId,
+  show,
+  onShowChange,
+}) => {
   // NOTE: calling setVisible will result in a loop, call handleVisible instead
   const [visible, setVisible] = useState(show || false);
   const controlled = show !== undefined && onShowChange !== undefined;
@@ -178,7 +214,7 @@ const Dialog = ({ dialog, children, className, layoutId, show, onShowChange }) =
           ref={dialogRef}
           role="dialog"
           className={classNames(
-            "absolute z-50 min-w-[320px] rounded-lg border border-base-content/10 bg-base-300 p-4",
+            "absolute z-50 min-w-[320px] rounded-lg border border-base-content/10 bg-base-300 p-4 shadow-md",
             windowSize.width >= 640
               ? `Dialog Dialog--${dialogPos}`
               : "left-1/2 right-1/2 top-10 -translate-x-1/2"

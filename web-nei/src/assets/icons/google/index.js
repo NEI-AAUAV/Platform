@@ -4,6 +4,7 @@ export { ReactComponent as CalendarViewMonthIcon} from "./calendar-view-month.sv
 export { ReactComponent as CloseIcon } from "./close.svg";
 export { ReactComponent as DarkModeIcon } from "./dark-mode.svg";
 export { ReactComponent as DownloadIcon } from "./download.svg";
+export { ReactComponent as EventIcon } from "./event.svg";
 export { ReactComponent as ExpandLessIcon } from "./expand-less.svg";
 export { ReactComponent as ExpandMoreIcon } from "./expand-more.svg";
 export { ReactComponent as FainaFamilyIcon } from "./faina-family.svg";

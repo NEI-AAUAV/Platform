@@ -21,8 +21,8 @@ export function getWeeklyIntervals(startDate, endDate) {
     const intervalEnd = new Date(intervalStart);
     intervalEnd.setDate(intervalEnd.getDate() + 6);
     intervals.push({
-      start: i === 0 ? startDate : intervalStart,
-      end: i === weeks - 1 ? endDate : intervalEnd,
+      weekStart: i === 0 ? startDate : intervalStart,
+      weekEnd: i === weeks - 1 ? endDate : intervalEnd,
     });
   }
 

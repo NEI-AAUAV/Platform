@@ -23,13 +23,13 @@ import {
 } from "assets/icons/google";
 import { GithubIcon, GoogleDriveIcon } from "assets/icons/social";
 
-const VIEWS = {
+const Views = {
   GRID: 1,
   LIST: 2,
 };
 
 const Notes = () => {
-  const [view, setView] = useState(VIEWS.GRID);
+  const [view, setView] = useState(Views.GRID);
   const [categories, setCategories] = useState(
     Object.values(data.categories).map((c) => ({ ...c, checked: true }))
   );
@@ -396,29 +396,29 @@ const Notes = () => {
             <button
               className={classNames(
                 "btn-sm btn gap-2 border-none bg-accent py-1",
-                view === VIEWS.GRID
+                view === Views.GRID
                   ? "no-animation shadow hover:bg-accent"
                   : "bg-transparent hover:bg-base-300 hover:opacity-75"
               )}
-              onClick={() => setView(VIEWS.GRID)}
+              onClick={() => setView(Views.GRID)}
             >
               <GridViewIcon />
             </button>
             <button
               className={classNames(
                 "btn-sm btn gap-2 border-none bg-accent py-1",
-                view === VIEWS.LIST
+                view === Views.LIST
                   ? "no-animation shadow hover:bg-accent"
                   : "bg-transparent hover:bg-base-300 hover:opacity-75"
               )}
-              onClick={() => setView(VIEWS.LIST)}
+              onClick={() => setView(Views.LIST)}
             >
               <ViewListIcon />
             </button>
           </div>
 
           <div>
-            {view === VIEWS.GRID && (
+            {view === Views.GRID && (
               <div className="flex">
                 {loading ? (
                   <Spinner
@@ -441,7 +441,7 @@ const Notes = () => {
                 )}
               </div>
             )}
-            {view === VIEWS.LIST && (
+            {view === Views.LIST && (
               <div className="flex flex-col">
                 {!!loading ? (
                   <Spinner
