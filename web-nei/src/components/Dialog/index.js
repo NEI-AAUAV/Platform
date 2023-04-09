@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import classNames from "classnames";
 import { useWindowSize } from "utils/hooks";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { EventIcon, CloseIcon } from "assets/icons/google";
 
@@ -208,21 +208,26 @@ const Dialog = ({
       >
         {children}
       </div>
-      {visible && (
-        <motion.div
-          layoutId={layoutId}
-          ref={dialogRef}
-          role="dialog"
-          className={classNames(
-            "absolute z-50 min-w-[320px] rounded-lg border border-base-content/10 bg-base-300 p-4 shadow-md",
-            windowSize.width >= 640
-              ? `Dialog Dialog--${dialogPos}`
-              : "left-1/2 right-1/2 top-10 -translate-x-1/2"
-          )}
-        >
-          {dialog}
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {visible && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            layoutId={layoutId}
+            ref={dialogRef}
+            role="dialog"
+            className={classNames(
+              "absolute z-50 min-w-[320px] rounded-lg border border-base-content/10 bg-base-300 p-4 shadow-md",
+              windowSize.width >= 640
+                ? `Dialog Dialog--${dialogPos}`
+                : "left-1/2 right-1/2 top-10 -translate-x-1/2"
+            )}
+          >
+            {dialog}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
