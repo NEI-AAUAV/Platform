@@ -1,3 +1,19 @@
+/**
+ * Function to convert a Date object to a key string in the format `MM/DD/YYYY`.
+ */
+export function dateKey(year, month = 0, day = 1) {
+  let date;
+  if (arguments.length === 1 && year instanceof Date) {
+    // Process Date object
+    date = year;
+  } else if ([year, month, day].every(Number.isInteger)) {
+    // Construct a Date object from the year, month, and day arguments
+    date = new Date(year, month, day);
+  } else {
+    throw new Error("Invalid arguments");
+  }
+  return date.toLocaleDateString("en-US");
+}
 
 export function getWeeklyIntervals(startDate, endDate) {
   // Set the start date to the Sunday before the actual start date
