@@ -102,9 +102,9 @@ const Navbar = () => {
                     </div>
                     <div className="navbar-center hidden md:flex">
                         <ul className="menu menu-horizontal px-1">
-                            {navItems.map(({ name, link, dropdown }, index) => (
+                            {navItems.map(({ name, link, disabled, dropdown }, index) => (
                                 !dropdown ? (
-                                    <li key={index}>
+                                    <li key={index} className={disabled && "pointer-events-none opacity-50"}>
                                         <LinkAdapter to={link}>{name}</LinkAdapter>
                                     </li>
                                 ) : (
@@ -114,8 +114,8 @@ const Navbar = () => {
                                             <ExpandMoreIcon />
                                         </a>
                                         <ul className="p-2 bg-base-200 border border-base-300 shadow !rounded-box w-52">
-                                            {dropdown.map(({ name, link, external }, index) =>
-                                                <li key={index}>
+                                            {dropdown.map(({ name, link, disabled, external }, index) =>
+                                                <li key={index} className={disabled && "pointer-events-none opacity-50"}>
                                                     <LinkAdapter to={link} external={external} className="justify-between">
                                                         {name}
                                                         {!!external && <OpenInNewIcon />}

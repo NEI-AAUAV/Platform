@@ -1,6 +1,4 @@
-import { GithubIcon, LinkedinIcon } from "assets/icons/social";
-import { PersonPinIcon } from "assets/icons/google";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import classNames from "classnames";
 import { useWindowSize } from "utils/hooks";
 
@@ -37,6 +35,7 @@ export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
   }
 
   function formatDateRange(start, end) {
+    if (!start || !end) return;
     const startMonthYear = start.toLocaleString("pt-PT", {
       month: "long",
       year: "numeric",
@@ -55,38 +54,42 @@ export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
       : `${startDay} de ${startMonthYear}`;
   }
 
-  const Event = () => (
-    <>
-      <div className="flex items-start gap-3">
-        <div
-          className="mr-1 rounded-full p-1 text-base-300"
-          style={{ background: `hsl(${event.category?.color})` }}
-        >
-          <EventIcon />
-        </div>
-        <h5 className="font-medium">{event.category?.name}</h5>
-
-        <div className="ml-auto gap-3">
+  const eventDialog = useMemo(() => {
+    if (!event) return null;
+    return (
+      <>
+        <div className="flex items-start gap-3">
           <div
-            className="btn-ghost btn-sm btn-circle btn"
-            onClick={() => handleVisible(false)}
+            className="mr-1 rounded-full p-1 text-base-300"
+            style={{ background: `hsl(${event.category?.color})` }}
           >
-            <CloseIcon />
+            <EventIcon />
+          </div>
+          <h5 className="font-medium">{event.category?.name}</h5>
+
+          <div className="ml-auto gap-3">
+            <div
+              className="btn-ghost btn-sm btn-circle btn"
+              onClick={() => handleVisible(false)}
+            >
+              <CloseIcon />
+            </div>
           </div>
         </div>
-      </div>
-      <h4 className="mt-2 font-semibold">{event.title}</h4>
-      <p className="mt-2 opacity-80 sm:whitespace-nowrap">
-        {formatDateRange(event.start, event.end)}
-      </p>
-    </>
-  );
+        <h4 className="mt-2 font-semibold">{event.title}</h4>
+        <p className="mt-2 opacity-80">
+          {formatDateRange(event.start, event.end)}
+        </p>
+      </>
+    );
+  }, [event]);
 
   return (
     <Dialog
       {...dialogProps}
-      dialog={<Event />}
+      dialog={eventDialog}
       show={visible}
+      layoutId="event-dialog"
       onShowChange={handleVisible}
     />
   );
@@ -185,6 +188,10 @@ const Dialog = ({
     const { top, bottom, left, right } =
       childrenRef.current.getBoundingClientRect();
 
+    // TODO: good for now, but should be improved
+    // (overflow-hidden in parent hides dialog in some positions)
+    // try using a custom parent container to calculate position
+    // ( childrenRef.current.closest("[data-dialog-container]") )
     const { innerWidth, innerHeight } = window;
 
     const leftSpace = left,
@@ -211,17 +218,18 @@ const Dialog = ({
       <AnimatePresence>
         {visible && (
           <motion.div
-            initial={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 1, zIndex: 40 }}
+            animate={{ opacity: 1, zIndex: 40 }}
+            exit={{ opacity: 0, zIndex: 50 }}
+            transition={{ duration: 0.3 }}
             layoutId={layoutId}
             ref={dialogRef}
             role="dialog"
             className={classNames(
-              "absolute z-50 min-w-[320px] rounded-lg border border-base-content/10 bg-base-300 p-4 shadow-md",
+              "absolute min-w-[380px] rounded-lg border border-base-content/10 bg-base-300 p-4 shadow-md",
               windowSize.width >= 640
                 ? `Dialog Dialog--${dialogPos}`
-                : "left-1/2 right-1/2 top-10 -translate-x-1/2"
+                : "!fixed left-1 right-1 top-20"
             )}
           >
             {dialog}

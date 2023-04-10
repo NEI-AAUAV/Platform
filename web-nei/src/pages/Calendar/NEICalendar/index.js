@@ -1,15 +1,11 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { css, jsx } from "@emotion/react";
+
 import {
   useState,
   useEffect,
-  Fragment,
   useCallback,
   useLayoutEffect,
   useRef,
 } from "react";
-import classNames from "classnames";
 
 import { useWindowSize } from "utils/hooks";
 import { ArrowForwardIcon, ArrowBackIcon } from "assets/icons/google";
@@ -23,8 +19,7 @@ import { dateKey, getWeeklyIntervals } from "./utils";
 
 import { useLoading } from "utils/hooks";
 
-import { EventDialog } from "components/Dialog";
-
+import CalendarMonth from "./CalendarMonth";
 import { motion, AnimatePresence } from "framer-motion";
 
 const calendarEvents = { _all: {} };
@@ -61,79 +56,7 @@ const swipePower = (offset, velocity) => {
   return Math.abs(offset) * velocity;
 };
 
-const CalendarMonths = ({ year, month, selEvent, setSelEvent }) => {
-  function isToday(date) {
-    return dateKey(new Date()) === date;
-  }
-
-  const dateEvents = calendarEvents[dateKey(year, month)]; // TODO: make this better, does it show even without events?
-
-  return (
-    <div className="grid grid-cols-7 border-l border-t border-base-content/10">
-      {dateEvents &&
-        Object.entries(dateEvents).map(([day, events], index) => (
-          <Fragment key={index}>
-            <div className="min-h-[120px] border-b border-r border-base-content/10">
-              <div
-                // onClick={() => showEventModal(day)}
-                className={classNames(
-                  "m-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-full leading-none transition duration-100 ease-in-out",
-                  {
-                    "bg-secondary text-white": isToday(day),
-                    "hover:bg-secondary/50": !isToday(day),
-                    "text-base-content/50": new Date(day).getMonth() !== month,
-                  }
-                )}
-              >
-                {new Date(day).getDate()}
-              </div>
-              <div className="">
-                {[...events].map((event, index) => {
-                  const selected = !!event && event.id === selEvent?.id;
-                  return (
-                    <Fragment key={index}>
-                      <EventDialog
-                        event={event}
-                        className="w-full"
-                        layoutId="event-dialog"
-                        onShowChange={(show) => !show && setSelEvent(null)}
-                      >
-                        <div
-                          className={classNames(
-                            "relative left-0 z-10 mb-2 cursor-pointer rounded font-medium text-white hover:shadow-md",
-                            { invisible: !event },
-                            {
-                              "shadow-md": selected,
-                            }
-                          )}
-                          style={{
-                            width: `calc(${event?.duration * 100}% + ${
-                              event?.duration - 1
-                            }px - 0.4rem)`,
-                            marginLeft: "0.2rem",
-                            background: `hsl(${event?.category?.color} / ${
-                              selected ? 1 : 0.7
-                            })`,
-                          }}
-                          onClick={() => setSelEvent(event)}
-                        >
-                          <p className="h-[24px] overflow-hidden truncate text-clip px-1 text-xs !leading-[24px] sm:text-sm">
-                            {event?.title}
-                          </p>
-                        </div>
-                      </EventDialog>
-                    </Fragment>
-                  );
-                })}
-              </div>
-            </div>
-          </Fragment>
-        ))}
-    </div>
-  );
-};
-
-const Calendar = () => {
+const NEICalendar = () => {
   const windowSize = useWindowSize();
   const [month, setMonth] = useState(3);
   const [year, setYear] = useState(2023);
@@ -328,7 +251,7 @@ const Calendar = () => {
   return (
     <div>
       <div className="container mx-auto mt-4">
-        <div className="overflow-hidden rounded-lg bg-base-200 shadow">
+        <div className="overflow-hidden rounded-lg bg-base-200 shadow" data-dialog-container>
           <div className="flex items-center justify-between px-6 py-2">
             <div>
               <span className="text-lg font-bold text-base-content">
@@ -400,9 +323,9 @@ const Calendar = () => {
                     }
                   }}
                 >
-                  <CalendarMonths
-                    year={year}
+                  <CalendarMonth
                     month={month}
+                    monthEvents={calendarEvents[dateKey(year, month)]}
                     selEvent={selEvent}
                     setSelEvent={setSelEvent}
                   />
@@ -414,12 +337,11 @@ const Calendar = () => {
       </div>
 
       {/* Modal */}
-      <div
+      {/* <div
         style={{ backgroundColor: "rgba(0, 0, 0, 0.8)", display: "none" }}
         className="fixed bottom-0 left-0 right-0 top-0 z-40 h-full w-full"
       >
         {" "}
-        {/*x-show.transition.opacity="openEventModal"*/}
         <div className="absolute left-0 right-0 mx-auto mt-24 max-w-xl overflow-hidden p-4">
           <div
             className="absolute right-0 top-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white text-gray-500 shadow hover:text-gray-800"
@@ -511,9 +433,9 @@ const Calendar = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-export default Calendar;
+export default NEICalendar;

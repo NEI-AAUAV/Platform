@@ -28,6 +28,7 @@ const data = [
             {
                 name: "História",
                 link: "/history",
+                disabled: true,
             },
             {
                 name: "RGM",
@@ -50,6 +51,7 @@ const data = [
             {
                 name: "Diário do Tux",
                 link: "/tux",
+                disabled: true,
             },
             {
                 name: "Código de Faina",
@@ -70,9 +72,10 @@ const data = [
         name: "Famílias",
         link: "/family",
     },
-    !config.PRODUCTION && {
+    {
         name: "Finalistas",
         link: "/seniors",
+        disabled: true,
     },
     // {
     //   name: "Estágios",
