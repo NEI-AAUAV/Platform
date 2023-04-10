@@ -3,6 +3,7 @@ import classNames from "classnames";
 
 import Typist from "react-typist";
 import NEICalendar from "./NEICalendar";
+
 import CheckboxFilter from "components/CheckboxFilter";
 import { CalendarViewMonthIcon, ViewAgendaIcon } from "assets/icons/google";
 

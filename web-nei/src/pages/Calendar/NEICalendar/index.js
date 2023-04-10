@@ -1,7 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { css, jsx } from "@emotion/react";
-import { useState, useEffect, Fragment, useCallback, useMemo } from "react";
+import {
+  useState,
+  useEffect,
+  Fragment,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import classNames from "classnames";
 
 import { useWindowSize } from "utils/hooks";
@@ -18,16 +25,132 @@ import { useLoading } from "utils/hooks";
 
 import { EventDialog } from "components/Dialog";
 
+import { motion, AnimatePresence } from "framer-motion";
+
 const calendarEvents = { _all: {} };
+
+const variants = {
+  enter: (direction) => {
+    return {
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0,
+    };
+  },
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction) => {
+    return {
+      zIndex: 0,
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0,
+    };
+  },
+};
+
+/**
+ * Experimenting with distilling swipe offset and velocity into a single variable, so the
+ * less distance a user has swiped, the more velocity they need to register as a swipe.
+ * Should accomodate longer swipes and short flicks without having binary checks on
+ * just distance thresholds and velocity > 0.
+ */
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset, velocity) => {
+  return Math.abs(offset) * velocity;
+};
+
+const CalendarMonths = ({ year, month, selEvent, setSelEvent }) => {
+  function isToday(date) {
+    return dateKey(new Date()) === date;
+  }
+
+  const dateEvents = calendarEvents[dateKey(year, month)]; // TODO: make this better, does it show even without events?
+
+  return (
+    <div className="grid grid-cols-7 border-l border-t border-base-content/10">
+      {dateEvents &&
+        Object.entries(dateEvents).map(([day, events], index) => (
+          <Fragment key={index}>
+            <div className="min-h-[120px] border-b border-r border-base-content/10">
+              <div
+                // onClick={() => showEventModal(day)}
+                className={classNames(
+                  "m-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-full leading-none transition duration-100 ease-in-out",
+                  {
+                    "bg-secondary text-white": isToday(day),
+                    "hover:bg-secondary/50": !isToday(day),
+                    "text-base-content/50": new Date(day).getMonth() !== month,
+                  }
+                )}
+              >
+                {new Date(day).getDate()}
+              </div>
+              <div className="">
+                {[...events].map((event, index) => {
+                  const selected = !!event && event.id === selEvent?.id;
+                  return (
+                    <Fragment key={index}>
+                      <EventDialog
+                        event={event}
+                        className="w-full"
+                        layoutId="event-dialog"
+                        onShowChange={(show) => !show && setSelEvent(null)}
+                      >
+                        <div
+                          className={classNames(
+                            "relative left-0 z-10 mb-2 cursor-pointer rounded font-medium text-white hover:shadow-md",
+                            { invisible: !event },
+                            {
+                              "shadow-md": selected,
+                            }
+                          )}
+                          style={{
+                            width: `calc(${event?.duration * 100}% + ${
+                              event?.duration - 1
+                            }px - 0.4rem)`,
+                            marginLeft: "0.2rem",
+                            background: `hsl(${event?.category?.color} / ${
+                              selected ? 1 : 0.7
+                            })`,
+                          }}
+                          onClick={() => setSelEvent(event)}
+                        >
+                          <p className="h-[24px] overflow-hidden truncate text-clip px-1 text-xs !leading-[24px] sm:text-sm">
+                            {event?.title}
+                          </p>
+                        </div>
+                      </EventDialog>
+                    </Fragment>
+                  );
+                })}
+              </div>
+            </div>
+          </Fragment>
+        ))}
+    </div>
+  );
+};
 
 const Calendar = () => {
   const windowSize = useWindowSize();
   const [month, setMonth] = useState(3);
   const [year, setYear] = useState(2023);
+  const [direction, setDirection] = useState(0);
 
   // const [calendarEvents, setCalendarEvents] = useState(calendarEventsMemory);
   const [selEvent, setSelEvent] = useState(null);
   const [loading, setLoading] = useLoading(false);
+
+  const [height, setHeight] = useState(0);
+  const elementRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (elementRef.current?.firstChild) {
+      setHeight(elementRef.current.firstChild.offsetHeight);
+    }
+  }, [elementRef.current?.firstChild, []]);
 
   // const [openEventModal, setOpenEventModal] = useState(false);
 
@@ -53,12 +176,11 @@ const Calendar = () => {
       const lapsedYears = Math.floor(month / 12);
       setYear(year + lapsedYears);
       const lapsedMonths = month % 12;
-      setMonth(lapsedMonths >= 0 ? lapsedMonths : 12 + lapsedMonths);
-    }, 200);
-  }
-
-  function isToday(date) {
-    return dateKey(new Date()) === date;
+      setMonth((prevMonth) => {
+        setDirection(month > prevMonth ? 1 : -1);
+        return lapsedMonths >= 0 ? lapsedMonths : 12 + lapsedMonths;
+      });
+    }, 300); // TODO: think about this
   }
 
   // function showEventModal(date) {
@@ -203,78 +325,6 @@ const Calendar = () => {
     return categories.NEI;
   }
 
-  const calendarMonths = [-1, 0, 1].map((index) => {
-    const dateEvents = calendarEvents[dateKey(year, month + index)];
-    if (!dateEvents) {
-      return null;
-    }
-    return (
-      <div
-        key={index}
-        className="mb-40 grid grid-cols-7 border-l border-t border-base-content/10"
-      >
-        {Object.entries(dateEvents).map(([day, events], index) => (
-          <Fragment key={index}>
-            <div className="min-h-[120px] border-b border-r border-base-content/10">
-              <div
-                // onClick={() => showEventModal(day)}
-                className={classNames(
-                  "m-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-full leading-none transition duration-100 ease-in-out",
-                  {
-                    "bg-secondary text-white": isToday(day),
-                    "hover:bg-secondary/50": !isToday(day),
-                    "text-base-content/50": new Date(day).getMonth() !== month,
-                  }
-                )}
-              >
-                {new Date(day).getDate()}
-              </div>
-              <div className="">
-                {[...events].map((event, index) => {
-                  const selected = !!event && event.id === selEvent?.id;
-                  return (
-                    <Fragment key={index}>
-                      <EventDialog
-                        event={event}
-                        className="w-full"
-                        layoutId="event-dialog"
-                        onShowChange={(show) => !show && setSelEvent(null)}
-                      >
-                        <div
-                          className={classNames(
-                            "relative left-0 z-10 mb-2 cursor-pointer rounded font-medium text-white hover:shadow-md",
-                            { invisible: !event },
-                            {
-                              "shadow-md": selected,
-                            }
-                          )}
-                          style={{
-                            width: `calc(${event?.duration * 100}% + ${
-                              event?.duration - 1
-                            }px - 0.4rem)`,
-                            marginLeft: "0.2rem",
-                            background: `hsl(${event?.category?.color} / ${
-                              selected ? 1 : 0.7
-                            })`,
-                          }}
-                          onClick={() => setSelEvent(event)}
-                        >
-                          <p className="h-[24px] overflow-hidden truncate text-clip px-1 text-xs !leading-[24px] sm:text-sm">
-                            {event?.title}
-                          </p>
-                        </div>
-                      </EventDialog>
-                    </Fragment>
-                  );
-                })}
-              </div>
-            </div>
-          </Fragment>
-        ))}
-      </div>
-    );
-  });
-
   return (
     <div>
       <div className="container mx-auto mt-4">
@@ -306,7 +356,7 @@ const Calendar = () => {
             </div>
           </div>
 
-          <div className="-mx-px -mb-px">
+          <div className="w-full">
             <div className="grid grid-cols-7">
               {data.weekDays.map((day, index) => (
                 <div className="py-2" key={index}>
@@ -316,7 +366,49 @@ const Calendar = () => {
                 </div>
               ))}
             </div>
-            {calendarMonths}
+            <motion.div
+              style={{ height: height }}
+              animate={{ height: height }}
+              transition={{ duration: 0.3 }}
+              className="relative -mb-[2px] -ml-px box-content w-full pl-px pr-[2px]"
+            >
+              <AnimatePresence initial={false} custom={direction}>
+                <motion.div
+                  id={month}
+                  ref={elementRef}
+                  className="absolute bottom-0 left-0 right-0 top-0"
+                  key={month}
+                  custom={direction}
+                  variants={variants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{
+                    x: { ease: "easeOut", duration: 0.3 },
+                    opacity: { duration: 0.2 },
+                  }}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={1}
+                  onDragEnd={(e, { offset, velocity }) => {
+                    const swipe = swipePower(offset.x, velocity.x);
+
+                    if (swipe < -swipeConfidenceThreshold) {
+                      handleMonthChange(month + 1);
+                    } else if (swipe > swipeConfidenceThreshold) {
+                      handleMonthChange(month - 1);
+                    }
+                  }}
+                >
+                  <CalendarMonths
+                    year={year}
+                    month={month}
+                    selEvent={selEvent}
+                    setSelEvent={setSelEvent}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
           </div>
         </div>
       </div>
