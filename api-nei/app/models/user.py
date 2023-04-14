@@ -26,6 +26,7 @@ class User(Base):
     scopes = Column(ARRAY(Enum(ScopeEnum, name="scope_enum", inherit_schema=True)))
     updated_at = Column(DateTime, nullable=False, index=True)
     created_at = Column(DateTime, nullable=False, index=True)
+    birthday = Column(DateTime)
 
     academic_details = relationship("UserAcademicDetails")
 

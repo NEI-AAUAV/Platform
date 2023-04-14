@@ -22,6 +22,21 @@ def get_users(
     return crud.user.get_multi(db=db)
 
 
+@router.get("/me", status_code=200, response_model=UserInDB)
+def get_curr_user(
+    *,
+    db: Session = Depends(deps.get_db),
+    payload = Security(auth.verify_token, scopes=[])
+) -> Any:
+    """ """
+    id = int(payload["sub"])
+
+    if not db.get(User, id):
+        raise HTTPException(status_code=404, detail="Invalid User")
+    
+    return crud.user.get(db=db, id=id)
+
+
 @router.get("/{id}", status_code=200, response_model=UserInDB)
 def get_user_by_id(
     *,

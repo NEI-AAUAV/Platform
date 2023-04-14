@@ -60,6 +60,7 @@ class UserInDB(UserBase):
     curriculum: Optional[AnyHttpUrl]
     created_at: datetime
     updated_at: datetime
+    birthday: Optional[datetime]
     scopes: List[ScopeEnum] = []
     academic_details: List[UserAcademicDetailsInBD]
 
