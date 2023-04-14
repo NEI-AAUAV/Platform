@@ -81,7 +81,7 @@ const Homepage = () => {
 
       {/* <img className="absolute left-0 w-[850px]" style={{filter: "brightness(0.1) invert(1)", opacity: 0.2}} src={bg} />
             <img className="absolute left-0 w-[850px]" src={bg2} /> */}
-      <div className="pointer-events-none absolute top-0 left-0 bottom-0 right-0 truncate">
+      <div className="pointer-events-none absolute inset-0 truncate">
         <div className="gradient-blur absolute top-[-50px] left-[100px] transition-size duration-500" />
         <div className="gradient-blur absolute top-[50vh] right-[-150px] transition-size duration-500" />
       </div>

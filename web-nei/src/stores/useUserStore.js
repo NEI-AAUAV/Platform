@@ -14,6 +14,7 @@ export const useUserStore = create((set) => ({
   name: null,
   surname: null,
   token: null,
+  image: null,
   setTheme: (theme) => {
     localStorage.setItem("th", theme);
     document.body.setAttribute("data-theme", theme);

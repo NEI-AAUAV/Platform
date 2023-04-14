@@ -1,17 +1,18 @@
 import { useEffect, useState, Fragment } from "react";
 import Typist from "react-typist";
 
-import PageNav from '../../components/PageNav';
-import service from 'services/NEIService';
+import PageNav from "../../components/PageNav";
+import service from "services/NEIService";
 import Document from "components/Document";
 
-import CheckboxFilter from "components/CheckboxFilter";
+import CheckboxDropdown from "components/CheckboxDropdown";
 
 import data from "./data";
 
 import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 
 import { Row, Spinner } from "react-bootstrap";
+import { FilterIcon } from "assets/icons/google";
 
 const Videos = () => {
   // Filters
@@ -92,7 +93,9 @@ const Videos = () => {
       </h2>
 
       <div className="flex w-full justify-end">
-        <CheckboxFilter values={tags} onChange={setTags} />
+        <CheckboxDropdown className="btn-sm m-1" values={tags} onChange={setTags}>
+          Filter <FilterIcon />
+        </CheckboxDropdown>
       </div>
 
       {/* Videos list */}

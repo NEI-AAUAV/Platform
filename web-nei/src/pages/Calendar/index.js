@@ -4,8 +4,8 @@ import classNames from "classnames";
 import Typist from "react-typist";
 import NEICalendar from "./NEICalendar";
 
-import CheckboxFilter from "components/CheckboxFilter";
-import { CalendarViewMonthIcon, ViewAgendaIcon } from "assets/icons/google";
+import CheckboxDropdown from "components/CheckboxDropdown";
+import { CalendarViewMonthIcon, FilterIcon, ViewAgendaIcon } from "assets/icons/google";
 
 import data from "./data";
 
@@ -17,7 +17,11 @@ const Views = {
 const Calendar = () => {
   const [categories, setCategories] = useState(
     // TODO: change active state according to user information
-    Object.entries(data.categories).map(([k, v]) => ({ ...v, key: k, checked: true }))
+    Object.entries(data.categories).map(([k, v]) => ({
+      ...v,
+      key: k,
+      checked: true,
+    }))
   );
   const [view, setView] = useState(Views.CALENDAR);
 
@@ -28,7 +32,7 @@ const Calendar = () => {
       </h2>
 
       <div className="flex justify-between">
-        <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
+        <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 px-2 py-1">
           <button
             className={classNames(
               "btn-sm btn gap-2 border-none bg-accent py-1",
@@ -53,7 +57,9 @@ const Calendar = () => {
           </button>
         </div>
 
-        <CheckboxFilter values={categories} onChange={setCategories} />
+        <CheckboxDropdown className="btn-sm m-1" values={categories} onChange={setCategories}>
+          Filter <FilterIcon />
+        </CheckboxDropdown>
       </div>
 
       <div>

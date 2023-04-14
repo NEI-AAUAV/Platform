@@ -3,15 +3,13 @@
 import { css, jsx } from "@emotion/react";
 import { useEffect, useState } from "react";
 
-import { FilterIcon } from "assets/icons/google";
-
 /**
  * A filter dropdown with checkboxes as options
  *
  * @param {Array[{name: String, checked: Boolean}]} values list of options to display
  * @param {Function} onChange callback to be called when a checkbox is checked/unchecked
  */
-const CheckboxFilter = ({ values, onChange, children, className }) => {
+const CheckboxDropdown = ({ values, onChange, children, className }) => {
   const [options, setOptions] = useState(values);
 
   useEffect(() => {
@@ -19,16 +17,16 @@ const CheckboxFilter = ({ values, onChange, children, className }) => {
   }, [values]);
 
   return (
-    <div className={`dropdown-end dropdown ${className}`}>
-      <label tabIndex={0} className="btn-sm btn m-1 gap-2">
-        Filter <FilterIcon />
+    <div className="dropdown-end dropdown">
+      <label tabIndex={0} className={`btn ${className}`}>
+        {children}
       </label>
       <ul
         tabIndex={0}
         className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-200 p-2 font-medium shadow"
       >
         {options?.map(
-          ({ name, checked, color = "211, 100%, 44%" /* blue */ }, index) => (
+          ({ name, checked, color = "var(--p)"}, index) => (
             <li key={index}>
               <label>
                 <input
@@ -61,4 +59,4 @@ const CheckboxFilter = ({ values, onChange, children, className }) => {
   );
 };
 
-export default CheckboxFilter;
+export default CheckboxDropdown;

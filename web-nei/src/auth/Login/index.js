@@ -11,20 +11,20 @@ import { useLoading } from "utils/hooks";
 import service from "services/NEIService";
 
 const Status = {
-  loading: 0b001,
-  success: 0b010,
-  error: 0b100,
-  loadingLogin: 0b0001,
-  loadingLoginIdP: 0b1001,
-  errorLogin: 0b0100,
-  errorLoginIdP: 0b1100,
+  loading: 1,
+  success: 2,
+  error: 3,
+  loadingLogin: 4,
+  loadingLoginIdP: 5,
+  errorLogin: 6,
+  errorLoginIdP: 7,
 };
 
 const Login = ({ onRedirect }) => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [response, setResponse] = useLoading({
     status: onRedirect && Status.loadingLoginIdP,
   });
@@ -141,10 +141,14 @@ const Login = ({ onRedirect }) => {
     passwordRef.current.classList.remove("input-error");
   });
 
-  const loading = response.status & Status.loading;
+  const loading = [
+    Status.loading,
+    Status.loadingLogin,
+    Status.loadingLoginIdP,
+  ].includes(response.status);
 
   return (
-    <div className="rounded-box m-auto flex h-fit max-w-lg flex-col bg-base-200 py-6 px-6 align-middle shadow-secondary drop-shadow-md xs:px-14 sm:max-w-md">
+    <div className="rounded-box m-auto flex h-fit max-w-lg flex-col bg-base-200 px-3 py-8 align-middle shadow-secondary drop-shadow-md xs:px-14 sm:max-w-md">
       <div className="text-center text-3xl">Iniciar sessão</div>
       <button
         disabled={loading}

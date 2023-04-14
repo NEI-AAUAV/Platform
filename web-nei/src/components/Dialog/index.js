@@ -229,7 +229,7 @@ const Dialog = ({
               "absolute min-w-[380px] rounded-lg border border-base-content/10 bg-base-300 p-4 shadow-md",
               windowSize.width >= 640
                 ? `Dialog Dialog--${dialogPos}`
-                : "!fixed left-1 right-1 top-20"
+                : "!fixed !min-w-[280px] left-1 right-1 top-20"
             )}
           >
             {dialog}

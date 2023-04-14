@@ -1,4 +1,3 @@
-
 import {
   useState,
   useEffect,
@@ -12,7 +11,7 @@ import { ArrowForwardIcon, ArrowBackIcon } from "assets/icons/google";
 
 import service from "services/GoogleCalendarService";
 
-import data from "./data";
+import { locales } from "./data";
 import { categories } from "../data";
 
 import { dateKey, getWeeklyIntervals } from "./utils";
@@ -251,11 +250,14 @@ const NEICalendar = () => {
   return (
     <div>
       <div className="container mx-auto mt-4">
-        <div className="overflow-hidden rounded-lg bg-base-200 shadow" data-dialog-container>
+        <div
+          className="overflow-hidden rounded-lg bg-base-200 shadow"
+          data-dialog-container
+        >
           <div className="flex items-center justify-between px-6 py-2">
             <div>
               <span className="text-lg font-bold text-base-content">
-                {data.months[month]}
+                {locales.pt.months[month]}
               </span>
               <span className="ml-1 text-lg font-normal text-base-content">
                 {year}
@@ -281,10 +283,13 @@ const NEICalendar = () => {
 
           <div className="w-full">
             <div className="grid grid-cols-7">
-              {data.weekDays.map((day, index) => (
+              {(windowSize.width < 768
+                ? locales.pt.daysMin
+                : locales.pt.daysShort
+              ).map((day, index) => (
                 <div className="py-2" key={index}>
                   <div className="text-center text-sm font-bold uppercase tracking-wide text-gray-600">
-                    {windowSize.width < 768 ? day[0] : day}
+                    {day}
                   </div>
                 </div>
               ))}
@@ -299,7 +304,7 @@ const NEICalendar = () => {
                 <motion.div
                   id={month}
                   ref={elementRef}
-                  className="absolute bottom-0 left-0 right-0 top-0"
+                  className="absolute inset-0"
                   key={month}
                   custom={direction}
                   variants={variants}

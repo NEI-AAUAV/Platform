@@ -8,7 +8,7 @@ import PageNav from "../../components/PageNav";
 import Alert from "../../components/Alert";
 import Details from "./Details";
 import Typist from "react-typist";
-import CheckboxFilter from "components/CheckboxFilter";
+import CheckboxDropdown from "components/CheckboxDropdown";
 import data from "./data";
 
 import Autocomplete from "components/Autocomplete";
@@ -16,6 +16,7 @@ import Autocomplete from "components/Autocomplete";
 import classNames from "classnames";
 import service from "services/NEIService";
 import {
+  FilterIcon,
   FilePDFIcon,
   FolderZipIcon,
   GridViewIcon,
@@ -169,10 +170,12 @@ const Notes = () => {
     service
       .getNotesYears(params)
       .then((data) => {
-        const arr = data.map((year) => {
-          const x = { key: year, label: year + "-" + (year + 1) };
-          return x;
-        }).sort((a, b) => b?.label?.localeCompare(a?.label));
+        const arr = data
+          .map((year) => {
+            const x = { key: year, label: year + "-" + (year + 1) };
+            return x;
+          })
+          .sort((a, b) => b?.label?.localeCompare(a?.label));
         setYears(arr);
       })
       .catch(() => {
@@ -187,10 +190,12 @@ const Notes = () => {
     service
       .getNotesSubjects(params)
       .then((data) => {
-        const arr = data.map((subj) => {
-          const x = { key: subj.code, label: subj.short };
-          return x;
-        }).sort((a, b) => a?.label?.localeCompare(b?.label));
+        const arr = data
+          .map((subj) => {
+            const x = { key: subj.code, label: subj.short };
+            return x;
+          })
+          .sort((a, b) => a?.label?.localeCompare(b?.label));
         setSubjects(arr);
       })
       .catch(() => {
@@ -205,10 +210,12 @@ const Notes = () => {
     service
       .getNotesStudents(params)
       .then((data) => {
-        const arr = data.map((t) => {
-          const x = { key: t.id, label: t.name + " " + t.surname };
-          return x;
-        }).sort((a, b) => a?.label?.localeCompare(b?.label));
+        const arr = data
+          .map((t) => {
+            const x = { key: t.id, label: t.name + " " + t.surname };
+            return x;
+          })
+          .sort((a, b) => a?.label?.localeCompare(b?.label));
         setStudents(arr);
       })
       .catch(() => {
@@ -223,10 +230,12 @@ const Notes = () => {
     service
       .getNotesCurricularYears(params)
       .then((data) => {
-        const arr = data.map((year) => {
-          const x = { key: year, label: `${year}º ano` };
-          return x;
-        }).sort((a, b) => a?.label?.localeCompare(b?.label));
+        const arr = data
+          .map((year) => {
+            const x = { key: year, label: `${year}º ano` };
+            return x;
+          })
+          .sort((a, b) => a?.label?.localeCompare(b?.label));
         setCurricularYears(arr);
       })
       .catch(() => {
@@ -241,10 +250,12 @@ const Notes = () => {
     service
       .getNotesTeachers(params)
       .then((data) => {
-        const arr = data.map((t) => {
-          const x = { key: t.id, label: t.name };
-          return x;
-        }).sort((a, b) => a?.label?.localeCompare(b?.label));
+        const arr = data
+          .map((t) => {
+            const x = { key: t.id, label: t.name };
+            return x;
+          })
+          .sort((a, b) => a?.label?.localeCompare(b?.label));
         setTeachers(arr);
       })
       .catch(() => {
@@ -255,11 +266,26 @@ const Notes = () => {
           text: "Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.",
         });
       });
-  }, [activeFilters, selSubject, selStudent, selYear, selPage, selTeacher, selCurricularYear]);
+  }, [
+    activeFilters,
+    selSubject,
+    selStudent,
+    selYear,
+    selPage,
+    selTeacher,
+    selCurricularYear,
+  ]);
 
   useEffect(() => {
     setSelPage(1);
-  }, [activeFilters, selSubject, selStudent, selYear, selTeacher, selCurricularYear]);
+  }, [
+    activeFilters,
+    selSubject,
+    selStudent,
+    selYear,
+    selTeacher,
+    selCurricularYear,
+  ]);
 
   // This method allows user to share the filtering parameters through a parameterized URL
   function linkShare() {
@@ -302,8 +328,8 @@ const Notes = () => {
         <Alert alert={alert} setAlert={setAlert} />
       </div>
 
-      <div className="mt-4 flex flex-col sm:flex-row gap-8">
-        <div className="flex mx-auto w-64 flex-col">
+      <div className="mt-4 flex flex-col gap-8 sm:flex-row">
+        <div className="mx-auto flex w-64 flex-col">
           <div className="sticky top-[5rem] w-[inherit]">
             <div className="flex flex-col gap-4">
               <h4>Filtros</h4>
@@ -340,7 +366,7 @@ const Notes = () => {
               />
             </div>
 
-            <div className="w-full flex justify-end">
+            <div className="flex w-full justify-end">
               {(selSubject || selStudent || selTeacher || selYear) && (
                 <div className="mb-2 flex flex-row flex-wrap">
                   <button
@@ -365,10 +391,9 @@ const Notes = () => {
                 </div>
               )}
 
-              <CheckboxFilter
-                values={categories}
-                onChange={setCategories}
-              />
+              <CheckboxDropdown className="btn-sm m-1" values={categories} onChange={setCategories}>
+                Filter <FilterIcon />
+              </CheckboxDropdown>
             </div>
 
             {selNote && selNote.id && (
@@ -392,7 +417,7 @@ const Notes = () => {
          ** the views, which are specified in each Tab.Pane element.
          */}
         <div className="w-full">
-          <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
+          <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 px-2 py-1">
             <button
               className={classNames(
                 "btn-sm btn gap-2 border-none bg-accent py-1",

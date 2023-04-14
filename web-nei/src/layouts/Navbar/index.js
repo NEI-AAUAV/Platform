@@ -159,7 +159,7 @@ const Navbar = () => {
                                     </label>
                                     <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-200 border border-base-300 rounded-box w-52">
                                         <li>
-                                            <Link to="/perfil"><PersonIcon /> Perfil</Link>
+                                            <Link to="/profile"><PersonIcon /> Perfil</Link>
                                         </li>
                                         <li>
                                             <Link to="/" onClick={useUserStore.getState().logout}>

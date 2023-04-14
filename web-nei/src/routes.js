@@ -15,12 +15,11 @@ import Team from "./pages/Team";
 import Error404 from "./pages/Error404";
 import Seniors from "./pages/Seniors";
 import Faina from "./pages/Faina";
-import News from "./pages/News";
-import NewsArticle from "./pages/NewsArticle";
 import RGM from "./pages/RGM";
 import Calendar from "./pages/Calendar";
 import History from "./pages/History";
 import Notes from "./pages/Notes";
+import Profile from "./pages/Profile";
 import FeedbackForm from "./pages/Forms/FeedbackForm";
 import Videos from "./pages/Videos";
 import Video from "./pages/Video";
@@ -53,6 +52,7 @@ const routes = [
       !config.PRODUCTION && { path: "/components", element: <Components /> },
       !config.PRODUCTION && { path: "/WSTest", element: <Test /> },
       !config.PRODUCTION && { path: "/WStacaua-admin-demo", element: <TacauaAdminDemo /> },
+      { path: "/profile", element: <Profile /> },
       { path: "/redirect", element: <Login onRedirect /> },
       { path: "/auth/register", element: <Register /> },
       { path: "/auth/login", element: <Login /> },

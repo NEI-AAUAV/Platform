@@ -1,6 +1,11 @@
 module.exports = {
   mode: "jit",
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    // Add the flowbite-datepicker library tailwind classes
+    "./node_modules/flowbite-datepicker/**/*.{js,jsx,ts,tsx}",
+  ],
+  darkMode: ["class", '[data-theme="dark"]'],
   theme: {
     extend: {
       screens: {
@@ -26,7 +31,7 @@ module.exports = {
         },
       },
       animation: {
-        'wiggle': 'wiggle 0.2s ease-in-out 0s 2',
+        wiggle: "wiggle 0.2s ease-in-out 0s 2",
       },
     },
   },

@@ -1,6 +1,8 @@
+export { ReactComponent as AddPhotoIcon } from "./add-photo.svg";
 export { ReactComponent as ArrowBackIcon } from "./arrow-back.svg";
 export { ReactComponent as ArrowForwardIcon } from "./arrow-forward.svg";
 export { ReactComponent as CalendarViewMonthIcon} from "./calendar-view-month.svg";
+export { ReactComponent as CalendarIcon} from "./calendar.svg";
 export { ReactComponent as CloseIcon } from "./close.svg";
 export { ReactComponent as DarkModeIcon } from "./dark-mode.svg";
 export { ReactComponent as DownloadIcon } from "./download.svg";
@@ -18,6 +20,7 @@ export { ReactComponent as FullScreenExitIcon } from "./fullscreen-exit.svg";
 export { ReactComponent as FullScreenIcon } from "./fullscreen.svg";
 export { ReactComponent as GridViewIcon } from "./grid-view.svg";
 export { ReactComponent as LightModeIcon } from "./light-mode.svg";
+export { ReactComponent as LinkIcon } from "./link.svg";
 export { ReactComponent as LocationIcon } from "./location.svg";
 export { ReactComponent as LogoutIcon } from "./logout.svg";
 export { ReactComponent as MailIcon } from "./mail.svg";

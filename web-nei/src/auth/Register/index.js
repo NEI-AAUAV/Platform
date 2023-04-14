@@ -36,7 +36,7 @@ const Register = () => {
 
   return (
     <>
-      <div className="z-10 m-auto flex h-fit max-w-lg flex-col rounded-2xl bg-base-200 py-6 px-6 align-middle shadow-md sm:max-w-xl sm:px-12">
+      <div className="z-10 m-auto flex h-fit max-w-lg flex-col rounded-box bg-base-200 py-8 px-3 align-middle shadow-md sm:max-w-xl xs:px-14">
         <div className="mb-2 text-center text-3xl">Criar Conta</div>
         <p className="m-auto mb-8 max-w-sm text-xs sm:text-sm">
           Este site é protegido pelo reCAPTCHA e aplicam-se a{" "}
