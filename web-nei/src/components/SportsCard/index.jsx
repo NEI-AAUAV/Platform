@@ -1,3 +1,5 @@
+import { useUserStore } from "stores/useUserStore";
+
 /**
  *
  * @param {{
@@ -41,20 +43,27 @@
  *
  */
 
-const GRADIENTS = {
-  Atletismo: "bg-gradient-to-r from-blue-400 to-blue-500",
-  Andebol: "bg-gradient-to-r from-red-400 to-red-500",
-  Basquetebol: "bg-gradient-to-r from-yellow-400 to-yellow-500",
-  Futsal: "bg-gradient-to-r from-green-400 to-green-500",
-  "Futebol 7": "bg-gradient-to-r from-purple-400 to-purple-500",
-  "Voleibol 4x4": "bg-gradient-to-r from-pink-400 to-pink-500",
-  "E-Sports LOL": "bg-gradient-to-r from-gray-400 to-gray-500",
-  "E-Sports CS:GO": "bg-gradient-to-r from-gray-400 to-gray-500",
+const GRADIENTS_LIGHT = {
+  "Voleibol 4x4": "bg-gradient-to-r from-[#f6d5f7] to-[#fbe9d7]",
+};
+
+const GRADIENTS_DARK = {
+  Atletismo: "bg-gradient-to-r from-[#b429f9] to-[#26c5f3]",
+  Andebol: "bg-gradient-to-r from-[#ff930f] to-[#fff95b]",
+  Basquetebol: "bg-gradient-to-r from-[#ce653b] to-[#2b0948]",
+  Futsal: "bg-gradient-to-r from-[#D22730] to-[#D19B28]",
+  "Futebol 7": "bg-gradient-to-r from-[#0f971c] to-[#0c0c0c]",
+  "Voleibol 4x4": "bg-gradient-to-r from-[#EF47FC] to-[#F3E2E2]",
+  "E-Sports LOL": "bg-gradient-to-r from-[#C29A3F] to-[#138D9B]",
+  "E-Sports CS:GO": "bg-gradient-to-r from-[#BB460C] to-[#E9B75B]",
 };
 
 const SportsCard = ({ modality, className }) => {
   const { image, sport, frame, type, competitions } = modality;
-  const gradient = GRADIENTS[sport] ?? "";
+  const theme = useUserStore((state) => state.theme);
+
+  const gradients = theme === "light" ? GRADIENTS_LIGHT : GRADIENTS_DARK;
+  const gradient = gradients[sport] ?? "";
   const division =
     competitions?.length > 0 && competitions[0]?.division
       ? `${competitions[0].division}ª Divisão`
