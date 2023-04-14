@@ -8,14 +8,15 @@ import PageNav from "../../components/PageNav";
 import Alert from "../../components/Alert";
 import Details from "./Details";
 import Typist from "react-typist";
-import CheckboxFilter from "components/CheckboxFilter";
+import CheckboxDropdown from "components/CheckboxDropdown";
 import data from "./data";
 
 import Autocomplete from "components/Autocomplete";
 
-import classname from "classname";
+import classNames from "classnames";
 import service from "services/NEIService";
 import {
+  FilterIcon,
   FilePDFIcon,
   FolderZipIcon,
   GridViewIcon,
@@ -23,13 +24,13 @@ import {
 } from "assets/icons/google";
 import { GithubIcon, GoogleDriveIcon } from "assets/icons/social";
 
-const VIEWS = {
+const Views = {
   GRID: 1,
   LIST: 2,
 };
 
 const Notes = () => {
-  const [view, setView] = useState(VIEWS.GRID);
+  const [view, setView] = useState(Views.GRID);
   const [categories, setCategories] = useState(
     Object.values(data.categories).map((c) => ({ ...c, checked: true }))
   );
@@ -41,6 +42,7 @@ const Notes = () => {
   const [years, setYears] = useState([]);
   const [students, setStudents] = useState([]);
   const [teachers, setTeachers] = useState([]);
+  const [curricularYears, setCurricularYears] = useState([]);
   const [page, setPage] = useState(1);
 
   // Grid view selected note
@@ -49,6 +51,7 @@ const Notes = () => {
   const [selYear, setSelYear] = useState("");
   const [selStudent, setSelStudent] = useState("");
   const [selTeacher, setSelTeacher] = useState("");
+  const [selCurricularYear, setSelCurricularYear] = useState("");
   const [selPage, setSelPage] = useState(1);
 
   const [loading, setLoading] = useState(true);
@@ -98,6 +101,7 @@ const Notes = () => {
       subject: selSubject || null,
       student: selStudent || null,
       teacher: selTeacher || null,
+      curricular_year: selCurricularYear || null,
       category: [],
     };
 
@@ -166,10 +170,12 @@ const Notes = () => {
     service
       .getNotesYears(params)
       .then((data) => {
-        const arr = data.map((year) => {
-          const x = { key: year, label: year + "-" + (year + 1) };
-          return x;
-        });
+        const arr = data
+          .map((year) => {
+            const x = { key: year, label: year + "-" + (year + 1) };
+            return x;
+          })
+          .sort((a, b) => b?.label?.localeCompare(a?.label));
         setYears(arr);
       })
       .catch(() => {
@@ -184,10 +190,12 @@ const Notes = () => {
     service
       .getNotesSubjects(params)
       .then((data) => {
-        const arr = data.map((subj) => {
-          const x = { key: subj.code, label: subj.short };
-          return x;
-        });
+        const arr = data
+          .map((subj) => {
+            const x = { key: subj.code, label: subj.short };
+            return x;
+          })
+          .sort((a, b) => a?.label?.localeCompare(b?.label));
         setSubjects(arr);
       })
       .catch(() => {
@@ -202,10 +210,12 @@ const Notes = () => {
     service
       .getNotesStudents(params)
       .then((data) => {
-        const arr = data.map((t) => {
-          const x = { key: t.id, label: t.name + " " + t.surname };
-          return x;
-        });
+        const arr = data
+          .map((t) => {
+            const x = { key: t.id, label: t.name + " " + t.surname };
+            return x;
+          })
+          .sort((a, b) => a?.label?.localeCompare(b?.label));
         setStudents(arr);
       })
       .catch(() => {
@@ -218,12 +228,34 @@ const Notes = () => {
       });
 
     service
+      .getNotesCurricularYears(params)
+      .then((data) => {
+        const arr = data
+          .map((year) => {
+            const x = { key: year, label: `${year}º ano` };
+            return x;
+          })
+          .sort((a, b) => a?.label?.localeCompare(b?.label));
+        setCurricularYears(arr);
+      })
+      .catch(() => {
+        console.error('Invalid parameters (no "curricular years" matching)!');
+        resetFilters();
+        setAlert({
+          type: "alert",
+          text: "Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.",
+        });
+      });
+
+    service
       .getNotesTeachers(params)
       .then((data) => {
-        const arr = data.map((t) => {
-          const x = { key: t.id, label: t.name };
-          return x;
-        });
+        const arr = data
+          .map((t) => {
+            const x = { key: t.id, label: t.name };
+            return x;
+          })
+          .sort((a, b) => a?.label?.localeCompare(b?.label));
         setTeachers(arr);
       })
       .catch(() => {
@@ -234,11 +266,26 @@ const Notes = () => {
           text: "Ocorreu um erro ao processar os teus filtros. Os seus valores foram reinicializados, por favor tenta novamente.",
         });
       });
-  }, [activeFilters, selSubject, selStudent, selYear, selPage, selTeacher]);
+  }, [
+    activeFilters,
+    selSubject,
+    selStudent,
+    selYear,
+    selPage,
+    selTeacher,
+    selCurricularYear,
+  ]);
 
   useEffect(() => {
     setSelPage(1);
-  }, [activeFilters, selSubject, selStudent, selYear, selTeacher]);
+  }, [
+    activeFilters,
+    selSubject,
+    selStudent,
+    selYear,
+    selTeacher,
+    selCurricularYear,
+  ]);
 
   // This method allows user to share the filtering parameters through a parameterized URL
   function linkShare() {
@@ -281,8 +328,8 @@ const Notes = () => {
         <Alert alert={alert} setAlert={setAlert} />
       </div>
 
-      <div className="mt-4 flex gap-8">
-        <div className=" flex w-64 flex-col">
+      <div className="mt-4 flex flex-col gap-8 sm:flex-row">
+        <div className="mx-auto flex w-64 flex-col">
           <div className="sticky top-[5rem] w-[inherit]">
             <div className="flex flex-col gap-4">
               <h4>Filtros</h4>
@@ -291,7 +338,13 @@ const Notes = () => {
                 items={years}
                 value={selYear}
                 onChange={setSelYear}
-                placeholder="Ano"
+                placeholder="Ano Letivo"
+              />
+              <Autocomplete
+                items={curricularYears}
+                value={selCurricularYear}
+                onChange={setSelCurricularYear}
+                placeholder="Ano Curricular"
               />
               <Autocomplete
                 items={subjects}
@@ -313,7 +366,7 @@ const Notes = () => {
               />
             </div>
 
-            <div className="w-full flex justify-end">
+            <div className="flex w-full justify-end">
               {(selSubject || selStudent || selTeacher || selYear) && (
                 <div className="mb-2 flex flex-row flex-wrap">
                   <button
@@ -338,10 +391,9 @@ const Notes = () => {
                 </div>
               )}
 
-              <CheckboxFilter
-                values={categories}
-                onChange={setCategories}
-              />
+              <CheckboxDropdown className="btn-sm m-1" values={categories} onChange={setCategories}>
+                Filter <FilterIcon />
+              </CheckboxDropdown>
             </div>
 
             {selNote && selNote.id && (
@@ -364,34 +416,34 @@ const Notes = () => {
          ** using a custom layout. The Nav element contains the buttons that switch
          ** the views, which are specified in each Tab.Pane element.
          */}
-        <div>
-          <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
+        <div className="w-full">
+          <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 px-2 py-1">
             <button
-              className={classname(
+              className={classNames(
                 "btn-sm btn gap-2 border-none bg-accent py-1",
-                view === VIEWS.GRID
+                view === Views.GRID
                   ? "no-animation shadow hover:bg-accent"
                   : "bg-transparent hover:bg-base-300 hover:opacity-75"
               )}
-              onClick={() => setView(VIEWS.GRID)}
+              onClick={() => setView(Views.GRID)}
             >
               <GridViewIcon />
             </button>
             <button
-              className={classname(
+              className={classNames(
                 "btn-sm btn gap-2 border-none bg-accent py-1",
-                view === VIEWS.LIST
+                view === Views.LIST
                   ? "no-animation shadow hover:bg-accent"
                   : "bg-transparent hover:bg-base-300 hover:opacity-75"
               )}
-              onClick={() => setView(VIEWS.LIST)}
+              onClick={() => setView(Views.LIST)}
             >
               <ViewListIcon />
             </button>
           </div>
 
           <div>
-            {view === VIEWS.GRID && (
+            {view === Views.GRID && (
               <div className="flex">
                 {loading ? (
                   <Spinner
@@ -414,7 +466,7 @@ const Notes = () => {
                 )}
               </div>
             )}
-            {view === VIEWS.LIST && (
+            {view === Views.LIST && (
               <div className="flex flex-col">
                 {!!loading ? (
                   <Spinner
@@ -444,14 +496,14 @@ const Notes = () => {
               </div>
             )}
           </div>
-          <PageNav
-            page={selPage}
-            total={page}
-            handler={fetchPage}
-            className="d-lg-none mx-auto mt-3"
-          ></PageNav>
         </div>
       </div>
+      <PageNav
+        numPages={page}
+        currentPage={selPage}
+        handler={fetchPage}
+        className="mx-auto mt-3"
+      ></PageNav>
       <div className="card mt-5 bg-base-200/80 text-center shadow-md">
         <h3>
           Foi graças a pessoas como tu que esta página se tornou possível!

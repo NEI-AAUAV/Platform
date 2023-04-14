@@ -7,6 +7,7 @@ from jose import jwt
 
 from app.core.config import settings
 from app.models import User
+from app.models.email import UserEmail
 from app.tests.conftest import SessionTesting
 from app.api.api_v1.auth.register import _create_email_verification_token
 from app.api.api_v1.auth._deps import Token, hash_password
@@ -15,47 +16,66 @@ user_password = "test_password"
 user = {
     "name": "Test",
     "surname": "User",
-    "email": "testUser@test.com",
     "hashed_password": hash_password(user_password),
     "created_at": datetime.fromtimestamp(0),
     "updated_at": datetime.fromtimestamp(0),
-    "active": True,
 }
+userEmail = "testUser@test.com"
 
 expiredUser = {
     "name": "Test",
     "surname": "User Expired",
-    "email": "testUserExpired@test.com",
     "hashed_password": hash_password(user_password),
     "created_at": datetime.fromtimestamp(0) - settings.CONFIRMATION_TOKEN_EXPIRE,
     "updated_at": datetime.fromtimestamp(0) - settings.CONFIRMATION_TOKEN_EXPIRE,
-    "active": False,
 }
+expiredUserEmail = "testUserExpired@test.com"
 
 inactiveUser = {
     "name": "Test",
     "surname": "User Inactive",
-    "email": "testUserInactive@test.com",
     "hashed_password": hash_password(user_password),
     "created_at": datetime.fromtimestamp(0) - settings.CONFIRMATION_TOKEN_EXPIRE,
     "updated_at": datetime.fromtimestamp(0) - settings.CONFIRMATION_TOKEN_EXPIRE,
-    "active": False,
 }
+inactiveUserEmail = "testUserInactive@test.com"
 
 
 @pytest.fixture(autouse=True)
 def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
-    db.add(User(**user))
-    db.add(User(**expiredUser))
-    db.add(User(**inactiveUser))
+    user_obj = User(**user)
+    db.add(user_obj)
+    db.flush()
+    db.add(UserEmail(user_id=user_obj.id, email=userEmail, active=True))
+
+    expired_user_obj = User(**expiredUser)
+    db.add(expired_user_obj)
+    db.flush()
+    db.add(UserEmail(user_id=expired_user_obj.id, email=expiredUserEmail, active=False))
+
+    inactive_user_obj = User(**inactiveUser)
+    db.add(inactive_user_obj)
+    db.flush()
+    db.add(
+        UserEmail(user_id=inactive_user_obj.id, email=inactiveUserEmail, active=False)
+    )
+
     db.commit()
+
+
+def get_by_email(db: SessionTesting, email: str) -> tuple[User, UserEmail]:
+    return (
+        db.query(User, UserEmail)
+        .filter(User.id == UserEmail.user_id, UserEmail.email == email)
+        .first()
+    )
 
 
 def test_register(db: SessionTesting, client: TestClient) -> None:
     email = "testUser2@test.com"
 
-    matches = db.query(User).filter(User.email == email).first()
+    matches = get_by_email(db, email)
     assert matches is None
 
     r = client.post(
@@ -74,7 +94,7 @@ def test_register(db: SessionTesting, client: TestClient) -> None:
     assert token.token_type == "bearer"
     assert r.cookies["refresh"] is not None
 
-    matches = db.query(User).filter(User.email == email).first()
+    matches = get_by_email(db, email)
     assert matches is not None
 
 
@@ -84,7 +104,7 @@ def test_register_conflict(db: SessionTesting, client: TestClient) -> None:
         json={
             "name": user["name"],
             "surname": user["surname"],
-            "email": user["email"],
+            "email": userEmail,
             "password": "test_password",
         },
         allow_redirects=True,
@@ -112,7 +132,7 @@ def test_register_short_password(db: SessionTesting, client: TestClient) -> None
         json={
             "name": user["name"],
             "surname": user["surname"],
-            "email": user["email"],
+            "email": userEmail,
             "password": "short",
         },
         allow_redirects=True,
@@ -121,7 +141,7 @@ def test_register_short_password(db: SessionTesting, client: TestClient) -> None
 
 
 def test_register_replace_expired(db: SessionTesting, client: TestClient) -> None:
-    matches = db.query(User).filter(User.email == expiredUser["email"]).first()
+    matches = get_by_email(db, expiredUserEmail)
     assert matches is not None
 
     r = client.post(
@@ -129,7 +149,7 @@ def test_register_replace_expired(db: SessionTesting, client: TestClient) -> Non
         json={
             "name": expiredUser["surname"] + "NEW",
             "surname": expiredUser["surname"],
-            "email": expiredUser["email"],
+            "email": expiredUserEmail,
             "password": user_password,
         },
         allow_redirects=True,
@@ -139,16 +159,16 @@ def test_register_replace_expired(db: SessionTesting, client: TestClient) -> Non
     token = Token(**data)
     assert token.token_type == "bearer"
 
-    matches = db.query(User).filter(User.email == expiredUser["email"]).first()
+    matches = get_by_email(db, expiredUserEmail)
     assert matches is not None
-    assert matches.name == expiredUser["surname"] + "NEW"
+    assert matches[0].name == expiredUser["surname"] + "NEW"
 
 
 def test_login(db: SessionTesting, client: TestClient) -> None:
     r = client.post(
         f"{settings.API_V1_STR}/auth/login/",
         data={
-            "username": user["email"],
+            "username": userEmail,
             "password": user_password,
         },
         allow_redirects=True,
@@ -164,7 +184,7 @@ def test_login_wrong_password(db: SessionTesting, client: TestClient) -> None:
     r = client.post(
         f"{settings.API_V1_STR}/auth/login/",
         data={
-            "username": user["email"],
+            "username": userEmail,
             "password": user_password + "bad",
         },
         allow_redirects=True,
@@ -173,13 +193,13 @@ def test_login_wrong_password(db: SessionTesting, client: TestClient) -> None:
 
 
 def test_login_wrong_email(db: SessionTesting, client: TestClient) -> None:
-    matches = db.query(User).filter(User.email == user["email"] + "bad").first()
+    matches = get_by_email(db, userEmail + "bad")
     assert matches is None
 
     r = client.post(
         f"{settings.API_V1_STR}/auth/login/",
         data={
-            "username": user["email"] + "bad",
+            "username": userEmail + "bad",
             "password": user_password,
         },
         allow_redirects=True,
@@ -191,7 +211,7 @@ def test_refresh(db: SessionTesting, client: TestClient) -> None:
     r1 = client.post(
         f"{settings.API_V1_STR}/auth/login/",
         data={
-            "username": user["email"],
+            "username": userEmail,
             "password": user_password,
         },
         allow_redirects=True,
@@ -217,11 +237,12 @@ def test_refresh(db: SessionTesting, client: TestClient) -> None:
 
 
 def test_verify(db: SessionTesting, client: TestClient) -> None:
-    matches = db.query(User).filter(User.email == inactiveUser["email"]).first()
-    assert matches is not None
-    assert not matches.active
+    matches = get_by_email(db, inactiveUserEmail)
 
-    token = _create_email_verification_token(matches.id)
+    assert matches is not None
+    assert not matches[1].active
+
+    token = _create_email_verification_token(matches[0].id, matches[1].email)
 
     r = client.get(
         f"{settings.API_V1_STR}/auth/verify/?token={token}",
@@ -229,6 +250,6 @@ def test_verify(db: SessionTesting, client: TestClient) -> None:
     )
     assert r.status_code == 200
 
-    matches = db.query(User).get(matches.id)
+    matches = get_by_email(db, inactiveUserEmail)
     assert matches is not None
-    assert matches.active
+    assert matches[1].active

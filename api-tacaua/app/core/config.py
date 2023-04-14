@@ -33,6 +33,7 @@ class Settings(BaseSettings):
 
     # PostgreSQL DB
     SCHEMA_NAME: str = "tacaua"
+    API_NEI_SERVER: str = os.getenv('API_NEI_SERVER', 'localhost')
     POSTGRES_SERVER: str = os.getenv('POSTGRES_SERVER', 'localhost')
     POSTGRES_USER: str = os.getenv('POSTGRES_USER', "postgres")
     POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "postgres")

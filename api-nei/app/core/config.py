@@ -51,9 +51,12 @@ class Settings(BaseSettings):
     )
 
     # Auth settings
+    ## IDP Secret Key
+    IDP_KEY: str = "_82e3318ee5c5cf2c7d7f7a1367fd4b3ea40858f08a"
+    IDP_SECRET_KEY: str = None
     ## Path to JWT signing keys
-    JWT_SECRET_KEY_PATH: str = os.getenv("SECRET_KEY", "../dev-keys/jwt.key")
-    JWT_PUBLIC_KEY_PATH: str = os.getenv("PUBLIC_KEY", "../dev-keys/jwt.key.pub")
+    JWT_SECRET_KEY_PATH: str = os.getenv("JWT_SECRET_KEY_PATH", "../dev-keys/jwt.key")
+    JWT_PUBLIC_KEY_PATH: str = os.getenv("JWT_PUBLIC_KEY_PATH", "../dev-keys/jwt.key.pub")
     ## How long access tokens are valid for
     ACCESS_TOKEN_EXPIRE: timedelta = timedelta(minutes=10)
     ## How long refresh tokens are valid for
@@ -101,6 +104,7 @@ class Settings(BaseSettings):
 
     class Config:
         case_sensitive = True
+        env_file = ".env"
 
 
 settings = Settings()

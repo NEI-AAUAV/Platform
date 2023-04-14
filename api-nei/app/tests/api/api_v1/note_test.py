@@ -8,44 +8,35 @@ from app.models import Note, Subject, Teacher, User
 from app.tests.conftest import SessionTesting
 
 
-
 SUBJECTS = [
     {
-        "code": 1,
+        "code": 9000,
         "name": "random name 0",
-        "curricular_year": 2021,
-        "semester": 2,
+        "curricular_year": 1,
         "short": "short",
         "discontinued": 1,
-        "optional": 1
+        "optional": 1,
     },
     {
-        "code": 2,
+        "code": 9001,
         "name": "random name",
-        "curricular_year": 2021,
-        "semester": 2,
+        "curricular_year": 2,
         "short": "short",
         "discontinued": 1,
-        "optional": 1
-    }
+        "optional": 1,
+    },
 ]
 
 TEACHERS = [
-    {
-        'name': 'DG',
-        'personal_page': 'personalpage_dg'
-    },
-    {
-        'name': 'TOS',
-        'personal_page': 'personalpage_tos'
-    }
+    {"name": "DG", "personal_page": "personalpage_dg"},
+    {"name": "TOS", "personal_page": "personalpage_tos"},
 ]
 
 NOTES = [
     {
-        'year': 2020,
-        'name': 'note name 0',
-        'location': '/path/to/note/1',
+        "year": 2020,
+        "name": "note name 0",
+        "location": "/path/to/note/1",
         "summary": 1,
         "tests": 1,
         "bibliography": 1,
@@ -58,9 +49,9 @@ NOTES = [
         "size": 1,
     },
     {
-        'year': 2021,
-        'name': 'note name 1',
-        'location': '/path/to/note/2',
+        "year": 2021,
+        "name": "note name 1",
+        "location": "/path/to/note/2",
         "summary": 1,
         "tests": 1,
         "bibliography": 0,
@@ -71,40 +62,38 @@ NOTES = [
         "content": "content text bla bla bla bla bla",
         "created_at": datetime(2022, 8, 4),
         "size": 1,
-    }
+    },
 ]
 
 USERS = [
     {
-        "name": 'Ze Pistolas',
-        "surname": 'Pistolas',
-        "email": 'zpp@ua.pt',
-        "iupi": 'x1x1',
-        "curriculum": 'ze_cv',
-        "linkedin": 'ze_linkedin',
-        "github": 'ze_git',
-        "scopes": ['ADMIN'],
+        "name": "Ze Pistolas",
+        "surname": "Pistolas",
+        "iupi": "x1x1",
+        "curriculum": "ze_cv",
+        "linkedin": "ze_linkedin",
+        "github": "ze_git",
+        "scopes": ["ADMIN"],
         "created_at": datetime(2022, 8, 4),
-        "updated_at": datetime(2022, 8, 5)
+        "updated_at": datetime(2022, 8, 5),
     },
     {
         "name": "Francisco",
         "surname": "Miguel Abrantes",
-        "email": "fma@ua.pt",
-        "iupi": 'x2x2',
-        "curriculum": 'francisco_cv',
-        "linkedin": 'francisco_linkedin',
-        "github": 'francisco_git',
-        "scopes": ['MANAGER_NEI', 'MANAGER_TACAUA'],
+        "iupi": "x2x2",
+        "curriculum": "francisco_cv",
+        "linkedin": "francisco_linkedin",
+        "github": "francisco_git",
+        "scopes": ["MANAGER_NEI", "MANAGER_TACAUA"],
         "created_at": datetime(2022, 8, 4),
-        "updated_at": datetime(2022, 8, 5)
-    }
+        "updated_at": datetime(2022, 8, 5),
+    },
 ]
 
 note = {
-    'year': 2020,
-    'name': 'note name 0',
-    'location': 'Aveiro',
+    "year": 2020,
+    "name": "note name 0",
+    "location": "Aveiro",
     "summary": 1,
     "tests": 1,
     "bibliography": 1,
@@ -149,7 +138,7 @@ def setup_database(db: SessionTesting):
         NOTES,
         [s.code for s in db.query(Subject).all()],
         [a.id for a in db.query(User).all()],
-        [t.id for t in db.query(Teacher).all()]
+        [t.id for t in db.query(Teacher).all()],
     ):
         db.add(Note(**note, subject_id=sid, author_id=aid, teacher_id=tid))
     db.commit()
@@ -184,17 +173,18 @@ def test_get_inexistent_note_by_id(client: TestClient) -> None:
 
 def test_get_note_by_categories(client: TestClient) -> None:
     r = client.get(
-        f"{settings.API_V1_STR}/note?category[]=bibliography&category[]=tests")
+        f"{settings.API_V1_STR}/note?category[]=bibliography&category[]=tests"
+    )
     assert r.status_code == 200
     data = r.json()
-    assert data['total'] == len(data['items']) == 2
-    assert all(i['bibliography'] or i['tests'] for i in data['items'])
-    r = client.get(
-        f"{settings.API_V1_STR}/note?category[]=slides&category[]=tests")
+    assert data["total"] == len(data["items"]) == 2
+    assert all(i["bibliography"] or i["tests"] for i in data["items"])
+    r = client.get(f"{settings.API_V1_STR}/note?category[]=slides&category[]=tests")
     assert r.status_code == 200
     data = r.json()
-    assert data['total'] == len(data['items']) == 2
-    assert all(i['slides'] or i['tests'] for i in data['items'])
+    assert data["total"] == len(data["items"]) == 2
+    assert all(i["slides"] or i["tests"] for i in data["items"])
+
 
 def test_get_teacher(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/note/teacher/")
@@ -206,6 +196,7 @@ def test_get_teacher(client: TestClient) -> None:
         assert "name" in lst
         assert "personal_page" in lst
 
+
 def test_get_subject(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/note/subject/")
     data = r.json()
@@ -215,4 +206,3 @@ def test_get_subject(client: TestClient) -> None:
         assert "code" in lst
         assert "name" in lst
         assert "curricular_year" in lst
-        assert "semester" in lst

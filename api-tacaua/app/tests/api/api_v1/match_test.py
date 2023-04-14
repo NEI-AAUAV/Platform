@@ -148,7 +148,7 @@ def test_update_match(db: SessionTesting, client: TestClient) -> None:
 
     # Check response
     assert r.status_code == 200
-    data = r.json()
+    data = r.json()["data"]
     assert len(data) == 3
     assert data[0]["id"] == old_this_match["id"]
     assert data[0]["team1_id"] == old_team1_match["team1_id"]

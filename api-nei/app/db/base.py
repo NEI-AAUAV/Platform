@@ -2,6 +2,7 @@
 # imported by Alembic
 from app.db.base_class import Base
 from app.models.course import Course
+from app.models.device_login import DeviceLogin
 from app.models.faina_member import FainaMember
 from app.models.faina_role import FainaRole
 from app.models.faina import Faina

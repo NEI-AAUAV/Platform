@@ -15,22 +15,17 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     iupi = Column(String(36), unique=True)
     nmec = Column(Integer, unique=True)
-    email = Column(String(256), nullable=False, unique=True)
     hashed_password = Column(Text)
     name = Column(String(20), nullable=False)
     surname = Column(String(20), nullable=False)
-    gender = Column(
-        Enum(GenderEnum, name="gender_enum", inherit_schema=True))
+    gender = Column(Enum(GenderEnum, name="gender_enum", inherit_schema=True))
     _image = Column("image", String(2048))
     _curriculum = Column("curriculum", String(2048))
     linkedin = Column(String(100))
     github = Column(String(39))
-    scopes = Column(
-        ARRAY(Enum(ScopeEnum, name="scope_enum", inherit_schema=True)))
+    scopes = Column(ARRAY(Enum(ScopeEnum, name="scope_enum", inherit_schema=True)))
     updated_at = Column(DateTime, nullable=False, index=True)
     created_at = Column(DateTime, nullable=False, index=True)
-
-    active = Column(Boolean, nullable=False, default=False)
 
     academic_details = relationship("UserAcademicDetails")
 

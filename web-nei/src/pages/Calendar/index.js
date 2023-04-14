@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import classname from "classname";
+import classNames from "classnames";
 
 import Typist from "react-typist";
-import Calendar2 from "components/Calendar2";
-import Calendar1 from "components/Calendar1";
-import CheckboxFilter from "components/CheckboxFilter";
-import { CalendarViewMonthIcon, ViewAgendaIcon } from "assets/icons/google";
+import NEICalendar from "./NEICalendar";
+
+import CheckboxDropdown from "components/CheckboxDropdown";
+import { CalendarViewMonthIcon, FilterIcon, ViewAgendaIcon } from "assets/icons/google";
 
 import data from "./data";
 
-const VIEWS = {
+const Views = {
   CALENDAR: 1,
   AGENDA: 2,
 };
@@ -17,9 +17,13 @@ const VIEWS = {
 const Calendar = () => {
   const [categories, setCategories] = useState(
     // TODO: change active state according to user information
-    data.categories.map((c) => ({...c, checked: true }))
+    Object.entries(data.categories).map(([k, v]) => ({
+      ...v,
+      key: k,
+      checked: true,
+    }))
   );
-  const [view, setView] = useState(VIEWS.CALENDAR);
+  const [view, setView] = useState(Views.CALENDAR);
 
   return (
     <div>
@@ -28,47 +32,38 @@ const Calendar = () => {
       </h2>
 
       <div className="flex justify-between">
-        <div class="flex w-fit items-center space-x-1 rounded-full bg-base-200 py-1 px-2">
+        <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 px-2 py-1">
           <button
-            className={classname(
+            className={classNames(
               "btn-sm btn gap-2 border-none bg-accent py-1",
-              view === VIEWS.CALENDAR
+              view === Views.CALENDAR
                 ? "no-animation shadow hover:bg-accent"
                 : "bg-transparent hover:bg-base-300 hover:opacity-75"
             )}
-            onClick={() => setView(VIEWS.CALENDAR)}
+            onClick={() => setView(Views.CALENDAR)}
           >
             <CalendarViewMonthIcon /> Mês
           </button>
           <button
-            className={classname(
+            className={classNames(
               "btn-sm btn gap-2 border-none bg-accent py-1",
-              view === VIEWS.AGENDA
+              view === Views.AGENDA
                 ? "no-animation shadow hover:bg-accent"
                 : "bg-transparent hover:bg-base-300 hover:opacity-75"
             )}
-            onClick={() => setView(VIEWS.AGENDA)}
+            onClick={() => setView(Views.AGENDA)}
           >
             <ViewAgendaIcon /> Agenda
           </button>
         </div>
 
-        <CheckboxFilter values={categories} onChange={setCategories} />
+        <CheckboxDropdown className="btn-sm m-1" values={categories} onChange={setCategories}>
+          Filter <FilterIcon />
+        </CheckboxDropdown>
       </div>
 
-      {/* <NEICalendar
-                selection={selection}
-                setInitialCategories={(fs) => {
-                    setFilters(fs);
-                    setSelection(fs.map(f => f['filter']));
-                }}
-
-                style={{
-                    animationDelay: animationBase + animationIncrement * 2 + "s",
-                }}
-            /> */}
-      <div className="slideUpFade">
-        <Calendar1 />
+      <div>
+        <NEICalendar />
       </div>
     </div>
   );

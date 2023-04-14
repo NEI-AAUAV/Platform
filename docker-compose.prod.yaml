@@ -10,8 +10,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes: 
-      - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
-      - ./api-rallytascas/app/db/setup.sql:/docker-entrypoint-initdb.d/rallytascas-0001.sql
+      # - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
+      # - ./api-rallytascas/app/db/setup.sql:/docker-entrypoint-initdb.d/rallytascas-0001.sql
       - pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
@@ -41,12 +41,25 @@ services:
       dockerfile: Dockerfile.prod
     ports:
       - 8000:8000
+      - 587:587
+      - 25:25
     environment:
       ENV: production
+      RECAPTCHA_ENABLED: "True"
+      EMAIL_ENABLED: "True"
       POSTGRES_SERVER: db_pg
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      JWT_SECRET_KEY_PATH: /api_nei/jwt-keys/jwt.key
+      JWT_PUBLIC_KEY_PATH: /api_nei/jwt-keys/jwt.key.pub
+      EMAIL_SENDER_ADDRESS: ${EMAIL_SENDER_ADDRESS}
+      EMAIL_SMTP_HOST: ${EMAIL_SMTP_HOST}
+      EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
+      EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
+      IDP_SECRET_KEY: ${IDP_SECRET_KEY}
+      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
     volumes: 
       - /api-nei/static:/api_nei/static
+      - /api-nei/jwt-keys:/api_nei/jwt-keys
     depends_on:
       db_pg:
         condition: service_healthy
@@ -115,9 +128,10 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./proxy/nei.web.ua.pt/nginx.conf:/etc/nginx/nginx.conf
-      - ./proxy/nei.web.ua.pt/default.prod.conf:/etc/nginx/conf.d/default.conf
-      - ./proxy/nei.web.ua.pt/locations.conf:/etc/nginx/conf.d/locations.conf
+      - /proxy/nei.web.ua.pt/nginx.conf:/etc/nginx/nginx.conf
+      - /proxy/nei.web.ua.pt/default.prod.conf:/etc/nginx/conf.d/default.conf
+      - /proxy/nei.web.ua.pt/locations.conf:/etc/nginx/conf.d/locations.conf
+      - /proxy/nei.web.ua.pt/ssl:/etc/ssl/private
     depends_on:
       - web_nei
       - api_nei

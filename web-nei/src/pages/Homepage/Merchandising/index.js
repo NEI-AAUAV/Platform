@@ -3,6 +3,7 @@ import { Button, Row, Col } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 import "./index.css";
 import Typist from "react-typist";
+import config from "config";
 import service from "services/NEIService";
 import CardMerch from "components/CardMerch";
 
@@ -21,6 +22,7 @@ const Merchandising = () => {
       setImgs(
         data.map((img, idx) => (
           <div
+            key={img.id}
             className={
               idx % 2 === 0
                 ? "impar text-center slideUpFade"
@@ -55,8 +57,8 @@ const Merchandising = () => {
                 sm={12}
                 className={idx % 2 == 0 ? "order-1" : "order-0"}
               >
-                <h22>{img.name}</h22>
-                <h55>Preço: {img.price}€</h55>
+                <h2>{img.name}</h2>
+                <h5>Preço: {img.price}€</h5>
               </Col>
             </Row>
           </div>
@@ -90,25 +92,27 @@ const Merchandising = () => {
 
       {imgs}
 
-      <hr />
+      {!config.PRODUCTION && <>
+        <hr />
 
-      <div className="grid grid-cols-3 gap-3">{newImgs}</div>
+        <div className="grid grid-cols-3 gap-3">{newImgs}</div>
 
-      <Row className="text-center mx-0" style={{ position: "relative" }}>
-        <a
-          href="https://forms.gle/pWNPzNi1LV59iSsAA"
-          target="_blank"
-          className="mx-auto"
-        >
-          <Button
-            variant="outline-primary"
-            className="rounded-pill btn-outline-primary-force"
-            size="lg"
+        <Row className="text-center mx-0" style={{ position: "relative" }}>
+          <a
+            href="https://orders.winrestbooking.com/StoreMenu/Index/4968"
+            target="_blank"
+            className="mx-auto"
           >
-            Comprar
-          </Button>
-        </a>
-      </Row>
+            <Button
+              variant="outline-primary"
+              className="rounded-pill btn-outline-primary-force"
+              size="lg"
+            >
+              Comprar
+            </Button>
+          </a>
+        </Row>
+      </>}
     </div>
   );
 };

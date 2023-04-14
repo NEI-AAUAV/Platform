@@ -4,14 +4,13 @@ import { Row, Spinner } from "react-bootstrap";
 import Typist from "react-typist";
 import service from "services/NEIService";
 import Tabs from "components/Tabs";
-import UserTooltip from "components/UserTooltip";
+import Popover, { UserPopover } from "components/Popover";
 
 import {
   DecorativeSepBottom,
   DecorativeSepMiddle,
   DecorativeSepTop,
 } from "assets/abstract";
-
 
 const Faina = () => {
   const [people, setPeople] = useState([]);
@@ -111,12 +110,12 @@ const Faina = () => {
             <div className="flex flex-col items-center">
               {people.map((person, index) => (
                 <Fragment key={index}>
-                  <UserTooltip className="hover:underline hover:decoration-2">
+                  <UserPopover className="hover:underline hover:decoration-2" user={null}>
                     <span className="p-1 font-medium uppercase">
                       <span className="font-medium text-[#D7A019]">{person.role}</span>
                       {"" + " " + person.name}
                     </span>
-                  </UserTooltip>
+                  </UserPopover>
                 </Fragment>
               ))}
             </div>

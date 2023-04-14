@@ -1,109 +1,96 @@
-import React, { useState, useEffect } from "react";
-import { Pagination, Nav } from "react-bootstrap";
+import React from "react";
+import classNames from "classnames";
 import "./index.css";
 
-/* A pagination bar, as seen in https://react-bootstrap.github.io/components/pagination/
+/* A pagination bar, as seen in https://daisyui.com/components/pagination/
 ** 
 ** ATTENTION! This component is 1-based index (first index is 1)!
 **
 ** Props:
-** - page: current active page
-** - total: total number of pages
+** - numPages: total number of pages
+** - currentPage: current active page
+** - pageDelta: number of surrounding pages to render (default 1)
 ** - handler: function to call with onClick, argument given is new page number
+** - className: extra styles to be applied (optional)
 */
-const PageNav = ({ className, ...props }) => {
-
-    // pass correct number to handler function
-    const handlePage = (e) => {
-        let val;
-        if (e.target.attributes.value === undefined)
-            val = e.target.parentElement.attributes.value.value;
-        else
-            val = e.target.attributes.value.value;
-
-        if (val === "prev")
-            props.handler(props.page - 1);
-        else if (val === "next")
-            props.handler(props.page / 1 + 1);
-        else
-            props.handler(val);
+const PageNav = ({ numPages, currentPage, pageDelta = 2, handler, className }) => {
+    // Don't render anything if there aren't pages to be paginated
+    if (numPages === 1) {
+        return null;
     }
 
-    // create each numbered page button
-    const [pages, setPages] = useState([]);
-
-    useEffect(() => {
-        const pagesArray = [];
-        if (props.total < 5) {
-            for (let i = 1; i <= props.total; i++) {
-                pagesArray.push(i);
-            }
-        } else {
-            // 1 2 3 ...  X
-            if (props.page <= 2) {
-                for (let i = 1; i <= 3; i++) {
-                    pagesArray.push(i);
-                }
-                pagesArray.push(-1);
-                pagesArray.push(props.total);
-                // 1 ...  X-2 X-1 X
-            } else if (props.page >= props.total - 1) {
-                pagesArray.push(1);
-                pagesArray.push(-1);
-                for (let i = props.total - 2; i <= props.total; i++) {
-                    pagesArray.push(i);
-                }
-                // ... X-1 X X+1 ...
-            } else {
-                let currentpage = parseInt(props.page);
-                pagesArray.push(-1);
-                pagesArray.push(currentpage - 1);
-                pagesArray.push(currentpage);
-                pagesArray.push(currentpage + 1);
-                pagesArray.push(-1);
-            }
-        }
-        setPages(pagesArray);
-    }, [props.total, props.page]);
-
     return (
-        <Nav className={className}>
-            <Pagination className="mx-auto mx-lg-0 ml-lg-auto mr-0">
-                <Pagination.First onClick={handlePage} value={1} disabled={props.page === 1} />
-                <Pagination.Prev onClick={handlePage} value="prev" disabled={props.page === 1} />
-
+        <div className={classNames("flex justify-center", className)}>
+            <div className="btn-group">
+                {/* Previous page button, only shown if not on the first page */}
+                {currentPage > 1 && <button
+                    className="btn"
+                    onClick={() => handler(currentPage - 1)}
+                >
+                    «
+                </button>}
+                {/* First page button, always shown */}
+                <button
+                    className={classNames("btn", currentPage === 1 && "btn-active")}
+                    onClick={() => handler(1)}
+                >
+                    1
+                </button>
                 {
-                    // Not sure how to render this yet, so keeping the condition false for now
-                    false &&
-                    <Pagination.Ellipsis />
-                }
+                    // List generator for buttons and ellipsis, the algorithm starts by
+                    // generating 2 * pageDelta elements, these will be the surrounding
+                    // pages that will be shown, plus 3 extra elements, one for the current
+                    // page and one for each side ellipsis that might be needed.
+                    Array(2 * pageDelta + 3).fill().map((_, idx) => {
+                        // The page of the current button is calculated by starting at the
+                        // left side of the visible range, which is the current page minus
+                        // the number of surrounding to be shown and minus the ellipsis that
+                        // might appear. Then the index of the current iteration is added to
+                        // get the true page of the button.
+                        const page = currentPage - pageDelta - 1 + idx;
 
-                {
-                    pages.map((page, index) =>
-                        <React.Fragment key={index}>
-                            {
-                                page >= 1
-                                    ?
-                                    <Pagination.Item onClick={handlePage} active={page === props.page} value={page} key={page}>
-                                        {page}
-                                    </Pagination.Item>
-                                    :
-                                    <Pagination.Ellipsis />
-                            }
-                        </React.Fragment>
-                    )
-                }
+                        // If the page doesn't exist (is out of the range of pages) or is the
+                        // first or last page, then no element is rendered).
+                        if (page <= 1 || page >= numPages) return null;
 
-                {
-                    // Not sure how to render this yet, so keeping the condition false for now
-                    false &&
-                    <Pagination.Ellipsis />
-                }
+                        // If the button wasn't culled previously and is the first iteration or
+                        // last of the algorithm then it's an ellipsis.
+                        if (idx === 0 || idx === 2 * pageDelta + 2)
+                            return <button key={page} className="btn btn-disabled hidden sm:flex">...</button>;
 
-                <Pagination.Next onClick={handlePage} value="next" disabled={props.page === props.total} />
-                <Pagination.Last onClick={handlePage} value={props.total} disabled={props.page === props.total} />
-            </Pagination>
-        </Nav>
+                        const distance = Math.abs(currentPage - page);
+
+                        // Otherwise render a normal page button.
+                        return <button
+                            key={page}
+                            className={classNames(
+                                "btn",
+                                page === currentPage && "btn-active",
+                                // Hide pages that aren't immediately adjacent in small screens
+                                (page !== currentPage && distance > 1) && "hidden xs:flex"
+                            )}
+                            onClick={() => handler(page)}
+                        >
+                            {page}
+                        </button>;
+                    })
+                }
+                {/* Last page button, always shown */}
+                <button
+                    className={classNames("btn", currentPage === numPages && "btn-active")}
+                    onClick={() => handler(numPages)}
+                >
+                    {numPages}
+                </button>
+                {/* Next page button, only shown if not on the last page */}
+                {currentPage !== numPages && <button
+                    className="btn"
+                    onClick={() => handler(currentPage + 1)}
+                >
+                    »
+                </button>}
+            </div>
+        </div>
     );
 };
 

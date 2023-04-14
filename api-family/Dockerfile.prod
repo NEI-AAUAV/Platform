@@ -27,4 +27,4 @@ RUN pip install --upgrade pip \
 COPY ./app ./app
 
 EXPOSE 8002
-CMD gunicorn app.main:app --bind 0.0.0.0:8002 -k uvicorn.workers.UvicornWorker
+CMD gunicorn app.main:app --bind 0.0.0.0:8002 -k uvicorn.workers.UvicornWorker --forwarded-allow-ips="*"

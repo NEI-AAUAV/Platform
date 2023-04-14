@@ -29,11 +29,12 @@ from ._deps import (
 router = APIRouter()
 
 
-def _create_password_reset_token(uid: int) -> str:
+def _create_password_reset_token(uid: int, email: str) -> str:
     """Generates a password reset token
 
     **Parameters**
     * `uid`: The id of the user
+    * `email`: The email the user used to request the password reset
 
     **Returns**
     The generated password reset token
@@ -45,6 +46,7 @@ def _create_password_reset_token(uid: int) -> str:
             "exp": iat + settings.PASSWORD_RESET_TOKEN_EXPIRE,
             # JWT requires 'sub' to be a string
             "sub": str(uid),
+            "email": email,
             "type": PASSWORD_RESET_TOKEN_TYPE,
         },
     )
@@ -58,7 +60,7 @@ async def _send_password_reset_token(email: str, name: str, uid: int):
     * `name`: The name of the user
     * `uid`: The id of the user
     """
-    confirmation_token = _create_password_reset_token(uid)
+    confirmation_token = _create_password_reset_token(uid, email)
     await emailUtils.send_password_reset(email, name, confirmation_token)
 
 
@@ -88,12 +90,14 @@ async def forgot(
             detail="Email is invalid",
         )
 
-    user = crud.user.get_by_email(db, email)
-    if user is None:
+    maybe_user = crud.user.get_by_email(db, email)
+    if maybe_user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="The provided email is not associated with an user",
         )
+
+    user, _ = maybe_user
 
     if settings.EMAIL_ENABLED:
         # Schedule to send the email with password reset link
@@ -131,6 +135,7 @@ async def reset(
         # Extract all needed fields inside a `try` in case a token
         # has a bad payload.
         user_id = int(payload["sub"])
+        email = payload["email"]
         token_type = payload["type"]
     except (JWTError, ValueError, KeyError):
         raise credentials_exception
@@ -152,9 +157,7 @@ async def reset(
 
     if settings.EMAIL_ENABLED:
         # Schedule to send the email with a warning that the password was changed
-        background_tasks.add_task(
-            emailUtils.send_password_changed, user.email, user.name
-        )
+        background_tasks.add_task(emailUtils.send_password_changed, email, user.name)
 
     return OperationSuccessfulResponse(
         status="success", message="Password reset successfully"

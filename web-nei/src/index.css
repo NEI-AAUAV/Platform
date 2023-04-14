@@ -114,7 +114,7 @@
     @apply !rounded-r-full;
   }
 
-  .input {
+  .input, .file-input {
     @apply !rounded-full;
     transition: outline 0.3s !important;
     outline: 2px solid transparent !important;
@@ -122,6 +122,10 @@
 
   .input:focus {
     outline: 2px solid hsla(var(--bc) / 0.2) !important;
+  }
+
+  .input-error {
+    @apply animate-wiggle;
   }
 
   /* For Webkit-based browsers (Chrome, Safari and Opera) */
@@ -137,13 +141,7 @@
     scroll-margin: 20px;
   }
 
-  /* .drawer-toggle:checked ~ .drawer-side .drawer-swap {
-    @apply swap-active;
-  }
 
-  .drawer-toggle:checked ~ .drawer-side .drawer-swap .swap-off {
-    opacity: 0;
-  } */
 }
 
 /* 

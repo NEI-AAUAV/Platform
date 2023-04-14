@@ -17,7 +17,7 @@ class GoogleCalendarService {
 
     async getEvents({ timeMin, timeMax, singleEvents = true, maxResults = 9999 }) {
         return await client.get(`/calendars/${calendarId}/events`,
-            { params: { key, timeMin, timeMax, singleEvents, maxResults } });
+            { params: { key, timeMin, timeMax, singleEvents, maxResults, orderBy: 'startTime' } });
     }
 
 }

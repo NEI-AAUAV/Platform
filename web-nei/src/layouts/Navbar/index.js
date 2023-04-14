@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import classname from "classname";
+import classNames from "classnames";
 
 import LinkAdapter from "utils/LinkAdapter";
 import { useWindowSize, useWindowScroll } from "utils/hooks";
@@ -30,7 +30,7 @@ const Navbar = () => {
     const windowSize = useWindowSize();
     const windowScroll = useWindowScroll();
     const [openMobile, setOpenMobile] = useState(false);
-    const { theme, loggedIn } = useUserStore(state => state);
+    const { theme, token, name, surname } = useUserStore(state => state);
     const [navItems, setNavItems] = useState(data);
 
     useEffect(() => {
@@ -90,7 +90,7 @@ const Navbar = () => {
     return (
         <>
             <nav
-                className={classname("fixed text-sm font-bold top-0 z-40 w-full text-base-300-content transition-size ease-out",
+                className={classNames("fixed text-sm font-bold top-0 z-40 w-full text-base-300-content transition-size ease-out",
                     openMobile && windowSize.width < 768 ? "!bg-base-200 border border-base-300 !shadow-lg m-1 !w-[calc(100%-0.5rem)] rounded-md" : "border-transparent",
                     windowScroll.y > 0 ? "bg-base-100/80 shadow backdrop-blur" : "bg-transparent")}
             >
@@ -102,9 +102,9 @@ const Navbar = () => {
                     </div>
                     <div className="navbar-center hidden md:flex">
                         <ul className="menu menu-horizontal px-1">
-                            {navItems.map(({ name, link, dropdown }, index) => (
+                            {navItems.map(({ name, link, disabled, dropdown }, index) => (
                                 !dropdown ? (
-                                    <li key={index}>
+                                    <li key={index} className={disabled && "pointer-events-none opacity-50"}>
                                         <LinkAdapter to={link}>{name}</LinkAdapter>
                                     </li>
                                 ) : (
@@ -114,8 +114,8 @@ const Navbar = () => {
                                             <ExpandMoreIcon />
                                         </a>
                                         <ul className="p-2 bg-base-200 border border-base-300 shadow !rounded-box w-52">
-                                            {dropdown.map(({ name, link, external }, index) =>
-                                                <li key={index}>
+                                            {dropdown.map(({ name, link, disabled, external }, index) =>
+                                                <li key={index} className={disabled && "pointer-events-none opacity-50"}>
                                                     <LinkAdapter to={link} external={external} className="justify-between">
                                                         {name}
                                                         {!!external && <OpenInNewIcon />}
@@ -129,16 +129,16 @@ const Navbar = () => {
                         </ul>
                     </div>
                     <div className="navbar-end gap-x-3 grow !w-fit">
-                        <div className={classname("flex p-1 gap-x-3", { "hidden": openMobile })}>
+                        <div className={classNames("flex p-1 gap-x-3", { "hidden": openMobile })}>
                             <label className="btn btn-circle btn-ghost btn-sm swap swap-rotate">
                                 <input type="checkbox" onChange={toggleTheme} checked={theme === 'dark'} />
                                 <DarkModeIcon className="swap-on" />
                                 <LightModeIcon className="swap-off" />
                             </label>
-                            {!loggedIn ?
+                            {!token ?
                                 <>
-                                    <Link to="/login" className="btn btn-sm">Log in</Link>
-                                    <Link to="/register" className="btn btn-primary btn-sm">Sign up</Link>
+                                    <Link to="/auth/login" className="btn btn-sm btn-outline btn-neutral">Entrar</Link>
+                                    <Link to="/auth/register" className="btn btn-primary btn-sm">Registar</Link>
                                 </>
                                 :
                                 <div className="dropdown dropdown-end">
@@ -149,7 +149,7 @@ const Navbar = () => {
                                             </div>
                                         </div>
                                         <span>
-                                            Jorden Foreest
+                                            {name} {surname}
                                         </span>
                                         <label className="swap swap-rotate ">
                                             <input type="checkbox" />
@@ -159,7 +159,7 @@ const Navbar = () => {
                                     </label>
                                     <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-200 border border-base-300 rounded-box w-52">
                                         <li>
-                                            <Link to="/perfil"><PersonIcon /> Perfil</Link>
+                                            <Link to="/profile"><PersonIcon /> Perfil</Link>
                                         </li>
                                         <li>
                                             <Link to="/" onClick={useUserStore.getState().logout}>
@@ -208,7 +208,7 @@ const Navbar = () => {
                 </div>
             </nav >
             <div
-                className={classname("modal", { "modal-open": openMobile })}
+                className={classNames("modal", { "modal-open": openMobile })}
                 onClick={() => setOpenMobile(false)}
             />
         </>

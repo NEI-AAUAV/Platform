@@ -1,28 +1,24 @@
 import React, { useEffect, useState } from "react";
 
 import Person from "./components/Person.js";
-import TextList from "../../components/TextList/index.js";
-import { Container, Row, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import Typist from "react-typist";
 
 import service from "services/NEIService";
-import config from "config/index";
 
 import Tabs from "components/Tabs/index.js";
 
-// Animation
-const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
-const animationIncrement = parseFloat(
-  process.env.REACT_APP_ANIMATION_INCREMENT
-);
+import classNames from "classnames";
+
+import { LinkedinIcon, GithubIcon } from "assets/icons/social";
 
 const Team = () => {
   const [years, setYears] = useState([]);
 
   const [selectedYear, setSelectedYear] = useState(null);
 
-  const [people, setPeople] = useState();
-  const [colaborators, setColaborators] = useState();
+  const [team, setTeam] = useState();
+  const [collaborators, setCollaborators] = useState();
 
   const [loading, setLoading] = useState(true);
 
@@ -44,54 +40,27 @@ const Team = () => {
       mandate: selectedYear,
     };
 
-    let team = [];
-    let colabs = [];
-    setPeople(team);
-    setColaborators(colabs);
-    service.getTeamMembers({ ...params }).then((response) => {
-      for (var i = 0; i < response.length; i++) {
-        if (response[i].mandate === selectedYear) {
-          team.push({
-            id: response[i].user.id,
-            name: response[i].user.name,
-            role: response[i].role.name,
-            header: response[i].header,
-            linkedIn: response[i].user.linkedin,
-          });
-        }
-      }
-      setPeople(
-        team.map((person, i) => (
-          <Person
-            key={person.id}
-            img={person.header}
-            name={person.name}
-            description={person.role}
-            linke={person.linkedIn}
-            className="slideUpFade"
-            style={{
-              animationDelay: animationBase + animationIncrement * i + "s",
-            }}
-          />
-        ))
-      );
-    });
-
-    service.getTeamColaborators({ ...params }).then((response) => {
-      for (var i = 0; i < response.length; i++) {
-        if (response[i].mandate === selectedYear) {
-          colabs.push({
-            id: response[i].user.id,
-            name: response[i].user.name,
-          });
-        }
-      }
-      setColaborators(
-        colabs.map((person, i) => <TextList colSize={4} text={person.name} />)
-      );
-    });
-    
-    setLoading(false);
+    setTeam(null);
+    setCollaborators(null);
+    Promise.all([
+      service.getTeamMembers({ ...params }).then((members) => {
+        members.sort(
+          ({ role: a }, { role: b }) =>
+            b?.weight - a?.weight || a?.name?.localeCompare(b?.name)
+        );
+        setTeam([
+          { members: members.slice(0, 2), title: "Coordenação" },
+          { members: members.slice(2, -3), title: "Vogais" },
+          { members: members.slice(-3), title: "Mesa da RGM" },
+        ]);
+      }),
+      service.getTeamCollaborators({ ...params }).then((colabs) => {
+        colabs.sort(({ user: a }, { user: b }) =>
+          a?.name?.localeCompare(b?.name)
+        );
+        setCollaborators(colabs);
+      }),
+    ]).then(() => setLoading(false));
   }, [selectedYear]);
 
   function customRender(tab) {
@@ -106,16 +75,18 @@ const Team = () => {
 
   return (
     <div className="d-flex flex-column flex-wrap">
-      <h2 className="mb-5 text-center">
+      <h2 className="text-center">
         <Typist>Equipa do NEI</Typist>
       </h2>
 
-      <Tabs
-        tabs={years}
-        value={selectedYear}
-        onChange={setSelectedYear}
-        renderTab={customRender}
-      />
+      <div className="my-10">
+        <Tabs
+          tabs={years}
+          value={selectedYear}
+          onChange={setSelectedYear}
+          renderTab={customRender}
+        />
+      </div>
       {loading ? (
         <Spinner
           animation="grow"
@@ -124,23 +95,75 @@ const Team = () => {
           title="A carregar..."
         />
       ) : (
-        <>
-          <Row xs={1} lg={3}>
-            {people}
-          </Row>
+        <div className="mx-auto max-w-5xl">
+          {team?.map(({ members, title }, index) => (
+            <>
+              <div className="flex gap-5 px-2">
+                <h4 className="opacity-80">{title}</h4>
+                <div className="divider mt-1 grow" />
+              </div>
+              <div
+                key={index}
+                className={classNames("flex flex-wrap justify-center sm:gap-5")}
+              >
+                {members?.map(({ id, role, header, user }) => (
+                  <div
+                    key={id}
+                    className="grow-0 basis-36 px-3 py-1.5 text-center sm:basis-56 sm:px-6 sm:py-3"
+                  >
+                    <img
+                      src={header}
+                      className="mx-auto mb-4 max-w-[90px] rounded-full shadow-lg sm:max-w-[130px]"
+                      alt=""
+                    />
 
-          {colaborators != null && colaborators.length > 0 && (
-            <Row className="justify-content-center">
-              <h2>Colaboradores</h2>
-            </Row>
+                    <p className="mb-1 text-lg font-bold">{user?.name}</p>
+                    <p className="mb-2 text-gray-500">{role?.name}</p>
+                    <ul className="flex justify-center space-x-1 sm:mt-0">
+                      {!!user?.github && (
+                        <li>
+                          <a
+                            href={user?.github}
+                            target="_blank"
+                            className="btn-ghost btn-xs btn-circle btn"
+                          >
+                            <GithubIcon />
+                          </a>
+                        </li>
+                      )}
+                      {!!user?.linkedin && (
+                        <li>
+                          <a
+                            href={user?.linkedin}
+                            target="_blank"
+                            className="btn-ghost btn-xs btn-circle btn"
+                          >
+                            <LinkedinIcon />
+                          </a>
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </>
+          ))}
+
+          {collaborators?.length > 0 && (
+            <div className="flex gap-5 px-2">
+              <h4 className="opacity-80">Colaboradores</h4>
+              <div className="divider mt-1 grow" />
+            </div>
           )}
 
-          <Container>
-            <Row xs={1} lg={3}>
-              {colaborators}
-            </Row>
-          </Container>
-        </>
+          <div className="mt-2 grid grid-cols-2 xs:grid-cols-3 md:grid-cols-4">
+            {collaborators?.map(({ user_id, user }) => (
+              <h5 key={user_id} className="px-7 sm:px-14">
+                {user?.name}
+              </h5>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

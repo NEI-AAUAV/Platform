@@ -28,6 +28,7 @@ const data = [
             {
                 name: "História",
                 link: "/history",
+                disabled: true,
             },
             {
                 name: "RGM",
@@ -50,6 +51,7 @@ const data = [
             {
                 name: "Diário do Tux",
                 link: "/tux",
+                disabled: true,
             },
             {
                 name: "Código de Faina",
@@ -67,12 +69,13 @@ const data = [
     //   link: "/breakthebars",
     // },
     {
-        name: "Família",
+        name: "Famílias",
         link: "/family",
     },
     {
         name: "Finalistas",
         link: "/seniors",
+        disabled: true,
     },
     // {
     //   name: "Estágios",
@@ -82,27 +85,29 @@ const data = [
         name: "Components",
         link: "/components",
     },
-    {
+    !config.PRODUCTION && {
         name: "Test",
-        link: "/testing",
+        link: "/WSTest",
     },
-    {
+    !config.PRODUCTION && {
         name: "TacauaAdminDemo",
-        link: "/tacaua-admin-demo",
+        link: "/WStacaua-admin-demo",
     }
 ];
 
 
 const dataCompacted = (size) => {
-    const items = [...data];
+    const items = data.filter(Boolean);
     const otherItems = items.splice(size - 1);
-    return [
-        ...items,
-        {
+
+    if (otherItems.length !== 0) {
+        items.push({
             name: "Outro",
             dropdown: otherItems
-        },
-    ];
+        });
+    }
+
+    return items;
 }
 
 export { data, dataCompacted };
