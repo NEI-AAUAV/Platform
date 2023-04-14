@@ -91,49 +91,24 @@ const Videos = () => {
       </h2>
 
       <div className="flex w-full justify-end">
-        <CheckboxDropdown className="btn-sm m-1" values={tags} onChange={setTags}>
+        <CheckboxDropdown
+          className="btn-sm m-1"
+          values={tags}
+          onChange={setTags}
+        >
           Filter <FilterIcon />
         </CheckboxDropdown>
       </div>
 
-      {/* Videos list */}
-      <Row>
-        {(loading || loadingCategories) && (
-          <Spinner
-            animation="grow"
-            variant="primary"
-            className="mx-auto mb-3"
-            title="A carregar..."
-          />
-        )}
-        {!loading &&
-          videos.map((video, index) => {
-            const candidates = categories.filter((c) => c.id == video.tag);
-            let tag = [];
-            if (candidates.length > 0) {
-              tag = {
-                name: candidates[0].name,
-                color: candidates[0].color,
-                className: "",
-              };
-            }
-
-            return (
-              <Fragment key={index}>
-                <Document
-                  name={video.title}
-                  description={video.subtitle}
-                  link={"/videos/" + video.id}
-                  blank={false}
-                  // icon={faPlayCircle}
-                  image={video.image}
-                  className="col-lg-6 col-xl-4 slideUpFade p-2"
-                  tags={tag ? [tag] : []}
-                />
-              </Fragment>
-            );
-          })}
-      </Row>
+      <div className="grid grid-cols-[repeat(auto-fit,_minmax(20rem,_1fr))] gap-3 mx-3">
+        {videos.map((video) => {
+          return (
+            <Fragment key={video.id}>
+              <CardVideo video={video} />
+            </Fragment>
+          );
+        })}
+      </div>
       {/* Pagination */}
       <PageNav
         currentPage={selPage}
