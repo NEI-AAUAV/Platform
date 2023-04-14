@@ -102,7 +102,7 @@ module.exports = {
 
         // Neutral
         neutral: "var(--ds-neutral)",
-        "neutral-focus": "var(--ds-neutral-focus)",
+        "neutral-focus": "var(--ds-neutral-focus  )",
         "neutral-content": "var(--ds-neutral-content)",
 
         // Base

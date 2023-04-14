@@ -1,6 +1,4 @@
 import React, { useEffect, useState, Fragment } from "react";
-import { Button, Row, Col } from "react-bootstrap";
-import Image from "react-bootstrap/Image";
 import "./index.css";
 import Typist from "react-typist";
 import config from "config";
