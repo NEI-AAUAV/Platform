@@ -10,7 +10,7 @@ RUN yarn install
 
 COPY . .
 
-RUN yarn build
+RUN GENERATE_SOURCEMAP=false yarn build
 
 FROM nginx
 

@@ -30,6 +30,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+sme-result.html
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

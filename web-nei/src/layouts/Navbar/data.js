@@ -2,6 +2,10 @@ import config from "config";
 
 const data = [
     {
+        name: "Notícias",
+        link: "/news",
+    },
+    {
         name: "Estudo",
         dropdown: [
             {

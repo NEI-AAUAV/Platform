@@ -9,8 +9,6 @@ import CheckboxDropdown from "components/CheckboxDropdown";
 
 import data from "./data";
 
-import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
-
 import { Row, Spinner } from "react-bootstrap";
 import { FilterIcon } from "assets/icons/google";
 
@@ -127,7 +125,7 @@ const Videos = () => {
                   description={video.subtitle}
                   link={"/videos/" + video.id}
                   blank={false}
-                  icon={faPlayCircle}
+                  // icon={faPlayCircle}
                   image={video.image}
                   className="col-lg-6 col-xl-4 slideUpFade p-2"
                   tags={tag ? [tag] : []}

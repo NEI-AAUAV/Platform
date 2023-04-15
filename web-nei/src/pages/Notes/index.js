@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faShareAlt } from "@fortawesome/free-solid-svg-icons";
 import ListView from "./ListView";
 import GridView from "./GridView";
 import PageNav from "../../components/PageNav";
@@ -375,10 +373,10 @@ const Notes = () => {
                     title="Copiar link com filtros"
                   >
                     <span className="mr-1">Partilhar</span>
-                    <FontAwesomeIcon
+                    {/* <FontAwesomeIcon
                       className="link my-auto"
                       icon={faShareAlt}
-                    />
+                    /> */}
                   </button>
                   <button
                     className="animation btn-sm btn mr-2"
@@ -386,7 +384,7 @@ const Notes = () => {
                     title="Remover filtros"
                   >
                     <span className="mr-1">Limpar</span>
-                    <FontAwesomeIcon className="link my-auto" icon={faTimes} />
+                    {/* <FontAwesomeIcon className="link my-auto" icon={faTimes} /> */}
                   </button>
                 </div>
               )}

@@ -1,9 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faInfoCircle,
-  faFilter,
-} from "@fortawesome/free-solid-svg-icons";
 import "./index.css";
 
 import { DownloadIcon, OpenInNewIcon } from "assets/icons/google";
@@ -126,7 +121,7 @@ const ListView = (props) => {
                               <>
                                 <dt className="small font-weight-bold">
                                   <span className="mr-1">Ano letivo</span>
-                                  <FontAwesomeIcon
+                                  {/* <FontAwesomeIcon
                                     className="link mr-1 text-primary"
                                     icon={faFilter}
                                     size={"1x"}
@@ -134,7 +129,7 @@ const ListView = (props) => {
                                     onClick={() =>
                                       props.setSelYear(item.yearId)
                                     }
-                                  />
+                                  /> */}
                                 </dt>
                                 <dd>
                                   {item.school_year?.year_begin}/
@@ -146,7 +141,7 @@ const ListView = (props) => {
                             <>
                               <dt className="small font-weight-bold">
                                 <span className="mr-1">Autor</span>
-                                <FontAwesomeIcon
+                                {/* <FontAwesomeIcon
                                   className="link mr-1 text-primary"
                                   icon={faFilter}
                                   size={"1x"}
@@ -154,7 +149,7 @@ const ListView = (props) => {
                                   onClick={() =>
                                     props.setSelStudent(item.authorId)
                                   }
-                                />
+                                /> */}
                               </dt>
                               <dd>{titleCase(item.author?.name)}</dd>
                             </>
@@ -164,7 +159,7 @@ const ListView = (props) => {
                               <dt className="small font-weight-bold">
                                 <span className="mr-1">
                                   <span className="mr-1">Docente</span>
-                                  <FontAwesomeIcon
+                                  {/* <FontAwesomeIcon
                                     className="link mr-1 text-primary"
                                     icon={faFilter}
                                     size={"1x"}
@@ -172,7 +167,7 @@ const ListView = (props) => {
                                     onClick={() =>
                                       props.setSelTeacher(item.teacher?.id)
                                     }
-                                  />
+                                  /> */}
                                 </span>
                                 {!!item.teacher?.page && (
                                   <a
@@ -181,11 +176,11 @@ const ListView = (props) => {
                                     target="_blank"
                                     rel="noreferrer"
                                   >
-                                    <FontAwesomeIcon
+                                    {/* <FontAwesomeIcon
                                       className="mr-3 text-primary"
                                       icon={faInfoCircle}
                                       size={"1x"}
-                                    />
+                                    /> */}
                                   </a>
                                 )}
                               </dt>

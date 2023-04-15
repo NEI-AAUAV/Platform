@@ -1,25 +1,15 @@
 import React from "react";
 import { Table } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheckCircle,
-  faTimesCircle,
-  faMinusCircle,
-  faAngleUp,
-  faAngleDown,
-  faAngleDoubleDown,
-} from "@fortawesome/free-solid-svg-icons";
 import "./index.css";
 
 const SportTable = (props) => {
-  const UpArrow = <FontAwesomeIcon icon={faAngleUp} className="up" />;
-  const DownArrow = <FontAwesomeIcon icon={faAngleDown} className="down" />;
-  const GameDraw = <FontAwesomeIcon icon={faMinusCircle} className="draw" />;
-  const GameWon = <FontAwesomeIcon icon={faCheckCircle} className="win" />;
-  const GameLost = <FontAwesomeIcon icon={faTimesCircle} className="lose" />;
-  const DoubleDownArrow = (
-    <FontAwesomeIcon icon={faAngleDoubleDown} className="down" />
-  );
+  // This was using @fortawesome, replaced it with span for now
+  const UpArrow = <span className="up">^</span>;
+  const DownArrow = <span className="down">v</span>;
+  const GameDraw = <span className="draw">E</span>;
+  const GameWon = <span className="win">V</span>;
+  const GameLost = <span className="lose">D</span>;
+  const DoubleDownArrow = <span className="down">vv</span>;
 
   const header = [
     {

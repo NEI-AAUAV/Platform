@@ -4,12 +4,6 @@ import "./index.css";
 
 import parse from "html-react-parser";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faInfoCircle,
-  faFilter,
-} from "@fortawesome/free-solid-svg-icons";
-
 import { FilePDFIcon, FolderZipIcon, DownloadIcon, OpenInNewIcon } from "assets/icons/google";
 import { GithubIcon, GoogleDriveIcon } from "assets/icons/social";
 
@@ -200,7 +194,7 @@ const Details = ({
                 <>
                   <dt className="small font-weight-bold">
                     <span className="mr-1">Ano letivo</span>
-                    <FontAwesomeIcon
+                    {/* <FontAwesomeIcon
                       className="link mr-1 text-primary"
                       icon={faFilter}
                       size={"1x"}
@@ -209,7 +203,7 @@ const Details = ({
                         setSelYear(note.school_year?.year_id);
                         setSelPage(1);
                       }}
-                    />
+                    /> */}
                   </dt>
                   <dd>
                     {note.school_year?.year_begin}/{note.school_year?.year_end}
@@ -220,7 +214,7 @@ const Details = ({
                 <>
                   <dt className="small font-weight-bold">
                     <span className="mr-1">Cadeira</span>
-                    <FontAwesomeIcon
+                    {/* <FontAwesomeIcon
                       className="link mr-1 text-primary"
                       icon={faFilter}
                       size={"1x"}
@@ -229,7 +223,7 @@ const Details = ({
                         setSelectedSubject(note.subjectId);
                         setSelPage(1);
                       }}
-                    />
+                    /> */}
                   </dt>
                   <dd>{note.subject?.name}</dd>
                 </>
@@ -238,7 +232,7 @@ const Details = ({
                 <>
                   <dt className="small font-weight-bold">
                     <span className="mr-1">Autor</span>
-                    <FontAwesomeIcon
+                    {/* <FontAwesomeIcon
                       className="link mr-1 text-primary"
                       icon={faFilter}
                       size={"1x"}
@@ -247,7 +241,7 @@ const Details = ({
                         setSelStudent(note.authorId);
                         setSelPage(1);
                       }}
-                    />
+                    /> */}
                   </dt>
                   <dd>{titleCase(note.author?.name)}</dd>
                 </>
@@ -257,7 +251,7 @@ const Details = ({
                   <dt className="small font-weight-bold">
                     <span className="mr-1">
                       <span className="mr-1">Docente</span>
-                      <FontAwesomeIcon
+                      {/* <FontAwesomeIcon
                         className="link mr-1 text-primary"
                         icon={faFilter}
                         size={"1x"}
@@ -266,7 +260,7 @@ const Details = ({
                           setSelTeacher(note.teacher?.id);
                           setSelPage(1);
                         }}
-                      />
+                      /> */}
                     </span>
                     {note.teacher?.personal_page && (
                       <a
@@ -275,11 +269,11 @@ const Details = ({
                         target="_blank"
                         rel="noreferrer"
                       >
-                        <FontAwesomeIcon
+                        {/* <FontAwesomeIcon
                           className="mr-3 text-primary"
                           icon={faInfoCircle}
                           size={"1x"}
-                        />
+                        /> */}
                       </a>
                     )}
                   </dt>

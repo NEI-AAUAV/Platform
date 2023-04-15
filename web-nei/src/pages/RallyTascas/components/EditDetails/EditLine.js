@@ -2,8 +2,6 @@ import { Input, Row, Text, Checkbox } from "@nextui-org/react";
 import React, { useState } from "react";
 import { EditIcon } from "../Icons/EditIcon";
 import { IconButton } from "../Customized";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 import service from 'services/RallyTascasService';
 
@@ -113,7 +111,7 @@ function EditLine({ checkpoint, team, reload }) {
           </IconButton>
           :
           <div>
-            <FontAwesomeIcon
+            {/* <FontAwesomeIcon
               className="text-danger mx-2"
               icon={faTimes}
               size={"2x"}
@@ -124,7 +122,7 @@ function EditLine({ checkpoint, team, reload }) {
               icon={faCheck}
               size={"2x"}
               onClick={submit}
-            />
+            /> */}
           </div>
         }
       </div>
