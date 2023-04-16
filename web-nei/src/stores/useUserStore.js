@@ -24,8 +24,8 @@ export const useUserStore = create((set) => ({
     const payload = parseJWT(token);
     set(() => ({ token, ...payload }));
   },
-  
+
   logout: () => {
-    set(() => ({ token: null }));
+    set(() => ({ name: null, surname: null, token: null }));
   },
 }));
