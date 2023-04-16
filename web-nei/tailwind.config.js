@@ -38,6 +38,7 @@ module.exports = {
   variants: {},
   plugins: [require("daisyui"), require("@emotion/react")],
   daisyui: {
+    logs: false,
     themes: [
       {
         light: {
