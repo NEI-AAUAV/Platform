@@ -1,21 +1,36 @@
 from pydantic import BaseModel
-from typing import List
-
+from typing import List, Optional
 from .match import Match
 
 
-class StandingsRow(BaseModel):
-    pts: int
-    matches: int
-    wins: int
-    ties: int
-    losses: int
-    ff: int
-    score_for: int
-    score_agst: int
-    score_diff: int
-    math_history: List[Match]
+class StandingsCreate(BaseModel):
+    team: str
+    pts: Optional[int]
+    wins: Optional[int]
+    ties: Optional[int]
+    losses: Optional[int]
+    goals_scored: Optional[int]
+    goals_against: Optional[int]
+    goal_difference: Optional[int]
 
+    classification: Optional[int]
+    has_passed: Optional[bool]
 
-class Standings(BaseModel):
-    standings: List[StandingsRow]
+class StandingsUpdate(BaseModel):
+    pts: Optional[int]
+    wins: Optional[int]
+    ties: Optional[int]
+    losses: Optional[int]
+    goals_scored: Optional[int]
+    goals_against: Optional[int]
+    goal_difference: Optional[int]
+
+    classification: Optional[int]
+    has_passed: Optional[bool]
+
+class StandingsInDB(BaseModel):
+    # standings: List[StandingsRow]
+    id: int
+
+    class Config:
+        orm_mode = True
