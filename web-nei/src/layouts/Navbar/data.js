@@ -4,6 +4,7 @@ const data = [
     {
         name: "Notícias",
         link: "/news",
+        disabled: config.PRODUCTION,
     },
     {
         name: "Estudo",
@@ -32,7 +33,7 @@ const data = [
             {
                 name: "História",
                 link: "/history",
-                disabled: true,
+                disabled: config.PRODUCTION,
             },
             {
                 name: "RGM",
@@ -55,7 +56,7 @@ const data = [
             {
                 name: "Diário do Tux",
                 link: "/tux",
-                disabled: true,
+                disabled: config.PRODUCTION,
             },
             {
                 name: "Código de Faina",
@@ -79,7 +80,7 @@ const data = [
     {
         name: "Finalistas",
         link: "/seniors",
-        disabled: true,
+        disabled: config.PRODUCTION,
     },
     // {
     //   name: "Estágios",

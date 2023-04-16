@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     # Auth settings
     ## IDP Secret Key
     IDP_KEY: str = "_82e3318ee5c5cf2c7d7f7a1367fd4b3ea40858f08a"
-    IDP_SECRET_KEY: str = None
+    IDP_SECRET_KEY: str = os.getenv("IDP_SECRET_KEY")
     ## Path to JWT signing keys
     JWT_SECRET_KEY_PATH: str = os.getenv("JWT_SECRET_KEY_PATH", "../dev-keys/jwt.key")
     JWT_PUBLIC_KEY_PATH: str = os.getenv("JWT_PUBLIC_KEY_PATH", "../dev-keys/jwt.key.pub")

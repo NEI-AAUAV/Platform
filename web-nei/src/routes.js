@@ -45,7 +45,7 @@ const routes = [
       { path: "/videos/:id", element: <Video /> },
       { path: "/teams", element: <Team /> },
       { path: "/rgm", element: <RGM /> },
-      { path: "/news/:id?", element: <NewsList />},
+      !config.PRODUCTION && { path: "/news/:id?", element: <NewsList />},
       !config.PRODUCTION && { path: "/history", element: <History /> },
       !config.PRODUCTION && { path: "/seniors/:course?", element: <Seniors /> },
       { path: "/faina", element: <Faina /> },
