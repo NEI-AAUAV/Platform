@@ -7,7 +7,6 @@ import {
 } from "react-bootstrap";
 import YoutubeEmbed from '../../components/YoutubeEmbed';
 import Alert from '../../components/Alert';
-import { faList } from '@fortawesome/free-solid-svg-icons';
 import service from 'services/NEIService';
 
 

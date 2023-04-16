@@ -10,6 +10,7 @@ import EmailVerify from "./auth/EmailVerify";
 import ForgotPassword from "./auth/ForgotPassword";
 import ResetPassword from "./auth/ResetPassword";
 
+import NewsList from "pages/News/NewsList"
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
 import Error404 from "./pages/Error404";
@@ -44,6 +45,7 @@ const routes = [
       { path: "/videos/:id", element: <Video /> },
       { path: "/teams", element: <Team /> },
       { path: "/rgm", element: <RGM /> },
+      { path: "/news/:id?", element: <NewsList />},
       !config.PRODUCTION && { path: "/history", element: <History /> },
       !config.PRODUCTION && { path: "/seniors/:course?", element: <Seniors /> },
       { path: "/faina", element: <Faina /> },

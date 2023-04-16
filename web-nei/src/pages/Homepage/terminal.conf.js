@@ -4,13 +4,12 @@ import { CommandMapping, EmulatorState, FileSystem, OutputFactory, defaultComman
 
 
 const defaultState = EmulatorState.createEmpty();
-    const defaultOutputs = defaultState.getOutputs();
+const defaultOutputs = defaultState.getOutputs();
 
-    const newOutputs = Outputs.addRecord(
-      defaultOutputs, OutputFactory.makeTextOutput(
-        "Welcome to the hacker zone! "
-      )
-    );
+const newOutputs = Outputs.addRecord(
+    defaultOutputs, 
+    OutputFactory.makeTextOutput("Welcome to the hacker zone! ")
+);
 
 
 const terminalstate = EmulatorState.create(

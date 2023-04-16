@@ -3,8 +3,6 @@ import React from "react";
 import Image from "react-bootstrap/Image";
 import { Container, Row, Col } from "react-bootstrap";
 import "./Person.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
 
 const Logo = process.env.PUBLIC_URL + "/linkedingLogo.png";
 
