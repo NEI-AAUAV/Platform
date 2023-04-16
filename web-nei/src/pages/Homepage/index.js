@@ -12,7 +12,7 @@ import ReactLogo from "assets/images/theming-gradient.svg";
 import { ReactComponent as BackgroundImage } from "assets/images/theming-gradient.svg";
 
 import MockupTerminal from "components/MockupTerminal";
-import NewsList from "../News/NewsList";
+import NewsList2 from "../News/NewsList2";
 import Partners from "./Partners";
 import Merchandising from "./Merchandising";
 import particlesConf1 from "./particles1.config";
@@ -145,7 +145,7 @@ const Homepage = () => {
                 title="A carregar..."
               />
             ) : (
-              <NewsList news={news}></NewsList>
+              <NewsList2 news={news}></NewsList2>
             )}
             <div
               variant="outline-dark"

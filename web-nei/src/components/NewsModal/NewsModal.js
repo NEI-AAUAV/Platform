@@ -25,7 +25,7 @@ export const NewsModal = (props) => {
         >
           <motion.div
             className="h-3/5"
-            layoutId={`card-${props.data.id}`}
+            layoutId={`card-news`}
             initial={{
               opacity: 0,
               y: 50,
