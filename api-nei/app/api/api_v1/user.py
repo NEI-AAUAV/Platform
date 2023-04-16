@@ -31,7 +31,7 @@ def get_curr_user(
     """ """
     id = int(payload["sub"])
 
-    if not db.get(User, id):
+    if not crud.user.get(id):
         raise HTTPException(status_code=404, detail="Invalid User")
     
     return crud.user.get(db=db, id=id)
@@ -44,7 +44,7 @@ def get_user_by_id(
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """ """
-    if not db.get(User, id):
+    if not crud.user.get(id):
         raise HTTPException(status_code=404, detail="Invalid User id")
     return crud.user.get(db=db, id=id)
 
@@ -68,7 +68,7 @@ def update_curr_user(
     """
     id = int(payload["sub"])
 
-    if not db.get(User, id):
+    if not crud.user.get(id):
         raise HTTPException(status_code=404, detail="Invalid User id")
 
     return crud.note.update(db=db, obj_in=user_in, db_obj=db.get(User, id))
@@ -81,7 +81,7 @@ def update_user(
     """
     Update a user in the database.
     """
-    if not db.get(User, id):
+    if not crud.user.get(id):
         raise HTTPException(status_code=404, detail="Invalid User id")
 
     return crud.note.update(db=db, obj_in=user_in, db_obj=db.get(User, id))
