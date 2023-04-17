@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from typing import Type
 
@@ -35,3 +36,22 @@ def include(fields: list[str]):
         return cls
 
     return decorator
+
+
+def validate_to_json(cls: Type[BaseModel]):
+    """Validates schemas that are stringified.
+
+    This is useful to validate requests with a form data containing an image
+    file and a schema stringified.
+    """
+    def __get_validators__(cls):
+        yield cls.validate_to_json
+
+    def validate_to_json(cls, value):
+        if isinstance(value, str):
+            return cls(**json.loads(value))
+        return value
+
+    setattr(cls, '__get_validators__', classmethod(__get_validators__))
+    setattr(cls, 'validate_to_json', classmethod(validate_to_json))
+    return cls

@@ -22,8 +22,11 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
     ) -> Team:
         img_path = None
         if image:
-            img_data = await image.read()
-            img = Image.open(BytesIO(img_data))
+            try:
+                img_data = await image.read()
+                img = Image.open(BytesIO(img_data))
+            except:
+                raise ImageFormatException()
             ext = img.format
             if not ext in ('JPEG', 'PNG'):
                 raise ImageFormatException()

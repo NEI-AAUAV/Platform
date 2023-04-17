@@ -22,7 +22,6 @@ app.add_event_handler("startup", init_logging)
 app.add_event_handler("startup", init_db)
 app.include_router(api_v1_router, prefix=settings.API_V1_STR)
 
-
 if __name__ == "__main__":
     # Use this for debugging purposes only
     import uvicorn

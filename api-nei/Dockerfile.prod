@@ -19,7 +19,7 @@ WORKDIR /api_nei
 COPY --from=requirements-stage /tmp/requirements.txt requirements.txt
 
 RUN apt-get update \
-    && apt-get -y install libpq-dev gcc
+    && apt-get -y install libpq-dev gcc libmagic1
 
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir --upgrade -r requirements.txt

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Security
+from fastapi import APIRouter, Depends, HTTPException, Query, Security, UploadFile, File, Form, Request
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get("/", status_code=200, response_model=List[UserInDB])
-def get_users(
+async def get_users(
     *,
     db: Session = Depends(deps.get_db),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
@@ -23,7 +23,7 @@ def get_users(
 
 
 @router.get("/me", status_code=200, response_model=UserInDB)
-def get_curr_user(
+async def get_curr_user(
     *,
     db: Session = Depends(deps.get_db),
     payload = Security(auth.verify_token, scopes=[])
@@ -31,26 +31,28 @@ def get_curr_user(
     """ """
     id = int(payload["sub"])
 
-    if not crud.user.get(id):
+    user = crud.user.get(db=db, id=id)
+    if not user:
         raise HTTPException(status_code=404, detail="Invalid User")
     
-    return crud.user.get(db=db, id=id)
+    return user
 
 
 @router.get("/{id}", status_code=200, response_model=UserInDB)
-def get_user_by_id(
+async def get_user_by_id(
     *,
     id: int,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """ """
-    if not crud.user.get(id):
-        raise HTTPException(status_code=404, detail="Invalid User id")
-    return crud.user.get(db=db, id=id)
+    user = crud.user.get(db=db, id=id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+    return user
 
 
 @router.post("/", status_code=201, response_model=UserInDB)
-def create_user(*, user_in: UserCreate, db: Session = Depends(deps.get_db)) -> dict:
+async def create_user(*, user_in: UserCreate, db: Session = Depends(deps.get_db)) -> dict:
     """
     Create a new user in the database.
     """
@@ -58,8 +60,11 @@ def create_user(*, user_in: UserCreate, db: Session = Depends(deps.get_db)) -> d
 
 
 @router.put("/me", status_code=200, response_model=UserInDB)
-def update_curr_user(
-    *, user_in: UserUpdate, 
+async def update_curr_user(
+    *, request: Request,
+    user_in: UserUpdate = Form(..., alias='user'),
+    image: UploadFile = File(None),
+    curriculum: UploadFile = File(None),
     db: Session = Depends(deps.get_db), 
     payload = Security(auth.verify_token, scopes=[])
 ) -> dict:
@@ -68,20 +73,31 @@ def update_curr_user(
     """
     id = int(payload["sub"])
 
-    if not crud.user.get(id):
-        raise HTTPException(status_code=404, detail="Invalid User id")
+    user = crud.user.get(db=db, id=id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+    
+    user = crud.user.update(db, db_obj=user, obj_in=user_in)
+    form = await request.form()
+    if 'image' in form:
+        user = await crud.user.update_image(
+            db=db, db_obj=user, image=image)
+    if 'curriculum' in form:
+        user = await crud.user.update_curriculum(
+            db=db, db_obj=user, curriculum=curriculum)
 
-    return crud.note.update(db=db, obj_in=user_in, db_obj=db.get(User, id))
+    return user
 
 
 @router.put("/{id}", status_code=200, response_model=UserInDB)
-def update_user(
+async def update_user(
     *, user_in: UserUpdate, db: Session = Depends(deps.get_db), id: int
 ) -> dict:
     """
     Update a user in the database.
     """
-    if not crud.user.get(id):
+    user = crud.user.get(db=db, id=id)
+    if not user:
         raise HTTPException(status_code=404, detail="Invalid User id")
 
-    return crud.note.update(db=db, obj_in=user_in, db_obj=db.get(User, id))
+    return crud.note.update(db=db, obj_in=user_in, db_obj=user)
