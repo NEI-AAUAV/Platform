@@ -22,15 +22,17 @@ const CardMerch = ({ img, title, price, className }) => {
   return (
     <>
       <div
-        className={`flex flex-col max-w-md w-fit rounded justify-center items-center bg-base-200 p-6 shadow-md my-2 ${className}`}
+        className={`flex flex-col max-w-sm rounded-3xl justify-center items-center bg-base-200 p-6 shadow-md ${
+          className ?? ""
+        }`}
       >
         <img
           src={img}
-          className="max-w-sm max-h-96 block object-cover object-center hover:scale-110 transition ease-in duration-150 p-6 "
+          className="max-w-full block object-cover object-center hover:scale-110 transition ease-in duration-150 my-auto p-6 "
           alt="Imagem Disponível em Breve"
         />
-        <div className="card-body justify-end">
-          <h1>{title}</h1>
+        <div className="card-body justify-end grow-0">
+          <h1 className="text-center">{title}</h1>
           <div className="flex justify-center items-center">
             <h3 className="text-lg font-medium">Preço: {formattedPrice}</h3>
           </div>

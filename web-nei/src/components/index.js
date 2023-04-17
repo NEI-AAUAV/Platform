@@ -7,3 +7,5 @@ export { default as MockupTerminal } from "./MockupTerminal";
 export { default as MultipleRangeInput } from "./MultipleRangeInput";
 export { default as CardMerch } from "./CardMerch";
 export { default as CardVideo } from "./CardVideo";
+export { default as SportsCard } from "./SportsCard";
+export { default as TabsButton } from "./TabsButton";

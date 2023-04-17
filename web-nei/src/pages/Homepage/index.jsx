@@ -64,8 +64,6 @@ const Homepage = () => {
     }
   }
 
-
-
   return (
     <>
       {/* <img alt="background" className="w-screen h-screen" src={'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><g opacity=".3" filter="url(#a)"><path fill="hsl(var(--p))" opacity=".5" d="M35.3 44.6c-.5 1.8-2.5 2.7-2.8 4.8 0 .5-.6 1.5-2.5 1.3-1.8 1.1-7.6-1-9 .8-1 1.3-2.1 3.1-1.7 5.5.3 1.9 1.3 3.8 2.3 5.4 1.5 2.3 3.3 4.5 5.2 6.2 6.2 5.5 13.5 6.919.7 7 7.6 0 14.1-3 19.7-7.9 2.2-2 4.3-4.3 5.9-7.3 1.4-2.7.6-5.7 3.59 0 1.1-4.1 1.8-8.7 1.3-13.7-.3-3.7-1.97.4-4.1-10.7-2.94.56.9-7-10.8-7.3-2.3-.1-5 .8-5.14.2 0 2.5 1 5.4 1.78.05.7 1.1 4.2.05.1-1.8 1.54.5 1.9-6.9 2.3-3 .3-6.3-.4-9.5-.6-1.8-.1-3.3.8-4.6 1.9-1.092"/></g><g opacity=".3" filter="url(#b)"><path fill="hsl(var(--s))" opacity=".5" d="M35.3 44.6c-.5 1.8-2.5 2.7-2.8 4.8 0 .5-.6 1.5-2.5 1.3-1.8 1.1-7.6-1-9 .8-1 1.3-2.1 3.1-1.7 5.5.3 1.9 1.3 3.8 2.3 5.4 1.5 2.3 3.3 4.5 5.2 6.2 6.2 5.5 13.5 6.919.7 7 7.6 0 14.1-3 19.7-7.9 2.2-2 4.3-4.3 5.9-7.3 1.4-2.7.6-5.7 3.59 0 1.1-4.1 1.8-8.7 1.3-13.7-.3-3.7-1.97.4-4.1-10.7-2.94.56.9-7-10.8-7.3-2.3-.1-5 .8-5.14.2 0 2.5 1 5.4 1.78.05.7 1.1 4.2.05.1-1.8 1.54.5 1.9-6.9 2.3-3 .3-6.3-.4-9.5-.6-1.8-.1-3.3.8-4.6 1.9-1.092"/></g><defs><filter id="a" x="0" y="0" width="96" height="96" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_577_931"/></filter><filter id="b" x="0" y="0" width="96" height="96" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_577_931"/></filter></defs></svg>'} ></img>
@@ -89,7 +87,6 @@ const Homepage = () => {
         <div className="mb-72 grid grid-cols-1 gap-4 lg:mt-20 lg:grid-cols-2">
           <div className="flex flex-col justify-between">
             <div className="relative top-[-80px] hidden h-full opacity-0 transition-opacity lg:block lg:opacity-80">
-              
               <Particles
                 container={containerRef[0]}
                 className="absolute h-[500px] w-[500px]"
@@ -105,7 +102,12 @@ const Homepage = () => {
                 init={particlesInit}
               />
               <div className="absolute top-1/2 left-0 right-0 m-auto -translate-y-1/2 ">
-                <PlayArrowIcon className="cursor-pointer" height={"50"} width={"50"} onClick={pauseAnimation} />
+                <PlayArrowIcon
+                  className="cursor-pointer"
+                  height={"50"}
+                  width={"50"}
+                  onClick={pauseAnimation}
+                />
               </div>
             </div>
             <div className="z-1 relative text-4xl leading-tight lg:text-5xl">
@@ -147,14 +149,9 @@ const Homepage = () => {
             ) : (
               <NewsList2 news={news}></NewsList2>
             )}
-            <div
-              variant="outline-dark"
-              className="rounded-pill btn mx-auto"
-              size="lg"
-              href="/news"
-            >
+            <a className="btn mx-auto" href="/news">
               Ver Todas
-            </div>
+            </a>
           </div>
         </section>
 

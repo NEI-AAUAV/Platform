@@ -15,7 +15,7 @@ const Footer = () => (
   <footer className="relative mt-auto">
     <div className="h-16 footer mx-auto flex w-full max-w-[90rem] flex-col-reverse items-center justify-center gap-1 p-4 xs:flex-row xs:justify-between">
       <div className="grid-flow-col items-center">
-        <p className="xs:ml-2"> 
+        <p className="xs:ml-2">
           &copy; {new Date().getFullYear()} - All right reserved by NEI-AAUAv.
         </p>
       </div>
@@ -53,9 +53,8 @@ const MainFooter = () => {
             className="h-24 md:h-32"
           />
           <p className="ml-2">
-            Núcleo de Estudantes de Informática da AAUAv 
-            <br />
-            A apoiar os estudantes desde 2013.
+            Núcleo de Estudantes de Informática da AAUAv
+            <br />A apoiar os estudantes desde 2013.
           </p>
           <p className="ml-2">
             &copy; {new Date().getFullYear()} - All right reserved by NEI-AAUAv.
@@ -65,11 +64,18 @@ const MainFooter = () => {
           <span className="footer-title">Contacto</span>
           <span className="ml-1 inline-flex min-h-[2rem] items-center gap-3">
             <LocationIcon />
-            3810-193 Aveiro, Portugal
+            <a
+              href="https://goo.gl/maps/JZY6mi3T9T6UxE3z6"
+              className="link link-hover"
+            >
+              3810-193 Aveiro, Portugal
+            </a>
           </span>
           <span className="ml-1 inline-flex min-h-[2rem] items-center gap-3">
             <MailIcon />
-            <a href="mailto:nei@aauav.pt" className="link link-hover">nei@aauav.pt</a>
+            <a href="mailto:nei@aauav.pt" className="link link-hover">
+              nei@aauav.pt
+            </a>
           </span>
 
           <span className="footer-title mt-4">Social</span>

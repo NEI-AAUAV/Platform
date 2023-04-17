@@ -21,10 +21,11 @@ import {
   ViewListIcon,
 } from "assets/icons/google";
 import { GithubIcon, GoogleDriveIcon } from "assets/icons/social";
+import { TabsButton } from "components";
 
 const Views = {
-  GRID: 1,
-  LIST: 2,
+  GRID: 0,
+  LIST: 1,
 };
 
 const Notes = () => {
@@ -103,8 +104,8 @@ const Notes = () => {
       category: [],
     };
 
-    for (var i = 0; i < activeFilters.length; i++) {
-      const cat = filters.filter((f) => f["name"] == activeFilters[i])[0]["db"];
+    for (let activeFilter of activeFilters) {
+      const cat = filters.filter((f) => f["name"] == activeFilter)[0]["db"];
       params.category.push(cat);
     }
 
@@ -295,10 +296,10 @@ const Notes = () => {
     if (selTeacher != "") url += `teacher=${selTeacher}&`;
     // Only include filters tags if not all selected (because if missing from url, all will be selected by default)
     if (activeFilters.length !== filters.length) {
-      for (var i = 0; i < activeFilters.length; i++) {
+      for (let activeFilter of activeFilters) {
         url +=
           "category=" +
-          filters.name((f) => f["filter"] == activeFilters[i])[0]["db"] +
+          filters.name((f) => f["filter"] == activeFilter)[0]["db"] +
           "&";
       }
     }
@@ -389,7 +390,11 @@ const Notes = () => {
                 </div>
               )}
 
-              <CheckboxDropdown className="btn-sm m-1" values={categories} onChange={setCategories}>
+              <CheckboxDropdown
+                className="btn-sm m-1"
+                values={categories}
+                onChange={setCategories}
+              >
                 Filter <FilterIcon />
               </CheckboxDropdown>
             </div>
@@ -414,34 +419,23 @@ const Notes = () => {
          ** using a custom layout. The Nav element contains the buttons that switch
          ** the views, which are specified in each Tab.Pane element.
          */}
-        <div className="w-full">
-          <div className="flex w-fit items-center space-x-1 rounded-full bg-base-200 px-2 py-1">
-            <button
-              className={classNames(
-                "btn-sm btn gap-2 border-none bg-accent py-1",
-                view === Views.GRID
-                  ? "no-animation shadow hover:bg-accent"
-                  : "bg-transparent hover:bg-base-300 hover:opacity-75"
-              )}
-              onClick={() => setView(Views.GRID)}
-            >
-              <GridViewIcon />
-            </button>
-            <button
-              className={classNames(
-                "btn-sm btn gap-2 border-none bg-accent py-1",
-                view === Views.LIST
-                  ? "no-animation shadow hover:bg-accent"
-                  : "bg-transparent hover:bg-base-300 hover:opacity-75"
-              )}
-              onClick={() => setView(Views.LIST)}
-            >
-              <ViewListIcon />
-            </button>
-          </div>
+
+        <div>
+          <TabsButton
+            tabs={[
+              <>
+                <GridViewIcon />
+              </>,
+              <>
+                <ViewListIcon />
+              </>,
+            ]}
+            selected={view}
+            setSelected={setView}
+          />
 
           <div>
-            {view === Views.GRID && (
+            {view === 0 && (
               <div className="flex">
                 {loading ? (
                   <Spinner
