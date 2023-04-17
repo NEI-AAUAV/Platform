@@ -3,13 +3,12 @@ import Typist from "react-typist";
 
 import PageNav from "../../components/PageNav";
 import service from "services/NEIService";
-import Document from "components/Document";
+import CardVideo from "components/CardVideo";
 
 import CheckboxDropdown from "components/CheckboxDropdown";
 
 import data from "./data";
 
-import { Row, Spinner } from "react-bootstrap";
 import { FilterIcon } from "assets/icons/google";
 
 const Videos = () => {
