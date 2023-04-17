@@ -1,5 +1,5 @@
 from enum import Enum
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional, List
 
 from pydantic import BaseModel, constr, AnyHttpUrl, root_validator, Field
@@ -60,6 +60,7 @@ class UserInDB(UserBase):
     curriculum: Optional[AnyHttpUrl]
     created_at: datetime
     updated_at: datetime
+    birthday: Optional[date]
     scopes: List[ScopeEnum] = []
     academic_details: List[UserAcademicDetailsInBD]
 

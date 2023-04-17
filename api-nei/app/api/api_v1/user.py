@@ -22,6 +22,21 @@ def get_users(
     return crud.user.get_multi(db=db)
 
 
+@router.get("/me", status_code=200, response_model=UserInDB)
+def get_curr_user(
+    *,
+    db: Session = Depends(deps.get_db),
+    payload = Security(auth.verify_token, scopes=[])
+) -> Any:
+    """ """
+    id = int(payload["sub"])
+
+    if not crud.user.get(id):
+        raise HTTPException(status_code=404, detail="Invalid User")
+    
+    return crud.user.get(db=db, id=id)
+
+
 @router.get("/{id}", status_code=200, response_model=UserInDB)
 def get_user_by_id(
     *,
@@ -29,7 +44,7 @@ def get_user_by_id(
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """ """
-    if not db.get(User, id):
+    if not crud.user.get(id):
         raise HTTPException(status_code=404, detail="Invalid User id")
     return crud.user.get(db=db, id=id)
 
@@ -42,6 +57,23 @@ def create_user(*, user_in: UserCreate, db: Session = Depends(deps.get_db)) -> d
     return crud.user.create(db=db, obj_in=user_in)
 
 
+@router.put("/me", status_code=200, response_model=UserInDB)
+def update_curr_user(
+    *, user_in: UserUpdate, 
+    db: Session = Depends(deps.get_db), 
+    payload = Security(auth.verify_token, scopes=[])
+) -> dict:
+    """
+    Update current user in the database.
+    """
+    id = int(payload["sub"])
+
+    if not crud.user.get(id):
+        raise HTTPException(status_code=404, detail="Invalid User id")
+
+    return crud.note.update(db=db, obj_in=user_in, db_obj=db.get(User, id))
+
+
 @router.put("/{id}", status_code=200, response_model=UserInDB)
 def update_user(
     *, user_in: UserUpdate, db: Session = Depends(deps.get_db), id: int
@@ -49,7 +81,7 @@ def update_user(
     """
     Update a user in the database.
     """
-    if not db.get(User, id):
+    if not crud.user.get(id):
         raise HTTPException(status_code=404, detail="Invalid User id")
 
     return crud.note.update(db=db, obj_in=user_in, db_obj=db.get(User, id))
