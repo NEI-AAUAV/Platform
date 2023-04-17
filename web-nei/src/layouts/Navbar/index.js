@@ -12,12 +12,14 @@ import {
     ExpandLessIcon,
     ExpandMoreIcon,
     OpenInNewIcon,
+    LoginIcon,
     LogoutIcon,
     DarkModeIcon,
     LightModeIcon,
     MenuIcon,
     CloseIcon,
-    PersonIcon
+    PersonIcon,
+    PersonAddIcon
 } from "assets/icons/google";
 
 import { data, dataCompacted } from "./data";
@@ -137,8 +139,14 @@ const Navbar = () => {
                             </label>
                             {!token ?
                                 <>
-                                    <Link to="/auth/login" className="btn btn-sm btn-outline btn-neutral">Entrar</Link>
-                                    <Link to="/auth/register" className="btn btn-primary btn-sm">Registar</Link>
+                                    <Link to="/auth/login" className="btn btn-sm btn-outline btn-neutral gap-2 btn-circle md:!w-fit md:!px-3">
+                                        <span className="hidden md:block">Entrar</span>
+                                        <LoginIcon />
+                                    </Link>
+                                    <Link to="/auth/register" className="btn btn-primary btn-sm gap-2 btn-circle md:!w-fit md:!px-3">
+                                        <span className="hidden md:block">Registar</span>
+                                        <PersonAddIcon />
+                                    </Link>
                                 </>
                                 :
                                 <div className="dropdown dropdown-end">
@@ -148,7 +156,7 @@ const Navbar = () => {
                                                 <img src="https://placeimg.com/192/192/people" />
                                             </div>
                                         </div>
-                                        <span>
+                                        <span className="hidden md:block">
                                             {name} {surname}
                                         </span>
                                         <label className="swap swap-rotate ">

@@ -17,6 +17,7 @@ const Autocomplete = ({ items, value, onChange, placeholder, renderOption }) => 
 
   useEffect(() => {
     setOptions(items);
+    resetText();
   }, [items]);
 
   useEffect(() => {
@@ -65,12 +66,12 @@ const Autocomplete = ({ items, value, onChange, placeholder, renderOption }) => 
         tabIndex={0}
       />
       <div className="absolute right-3 top-1/2 flex !-translate-y-1/2 items-center gap-2 text-base-content/25">
-        {!!value && (
+        {!!value && items.length > 0 && (
           <button
             className="btn-ghost btn-xs btn-circle btn text-base-content"
             // Hack to prevent calling focus on input
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => setValue(null)}
+            onClick={() => setValue("")}
           >
             <CloseIcon />
           </button>

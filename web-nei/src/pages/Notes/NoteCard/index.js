@@ -11,14 +11,12 @@ import { monthsPassed } from "utils";
  */
 const NoteCard = ({
   note,
-  description,
   link,
   className,
   Icon,
   onClick,
   title,
   style,
-  iconColor,
 }) => {
   const { author, subject } = note;
   function getTags(tag) {
@@ -43,7 +41,7 @@ const NoteCard = ({
       onClick={onClick}
       title={title ? title : ""}
       style={style}
-      className={"m-1.5 cursor-pointer no-underline " + className}
+      className={"cursor-pointer no-underline " + className}
     >
       <div className="h-full rounded-md border border-base-content/10 !bg-base-200 p-4 shadow-sm transition-hover duration-300 hover:-translate-y-1 hover:shadow-md hover:brightness-110">
         <div className="flex items-center text-left">
@@ -60,7 +58,7 @@ const NoteCard = ({
           </p>
           {author && (
             <div
-              className="tooltip avatar mr-1 ml-auto"
+              className="tooltip tooltip-left avatar mr-1 ml-auto"
               data-tip={`Autoria de ${author.name} ${author.surname}`}
             >
               <div className="mask mask-circle w-6">

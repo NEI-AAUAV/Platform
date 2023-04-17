@@ -10,8 +10,8 @@ from .user_academic_details import UserAcademicDetailsInBD
 
 
 class GenderEnum(str, Enum):
-    MALE = 'Masculino'
-    FEMALE = 'Feminino'
+    MALE = 'M'
+    FEMALE = 'F'
 
 
 class ScopeEnum(str, Enum):

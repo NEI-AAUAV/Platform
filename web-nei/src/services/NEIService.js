@@ -166,6 +166,14 @@ class NEIService {
     return await client.get(`/senior/${course}/${year}`);
   }
 
+  async getCurrUser() {
+    return await client.get("/user/me");
+  }
+
+  async updateCurrUser(data) {
+    return await client.put("/user/me", data);
+  }
+
   async login(data) {
     return await client.post("/auth/login/", data);
   }
