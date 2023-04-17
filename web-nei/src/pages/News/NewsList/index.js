@@ -129,29 +129,31 @@ const cardData = [
 
 const Image = ({ image, selected, pointOfInterest = 0 }) => {
   return (
-    <div 
-    className="relative h-96 overflow-hidden bg-red-500"
-    >
-    <motion.div
-      layout
-      className="absolute"
-      style={{width: 'calc(1024px + 80px)'}}
-      animate={selected ? { top: -40, left: -40, bottom: -40 } : { top: -4, left: -4, bottom: -4 }}
-    >
-      <motion.img
-        src={image}
-        alt=""
-        initial={false}
+    <div className="relative h-96 overflow-hidden bg-red-500">
+      <motion.div
         layout
-        animate={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          objectPosition: 'center'
-        }}
-        // transition={closeSpring}
-      />
-    </motion.div>
+        className="absolute"
+        style={{ width: "calc(1024px + 80px)" }}
+        animate={
+          selected
+            ? { top: -40, left: -40, bottom: -40 }
+            : { top: -4, left: -4, bottom: -4 }
+        }
+      >
+        <motion.img
+          src={image}
+          alt=""
+          initial={false}
+          layout
+          animate={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+          // transition={closeSpring}
+        />
+      </motion.div>
     </div>
   );
 };
@@ -185,17 +187,17 @@ function NewsList() {
           return (
             <div
               key={item.id}
-              className="flex h-96 grow relative"
+              className="relative flex h-96 grow"
               style={{ flexBasis: sample([340, 340, 340, 360, 360, 400, 440]) }}
             >
               <motion.div
-                initial={{ opacity: 0 }}
+                // initial={false}
                 animate={{ opacity: selected ? 1 : 0 }}
                 transition={{ duration: 0.15 }}
                 style={{
                   pointerEvents: selected ? "auto" : "none",
                 }}
-                className="fixed inset-0 z-40 bg-black/80 transition-opacity"
+                className="fixed inset-0 !z-50 bg-black/80"
                 onClick={() => navigate("/news")}
               />
               <motion.div
@@ -206,7 +208,7 @@ function NewsList() {
                       selected,
                   },
                 )}
-                animate={selected ? { zIndex: 40 } : { zIndex: 0 }}
+                animate={selected ? { zIndex: 50 } : { zIndex: 0 }}
                 transition={{ duration: 0, delay: selected ? 0 : 0.3 }}
               >
                 <motion.div
@@ -216,7 +218,9 @@ function NewsList() {
                   whileHover={
                     !selectedId && { transition: { duration: 0.3 }, y: -4 }
                   }
-                  animate={{ height: selected ? 700 : 380, zIndex: selected ? 40 : 0 }}
+                  animate={{
+                    height: selected ? 700 : 380,
+                  }}
                   className={classNames(
                     "relative mx-auto h-full w-full overflow-hidden rounded-2xl bg-base-300",
                     selected
@@ -227,34 +231,22 @@ function NewsList() {
                 >
                   <Image image={item.image} selected={selected} />
                   <div className="absolute left-0 top-0 w-full bg-gradient-to-b from-black/60 to-black/0 text-white/90">
-                  <motion.div
-                    layout
-                    initial={false}
-                    animate={selected ? { padding: 30, paddingRight: 15 } : { padding: 15, paddingRight: 30 }}
-                    className="max-w-[340px] box-content !pb-20"
-                  >
-                    <span>{item.category}</span>
-                    <h3>{item.title}</h3>
-                  </motion.div>
+                    <motion.div
+                      layout
+                      initial={false}
+                      animate={
+                        selected
+                          ? { padding: 30, paddingRight: 15 }
+                          : { padding: 15, paddingRight: 30 }
+                      }
+                      className="box-content max-w-[340px] !pb-20"
+                    >
+                      <span>{item.category}</span>
+                      <h3>{item.title}</h3>
+                    </motion.div>
                   </div>
-                  {/* <AnimatePresence>
-                  {selected && <motion.div
-                    layout
-                    className="p-5"
-                    // layoutOrigin={[0, 0]}
-                    // animate={{ height: selected ? "auto" : 0 }}
-                    // animate={{ padding: selected ? "35px 35px 35px 35px" : 0 }}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {item.text}
-                  </motion.div>}
-                  </AnimatePresence> */}
-                  <div style={{padding: 30}}>
-                  {item.text}
-                  </div>
+
+                  <div style={{ padding: 30 }}>{item.text}</div>
                 </motion.div>
               </motion.div>
             </div>

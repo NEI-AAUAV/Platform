@@ -104,7 +104,7 @@ const Navbar = () => {
                         <ul className="menu menu-horizontal px-1">
                             {navItems.map(({ name, link, disabled, dropdown }, index) => (
                                 !dropdown ? (
-                                    <li key={index} className={disabled && "pointer-events-none opacity-50"}>
+                                    <li key={index} className={classNames({"pointer-events-none opacity-50" : disabled})}>
                                         <LinkAdapter to={link}>{name}</LinkAdapter>
                                     </li>
                                 ) : (
@@ -115,7 +115,7 @@ const Navbar = () => {
                                         </a>
                                         <ul className="p-2 bg-base-200 border border-base-300 shadow !rounded-box w-52">
                                             {dropdown.map(({ name, link, disabled, external }, index) =>
-                                                <li key={index} className={disabled && "pointer-events-none opacity-50"}>
+                                                <li key={index} className={classNames({"pointer-events-none opacity-50" : disabled})}>
                                                     <LinkAdapter to={link} external={external} className="justify-between">
                                                         {name}
                                                         {!!external && <OpenInNewIcon />}

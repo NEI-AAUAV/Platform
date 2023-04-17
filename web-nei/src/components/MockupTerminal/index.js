@@ -40,7 +40,7 @@ const initialState = {
 };
 
 const MockupTerminal = () => {
-    const surname = useUserStore((state) => state.surname);
+    const surname = useUserStore((state) => state.surname)?.toLowerCase();
 
     const inputRef = useRef(null);
     const terminalRef = useRef(null);
