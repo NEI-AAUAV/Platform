@@ -98,6 +98,6 @@ async def update_user(
     """
     user = crud.user.get(db=db, id=id)
     if not user:
-        raise HTTPException(status_code=404, detail="Invalid User id")
+        raise HTTPException(status_code=404, detail="User not found.")
 
     return crud.note.update(db=db, obj_in=user_in, db_obj=user)

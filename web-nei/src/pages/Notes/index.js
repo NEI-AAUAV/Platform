@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Spinner } from "react-bootstrap";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -25,6 +25,7 @@ import {
 } from "assets/icons/google";
 import { GithubIcon, GoogleDriveIcon } from "assets/icons/social";
 import { TabsButton } from "components";
+import { debounce } from "lodash";
 
 const Views = {
   GRID: 0,
@@ -63,6 +64,10 @@ const Notes = () => {
     text: "",
   });
 
+  const debouncedSetCategories = useCallback(
+    debounce(setCategories, 300)
+  , []);
+
   const fetchPage = (pageNum) => {
     setSelPage(pageNum);
   };
@@ -98,13 +103,20 @@ const Notes = () => {
     // Every time a new call is made to the API, close details
     setSelNote(null);
 
+    const selCategories = categories
+      .filter((c) => c.checked)
+      .map((c) => c.name);
+    const selCategoriesKeys = Object.entries(data.categories)
+      .filter(([k, v]) => selCategories.includes(v.name))
+      .map(([k]) => k);
+
     const params = {
       year: selYear || null,
       subject: selSubject || null,
       student: selStudent || null,
       teacher: selTeacher || null,
       curricular_year: selCurricularYear || null,
-      category: [],
+      category: selCategoriesKeys,
     };
 
     for (let activeFilter of activeFilters) {
@@ -276,6 +288,7 @@ const Notes = () => {
     selPage,
     selTeacher,
     selCurricularYear,
+    categories,
   ]);
 
   useEffect(() => {
@@ -436,7 +449,7 @@ const Notes = () => {
             <CheckboxDropdown
               className="btn-sm gap-2"
               values={categories}
-              onChange={setCategories}
+              onChange={debouncedSetCategories}
             >
               Categorias <FilterIcon />
             </CheckboxDropdown>

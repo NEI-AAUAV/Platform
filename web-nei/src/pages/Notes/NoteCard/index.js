@@ -4,6 +4,9 @@ import LinkAdapter from "utils/LinkAdapter";
 
 import { monthsPassed } from "utils";
 
+import malePic from "assets/default_profile/male.svg";
+import femalePic from "assets/default_profile/female.svg";
+
 /**
  *
  * @param {ReactElement} Icon optional
@@ -56,13 +59,13 @@ const NoteCard = ({
               </span>
             )}
           </p>
-          {author && (
+          {!!author && (
             <div
               className="tooltip tooltip-left avatar mr-1 ml-auto"
               data-tip={`Autoria de ${author.name} ${author.surname}`}
             >
               <div className="mask mask-circle w-6">
-                <img src="https://placeimg.com/192/192/people" />
+                <img src={author.image || (author.gender === 'F' ? femalePic : malePic)} />
               </div>
             </div>
           )}
