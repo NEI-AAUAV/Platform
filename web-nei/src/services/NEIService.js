@@ -1,20 +1,45 @@
 import axios from "axios";
 import config from "config";
+import { useUserStore } from "stores/useUserStore";
 
 const client = axios.create({
   baseURL: config.NEI_URL,
   timeout: 5000,
 });
 
-client.interceptors.request.use(
-  function (config) {
-    // Do something before request is sent
+const UNAUTHORIZED = 401;
+const MAX_RETRIES = 3;
 
-    // Inject here authorization token in request header
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+/** Attempt to login with refresh token cookie. */
+async function refreshToken() {
+  return client.post("/auth/refresh/").then(({ access_token }) => {
+    client.defaults.headers.common.Authorization = `Bearer ${access_token}`;
+    useUserStore.getState().login({ token: access_token });
+    return access_token;
+  });
+};
+
+/** Add new pending request to wait for a new access token. */
+function subscribeTokenRefresh(callback) {
+  refreshSubscribers.push(callback);
+}
+
+/* Resolve all pending requests with the new access token. */
+function processQueue(error, token = null) {
+  refreshSubscribers.map((callback) => callback(token));
+  refreshSubscribers = [];
+}
+
+client.interceptors.request.use(
+  (config) => {
+    // Do something before request is sent
 
     return config;
   },
-  function (error) {
+  (error) => {
     // Do something with request error
     console.error(error);
 
@@ -23,14 +48,14 @@ client.interceptors.request.use(
 );
 
 client.interceptors.response.use(
-  function (response) {
+  (response) => {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     // console.log(response)
 
     return response.data;
   },
-  function (error) {
+  async (error) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
 
@@ -40,9 +65,31 @@ client.interceptors.response.use(
       response: { status },
     } = error;
 
-    if (status === 401) {
+    if (status === UNAUTHORIZED) {
       // Token expired. Retry authentication here
-      return Promise.reject("Session Expired");
+      if (!isRefreshing) {
+        isRefreshing = true;
+
+        try {
+          const token = await refreshToken();
+          // Inject the access token in request header
+          config.headers.Authorization = `Bearer ${token}`;
+          processQueue(null, token);
+          return client.request(config);
+        } catch (e) {
+          processQueue(e, null);
+          return Promise.reject("Session Expired");
+        } finally {
+          isRefreshing = false;
+        }
+      } else {
+        return new Promise((resolve) => {
+          subscribeTokenRefresh((token) => {
+            config.headers.Authorization = `Bearer ${token}`;
+            resolve(client.request(config));
+          });
+        });
+      }
     }
 
     return Promise.reject(error);
@@ -50,6 +97,10 @@ client.interceptors.response.use(
 );
 
 class NEIService {
+  constructor() {
+    refreshToken();
+  }
+
   async getNotes(params) {
     return await client.get("/note", { params });
   }
@@ -96,10 +147,6 @@ class NEIService {
 
   async getPartners() {
     return await client.get(`/partner/`);
-  }
-
-  async getPartnersBanner() {
-    return await client.get(`/partner/banner/`);
   }
 
   async getTeamMembers(params) {

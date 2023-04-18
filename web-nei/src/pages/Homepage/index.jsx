@@ -16,6 +16,7 @@ import NewsList2 from "../News/NewsList2";
 import Partners from "./Partners";
 import Merchandising from "./Merchandising";
 import particlesConfig from "./particles.config";
+import config from "config";
 
 import particlesConf1 from "./particles1.config";
 import particlesConf2 from "./particles2.config";
@@ -36,18 +37,11 @@ const Homepage = () => {
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [banner, setBanner] = useState(undefined);
-
   useEffect(() => {
     // Get first 3 news articles from API when page loads
     service.getNews({ size: 3 }).then((data) => {
       setNews(data.items || []);
       setIsLoading(false);
-    });
-
-    // Get partner banner
-    service.getPartnersBanner().then((data) => {
-      setBanner(data);
     });
   }, []);
 
@@ -85,17 +79,17 @@ const Homepage = () => {
       <div className="pointer-events-none absolute inset-0 truncate">
         <div className="gradient-blur absolute left-[100px] top-[-50px] transition-size duration-500" />
         <div className="gradient-blur absolute right-[-150px] top-[50vh] transition-size duration-500" />
-          <motion.div
-          initial={{opacity: 0}}
-          animate={{opacity: 1}}
-          transition={{duration: 4}}
-          >
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 4 }}
+        >
           <Particles
             className="absolute h-screen w-screen"
             options={particlesConfig}
             init={particlesInit}
           />
-          </motion.div>
+        </motion.div>
       </div>
       <div className="relative my-10">
         <div className="mb-72 grid grid-cols-1 gap-4 lg:mt-20 lg:grid-cols-2">
@@ -146,34 +140,35 @@ const Homepage = () => {
           </div>
         </div>
 
-        <section className="relative left-1/2 w-screen translate-x-[-50%] bg-base-content/10 p-20 shadow-md backdrop-blur-lg">
-          <Partners />
-        </section>
+        {!!config.PRODUCTION && (
+          <>
+            <section className="relative left-1/2 w-screen translate-x-[-50%] bg-base-content/10 p-20 shadow-md backdrop-blur-lg">
+              <Partners />
+            </section>
 
-        <section className="p-20">
-          <div
-            xs={11}
-            sm={10}
-            className="d-flex flex-column col-xxl-9 mx-auto flex-wrap text-center"
-          >
-            <h2 className="header-dark mb-4">Notícias</h2>
-            {!!isLoading ? (
+            <section className="p-20">
               <div
-                animation="grow"
-                variant="primary"
-                className="loading mx-auto mb-3"
-                title="A carregar..."
-              />
-            ) : (
-              <NewsList2 news={news}></NewsList2>
-            )}
-            <a className="btn mx-auto" href="/news">
-              Ver Todas
-            </a>
-          </div>
-        </section>
-
-        <section className="p-20">
+                className="flex flex-col mx-auto flex-wrap text-center"
+              >
+                <h2 className="header-dark mb-4">Notícias</h2>
+                {!!isLoading ? (
+                  <div
+                    animation="grow"
+                    variant="primary"
+                    className="loading mx-auto mb-3"
+                    title="A carregar..."
+                  />
+                ) : (
+                  <NewsList2 news={news}></NewsList2>
+                )}
+                <a className="btn mx-auto" href="/news">
+                  Ver Todas
+                </a>
+              </div>
+            </section>
+          </>
+        )}
+        <section className="py-20">
           <Merchandising />
         </section>
       </div>

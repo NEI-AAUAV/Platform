@@ -9,18 +9,12 @@ import service from 'services/NEIService';
 const Partners = () => {
 
   const [partners, setPartners] = useState([]);
-  const [banner, setBanner] = useState(undefined);
 
   // Get API data when component renders
   useEffect(() => {
     service.getPartners()
       .then((data) => {
         setPartners(data);
-      });
-    // Get partner banner
-    service.getPartnersBanner()
-      .then((data) => {
-        setBanner(data);
       });
   }, []);
 

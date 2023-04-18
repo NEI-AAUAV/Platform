@@ -20,7 +20,7 @@ const initialOutput = [
     type: "prompt",
     user: "guest",
     hostname: "aauav-nei",
-    cwd: "~/lixo",
+    cwd: "~",
     cmdline: "cd lixo",
   },
   {
@@ -216,7 +216,7 @@ const MockupTerminal = () => {
 
   return (
     <div
-      className="mockup-terminal mockup-code font-mono leading-[22px]"
+      className="mockup-terminal mockup-code bg-base-300 text-base-content font-mono leading-[22px]"
       onClick={setInputFocus}
     >
       <div
@@ -228,7 +228,7 @@ const MockupTerminal = () => {
             case "prompt":
               return (
                 <div key={i} className="relative text-success">
-                  <span className="absolute font-bold opacity-50">
+                  <span className="absolute font-bold opacity-70">
                     {prompt(data.user, data.hostname, data.cwd)}
                   </span>
                   <div
@@ -252,7 +252,7 @@ const MockupTerminal = () => {
           }
         })}
         <div className="relative text-success">
-          <span className="absolute font-bold opacity-50">
+          <span className="absolute font-bold opacity-70">
             {prompt(state.user, state.hostname, state.cwd)}
           </span>
           <div

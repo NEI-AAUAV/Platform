@@ -9,8 +9,8 @@ class SubjectBase(BaseModel):
     name: Annotated[Optional[str], Field(max_length=60)]
     curricular_year: int
     short: Annotated[Optional[str], Field(max_length=5)]
-    discontinued: int
-    optional: int
+    discontinued: bool
+    optional: bool
     # course_id: int
 
 class SubjectCreate(SubjectBase):

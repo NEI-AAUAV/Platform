@@ -8,6 +8,7 @@ class MerchBase(BaseModel):
     image: str
     price: Optional[float]
     number_of_items: Optional[int]
+    discontinued: bool
 
 class MerchCreate(MerchBase):
     """Properties to receive via API on create."""
