@@ -7,9 +7,7 @@ from PIL import Image, ImageOps
 from sqlalchemy.orm import Session
 from fastapi import UploadFile
 from fastapi.encoders import jsonable_encoder
-
-import base64
-
+from loguru import logger
 from app.exception import FileFormatException
 from app.crud.base import CRUDBase
 from app.models.user import User
@@ -40,7 +38,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         *,
         obj_in: UserCreate,
         email: str,
-        active: bool = not settings.EMAIL_ENABLED
+        active: bool = not settings.EMAIL_ENABLED,
     ) -> User:
         """Creates a new user in the database with an associated email.
 
@@ -89,24 +87,31 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
         return db_obj
 
-    async def update_image(
+    async def update_image_file(
         self,
         db: Session,
         *,
         db_obj: User,
         image: Optional[UploadFile],
     ) -> User:
+        return await self.update_image_data(db, User, await image.read())
+
+    async def update_image_data(
+        self,
+        db: Session,
+        *,
+        db_obj: User,
+        image: bytes,
+    ) -> User:
         img_path = None
         if image:
             try:
-                img_data = await image.read()
-                img = Image.open(BytesIO(base64.b64decode(img_data)))
+                img = Image.open(BytesIO(image))
             except:
                 raise FileFormatException()
             ext = img.format
-            if not ext in ('JPEG', 'PNG'):
-                raise FileFormatException(
-                    detail="Image format must be JPEG or PNG.")
+            if not ext in ("JPEG", "PNG", "BMP"):
+                raise FileFormatException(detail="Image format must be JPEG or PNG.")
 
             # TODO: rescale if necessary
 
@@ -117,17 +122,19 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             img = img.convert("RGB")
 
             # Create path if it doesn't exist
-            os.makedirs(f"static/users/{db_obj.id}", exist_ok=True)
+            os.makedirs(f"static/users/{db_obj.id}", exist_ok=False)
 
             # Save optimized image on static folder
             img_path = f"/users/{db_obj.id}/profile.jpg"
-            img.save(f"static{img_path}",
-                     format='JPEG',
-                     quality='web_high',
-                     optimize=True,
-                     progressive=True)
+            img.save(
+                f"static{img_path}",
+                format="JPEG",
+                quality="web_high",
+                optimize=True,
+                progressive=True,
+            )
 
-        setattr(db_obj, 'image', img_path)
+        setattr(db_obj, "image", img_path)
         db.add(db_obj)
         db.commit()
         return db_obj
@@ -155,10 +162,9 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
                 with open(f"static{curriculum_path}", "wb") as f:
                     f.write(curriculum_data)
             else:
-                raise FileFormatException(
-                    detail="Curriculum format must be PDF.")
+                raise FileFormatException(detail="Curriculum format must be PDF.")
 
-        setattr(db_obj, 'curriculum', curriculum_path)
+        setattr(db_obj, "curriculum", curriculum_path)
         db.add(db_obj)
         db.commit()
         return db_obj

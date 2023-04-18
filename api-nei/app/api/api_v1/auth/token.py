@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.responses import JSONResponse, RedirectResponse
 from app.core.config import settings
@@ -128,7 +129,11 @@ async def get_token(
             logger.info(f"Creating user: {user_in}")
             user = crud.user.create(db, obj_in=user_in, email=uu["email"], active=True)
             userid = user.id
-            crud.user.update_image(db, user, student_info["Foto"])
+
+            await crud.user.update_image_data(
+                db, db_obj=user, image=base64.b64decode(student_info["Foto"])
+            )
+
             subList = []
             for subject in student_courses:
                 subList.append(
@@ -218,4 +223,3 @@ def get_data(resource_owner_key, resource_owner_secret):
             returndata["uu"] = r.json()
 
     return returndata
-
