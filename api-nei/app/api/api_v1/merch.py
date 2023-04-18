@@ -14,4 +14,4 @@ def get(
     *, db: Session = Depends(deps.get_db),
     _ = Depends(deps.long_cache)
 ) -> Any:
-    return crud.merch.get_multi(db=db)
+    return crud.merch.get_by_discontinued(db=db, discontinued=False)

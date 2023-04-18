@@ -98,10 +98,6 @@ class NEIService {
     return await client.get(`/partner/`);
   }
 
-  async getPartnersBanner() {
-    return await client.get(`/partner/banner/`);
-  }
-
   async getTeamMembers(params) {
     return await client.get("/team/member/", { params });
   }

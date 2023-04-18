@@ -1,28 +1,35 @@
 import React, { useEffect, useState, Fragment } from "react";
-import "./index.css";
 import Typist from "react-typist";
-import config from "config";
+import {motion} from "framer-motion";
 import service from "services/NEIService";
 import CardMerch from "components/CardMerch";
 
-// Animation
-const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
-const animationIncrement = parseFloat(
-  process.env.REACT_APP_ANIMATION_INCREMENT
-);
+const container = {
+  hidden: { opacity: 1, scale: 0 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      delayChildren: 0.3,
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const item = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+  },
+};
 
 const Merchandising = () => {
-  const [imgs, setImgs] = useState([]);
+  const [merchs, setMerchs] = useState(null);
 
   useEffect(() => {
     service.getMerch().then((data) => {
-      setImgs(
-        data.map((data) => (
-          <Fragment key={data.id}>
-            <CardMerch img={data.image} title={data.name} price={data.price} />
-          </Fragment>
-        ))
-      );
+      setMerchs(data);
     });
   }, []);
 
@@ -32,15 +39,31 @@ const Merchandising = () => {
         <Typist>Merchandising</Typist>
       </h2>
 
-      <div className="flex flex-wrap gap-4 mx-auto justify-center my-10">
-        {imgs}
-      </div>
+      {merchs && (
+        <motion.div
+          className="mx-auto my-10 flex flex-wrap justify-center gap-10"
+          variants={container}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {merchs.map((data) => (
+            <motion.div key={data.id} variants={item}>
+              <CardMerch
+                img={data.image}
+                title={data.name}
+                price={data.price}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
 
       <div className="flex justify-center">
         <a
           href="https://orders.winrestbooking.com/StoreMenu/Index/4968"
           target="_blank"
-          className="btn btn-lg mx-auto"
+          className="btn-lg btn mx-auto"
         >
           Comprar
         </a>

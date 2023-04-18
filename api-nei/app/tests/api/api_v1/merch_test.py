@@ -15,14 +15,16 @@ MERCHANDISINGS = [
         "name": "Cat123456",
         "image": "/nei.png",
         "price": 4,
-        "number_of_items": 5
+        "number_of_items": 5,
+        "discontinued": 0
     },
     {
         "id": 2,
         "name": "Cat123456",
         "image": "",
         "price": 4,
-        "number_of_items": 5
+        "number_of_items": 5,
+        "discontinued": 0
     }
 ]
 
