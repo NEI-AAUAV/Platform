@@ -1,5 +1,8 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import Typist from "react-typist";
+import { motion } from "framer-motion";
+import { debounce } from "lodash";
 
 import PageNav from "../../components/PageNav";
 import service from "services/NEIService";
@@ -10,6 +13,26 @@ import CheckboxDropdown from "components/CheckboxDropdown";
 import data from "./data";
 
 import { FilterIcon } from "assets/icons/google";
+
+const container = {
+  hidden: { opacity: 1, scale: 0 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      delayChildren: 0.2,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const item = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+  },
+};
 
 const Videos = () => {
   // Filters
@@ -22,7 +45,18 @@ const Videos = () => {
   const [selection, setSelection] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
-  // FIXME: unused
+  // Videos
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Pagination
+  const [pages, setPages] = useState(1);
+  const [selPage, setSelPage] = useState(1);
+
+  const debouncedSetTags = useCallback(
+    debounce(setTags, 300)
+  , []);
+
   // Get categories from API
   useEffect(() => {
     service
@@ -44,13 +78,7 @@ const Videos = () => {
       });
   }, []);
 
-  // Videos
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Pagination
-  const [pages, setPages] = useState(1);
-  const [selPage, setSelPage] = useState(1);
+  console.log(videos, tags)
 
   // When categories selected change, update videos list (get from API)
   useEffect(() => {
@@ -81,7 +109,7 @@ const Videos = () => {
       setPages(1);
       setSelPage(1);
     }
-  }, [selection, selPage]);
+  }, [selection, selPage, categories]);
 
   return (
     <div>
@@ -89,25 +117,34 @@ const Videos = () => {
         <Typist>Vídeos</Typist>
       </h2>
 
-      <div className="flex w-full justify-end">
+      {/* TODO: filter videos */}
+      {/* <div className="flex w-full justify-end">
         <CheckboxDropdown
           className="btn-sm m-1"
           values={tags}
-          onChange={setTags}
+          onChange={debouncedSetTags}
         >
           Filter <FilterIcon />
         </CheckboxDropdown>
-      </div>
+      </div> */}
 
-      <div className="grid grid-cols-[repeat(auto-fit,_minmax(20rem,_1fr))] gap-3 mx-3">
-        {videos.map((video) => {
-          return (
-            <Fragment key={video.id}>
-              <CardVideo video={video} />
-            </Fragment>
-          );
-        })}
-      </div>
+      {videos.length > 0 && (
+        <motion.div
+          className="mt-10 m-3 grid grid-cols-[repeat(auto-fit,_minmax(20rem,_1fr))] gap-6"
+          variants={container}
+          initial="hidden"
+          animate="visible"
+        >
+          {videos.map((video) => (
+            <motion.div key={video.id} variants={item}>
+              <Link to={`/videos/${video.id}`}>
+                <CardVideo video={video} />
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+
       {/* Pagination */}
       <PageNav
         currentPage={selPage}

@@ -1,10 +1,10 @@
 const Tab = ({ children, className, selected, onClick, ...props }) => {
   const selectedClass = selected
-    ? "no-animation text-primary-content shadow hover:bg-accent-focus"
+    ? "no-animation shadow hover:bg-accent-focus"
     : "bg-transparent hover:bg-base-300 hover:opacity-75";
   return (
     <button
-      className={`btn-sm btn gap-2 border-none bg-accent py-1 ${selectedClass} ${className}`}
+      className={`btn-sm text-accent-content btn gap-2 border-none bg-accent py-1 ${selectedClass} ${className}`}
       onClick={onClick}
       {...props}
     >

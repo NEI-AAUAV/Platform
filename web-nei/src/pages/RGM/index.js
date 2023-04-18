@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Spinner } from "react-bootstrap";
+import { motion } from "framer-motion";
 
 import Tabs from "components/Tabs";
 
@@ -9,8 +10,27 @@ import { DownloadIcon } from "assets/icons/google";
 
 import service from "services/NEIService";
 
+const container = {
+  hidden: { opacity: 1, scale: 0 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      delayChildren: 0.2,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+  },
+};
+
 const RGM = () => {
-  const [docs, setDocs] = useState([]);
+  const [docs, setDocs] = useState(null);
   const [tab, setTab] = useState(null);
   const [mandates, setMandates] = useState([]);
 
@@ -24,6 +44,7 @@ const RGM = () => {
     service
       .getRGMMandates()
       .then(({ data }) => {
+        data.sort().reverse();
         setMandates(data);
         setTab(data[0]);
         setLoading(false);
@@ -36,7 +57,7 @@ const RGM = () => {
   useEffect(() => {
     if (!tab) return;
     setLoading(true);
-    setDocs([]);
+    setDocs(null);
     service
       .getRGM({ mandate: tab })
       .then((data) => {
@@ -69,7 +90,7 @@ const RGM = () => {
   }
 
   const ataNumber = docs
-    .filter((d) => d.category === "ATA")
+    ?.filter((d) => d.category === "ATA")
     .reduce((o, d, i) => ({ ...o, [d.id]: i + 1 }), {});
 
   return (
@@ -104,40 +125,45 @@ const RGM = () => {
               <th className="text-center">Documento</th>
             </tr>
           </thead>
-          <tbody>
-            {docs.map((doc, index) => (
-              <tr>
-                {/* <th>{index + 1}</th> */}
-                <td>
-                  <p className="font-bold">
-                    {doc?.category}{" "}
-                    {!!ataNumber[doc?.id]
-                      ? `Número ${ataNumber[doc?.id]}`
-                      : doc.mandate}
-                  </p>
-                  <p className="hidden whitespace-pre-wrap text-sm text-base-content/80 sm:block">
-                    {doc?.title}
-                  </p>
-                </td>
-                <td className="hidden text-center xs:table-cell">
-                  {!!doc?.date &&
-                    new Date(doc.date).toLocaleDateString("pt-PT", {
-                      year: "numeric",
-                      month: "numeric",
-                      day: "numeric",
-                    })}
-                </td>
-                <td className="text-center">
-                  <a href={doc?.file} target="_blank" rel="noreferrer">
-                    <button className="btn-xs btn mb-3 ml-0 flex-nowrap">
-                      <DownloadIcon />
-                      <span className="ml-1">Descarregar</span>
-                    </button>
-                  </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          {docs && (
+            <motion.tbody
+              variants={container}
+              initial="hidden"
+              animate="visible"
+            >
+              {docs.map((doc, index) => (
+                <motion.tr key={index} variants={item}>
+                  <td>
+                    <p className="font-bold">
+                      {doc?.category}{" "}
+                      {!!ataNumber[doc?.id]
+                        ? `Número ${ataNumber[doc?.id]}`
+                        : doc.mandate}
+                    </p>
+                    <p className="hidden whitespace-pre-wrap text-sm text-base-content/80 sm:block">
+                      {doc?.title}
+                    </p>
+                  </td>
+                  <td className="hidden text-center xs:table-cell">
+                    {!!doc?.date &&
+                      new Date(doc.date).toLocaleDateString("pt-PT", {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                      })}
+                  </td>
+                  <td className="text-center">
+                    <a href={doc?.file} target="_blank" rel="noreferrer">
+                      <button className="btn-xs btn mb-3 ml-0 flex-nowrap">
+                        <DownloadIcon />
+                        <span className="ml-1">Descarregar</span>
+                      </button>
+                    </a>
+                  </td>
+                </motion.tr>
+              ))}
+            </motion.tbody>
+          )}
         </table>
       )}
     </div>

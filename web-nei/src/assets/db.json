@@ -426,7 +426,7 @@
             "organizations": [{"year": 19, "name": "CF"},{"year": 19, "name": "AETTUA", "role": "Secretário"},
                 {"year": 20, "name": "CF"},{"year": 20, "name": "AETTUA", "role": "Presidente"}, 
                 {"year": 21, "name": "CF"},
-                {"year": 22, "name": "CF"}],
+                {"year": 22, "name": "CF", "role": "Mestre de Curso"}],
             "faina": [{"year": 19, "name": "Edu"}]},
         {"id": "028", "nmec": 92972, "start_year": 18, "end_year": 20, "sex": "M", "parent": "005", "name": "Gonçalo Matos", "image": "",
             "organizations": [{"year": 20, "name": "NEI", "role": "Vogal da Secção Administrativa"}],
@@ -741,7 +741,7 @@
             "faina": [{"year": 22, "name": null}]},
         {"id": "B03", "nmec": 108796, "start_year": 21, "end_year": null, "sex": "F", "parent": "A96", "name": "Sara Almeida", "image": "",
             "faina": [{"year": 22, "name": "Sardinha"}]},
-        {"id": "137", "nmec": 107548, "start_year": 22, "end_year": null, "sex": "F", "parent": "082", "name": "Lia Cardoso", "image": "",
+        {"id": "137", "nmec": 107548, "start_year": 21, "end_year": null, "sex": "F", "parent": "082", "name": "Lia Cardoso", "image": "",
             "faina": [{"year": 23, "name": null}]}, 
 
         {"id": "100", "nmec": 113655, "start_year": 22, "end_year": null, "sex": "M", "parent": "B25", "name": "Abel Teixeira", "image": "",

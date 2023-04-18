@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Row, Spinner } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
+import { AnimatePresence, motion } from "framer-motion";
 
 import Typist from "react-typist";
 import service from "services/NEIService";
@@ -12,8 +13,21 @@ import {
   DecorativeSepTop,
 } from "assets/abstract";
 
+const item = {
+  hidden: { x: 0, y: 0, opacity: 0 },
+  visible: {
+    transition: { duration: 0.4 },
+    opacity: 1,
+  },
+  slide: {
+    transition: { delay: 0.1, duration: 0.4 },
+    x: -20,
+    opacity: 1,
+  },
+};
+
 const Faina = () => {
-  const [people, setPeople] = useState([]);
+  const [people, setPeople] = useState();
   const [tabs, setTabs] = useState([]);
   const [selectedTab, setSelectedTab] = useState();
   const [fainaImg, setFainaImg] = useState(null);
@@ -31,10 +45,10 @@ const Faina = () => {
         setSelectedTab(mandates[0]);
       }
     });
-    setLoading(false);
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     let members = [];
     service.getFainaMandates().then((response) => {
       for (var i = 0; i < response.length; i++) {
@@ -53,8 +67,8 @@ const Faina = () => {
         }
       }
       setPeople(members);
+      setLoading(false);
     });
-    setLoading(false);
   }, [selectedTab]);
 
   function customTabRender(tab) {
@@ -92,14 +106,29 @@ const Faina = () => {
           title="A carregar..."
         />
       ) : (
-        <div className="flex flex-wrap justify-center gap-10">
-          {fainaImg && (
-            <img
-              src={fainaImg}
-              className="max-h-[60vh] w-full max-w-3xl rounded-lg shadow-md"
-            />
-          )}
-          <div className="card !mx-0 flex w-96 items-center !bg-base-200 shadow-md">
+        <div className="flex flex-col xl:flex-row justify-center items-center">
+          <AnimatePresence>
+            {fainaImg && (
+              <motion.div
+                className="max-w-3xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                <img
+                  src={fainaImg}
+                  className="h-full w-full rounded-lg object-cover object-center shadow-md"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <motion.div
+            className="card !mt-10 h-fit !ml-10 !mr-0 xl:!mx-0 flex w-96 items-center !bg-base-200 !bg-opacity-60 shadow-md !backdrop-blur-lg"
+            variants={item}
+            initial="hidden"
+            animate={fainaImg ? "slide" : "visible"}
+          >
             <DecorativeSepTop className="text-[#D7A019]" />
 
             <h4 className="uppercase">
@@ -110,9 +139,14 @@ const Faina = () => {
             <div className="flex flex-col items-center">
               {people.map((person, index) => (
                 <Fragment key={index}>
-                  <UserPopover className="hover:underline hover:decoration-2" user={null}>
+                  <UserPopover
+                    className="sm:hover:underline sm:hover:decoration-2"
+                    user={person}
+                  >
                     <span className="p-1 font-medium uppercase">
-                      <span className="font-medium text-[#D7A019]">{person.role}</span>
+                      <span className="font-medium text-[#D7A019]">
+                        {person.role}
+                      </span>
                       {"" + " " + person.name}
                     </span>
                   </UserPopover>
@@ -121,7 +155,7 @@ const Faina = () => {
             </div>
 
             <DecorativeSepBottom className="text-[#D7A019]" />
-          </div>
+          </motion.div>
         </div>
       )}
     </div>

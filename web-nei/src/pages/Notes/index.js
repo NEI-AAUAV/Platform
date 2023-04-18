@@ -64,9 +64,7 @@ const Notes = () => {
     text: "",
   });
 
-  const debouncedSetCategories = useCallback(
-    debounce(setCategories, 300)
-  , []);
+  const debouncedSetCategories = useCallback(debounce(setCategories, 300), []);
 
   const fetchPage = (pageNum) => {
     setSelPage(pageNum);
@@ -435,14 +433,7 @@ const Notes = () => {
         <div className="flex grow flex-col gap-5">
           <div className="flex justify-between">
             <TabsButton
-              tabs={[
-                <>
-                  <GridViewIcon />
-                </>,
-                <>
-                  <ViewListIcon />
-                </>,
-              ]}
+              tabs={[<GridViewIcon />, <ViewListIcon />]}
               selected={view}
               setSelected={setView}
             />
