@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from fastapi import UploadFile
 from fastapi.encoders import jsonable_encoder
 
+import base64
+
 from app.exception import FileFormatException
 from app.crud.base import CRUDBase
 from app.models.user import User
@@ -98,7 +100,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         if image:
             try:
                 img_data = await image.read()
-                img = Image.open(BytesIO(img_data))
+                img = Image.open(BytesIO(base64.b64decode(img_data)))
             except:
                 raise FileFormatException()
             ext = img.format

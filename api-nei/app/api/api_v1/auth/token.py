@@ -7,7 +7,6 @@ import requests
 import base64
 
 from requests_oauthlib import OAuth1Session
-from PIL import Image
 from io import BytesIO
 from app.api import deps
 from sqlalchemy.orm import Session
@@ -129,7 +128,7 @@ async def get_token(
             logger.info(f"Creating user: {user_in}")
             user = crud.user.create(db, obj_in=user_in, email=uu["email"], active=True)
             userid = user.id
-            createImg(user.id, student_info["Foto"], db)
+            crud.user.update_image(db, user, student_info["Foto"])
             subList = []
             for subject in student_courses:
                 subList.append(
@@ -220,25 +219,3 @@ def get_data(resource_owner_key, resource_owner_secret):
 
     return returndata
 
-
-def createImg(id, img, db):
-    try:
-        logger.info(f"Creating image for user " + str(id))
-        # Save photo as JPEG image
-        imgEnc = Image.open(BytesIO(base64.b64decode(img)))
-        imgEnc.save(f"../static/img/{id}/pfpUA.jpg", "JPEG")
-        user = crud.user.get(db, id=id)
-        user_in = UserUpdate(
-            id=user.id,
-            iupi=user.iupi,
-            nmec=user.nmec,
-            email=user.email,
-            name=user.name,
-            surname=user.surname,
-            image=f"../static/img/{id}/pfpUA.jpg",
-        )
-        user = crud.user.update(db, db_obj=user, obj_in=user_in)
-        logger.info(f"User updated: {user.dict()} {user.__dict__}")
-    except:
-        # Some error occurred
-        pass
