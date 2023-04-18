@@ -22,7 +22,7 @@ const CalendarMonth = ({ month, monthEvents, selEvent, setSelEvent }) => {
               className={classNames(
                 "m-2 inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-full leading-none transition duration-100 ease-in-out",
                 {
-                  "bg-secondary text-white": isToday(day),
+                  "bg-secondary text-secondary-content": isToday(day),
                   "hover:bg-secondary/50": !isToday(day),
                   "text-base-content/50": new Date(day).getMonth() !== month,
                 }

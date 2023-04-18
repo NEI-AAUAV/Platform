@@ -4,14 +4,14 @@ from typing import Optional, List
 
 from pydantic import BaseModel, constr, AnyHttpUrl, root_validator, Field
 
-from app.utils import include
+from app.utils import include, validate_to_json
 
 from .user_academic_details import UserAcademicDetailsInBD
 
 
 class GenderEnum(str, Enum):
-    MALE = 'Masculino'
-    FEMALE = 'Feminino'
+    MALE = 'M'
+    FEMALE = 'F'
 
 
 class ScopeEnum(str, Enum):
@@ -42,6 +42,7 @@ class UserCreate(UserBase):
 
 
 @include(["updated_at"])
+@validate_to_json
 class UserUpdate(UserBase):
     """Properties to receive via API on create."""
 

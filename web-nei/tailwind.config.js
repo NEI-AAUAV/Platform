@@ -102,7 +102,7 @@ module.exports = {
 
         // Neutral
         neutral: "var(--ds-neutral)",
-        "neutral-focus": "var(--ds-neutral-focus  )",
+        "neutral-focus": "var(--ds-neutral-focus)",
         "neutral-content": "var(--ds-neutral-content)",
 
         // Base
@@ -123,6 +123,7 @@ module.exports = {
           ...require("daisyui/src/colors/themes")["[data-theme=light]"],
           primary: "#26AB55",
           "primary-content": "#141414",
+          secondary: "#65E67D",
           accent: "#26AB55",
 
           // System
@@ -136,9 +137,9 @@ module.exports = {
           "success-content": "#09552B",
 
           // Neutral
-          neutral: "#FFFFFF",
-          "neutral-focus": "#F9F9F9",
-          "neutral-content": "#777777",
+          // neutral: "#FFFFFF",
+          // "neutral-focus": "#F9F9F9",
+          // "neutral-content": "#777777",
 
           // Base
           "base-100": "#EBEBEB",
@@ -157,6 +158,7 @@ module.exports = {
           ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
           primary: "#26AB55",
           "primary-content": "#FFFFFF",
+          secondary: "#65E67D",
           accent: "#26AB55",
           // System
           error: "#FCD4D8",
@@ -169,9 +171,9 @@ module.exports = {
           "success-content": "#09552B",
 
           // Neutral
-          neutral: "#262626",
-          "neutral-focus": "#1F1F1F",
-          "neutral-content": "#B0B0B0",
+          // neutral: "#262626",
+          // "neutral-focus": "#1F1F1F",
+          // "neutral-content": "#B0B0B0",
           // Base
           "base-100": "#141414",
           "base-200": "#161616",
@@ -180,7 +182,7 @@ module.exports = {
           "--ds-base-secondary": "#161616",
           "base-content": "#C0C0C0",
           // Content
-          "secondary-content": "#909090",
+          "secondary-content": "#666666",
         },
       },
     ],

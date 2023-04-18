@@ -1,28 +1,45 @@
-import { Fragment } from "react";
+import { motion } from "framer-motion";
+
 import NoteCard from "../NoteCard";
 
-// Animation
-const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
-const animationIncrement = parseFloat(
-  process.env.REACT_APP_ANIMATION_INCREMENT
-);
+const container = {
+  hidden: { opacity: 1, scale: 0 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      delayChildren: 0.2,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const item = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+  },
+};
 
 const GridView = ({ data, setSelected }) => {
   return (
-    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <motion.div
+      className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3"
+      variants={container}
+      initial="hidden"
+      animate="visible"
+    >
       {data.map((note, i) => (
-        <Fragment key={i}>
+        <motion.div key={i} variants={item}>
           <NoteCard
             note={note}
-            style={{
-              animationDelay: animationBase + i * animationIncrement + "s",
-            }}
             Icon={note.type?.Icon}
             onClick={() => setSelected(note)}
           />
-        </Fragment>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 };
 

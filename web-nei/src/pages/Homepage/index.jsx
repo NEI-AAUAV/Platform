@@ -15,12 +15,15 @@ import MockupTerminal from "components/MockupTerminal";
 import NewsList2 from "../News/NewsList2";
 import Partners from "./Partners";
 import Merchandising from "./Merchandising";
+import particlesConfig from "./particles.config";
+
 import particlesConf1 from "./particles1.config";
 import particlesConf2 from "./particles2.config";
 import "./index.css";
-import { PlayArrowIcon } from "assets/icons/google";
-// import bg from 'assets/images/nei-white.svg';
-// import bg2 from 'assets/images/nei-outline2.svg';
+// import { PlayArrowIcon } from "assets/icons/google";
+import bg from "assets/images/nei.svg";
+import bg2 from "assets/images/nei-outline2.svg";
+import { motion } from "framer-motion";
 
 // Animation
 const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
@@ -77,38 +80,53 @@ const Homepage = () => {
 
       {/* <BackgroundImage className="w-[10rem] md:w-[30rem] lg:w-[60rem]" /> */}
 
-      {/* <img className="absolute left-0 w-[850px]" style={{filter: "brightness(0.1) invert(1)", opacity: 0.2}} src={bg} />
-            <img className="absolute left-0 w-[850px]" src={bg2} /> */}
+      {/* <img className="absolute left-0 w-[850px]" style={{filter: "brightness(0.1) invert(1)", opacity: 0.2}} src={bg} />  */}
+
       <div className="pointer-events-none absolute inset-0 truncate">
-        <div className="gradient-blur absolute top-[-50px] left-[100px] transition-size duration-500" />
-        <div className="gradient-blur absolute top-[50vh] right-[-150px] transition-size duration-500" />
+        <div className="gradient-blur absolute left-[100px] top-[-50px] transition-size duration-500" />
+        <div className="gradient-blur absolute right-[-150px] top-[50vh] transition-size duration-500" />
+          <motion.div
+          initial={{opacity: 0}}
+          animate={{opacity: 1}}
+          transition={{duration: 4}}
+          >
+          <Particles
+            className="absolute h-screen w-screen"
+            options={particlesConfig}
+            init={particlesInit}
+          />
+          </motion.div>
       </div>
       <div className="relative my-10">
         <div className="mb-72 grid grid-cols-1 gap-4 lg:mt-20 lg:grid-cols-2">
           <div className="flex flex-col justify-between">
             <div className="relative top-[-80px] hidden h-full opacity-0 transition-opacity lg:block lg:opacity-80">
-              <Particles
+              <img
+                className="absolute -top-[50px] h-[600px] w-[600px]"
+                src={bg}
+              />
+              {/* <Particles
                 container={containerRef[0]}
                 className="absolute h-[500px] w-[500px]"
                 id="particles1"
                 options={particlesConf1}
                 init={particlesInit}
-              />
-              <Particles
+              /> */}
+              {/* <Particles
                 container={containerRef[1]}
                 className="absolute h-[500px] w-[500px]"
                 id="particles2"
                 options={particlesConf2}
                 init={particlesInit}
-              />
-              <div className="absolute top-1/2 left-0 right-0 m-auto -translate-y-1/2 ">
+              /> */}
+              {/* <div className="absolute top-1/2 left-0 right-0 m-auto -translate-y-1/2 ">
                 <PlayArrowIcon
                   className="cursor-pointer"
                   height={"50"}
                   width={"50"}
                   onClick={pauseAnimation}
                 />
-              </div>
+              </div> */}
             </div>
             <div className="z-1 relative text-4xl leading-tight lg:text-5xl">
               <span className="text-3xl lg:text-4xl">Bem-vindo ao</span>
@@ -117,7 +135,7 @@ const Homepage = () => {
               <span className="bg-gradient-to-r from-success to-[#548786] bg-clip-text font-extrabold text-transparent drop-shadow-lg">
                 Informática
               </span>{" "}
-              <span className="font-extrabold">da AAUAv</span>
+              {/* <span className="font-extrabold">da AAUAv</span> */}
             </div>
           </div>
           <div

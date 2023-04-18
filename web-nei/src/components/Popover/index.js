@@ -1,8 +1,12 @@
+import { useState, useRef, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import classNames from "classnames";
+import { debounce } from "lodash";
+
+import { useWindowSize } from "utils/hooks";
+
 import { GithubIcon, LinkedinIcon } from "assets/icons/social";
 import { PersonPinIcon } from "assets/icons/google";
-import { useState, useRef, useEffect } from "react";
-import classNames from "classnames";
-import { useWindowSize } from "utils/hooks";
 
 import "./index.css";
 
@@ -17,6 +21,8 @@ export const UserPopover = ({ user, ...popoverProps }) => {
     github: "https://github/leand12",
     linkedin: "https://github/leand12",
   };
+
+  console.log(user);
 
   function findInFamily() {
     setLoading(true);
@@ -92,6 +98,8 @@ const Popover = ({ popover, children, className }) => {
   const [visible, setVisible] = useState(false);
   const [popoverPos, setPopoverPos] = useState("top-right");
 
+  const debouncedSetVisible = useCallback(debounce(setVisible, 300), []);
+
   const childrenRef = useRef(null);
 
   const windowSize = useWindowSize();
@@ -125,31 +133,39 @@ const Popover = ({ popover, children, className }) => {
   return (
     <div
       className={`relative w-fit ${className}`}
-      onFocus={() => setVisible(true)}
-      onMouseOver={() => setVisible(true)}
-      onMouseOut={() => setVisible(false)}
+      onMouseOver={() => debouncedSetVisible(true)}
+      onMouseOut={() => {
+        debouncedSetVisible(false)
+      }}
     >
       <div
         ref={childrenRef}
         tabIndex="0"
         role="link"
-        className="sm:cursor-pointer"
+        className="sm:cursor-default"
+        // className="sm:cursor-pointer"
       >
         {children}
       </div>
-      {visible && (
-        <div
-          role="popover"
-          className={classNames(
-            "invisible absolute z-50 min-w-[320px] rounded-lg border border-base-content/10 bg-base-300 p-4 sm:visible",
-            windowSize.width >= 640
-              ? `Popover Popover--${popoverPos}`
-              : "left-1/2 right-1/2 top-10 -translate-x-1/2"
-          )}
-        >
-          {popover}
-        </div>
-      )}
+      <AnimatePresence>
+        {visible && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            role="popover"
+            className={classNames(
+              "invisible absolute z-50 min-w-[320px] rounded-lg border border-base-content/10 bg-base-300 p-4 sm:visible",
+              windowSize.width >= 640
+                ? `Popover Popover--${popoverPos}`
+                : "left-1/2 right-1/2 top-10 -translate-x-1/2"
+            )}
+          >
+            {popover}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

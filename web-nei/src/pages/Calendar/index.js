@@ -58,9 +58,8 @@ const Calendar = () => {
         </CheckboxDropdown>
       </div>
 
-      <div>
-        <NEICalendar />
-      </div>
+      {view === Views.CALENDAR && <NEICalendar />}
+      {view === Views.AGENDA && "Não há agenda"}
     </div>
   );
 };

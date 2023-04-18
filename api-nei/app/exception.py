@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse
+
+from fastapi import HTTPException
 
 
 class APIException(HTTPException):
@@ -19,21 +19,6 @@ class APIException(HTTPException):
         super().__init__(*args, **kwargs)
 
 
-class NotFoundException(APIException):
-    status_code = 404
-    detail = "Result Not Found"
-
-
-class ImageFormatException(APIException):
+class FileFormatException(APIException):
     status_code = 400
-    detail = "Invalid Image Format"
-
-
-class RestrictionException(APIException):
-    status_code = 400
-    detail = "Restriction Not Respected"
-
-
-class NotImplementedException(APIException):
-    status_code = 501
-    detail = "Not Implemented"
+    detail = "Invalid File Format"

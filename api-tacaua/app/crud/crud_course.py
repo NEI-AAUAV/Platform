@@ -26,9 +26,13 @@ class CRUDCourse(CRUDBase[Course, CourseCreate, CourseUpdate]):
     ) -> Course:
         img_path = None
         if image:
-            img_data = await image.read()
-            # Avoid any conversion exception
-            img_str = img_data.decode('latin_1')
+            try:
+                img_data = await image.read()
+                # Avoid any conversion exception
+                img_str = img_data.decode('latin_1')
+            except:
+                logger.exception("Error reading image")
+                raise ImageFormatException()
 
             # Check if is SVG
             if self.SVG_RE.match(img_str) is not None:
@@ -36,7 +40,11 @@ class CRUDCourse(CRUDBase[Course, CourseCreate, CourseUpdate]):
                 with open(f"static{img_path}", 'w') as f:
                     f.write(img_str)
             else:
-                img = Image.open(BytesIO(img_data))
+                try:
+                    img = Image.open(BytesIO(img_data))
+                except:
+                    logger.exception("Error opening image")
+                    raise ImageFormatException()
                 ext = img.format
                 if not ext in ('JPEG', 'PNG'):
                     raise ImageFormatException()

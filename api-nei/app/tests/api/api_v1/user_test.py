@@ -83,7 +83,7 @@ def test_get_inexistent_user_by_id(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/user/{inexistent_user_id}")
     data = r.json()
     assert r.status_code == 404
-    assert data["detail"] == "Invalid User id"
+    assert data["detail"] == "User not found."
 
 
 @pytest.mark.skip(reason="Test aftwards when login is implemented")
@@ -113,4 +113,4 @@ def test_update_inexistent_user(client: TestClient) -> None:
     data = r.json()
     print(data)
     assert r.status_code == 404
-    assert data["detail"] == "Invalid User id"
+    assert data["detail"] == "User not found."

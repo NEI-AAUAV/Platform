@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Spinner } from "react-bootstrap";
+import { motion, AnimatePresence } from "framer-motion";
+
 import ListView from "./ListView";
 import GridView from "./GridView";
 import PageNav from "../../components/PageNav";
@@ -11,7 +13,6 @@ import data from "./data";
 
 import Autocomplete from "components/Autocomplete";
 
-import classNames from "classnames";
 import service from "services/NEIService";
 import {
   FilterIcon,
@@ -19,9 +20,12 @@ import {
   FolderZipIcon,
   GridViewIcon,
   ViewListIcon,
+  ShareIcon,
+  CloseIcon,
 } from "assets/icons/google";
 import { GithubIcon, GoogleDriveIcon } from "assets/icons/social";
 import { TabsButton } from "components";
+import { debounce } from "lodash";
 
 const Views = {
   GRID: 0,
@@ -60,8 +64,10 @@ const Notes = () => {
     text: "",
   });
 
-  const fetchPage = (p_num) => {
-    setSelPage(p_num);
+  const debouncedSetCategories = useCallback(debounce(setCategories, 300), []);
+
+  const fetchPage = (pageNum) => {
+    setSelPage(pageNum);
   };
 
   // When page loads
@@ -72,10 +78,10 @@ const Notes = () => {
     // 2. Check if there are filtering parameters on URL
     // Get parameters and apply to filters
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("year")) setSelYear(urlParams.get("year"));
-    if (urlParams.get("subject")) setSelSubject(urlParams.get("subject"));
-    if (urlParams.get("author")) setSelStudent(urlParams.get("author"));
-    if (urlParams.get("teacher")) setSelTeacher(urlParams.get("teacher"));
+    if (urlParams.get("year")) setSelYear(+urlParams.get("year"));
+    if (urlParams.get("subject")) setSelSubject(+urlParams.get("subject"));
+    if (urlParams.get("author")) setSelStudent(+urlParams.get("author"));
+    if (urlParams.get("teacher")) setSelTeacher(+urlParams.get("teacher"));
     let active = [];
     urlParams.getAll("category").forEach((categoryParam) => {
       let find = categories.find((f) => f.db == categoryParam);
@@ -95,13 +101,20 @@ const Notes = () => {
     // Every time a new call is made to the API, close details
     setSelNote(null);
 
+    const selCategories = categories
+      .filter((c) => c.checked)
+      .map((c) => c.name);
+    const selCategoriesKeys = Object.entries(data.categories)
+      .filter(([k, v]) => selCategories.includes(v.name))
+      .map(([k]) => k);
+
     const params = {
       year: selYear || null,
       subject: selSubject || null,
       student: selStudent || null,
       teacher: selTeacher || null,
       curricular_year: selCurricularYear || null,
-      category: [],
+      category: selCategoriesKeys,
     };
 
     for (let activeFilter of activeFilters) {
@@ -109,7 +122,7 @@ const Notes = () => {
       params.category.push(cat);
     }
 
-    if (activeFilters.length == 0) {
+    if (activeFilters.length === 0) {
       setNotes([]);
       setSelPage(1);
       setPage(1);
@@ -117,11 +130,11 @@ const Notes = () => {
       return;
     }
 
-    if (params.category.length == 0) {
+    if (params.category.length === 0) {
       setNotes([]);
     } else {
       service
-        .getNotes({ ...params, page: selPage, size: 24 })
+        .getNotes({ ...params, page: selPage, size: 18 })
         .then(({ items, last }) => {
           setNotes(
             items.map((note) => {
@@ -273,6 +286,7 @@ const Notes = () => {
     selPage,
     selTeacher,
     selCurricularYear,
+    categories,
   ]);
 
   useEffect(() => {
@@ -319,7 +333,7 @@ const Notes = () => {
   }
 
   return (
-    <div id="apontamentosPage">
+    <div id="notes">
       <div className="mb-5 flex flex-col">
         <h2 className="mb-2 text-center">
           <Typist>Apontamentos</Typist>
@@ -331,7 +345,28 @@ const Notes = () => {
         <div className="mx-auto flex w-64 flex-col">
           <div className="sticky top-[5rem] w-[inherit]">
             <div className="flex flex-col gap-4">
-              <h4>Filtros</h4>
+              <div className="mt-1 flex h-10 justify-around align-top">
+                {(selSubject || selStudent || selTeacher || selYear) && (
+                  <>
+                    <button
+                      className="btn-sm btn gap-2"
+                      onClick={() => linkShare()}
+                      title="Copiar link com filtros"
+                    >
+                      Partilhar
+                      <ShareIcon />
+                    </button>
+                    <button
+                      className="btn-sm btn gap-2"
+                      onClick={() => resetFilters()}
+                      title="Remover filtros"
+                    >
+                      Limpar
+                      <CloseIcon />
+                    </button>
+                  </>
+                )}
+              </div>
 
               <Autocomplete
                 items={years}
@@ -365,53 +400,28 @@ const Notes = () => {
               />
             </div>
 
-            <div className="flex w-full justify-end">
-              {(selSubject || selStudent || selTeacher || selYear) && (
-                <div className="mb-2 flex flex-row flex-wrap">
-                  <button
-                    className="animation btn-sm btn mr-2"
-                    onClick={() => linkShare()}
-                    title="Copiar link com filtros"
-                  >
-                    <span className="mr-1">Partilhar</span>
-                    {/* <FontAwesomeIcon
-                      className="link my-auto"
-                      icon={faShareAlt}
-                    /> */}
-                  </button>
-                  <button
-                    className="animation btn-sm btn mr-2"
-                    onClick={() => resetFilters()}
-                    title="Remover filtros"
-                  >
-                    <span className="mr-1">Limpar</span>
-                    {/* <FontAwesomeIcon className="link my-auto" icon={faTimes} /> */}
-                  </button>
-                </div>
+            <AnimatePresence initial={false}>
+              {selNote && selNote.id && (
+                <motion.div
+                  key={selNote.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <Details
+                    className="mt-8"
+                    note_id={selNote.id}
+                    close={() => setSelNote(null)}
+                    setSelYear={setSelYear}
+                    setSelSubject={setSelSubject}
+                    setSelStudent={setSelStudent}
+                    setSelTeacher={setSelTeacher}
+                    setSelPage={setSelPage}
+                    setAlert={setAlert}
+                  />
+                </motion.div>
               )}
-
-              <CheckboxDropdown
-                className="btn-sm m-1"
-                values={categories}
-                onChange={setCategories}
-              >
-                Filter <FilterIcon />
-              </CheckboxDropdown>
-            </div>
-
-            {selNote && selNote.id && (
-              <Details
-                className="order-lg-0 order-2"
-                note_id={selNote.id}
-                close={() => setSelNote(null)}
-                setSelYear={setSelYear}
-                setSelSubject={setSelSubject}
-                setSelStudent={setSelStudent}
-                setSelTeacher={setSelTeacher}
-                setSelPage={setSelPage}
-                setAlert={setAlert}
-              />
-            )}
+            </AnimatePresence>
           </div>
         </div>
 
@@ -420,23 +430,25 @@ const Notes = () => {
          ** the views, which are specified in each Tab.Pane element.
          */}
 
-        <div>
-          <TabsButton
-            tabs={[
-              <>
-                <GridViewIcon />
-              </>,
-              <>
-                <ViewListIcon />
-              </>,
-            ]}
-            selected={view}
-            setSelected={setView}
-          />
+        <div className="flex grow flex-col gap-5">
+          <div className="flex justify-between">
+            <TabsButton
+              tabs={[<GridViewIcon />, <ViewListIcon />]}
+              selected={view}
+              setSelected={setView}
+            />
+            <CheckboxDropdown
+              className="btn-sm gap-2"
+              values={categories}
+              onChange={debouncedSetCategories}
+            >
+              Categorias <FilterIcon />
+            </CheckboxDropdown>
+          </div>
 
           <div>
             {view === 0 && (
-              <div className="flex">
+              <div className="flex justify-center">
                 {loading ? (
                   <Spinner
                     animation="grow"
@@ -445,7 +457,7 @@ const Notes = () => {
                     title="A carregar..."
                   />
                 ) : notes.length == 0 ? (
-                  <div sm={12}>
+                  <div>
                     <h3 className="mt-3 text-center">
                       Nenhum apontamento encontrado
                     </h3>
@@ -458,35 +470,39 @@ const Notes = () => {
                 )}
               </div>
             )}
-            {view === Views.LIST && (
-              <div className="flex flex-col">
-                {!!loading ? (
-                  <Spinner
-                    animation="grow"
-                    variant="primary"
-                    className="mx-auto mt-3"
-                    title="A carregar..."
-                  />
-                ) : notes.length === 0 ? (
-                  <div sm={12}>
-                    <h3 className="mt-3 text-center">
-                      Nenhum apontamento encontrado
-                    </h3>
-                    <h4 className="text-center">
-                      Tente definir filtros menos restritivos
-                    </h4>
-                  </div>
-                ) : (
-                  <ListView
-                    data={notes}
-                    setSelYear={setSelYear}
-                    setSelSubject={setSelSubject}
-                    setSelStudent={setSelStudent}
-                    setSelTeacher={setSelTeacher}
-                  ></ListView>
-                )}
-              </div>
-            )}
+            {
+              view === Views.LIST && "Uhh ainda não temos isto feito"
+              // TODO: meter isto em tailwind
+              // (
+              //   <div className="flex flex-col">
+              //     {!!loading ? (
+              //       <Spinner
+              //         animation="grow"
+              //         variant="primary"
+              //         className="mx-auto mt-3"
+              //         title="A carregar..."
+              //       />
+              //     ) : notes.length === 0 ? (
+              //       <div sm={12}>
+              //         <h3 className="mt-3 text-center">
+              //           Nenhum apontamento encontrado
+              //         </h3>
+              //         <h4 className="text-center">
+              //           Tente definir filtros menos restritivos
+              //         </h4>
+              //       </div>
+              //     ) : (
+              //       <ListView
+              //         data={notes}
+              //         setSelYear={setSelYear}
+              //         setSelSubject={setSelSubject}
+              //         setSelStudent={setSelStudent}
+              //         setSelTeacher={setSelTeacher}
+              //       ></ListView>
+              //     )}
+              //   </div>
+              // )
+            }
           </div>
         </div>
       </div>
@@ -494,9 +510,9 @@ const Notes = () => {
         numPages={page}
         currentPage={selPage}
         handler={fetchPage}
-        className="mx-auto mt-3"
+        className="mx-auto mt-10"
       ></PageNav>
-      <div className="card mt-5 bg-base-200/80 text-center shadow-md">
+      <div className="card mx-auto mt-10 max-w-4xl bg-base-200/80 px-16 py-8 text-center shadow-md">
         <h3>
           Foi graças a pessoas como tu que esta página se tornou possível!
         </h3>
@@ -508,16 +524,16 @@ const Notes = () => {
 
           <div>
             <div className="mx-auto my-3">
-              <h4 className="">Diogo Silva</h4>
-              <div className="small">
-                <a className="link" href={"/notes?author=1161"}>
+              <h4>Diogo Silva</h4>
+              <div>
+                <a className="link-primary link" href={"/notes?author=36"}>
                   Os seus apontamentos no site do NEI
                 </a>
                 <br />
                 <a
                   href="https://resumosdeinformatica.netlify.app/"
                   target="_blank"
-                  className="link"
+                  className="link-primary link"
                 >
                   Website de apontamentos
                 </a>

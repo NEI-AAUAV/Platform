@@ -1,12 +1,21 @@
+import os
+from io import BytesIO
 from typing import Optional
+
+import magic
+from PIL import Image, ImageOps
 from sqlalchemy.orm import Session
+from fastapi import UploadFile
 from fastapi.encoders import jsonable_encoder
 
+from app.exception import FileFormatException
 from app.crud.base import CRUDBase
 from app.models.user import User
 from app.models.email import UserEmail
 from app.schemas.user import UserCreate, UserUpdate
 from app.core.config import settings
+
+mime = magic.Magic(mime=True)
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
@@ -76,6 +85,80 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         db.commit()
         db.refresh(db_obj)
 
+        return db_obj
+
+    async def update_image(
+        self,
+        db: Session,
+        *,
+        db_obj: User,
+        image: Optional[UploadFile],
+    ) -> User:
+        img_path = None
+        if image:
+            try:
+                img_data = await image.read()
+                img = Image.open(BytesIO(img_data))
+            except:
+                raise FileFormatException()
+            ext = img.format
+            if not ext in ('JPEG', 'PNG'):
+                raise FileFormatException(
+                    detail="Image format must be JPEG or PNG.")
+
+            # TODO: rescale if necessary
+
+            # Handle EXIF orientation tag
+            img = ImageOps.exif_transpose(img)
+
+            # Convert image mode to RGB to allow JPEG conversion
+            img = img.convert("RGB")
+
+            # Create path if it doesn't exist
+            os.makedirs(f"static/users/{db_obj.id}", exist_ok=True)
+
+            # Save optimized image on static folder
+            img_path = f"/users/{db_obj.id}/profile.jpg"
+            img.save(f"static{img_path}",
+                     format='JPEG',
+                     quality='web_high',
+                     optimize=True,
+                     progressive=True)
+
+        setattr(db_obj, 'image', img_path)
+        db.add(db_obj)
+        db.commit()
+        return db_obj
+
+    async def update_curriculum(
+        self,
+        db: Session,
+        *,
+        db_obj: User,
+        curriculum: Optional[UploadFile],
+    ) -> User:
+        curriculum_path = None
+        if curriculum:
+            try:
+                curriculum_data = await curriculum.read()
+                file_type = mime.from_buffer(curriculum_data)
+            except:
+                raise FileFormatException(detail="Failed to detect file type.")
+            curriculum_path = f"/users/{db_obj.id}/cv.pdf"
+
+            if file_type == "application/pdf":
+                # Create path if it doesn't exist
+                os.makedirs(f"static/users/{db_obj.id}", exist_ok=True)
+
+                with open(f"static{curriculum_path}", "wb") as f:
+                    f.write(curriculum_data)
+            else:
+                raise FileFormatException(
+                    detail="Curriculum format must be PDF.")
+
+        setattr(db_obj, 'curriculum', curriculum_path)
+        db.add(db_obj)
+        db.commit()
         return db_obj
 
 

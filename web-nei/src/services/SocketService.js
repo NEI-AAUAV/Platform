@@ -14,7 +14,7 @@ export const getSocket = () => {
 
     if (!socket) {
         socket = new WebSocket(`${config.WS_URL}/ws`);
-        console.log(socket)
+        // console.log(socket)
 
         socket.onopen = async (event) => {
             console.info("[open] Connection established");
@@ -44,7 +44,6 @@ export const getSocket = () => {
 }
 
 export const wsend = async (d) => {
-    console.log(socket.readyState, socket.OPEN)
     if (socket && socket.readyState === socket.OPEN) {
         await socket.send(JSON.stringify(d));
     } else {
