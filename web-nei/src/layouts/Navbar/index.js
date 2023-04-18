@@ -150,8 +150,8 @@ const Navbar = () => {
                                 </>
                                 :
                                 <div className="dropdown dropdown-end">
-                                    <label tabIndex={0} className="btn btn-sm btn-ghost gap-1 !px-0.5 flex-nowrap align-middle">
-                                        <div className="avatar mr-1">
+                                    <label tabIndex={0} className="btn btn-sm btn-outline md:gap-1 !px-0.5 flex-nowrap align-middle">
+                                        <div className="avatar md:mr-1">
                                             <div className="w-7 mask mask-circle">
                                                 <img src="https://placeimg.com/192/192/people" />
                                             </div>

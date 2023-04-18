@@ -41,14 +41,14 @@ const Merchandising = () => {
 
       {merchs && (
         <motion.div
-          className="mx-auto my-10 flex flex-wrap justify-center gap-10"
+          className="mx-auto my-10 flex flex-wrap justify-center gap-5 sm:gap-10"
           variants={container}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
           {merchs.map((data) => (
-            <motion.div key={data.id} variants={item}>
+            <motion.div key={data.id} variants={item} className="flex basis-80">
               <CardMerch
                 img={data.image}
                 title={data.name}

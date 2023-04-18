@@ -21,7 +21,8 @@ const CardMerch = ({ img, title, price, className }) => {
 
   return (
     <div
-      className={`relative flex h-96 w-80 flex-col items-center justify-center overflow-hidden rounded-3xl bg-base-200 pb-8 shadow-md ${className}`}
+   
+      className={`relative flex h-96 w-full flex-col items-center justify-center overflow-hidden rounded-3xl bg-base-200 pb-8 shadow-md ${className}`}
     >
       <img
         src={img}

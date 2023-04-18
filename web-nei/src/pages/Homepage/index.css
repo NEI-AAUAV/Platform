@@ -16,7 +16,7 @@
     width: var(--size);
     height: var(--size);
     filter: blur(calc(var(--size) / 5));
-    background-image: linear-gradient(hsla(var(--in) / .5), hsl(var(--suc)));
+    background-image: linear-gradient(#54878666, hsl(var(--suc)));
     animation: rotate var(--speed) var(--easing) alternate infinite;
     border-radius: 30% 70% 70% 30%/30% 30% 70% 70%;
 }

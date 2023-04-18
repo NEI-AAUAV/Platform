@@ -173,7 +173,7 @@ const Details = ({
 
               {!!note.year && (
                 <>
-                  <dt className="mt-1 flex align-center gap-2 font-bold">
+                  <dt className="mt-1 flex align-center gap-1.5 font-bold">
                     <span>Ano letivo</span>
                     <button
                       className="btn-ghost btn-xs btn-circle btn text-primary"
@@ -192,7 +192,7 @@ const Details = ({
               )}
               {!!note.subject && (
                 <>
-                  <dt className="mt-1 flex align-center gap-2 font-bold">
+                  <dt className="mt-1 flex align-center gap-1.5 font-bold">
                     <span>Cadeira</span>
                     <button
                       className="btn-ghost btn-xs btn-circle btn text-primary"
@@ -209,7 +209,7 @@ const Details = ({
               )}
               {!!note.author && (
                 <>
-                  <dt className="mt-1 flex align-center gap-2 font-bold">
+                  <dt className="mt-1 flex align-center gap-1.5 font-bold">
                     <span>Autor</span>
                     <button
                       className="btn-ghost btn-xs btn-circle btn text-primary"
@@ -256,7 +256,7 @@ const Details = ({
               )}
               {!!(note.content || note.size) && (
                 <div className="file-content">
-                  <dt className="mt-1 flex align-center gap-2 font-bold">
+                  <dt className="mt-1 flex align-center gap-1.5 font-bold">
                     Conteúdo
                     {!!note.size && (
                       <small className="ml-1">({note.size} MB)</small>

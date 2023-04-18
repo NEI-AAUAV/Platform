@@ -148,9 +148,7 @@ const Homepage = () => {
 
             <section className="p-20">
               <div
-                xs={11}
-                sm={10}
-                className="d-flex flex-column col-xxl-9 mx-auto flex-wrap text-center"
+                className="flex flex-col mx-auto flex-wrap text-center"
               >
                 <h2 className="header-dark mb-4">Notícias</h2>
                 {!!isLoading ? (
@@ -170,7 +168,7 @@ const Homepage = () => {
             </section>
           </>
         )}
-        <section className="p-20">
+        <section className="py-20">
           <Merchandising />
         </section>
       </div>
