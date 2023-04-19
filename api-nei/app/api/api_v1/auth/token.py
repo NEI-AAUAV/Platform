@@ -56,7 +56,8 @@ async def get_token(
 ) -> Response:
     if oauth_token is None:
         # Step 1: Request Token
-        oauth = OAuth1Session(settings.IDP_KEY, client_secret=settings.IDP_SECRET_KEY)
+        oauth = OAuth1Session(
+            settings.IDP_KEY, client_secret=settings.IDP_SECRET_KEY)
 
         fetch_response = oauth.fetch_request_token(request_token_url)
 
@@ -127,20 +128,21 @@ async def get_token(
                 surname=name["surname"],
             )
             logger.info(f"Creating user: {user_in}")
-            user = crud.user.create(db, obj_in=user_in, email=uu["email"], active=True)
-            userid = user.id
+            user = crud.user.create(
+                db, obj_in=user_in, email=uu["email"], active=True)
 
-            await crud.user.update_image_data(
+            await crud.user.update_image(
                 db, db_obj=user, image=base64.b64decode(student_info["Foto"])
             )
 
             subList = []
             for subject in student_courses:
                 subList.append(
-                    crud.subject.get_by_code(db, code=int(subject["CodDisciplina"]))
+                    crud.subject.get_by_code(
+                        db, code=int(subject["CodDisciplina"]))
                 )
             userAc = UserAcademicDetailsCreate(
-                user_id=userid,
+                user_id=user.id,
                 course_id=int(courseInfo[0].strip()),
                 curricular_year=student_info["AnoCurricular"],
                 year=student_info["AnoCurricular"],
@@ -163,6 +165,10 @@ async def get_token(
             logger.info(f"Updating user {user.id}: {user_up}")
             user = crud.user.update(db, db_obj=user, obj_in=user_up)
 
+            if user.image is None:
+                user = await crud.user.update_image(
+                    db, db_obj=user, image=base64.b64decode(student_info["Foto"]))
+
             # get user academic details
             userAc = crud.user_academic.get_by_user_id(db, user_id=user.id)
 
@@ -170,8 +176,8 @@ async def get_token(
             subList = []
             for subject in student_courses:
                 subList.append(
-                    crud.subject.get_by_code(db, code=int(subject["CodDisciplina"]))
-                )
+                    crud.subject.get_by_code(
+                        db, code=int(subject["CodDisciplina"])))
 
             userAc_up = UserAcademicDetailsCreate(
                 user_id=user.id,
@@ -182,7 +188,8 @@ async def get_token(
             if userAc is None:
                 userAc = crud.user_academic.create(db, obj_in=userAc_up)
             else:
-                userAc = crud.user_academic.update(db, db_obj=userAc, obj_in=userAc_up)
+                userAc = crud.user_academic.update(
+                    db, db_obj=userAc, obj_in=userAc_up)
 
             userAc.subjects = subList
             db.add(userAc)
@@ -212,7 +219,8 @@ def get_data(resource_owner_key, resource_owner_secret):
     for s in scopes:
         r = oauth.get(f"{get_data_url}?scope={s}&format=json")
         if s == "student_info":
-            returndata["student_info"] = r.json()["NewDataSet"]["ObterDadosAluno"]
+            returndata["student_info"] = r.json(
+            )["NewDataSet"]["ObterDadosAluno"]
         elif s == "student_courses":
             returndata["student_courses"] = r.json()["NewDataSet"][
                 "ObterListaDisciplinasAluno"

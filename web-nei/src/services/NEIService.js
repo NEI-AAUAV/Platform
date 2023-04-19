@@ -36,13 +36,10 @@ function processQueue(error, token = null) {
 client.interceptors.request.use(
   (config) => {
     // Do something before request is sent
-
     return config;
   },
   (error) => {
     // Do something with request error
-    console.error(error);
-
     return Promise.reject(error);
   }
 );
@@ -52,20 +49,18 @@ client.interceptors.response.use(
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     // console.log(response)
-
     return response.data;
   },
   async (error) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
 
-    console.error(error);
-
     const {
       response: { status },
+      config: { url }
     } = error;
 
-    if (status === UNAUTHORIZED) {
+    if (status === UNAUTHORIZED && url !== "/auth/refresh/") {
       // Token expired. Retry authentication here
       if (!isRefreshing) {
         isRefreshing = true;
@@ -78,6 +73,7 @@ client.interceptors.response.use(
           return client.request(config);
         } catch (e) {
           processQueue(e, null);
+          useUserStore.getState().logout();
           return Promise.reject("Session Expired");
         } finally {
           isRefreshing = false;
@@ -91,7 +87,6 @@ client.interceptors.response.use(
         });
       }
     }
-
     return Promise.reject(error);
   }
 );
@@ -238,6 +233,10 @@ class NEIService {
   async register(data) {
     // Increase timeout because the reCaptcha takes a while
     return await client.post("/auth/register/", data, { timeout: 15000 });
+  }
+
+  async logout() {
+    return await client.post("/auth/logout/");
   }
 
   async verifyEmail(params) {

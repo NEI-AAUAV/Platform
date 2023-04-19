@@ -227,8 +227,8 @@ def generate_response(
         secure=settings.PRODUCTION,
         httponly=True,
         samesite="strict",
-        # Only pass the cookie to the refresh endpoint
-        path=settings.API_V1_STR + "/auth/refresh",
+        # Only pass the cookie to the auth endpoints
+        path=f"{settings.API_V1_STR}/auth",
     )
     return response
 

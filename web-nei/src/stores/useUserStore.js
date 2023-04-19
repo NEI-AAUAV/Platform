@@ -16,6 +16,7 @@ document.body.setAttribute("data-theme", defaultTheme);
 export const useUserStore = create((set, get) => ({
   theme: defaultTheme,
   reducedAnimation: defaultReducedAnimation,
+  sub: null,
   name: null,
   surname: null,
   token: null,

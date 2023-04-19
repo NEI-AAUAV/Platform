@@ -27,6 +27,7 @@ const config = {
     HOST,
     BASE_URL,
     NEI_URL: `${BASE_URL}/api/nei/v1`,
+    NEI_STATIC_URL: `${BASE_URL}/static/nei`,
     TACAUA_URL: `${BASE_URL}/api/tacaua/v1`,
     FAMILY_URL: `${BASE_URL}/api/family/v1`,
     RALLYTASCAS_URL: `${BASE_URL}/api/rallytascas/v1`,

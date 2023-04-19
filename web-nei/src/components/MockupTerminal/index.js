@@ -216,7 +216,7 @@ const MockupTerminal = () => {
 
   return (
     <div
-      className="mockup-terminal mockup-code bg-base-300 text-base-content font-mono leading-[22px]"
+      className="mockup-terminal mockup-code bg-base-300 font-mono leading-[22px] text-base-content shadow-lg"
       onClick={setInputFocus}
     >
       <div

@@ -7,6 +7,7 @@ from PIL import Image, ImageOps
 from sqlalchemy.orm import Session
 from fastapi import UploadFile
 from fastapi.encoders import jsonable_encoder
+from starlette.datastructures import UploadFile as StarletteUploadFile
 from loguru import logger
 from app.exception import FileFormatException
 from app.crud.base import CRUDBase
@@ -87,25 +88,18 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
         return db_obj
 
-    async def update_image_file(
+    async def update_image(
         self,
         db: Session,
         *,
         db_obj: User,
-        image: Optional[UploadFile],
-    ) -> User:
-        return await self.update_image_data(db, User, await image.read())
-
-    async def update_image_data(
-        self,
-        db: Session,
-        *,
-        db_obj: User,
-        image: bytes,
+        image: UploadFile | bytes | None,
     ) -> User:
         img_path = None
         if image:
             try:
+                if isinstance(image, StarletteUploadFile):
+                    image = await image.read()
                 img = Image.open(BytesIO(image))
             except:
                 raise FileFormatException()
@@ -122,7 +116,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             img = img.convert("RGB")
 
             # Create path if it doesn't exist
-            os.makedirs(f"static/users/{db_obj.id}", exist_ok=False)
+            os.makedirs(f"static/users/{db_obj.id}", exist_ok=True)
 
             # Save optimized image on static folder
             img_path = f"/users/{db_obj.id}/profile.jpg"
@@ -133,6 +127,12 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
                 optimize=True,
                 progressive=True,
             )
+        elif db_obj.image:
+            # Delete image
+            try:
+                os.remove(f"static{db_obj._image}")
+            except:
+                pass  # ignore errors
 
         setattr(db_obj, "image", img_path)
         db.add(db_obj)
@@ -163,6 +163,12 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
                     f.write(curriculum_data)
             else:
                 raise FileFormatException(detail="Curriculum format must be PDF.")
+        elif db_obj.curriculum:
+            # Delete curriculum
+            try:
+                os.remove(f"static{db_obj._curriculum}")
+            except:
+                pass  # ignore errors
 
         setattr(db_obj, "curriculum", curriculum_path)
         db.add(db_obj)
