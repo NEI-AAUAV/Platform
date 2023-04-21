@@ -93,12 +93,13 @@ function UserProfile() {
 
   useEffect(() => {
     const previewElem = document.getElementById("profile-image-preview");
+    if (!previewElem) return;
 
     const defaultImage = {
       M: malePic,
       F: femalePic,
       null: otherPic,
-    }[watchGender || user?.gender];
+    }[watchGender];
 
     if (watchImage === undefined) {
       previewElem.src = user?.image || defaultImage;
@@ -162,7 +163,8 @@ function UserProfile() {
       });
   };
 
-  console.log(dirtyFields);
+  if (isLoading)
+    return null;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
