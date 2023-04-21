@@ -29,6 +29,11 @@ export const useUserStore = create((set, get) => ({
   },
 
   logout: () => {
-    set(() => ({ name: null, surname: null, token: null }));
+    set(() => ({
+      name: null,
+      surname: null,
+      token: null,
+      sessionLoading: false,
+    }));
   },
 }));
