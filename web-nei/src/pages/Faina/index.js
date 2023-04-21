@@ -106,7 +106,7 @@ const Faina = () => {
           title="A carregar..."
         />
       ) : (
-        <div className="flex flex-col xl:flex-row justify-center items-center">
+        <div className="flex flex-col items-center justify-center xl:flex-row">
           <AnimatePresence>
             {fainaImg && (
               <motion.div
@@ -124,7 +124,7 @@ const Faina = () => {
             )}
           </AnimatePresence>
           <motion.div
-            className="card !mt-10 h-fit !ml-10 !mr-0 xl:!mx-0 flex w-96 items-center !bg-base-200 !bg-opacity-60 shadow-md !backdrop-blur-lg"
+            className="card !ml-10 !mr-0 !mt-10 flex h-fit w-96 items-center !bg-base-200 !bg-opacity-60 shadow-md !backdrop-blur-lg xl:!mx-0"
             variants={item}
             initial="hidden"
             animate={fainaImg ? "slide" : "visible"}
@@ -139,7 +139,7 @@ const Faina = () => {
             <div className="flex flex-col items-center">
               {people.map((person, index) => (
                 <Fragment key={index}>
-                  <UserPopover
+                  {/* <UserPopover
                     className="sm:hover:underline sm:hover:decoration-2"
                     user={person}
                   >
@@ -147,9 +147,16 @@ const Faina = () => {
                       <span className="font-medium text-[#D7A019]">
                         {person.role}
                       </span>
-                      {"" + " " + person.name}
+                      {` ${person.name}`}
                     </span>
-                  </UserPopover>
+                  </UserPopover> */}
+
+                  <span className="p-1 font-medium uppercase">
+                    <span className="font-medium text-[#D7A019]">
+                      {person.role}
+                    </span>
+                    {` ${person.name}`}
+                  </span>
                 </Fragment>
               ))}
             </div>

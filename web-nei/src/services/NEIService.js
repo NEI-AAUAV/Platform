@@ -8,7 +8,6 @@ const client = axios.create({
 });
 
 const UNAUTHORIZED = 401;
-const MAX_RETRIES = 3;
 
 let isRefreshing = false;
 let refreshSubscribers = [];
@@ -19,6 +18,8 @@ async function refreshToken() {
     client.defaults.headers.common.Authorization = `Bearer ${access_token}`;
     useUserStore.getState().login({ token: access_token });
     return access_token;
+  }).catch(() => {
+    useUserStore.getState().logout();
   });
 };
 

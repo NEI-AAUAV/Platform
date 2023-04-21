@@ -1,16 +1,23 @@
 import React from "react";
+import { Navigate } from "react-router-dom";
 
 import config from "config";
 
 import Layout, { FullLayout, CleanLayout } from "./layouts/Layout";
 
-import Login from "./auth/Login";
-import Register from "./auth/Register";
-import EmailVerify from "./auth/EmailVerify";
-import ForgotPassword from "./auth/ForgotPassword";
-import ResetPassword from "./auth/ResetPassword";
-
-import NewsList from "pages/News/NewsList"
+import {
+  Login,
+  Register,
+  EmailVerify,
+  ForgotPassword,
+  ResetPassword,
+} from "./pages/auth";
+import {
+  SettingsProfile,
+  SettingsFamily,
+  SettingsAccount,
+} from "./pages/settings";
+import NewsList from "pages/News/NewsList";
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
 import Error404 from "./pages/Error404";
@@ -20,7 +27,6 @@ import RGM from "./pages/RGM";
 import Calendar from "./pages/Calendar";
 import History from "./pages/History";
 import Notes from "./pages/Notes";
-import Profile from "./pages/Profile";
 import FeedbackForm from "./pages/Forms/FeedbackForm";
 import Videos from "./pages/Videos";
 import Video from "./pages/Video";
@@ -33,7 +39,9 @@ import Test from "./pages/WSTest";
 import TacauaAdminDemo from "./pages/TacauaAdminDemo";
 import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
 
-const routes = [
+const isProd = config.PRODUCTION;
+
+const routes = ({ isAuth }) => [
   {
     path: "/",
     element: <Layout />,
@@ -45,25 +53,39 @@ const routes = [
       { path: "/videos/:id", element: <Video /> },
       { path: "/teams", element: <Team /> },
       { path: "/rgm", element: <RGM /> },
-      !config.PRODUCTION && { path: "/news/:id?", element: <NewsList />},
-      !config.PRODUCTION && { path: "/history", element: <History /> },
-      !config.PRODUCTION && { path: "/seniors/:course?", element: <Seniors /> },
+      !isProd && { path: "/news/:id?", element: <NewsList /> },
+      !isProd && { path: "/history", element: <History /> },
+      !isProd && { path: "/seniors/:course?", element: <Seniors /> },
       { path: "/faina", element: <Faina /> },
-      !config.PRODUCTION && { path: "/taca-ua", element: <Sports /> },
-      !config.PRODUCTION && { path: "/taca-ua/:id/:view?", element: <SportModality /> },
-      !config.PRODUCTION && { path: "/components", element: <Components /> },
-      !config.PRODUCTION && { path: "/WSTest", element: <Test /> },
-      !config.PRODUCTION && { path: "/WStacaua-admin-demo", element: <TacauaAdminDemo /> },
-      { path: "/profile", element: <Profile /> },
+      !isProd && { path: "/taca-ua", element: <Sports /> },
+      !isProd && { path: "/taca-ua/:id/:view?", element: <SportModality /> },
+      !isProd && { path: "/components", element: <Components /> },
+      !isProd && { path: "/WSTest", element: <Test /> },
+      !isProd && { path: "/WStacaua-admin-demo", element: <TacauaAdminDemo /> },
       { path: "/redirect", element: <Login onRedirect /> },
-      { path: "/auth/register", element: <Register /> },
-      { path: "/auth/login", element: <Login /> },
       { path: "/auth/verify", element: <EmailVerify /> },
-      { path: "/auth/forgot", element: <ForgotPassword /> },
       { path: "/auth/reset", element: <ResetPassword /> },
       { path: "/*", element: <Error404 /> },
       // { path: "/estagios", element: <Internship /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
+    ],
+  },
+  {
+    path: "/",
+    element: !!isAuth ? <Layout /> : <Navigate to="/" />,
+    children: [
+      { path: "/settings/profile", element: <SettingsProfile /> },
+      !isProd && { path: "/settings/family", element: <SettingsFamily /> },
+      !isProd && { path: "/settings/account", element: <SettingsAccount /> },
+    ],
+  },
+  {
+    path: "/",
+    element: !isAuth ? <Layout /> : <Navigate to="/" />,
+    children: [
+      { path: "/auth/register", element: <Register /> },
+      { path: "/auth/login", element: <Login /> },
+      { path: "/auth/forgot", element: <ForgotPassword /> },
     ],
   },
   {

@@ -143,6 +143,7 @@ class UserUpdate(UserBase):
 
 class UserAdminUpdate(UserUpdate):
     faina: Optional[FainaAdminUpdate]
+    academic: Optional[AcademicUpdate]
 
 
 class UserInDB(UserBase):

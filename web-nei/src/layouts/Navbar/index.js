@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
 import LinkAdapter from "utils/LinkAdapter";
@@ -20,8 +20,12 @@ import {
   MenuIcon,
   CloseIcon,
   PersonIcon,
+  FamilyPersonIcon,
+  SettingsIcon,
   PersonAddIcon,
 } from "assets/icons/google";
+
+import otherPic from "assets/default_profile/other.svg";
 
 import { data, dataCompacted } from "./data";
 import config from "config";
@@ -35,6 +39,7 @@ const Navbar = () => {
   const [openMobile, setOpenMobile] = useState(false);
   const { theme, token, name, surname, sub } = useUserStore((state) => state);
   const [navItems, setNavItems] = useState(data);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Close navbar mobile when location changes
@@ -49,7 +54,7 @@ const Navbar = () => {
       resetMenuDropdowns();
     }
     if (windowSize.width < 1024) {
-      setNavItems(dataCompacted(5));
+      setNavItems(dataCompacted(4));
     } else {
       setNavItems(dataCompacted(7));
     }
@@ -82,6 +87,7 @@ const Navbar = () => {
   function toggleMobileDropdown(e) {
     const nav = navMobileRef.current;
     const dropdown = e.target.nextSibling;
+    if (!dropdown) return;
     if (dropdown.style.maxHeight) {
       dropdown.style.maxHeight = null;
     } else {
@@ -99,6 +105,7 @@ const Navbar = () => {
       .logout()
       .then(() => {
         useUserStore.getState().logout();
+        navigate("/");
       })
       .catch((err) => {
         console.error(err);
@@ -182,7 +189,7 @@ const Navbar = () => {
             <div
               className={classNames("flex gap-x-3 p-1", { hidden: openMobile })}
             >
-              <label className="swap btn-ghost swap-rotate btn-sm btn-circle btn">
+              <label className="swap-rotate swap btn-ghost btn-sm btn-circle btn">
                 <input
                   type="checkbox"
                   onChange={toggleTheme}
@@ -216,11 +223,15 @@ const Navbar = () => {
                   >
                     <div className="avatar md:mr-1">
                       <div className="mask mask-circle w-7">
-                        <img
-                          src={
-                            config.NEI_STATIC_URL + `/users/${sub}/profile.jpg`
-                          }
-                        />
+                        <object data={otherPic} type="image/svg+xml">
+                          <img
+                            src={
+                              config.NEI_STATIC_URL +
+                              `/users/${sub}/profile.jpg`
+                            }
+                            alt="Perfil"
+                          />
+                        </object>
                       </div>
                     </div>
                     <span className="hidden md:block">
@@ -237,14 +248,28 @@ const Navbar = () => {
                     className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-200 p-2 shadow"
                   >
                     <li>
-                      <Link to="/profile">
+                      <Link to="/settings/profile">
                         <PersonIcon /> Perfil
                       </Link>
                     </li>
-                    <li>
-                      <Link to="/" onClick={logout}>
+                    {!config.PRODUCTION && (
+                      <>
+                        <li>
+                          <Link to="/settings/family">
+                            <FamilyPersonIcon /> Família
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="/settings/account">
+                            <SettingsIcon /> Conta
+                          </Link>
+                        </li>
+                      </>
+                    )}
+                    <li onClick={logout}>
+                      <a>
                         <LogoutIcon /> Log out
-                      </Link>
+                      </a>
                     </li>
                   </ul>
                 </div>
@@ -266,34 +291,38 @@ const Navbar = () => {
           className="navbar-mobile mx-auto max-h-0 w-full overflow-hidden transition-all ease-out md:hidden"
         >
           <ul className="menu menu-vertical p-5 pt-0">
-            {data.map(({ name, link, dropdown }, index) =>
+            {data.map(({ name, link, disabled, dropdown }, index) =>
               !dropdown ? (
-                <li key={index}>
+                <li
+                  key={index}
+                  className={classNames({
+                    "pointer-events-none opacity-50": disabled,
+                  })}
+                >
                   <LinkAdapter to={link}>{name}</LinkAdapter>
                 </li>
               ) : (
                 <li key={index} tabIndex={0}>
                   <a className="justify-between" onClick={toggleMobileDropdown}>
                     {name}
-                    <svg
-                      className="pointer-events-none fill-current"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
-                    </svg>
+                    <ExpandMoreIcon />
                   </a>
-                  <ul className="relative left-0 ml-4 flex max-h-0 overflow-hidden !rounded-none border-l-2 border-base-300 pl-2 transition-all ease-out">
-                    {dropdown.map(({ name, link, external }, index) => (
-                      <li key={index}>
-                        <LinkAdapter to={link} external={external}>
-                          {name}
-                          {!!external && <OpenInNewIcon />}
-                        </LinkAdapter>
-                      </li>
-                    ))}
+                  <ul className="relative left-0 ml-4 flex max-h-0 overflow-hidden !rounded-none border-l-2 border-base-content/50 pl-2 transition-all ease-out">
+                    {dropdown.map(
+                      ({ name, link, disabled, external }, index) => (
+                        <li
+                          key={index}
+                          className={classNames({
+                            "pointer-events-none opacity-50": disabled,
+                          })}
+                        >
+                          <LinkAdapter to={link} external={external}>
+                            {name}
+                            {!!external && <OpenInNewIcon />}
+                          </LinkAdapter>
+                        </li>
+                      )
+                    )}
                   </ul>
                 </li>
               )

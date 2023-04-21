@@ -10,12 +10,12 @@ import classNames from "classnames";
  * @param {Array[{label: String, value: String, checked: Boolean}]} values list of options to display
  * @param {Function} onChange callback to be called when a radio is checked/unchecked
  */
-const RadioDropdown = ({ name, values, onChange, children, className, ...props }) => {
-  const [options, setOptions] = useState(values);
+const RadioDropdown = ({ name, value, onChange, children, className, ...props }) => {
+  const [options, setOptions] = useState(props.options);
 
-  useEffect(() => {
-    setOptions(values);
-  }, [values]);
+  // useEffect(() => {
+  //   setOptions(props.options);
+  // }, [props.options]);
 
   return (
     <div className={classNames("dropdown", className?.dropdown)}>
@@ -27,13 +27,13 @@ const RadioDropdown = ({ name, values, onChange, children, className, ...props }
         className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-200 p-2 font-medium shadow"
       >
         {options?.map(
-          ({ label, checked, color = "var(--p)" }, index) => (
+          ({ value: v, label, color = "var(--p)" }, index) => (
             <li key={index}>
               <label>
                 <input
                   type="radio"
                   name={name}
-                  checked={checked}
+                  checked={v === value}
                   onChange={() => onChange(options[index].value)}
                   className="radio radio-sm"
                   // Customize DaisyUI colorss

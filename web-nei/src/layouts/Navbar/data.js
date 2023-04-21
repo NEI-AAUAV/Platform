@@ -2,11 +2,6 @@ import config from "config";
 
 const data = [
     {
-        name: "Notícias",
-        link: "/news",
-        disabled: config.PRODUCTION,
-    },
-    {
         name: "Estudo",
         dropdown: [
             {
@@ -65,6 +60,11 @@ const data = [
             },
         ],
     },
+    {
+        name: "Notícias",
+        link: "/news",
+        disabled: config.PRODUCTION,
+    },
     !config.PRODUCTION && {
         name: "Taça UA",
         link: "/taca-ua",
@@ -98,11 +98,11 @@ const data = [
         name: "TacauaAdminDemo",
         link: "/WStacaua-admin-demo",
     }
-];
+].filter(Boolean);
 
 
 const dataCompacted = (size) => {
-    const items = data.filter(Boolean);
+    const items = [...data];
     const otherItems = items.splice(size - 1);
 
     if (otherItems.length !== 0) {
@@ -111,7 +111,6 @@ const dataCompacted = (size) => {
             dropdown: otherItems
         });
     }
-
     return items;
 }
 

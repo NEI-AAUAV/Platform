@@ -11,13 +11,13 @@ const Status = {
   error: 4,
 };
 
-function UserEmail() {
+function SettingsAccount() {
   // Define state variables for form inputs
   const [errors, setErrors] = useState({});
   const [response, setResponse] = useLoading({ status: null });
-  const { name, surname, image } = useUserStore((state) => state);
+  const { name, surname } = useUserStore((state) => state);
   let form = {
-    image,
+    image: null,
     name: name || "",
     surname: surname || "",
     birthdate: "",
@@ -104,4 +104,4 @@ function UserEmail() {
   );
 }
 
-export default UserEmail;
+export default SettingsAccount;

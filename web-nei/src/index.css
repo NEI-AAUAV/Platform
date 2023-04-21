@@ -128,6 +128,14 @@
     @apply animate-wiggle;
   }
 
+  .message-error {
+    @apply px-1 py-2 text-xs text-error font-medium;
+  }
+
+  .message-error::before {
+    content: "⚠ ";
+  }
+
   /* For Webkit-based browsers (Chrome, Safari and Opera) */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;

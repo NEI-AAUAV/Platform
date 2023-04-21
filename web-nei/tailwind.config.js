@@ -101,9 +101,9 @@ module.exports = {
         },
 
         // Neutral
-        neutral: "var(--ds-neutral)",
-        "neutral-focus": "var(--ds-neutral-focus)",
-        "neutral-content": "var(--ds-neutral-content)",
+        // neutral: "var(--ds-neutral)",
+        // "neutral-focus": "var(--ds-neutral-focus)",
+        // "neutral-content": "var(--ds-neutral-content)",
 
         // Base
         base: {
@@ -127,7 +127,7 @@ module.exports = {
           accent: "#26AB55",
 
           // System
-          error: "#FCD4D8",
+          error: "#E83E34",
           "error-content": "#64085B",
           warning: "#FEF8CB",
           "warning-content": "#765100",
@@ -161,7 +161,7 @@ module.exports = {
           secondary: "#65E67D",
           accent: "#26AB55",
           // System
-          error: "#FCD4D8",
+          error: "#E83E34",
           "error-content": "#64085B",
           warning: "#FEF8CB",
           "warning-content": "#765100",

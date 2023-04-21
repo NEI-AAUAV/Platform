@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const config = {
-    PRODUCTION,
+    PRODUCTION: true,
     HOST,
     BASE_URL,
     NEI_URL: `${BASE_URL}/api/nei/v1`,

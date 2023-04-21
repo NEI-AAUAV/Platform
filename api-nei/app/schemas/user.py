@@ -63,7 +63,8 @@ class UserInDB(UserBase):
     updated_at: datetime
     birthday: Optional[date]
     scopes: List[ScopeEnum] = []
-    academic_details: List[UserAcademicDetailsInBD]
+    academic_details: list[UserAcademicDetailsInBD] | list  
+    # TODO: sometimes i need to put list, but it feels wrong, fix this
 
     class Config:
         orm_mode = True
