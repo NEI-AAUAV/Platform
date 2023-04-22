@@ -43,6 +43,7 @@ jobs:
       IDP_SECRET_KEY: ${{ secrets.IDP_SECRET_KEY }}
       RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
     steps:
+    - uses: actions/checkout@v2
     - name: Copy docker-compose file
       uses: appleboy/scp-action@master
       with:
@@ -51,11 +52,8 @@ jobs:
         password: ${{ secrets.SSH_PASSWORD }}
         source: "docker-compose.prod.yaml,docker-compose.prod.yaml"
         target: "~/deploy-latest/,~/deploy-${GITHUB_SHA:0:7}/"
-        
-    - name: Checkout code
-      uses: actions/checkout@v2
-    
     - name: Deploy with docker-compose
+      uses: actions/checkout@v2
       run: |
         docker stop $(docker ps -aq) || true
         docker rm $(docker ps -aq) || true

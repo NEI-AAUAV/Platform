@@ -140,7 +140,7 @@ const Homepage = () => {
           </div>
         </div>
 
-        {!!config.PRODUCTION && (
+        {!config.PRODUCTION && (
           <>
             <section className="relative left-1/2 w-screen translate-x-[-50%] bg-base-content/10 p-20 shadow-md backdrop-blur-lg">
               <Partners />

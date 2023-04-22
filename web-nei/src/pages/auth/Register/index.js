@@ -1,9 +1,10 @@
 import NEIService from "services/NEIService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import { useReCaptcha } from "utils/hooks";
 
 const Register = () => {
+  const navigate = useNavigate();
   const passwordRef = useRef(null);
   const confirmRef = useRef(null);
   const errorMessage = useRef(null);
@@ -30,8 +31,11 @@ const Register = () => {
 
     const token = await generateReCaptchaToken("register");
     data.recaptcha_token = token;
-    const access = await NEIService.register(data);
-    console.log(access);
+    NEIService.register(data).then((response) => {
+      navigate("/");
+    }).catch((error) => {
+      console.error("Could not register user.")
+    });
   };
 
   return (
@@ -125,6 +129,10 @@ const Register = () => {
           </button>
         </form>
         <p className="m-auto mt-2 text-xs sm:text-sm">
+        Terás de ativar o teu email no email que indicares.
+        </p>
+        <p className="m-auto mt-2 text-xs sm:text-sm">
+          
           Já estás registado?{" "}
           <Link to={"/auth/login"} className="link-primary link">
             Inicia sessão aqui.
