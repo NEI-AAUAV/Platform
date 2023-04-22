@@ -123,7 +123,7 @@ module.exports = {
           ...require("daisyui/src/colors/themes")["[data-theme=light]"],
           primary: "#26AB55",
           "primary-content": "#141414",
-          secondary: "#65E67D",
+          secondary: "#3EAB65",
           accent: "#26AB55",
 
           // System
@@ -150,7 +150,7 @@ module.exports = {
           "base-content": "#2A2A2A",
 
           // Content
-          "secondary-content": "#666666",
+          "secondary-content": "#ffffff",
         },
       },
       {
@@ -158,7 +158,7 @@ module.exports = {
           ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
           primary: "#26AB55",
           "primary-content": "#FFFFFF",
-          secondary: "#65E67D",
+          secondary: "#3EAB65",
           accent: "#26AB55",
           // System
           error: "#E83E34",
@@ -182,7 +182,7 @@ module.exports = {
           "--ds-base-secondary": "#161616",
           "base-content": "#C0C0C0",
           // Content
-          "secondary-content": "#666666",
+          "secondary-content": "#ffffff",
         },
       },
     ],

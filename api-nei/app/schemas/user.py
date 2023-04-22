@@ -27,8 +27,10 @@ class UserBase(BaseModel):
     name: constr(max_length=20)
     surname: constr(max_length=20)
     gender: Optional[GenderEnum]
-    linkedin: Optional[constr(max_length=100)]
-    github: Optional[constr(max_length=39)]
+    linkedin: Optional[AnyHttpUrl]  # Optional[constr(max_length=100)]
+    github: Optional[AnyHttpUrl]  # Optional[constr(max_length=39)]
+    # Allow to receive datetime but then convert to date
+    birthday: Optional[datetime | date]
 
 
 @include(["created_at", "updated_at"])

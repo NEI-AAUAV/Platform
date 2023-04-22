@@ -62,7 +62,6 @@ const routes = ({ isAuth }) => [
       !isProd && { path: "/components", element: <Components /> },
       !isProd && { path: "/WSTest", element: <Test /> },
       !isProd && { path: "/WStacaua-admin-demo", element: <TacauaAdminDemo /> },
-      { path: "/redirect", element: <Login onRedirect /> },
       { path: "/auth/verify", element: <EmailVerify /> },
       { path: "/auth/reset", element: <ResetPassword /> },
       { path: "/*", element: <Error404 /> },
@@ -83,6 +82,7 @@ const routes = ({ isAuth }) => [
     path: "/",
     element: !isAuth ? <Layout /> : <Navigate to="/" />,
     children: [
+      { path: "/redirect", element: <Login onRedirect /> },
       { path: "/auth/register", element: <Register /> },
       { path: "/auth/login", element: <Login /> },
       { path: "/auth/forgot", element: <ForgotPassword /> },

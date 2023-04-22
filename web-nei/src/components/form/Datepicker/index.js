@@ -33,31 +33,26 @@ const Datepicker = forwardRef(
         )}
         <div className="relative">
           <input
-            ref={ref}
             type="text"
             className={classNames(
               "input-bordered input w-full pr-12",
               error && "!input-error"
             )}
+            {...props}
             onSelect={(e) => {
               e.target?.value && onChange(e);
             }}
-            onClick={(e) => console.log(e.target.value)}
             onChange={() => {}}
             value={value}
             data-datepicker
+            ref={ref}
             id={id}
-            {...props}
           />
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
             <CalendarIcon />
           </div>
         </div>
-        {!!error && (
-          <p className="message-error">
-            {error?.message}
-          </p>
-        )}
+        {!!error && <p className="message-error">{error?.message}</p>}
       </>
     );
   }

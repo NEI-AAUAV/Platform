@@ -37,7 +37,9 @@ const Navbar = () => {
   const windowSize = useWindowSize();
   const windowScroll = useWindowScroll();
   const [openMobile, setOpenMobile] = useState(false);
-  const { theme, token, name, surname, sub } = useUserStore((state) => state);
+  const { theme, token, name, surname, image } = useUserStore(
+    (state) => state
+  );
   const [navItems, setNavItems] = useState(data);
   const navigate = useNavigate();
 
@@ -223,15 +225,7 @@ const Navbar = () => {
                   >
                     <div className="avatar md:mr-1">
                       <div className="mask mask-circle w-7">
-                        <object data={otherPic} type="image/svg+xml">
-                          <img
-                            src={
-                              config.NEI_STATIC_URL +
-                              `/users/${sub}/profile.jpg`
-                            }
-                            alt="Perfil"
-                          />
-                        </object>
+                        <img src={image || otherPic} alt="Perfil" />
                       </div>
                     </div>
                     <span className="hidden md:block">

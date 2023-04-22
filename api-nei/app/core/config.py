@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     ## How long the email confirmation tokens are valid for
     CONFIRMATION_TOKEN_EXPIRE: timedelta = timedelta(days=1)
     ## How long the password reset tokens are valid for
-    PASSWORD_RESET_TOKEN_EXPIRE = timedelta(hours=1)
+    PASSWORD_RESET_TOKEN_EXPIRE: timedelta = timedelta(hours=1)
     ## Algorithm to use when signing JWT tokens
     JWT_ALGORITHM: str = "ES512"
 

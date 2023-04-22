@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import { useRoutes } from "react-router-dom";
 
 import routes from "./routes";
 
 import { getSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
+import { refreshToken } from "services/NEIService";
 
 let ws = getSocket();
 
@@ -23,6 +25,11 @@ const UnauthenticatedRoutes = () => {
  */
 const App = () => {
   const { sessionLoading, token } = useUserStore((state) => state);
+
+  useEffect(() => {
+    refreshToken();
+  }, []);
+
   if (sessionLoading) {
     return null;
   } else if (token) {

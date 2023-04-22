@@ -165,10 +165,6 @@ async def get_token(
             logger.info(f"Updating user {user.id}: {user_up}")
             user = crud.user.update(db, db_obj=user, obj_in=user_up)
 
-            if user.image is None:
-                user = await crud.user.update_image(
-                    db, db_obj=user, image=base64.b64decode(student_info["Foto"]))
-
             # get user academic details
             userAc = crud.user_academic.get_by_user_id(db, user_id=user.id)
 

@@ -49,7 +49,7 @@ const MainFooter = () => {
           theme === "dark" ? `url(${blackMapBg})` : `url(${whiteMapBg})`,
       }}
     >
-      <div className="footer mx-auto w-full max-w-[90rem] p-3 xs:p-10 text-neutral-content md:justify-normal justify-center">
+      <div className="footer mx-auto w-full max-w-[90rem] p-3 xs:p-10 text-base-content md:justify-normal justify-center">
         <div>
           <img
             src={theme === "dark" ? whiteLogo : blackLogo}

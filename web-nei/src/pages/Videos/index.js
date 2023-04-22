@@ -78,8 +78,6 @@ const Videos = () => {
       });
   }, []);
 
-  console.log(videos, tags)
-
   // When categories selected change, update videos list (get from API)
   useEffect(() => {
     setLoading(true);

@@ -59,7 +59,7 @@ const Calendar = () => {
       </div>
 
       {view === Views.CALENDAR && <NEICalendar />}
-      {view === Views.AGENDA && "Não há agenda"}
+      {view === Views.AGENDA && "Meter uma linda agenda aqui"}
     </div>
   );
 };

@@ -29,14 +29,14 @@ const CardMerch = ({ img, title, price, className }) => {
         className=" relative  my-auto block h-full w-full object-contain object-center p-12 transition duration-150 ease-in hover:z-10 hover:scale-110 "
         alt="Imagem Disponível em Breve"
       />
-      <div className="pointer-events-none absolute inset-0 flex w-full grow-0 flex-col justify-end opacity-50">
+      <div className="pointer-events-none absolute inset-0 flex w-full grow-0 flex-col justify-end opacity-70">
         <div className="overflow-hidden">
-          <div className="h-0 w-[102.24%] origin-top-left rotate-12 bg-accent p-[10.63%]" />
+          <div className="h-0 w-[102.24%] origin-top-left rotate-12 bg-secondary p-[10.63%]" />
         </div>
-        <div className="h-1/3 w-full bg-accent" />
+        <div className="h-1/3 w-full bg-secondary" />
       </div>
       <div className="card-body absolute bottom-0 w-full">
-        <h2 className="text-left text-accent-content">{title}</h2>
+        <h2 className="text-left text-secondary-content">{title}</h2>
         <span className="text-right">
           <span className="text-md font-medium">Preço:</span>
           <span className="text-xl font-semibold"> {formattedPrice}</span>

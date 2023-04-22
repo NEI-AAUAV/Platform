@@ -22,8 +22,6 @@ export const UserPopover = ({ user, ...popoverProps }) => {
     linkedin: "https://github/leand12",
   };
 
-  console.log(user);
-
   function findInFamily() {
     setLoading(true);
     setTimeout(() => setLoading(false), 3000);

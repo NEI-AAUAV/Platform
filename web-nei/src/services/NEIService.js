@@ -12,9 +12,11 @@ const UNAUTHORIZED = 401;
 let isRefreshing = false;
 let refreshSubscribers = [];
 
+window.storage = useUserStore.getState
+
 /** Attempt to login with refresh token cookie. */
-async function refreshToken() {
-  return client.post("/auth/refresh/").then(({ access_token }) => {
+export async function refreshToken() {
+  return await client.post("/auth/refresh/").then(({ access_token }) => {
     client.defaults.headers.common.Authorization = `Bearer ${access_token}`;
     useUserStore.getState().login({ token: access_token });
     return access_token;
@@ -58,26 +60,22 @@ client.interceptors.response.use(
 
     const {
       response: { status },
-      config: { url }
+      config
     } = error;
 
-    if (status === UNAUTHORIZED && url !== "/auth/refresh/") {
+    if (status === UNAUTHORIZED && config.url !== "/auth/refresh/") {
       // Token expired. Retry authentication here
       if (!isRefreshing) {
         isRefreshing = true;
-
-        try {
-          const token = await refreshToken();
+        const token = await refreshToken();
+        processQueue(token);
+        isRefreshing = false;
+        if (token) {
           // Inject the access token in request header
           config.headers.Authorization = `Bearer ${token}`;
-          processQueue(null, token);
           return client.request(config);
-        } catch (e) {
-          processQueue(e, null);
-          useUserStore.getState().logout();
+        } else {
           return Promise.reject("Session Expired");
-        } finally {
-          isRefreshing = false;
         }
       } else {
         return new Promise((resolve) => {
@@ -93,10 +91,6 @@ client.interceptors.response.use(
 );
 
 class NEIService {
-  constructor() {
-    refreshToken();
-  }
-
   async getNotes(params) {
     return await client.get("/note", { params });
   }

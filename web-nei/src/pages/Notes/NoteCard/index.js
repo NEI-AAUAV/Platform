@@ -8,7 +8,6 @@ import malePic from "assets/default_profile/male.svg";
 import femalePic from "assets/default_profile/female.svg";
 import otherPic from "assets/default_profile/other.svg";
 
-
 /**
  *
  * @param {ReactElement} Icon optional
@@ -59,14 +58,13 @@ const NoteCard = ({ note, link, className, Icon, onClick, title, style }) => {
               data-tip={`Autoria de ${author.name} ${author.surname}`}
             >
               <div className="mask mask-circle w-6">
-                <object
-                  data={
+                <img
+                  src={
+                    author.image ||
                     { M: malePic, F: femalePic, null: otherPic }[author.gender]
                   }
-                  type="image/svg+xml"
-                >
-                  <img src={author.image} alt="Perfil" />
-                </object>
+                  alt="Perfil"
+                />
               </div>
             </div>
           )}

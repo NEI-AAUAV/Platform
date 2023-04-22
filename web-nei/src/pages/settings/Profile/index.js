@@ -59,13 +59,18 @@ function UserProfile() {
         return {
           name: user.name,
           surname: user.surname,
-          birthdate: user.birthdate,
+          birthday:
+            user.birthday &&
+            new Date(user.birthday).toLocaleDateString("pt-PT"),
           gender: user.gender,
           linkedin: user.linkedin,
           github: user.github,
         };
       }),
   });
+
+  window.user = user;
+  window.show = getValues;
 
   const registerFile = (name, options = {}) => {
     return {
@@ -133,10 +138,10 @@ function UserProfile() {
   const onSubmit = (data) => {
     const { image, curriculum, ...rest } = data;
 
-    // Remove undefiened values and set empty strings to null
+    // Filter dirty values and set empty strings to null
     const user = Object.fromEntries(
       Object.entries(rest)
-        .filter(([_, value]) => value !== undefined)
+        .filter(([key, _]) => dirtyFields[key])
         .map(([key, value]) => [key, value === "" ? null : value])
     );
 
@@ -144,10 +149,6 @@ function UserProfile() {
     formData.append("user", JSON.stringify(user));
     image !== undefined && formData.append("image", image || "");
     curriculum !== undefined && formData.append("curriculum", curriculum || "");
-
-    for (const [key, value] of formData.entries()) {
-      console.log(key + ": " + value);
-    }
 
     service
       .updateCurrUser(formData)
@@ -163,8 +164,7 @@ function UserProfile() {
       });
   };
 
-  if (isLoading)
-    return null;
+  if (isLoading) return null;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -256,14 +256,24 @@ function UserProfile() {
         />
       </div>
 
-      {/* Birthdate Field */}
+      {/* Birthday Field */}
       <div className="mb-4">
         <Datepicker
-          id="profile-birthdate"
+          id="profile-birthday"
           placeholder="Data de Nascimento"
           label="Data de Nascimento"
-          error={errors.birthdate}
-          {...register("birthdate")}
+          error={errors.birthday}
+          {...register("birthday", {
+            // valueAsDate cannot convert pt-PT format
+            setValueAs: (date) => {
+              // WTF am i doing :'(
+              if (!date) return date;
+              const [day, month, year] = date.split("/");
+              return new Date(+year, +month - 1, +day + 1)
+                .toISOString()
+                .substring(0, 10);
+            },
+          })}
         />
       </div>
 
@@ -378,10 +388,10 @@ function UserProfile() {
             type="button"
             onClick={() => reset()}
           >
-            Cancelar
+            Descartar Alterações
           </button>
           <button className="btn-secondary btn" type="submit">
-            Guardar Alterações
+            Guardar
           </button>
         </div>
       )}
