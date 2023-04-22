@@ -1,4 +1,4 @@
-name: Push to Docker Hub
+name: Push and Deploy
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
         docker-compose -f docker-compose.prod.yaml push --ignore-push-failures
     - name: Push docker images with tag
       run: |
-        export TAG=$(git rev-parse --short HEAD)
+        export TAG=${GITHUB_SHA:0:7}
         docker-compose -f docker-compose.prod.yaml build
         docker-compose -f docker-compose.prod.yaml push --ignore-push-failures
   
@@ -50,7 +50,7 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
         source: "docker-compose.prod.yaml,docker-compose.prod.yaml"
-        target: "~/docker-compose.latest.yaml,~/docker-compose.$(git rev-parse --short HEAD).yaml"
+        target: "~/docker-compose.latest.yaml,~/docker-compose.${GITHUB_SHA:0:7}.yaml"
         
     - name: Checkout code
       uses: actions/checkout@v2
