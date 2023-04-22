@@ -50,15 +50,15 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
         source: "docker-compose.prod.yaml,docker-compose.prod.yaml"
-        target: "~/docker-compose.latest.yaml,~/docker-compose.${GITHUB_SHA:0:7}.yaml"
+        target: "~/deploy-latest/,~/deploy-${GITHUB_SHA:0:7}/"
         
     - name: Checkout code
       uses: actions/checkout@v2
     
     - name: Deploy with docker-compose
       run: |
-        docker stop $(docker ps -aq)
-        docker rm $(docker ps -aq)
+        docker stop $(docker ps -aq) || true
+        docker rm $(docker ps -aq) || true
         docker image prune -af
         docker-compose -f docker-compose.prod.yaml pull
         docker-compose -f docker-compose.prod.yaml up -d --remove-orphans --force-recreate
