@@ -53,7 +53,6 @@ jobs:
         source: "docker-compose.prod.yaml,docker-compose.prod.yaml"
         target: "~/deploy-latest/,~/deploy-${GITHUB_SHA:0:7}/"
     - name: Deploy with docker-compose
-      uses: actions/checkout@v2
       run: |
         docker stop $(docker ps -aq) || true
         docker rm $(docker ps -aq) || true
