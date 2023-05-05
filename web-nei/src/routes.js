@@ -71,7 +71,7 @@ const routes = ({ isAuth }) => [
   },
   {
     path: "/",
-    element: !!isAuth ? <Layout /> : <Navigate to="/" />,
+    element: isAuth ? <Layout /> : <Navigate to="/" />,
     children: [
       { path: "/settings/profile", element: <SettingsProfile /> },
       !isProd && { path: "/settings/family", element: <SettingsFamily /> },
