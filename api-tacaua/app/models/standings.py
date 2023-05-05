@@ -10,6 +10,7 @@ from app.core.config import settings
 from app.core.logging import logger
 
 from app.models.team import Team
+from app.models.group import Group
 
 
 class Standings(Base):
@@ -19,17 +20,18 @@ class Standings(Base):
         ForeignKey(Team.id, ondelete="CASCADE"),
         nullable=False
     )
+    group = Column(
+        String(50),
+        ForeignKey(Group.id, ondelete="CASCADE"),
+        nullable=False
+    )
     pts = Column(SmallInteger, default=0)
     wins = Column(SmallInteger, default=0)
     ties = Column(SmallInteger, default=0)
     losses = Column(SmallInteger, default=0)
     goals_scored = Column(SmallInteger, default=0)
     goals_against = Column(SmallInteger, default=0)
-    goal_difference = Column(SmallInteger, default=0)
-
-    classification = Column(Integer, nullable=False)
-    has_passed = Column(Boolean, default=False)
-    
+    goal_difference = Column(SmallInteger, default=0)    
 
     @hybrid_property
     def image(self) -> Optional[AnyHttpUrl]:
