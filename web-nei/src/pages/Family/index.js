@@ -23,7 +23,7 @@ function Family() {
   const [auth, setAuth] = useState(!!localStorage.getItem("treeei"));
   const [pass, setPass] = useState("");
   const [expanded, setExpanded] = useState(false);
-  const [sidebarOpened, setSidebarOpened] = useState(false);
+  const [sidebarOpened, setSidebarOpened] = useState(true);
 
   const [insignias, setInsignias] = useState([]);
   const [year, setYear] = useState(MAX_YEAR);

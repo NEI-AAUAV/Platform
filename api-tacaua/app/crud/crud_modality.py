@@ -20,10 +20,14 @@ class CRUDModality(CRUDBase[Modality, ModalityCreate, ModalityUpdate]):
         db_obj: Modality,
         image: Optional[UploadFile],
     ) -> Modality:
+        # TODO: should allow SVG
         img_path = None
         if image:
-            img_data = await image.read()
-            img = Image.open(BytesIO(img_data))
+            try:
+                img_data = await image.read()
+                img = Image.open(BytesIO(img_data))
+            except:
+                raise ImageFormatException()
             ext = img.format
             if not ext in ('JPEG', 'PNG'):
                 raise ImageFormatException()

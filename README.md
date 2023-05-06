@@ -1,16 +1,6 @@
 # NEI-AAUAv Platform
 
-## Documentation
-
-- [Code of Conduct](docs/CODE_OF_CONDUCT.md)
-- [Developer Documentation](docs/DEVELOPER.md)
-- [Administrator Documentation](docs/ADMIN.md)
-
-## Installation
-
-- [Local Installation](docs/DEVELOPER.md#2-local-installation)
-- [Docker Installation](docs/DEVELOPER.md#3-docker-installation)
-- [Docker Deployement](docs/DEVELOPER.md#4-docker-deployment)
+**[NEI Platform Documentation](https://nei-aauav.github.io/Platform-Documentation)**
 
 ## Contributors
 
@@ -27,7 +17,6 @@ Vogal:
 - [Lucius Vinicius](https://github.com/luciusvinicius) luciusvinicius
 - [Pedro Duarte](https://github.com/PedroDuarte536) PedroDuarte536
 </details>
-
 
 **2022 Mandate (Semester 1)**
 

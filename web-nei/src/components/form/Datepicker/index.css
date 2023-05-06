@@ -1,0 +1,45 @@
+/* Overwrites to flowbite CSS classes */
+
+.datepicker span.bg-blue-700 {
+  background-color: hsl(var(--s)) !important;
+}
+
+.datepicker button.next-btn,
+.datepicker button.prev-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  width: 2rem !important;
+}
+
+.datepicker button {
+  padding: 0 0.75rem !important;
+  border-radius: 9999px !important;
+  border-color: transparent !important;
+  background-color: transparent !important;
+  height: 2rem !important;
+  min-height: 2rem !important;
+  font-size: 0.875rem !important;
+  box-shadow: none !important;
+}
+
+.datepicker button:hover:not(.selected),
+.datepicker .datepicker-cell:hover:not(.selected) {
+  background-color: hsl(var(--bc) / 0.2) !important;
+}
+
+.datepicker-picker {
+  background-color: hsl(var(--b3)) !important;
+}
+
+.datepicker-view.decades,
+.datepicker-view.years,
+.datepicker-view.months {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.datepicker-cell {
+  line-height: 2rem !important;
+}

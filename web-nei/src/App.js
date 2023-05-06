@@ -1,22 +1,42 @@
-import { useRoutes } from 'react-router-dom';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faFilePdf, faFolder, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
+import { useEffect } from "react";
+import { useRoutes } from "react-router-dom";
 
-import routes from './routes';
+import routes from "./routes";
 
-import { getSocket } from "services/SocketService"; 
-
-
-// Register Fontawesome icons
-// https://fontawesome.com/v5.15/how-to-use/on-the-web/using-with/react (Using Icons via Global Use)
-library.add(fab, faFilePdf, faFolder, faCloudDownloadAlt);
+import { getSocket } from "services/SocketService";
+import { useUserStore } from "stores/useUserStore";
+import { refreshToken } from "services/NEIService";
 
 let ws = getSocket();
 
+const AuthenticatedRoutes = () => {
+  return useRoutes(routes({ isAuth: true }));
+};
+
+const UnauthenticatedRoutes = () => {
+  return useRoutes(routes({ isAuth: false }));
+};
+
+/**
+ * Render the pages with protected routes, after knowing if a session exists.
+ * 
+ * This avoids wrong redirects when the application assumes a session does not exist 
+ * while it is waiting for the server response.
+ */
 const App = () => {
-    const routing = useRoutes(routes);
-    return routing;
-}
+  const { sessionLoading, token } = useUserStore((state) => state);
+
+  useEffect(() => {
+    refreshToken();
+  }, []);
+
+  if (sessionLoading) {
+    return null;
+  } else if (token) {
+    return <AuthenticatedRoutes />;
+  } else {
+    return <UnauthenticatedRoutes />;
+  }
+};
 
 export default App;

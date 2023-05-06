@@ -1,22 +1,28 @@
 import React from "react";
+import { Navigate } from "react-router-dom";
 
 import config from "config";
 
 import Layout, { FullLayout, CleanLayout } from "./layouts/Layout";
 
-import Login from "./auth/Login";
-import Register from "./auth/Register";
-import EmailVerify from "./auth/EmailVerify";
-import ForgotPassword from "./auth/ForgotPassword";
-import ResetPassword from "./auth/ResetPassword";
-
+import {
+  Login,
+  Register,
+  EmailVerify,
+  ForgotPassword,
+  ResetPassword,
+} from "./pages/auth";
+import {
+  SettingsProfile,
+  SettingsFamily,
+  SettingsAccount,
+} from "./pages/settings";
+import NewsList from "pages/News/NewsList";
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
 import Error404 from "./pages/Error404";
 import Seniors from "./pages/Seniors";
 import Faina from "./pages/Faina";
-import News from "./pages/News";
-import NewsArticle from "./pages/NewsArticle";
 import RGM from "./pages/RGM";
 import Calendar from "./pages/Calendar";
 import History from "./pages/History";
@@ -33,37 +39,53 @@ import Test from "./pages/WSTest";
 import TacauaAdminDemo from "./pages/TacauaAdminDemo";
 import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
 
-const routes = [
+const isProd = config.PRODUCTION;
+
+const routes = ({ isAuth }) => [
   {
     path: "/",
     element: <Layout />,
     children: [
       { path: "/", element: <Homepage /> },
-      { path: "/news", element: <News /> },
-      { path: "/news/:id", element: <NewsArticle /> },
       { path: "/notes", element: <Notes /> },
-      { path: "/teams", element: <Team /> },
       { path: "/calendar", element: <Calendar /> },
-      { path: "/rgm", element: <RGM /> },
-      { path: "/history", element: <History /> },
-      { path: "/seniors/:course?", element: <Seniors /> },
-      { path: "/faina", element: <Faina /> },
       { path: "/videos", element: <Videos /> },
       { path: "/videos/:id", element: <Video /> },
+      { path: "/teams", element: <Team /> },
+      { path: "/rgm", element: <RGM /> },
+      !isProd && { path: "/news/:id?", element: <NewsList /> },
+      !isProd && { path: "/history", element: <History /> },
+      !isProd && { path: "/seniors/:course?", element: <Seniors /> },
+      { path: "/faina", element: <Faina /> },
+      !isProd && { path: "/taca-ua", element: <Sports /> },
+      !isProd && { path: "/taca-ua/:id/:view?", element: <SportModality /> },
+      !isProd && { path: "/components", element: <Components /> },
+      !isProd && { path: "/WSTest", element: <Test /> },
+      !isProd && { path: "/WStacaua-admin-demo", element: <TacauaAdminDemo /> },
+      { path: "/auth/verify", element: <EmailVerify /> },
+      { path: "/auth/reset", element: <ResetPassword /> },
+      { path: "/*", element: <Error404 /> },
       // { path: "/estagios", element: <Internship /> },
-      { path: "/taca-ua", element: <Sports /> },
-      { path: "/taca-ua/:id/:view?", element: <SportModality /> },
-      !config.PRODUCTION && { path: "/components", element: <Components /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
-      { path: "/WSTest", element: <Test /> },
-      { path: "/WStacaua-admin-demo", element: <TacauaAdminDemo /> },
+    ],
+  },
+  {
+    path: "/",
+    element: !!isAuth ? <Layout /> : <Navigate to="/" />,
+    children: [
+      { path: "/settings/profile", element: <SettingsProfile /> },
+      !isProd && { path: "/settings/family", element: <SettingsFamily /> },
+      !isProd && { path: "/settings/account", element: <SettingsAccount /> },
+    ],
+  },
+  {
+    path: "/",
+    element: !isAuth ? <Layout /> : <Navigate to="/" />,
+    children: [
       { path: "/redirect", element: <Login onRedirect /> },
       { path: "/auth/register", element: <Register /> },
       { path: "/auth/login", element: <Login /> },
-      { path: "/auth/verify", element: <EmailVerify /> },
       { path: "/auth/forgot", element: <ForgotPassword /> },
-      { path: "/auth/reset", element: <ResetPassword /> },
-      { path: "/*", element: <Error404 /> },
     ],
   },
   {

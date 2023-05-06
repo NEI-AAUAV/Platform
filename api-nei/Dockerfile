@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /api_nei
 
-RUN apt-get update && apt-get -y install libpq-dev gcc
+RUN apt-get update && apt-get -y install libpq-dev gcc libmagic1
 
 RUN pip install --upgrade pip \
     pip install --no-cache-dir --upgrade poetry

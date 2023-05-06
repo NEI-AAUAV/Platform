@@ -201,6 +201,7 @@ def generate_response(
             "sub": str(user.id),
             "type": ACCESS_TOKEN_TYPE,
             "nmec": user.nmec,
+            "img": user.image is not None,
             "name": user.name,
             "surname": user.surname,
             "scopes": user.scopes,
@@ -227,8 +228,8 @@ def generate_response(
         secure=settings.PRODUCTION,
         httponly=True,
         samesite="strict",
-        # Only pass the cookie to the refresh endpoint
-        path=settings.API_V1_STR + "/auth/refresh",
+        # Only pass the cookie to the auth endpoints
+        path=f"{settings.API_V1_STR}/auth",
     )
     return response
 

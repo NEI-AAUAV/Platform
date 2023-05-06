@@ -1,17 +1,38 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import Typist from "react-typist";
+import { motion } from "framer-motion";
+import { debounce } from "lodash";
 
-import PageNav from '../../components/PageNav';
-import service from 'services/NEIService';
-import Document from "components/Document";
+import PageNav from "../../components/PageNav";
+import service from "services/NEIService";
+import CardVideo from "components/CardVideo";
 
-import CheckboxFilter from "components/CheckboxFilter";
+import CheckboxDropdown from "components/CheckboxDropdown";
 
 import data from "./data";
 
-import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+import { FilterIcon } from "assets/icons/google";
 
-import { Row, Spinner } from "react-bootstrap";
+const container = {
+  hidden: { opacity: 1, scale: 0 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      delayChildren: 0.2,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const item = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+  },
+};
 
 const Videos = () => {
   // Filters
@@ -24,7 +45,18 @@ const Videos = () => {
   const [selection, setSelection] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
-  // FIXME: unused
+  // Videos
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Pagination
+  const [pages, setPages] = useState(1);
+  const [selPage, setSelPage] = useState(1);
+
+  const debouncedSetTags = useCallback(
+    debounce(setTags, 300)
+  , []);
+
   // Get categories from API
   useEffect(() => {
     service
@@ -45,14 +77,6 @@ const Videos = () => {
         console.error("something went wrong...");
       });
   }, []);
-
-  // Videos
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Pagination
-  const [pages, setPages] = useState(1);
-  const [selPage, setSelPage] = useState(1);
 
   // When categories selected change, update videos list (get from API)
   useEffect(() => {
@@ -83,7 +107,7 @@ const Videos = () => {
       setPages(1);
       setSelPage(1);
     }
-  }, [selection, selPage]);
+  }, [selection, selPage, categories]);
 
   return (
     <div>
@@ -91,48 +115,34 @@ const Videos = () => {
         <Typist>Vídeos</Typist>
       </h2>
 
-      <div className="flex w-full justify-end">
-        <CheckboxFilter values={tags} onChange={setTags} />
-      </div>
+      {/* TODO: filter videos */}
+      {/* <div className="flex w-full justify-end">
+        <CheckboxDropdown
+          className="btn-sm m-1"
+          values={tags}
+          onChange={debouncedSetTags}
+        >
+          Filter <FilterIcon />
+        </CheckboxDropdown>
+      </div> */}
 
-      {/* Videos list */}
-      <Row>
-        {(loading || loadingCategories) && (
-          <Spinner
-            animation="grow"
-            variant="primary"
-            className="mx-auto mb-3"
-            title="A carregar..."
-          />
-        )}
-        {!loading &&
-          videos.map((video, index) => {
-            const candidates = categories.filter((c) => c.id == video.tag);
-            let tag = [];
-            if (candidates.length > 0) {
-              tag = {
-                name: candidates[0].name,
-                color: candidates[0].color,
-                className: "",
-              };
-            }
+      {videos.length > 0 && (
+        <motion.div
+          className="mt-10 m-3 grid grid-cols-[repeat(auto-fit,_minmax(20rem,_1fr))] gap-6"
+          variants={container}
+          initial="hidden"
+          animate="visible"
+        >
+          {videos.map((video) => (
+            <motion.div key={video.id} variants={item}>
+              <Link to={`/videos/${video.id}`}>
+                <CardVideo video={video} />
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
 
-            return (
-              <Fragment key={index}>
-                <Document
-                  name={video.title}
-                  description={video.subtitle}
-                  link={"/videos/" + video.id}
-                  blank={false}
-                  icon={faPlayCircle}
-                  image={video.image}
-                  className="col-lg-6 col-xl-4 slideUpFade p-2"
-                  tags={tag ? [tag] : []}
-                />
-              </Fragment>
-            );
-          })}
-      </Row>
       {/* Pagination */}
       <PageNav
         currentPage={selPage}

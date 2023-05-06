@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     # Auth settings
     ## IDP Secret Key
     IDP_KEY: str = "_82e3318ee5c5cf2c7d7f7a1367fd4b3ea40858f08a"
-    IDP_SECRET_KEY: str = None
+    IDP_SECRET_KEY: str = os.getenv("IDP_SECRET_KEY")
     ## Path to JWT signing keys
     JWT_SECRET_KEY_PATH: str = os.getenv("JWT_SECRET_KEY_PATH", "../dev-keys/jwt.key")
     JWT_PUBLIC_KEY_PATH: str = os.getenv("JWT_PUBLIC_KEY_PATH", "../dev-keys/jwt.key.pub")
@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     ## How long the email confirmation tokens are valid for
     CONFIRMATION_TOKEN_EXPIRE: timedelta = timedelta(days=1)
     ## How long the password reset tokens are valid for
-    PASSWORD_RESET_TOKEN_EXPIRE = timedelta(hours=1)
+    PASSWORD_RESET_TOKEN_EXPIRE: timedelta = timedelta(hours=1)
     ## Algorithm to use when signing JWT tokens
     JWT_ALGORITHM: str = "ES512"
 

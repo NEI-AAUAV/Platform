@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import AnyHttpUrl
-from sqlalchemy import Float, String, Column, Integer
+from sqlalchemy import Float, String, Column, Integer, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.core.config import settings
@@ -14,6 +14,7 @@ class Merch(Base):
     _image = Column("image", String(2048))
     price = Column(Float, default=0)
     number_of_items = Column(Integer, default=0)
+    discontinued = Column(Boolean)
 
     @hybrid_property
     def image(self) -> Optional[AnyHttpUrl]:

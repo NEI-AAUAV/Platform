@@ -4,22 +4,16 @@ import LinkAdapter from "utils/LinkAdapter";
 
 import { monthsPassed } from "utils";
 
+import malePic from "assets/default_profile/male.svg";
+import femalePic from "assets/default_profile/female.svg";
+import otherPic from "assets/default_profile/other.svg";
+
 /**
  *
  * @param {ReactElement} Icon optional
  * @returns
  */
-const NoteCard = ({
-  note,
-  description,
-  link,
-  className,
-  Icon,
-  onClick,
-  title,
-  style,
-  iconColor,
-}) => {
+const NoteCard = ({ note, link, className, Icon, onClick, title, style }) => {
   const { author, subject } = note;
   function getTags(tag) {
     var tags = [];
@@ -43,13 +37,13 @@ const NoteCard = ({
       onClick={onClick}
       title={title ? title : ""}
       style={style}
-      className={"m-1.5 cursor-pointer no-underline " + className}
+      className={"cursor-pointer no-underline " + className}
     >
       <div className="h-full rounded-md border border-base-content/10 !bg-base-200 p-4 shadow-sm transition-hover duration-300 hover:-translate-y-1 hover:shadow-md hover:brightness-110">
         <div className="flex items-center text-left">
           {!!Icon && <Icon className="min-h-[30px] min-w-[30px]" />}
           <p className="ml-3 overflow-hidden text-ellipsis text-sm text-base-content/50">
-            <span className="font-medium text-base-content/60 mr-[1ch]">
+            <span className="mr-[1ch] font-medium text-base-content/60">
               {subject?.short}
             </span>
             {note?.year && (
@@ -58,13 +52,19 @@ const NoteCard = ({
               </span>
             )}
           </p>
-          {author && (
+          {!!author && (
             <div
-              className="tooltip avatar mr-1 ml-auto"
+              className="tooltip tooltip-left avatar ml-auto mr-1"
               data-tip={`Autoria de ${author.name} ${author.surname}`}
             >
               <div className="mask mask-circle w-6">
-                <img src="https://placeimg.com/192/192/people" />
+                <img
+                  src={
+                    author.image ||
+                    { M: malePic, F: femalePic, null: otherPic }[author.gender]
+                  }
+                  alt="Perfil"
+                />
               </div>
             </div>
           )}
@@ -78,7 +78,7 @@ const NoteCard = ({
             {getTags().map((tag, index) => (
               <span
                 key={index}
-                className="badge badge-sm font-bold text-white border-0"
+                className="badge badge-sm border-0 font-bold text-white"
                 style={{ backgroundColor: `hsl(${tag.color})` }}
               >
                 {tag.name}

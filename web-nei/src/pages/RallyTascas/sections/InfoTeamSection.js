@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, Text } from "@nextui-org/react";
 import LeaderBoard from "../components/LeaderBoard";
-import { AiOutlineArrowLeft } from 'react-icons/ai';
 import "../index.css";
 import { Checkpoint } from "./MapSection";
 
@@ -25,8 +24,7 @@ const InfoTeamSection = ({ team, goBack }) => {
     return (
         <>
             <div className="mb-2" style={{ color: "rgb(255, 70, 70)", fontWeight: 'bold', cursor: 'pointer' }} onClick={goBack}>
-                <AiOutlineArrowLeft />
-                <span style={{ "vertical-align": "middle" }}>{' '}Go Back</span>
+                <span style={{ "vertical-align": "middle" }}>{'< '}Go Back</span>
             </div>
             <div className="d-flex flex-wrap" style={{ justifyContent: "space-between", fontFamily: "Aldrich", width: "100%", justifyContent: "space-around" }}>
                 <div className="rally-tascas-column">

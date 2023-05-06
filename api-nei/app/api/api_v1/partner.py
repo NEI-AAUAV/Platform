@@ -16,11 +16,3 @@ def get_partners(
     _ = Depends(deps.short_cache),
 ) -> Any:
     return crud.partner.get_multi(db=db)
-
-
-@router.get("/banner", status_code=200, response_model=PartnerInDB)
-def get_partner_banner(
-    *, db: Session = Depends(deps.get_db), 
-    _ = Depends(deps.short_cache),
-) -> Any:
-    return crud.partner.get_banner(db=db)

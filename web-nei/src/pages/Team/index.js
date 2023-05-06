@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Person from "./components/Person.js";
 import { Spinner } from "react-bootstrap";
 import Typist from "react-typist";
+import { motion } from "framer-motion";
 
 import service from "services/NEIService";
 
@@ -11,6 +12,25 @@ import Tabs from "components/Tabs/index.js";
 import classNames from "classnames";
 
 import { LinkedinIcon, GithubIcon } from "assets/icons/social";
+
+const container = {
+  hidden: { opacity: 1, scale: 0 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      delayChildren: 0.2,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+  },
+};
 
 const Team = () => {
   const [years, setYears] = useState([]);
@@ -49,7 +69,7 @@ const Team = () => {
             b?.weight - a?.weight || a?.name?.localeCompare(b?.name)
         );
         setTeam([
-          { members: members.slice(0, 2), title: "Direção" },
+          { members: members.slice(0, 2), title: "Coordenação" },
           { members: members.slice(2, -3), title: "Vogais" },
           { members: members.slice(-3), title: "Mesa da RGM" },
         ]);
@@ -87,6 +107,7 @@ const Team = () => {
           renderTab={customRender}
         />
       </div>
+
       {loading ? (
         <Spinner
           animation="grow"
@@ -95,15 +116,19 @@ const Team = () => {
           title="A carregar..."
         />
       ) : (
-        <div className="mx-auto max-w-5xl">
+        <motion.div
+          className="mx-auto max-w-5xl"
+          variants={container}
+          initial="hidden"
+          animate="visible"
+        >
           {team?.map(({ members, title }, index) => (
-            <>
+            <motion.div key={index} variants={item}>
               <div className="flex gap-5 px-2">
                 <h4 className="opacity-80">{title}</h4>
                 <div className="divider mt-1 grow" />
               </div>
               <div
-                key={index}
                 className={classNames("flex flex-wrap justify-center sm:gap-5")}
               >
                 {members?.map(({ id, role, header, user }) => (
@@ -146,24 +171,25 @@ const Team = () => {
                   </div>
                 ))}
               </div>
-            </>
+            </motion.div>
           ))}
 
           {collaborators?.length > 0 && (
-            <div className="flex gap-5 px-2">
-              <h4 className="opacity-80">Colaboradores</h4>
-              <div className="divider mt-1 grow" />
-            </div>
+            <motion.div variants={item}>
+              <div className="flex gap-5 px-2">
+                <h4 className="opacity-80">Colaboradores</h4>
+                <div className="divider mt-1 grow" />
+              </div>
+              <div className="mt-2 grid grid-cols-2 xs:grid-cols-3 md:grid-cols-4">
+                {collaborators?.map(({ user_id, user }) => (
+                  <h5 key={user_id} className="px-7 sm:px-14">
+                    {user?.name}
+                  </h5>
+                ))}
+              </div>
+            </motion.div>
           )}
-
-          <div className="mt-2 grid grid-cols-2 xs:grid-cols-3 md:grid-cols-4">
-            {collaborators?.map(({ user_id, user }) => (
-              <h5 key={user_id} className="px-7 sm:px-14">
-                {user?.name}
-              </h5>
-            ))}
-          </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

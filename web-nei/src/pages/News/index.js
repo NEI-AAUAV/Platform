@@ -74,7 +74,7 @@ const News = () => {
                     ?
                     <Spinner animation="grow" variant="primary" className="mx-auto" title="A carregar..." />
                     :
-                    <NewsList news={news} loading={isLoading}></NewsList>
+                    <NewsList />
             }
         </div>
     );

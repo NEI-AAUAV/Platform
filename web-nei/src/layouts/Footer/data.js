@@ -12,14 +12,17 @@ export const data = [
   {
     icon: <YoutubeIcon />,
     url: "https://www.youtube.com/@neiaauav2598",
+    secondary: true,
   },
   {
     icon: <DiscordIcon />,
     url: "https://discord.gg/JpWwJc8Suv",
+    secondary: true,
   },
   {
     icon: <GithubIcon />,
     url: "https://github.com/NEI-AAUAV",
+    secondary: true,
   },
   {
     icon: <FacebookIcon />,

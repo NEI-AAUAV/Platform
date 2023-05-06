@@ -1,6 +1,4 @@
 import Card from "react-bootstrap/Card";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import "./index.css";
 
 const InternshipCard = (props) => {
@@ -15,7 +13,7 @@ const InternshipCard = (props) => {
           <Card.Title className="card-title">{props.title}</Card.Title>
           <span className="card-link">
             <a href={props.link} target="_blank" rel="noreferrer">
-              <FontAwesomeIcon className="icon" icon={faExternalLinkAlt} />
+              {/* <FontAwesomeIcon className="icon" icon={faExternalLinkAlt} /> */}
             </a>
           </span>
           <p className="position">{props.position}</p>

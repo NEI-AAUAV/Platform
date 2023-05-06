@@ -12,30 +12,28 @@ from app.schemas.news import StatusEnum, CategoryEnum
 USERS = [
     {
         "id": 2,
-        "name": 'Ze Pistolas',
-        "surname": 'Pistolas',
-        "email": 'zpp@ua.pt',
-        "iupi": 'x1x1',
-        "curriculum": 'ze_cv',
-        "linkedin": 'ze_linkedin',
-        "github": 'ze_git',
-        "scopes": ['ADMIN'],
+        "name": "Ze Pistolas",
+        "surname": "Pistolas",
+        "iupi": "x1x1",
+        "curriculum": "ze_cv",
+        "linkedin": "https://ze_linkedin",
+        "github": "https://ze_git",
+        "scopes": ["ADMIN"],
         "created_at": datetime(2022, 8, 4),
-        "updated_at": datetime(2022, 8, 5)
+        "updated_at": datetime(2022, 8, 5),
     },
     {
         "id": 3,
         "name": "Francisco",
         "surname": "Miguel Abrantes",
-        "email": "fma@ua.pt",
-        "iupi": 'x2x2',
-        "curriculum": 'francisco_cv',
-        "linkedin": 'francisco_linkedin',
-        "github": 'francisco_git',
-        "scopes": ['MANAGER_NEI', 'MANAGER_TACAUA'],
+        "iupi": "x2x2",
+        "curriculum": "francisco_cv",
+        "linkedin": "https://francisco_linkedin",
+        "github": "https://francisco_git",
+        "scopes": ["MANAGER_NEI", "MANAGER_TACAUA"],
         "created_at": datetime(2022, 8, 4),
-        "updated_at": datetime(2022, 8, 5)
-    }
+        "updated_at": datetime(2022, 8, 5),
+    },
 ]
 
 NEWS = [
@@ -47,7 +45,7 @@ NEWS = [
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non diam placerat, ultrices libero sit amet, molestie dui. Praesent at purus sit amet velit aliquet commodo. Maecenas dapibus tellus purus.",
         "published_by": 2,
         "created_at": datetime.now().isoformat(),
-        "author_id": 3
+        "author_id": 3,
     },
     {
         "header": "Test2",
@@ -57,7 +55,7 @@ NEWS = [
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non diam placerat, ultrices libero sit amet, molestie dui. Praesent at purus sit amet velit aliquet commodo. Maecenas dapibus tellus purus.",
         "published_by": 2,
         "created_at": datetime(2016, 5, 5).isoformat(),
-        "author_id": 2
+        "author_id": 2,
     },
 ]
 
@@ -91,8 +89,7 @@ def test_get_news_by_category(client: TestClient) -> None:
 
 
 def test_get_news_by_categories(client: TestClient) -> None:
-    r = client.get(
-        f"{settings.API_V1_STR}/news/?category[]=Event&category[]=Parceria")
+    r = client.get(f"{settings.API_V1_STR}/news/?category[]=Event&category[]=Parceria")
     data = r.json()
     assert r.status_code == 200
     assert len(data["items"]) == 2
@@ -101,8 +98,7 @@ def test_get_news_by_categories(client: TestClient) -> None:
 
 
 def test_nonexistant_category(client: TestClient) -> None:
-    r = client.get(
-        f"{settings.API_V1_STR}/news/?category[]=Event&category[]=TEST")
+    r = client.get(f"{settings.API_V1_STR}/news/?category[]=Event&category[]=TEST")
     data = r.json()
     assert r.status_code == 400
 
@@ -123,4 +119,4 @@ def test_get_categories(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/news/category")
     data = r.json()
     assert r.status_code == 200
-    assert len(data['data']) == 2
+    assert len(data["data"]) == 2

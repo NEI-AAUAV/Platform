@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.responses import JSONResponse, RedirectResponse
 from app.core.config import settings
@@ -7,7 +8,6 @@ import requests
 import base64
 
 from requests_oauthlib import OAuth1Session
-from PIL import Image
 from io import BytesIO
 from app.api import deps
 from sqlalchemy.orm import Session
@@ -105,7 +105,8 @@ async def get_token(
 
         for subject in student_courses:
             subjectInDb = crud.subject.get_by_code(
-                db, code=int(subject["CodDisciplina"]))
+                db, code=int(subject["CodDisciplina"])
+            )
             if subjectInDb is None:
                 subject_in = SubjectCreate(
                     name=subject["NomeDisciplina"],
@@ -118,25 +119,30 @@ async def get_token(
                 )
                 crud.subject.create(db, obj_in=subject_in)
 
-        user = crud.user.get_by_email(db, email=uu["email"])
-        if user is None:
+        maybe_user = crud.user.get_by_email(db, email=uu["email"])
+        if maybe_user is None:
             user_in = UserCreate(
                 iupi=uu["iupi"],
                 nmec=student_info["NMec"],
-                email=uu["email"],
                 name=name["name"],
                 surname=name["surname"],
             )
             logger.info(f"Creating user: {user_in}")
-            user = crud.user.create(db, obj_in=user_in)
-            userid = user.id
-            createImg(user.id, student_info["Foto"], db)
+            user = crud.user.create(
+                db, obj_in=user_in, email=uu["email"], active=True)
+
+            await crud.user.update_image(
+                db, db_obj=user, image=base64.b64decode(student_info["Foto"])
+            )
+
             subList = []
             for subject in student_courses:
-                subList.append(crud.subject.get_by_code(
-                    db, code=int(subject["CodDisciplina"])))
+                subList.append(
+                    crud.subject.get_by_code(
+                        db, code=int(subject["CodDisciplina"]))
+                )
             userAc = UserAcademicDetailsCreate(
-                user_id=userid,
+                user_id=user.id,
                 course_id=int(courseInfo[0].strip()),
                 curricular_year=student_info["AnoCurricular"],
                 year=student_info["AnoCurricular"],
@@ -147,13 +153,12 @@ async def get_token(
             db.add_all(subList)
             db.commit()
         else:
+            user, user_email = maybe_user
             # update user
-
             user_up = UserUpdate(
-                id=user.id,
+                id=maybe_user[0].id,
                 iupi=uu["iupi"],
                 nmec=student_info["NMec"],
-                email=uu["email"],
                 name=name["name"],
                 surname=name["surname"],
             )
@@ -166,8 +171,9 @@ async def get_token(
             # check if subjects are the same
             subList = []
             for subject in student_courses:
-                subList.append(crud.subject.get_by_code(
-                    db, code=int(subject["CodDisciplina"])))
+                subList.append(
+                    crud.subject.get_by_code(
+                        db, code=int(subject["CodDisciplina"])))
 
             userAc_up = UserAcademicDetailsCreate(
                 user_id=user.id,
@@ -221,26 +227,3 @@ def get_data(resource_owner_key, resource_owner_secret):
             returndata["uu"] = r.json()
 
     return returndata
-
-
-def createImg(id, img, db):
-    try:
-        logger.info(f"Creating image for user " + str(id))
-        # Save photo as JPEG image
-        imgEnc = Image.open(BytesIO(base64.b64decode(img)))
-        imgEnc.save(f"../static/img/{id}/pfpUA.jpg", "JPEG")
-        user = crud.user.get(db, id=id)
-        user_in = UserUpdate(
-            id=user.id,
-            iupi=user.iupi,
-            nmec=user.nmec,
-            email=user.email,
-            name=user.name,
-            surname=user.surname,
-            image=f"../static/img/{id}/pfpUA.jpg",
-        )
-        user = crud.user.update(db, db_obj=user, obj_in=user_in)
-        logger.info(f"User updated: {user.dict()} {user.__dict__}")
-    except:
-        # Some error occurred
-        pass

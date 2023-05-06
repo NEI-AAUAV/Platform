@@ -1,5 +1,4 @@
 import React from "react";
-import { Table } from "react-bootstrap";
 import "./index.css";
 
 const SportTable = (props) => {

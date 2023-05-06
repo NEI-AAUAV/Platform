@@ -1,8 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 
-from sqlalchemy.exc import IntegrityError
-
 
 class APIException(HTTPException):
     """Light wrapper around HTTPException that allows specifying defaults via class property"""

@@ -28,6 +28,7 @@ const data = [
             {
                 name: "História",
                 link: "/history",
+                disabled: config.PRODUCTION,
             },
             {
                 name: "RGM",
@@ -50,6 +51,7 @@ const data = [
             {
                 name: "Diário do Tux",
                 link: "/tux",
+                disabled: config.PRODUCTION,
             },
             {
                 name: "Código de Faina",
@@ -57,6 +59,11 @@ const data = [
                 external: true,
             },
         ],
+    },
+    {
+        name: "Notícias",
+        link: "/news",
+        disabled: config.PRODUCTION,
     },
     !config.PRODUCTION && {
         name: "Taça UA",
@@ -70,9 +77,10 @@ const data = [
         name: "Famílias",
         link: "/family",
     },
-    !config.PRODUCTION && {
+    {
         name: "Finalistas",
         link: "/seniors",
+        disabled: config.PRODUCTION,
     },
     // {
     //   name: "Estágios",
@@ -90,11 +98,11 @@ const data = [
         name: "TacauaAdminDemo",
         link: "/WStacaua-admin-demo",
     }
-];
+].filter(Boolean);
 
 
 const dataCompacted = (size) => {
-    const items = data.filter(Boolean);
+    const items = [...data];
     const otherItems = items.splice(size - 1);
 
     if (otherItems.length !== 0) {
@@ -103,7 +111,6 @@ const dataCompacted = (size) => {
             dropdown: otherItems
         });
     }
-
     return items;
 }
 

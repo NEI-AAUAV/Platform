@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, SmallInteger, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 
 from app.db.base_class import Base
 from app.core.config import settings
@@ -12,5 +12,5 @@ class Subject(Base):
     curricular_year = Column(Integer, nullable=False)
     name = Column(String(128), nullable=False)
     short = Column(String(8), nullable=False)
-    discontinued = Column(SmallInteger)
-    optional = Column(SmallInteger)
+    discontinued = Column(Boolean)
+    optional = Column(Boolean)

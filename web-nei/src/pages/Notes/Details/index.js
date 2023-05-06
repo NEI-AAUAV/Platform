@@ -4,33 +4,23 @@ import "./index.css";
 
 import parse from "html-react-parser";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faInfoCircle,
-  faFilter,
-} from "@fortawesome/free-solid-svg-icons";
-
-import { FilePDFIcon, FolderZipIcon, DownloadIcon, OpenInNewIcon } from "assets/icons/google";
+  FilePDFIcon,
+  FolderZipIcon,
+  DownloadIcon,
+  OpenInNewIcon,
+  CloseIcon,
+  FilterIcon,
+  InfoIcon,
+} from "assets/icons/google";
 import { GithubIcon, GoogleDriveIcon } from "assets/icons/social";
 
 import service from "services/NEIService";
 
-function titleCase(str) {
-  var splitStr = str.toLowerCase().split(" ");
-  for (var i = 0; i < splitStr.length; i++) {
-    // You do not need to check if i is larger than splitStr length, as your for does that for you
-    // Assign it back to the array
-    splitStr[i] =
-      splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-  }
-  // Directly return the joined string
-  return splitStr.join(" ");
-}
-
 const Details = ({
   note_id,
   close,
-  setSelectedSubject,
+  setSelSubject,
   setSelYear,
   setSelStudent,
   setSelTeacher,
@@ -109,19 +99,13 @@ const Details = ({
     setTags(note_tags);
 
     // Scroll to element
-    if (document.getElementById("apontamentosPage") != null) {
-      document
-        .getElementById("apontamentosPage")
-        .scrollIntoView({ behavior: "smooth" });
+    if (document.getElementById("notes") != null) {
+      document.getElementById("notes").scrollIntoView({ behavior: "smooth" });
     }
   }, [note]);
 
   return (
-    <div
-      className={
-        "notesDetails animation d-flex flex-column mb-4 p-3 " + className
-      }
-    >
+    <div className={`flex flex-col ${className}`}>
       {!!loading ? (
         <Spinner
           animation="grow"
@@ -130,31 +114,24 @@ const Details = ({
           title="A carregar..."
         />
       ) : (
-        <>
-          <div className="d-flex flex-row">
-            <h4 className="mr-auto break-all">{note.name}</h4>
-            <button
-              type="button"
-              className="close mb-auto ml-auto"
-              data-dismiss="modal"
-              aria-label="Close"
-              onClick={close}
-            >
-              <span aria-hidden="true">×</span>
+        <div className="rounded-xl border border-base-content/10 bg-base-200 p-5">
+          <div className="flex flex-row justify-between">
+            <h4>{note.name}</h4>
+            <button className="btn-ghost btn-sm btn-circle btn" onClick={close}>
+              <CloseIcon />
             </button>
           </div>
           <div className="row mx-0 my-3">
             {tags.map((tag, index) => (
               <span
                 key={index}
-                className={"badge-pill badge ml-0 mb-1 mr-1 " + tag.className}
+                className={"badge-pill badge mb-1 ml-0 mr-1 " + tag.className}
               >
                 {tag.name}
               </span>
             ))}
           </div>
-          <a href={note.location} target="_blank" rel="noreferrer">
-            <button className="btn-sm btn mb-3 ml-0">
+          <a className="btn-sm btn mb-3" href={note.location} target="_blank" rel="noreferrer">
               {!note.type?.download ? (
                 <>
                   <OpenInNewIcon />
@@ -166,10 +143,8 @@ const Details = ({
                   <span className="ml-1">Descarregar</span>
                 </>
               )}
-            </button>
           </a>
-          {false && (
-            <Tab.Container
+          {/* <Tab.Container
               defaultActiveKey="first"
               id="uncontrolled-tab-example"
               className="mb-3"
@@ -192,94 +167,87 @@ const Details = ({
                   <h1>Tab2</h1>
                 </Tab.Pane>
               </Tab.Content>
-            </Tab.Container>
-          )}
+            </Tab.Container> */}
           <div>
             <dl>
-              {note.school_year?.year_begin && note.school_year?.year_end && (
+
+              {!!note.year && (
                 <>
-                  <dt className="small font-weight-bold">
-                    <span className="mr-1">Ano letivo</span>
-                    <FontAwesomeIcon
-                      className="link mr-1 text-primary"
-                      icon={faFilter}
-                      size={"1x"}
-                      title="Filtrar por ano letivo"
+                  <dt className="mt-1 flex align-center gap-1.5 font-bold">
+                    <span>Ano letivo</span>
+                    <button
+                      className="btn-ghost btn-xs btn-circle btn text-primary"
                       onClick={() => {
-                        setSelYear(note.school_year?.year_id);
+                        setSelYear(note.year);
                         setSelPage(1);
                       }}
-                    />
+                    >
+                      <FilterIcon />
+                    </button>
                   </dt>
                   <dd>
-                    {note.school_year?.year_begin}/{note.school_year?.year_end}
+                    {note.year}-{note.year + 1}
                   </dd>
                 </>
               )}
-              {!!note.subject?.name && (
+              {!!note.subject && (
                 <>
-                  <dt className="small font-weight-bold">
-                    <span className="mr-1">Cadeira</span>
-                    <FontAwesomeIcon
-                      className="link mr-1 text-primary"
-                      icon={faFilter}
-                      size={"1x"}
-                      title="Filtrar por cadeira"
+                  <dt className="mt-1 flex align-center gap-1.5 font-bold">
+                    <span>Cadeira</span>
+                    <button
+                      className="btn-ghost btn-xs btn-circle btn text-primary"
                       onClick={() => {
-                        setSelectedSubject(note.subjectId);
+                        setSelSubject(note.subject_id);
                         setSelPage(1);
                       }}
-                    />
+                    >
+                      <FilterIcon />
+                    </button>
                   </dt>
                   <dd>{note.subject?.name}</dd>
                 </>
               )}
-              {!!note.author?.name && (
+              {!!note.author && (
                 <>
-                  <dt className="small font-weight-bold">
-                    <span className="mr-1">Autor</span>
-                    <FontAwesomeIcon
-                      className="link mr-1 text-primary"
-                      icon={faFilter}
-                      size={"1x"}
-                      title="Filtrar por autor"
+                  <dt className="mt-1 flex align-center gap-1.5 font-bold">
+                    <span>Autor</span>
+                    <button
+                      className="btn-ghost btn-xs btn-circle btn text-primary"
                       onClick={() => {
-                        setSelStudent(note.authorId);
+                        setSelStudent(note.author_id);
                         setSelPage(1);
                       }}
-                    />
+                    >
+                      <FilterIcon />
+                    </button>
                   </dt>
-                  <dd>{titleCase(note.author?.name)}</dd>
+                  <dd>
+                    {note.author?.name} {note.author?.surname}
+                  </dd>
                 </>
               )}
-              {!!note.teacher?.name && (
+              {!!note.teacher && (
                 <>
-                  <dt className="small font-weight-bold">
-                    <span className="mr-1">
-                      <span className="mr-1">Docente</span>
-                      <FontAwesomeIcon
-                        className="link mr-1 text-primary"
-                        icon={faFilter}
-                        size={"1x"}
-                        title="Filtrar por docente"
-                        onClick={() => {
-                          setSelTeacher(note.teacher?.id);
-                          setSelPage(1);
-                        }}
-                      />
-                    </span>
+                  <dt className="mt-1 flex gap-1 font-bold">
+                    <span>Docente</span>
+                    <button
+                      className="btn-ghost btn-xs btn-circle btn text-primary"
+                      onClick={() => {
+                        setSelTeacher(note.teacher_id);
+                        setSelPage(1);
+                      }}
+                    >
+                      <FilterIcon />
+                    </button>
                     {note.teacher?.personal_page && (
                       <a
                         title="Perfil do docente ua.pt"
+                        className="btn-ghost btn-xs btn-circle btn text-primary"
                         href={note.teacher?.personal_page}
                         target="_blank"
                         rel="noreferrer"
                       >
-                        <FontAwesomeIcon
-                          className="mr-3 text-primary"
-                          icon={faInfoCircle}
-                          size={"1x"}
-                        />
+                        <InfoIcon />
                       </a>
                     )}
                   </dt>
@@ -288,7 +256,7 @@ const Details = ({
               )}
               {!!(note.content || note.size) && (
                 <div className="file-content">
-                  <dt className="small font-weight-bold">
+                  <dt className="mt-1 flex align-center gap-1.5 font-bold">
                     Conteúdo
                     {!!note.size && (
                       <small className="ml-1">({note.size} MB)</small>
@@ -301,7 +269,7 @@ const Details = ({
               )}
             </dl>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
