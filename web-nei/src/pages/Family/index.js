@@ -23,7 +23,7 @@ function Family() {
   const [auth, setAuth] = useState(!!localStorage.getItem("treeei"));
   const [pass, setPass] = useState("");
   const [expanded, setExpanded] = useState(false);
-  const [sidebarOpened, setSidebarOpened] = useState(true);
+  const [sidebarOpened, setSidebarOpened] = useState(window.innerWidth >= 768);
 
   const [insignias, setInsignias] = useState([]);
   const [year, setYear] = useState(MAX_YEAR);
@@ -55,17 +55,19 @@ function Family() {
   }
   return (
     <motion.div
-      className={classNames("w-full ", {
-        expand: expanded,
-      })}
+      className="w-full"
       id="treeei"
       animate={expanded ? "expand" : "normal"}
       transition={{ duration: 0.15 }}
       variants={{
-        expand: { y: -80, height: "100vh", zIndex: 1000 },
+        expand: { 
+          y: -80, 
+          height: window.innerHeight, 
+          zIndex: 1000 
+        },
         normal: {
           y: 0,
-          height: "calc(100vh - 9rem)",
+          height: window.innerHeight - 144, // 144 = navbar + footer
           zIndex: 0,
           transition: {
             duration: 0.15,
@@ -93,7 +95,7 @@ function Family() {
           <div className="drawer-overlay hidden" />
           <div
             className={classNames(
-              "rounded-l-box relative mr-12 !flex h-full w-80 text-base-content !transition-size",
+              "rounded-l-box relative mr-12 !flex h-full w-80 text-base-content !transition-transform",
               sidebarOpened
                 ? "pointer-events-auto border border-r-0 border-base-content/10 bg-base-200 shadow-[0_1px_3px_-1px_rgba(0,0,0,0.1)]"
                 : "bg-transparent"
@@ -111,7 +113,7 @@ function Family() {
             </div>
             <div
               className={classNames(
-                "rounded-r-box absolute left-full -top-px -bottom-px flex w-12 flex-col items-center gap-3 overflow-hidden py-3 !transition-size",
+                "rounded-r-box absolute left-full -top-px -bottom-px flex w-12 flex-col items-center gap-3 overflow-hidden py-3",
                 sidebarOpened
                   ? "border  border-l-0 border-base-content/10 bg-base-200 shadow-[1px_1px_3px_-1px_rgba(0,0,0,0.1)]"
                   : "bg-transparent"

@@ -1,5 +1,10 @@
 /**
- * Function to convert a Date object to a key string in the format `MM/DD/YYYY`.
+ * Function to convert a Date object to a key string in the format `YYYY-MM-DD`.
+ * 
+ * @example
+ * dateKey(new Date(2023, 0, 1)) // "2023-01-01"
+ * dateKey(2023, 0, 1) // "2023-01-01"
+ * dateKey(2023) // "2023-01-01"
  */
 export function dateKey(year, month = 0, day = 1) {
   let date;
@@ -12,10 +17,31 @@ export function dateKey(year, month = 0, day = 1) {
   } else {
     throw new Error("Invalid arguments");
   }
-  return date.toLocaleDateString("en-US");
+  return date.toLocaleDateString('en-CA');
 }
 
-export function getWeeklyIntervals(startDate, endDate) {
+/**
+ * Divide a date interval into weekly intervals.
+ * 
+ * @param {Date} startDate    The start date of the interval
+ * @param {Date} endDate      The end date of the interval
+ * @param {Date} [sinceDate]  The start limit
+ * @param {Date} [toDate]     The end limit
+ * @returns {Array.<{weekStart: Date, weekEnd: Date}>} An array of objects representing the weekly intervals
+ * 
+ * @example
+ * // Returns an array of 4 objects, representing the 4 weeks from January 2023 starting on Sunday and ending on Saturday
+ * getWeeklyIntervals(new Date("2023-01-01"), new Date("2023-01-31"))
+ */
+export function getWeeklyIntervals(startDate, endDate, sinceDate, toDate) {
+  // Constraint the interval to the limits, if provided
+  if (sinceDate && startDate.getTime() < sinceDate.getTime()) {
+    startDate = sinceDate;
+  }
+  if (toDate && toDate.getTime() < endDate.getTime()) {
+    endDate = toDate;
+  }
+
   // Set the start date to the Sunday before the actual start date
   const start = new Date(startDate);
   start.setDate(start.getDate() - start.getDay());

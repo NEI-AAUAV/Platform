@@ -12,7 +12,7 @@
     "d3": "^7.4.4",
     "daisyui": "^2.45.0",
     "flowbite-datepicker": "^1.2.2",
-    "framer-motion": "^9.0.3",
+    "framer-motion": "9.1.7",
     "html-react-parser": "^3.0.9",
     "lodash": "^4.17.21",
     "popmotion": "^11.0.5",

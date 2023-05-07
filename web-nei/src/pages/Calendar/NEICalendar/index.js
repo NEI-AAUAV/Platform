@@ -56,12 +56,11 @@ const swipePower = (offset, velocity) => {
 };
 
 const NEICalendar = () => {
+  const today = new Date();
   const windowSize = useWindowSize();
-  const [month, setMonth] = useState(3);
-  const [year, setYear] = useState(2023);
+  const [[year, month], setDate] = useState([today.getFullYear(), today.getMonth()]);
   const [direction, setDirection] = useState(0);
 
-  // const [calendarEvents, setCalendarEvents] = useState(calendarEventsMemory);
   const [selEvent, setSelEvent] = useState(null);
   const [loading, setLoading] = useLoading(false);
 
@@ -77,32 +76,19 @@ const NEICalendar = () => {
   // const [openEventModal, setOpenEventModal] = useState(false);
 
   useEffect(() => {
-    let today = new Date();
-    setMonth(today.getMonth());
-    setYear(today.getFullYear());
-    initDayEvents();
-  }, []);
-
-  useEffect(() => {
-    initDayEvents();
-  }, [month, year]);
-
-  useEffect(() => {
-    if (loading) {
-      fetchEvents();
-    }
-  }, [loading]);
+    fetchEvents();
+  }, [year, month]);
 
   function handleMonthChange(month) {
-    setTimeout(() => {
-      const lapsedYears = Math.floor(month / 12);
-      setYear(year + lapsedYears);
-      const lapsedMonths = month % 12;
-      setMonth((prevMonth) => {
-        setDirection(month > prevMonth ? 1 : -1);
-        return lapsedMonths >= 0 ? lapsedMonths : 12 + lapsedMonths;
-      });
-    }, 300); // TODO: think about this
+    const lapsedYears = Math.floor(month / 12);
+    const lapsedMonths = month % 12;
+    setDate(([, prevMonth]) => {
+      setDirection(month > prevMonth ? 1 : -1);
+      return [
+        year + lapsedYears,
+        lapsedMonths >= 0 ? lapsedMonths : 12 + lapsedMonths,
+      ];
+    });
   }
 
   // function showEventModal(date) {
@@ -116,13 +102,8 @@ const NEICalendar = () => {
   //   setOpenEventModal(false);
   // }
 
-  const initDayEvents = useCallback(async () => {
-    setLoading(true);
-  }, [year, month]);
-
-  const fetchEvents = () => {
-    function addMonthEvents(date) {
-      const [year, month] = [date.getFullYear(), date.getMonth()];
+  const fetchEvents = async () => {    
+    function addMonthEvents(year, month) {
       const monthKey = dateKey(year, month);
 
       if (monthKey in calendarEvents) {
@@ -140,31 +121,44 @@ const NEICalendar = () => {
       for (let day = daySince; day <= dayTo; day++) {
         const dayKey = dateKey(year, month, day);
         const events = [];
-        calendarEvents._all[dayKey] = { unfetched: true, events };
+        // Both objects have the same `events` reference for convenience later on [1]
+        calendarEvents._all[dayKey] = events;
         calendarEvents[monthKey][dayKey] = events;
       }
       return [new Date(year, month, daySince), new Date(year, month, dayTo)];
     }
 
+    // Calculate required range while creating respective empty calendarEvents
+    //
+    // The range is always the next or previous 2 months,
+    // when on the edge of the current fetched month
     let calendarSince, calendarTo, range;
-    if ((range = addMonthEvents(new Date(year, month)))) {
+    if ((range = addMonthEvents(year, month))) {
       [calendarSince, calendarTo] = range;
     }
-    if ((range = addMonthEvents(new Date(year, month - 1)))) {
-      calendarSince = range[0];
-      calendarTo = calendarTo || range[1];
+    for (let i = 1; i <= 2; i++) {
+      if ((range = addMonthEvents(year, month - i))) {
+        calendarSince = range[0];
+        calendarTo = calendarTo || range[1];
+      } else {
+        break; // Still has data for the previous month
+      }
     }
-    if ((range = addMonthEvents(new Date(year, month + 1)))) {
-      calendarSince = calendarSince || range[0];
-      calendarTo = range[1];
+    for (let i = 1; i <= 2; i++) {
+      if ((range = addMonthEvents(year, month + i))) {
+        calendarSince = calendarSince || range[0];
+        calendarTo = range[1];
+      } else {
+        break; // Still has data for the next month
+      }
     }
 
     if (!calendarSince || !calendarTo) {
       // Data already fetched
-      setLoading(false);
       return;
     }
 
+    setLoading(true);
     const timeMin =
       `${calendarSince.getFullYear()}-` +
       `${calendarSince.getMonth() + 1}-` +
@@ -174,63 +168,60 @@ const NEICalendar = () => {
       `${calendarTo.getMonth() + 1}-` +
       `${calendarTo.getDate()}T00:00:00+01:00`;
 
-    service.getEvents({ timeMin, timeMax }).then(({ data }) => {
-      let events = [];
+    const { data } = await service.getEvents({ timeMin, timeMax });
+    let events = [];
 
-      for (const e of data.items) {
-        let start = new Date(e.start.date || e.start.dateTime);
-        let end = new Date(e.end.date || e.end.dateTime);
-        if (e.end.date) {
-          // Google API considers end date as the day after the event at midnight,
-          // so one day is substracted
-          end.setDate(end.getDate() - 1);
-        }
-
-        events = events.concat(
-          getWeeklyIntervals(start, end)
-            .map(({ weekStart, weekEnd }) => ({
-              id: e["id"],
-              title: e["summary"],
-              allDay: "date" in e["start"],
-              category: getCategory(e["summary"]),
-              weekStart,
-              start,
-              end,
-              duration:
-                Math.ceil(
-                  (weekEnd.getTime() - weekStart.getTime()) /
-                    (1000 * 60 * 60 * 24)
-                ) + 1,
-            }))
-            // Select events in the calendar range and not already fetched
-            .filter((e) => calendarEvents._all[dateKey(e.weekStart)]?.unfetched)
-        );
+    for (const e of data.items) {
+      let start = new Date(e.start.date || e.start.dateTime);
+      let end = new Date(e.end.date || e.end.dateTime);
+      if (e.end.date) {
+        // Google API considers end date as the day after the event at midnight,
+        // so one day is substracted
+        end.setDate(end.getDate() - 1);
       }
+      events = events.concat(
+        getWeeklyIntervals(start, end, calendarSince, calendarTo).map(
+          ({ weekStart, weekEnd }) => ({
+            id: e["id"],
+            title: e["summary"],
+            allDay: "date" in e["start"],
+            category: getCategory(e["summary"]),
+            weekStart,
+            start,
+            end,
+            duration:
+              Math.ceil(
+                (weekEnd.getTime() - weekStart.getTime()) /
+                  (1000 * 60 * 60 * 24)
+              ) + 1,
+          })
+        )
+      );
+    }
 
-      // Assign events to a day slot in a way that they don't overlap
-      // and fit the free slots efficiently
-      for (const e of events) {
-        const calendarDate = calendarEvents._all[dateKey(e.weekStart)];
-        if (!calendarDate) {
-          // Event is out of the calendar range
-          continue;
-        }
-        calendarDate.unfetched = false;
-
-        // Find first free slot
-        const index = [...calendarDate.events, undefined].findIndex(
-          (e) => e === undefined
-        );
-        calendarDate.events[index] = e;
-        for (let i = 1; i < e.duration; i++) {
-          const date = new Date(e.weekStart);
-          date.setDate(date.getDate() + i);
-          // Occupy the next slots adjacent
-          calendarEvents._all[dateKey(date)].events[index] = null;
-        }
+    // Assign events to a day slot in a way that they don't overlap
+    // and fit the free slots efficiently
+    for (const e of events) {
+      const dateEvents = calendarEvents._all[dateKey(e.weekStart)];
+      if (!dateEvents) {
+        // Event is out of the calendar range
+        continue;
       }
-      setLoading(false);
-    });
+      // Find first free slot
+      // Free slots are marked with `undefined`
+      const index = [...dateEvents, undefined].findIndex(
+        (e) => e === undefined
+      );
+      dateEvents[index] = e;
+      for (let i = 1; i < e.duration; i++) {
+        const date = new Date(e.weekStart);
+        date.setDate(date.getDate() + i);
+        // Occupy the next slots adjacent with `null` mark
+        // [1] this will modify the other `events` reference as well
+        calendarEvents._all[dateKey(date)][index] = null;
+      }
+    }
+    setLoading(false);
   };
 
   function getCategory(title) {
@@ -267,14 +258,18 @@ const NEICalendar = () => {
               <button
                 type="button"
                 className="btn-ghost btn-sm btn-circle btn"
-                onClick={() => handleMonthChange(month - 1)}
+                onClick={() =>
+                  setTimeout(() => handleMonthChange(month - 1), 300)
+                }
               >
                 <ArrowBackIcon />
               </button>
               <button
                 type="button"
                 className="btn-ghost btn-sm btn-circle btn"
-                onClick={() => handleMonthChange(month + 1)}
+                onClick={() =>
+                  setTimeout(() => handleMonthChange(month + 1), 300)
+                }
               >
                 <ArrowForwardIcon />
               </button>
