@@ -116,7 +116,7 @@ const Details = ({
       ) : (
         <div className="rounded-xl border border-base-content/10 bg-base-200 p-5">
           <div className="flex flex-row justify-between">
-            <h4>{note.name}</h4>
+            <h4 className="break-words w-52">{note.name}</h4>
             <button className="btn-ghost btn-sm btn-circle btn" onClick={close}>
               <CloseIcon />
             </button>

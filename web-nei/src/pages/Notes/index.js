@@ -342,7 +342,7 @@ const Notes = () => {
       </div>
 
       <div className="mt-4 flex flex-col gap-8 sm:flex-row">
-        <div className="mx-auto flex w-64 flex-col">
+        <div className="mx-auto flex w-72 flex-col">
           <div className="sticky top-[5rem] w-[inherit]">
             <div className="flex flex-col gap-4">
               <div className="mt-1 flex h-10 justify-around align-top">

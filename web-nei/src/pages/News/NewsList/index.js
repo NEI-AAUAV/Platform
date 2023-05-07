@@ -43,89 +43,111 @@ const cardData = [
     id: "c",
     image:
       "https://uploads.codesandbox.io/uploads/user/6480904d-d79b-484b-9f16-8d5a3eff77e3/J-By-g.jpg",
-    category: "Pizza",
+    created_at: "10/10/2021",
+    category: "event",
     title: "5 Food Apps Delivering the Best of Your City",
     pointOfInterest: 80,
     backgroundColor: "#814A0E",
     text,
+    author: { name: "Eugene", surname: "Hooper" },
   },
   // Photo by Dennis Brendel on Unsplash
   {
     id: "f",
     image:
       "https://images.pexels.com/photos/276092/pexels-photo-276092.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    category: "How to",
+    created_at: "3/9/2022",
+    category: "partner",
     title: "Arrange Your Apple Devices for the Gram",
     pointOfInterest: 120,
     backgroundColor: "#959684",
     text,
+    author: { name: "Eugene", surname: "Hooper" },
   },
   // Photo by Alessandra Caretto on Unsplash
   {
     id: "a",
     image:
       "https://uploads.codesandbox.io/uploads/user/6480904d-d79b-484b-9f16-8d5a3eff77e3/zRYi-a.jpg",
-    category: "Pedal Power",
+    created_at: "19/4/2022",
+    category: "event",
     title: "Map Apps for the Superior Mode of Transport",
     pointOfInterest: 260,
     backgroundColor: "#5DBCD2",
     text,
+    author: { name: "Eugene", surname: "Hooper" },
   },
   // Photo by Taneli Lahtinen on Unsplash
   {
     id: "g",
     image:
       "https://media.istockphoto.com/id/1287021364/photo/wide-angle-blue-celebration-bokeh-background.jpg?b=1&s=170667a&w=0&k=20&c=SLOK2idjHdYVZFB14wbWWjh-LvGv7biFyrSyUWBqmLU=",
-    category: "Holidays",
+    created_at: "11/1/2023",
+    category: "news",
     title: "Our Pick of Apps to Help You Escape From Apps",
     pointOfInterest: 200,
     backgroundColor: "#8F986D",
     text,
+    author: { name: "Eugene", surname: "Hooper" },
   },
   // Photo by Simone Hutsch on Unsplash
   {
     id: "d",
     image:
       "https://images.unsplash.com/photo-1553095066-5014bc7b7f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8d2FsbCUyMGJhY2tncm91bmR8ZW58MHx8MHx8&w=1000&q=80",
-    category: "Photography",
+    created_at: "11/9/2023",
+    category: "news",
     title: "The Latest Ultra-Specific Photography Editing Apps",
     pointOfInterest: 150,
     backgroundColor: "#FA6779",
     text,
+    author: { name: "Eugene", surname: "Hooper" },
   },
   // Photo by Siora Photography on Unsplash
   {
     id: "h",
     image:
       "https://uploads.codesandbox.io/uploads/user/6480904d-d79b-484b-9f16-8d5a3eff77e3/SPE0-f.jpg",
-    category: "They're all the same",
+    created_at: "9/8/2023",
+    category: "partner",
     title: "100 Cupcake Apps for the Cupcake Connoisseur",
     pointOfInterest: 60,
     backgroundColor: "#282F49",
     text,
+    author: { name: "Eugene", surname: "Hooper" },
   },
   // Photo by Yerlin Matu on Unsplash
   {
     id: "e",
     image:
       "https://images.unsplash.com/photo-1483232539664-d89822fb5d3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80",
-    category: "Cats",
+    created_at: "9/12/2023",
+    category: "event",
     title: "Yes, They Are Sociopaths",
     pointOfInterest: 200,
     backgroundColor: "#AC7441",
     text,
+    author: { name: "Eugene", surname: "Hooper" },
   },
   // Photo by Ali Abdul Rahman on Unsplash
   {
     id: "b",
     image: logo,
-    category: "Holidays",
+    created_at: "2/8/2023",
+    category: "partner",
     title: "Seriously the Only Escape is the Stratosphere",
     pointOfInterest: 260,
     backgroundColor: "#CC555B",
     text,
+    author: { name: "Eugene", surname: "Hooper" },
   },
 ];
+
+const Badges = {
+  event: ["!text-green-500"],
+  partner: ["!text-blue-500"],
+  news: ["!text-yellow-500"],
+};
 
 const Image = ({ image, selected, pointOfInterest = 0 }) => {
   return (
@@ -206,7 +228,7 @@ function NewsList() {
                   {
                     "!fixed bottom-0 left-0 right-0 top-0 overflow-hidden px-1 py-40":
                       selected,
-                  },
+                  }
                 )}
                 animate={selected ? { zIndex: 50 } : { zIndex: 0 }}
                 transition={{ duration: 0, delay: selected ? 0 : 0.3 }}
@@ -241,8 +263,43 @@ function NewsList() {
                       }
                       className="box-content max-w-[340px] !pb-20"
                     >
-                      <span>{item.category}</span>
+                      <span>{item.created_at}</span>
                       <h3>{item.title}</h3>
+                    </motion.div>
+                  </div>
+
+                  <div className="absolute bottom-0 left-0 w-full bg-base-300 text-base-content text-right">
+                    <motion.div
+                      layout
+                      initial={false}
+                      animate={
+                        selected
+                          ? { padding: 30, paddingRight: 15 }
+                          : { padding: 15, paddingRight: 30 }
+                      }
+                      className="flex gap-4"
+                    >
+                      <div className="mask mask-circle w-10 shrink-0">
+                        <img
+                          src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png"
+                          alt="Bonnie Avatar"
+                        />
+                      </div>
+                      <div className="flex flex-col w-full">
+                        <span className="self-start">
+                          {item.author.name} {item.author.surname}
+                        </span>
+                        <div
+                        className={classNames(
+                          "badge-outline badge self-end",
+                          Badges[item.category.toLowerCase()]
+                        )}
+                      >
+                        {item.category}
+                      </div>
+                      </div>
+
+                      
                     </motion.div>
                   </div>
 
