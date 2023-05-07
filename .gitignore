@@ -6,14 +6,12 @@ Thumbs.db
 
 # VisualStudioCode
 .vscode/
-*.code-workspace
 
 # JetBrains IDE
 .idea/
 
 # Static files
 **/static/*
-!**/static/**/.gitkeep
 
 # Node dependencies
 node_modules
@@ -140,3 +138,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Never ignore .gitkeep files
+!**/.gitkeep

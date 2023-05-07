@@ -35,7 +35,6 @@ jobs:
     timeout-minutes: 5
     env:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
       EMAIL_SENDER_ADDRESS: ${{ secrets.EMAIL_SENDER_ADDRESS }}
       EMAIL_SMTP_HOST: ${{ secrets.EMAIL_SMTP_HOST }}
       EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
@@ -57,5 +56,6 @@ jobs:
         docker stop $(docker ps -aq) || true
         docker rm $(docker ps -aq) || true
         docker image prune -af
+        docker builder prune
         docker-compose -f docker-compose.prod.yaml pull
         docker-compose -f docker-compose.prod.yaml up -d --remove-orphans --force-recreate
