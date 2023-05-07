@@ -22,24 +22,25 @@ services:
       - backend
     restart: unless-stopped
 
-  # db_mongo:
-  #   image: mongo:4.4.19-rc0-focal
-  #   ports:
-  #     - 27017:27017
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: mongo
-  #     MONGO_INITDB_ROOT_PASSWORD: mongo
-  #   volumes:
-  #     - mongo_data:/data/db
-  #   healthcheck:
-  #     test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
-  #     interval: 10s
-  #     timeout: 10s
-  #     retries: 5
-  #     start_period: 40s
-  #   networks:
-  #     - backend
-  #   restart: unless-stopped
+  db_mongo:
+    image: mongo:6.0.5-jammy
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_DATABASE: mongo_test
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - backend
+    restart: unless-stopped
 
   api_nei:
     build:
