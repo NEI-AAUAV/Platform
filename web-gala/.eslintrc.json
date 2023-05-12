@@ -21,6 +21,7 @@
     "react/react-in-jsx-scope": ["off"],
     "react/jsx-props-no-spreading": ["warn"],
     "react/jsx-uses-react": ["off"],
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "import/extensions": ["error", "never", { "ignorePackages": true }]
   }
 }
