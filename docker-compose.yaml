@@ -111,18 +111,31 @@ services:
       - backend
     restart: unless-stopped
     profiles:
-      - disabled
+      - rallytascas
   web_nei:
     build:
       context: web-nei
     ports:
       - 3000:3000
     volumes: 
-      - node_modules:/web_nei/node_modules
+      - nei_node_modules:/web_nei/node_modules
       - ./web-nei:/web_nei
     networks:
       - frontend
     restart: unless-stopped
+  web_gala:
+    build:
+      context: web-nei
+    ports:
+      - 3000:3000
+    volumes: 
+      - gala_node_modules:/web_gala/node_modules
+      - ./web-gala:/web_gala
+    networks:
+      - frontend
+    restart: unless-stopped
+    profiles:
+      - gala
   proxy:
     build:
       context: proxy/nei.web.ua.pt
@@ -154,5 +167,7 @@ volumes:
     driver: local
   mongo_data:
     driver: local
-  node_modules:
+  nei_node_modules:
+    driver: local
+  gala_node_modules:
     driver: local
