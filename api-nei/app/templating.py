@@ -3,7 +3,7 @@ from jinja2 import Environment, select_autoescape, PackageLoader
 from app.core.config import settings
 
 _env = Environment(
-    loader=PackageLoader("app", "templates"),
+    loader=PackageLoader("app", "email-templates"),
     autoescape=select_autoescape(["html", "xml"]),
 )
 

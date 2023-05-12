@@ -7,7 +7,8 @@ import requests
 
 import base64
 
-from requests_oauthlib import OAuth1Session
+from authlib.integrations.httpx_client import AsyncOAuth1Client
+
 from io import BytesIO
 from app.api import deps
 from sqlalchemy.orm import Session
@@ -56,17 +57,17 @@ async def get_token(
 ) -> Response:
     if oauth_token is None:
         # Step 1: Request Token
-        oauth = OAuth1Session(
+        oauth = AsyncOAuth1Client(
             settings.IDP_KEY, client_secret=settings.IDP_SECRET_KEY)
 
-        fetch_response = oauth.fetch_request_token(request_token_url)
+        fetch_response = await oauth.fetch_request_token(request_token_url)
 
         resource_owner_key = fetch_response.get("oauth_token")
         resource_owner_secret = fetch_response.get("oauth_token_secret")
         tokens[resource_owner_key] = resource_owner_secret
 
         # Step 2: Authorize
-        authorization_url = oauth.authorization_url(authorize_url)
+        authorization_url = await oauth.create_authorization_url(authorize_url)
         return JSONResponse(status_code=200, content={"url": authorization_url})
 
     else:
@@ -74,17 +75,17 @@ async def get_token(
             raise HTTPException(status_code=404, detail="Token not found")
 
         # Step 3: Access Token
-        oauth = OAuth1Session(
+        oauth = AsyncOAuth1Client(
             settings.IDP_KEY,
             client_secret=settings.IDP_SECRET_KEY,
             resource_owner_key=oauth_token,
             resource_owner_secret=tokens[oauth_token],
             verifier=oauth_verifier,
         )
-        oauth_tokens = oauth.fetch_access_token(access_token_url)
+        oauth_tokens = await oauth.fetch_access_token(access_token_url)
         resource_owner_key = oauth_tokens.get("oauth_token")
         resource_owner_secret = oauth_tokens.get("oauth_token_secret")
-        data = get_data(resource_owner_key, resource_owner_secret)
+        data = await get_data(resource_owner_key, resource_owner_secret)
         # save to db
         student_courses, student_info, name, uu = (
             data["student_courses"],
@@ -196,7 +197,7 @@ async def get_token(
         return generate_response(db, user)
 
 
-def get_data(resource_owner_key, resource_owner_secret):
+async def get_data(resource_owner_key, resource_owner_secret):
     """
     Permitted scopes, how to access data and keys:
     - uu (nothing needs to be done) -> email, iupi
@@ -205,7 +206,7 @@ def get_data(resource_owner_key, resource_owner_secret):
     - student_courses (access ['NewDataSet']['ObterListaDisciplinasAluno'] -> array de disciplinas
     """
     scopes = ["student_courses", "student_info", "name", "uu"]
-    oauth = OAuth1Session(
+    oauth = AsyncOAuth1Client(
         settings.IDP_KEY,
         client_secret=settings.IDP_SECRET_KEY,
         resource_owner_key=resource_owner_key,
@@ -213,7 +214,7 @@ def get_data(resource_owner_key, resource_owner_secret):
     )
     returndata = {}
     for s in scopes:
-        r = oauth.get(f"{get_data_url}?scope={s}&format=json")
+        r = await oauth.get(f"{get_data_url}?scope={s}&format=json")
         if s == "student_info":
             returndata["student_info"] = r.json(
             )["NewDataSet"]["ObterDadosAluno"]
