@@ -1,16 +1,22 @@
+//* Pages
 import Layout from "../pages/Layout";
-import Home from "../pages/Home";
 import ErrorBoundary from "../pages/ErrorBoundary";
+import Home from "../pages/Home";
+import Reserve from "../pages/Reserve";
 
 const routes = [
   {
-    path: "/",
+    path: "/gala",
     element: <Layout />,
     errorElement: <ErrorBoundary />,
     children: [
       {
-        path: "/",
+        path: "/gala",
         element: <Home />,
+      },
+      {
+        path: "/gala/tables",
+        element: <Reserve />,
       },
     ],
   },
