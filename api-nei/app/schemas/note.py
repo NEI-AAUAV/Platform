@@ -31,7 +31,6 @@ class NoteBase(BaseModel):
     projects: Optional[int]
     notebook: Optional[int]
 
-    content: Optional[str]
     created_at: datetime
     size: Optional[int]
 
