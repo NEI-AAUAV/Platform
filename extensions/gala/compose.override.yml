@@ -5,8 +5,23 @@ services:
     environment:
       ENABLE_GALA: true
 
-  # api_gala:
-  #   ...
+  api_gala:
+    build:
+      context: extensions/gala/api-gala
+    environment:
+      MONGO_SERVER: db_mongo
+      JWT_PUBLIC_KEY_PATH: /jwt.key.pub
+    ports:
+      - 8004:8004
+    volumes:
+      - ./extensions/gala/api-gala:/api_gala
+      - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
+    depends_on:
+      db_mongo:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
 
   web_gala:
     build:
