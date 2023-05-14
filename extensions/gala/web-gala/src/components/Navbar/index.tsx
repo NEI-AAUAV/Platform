@@ -29,7 +29,7 @@ export default function Navbar() {
       </div>
       <motion.div
         animate={{ height: isOpen ? "auto" : 0 }}
-        className={`outline fixed left-0 px-3 first-letter:sm:hidden overflow-hidden w-full ${background}`}
+        className={`fixed left-0 px-3 sm:hidden overflow-hidden w-full ${background}`}
       >
         <Navigation className="pt-8 pb-3" />
       </motion.div>
