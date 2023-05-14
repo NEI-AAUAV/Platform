@@ -9,10 +9,10 @@ export default function Navigation({ className }: NavigationProps) {
     <nav className={className}>
       <ul className="flex flex-col gap-3 md:gap-6 sm:flex-row font-light">
         <li>
-          <Link to="/gala/tables">Reservar Lugar</Link>
+          <Link to="/tables">Reservar Lugar</Link>
         </li>
         <li>
-          <Link to="/gala/vote">Votar</Link>
+          <Link to="/vote">Votar</Link>
         </li>
       </ul>
     </nav>

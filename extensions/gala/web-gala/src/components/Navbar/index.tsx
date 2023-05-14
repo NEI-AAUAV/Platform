@@ -12,7 +12,7 @@ export default function Navbar() {
       className={`sm:bg-transparent sm:rounded-none sticky top-0 p-3 transition-[background-color] md:delay-100 ease-linear ${background}`}
     >
       <div className="flex">
-        <Link className="flex gap-3" to="/gala">
+        <Link className="flex gap-3" to="/">
           <LogoIcon className="" />
           <span className="text-xl font-bold">Jantar de Gala</span>
         </Link>

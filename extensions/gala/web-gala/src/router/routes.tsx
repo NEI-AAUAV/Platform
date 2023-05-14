@@ -20,7 +20,7 @@ const routes = [
         element: <Reserve />,
       },
       {
-        path: "/gala/vote",
+        path: "/vote",
         element: <Vote />,
       },
     ],
