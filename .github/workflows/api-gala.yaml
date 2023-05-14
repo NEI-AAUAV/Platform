@@ -1,0 +1,74 @@
+name: Build and Test api-gala
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/api-gala.yaml'
+      - 'api-gala/**/*'
+  pull_request:
+    paths:
+      - '.github/workflows/api-gala.yaml'
+      - 'api-gala/**/*'
+  workflow_dispatch:
+
+jobs:
+  api-gala:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo
+        env:
+          MONGO_INITDB_DATABASE: mongo_test
+          MONGO_INITDB_ROOT_USERNAME: mongo
+          MONGO_INITDB_ROOT_PASSWORD: mongo
+        options: >-
+          --health-cmd "echo 'db.runCommand("ping").ok' | mongosh --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout repository files
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ^3.10
+
+      - name: Install poetry
+        run: |
+          pip install --upgrade pip setuptools
+          pip install -U poetry
+
+      - name: Install system libraries
+        run: sudo apt-get -y install libpq-dev gcc
+
+      - name: Install dependencies
+        working-directory: ./api-gala
+        run: poetry install --no-interaction --no-root --with test,dev
+
+      - name: Format
+        if: '!cancelled()'
+        working-directory: ./api-gala
+        run: poetry run black --check --diff app
+
+      - name: Lint
+        if: '!cancelled()'
+        working-directory: ./api-gala
+        run: poetry run flake8 .
+
+      - name: Type-Check
+        if: '!cancelled()'
+        working-directory: ./api-gala
+        run: poetry run mypy app --strict
+
+      - name: Run tests
+        if: '!cancelled()'
+        working-directory: ./api-gala
+        run: poetry run pytest
