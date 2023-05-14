@@ -1,4 +1,4 @@
-from aiocache.decorators import cached
+import hashlib
 import pytest
 import typing
 import pytest_asyncio
@@ -6,6 +6,7 @@ import pytest_asyncio
 from httpx import AsyncClient
 from functools import lru_cache
 from fastapi import HTTPException
+from aiocache.decorators import cached
 from asgi_lifespan import LifespanManager
 from collections.abc import AsyncGenerator
 from fastapi.security import SecurityScopes
@@ -35,7 +36,10 @@ def pytest_runtest_makereport(item):
 
 @pytest.fixture(scope="function")
 def settings(request: pytest.FixtureRequest) -> Settings:
-    return Settings(MONGO_DB=f"test-database-{request.node.name}")
+    name = request.node.name
+    hash = hashlib.sha256(name.encode("utf-8")).hexdigest()
+    truncated_name = request.node.name[:56] + hash[:8]
+    return Settings(MONGO_DB=f"{truncated_name}")
 
 
 @pytest_asyncio.fixture(scope="function")

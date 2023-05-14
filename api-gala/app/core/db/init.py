@@ -18,7 +18,14 @@ async def init_db(db: DBType) -> None:
     except CollectionInvalid:
         logger.debug("Collection already exist")
 
-    await Table.get_collection(db).create_index("persons.id")
+    # Create an index over the `id` of the persons documents stored in a table.
+    #
+    # This index is marked as unique to guarantee that a person doesn't enter multiple
+    # tables at the same time. Mongo doesn't check it against documents in the same array
+    # so that needs to be manually verified.
+    #
+    # The index is also marked as `sparse` so that empty tables don't conflict with each other.
+    await Table.get_collection(db).create_index("persons.id", unique=True, sparse=True)
     await db.command(
         {
             "collMod": Table.collection(),

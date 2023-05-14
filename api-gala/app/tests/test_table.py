@@ -49,7 +49,7 @@ async def test_list_tables_logged_out(settings: Settings, client: AsyncClient) -
 async def test_list_tables(settings: Settings, client: AsyncClient, db: DBType) -> None:
     await Table.get_collection(db).insert_one(test_table.dict(by_alias=True))
     test_table2 = test_table.copy()
-    test_table2.id = 2
+    test_table2.id += 1
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
     response = await client.get(f"{settings.API_V1_STR}/table/list")
@@ -511,7 +511,7 @@ async def test_reserve_table_empty(
 
     form = TableReservationForm(dish=DishType.NORMAL, companions=[])
     response = await client.post(
-        f"{settings.API_V1_STR}/table/1/reserve", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table.id}/reserve", json=form.dict()
     )
     assert response.status_code == 200
     table_res = Table(**response.json())
@@ -533,7 +533,7 @@ async def test_reserve_table_empty(
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "client",
-    [auth_data(sub=0, scopes=[ScopeEnum.MANAGER_JANTAR_GALA])],
+    [auth_data(sub=0)],
     indirect=["client"],
 )
 async def test_reserve_table_non_empty(
@@ -548,7 +548,7 @@ async def test_reserve_table_non_empty(
 
     form = TableReservationForm(dish=DishType.NORMAL, companions=[])
     response = await client.post(
-        f"{settings.API_V1_STR}/table/1/reserve", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table2.id}/reserve", json=form.dict()
     )
     assert response.status_code == 200
     table_res = Table(**response.json())
@@ -564,6 +564,43 @@ async def test_reserve_table_non_empty(
 
     assert table_res == db_table_res
     assert mod_test_table2 == db_table_res
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_reserve_table_already_in_another_table(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    test_table2 = test_table.copy()
+    test_table2.head = 1
+    test_table2.persons = [
+        dummy_person(id=1, confirmed=True),
+        dummy_person(id=0, confirmed=True),
+    ]
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+    test_table3 = test_table.copy()
+    test_table3.id += 1
+    await Table.get_collection(db).insert_one(test_table3.dict(by_alias=True))
+
+    form = TableReservationForm(dish=DishType.NORMAL, companions=[])
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/{test_table3.id}/reserve", json=form.dict()
+    )
+    assert response.status_code == 409
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table2 == db_table_res
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table3.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table3 == db_table_res
 
 
 # TODO: SEATS CHECKS TESTS
