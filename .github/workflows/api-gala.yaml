@@ -6,11 +6,11 @@ on:
       - main
     paths:
       - '.github/workflows/api-gala.yaml'
-      - 'api-gala/**/*'
+      - 'extensions/gala/api-gala/**/*'
   pull_request:
     paths:
       - '.github/workflows/api-gala.yaml'
-      - 'api-gala/**/*'
+      - 'extensions/gala/api-gala/**/*'
   workflow_dispatch:
 
 jobs:
@@ -50,25 +50,25 @@ jobs:
         run: sudo apt-get -y install libpq-dev gcc
 
       - name: Install dependencies
-        working-directory: ./api-gala
+        working-directory: ./extensions/gala/api-gala
         run: poetry install --no-interaction --no-root --with test,dev
 
       - name: Format
         if: '!cancelled()'
-        working-directory: ./api-gala
+        working-directory: ./extensions/gala/api-gala
         run: poetry run black --check --diff app
 
       - name: Lint
         if: '!cancelled()'
-        working-directory: ./api-gala
+        working-directory: ./extensions/gala/api-gala
         run: poetry run flake8 .
 
       - name: Type-Check
         if: '!cancelled()'
-        working-directory: ./api-gala
+        working-directory: ./extensions/gala/api-gala
         run: poetry run mypy app --strict
 
       - name: Run tests
         if: '!cancelled()'
-        working-directory: ./api-gala
+        working-directory: ./extensions/gala/api-gala
         run: poetry run pytest

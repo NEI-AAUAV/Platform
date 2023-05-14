@@ -43,7 +43,7 @@ services:
       - ./proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
       - ./proxy/locations.gala.conf:/etc/nginx/conf.d/locations.gala.conf:ro
     depends_on:
-      # - api_gala
+      - api_gala
       - web_gala
 
 

@@ -33,9 +33,9 @@ services:
     volumes:
       - mongo_data:/data/db
     healthcheck:
-      test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
       interval: 10s
-      timeout: 10s
+      timeout: 5s
       retries: 5
       start_period: 40s
     networks:
