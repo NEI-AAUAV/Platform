@@ -1,4 +1,5 @@
 import pytest
+from typing import List
 from httpx import AsyncClient
 from app.api.auth import ScopeEnum
 from app.api.table.confirm import TableApprovalForm
@@ -9,11 +10,24 @@ from app.api.table.transfer import TableTransferForm
 
 from app.core.config import Settings
 from app.core.db.types import DBType
-from app.models.table import Table, TablePerson
+from app.models.table import Companion, DishType, Table, TablePerson
 
 from ._utils import auth_data
 
 test_table = Table(_id=1, name=None, head=None, seats=3, persons=[])
+
+
+def dummy_person(
+    *, id: int, confirmed: bool, companions: List[Companion] = []
+) -> TablePerson:
+    return TablePerson(
+        id=id,
+        confirmed=confirmed,
+        companions=companions,
+        dish=DishType.NORMAL,
+        allergies="",
+    )
+
 
 # =================
 # == LIST TABLES ==
@@ -60,8 +74,8 @@ async def test_list_tables_sanitize(
     test_table2 = test_table.copy()
     test_table2.head = 2
     test_table2.persons = [
-        TablePerson(id=2, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=2, confirmed=True),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -88,9 +102,9 @@ async def test_list_tables_sanitize_self(
     test_table2 = test_table.copy()
     test_table2.head = 2
     test_table2.persons = [
-        TablePerson(id=2, companions=0, confirmed=True),
-        TablePerson(id=0, companions=0, confirmed=False),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=2, confirmed=True),
+        dummy_person(id=0, confirmed=False),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -117,9 +131,9 @@ async def test_list_tables_sanitize_head(
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
-        TablePerson(id=2, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=False),
+        dummy_person(id=2, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -146,8 +160,8 @@ async def test_list_tables_sanitize_manager(
     test_table2 = test_table.copy()
     test_table2.head = 2
     test_table2.persons = [
-        TablePerson(id=2, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=2, confirmed=True),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -200,8 +214,8 @@ async def test_get_table_sanitize(
     test_table2 = test_table.copy()
     test_table2.head = 2
     test_table2.persons = [
-        TablePerson(id=2, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=2, confirmed=True),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -225,9 +239,9 @@ async def test_get_table_sanitize_self(
     test_table2 = test_table.copy()
     test_table2.head = 2
     test_table2.persons = [
-        TablePerson(id=2, companions=0, confirmed=True),
-        TablePerson(id=0, companions=0, confirmed=False),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=2, confirmed=True),
+        dummy_person(id=0, confirmed=False),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -251,9 +265,9 @@ async def test_get_table_sanitize_head(
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
-        TablePerson(id=2, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=False),
+        dummy_person(id=2, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -277,8 +291,8 @@ async def test_get_table_sanitize_manager(
     test_table2 = test_table.copy()
     test_table2.head = 2
     test_table2.persons = [
-        TablePerson(id=2, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=2, confirmed=True),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -374,7 +388,7 @@ async def test_edit_table_unauthorized(
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
-        TablePerson(id=1, companions=0, confirmed=True),
+        dummy_person(id=1, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -402,7 +416,7 @@ async def test_edit_table_head(
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -435,7 +449,7 @@ async def test_edit_table_manager(
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
-        TablePerson(id=1, companions=0, confirmed=True),
+        dummy_person(id=1, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -477,7 +491,7 @@ async def test_reserve_table_logged_out(
     indirect=["client"],
 )
 async def test_reserve_table_not_found(settings: Settings, client: AsyncClient) -> None:
-    form = TableReservationForm(companions=0)
+    form = TableReservationForm(dish=DishType.NORMAL, companions=[])
     response = await client.post(
         f"{settings.API_V1_STR}/table/1/reserve", json=form.dict()
     )
@@ -495,7 +509,7 @@ async def test_reserve_table_empty(
 ) -> None:
     await Table.get_collection(db).insert_one(test_table.dict(by_alias=True))
 
-    form = TableReservationForm(companions=0)
+    form = TableReservationForm(dish=DishType.NORMAL, companions=[])
     response = await client.post(
         f"{settings.API_V1_STR}/table/1/reserve", json=form.dict()
     )
@@ -509,7 +523,7 @@ async def test_reserve_table_empty(
     mod_test_table = test_table.copy()
     mod_test_table.head = 0
     mod_test_table.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
     ]
 
     assert table_res == db_table_res
@@ -528,11 +542,11 @@ async def test_reserve_table_non_empty(
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
-        TablePerson(id=1, companions=0, confirmed=True),
+        dummy_person(id=1, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
-    form = TableReservationForm(companions=0)
+    form = TableReservationForm(dish=DishType.NORMAL, companions=[])
     response = await client.post(
         f"{settings.API_V1_STR}/table/1/reserve", json=form.dict()
     )
@@ -545,7 +559,7 @@ async def test_reserve_table_non_empty(
 
     mod_test_table2 = test_table2.copy()
     mod_test_table2.persons.append(
-        TablePerson(id=0, companions=0, confirmed=False),
+        dummy_person(id=0, confirmed=False),
     )
 
     assert table_res == db_table_res
@@ -594,8 +608,8 @@ async def test_confirm_table_unauthorized(
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
-        TablePerson(id=1, companions=0, confirmed=True),
-        TablePerson(id=2, companions=0, confirmed=False),
+        dummy_person(id=1, confirmed=True),
+        dummy_person(id=2, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -618,8 +632,8 @@ async def test_confirm_table_head(
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -653,8 +667,8 @@ async def test_confirm_table_manager(
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
-        TablePerson(id=1, companions=0, confirmed=True),
-        TablePerson(id=2, companions=0, confirmed=False),
+        dummy_person(id=1, confirmed=True),
+        dummy_person(id=2, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -688,8 +702,8 @@ async def test_confirm_table_change_head(
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -717,8 +731,8 @@ async def test_confirm_table_not_in_table(
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -746,8 +760,8 @@ async def test_confirm_table_confirm_false(
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -812,8 +826,8 @@ async def test_transfer_table_head(
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -848,8 +862,8 @@ async def test_transfer_table_manager(
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
-        TablePerson(id=1, companions=0, confirmed=True),
-        TablePerson(id=2, companions=0, confirmed=False),
+        dummy_person(id=1, confirmed=True),
+        dummy_person(id=2, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -884,7 +898,7 @@ async def test_transfer_table_not_in_table(
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -934,8 +948,8 @@ async def test_leave_table(settings: Settings, client: AsyncClient, db: DBType) 
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -969,7 +983,7 @@ async def test_leave_table_head(
     test_table2.head = 0
     test_table2.name = "GOOD"
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -1005,8 +1019,8 @@ async def test_leave_table_head_non_empty(
     test_table2.head = 0
     test_table2.name = "GOOD"
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -1075,8 +1089,8 @@ async def test_remove_table(
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -1110,7 +1124,7 @@ async def test_remove_table_head(
     test_table2.head = 0
     test_table2.name = "GOOD"
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -1146,7 +1160,7 @@ async def test_remove_table_manager(
     test_table2.head = 1
     test_table2.name = "GOOD"
     test_table2.persons = [
-        TablePerson(id=1, companions=0, confirmed=True),
+        dummy_person(id=1, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -1182,8 +1196,8 @@ async def test_remove_table_head_non_empty(
     test_table2.head = 0
     test_table2.name = "GOOD"
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
-        TablePerson(id=1, companions=0, confirmed=False),
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=False),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 
@@ -1233,7 +1247,7 @@ async def test_remove_table_target_not_in_table(
     test_table2.head = 0
     test_table2.name = "GOOD"
     test_table2.persons = [
-        TablePerson(id=0, companions=0, confirmed=True),
+        dummy_person(id=0, confirmed=True),
     ]
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
 

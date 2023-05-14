@@ -18,7 +18,7 @@ _companions_lt_seats = {
             "initialValue": True,
             "in": {
                 "$cond": {
-                    "if": {"lt": ["$$this.companions", "$seats"]},
+                    "if": {"lt": [{"$size": "$$this.companions"}, "$seats"]},
                     "then": "$$value",
                     "else": False,
                 }

@@ -6,7 +6,7 @@ num_confirmed_persons = {
         "in": {
             "$cond": {
                 "if": "$$this.confirmed",
-                "then": {"$add": ["$$this.companions", "$$value", 1]},
+                "then": {"$add": [{"$size": "$$this.companions"}, "$$value", 1]},
                 "else": "$$value",
             }
         },

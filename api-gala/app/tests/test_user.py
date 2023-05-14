@@ -6,7 +6,7 @@ from app.api.user.edit import UserEditForm
 
 from app.core.config import Settings
 from app.core.db.types import DBType
-from app.models.user import DishType, User
+from app.models.user import User
 
 from ._utils import auth_data
 
@@ -16,9 +16,7 @@ test_user = User(
     nmec=0,
     email="dev@dev.dev",
     name="dev",
-    dish=DishType.NORMAL,
     has_payed=False,
-    allergies="",
 )
 
 # ================
@@ -152,7 +150,7 @@ async def test_create_user_logged_out(settings: Settings, client: AsyncClient) -
     indirect=["client"],
 )
 async def test_create_user(settings: Settings, client: AsyncClient, db: DBType) -> None:
-    form = UserCreateForm(dish=DishType.NORMAL, email="test@local.test")
+    form = UserCreateForm(email="test@local.test")
     response = await client.post(f"{settings.API_V1_STR}/users", json=form.dict())
     assert response.status_code == 200
     user_res = User(**response.json())
@@ -175,7 +173,7 @@ async def test_create_user_repeated(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await User.get_collection(db).insert_one(test_user.dict(by_alias=True))
-    form = UserCreateForm(dish=DishType.NORMAL, email="test@local.test")
+    form = UserCreateForm(email="test@local.test")
     response = await client.post(f"{settings.API_V1_STR}/users", json=form.dict())
     assert response.status_code == 409
 

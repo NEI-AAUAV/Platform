@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Security, HTTPException
 from pydantic import BaseModel
-from pydantic.fields import Field
 from pymongo import ReturnDocument
 from pymongo.errors import OperationFailure
-from typing import Annotated
+from typing import List
 from app.core.db.types import DBType
 
-from app.models.table import Table, TablePerson
+from app.models.table import Companion, Table, TablePerson, DishType
 from app.api.auth import AuthData, api_nei_auth
 from app.core.db import DatabaseDep
 from app.core.logging import logger
@@ -23,7 +22,9 @@ async def person_in_table(uid: int, db: DBType) -> bool:
 
 
 class TableReservationForm(BaseModel):
-    companions: Annotated[int, Field(ge=0)]
+    dish: DishType
+    allergies: str = ""
+    companions: List[Companion]
 
 
 @router.post(
@@ -43,6 +44,8 @@ async def reserve_table(
     """Reserves a seat on table"""
     table_person = TablePerson(
         id=auth_data.sub,
+        dish=form_data.dish,
+        allergies=form_data.allergies,
         companions=form_data.companions,
         confirmed=False,
     )
@@ -84,10 +87,10 @@ async def reserve_table(
             raise HTTPException(status_code=409, detail="Already in table")
 
         occupied_seats = sum(
-            1 + person.companions for person in table.persons if person.confirmed
+            1 + len(person.companions) for person in table.persons if person.confirmed
         )
 
-        if table_person.companions >= table.seats:
+        if len(table_person.companions) >= table.seats:
             raise HTTPException(
                 status_code=400, detail="There aren't enough seats for the companions"
             )

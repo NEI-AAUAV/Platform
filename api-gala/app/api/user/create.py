@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
 from typing import Optional
 
-from app.models.user import DishType, User, Matriculation
+from app.models.user import User, Matriculation
 from app.core.db import DatabaseDep
 from app.api.auth import AuthData, api_nei_auth
 
@@ -11,10 +11,8 @@ router = APIRouter()
 
 
 class UserCreateForm(BaseModel):
-    matriculation: Optional[Matriculation] = None
-    dish: DishType
-    allergies: str = ""
     email: str
+    matriculation: Optional[Matriculation] = None
 
 
 @router.post("/")
@@ -31,8 +29,6 @@ async def create_user(
         nmec=auth.nmec,
         email=form_data.email,
         name=auth.name,
-        dish=form_data.dish,
-        allergies=form_data.allergies,
     )
 
     try:
