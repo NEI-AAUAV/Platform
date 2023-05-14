@@ -1,6 +1,6 @@
 FROM node:18-alpine as build-stage
 
-WORKDIR /web_nei
+WORKDIR /web_gala
 
 COPY ./package.json ./
 
@@ -16,6 +16,6 @@ FROM nginx:1.20-alpine
 
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=build-stage /web_nei/build /usr/share/nginx/html
+COPY --from=build-stage /web_gala/build /usr/share/nginx/html
 
-EXPOSE 3000
+EXPOSE 3002

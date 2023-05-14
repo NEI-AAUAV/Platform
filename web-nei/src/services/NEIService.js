@@ -3,7 +3,7 @@ import config from "config";
 import { useUserStore } from "stores/useUserStore";
 
 const client = axios.create({
-  baseURL: config.NEI_URL,
+  baseURL: config.API_NEI_URL,
   timeout: 5000,
 });
 

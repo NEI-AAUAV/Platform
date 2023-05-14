@@ -5,7 +5,7 @@ import { useRallyAuth } from "stores/useRallyAuth";
 
 
 const client = axios.create({
-    baseURL: config.RALLYTASCAS_URL,
+    baseURL: config.API_RALLY_URL,
     timeout: 5000,
 });
 

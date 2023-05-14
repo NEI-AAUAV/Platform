@@ -37,9 +37,7 @@ const Navbar = () => {
   const windowSize = useWindowSize();
   const windowScroll = useWindowScroll();
   const [openMobile, setOpenMobile] = useState(false);
-  const { theme, token, name, surname, image } = useUserStore(
-    (state) => state
-  );
+  const { theme, token, name, surname, image } = useUserStore((state) => state);
   const [navItems, setNavItems] = useState(data);
   const navigate = useNavigate();
 
@@ -141,49 +139,53 @@ const Navbar = () => {
           </div>
           <div className="navbar-center hidden md:flex">
             <ul className="menu menu-horizontal px-1">
-              {navItems.map(({ name, link, disabled, dropdown }, index) =>
-                !dropdown ? (
-                  <li
-                    key={index}
-                    className={classNames({
-                      "pointer-events-none opacity-50": disabled,
-                    })}
-                  >
-                    <LinkAdapter to={link}>{name}</LinkAdapter>
-                  </li>
-                ) : (
-                  <li
-                    key={index}
-                    tabIndex={0}
-                    onMouseDown={(e) => e.preventDefault()}
-                  >
-                    <a className="gap-1">
-                      {name}
-                      <ExpandMoreIcon />
-                    </a>
-                    <ul className="!rounded-box w-52 border border-base-300 bg-base-200 p-2 shadow">
-                      {dropdown.map(
-                        ({ name, link, disabled, external }, index) => (
-                          <li
-                            key={index}
-                            className={classNames({
-                              "pointer-events-none opacity-50": disabled,
-                            })}
-                          >
-                            <LinkAdapter
-                              to={link}
-                              external={external}
-                              className="justify-between"
+              {navItems.map(
+                ({ name, link, disabled, dropdown, reload }, index) =>
+                  !dropdown ? (
+                    <li
+                      key={index}
+                      className={classNames({
+                        "pointer-events-none opacity-50": disabled,
+                      })}
+                    >
+                      <LinkAdapter to={link} reload={reload}>
+                        {name}
+                      </LinkAdapter>
+                    </li>
+                  ) : (
+                    <li
+                      key={index}
+                      tabIndex={0}
+                      onMouseDown={(e) => e.preventDefault()}
+                    >
+                      <a className="gap-1">
+                        {name}
+                        <ExpandMoreIcon />
+                      </a>
+                      <ul className="!rounded-box w-52 border border-base-300 bg-base-200 p-2 shadow">
+                        {dropdown.map(
+                          ({ name, link, disabled, external, reload }, index) => (
+                            <li
+                              key={index}
+                              className={classNames({
+                                "pointer-events-none opacity-50": disabled,
+                              })}
                             >
-                              {name}
-                              {!!external && <OpenInNewIcon />}
-                            </LinkAdapter>
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </li>
-                )
+                              <LinkAdapter
+                                to={link}
+                                external={external}
+                                reload={reload}
+                                className="justify-between"
+                              >
+                                {name}
+                                {!!external && <OpenInNewIcon />}
+                              </LinkAdapter>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </li>
+                  )
               )}
             </ul>
           </div>
@@ -191,7 +193,7 @@ const Navbar = () => {
             <div
               className={classNames("flex gap-x-3 p-1", { hidden: openMobile })}
             >
-              <label className="swap-rotate swap btn-ghost btn-sm btn-circle btn">
+              <label className="swap btn-ghost swap-rotate btn-sm btn-circle btn">
                 <input
                   type="checkbox"
                   onChange={toggleTheme}
