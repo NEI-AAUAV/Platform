@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes: 
       # - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
-      # - ./api-rallytascas/app/db/setup.sql:/docker-entrypoint-initdb.d/rallytascas-0001.sql
+      # - ./api-rally/app/db/setup.sql:/docker-entrypoint-initdb.d/rally-0001.sql
       - pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
@@ -87,10 +87,10 @@ services:
     restart: always
     profiles:
       - disabled
-  api_rallytascas:
-    image: neiaauav/api-rallytascas:${TAG:-latest}
+  api_rally:
+    image: neiaauav/api-rally:${TAG:-latest}
     build:
-      context: api-rallytascas
+      context: api-rally
       dockerfile: Dockerfile.prod
     ports:
       - 8003:8003
@@ -100,7 +100,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       SECRET_KEY: ${SECRET_KEY}
     volumes: 
-      - /api-rallytascas/static:/api_rallytascas/static
+      - /api-rally/static:/api_rally/static
     depends_on:
       db_pg:
         condition: service_healthy

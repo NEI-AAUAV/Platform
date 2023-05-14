@@ -13,8 +13,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 class Settings(BaseSettings):
     PRODUCTION: bool = os.getenv("ENV") == "production"
 
-    API_V1_STR: str = "/api/rallytascas/v1"
-    STATIC_STR: str = "/static/rallytascas"
+    API_V1_STR: str = "/api/rally/v1"
+    STATIC_STR: str = "/static/rally"
 
     HOST: AnyHttpUrl = ("https://nei.web.ua.pt" if PRODUCTION else
                         "http://localhost:8000")

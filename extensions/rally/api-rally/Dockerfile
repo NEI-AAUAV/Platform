@@ -2,7 +2,7 @@ FROM python:3.10-slim as requirements-stage
 
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /api_rallytascas
+WORKDIR /api_rally
 
 RUN apt-get update && apt-get -y install libpq-dev gcc
 

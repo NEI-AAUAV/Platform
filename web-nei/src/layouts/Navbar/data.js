@@ -97,6 +97,14 @@ const data = [
     !config.PRODUCTION && {
         name: "TacauaAdminDemo",
         link: "/WStacaua-admin-demo",
+    },
+    config.ENABLE_GALA && {
+        name: "Jantar de Gala",
+        link: config.WEB_GALA_URL,
+    },
+    config.ENABLE_RALLY && {
+        name: "Jantar de Gala",
+        link: config.WEB_RALLY_URL,
     }
 ].filter(Boolean);
 

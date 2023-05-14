@@ -31,7 +31,7 @@ def get_db() -> Generator:
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/rallytascas/v1/user/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/rally/v1/user/token")
 
 
 def verify_password(password, hashed_password):

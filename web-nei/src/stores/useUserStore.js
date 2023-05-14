@@ -32,7 +32,7 @@ export const useUserStore = create((set, get) => ({
       token,
       sessionLoading: false,
       ...payload,
-      image: img && config.NEI_STATIC_URL + `/users/${payload.sub}/profile.jpg`,
+      image: img && config.STATIC_NEI_URL + `/users/${payload.sub}/profile.jpg`,
     }));
   },
 

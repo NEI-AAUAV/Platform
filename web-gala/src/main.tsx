@@ -8,19 +8,24 @@ import Home from "./pages/Home";
 import ErrorBoundary from "./pages/ErrorBoundary";
 import Layout from "./pages/Layout";
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Layout />,
+      errorElement: <ErrorBoundary />,
+      children: [
+        {
+          path: "/",
+          element: <Home />,
+        },
+      ],
+    },
+  ],
   {
-    path: "/",
-    element: <Layout />,
-    errorElement: <ErrorBoundary />,
-    children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-    ],
+    basename: "/gala",
   },
-]);
+);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

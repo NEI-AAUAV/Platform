@@ -14,13 +14,7 @@
       "path": "api-family"
     },
     {
-      "path": "api-rallytascas"
-    },
-    {
       "path": "web-nei"
-    },
-    {
-      "path": "web-gala"
     },
     {
       "path": "proxy"
@@ -38,10 +32,10 @@
       "**/node_modules": true,
       "**/build": true
     },
-	"files.exclude": {
-        "api-*/": true,
-        "proxy/": true,
-        "web-*/": true
+    "files.exclude": {
+      "api-*/": true,
+      "web-*/": true,
+      "proxy/": true
     }
   }
 }
