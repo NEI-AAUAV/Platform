@@ -11,6 +11,7 @@ from app.api.table.transfer import TableTransferForm
 from app.core.config import Settings
 from app.core.db.types import DBType
 from app.models.table import Companion, DishType, Table, TablePerson
+from app.models.user import User
 
 from ._utils import auth_data
 
@@ -27,6 +28,11 @@ def dummy_person(
         dish=DishType.NORMAL,
         allergies="",
     )
+
+
+async def create_test_user(*, id: int, db: DBType) -> None:
+    test_user = User(_id=id, matriculation=None, nmec=1, email="dev@dev.dev", name="J")
+    await User.get_collection(db).insert_one(test_user.dict(by_alias=True))
 
 
 # =================
@@ -490,7 +496,10 @@ async def test_reserve_table_logged_out(
     [auth_data(sub=0)],
     indirect=["client"],
 )
-async def test_reserve_table_not_found(settings: Settings, client: AsyncClient) -> None:
+async def test_reserve_table_not_found(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await create_test_user(id=0, db=db)
     form = TableReservationForm(dish=DishType.NORMAL, companions=[])
     response = await client.post(
         f"{settings.API_V1_STR}/table/1/reserve", json=form.dict()
@@ -507,6 +516,7 @@ async def test_reserve_table_not_found(settings: Settings, client: AsyncClient) 
 async def test_reserve_table_empty(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await create_test_user(id=0, db=db)
     await Table.get_collection(db).insert_one(test_table.dict(by_alias=True))
 
     form = TableReservationForm(dish=DishType.NORMAL, companions=[])
@@ -539,6 +549,7 @@ async def test_reserve_table_empty(
 async def test_reserve_table_non_empty(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await create_test_user(id=0, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
@@ -575,6 +586,7 @@ async def test_reserve_table_non_empty(
 async def test_reserve_table_already_in_another_table(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await create_test_user(id=0, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
@@ -612,6 +624,7 @@ async def test_reserve_table_already_in_another_table(
 async def test_reserve_table_full_companions(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await create_test_user(id=0, db=db)
     test_table2 = test_table.copy()
     test_table2.seats = 2
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
@@ -649,6 +662,7 @@ async def test_reserve_table_full_companions(
 async def test_reserve_table_too_many_companions(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await create_test_user(id=0, db=db)
     test_table2 = test_table.copy()
     test_table2.seats = 2
     await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
@@ -669,7 +683,27 @@ async def test_reserve_table_too_many_companions(
     assert test_table2 == db_table_res
 
 
-# TODO: SEATS CHECKS TESTS
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_reserve_table_no_user(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await Table.get_collection(db).insert_one(test_table.dict(by_alias=True))
+
+    form = TableReservationForm(dish=DishType.NORMAL, companions=[])
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/{test_table.id}/reserve", json=form.dict()
+    )
+    assert response.status_code == 400
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table == db_table_res
 
 
 # ===================
@@ -949,8 +983,6 @@ async def test_confirm_table_full_companions(
     assert test_table2 == db_table_res
 
 
-# TODO: SEATS CHECKS TESTS
-
 # ====================
 # == TRANSFER TABLE ==
 # ====================
@@ -1111,8 +1143,6 @@ async def test_transfer_table_full_companions(
     db_table_res = Table(**db_res)
     assert test_table2 == db_table_res
 
-
-# TODO: SEATS CHECKS TESTS
 
 # =================
 # == LEAVE TABLE ==

@@ -9,6 +9,7 @@ from app.models.table import Companion, Table, TablePerson, DishType
 from app.api.auth import AuthData, api_nei_auth
 from app.core.db import DatabaseDep
 from app.core.logging import logger
+from app.models.user import User
 import app.queries.table as table_queries
 
 from ._utils import sanitize_table, fetch_table, NotFoundReCheck
@@ -42,6 +43,11 @@ async def reserve_table(
     auth_data: AuthData = Security(api_nei_auth),
 ) -> Table:
     """Reserves a seat on table"""
+    user = await User.get_collection(db).find_one({"_id": auth_data.sub})
+
+    if user is None:
+        raise HTTPException(status_code=400, detail="An user must be created first")
+
     table_person = TablePerson(
         id=auth_data.sub,
         dish=form_data.dish,
