@@ -1,15 +1,15 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { LogoIcon, HamburgerIcon } from "@/assets/icons";
 import Navigation from "./Navigation";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const background = isOpen ? "bg-white rounded-b-xl" : "";
   return (
     <header
-      className={`p-3 ${
-        isOpen ? "bg-white rounded-b-xl sm:bg-transparent sm:rounded-none" : ""
-      }`}
+      className={`sm:bg-transparent sm:rounded-none sticky top-0 p-3 transition-[background-color] md:delay-100 ease-linear ${background}`}
     >
       <div className="flex">
         <Link className="flex gap-3" to="/gala">
@@ -27,13 +27,12 @@ export default function Navbar() {
           <HamburgerIcon />
         </button>
       </div>
-      <div className="flex sm:hidden overflow-hidden">
-        <Navigation
-          className={`overflow-hidden transition-all duration-200 ease-out ${
-            isOpen ? "basis-auto" : "basis-0"
-          }`}
-        />
-      </div>
+      <motion.div
+        animate={{ height: isOpen ? "auto" : 0 }}
+        className={`outline fixed left-0 px-3 first-letter:sm:hidden overflow-hidden w-full ${background}`}
+      >
+        <Navigation className="pt-8 pb-3" />
+      </motion.div>
     </header>
   );
 }

@@ -7,7 +7,7 @@ type NavigationProps = {
 export default function Navigation({ className }: NavigationProps) {
   return (
     <nav className={className}>
-      <ul className="flex flex-col gap-3 sm:flex-row font-light">
+      <ul className="flex flex-col gap-3 md:gap-6 sm:flex-row font-light">
         <li>
           <Link to="/gala/tables">Reservar Lugar</Link>
         </li>

@@ -7,7 +7,9 @@ export default function Home() {
   return (
     <>
       <Background src={homeBackground} />
-      Hi this is the home
+      <div className="h-screen flex justify-center items-center">
+        <h1 className="text-3xl font-semibold">Hi this is home</h1>
+      </div>
     </>
   );
 }
