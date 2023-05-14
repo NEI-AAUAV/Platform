@@ -86,9 +86,7 @@ async def reserve_table(
         if any(person.id == table_person.id for person in table.persons):
             raise HTTPException(status_code=409, detail="Already in table")
 
-        occupied_seats = sum(
-            1 + len(person.companions) for person in table.persons if person.confirmed
-        )
+        occupied_seats = table.confirmed_seats()
 
         if len(table_person.companions) >= table.seats:
             raise HTTPException(

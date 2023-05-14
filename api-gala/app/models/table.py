@@ -10,8 +10,8 @@ class DishType(str, Enum):
 
 
 class Companion(BaseModel):
-    allergies: str
     dish: DishType
+    allergies: str = ""
 
 
 class TablePerson(BaseModel):
@@ -28,3 +28,8 @@ class Table(BaseDocument):
     head: Optional[int]
     seats: PositiveInt
     persons: List[TablePerson]
+
+    def confirmed_seats(self) -> int:
+        return sum(
+            1 + len(person.companions) for person in self.persons if person.confirmed
+        )

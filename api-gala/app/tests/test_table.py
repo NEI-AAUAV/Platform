@@ -603,6 +603,72 @@ async def test_reserve_table_already_in_another_table(
     assert test_table3 == db_table_res
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_reserve_table_full_companions(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    test_table2 = test_table.copy()
+    test_table2.seats = 2
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    companions = [
+        Companion(dish=DishType.NORMAL),
+    ]
+    form = TableReservationForm(dish=DishType.NORMAL, companions=companions)
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/reserve", json=form.dict()
+    )
+    assert response.status_code == 200
+    table_res = Table(**response.json())
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+
+    mod_test_table2 = test_table2.copy()
+    mod_test_table2.head = 0
+    mod_test_table2.persons = [
+        dummy_person(id=0, confirmed=True, companions=companions)
+    ]
+
+    assert table_res == mod_test_table2
+    assert mod_test_table2 == db_table_res
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_reserve_table_too_many_companions(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    test_table2 = test_table.copy()
+    test_table2.seats = 2
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    companions = [
+        Companion(dish=DishType.NORMAL),
+        Companion(dish=DishType.NORMAL),
+    ]
+    form = TableReservationForm(dish=DishType.NORMAL, companions=companions)
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/reserve", json=form.dict()
+    )
+    assert response.status_code == 400
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table2 == db_table_res
+
+
 # TODO: SEATS CHECKS TESTS
 
 
@@ -652,7 +718,7 @@ async def test_confirm_table_unauthorized(
 
     form = TableApprovalForm(uid=2, confirm=True)
     response = await client.patch(
-        f"{settings.API_V1_STR}/table/1/confirm", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table2.id}/confirm", json=form.dict()
     )
     assert response.status_code == 403
 
@@ -676,7 +742,7 @@ async def test_confirm_table_head(
 
     form = TableApprovalForm(uid=1, confirm=True)
     response = await client.patch(
-        f"{settings.API_V1_STR}/table/1/confirm", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table2.id}/confirm", json=form.dict()
     )
     assert response.status_code == 200
     table_res = Table(**response.json())
@@ -711,7 +777,7 @@ async def test_confirm_table_manager(
 
     form = TableApprovalForm(uid=2, confirm=True)
     response = await client.patch(
-        f"{settings.API_V1_STR}/table/1/confirm", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table2.id}/confirm", json=form.dict()
     )
     assert response.status_code == 200
     table_res = Table(**response.json())
@@ -746,7 +812,7 @@ async def test_confirm_table_change_head(
 
     form = TableApprovalForm(uid=0, confirm=False)
     response = await client.patch(
-        f"{settings.API_V1_STR}/table/1/confirm", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table2.id}/confirm", json=form.dict()
     )
     assert response.status_code == 400
 
@@ -775,7 +841,7 @@ async def test_confirm_table_not_in_table(
 
     form = TableApprovalForm(uid=2, confirm=True)
     response = await client.patch(
-        f"{settings.API_V1_STR}/table/1/confirm", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table2.id}/confirm", json=form.dict()
     )
     assert response.status_code == 400
 
@@ -804,7 +870,7 @@ async def test_confirm_table_confirm_false(
 
     form = TableApprovalForm(uid=1, confirm=False)
     response = await client.patch(
-        f"{settings.API_V1_STR}/table/1/confirm", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table2.id}/confirm", json=form.dict()
     )
     assert response.status_code == 200
     table_res = Table(**response.json())
@@ -818,6 +884,69 @@ async def test_confirm_table_confirm_false(
 
     assert table_res == db_table_res
     assert mod_test_table2 == db_table_res
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_confirm_table_full(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    test_table2 = test_table.copy()
+    test_table2.head = 0
+    test_table2.seats = 2
+    test_table2.persons = [
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=True),
+        dummy_person(id=2, confirmed=False),
+    ]
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    form = TableApprovalForm(uid=2, confirm=True)
+    response = await client.patch(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/confirm", json=form.dict()
+    )
+    assert response.status_code == 409
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table2 == db_table_res
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_confirm_table_full_companions(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    test_table2 = test_table.copy()
+    test_table2.head = 0
+    test_table2.seats = 2
+    test_table2.persons = [
+        dummy_person(id=0, confirmed=True),
+        dummy_person(
+            id=2, confirmed=False, companions=[Companion(dish=DishType.NORMAL)]
+        ),
+    ]
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    form = TableApprovalForm(uid=2, confirm=True)
+    response = await client.patch(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/confirm", json=form.dict()
+    )
+    assert response.status_code == 409
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table2 == db_table_res
 
 
 # TODO: SEATS CHECKS TESTS
@@ -870,7 +999,7 @@ async def test_transfer_table_head(
 
     form = TableTransferForm(uid=1)
     response = await client.patch(
-        f"{settings.API_V1_STR}/table/1/transfer", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table2.id}/transfer", json=form.dict()
     )
     assert response.status_code == 200
     table_res = Table(**response.json())
@@ -906,7 +1035,7 @@ async def test_transfer_table_manager(
 
     form = TableTransferForm(uid=2)
     response = await client.patch(
-        f"{settings.API_V1_STR}/table/1/transfer", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table2.id}/transfer", json=form.dict()
     )
     assert response.status_code == 200
     table_res = Table(**response.json())
@@ -941,9 +1070,41 @@ async def test_transfer_table_not_in_table(
 
     form = TableTransferForm(uid=1)
     response = await client.patch(
-        f"{settings.API_V1_STR}/table/1/transfer", json=form.dict()
+        f"{settings.API_V1_STR}/table/{test_table2.id}/transfer", json=form.dict()
     )
     assert response.status_code == 400
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table2 == db_table_res
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_transfer_table_full_companions(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    test_table2 = test_table.copy()
+    test_table2.head = 0
+    test_table2.persons = [
+        dummy_person(id=0, confirmed=True),
+        dummy_person(
+            id=1, confirmed=False, companions=[Companion(dish=DishType.NORMAL)]
+        ),
+        dummy_person(id=2, confirmed=True),
+    ]
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    form = TableTransferForm(uid=1)
+    response = await client.patch(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/transfer", json=form.dict()
+    )
+    assert response.status_code == 409
 
     db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
     assert db_res is not None
