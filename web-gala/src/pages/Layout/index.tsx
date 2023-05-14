@@ -1,9 +1,10 @@
 import { Outlet } from "react-router-dom";
+import Navbar from "@/components/Navbar";
 
 export default function Layout() {
   return (
     <>
-      <h1 className="text-3xl sticky top-0">Hi this is the layout</h1>
+      <Navbar />
       <Outlet />
     </>
   );
