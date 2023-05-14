@@ -34,7 +34,7 @@
     },
     "files.exclude": {
       "api-*/": true,
-      "web-*/": true,
+      "web-*/": false,
       "proxy/": true
     }
   }

@@ -12,7 +12,7 @@
   "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./web-gala/tsconfig.json",
+    "project": ["./web-gala/tsconfig.node.json", "./web-gala/tsconfig.json"],
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
@@ -21,6 +21,7 @@
     "react/react-in-jsx-scope": ["off"],
     "react/jsx-props-no-spreading": ["warn"],
     "react/jsx-uses-react": ["off"],
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "import/extensions": ["off", "never", { "ignorePackages": true }]
   }
 }

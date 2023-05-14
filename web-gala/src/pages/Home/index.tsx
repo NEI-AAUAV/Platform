@@ -1,5 +1,13 @@
+import homeBackground from "../../assets/home-background.png";
+import Background from "../../components/Background";
+
 export default function Home() {
   // TODO: Everything
 
-  return <>Hi this is the home</>;
+  return (
+    <>
+      <Background src={homeBackground} />
+      Hi this is the home
+    </>
+  );
 }

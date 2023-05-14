@@ -1,6 +1,8 @@
+//* Pages
 import Layout from "../pages/Layout";
-import Home from "../pages/Home";
 import ErrorBoundary from "../pages/ErrorBoundary";
+import Home from "../pages/Home";
+import Reserve from "../pages/Reserve";
 
 const routes = [
   {
@@ -11,6 +13,10 @@ const routes = [
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/tables",
+        element: <Reserve />,
       },
     ],
   },
