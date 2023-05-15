@@ -11,9 +11,8 @@ from app.api.table.transfer import TableTransferForm
 from app.core.config import Settings
 from app.core.db.types import DBType
 from app.models.table import Companion, DishType, Table, TablePerson
-from app.models.user import User
 
-from ._utils import auth_data
+from ._utils import auth_data, create_test_user
 
 test_table = Table(_id=1, name=None, head=None, seats=3, persons=[])
 
@@ -28,11 +27,6 @@ def dummy_person(
         dish=DishType.NORMAL,
         allergies="",
     )
-
-
-async def create_test_user(*, id: int, db: DBType) -> None:
-    test_user = User(_id=id, matriculation=None, nmec=1, email="dev@dev.dev", name="J")
-    await User.get_collection(db).insert_one(test_user.dict(by_alias=True))
 
 
 # =================

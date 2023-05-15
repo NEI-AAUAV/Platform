@@ -7,9 +7,9 @@ from app.models.table import Table
 from app.api.auth import AuthData, api_nei_auth
 from app.core.db import DatabaseDep
 from app.core.logging import logger
+from app.utils import NotFoundReCheck
 
 from ._utils import (
-    NotFoundReCheck,
     sanitize_table,
     fetch_table,
     query_check_table_head_permissions,

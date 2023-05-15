@@ -11,8 +11,9 @@ from app.core.db import DatabaseDep
 from app.core.logging import logger
 from app.models.user import User
 import app.queries.table as table_queries
+from app.utils import NotFoundReCheck
 
-from ._utils import sanitize_table, fetch_table, NotFoundReCheck
+from ._utils import sanitize_table, fetch_table
 
 router = APIRouter()
 

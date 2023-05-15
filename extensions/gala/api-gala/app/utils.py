@@ -21,3 +21,7 @@ def optional(*, exclude: Set[str] = set()) -> Callable[[Type[_C]], Type[_C]]:
         return _cls
 
     return dec
+
+
+class NotFoundReCheck(Exception):
+    pass

@@ -8,13 +8,13 @@ from app.api.auth import AuthData, api_nei_auth
 from app.core.db import DatabaseDep
 from app.core.logging import logger
 import app.queries.table as table_queries
+from app.utils import NotFoundReCheck
 
 from ._utils import (
     sanitize_table,
     fetch_table,
     query_check_table_head_permissions,
     head_permission_check,
-    NotFoundReCheck,
 )
 
 router = APIRouter()

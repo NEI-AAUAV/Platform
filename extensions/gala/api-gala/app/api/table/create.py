@@ -4,7 +4,7 @@ from pydantic import BaseModel, PositiveInt
 from app.models.table import Table
 from app.api.auth import AuthData, api_nei_auth, ScopeEnum
 from app.core.db import DatabaseDep
-from app.core.db.counters import getNextTabledId
+from app.core.db.counters import getNextTableId
 
 router = APIRouter()
 
@@ -21,7 +21,7 @@ async def create_table(
     _: AuthData = Security(api_nei_auth, scopes=[ScopeEnum.MANAGER_JANTAR_GALA]),
 ) -> Table:
     """Creates a new table"""
-    id = await getNextTabledId(db)
+    id = await getNextTableId(db)
     table = Table(
         _id=id,
         name=None,
