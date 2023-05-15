@@ -12,7 +12,7 @@ export default function Navbar() {
     <>
       <header
         className={classNames(
-          "sm:bg-transparent sm:rounded-none sticky top-0 z-40 p-3 transition-[background-color]",
+          "sm:bg-transparent sm:rounded-none sticky top-0 z-40 p-3 transition-[background-color] text-base-content text-opacity-70",
           {
             [background]: isOpen,
           },

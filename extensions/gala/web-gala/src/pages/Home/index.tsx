@@ -7,7 +7,7 @@ export default function Home() {
     <>
       <Background src={homeBackground} />
       <div className="absolute inset-0 flex justify-center items-center">
-        <div className="flex flex-col items-center text-center mx-4">
+        <div className="flex flex-col items-center text-center mx-4 text-base-content text-opacity-70">
           <h1 className="text-[2.5rem] sm:text-[4rem] font-bold leading-tight">
             O Melhor Jantar de Gala
           </h1>

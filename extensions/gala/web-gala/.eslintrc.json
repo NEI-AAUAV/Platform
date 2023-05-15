@@ -12,10 +12,7 @@
   "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": [
-      "./extensions/gala/web-gala/tsconfig.node.json",
-      "./extensions/gala/web-gala/tsconfig.json"
-    ],
+    "project": "./tsconfig.json",
     "ecmaVersion": "latest",
     "sourceType": "module"
   },

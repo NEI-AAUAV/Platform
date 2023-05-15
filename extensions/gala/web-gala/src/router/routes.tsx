@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 //* Pages
 import Layout from "@/pages/Layout";
 import ErrorBoundary from "@/pages/ErrorBoundary";
@@ -22,6 +23,10 @@ const routes = [
       {
         path: "/vote",
         element: <Vote />,
+      },
+      {
+        path: "*",
+        element: <Navigate to="/" />,
       },
     ],
   },
