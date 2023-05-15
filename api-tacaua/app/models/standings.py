@@ -1,13 +1,6 @@
-from typing import Optional
-from pydantic import AnyHttpUrl
-from sqlalchemy import Column, Boolean, SmallInteger, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy import Column, ARRAY, SmallInteger, Integer, ForeignKey
 
 from app.db.base_class import Base
-from app.schemas.modality import TypeEnum, FrameEnum, SportEnum
-from app.core.config import settings
-from app.core.logging import logger
 
 from app.models.team import Team
 from app.models.group import Group
@@ -16,27 +9,21 @@ from app.models.group import Group
 class Standings(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     team = Column(
-        String(50),
+        Integer,
         ForeignKey(Team.id, ondelete="CASCADE"),
         nullable=False
     )
     group = Column(
-        String(50),
+        Integer,
         ForeignKey(Group.id, ondelete="CASCADE"),
         nullable=False
     )
     pts = Column(SmallInteger, default=0)
+    matches = Column(SmallInteger, default=0)
     wins = Column(SmallInteger, default=0)
     ties = Column(SmallInteger, default=0)
     losses = Column(SmallInteger, default=0)
-    goals_scored = Column(SmallInteger, default=0)
-    goals_against = Column(SmallInteger, default=0)
-    goal_difference = Column(SmallInteger, default=0)    
-
-    @hybrid_property
-    def image(self) -> Optional[AnyHttpUrl]:
-        return self._image and settings.STATIC_URL + self._image
-
-    @image.setter
-    def image(self, image: Optional[AnyHttpUrl]):
-        self._image = image
+    ff = Column(SmallInteger, default=0)
+    score_for = Column(SmallInteger, default=0)
+    score_agst = Column(SmallInteger, default=0)
+    math_history = Column(ARRAY(SmallInteger), default=[])

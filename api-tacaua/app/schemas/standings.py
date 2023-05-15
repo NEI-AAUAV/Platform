@@ -1,31 +1,32 @@
 from pydantic import BaseModel
-from typing import List, Optional
-from .group import Group
+from typing import Literal
+from .team import TeamLazy
 
 
-class StandingsCreate(BaseModel):
-    team: str
-    pts: Optional[int]
-    wins: Optional[int]
-    ties: Optional[int]
-    losses: Optional[int]
-    goals_scored: Optional[int]
-    goals_against: Optional[int]
-    goal_difference: Optional[int]
+class StandingsBase(BaseModel):
+    pts: int = 0
+    matches: int = 0
+    wins: int = 0
+    ties: int = 0
+    losses: int = 0
+    ff: int = 0
+    score_for: int = 0
+    score_agst: int = 0
+    goal_difference: int = 0
+    math_history: list[Literal[-1, 0, 1]] = []
 
-class StandingsUpdate(BaseModel):
-    pts: Optional[int]
-    wins: Optional[int]
-    ties: Optional[int]
-    losses: Optional[int]
-    goals_scored: Optional[int]
-    goals_against: Optional[int]
-    goal_difference: Optional[int]
 
-class StandingsInDB(BaseModel):
-    # standings: List[StandingsRow]
+class StandingsCreate(StandingsBase):
+    pass
+
+class StandingsUpdate(StandingsBase):
+    pass
+
+class StandingsInDB(StandingsBase):
     id: int
-    group: Group
+    team_id: int
+    group_id: int
+    team: TeamLazy
 
     class Config:
         orm_mode = True
