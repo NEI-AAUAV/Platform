@@ -1,13 +1,14 @@
 import os
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Response, BackgroundTasks
 from fastapi.responses import JSONResponse, RedirectResponse
 from app.core.config import settings
 from ._deps import generate_response
-import requests
+import httpx
 
 import base64
 
-from requests_oauthlib import OAuth1Session
+from authlib.integrations.httpx_client import AsyncOAuth1Client
+
 from io import BytesIO
 from app.api import deps
 from sqlalchemy.orm import Session
@@ -31,15 +32,7 @@ get_data_url = "https://identity.ua.pt/oauth/get_data"
 
 
 # Prevent SSL error: DH keys are too small
-requests.packages.urllib3.disable_warnings()
-requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ":HIGH:!DH:!aNULL"
-try:
-    requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += (
-        ":HIGH:!DH:!aNULL"
-    )
-except AttributeError:
-    # No pyopenssl support used / needed / available
-    pass
+httpx._config.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
 
 # Save tokens
 tokens = {}
@@ -50,23 +43,26 @@ tokens = {}
     responses={503: {"description": "Service Unavailable"}},
 )
 async def get_token(
-    db: Session = Depends(deps.get_db),
     oauth_verifier: str = None,
     oauth_token: str = None,
+    *,
+    db: Session = Depends(deps.get_db),
+    # background_tasks: BackgroundTasks,
 ) -> Response:
     if oauth_token is None:
+        print(settings.IDP_SECRET_KEY)
         # Step 1: Request Token
-        oauth = OAuth1Session(
+        oauth = AsyncOAuth1Client(
             settings.IDP_KEY, client_secret=settings.IDP_SECRET_KEY)
 
-        fetch_response = oauth.fetch_request_token(request_token_url)
+        fetch_response = await oauth.fetch_request_token(request_token_url)
 
-        resource_owner_key = fetch_response.get("oauth_token")
-        resource_owner_secret = fetch_response.get("oauth_token_secret")
-        tokens[resource_owner_key] = resource_owner_secret
+        token = fetch_response.get("oauth_token")
+        token_secret = fetch_response.get("oauth_token_secret")
+        tokens[token] = token_secret
 
         # Step 2: Authorize
-        authorization_url = oauth.authorization_url(authorize_url)
+        authorization_url = oauth.create_authorization_url(authorize_url)
         return JSONResponse(status_code=200, content={"url": authorization_url})
 
     else:
@@ -74,129 +70,51 @@ async def get_token(
             raise HTTPException(status_code=404, detail="Token not found")
 
         # Step 3: Access Token
-        oauth = OAuth1Session(
+        oauth = AsyncOAuth1Client(
             settings.IDP_KEY,
             client_secret=settings.IDP_SECRET_KEY,
-            resource_owner_key=oauth_token,
-            resource_owner_secret=tokens[oauth_token],
+            token=oauth_token,
+            token_secret=tokens[oauth_token],
             verifier=oauth_verifier,
         )
-        oauth_tokens = oauth.fetch_access_token(access_token_url)
-        resource_owner_key = oauth_tokens.get("oauth_token")
-        resource_owner_secret = oauth_tokens.get("oauth_token_secret")
-        data = get_data(resource_owner_key, resource_owner_secret)
-        # save to db
-        student_courses, student_info, name, uu = (
-            data["student_courses"],
-            data["student_info"],
+        oauth_tokens = await oauth.fetch_access_token(access_token_url)
+        token = oauth_tokens.get("oauth_token")
+        token_secret = oauth_tokens.get("oauth_token_secret")
+        data = await get_data(token, token_secret, scopes=["name", "uu"])
+
+        name, uu = (
             data["name"],
             data["uu"],
         )
 
-        courseInfo = student_info["Curso"].split("-")
-
-        course = crud.course.get_by_code(db, code=int(courseInfo[0].strip()))
-        if course is None:
-            course_in = CourseCreate(
-                name=courseInfo[1].strip(),
-                code=courseInfo[0].strip(),
-            )
-            crud.course.create(db, obj_in=course_in)
-
-        for subject in student_courses:
-            subjectInDb = crud.subject.get_by_code(
-                db, code=int(subject["CodDisciplina"])
-            )
-            if subjectInDb is None:
-                subject_in = SubjectCreate(
-                    name=subject["NomeDisciplina"],
-                    code=subject["CodDisciplina"],
-                    short="",
-                    discontinued=0,
-                    optional=0,
-                    curricular_year=student_info["AnoCurricular"],
-                    course_id=int(courseInfo[0].strip()),
-                )
-                crud.subject.create(db, obj_in=subject_in)
-
         maybe_user = crud.user.get_by_email(db, email=uu["email"])
         if maybe_user is None:
+            # save new user in db
             user_in = UserCreate(
                 iupi=uu["iupi"],
-                nmec=student_info["NMec"],
                 name=name["name"],
                 surname=name["surname"],
             )
             logger.info(f"Creating user: {user_in}")
             user = crud.user.create(
                 db, obj_in=user_in, email=uu["email"], active=True)
-
-            await crud.user.update_image(
-                db, db_obj=user, image=base64.b64decode(student_info["Foto"])
-            )
-
-            subList = []
-            for subject in student_courses:
-                subList.append(
-                    crud.subject.get_by_code(
-                        db, code=int(subject["CodDisciplina"]))
-                )
-            userAc = UserAcademicDetailsCreate(
-                user_id=user.id,
-                course_id=int(courseInfo[0].strip()),
-                curricular_year=student_info["AnoCurricular"],
-                year=student_info["AnoCurricular"],
-            )
-            userAcModel = crud.user_academic.create(db, obj_in=userAc)
-            userAcModel.subjects = subList
-            db.add(userAcModel)
-            db.add_all(subList)
-            db.commit()
         else:
-            user, user_email = maybe_user
             # update user
+            user, user_email = maybe_user
             user_up = UserUpdate(
                 id=maybe_user[0].id,
                 iupi=uu["iupi"],
-                nmec=student_info["NMec"],
                 name=name["name"],
                 surname=name["surname"],
             )
             logger.info(f"Updating user {user.id}: {user_up}")
             user = crud.user.update(db, db_obj=user, obj_in=user_up)
 
-            # get user academic details
-            userAc = crud.user_academic.get_by_user_id(db, user_id=user.id)
-
-            # check if subjects are the same
-            subList = []
-            for subject in student_courses:
-                subList.append(
-                    crud.subject.get_by_code(
-                        db, code=int(subject["CodDisciplina"])))
-
-            userAc_up = UserAcademicDetailsCreate(
-                user_id=user.id,
-                course_id=int(courseInfo[0].strip()),
-                curricular_year=student_info["AnoCurricular"],
-                year=student_info["AnoCurricular"],
-            )
-            if userAc is None:
-                userAc = crud.user_academic.create(db, obj_in=userAc_up)
-            else:
-                userAc = crud.user_academic.update(
-                    db, db_obj=userAc, obj_in=userAc_up)
-
-            userAc.subjects = subList
-            db.add(userAc)
-            db.add_all(subList)
-            db.commit()
-
         del tokens[oauth_token]
         return generate_response(db, user)
 
 
-def get_data(resource_owner_key, resource_owner_secret):
+async def get_data(token, token_secret, scopes):
     """
     Permitted scopes, how to access data and keys:
     - uu (nothing needs to be done) -> email, iupi
@@ -204,26 +122,27 @@ def get_data(resource_owner_key, resource_owner_secret):
     - student_info (access ['NewDataSet']['ObterDadosAluno'] -> NMec, Curso, AnoCurricular, Foto
     - student_courses (access ['NewDataSet']['ObterListaDisciplinasAluno'] -> array de disciplinas
     """
-    scopes = ["student_courses", "student_info", "name", "uu"]
-    oauth = OAuth1Session(
+    oauth = AsyncOAuth1Client(
         settings.IDP_KEY,
         client_secret=settings.IDP_SECRET_KEY,
-        resource_owner_key=resource_owner_key,
-        resource_owner_secret=resource_owner_secret,
+        token=token,
+        token_secret=token_secret,
     )
-    returndata = {}
+    data = {}
     for s in scopes:
-        r = oauth.get(f"{get_data_url}?scope={s}&format=json")
+        res = await oauth.get(f"{get_data_url}?scope={s}&format=json")
+        res = res.json()
         if s == "student_info":
-            returndata["student_info"] = r.json(
-            )["NewDataSet"]["ObterDadosAluno"]
+            data["student_info"] = res["NewDataSet"]["ObterDadosAluno"]
         elif s == "student_courses":
-            returndata["student_courses"] = r.json()["NewDataSet"][
+            data["student_courses"] = res["NewDataSet"][
                 "ObterListaDisciplinasAluno"
             ]
         elif s == "name":
-            returndata["name"] = r.json()
+            data["name"] = res
         elif s == "uu":
-            returndata["uu"] = r.json()
+            data["uu"] = res
+        else:
+            logger.warning(f"Scope {s} not found, ignoring...")
 
-    return returndata
+    return data
