@@ -4,7 +4,7 @@ from pydantic import BaseModel, NonNegativeInt
 from pymongo import ReturnDocument
 from pymongo.errors import OperationFailure
 
-from app.api.auth import AuthData, api_nei_auth
+from app.api.auth import AuthData, api_nei_auth, auth_responses
 from app.core.db import DatabaseDep
 from app.models.user import User
 from app.models.vote import Vote, VoteCategory, VoteListing
@@ -19,7 +19,14 @@ class VoteForm(BaseModel):
     option: NonNegativeInt
 
 
-@router.put("/{category_id}/cast")
+@router.put(
+    "/{category_id}/cast",
+    responses={
+        **auth_responses,
+        400: {"description": "A user must be created first or the option is not valid"},
+        409: {"description": "Already cast a vote in this category"},
+    },
+)
 async def cast_vote(
     category_id: int,
     form_data: VoteForm,
@@ -31,7 +38,7 @@ async def cast_vote(
     user = await User.get_collection(db).find_one({"_id": auth.sub})
 
     if user is None:
-        raise HTTPException(status_code=400, detail="An user must be created first")
+        raise HTTPException(status_code=400, detail="A user must be created first")
 
     vote = Vote(uid=auth.sub, option=form_data.option)
 

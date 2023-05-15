@@ -1,7 +1,7 @@
 from typing import Any, List
 from fastapi import APIRouter, Security
 
-from app.api.auth import AuthData, api_nei_auth
+from app.api.auth import AuthData, api_nei_auth, auth_responses
 from app.core.db import DatabaseDep
 from app.models.vote import VoteCategory, VoteListing
 
@@ -27,7 +27,12 @@ def anonymize_category(category: VoteCategory, auth: AuthData) -> VoteListing:
     )
 
 
-@router.get("/list")
+@router.get(
+    "/list",
+    responses={
+        **auth_responses,
+    },
+)
 async def list_categories(
     *,
     db: DatabaseDep,
@@ -43,7 +48,10 @@ async def list_categories(
     return list(map(mapper, res))
 
 
-@router.get("/{category_id}")
+@router.get(
+    "/{category_id}",
+    responses={**auth_responses, 404: {"description": "Vote category not found"}},
+)
 async def get_category(
     category_id: int,
     *,

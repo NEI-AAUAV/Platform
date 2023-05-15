@@ -3,7 +3,7 @@ from aiocache.decorators import cached
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from pydantic import BaseModel
-from typing import Annotated, List, Optional, no_type_check
+from typing import Annotated, Any, Union, Dict, List, Optional, no_type_check
 from jose import JWTError, jwt
 
 from app.core.config import SettingsDep
@@ -89,3 +89,9 @@ async def api_nei_auth(
             )
 
     return auth_data
+
+
+auth_responses: Dict[Union[int, str], Dict[str, Any]] = {
+    401: {"description": "Not authenticated"},
+    403: {"description": "Not enough permissions"},
+}

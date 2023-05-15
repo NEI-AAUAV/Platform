@@ -4,7 +4,7 @@ from loguru import logger
 from pydantic import BaseModel, Field
 from pymongo.errors import DuplicateKeyError, OperationFailure
 
-from app.api.auth import AuthData, api_nei_auth, ScopeEnum
+from app.api.auth import AuthData, api_nei_auth, ScopeEnum, auth_responses
 from app.core.db import DatabaseDep
 from app.core.db.counters import getNextVoteCategoryId
 from app.models.vote import VoteCategory
@@ -17,7 +17,15 @@ class VoteCategoryCreateForm(BaseModel):
     options: Annotated[List[str], Field(min_items=2)]
 
 
-@router.post("/new")
+@router.post(
+    "/new",
+    responses={
+        **auth_responses,
+        409: {
+            "description": "A vote category with the same (or similar) name already exists"
+        },
+    },
+)
 async def create_category(
     form_data: VoteCategoryCreateForm,
     *,

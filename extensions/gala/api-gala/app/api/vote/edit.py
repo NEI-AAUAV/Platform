@@ -3,7 +3,7 @@ from loguru import logger
 from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError, OperationFailure
 
-from app.api.auth import AuthData, api_nei_auth, ScopeEnum
+from app.api.auth import AuthData, api_nei_auth, ScopeEnum, auth_responses
 from app.core.db import DatabaseDep
 from app.models.vote import VoteCategory
 from app.utils import optional
@@ -18,7 +18,15 @@ class VoteCategoryEditForm(VoteCategoryCreateForm):
     pass
 
 
-@router.put("/{category_id}/edit")
+@router.put(
+    "/{category_id}/edit",
+    responses={
+        **auth_responses,
+        409: {
+            "description": "A vote category with the same (or similar) name already exists"
+        },
+    },
+)
 async def edit_category(
     category_id: int,
     form_data: VoteCategoryEditForm,

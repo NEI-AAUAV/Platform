@@ -464,6 +464,7 @@ async def test_cast_vote(settings: Settings, client: AsyncClient, db: DBType) ->
     db_category_res = VoteCategory(**db_res)
 
     mod_test_category = test_category.copy()
+    mod_test_category.votes = mod_test_category.votes.copy()
     mod_test_category.votes.append(Vote(uid=0, option=0))
 
     assert mod_test_category == db_category_res
@@ -480,6 +481,7 @@ async def test_cast_vote_already_voted(
 ) -> None:
     await create_test_user(id=0, db=db)
     test_category2 = test_category.copy()
+    test_category2.votes = test_category2.votes.copy()
     test_category2.votes.append(Vote(uid=0, option=0))
     await VoteCategory.get_collection(db).insert_one(test_category2.dict(by_alias=True))
 
