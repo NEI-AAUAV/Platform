@@ -1,4 +1,5 @@
 COMPOSE_FILE ?= compose.yml
+UFLAGS ?= --build --remove-orphans
 
 .PHONY: rally gala
 
@@ -11,10 +12,10 @@ rally gala:
 
 up:
 	@echo "Starting platform."
-	COMPOSE_FILE=$(COMPOSE_FILE) docker-compose up --build --remove-orphans
+	COMPOSE_FILE=$(COMPOSE_FILE) docker-compose up $(UFLAGS)
 
 down: 
-	COMPOSE_FILE=$(COMPOSE_FILE) docker-compose down
+	COMPOSE_FILE=$(COMPOSE_FILE) docker-compose down $(DFLAGS)
 
 down-volumes:
 	COMPOSE_FILE=$(COMPOSE_FILE) docker-compose down -v

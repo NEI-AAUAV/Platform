@@ -6,7 +6,7 @@ from email.mime.multipart import MIMEMultipart
 
 from app.core.logging import logger
 from app.core.config import settings
-import app.templates as template
+import app.templating as template
 
 if settings.EMAIL_ENABLED:
     logger.info("Email is enabled")
