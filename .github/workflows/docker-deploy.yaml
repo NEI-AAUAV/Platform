@@ -1,17 +1,24 @@
 name: Push and Deploy
 
 on:
-  push:
-    branches:
-      - deploy
-
   workflow_dispatch:
+    inputs:
+      profiles:
+        description: 'Framework version'
+        required: true
+        default: 'tacaua,family'
+      copy_docker_compose:
+        description: 'Publish artifacts'
+        required: true
+        default: 'true'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      COMPOSE_PROFILES: ${{ github.event.inputs.profiles }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Login to Docker Hub
       env:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -25,7 +32,7 @@ jobs:
         docker-compose -f docker-compose.prod.yaml push --ignore-push-failures
     - name: Push docker images with tag
       run: |
-        export TAG=${GITHUB_SHA:0:7}
+        export TAG=${GITHUB_SHA::7}
         docker-compose -f docker-compose.prod.yaml build
         docker-compose -f docker-compose.prod.yaml push --ignore-push-failures
   
@@ -34,6 +41,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 5
     env:
+      COMPOSE_PROFILES: ${{ github.event.inputs.profiles }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       EMAIL_SENDER_ADDRESS: ${{ secrets.EMAIL_SENDER_ADDRESS }}
       EMAIL_SMTP_HOST: ${{ secrets.EMAIL_SMTP_HOST }}
@@ -42,15 +50,17 @@ jobs:
       IDP_SECRET_KEY: ${{ secrets.IDP_SECRET_KEY }}
       RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Copy docker-compose file
+    - uses: actions/checkout@v3
+    - if: github.event.inputs.copy_docker_compose == 'true'
+      name: Copy docker-compose file
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
         source: "docker-compose.prod.yaml,docker-compose.prod.yaml"
-        target: "~/deploy-latest/,~/deploy-${GITHUB_SHA:0:7}/"
+        target: "~/deploy-latest/,~/deploy-${GITHUB_SHA::7}/"
+        overwrite: true
     - name: Deploy with docker-compose
       run: |
         docker stop $(docker ps -aq) || true

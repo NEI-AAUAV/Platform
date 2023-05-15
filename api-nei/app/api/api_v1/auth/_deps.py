@@ -35,6 +35,7 @@ oauth2_scheme = OAuth2PasswordBearer(
         ScopeEnum.MANAGER_FAMILY: "Edit faina family.",
         ScopeEnum.MANAGER_TACAUA: "Edit data related to tacaua.",
         ScopeEnum.MANAGER_NEI: "Edit data related to nei.",
+        ScopeEnum.MANAGER_JANTAR_GALA: "Edit data related to jantar de gala.",
     },
 )
 

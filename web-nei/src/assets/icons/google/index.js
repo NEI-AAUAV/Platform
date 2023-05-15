@@ -1,8 +1,8 @@
 export { ReactComponent as AddPhotoIcon } from "./add-photo.svg";
 export { ReactComponent as ArrowBackIcon } from "./arrow-back.svg";
 export { ReactComponent as ArrowForwardIcon } from "./arrow-forward.svg";
-export { ReactComponent as CalendarViewMonthIcon} from "./calendar-view-month.svg";
-export { ReactComponent as CalendarIcon} from "./calendar.svg";
+export { ReactComponent as CalendarViewMonthIcon } from "./calendar-view-month.svg";
+export { ReactComponent as CalendarIcon } from "./calendar.svg";
 export { ReactComponent as CloseIcon } from "./close.svg";
 export { ReactComponent as DarkModeIcon } from "./dark-mode.svg";
 export { ReactComponent as DownloadIcon } from "./download.svg";
@@ -38,3 +38,4 @@ export { ReactComponent as PersonIcon } from "./person.svg";
 export { ReactComponent as TuneIcon } from "./tune.svg";
 export { ReactComponent as ViewAgendaIcon } from "./view-agenda.svg";
 export { ReactComponent as ViewListIcon } from "./view-list.svg";
+export { ReactComponent as LockIcon } from "./lock.svg";
