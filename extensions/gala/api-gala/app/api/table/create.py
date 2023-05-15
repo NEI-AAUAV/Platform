@@ -2,7 +2,7 @@ from fastapi import APIRouter, Security
 from pydantic import BaseModel, PositiveInt
 
 from app.models.table import Table
-from app.api.auth import AuthData, api_nei_auth, ScopeEnum
+from app.api.auth import AuthData, api_nei_auth, ScopeEnum, auth_responses
 from app.core.db import DatabaseDep
 from app.core.db.counters import getNextTableId
 
@@ -13,7 +13,12 @@ class TableCreateForm(BaseModel):
     seats: PositiveInt
 
 
-@router.post("/new")
+@router.post(
+    "/new",
+    responses={
+        **auth_responses,
+    },
+)
 async def create_table(
     form_data: TableCreateForm,
     *,

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Security
 from typing import List, Any
 
 from app.models.table import Table
-from app.api.auth import AuthData, api_nei_auth
+from app.api.auth import AuthData, api_nei_auth, auth_responses
 from app.core.db import DatabaseDep
 
 from ._utils import sanitize_table, fetch_table
@@ -10,7 +10,12 @@ from ._utils import sanitize_table, fetch_table
 router = APIRouter()
 
 
-@router.get("/list")
+@router.get(
+    "/list",
+    responses={
+        **auth_responses,
+    },
+)
 async def list_tables(
     *,
     db: DatabaseDep,
@@ -26,7 +31,13 @@ async def list_tables(
     return list(map(mapper, res))
 
 
-@router.get("/{table_id}")
+@router.get(
+    "/{table_id}",
+    responses={
+        **auth_responses,
+        404: {"description": "Table not found"},
+    },
+)
 async def get_table(
     table_id: int,
     *,

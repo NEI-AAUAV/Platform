@@ -6,7 +6,7 @@ from typing import List
 from app.core.db.types import DBType
 
 from app.models.table import Companion, Table, TablePerson, DishType
-from app.api.auth import AuthData, api_nei_auth
+from app.api.auth import AuthData, api_nei_auth, auth_responses
 from app.core.db import DatabaseDep
 from app.core.logging import logger
 from app.models.user import User
@@ -32,6 +32,8 @@ class TableReservationForm(BaseModel):
 @router.post(
     "/{table_id}/reserve",
     responses={
+        **auth_responses,
+        400: {"description": "There aren't enough seats for the companions"},
         404: {"description": "Table not found"},
         409: {"description": "Table already full or person already belongs to a table"},
     },

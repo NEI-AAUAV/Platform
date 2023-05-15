@@ -6,7 +6,7 @@ from pymongo.errors import OperationFailure
 from typing import Annotated
 
 from app.models.table import Table
-from app.api.auth import AuthData, api_nei_auth
+from app.api.auth import AuthData, api_nei_auth, auth_responses
 from app.core.db import DatabaseDep
 from app.core.logging import logger
 from app.utils import NotFoundReCheck
@@ -28,7 +28,7 @@ class TableEditForm(BaseModel):
 @router.put(
     "/{table_id}/edit",
     responses={
-        403: {"description": "The user doesn't have enough permissions"},
+        **auth_responses,
         404: {"description": "Table not found"},
     },
 )

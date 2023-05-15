@@ -4,7 +4,7 @@ from pymongo import ReturnDocument
 from pymongo.errors import OperationFailure
 
 from app.models.table import Table
-from app.api.auth import AuthData, api_nei_auth
+from app.api.auth import AuthData, api_nei_auth, auth_responses
 from app.core.db import DatabaseDep
 from app.core.logging import logger
 from app.utils import NotFoundReCheck
@@ -26,9 +26,10 @@ class TableTransferForm(BaseModel):
 @router.patch(
     "/{table_id}/transfer",
     responses={
+        **auth_responses,
         400: {"description": "The person doesn't belong to the table"},
-        403: {"description": "The user doesn't have enough permissions"},
         404: {"description": "Table not found"},
+        409: {"description": "Table is full"},
     },
 )
 async def person_transfer_table(
