@@ -44,6 +44,7 @@ export default function Navbar() {
         </motion.div>
       </header>
       <div
+        aria-hidden="true"
         className={classNames("modal z-30 bg-opacity-70", {
           "modal-open": isOpen,
         })}
