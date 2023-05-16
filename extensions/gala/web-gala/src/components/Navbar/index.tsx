@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
@@ -8,6 +8,22 @@ import Navigation from "./Navigation";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const background = "bg-white rounded-b-xl";
+
+  useEffect(() => {
+    function handleResize() {
+      const sm = 640;
+      if (window.innerWidth > sm) {
+        setIsOpen(false);
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <header
