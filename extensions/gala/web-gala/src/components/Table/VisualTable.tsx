@@ -1,12 +1,15 @@
 type VisualTableProps = {
+  seats: number;
   occupiedSeats: number;
 };
 
-export default function VisualTable({ occupiedSeats }: VisualTableProps) {
-  const maxSeats = 8;
+export default function VisualTable({
+  seats,
+  occupiedSeats,
+}: VisualTableProps) {
   return (
     <h1 className="bold">
-      Hi this is the visual table representation with {occupiedSeats} seats
+      Seats: {seats} with {occupiedSeats} seats occupied
     </h1>
   );
 }

@@ -1,30 +1,59 @@
 import VisualTable from "./VisualTable";
 
+type Person = {
+  id: number;
+  allergies: string;
+  dish: string;
+  confirmed: boolean;
+  companions: {
+    dish: string;
+    allergies: string;
+  }[];
+};
+
 type TableProps = {
-  tableName?: string;
-  ownerName?: string;
-  occupiedSeats?: number;
+  table: {
+    _id: number;
+    name: string;
+    head: string;
+    seats: number;
+    persons: {
+      id: number;
+      allergies: string;
+      dish: string;
+      confirmed: boolean;
+      companions: {
+        dish: string;
+        allergies: string;
+      }[];
+    }[];
+  };
   className?: string;
 };
 
-export default function Table({
-  tableName,
-  ownerName,
-  occupiedSeats,
-  className,
-}: TableProps) {
+function calculateOccupiedSeats(persons: Person[]) {
+  let occupiedSeats = 0;
+  persons.forEach((person) => {
+    occupiedSeats += 1;
+    if (person.companions.length > 0) {
+      occupiedSeats += person.companions.length;
+    }
+  });
+  return occupiedSeats;
+}
+
+export default function Table({ table, className }: TableProps) {
+  const { name, head, seats, persons } = table;
+  const occupiedSeats = calculateOccupiedSeats(persons);
   return (
     <div className={`flex flex-col items-center ${className}`}>
-      <h4>{tableName}</h4>
-      <h6>{ownerName}</h6>
-      <VisualTable occupiedSeats={occupiedSeats ?? 0} />
+      <h4>{name}</h4>
+      <h6>{head}</h6>
+      <VisualTable seats={seats} occupiedSeats={occupiedSeats} />
     </div>
   );
 }
 
 Table.defaultProps = {
-  tableName: "Mesa sem nome",
-  ownerName: "SEM DONO",
-  occupiedSeats: 0,
   className: "",
 };

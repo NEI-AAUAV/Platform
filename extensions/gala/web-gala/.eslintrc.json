@@ -22,6 +22,7 @@
     "react/jsx-props-no-spreading": ["warn"],
     "react/jsx-uses-react": ["off"],
     "no-shadow": "off",
-    "import/extensions": ["off", "never", { "ignorePackages": true }]
+    "import/extensions": ["off", "never", { "ignorePackages": true }],
+    "no-underscore-dangle": "off"
   }
 }
