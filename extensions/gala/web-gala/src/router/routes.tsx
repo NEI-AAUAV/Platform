@@ -1,10 +1,8 @@
 import { Navigate } from "react-router-dom";
+
 //* Pages
 import Layout from "@/pages/Layout";
 import ErrorBoundary from "@/pages/ErrorBoundary";
-import Home from "@/pages/Home";
-import Reserve from "@/pages/Reserve";
-import Vote from "@/pages/Vote";
 
 const routes = [
   {
@@ -14,15 +12,24 @@ const routes = [
     children: [
       {
         path: "/",
-        element: <Home />,
+        async lazy() {
+          const { default: Home } = await import("@/pages/Home");
+          return { Component: Home };
+        },
       },
       {
         path: "/tables",
-        element: <Reserve />,
+        async lazy() {
+          const { default: Tables } = await import("@/pages/Tables");
+          return { Component: Tables };
+        },
       },
       {
         path: "/vote",
-        element: <Vote />,
+        async lazy() {
+          const { default: Vote } = await import("@/pages/Vote");
+          return { Component: Vote };
+        },
       },
       {
         path: "*",
