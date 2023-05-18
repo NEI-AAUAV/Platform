@@ -28,6 +28,42 @@ const testingTables = [
       },
     ],
   },
+  {
+    _id: 0,
+    name: "mesa2",
+    head: "John Doe",
+    seats: 10,
+    persons: [
+      {
+        id: 0,
+        allergies: "",
+        dish: "Meat",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+      {
+        id: 1,
+        allergies: "",
+        dish: "NOR",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export default function Tables() {

@@ -23,6 +23,7 @@
     "react/jsx-uses-react": ["off"],
     "no-shadow": "off",
     "import/extensions": ["off", "never", { "ignorePackages": true }],
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "no-plusplus": "off"
   }
 }

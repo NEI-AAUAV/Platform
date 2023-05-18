@@ -47,8 +47,8 @@ export default function Table({ table, className }: TableProps) {
   const occupiedSeats = calculateOccupiedSeats(persons);
   return (
     <div className={`flex flex-col items-center ${className}`}>
-      <h4>{name}</h4>
-      <h6>{head}</h6>
+      <h4 className="font-semibold text-xl">{name}</h4>
+      <h6 className="font-light text-sm uppercase">{head}</h6>
       <VisualTable seats={seats} occupiedSeats={occupiedSeats} />
     </div>
   );

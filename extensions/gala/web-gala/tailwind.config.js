@@ -5,7 +5,12 @@ export default {
   mode: "jit",
   content: ["./src/**/*.{html,js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "light-gold": "#EBD5B5",
+        "dark-gold": "#B6A080",
+      },
+    },
   },
   plugins: [daisyui],
   daisyui: {
