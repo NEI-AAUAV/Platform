@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List, Optional
+import zipfile
 
 from app import crud
 from app.api import deps
@@ -137,6 +138,15 @@ def get_notes(
     return Page.create(total, items, page_params)
 
 
+def list_zip_contents(zip_file, path=''):
+        with zipfile.ZipFile(zip_file, 'r') as zip_obj:
+            for file in zip_obj.namelist():
+                if file.startswith(path) and file != path:
+                    print(file)
+                    if file.endswith('/'):
+                        list_zip_contents(zip_file, file)
+
+
 @router.get("/{id}", status_code=200, response_model=NoteInDB)
 def get_note_by_id(
     *, id: int, db: Session = Depends(deps.get_db),
@@ -144,5 +154,9 @@ def get_note_by_id(
 ) -> Any:
     if not db.get(Note, id):
         raise HTTPException(status_code=404, detail="Invalid Note id")
+    
+    zip_file = crud.note.get(db=db, id=id).location
+    print(zip_file)
+    list_zip_contents(zip_file)
 
     return crud.note.get(db=db, id=id)
