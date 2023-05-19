@@ -20,6 +20,7 @@ class ScopeEnum(str, Enum):
     MANAGER_NEI = 'manager-nei'
     MANAGER_TACAUA = 'manager-tacaua'
     MANAGER_FAMILY = 'manager-family'
+    MANAGER_JANTAR_GALA = "manager-jantar-gala"
     DEFAULT = 'default'
 
 

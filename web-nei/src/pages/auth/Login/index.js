@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "assets/icons/ua_logo.svg";
 import { useCallback, useEffect, useRef } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUserStore } from "stores/useUserStore";
 
 import classNames from "classnames";

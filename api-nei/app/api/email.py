@@ -6,7 +6,7 @@ from email.mime.multipart import MIMEMultipart
 
 from app.core.logging import logger
 from app.core.config import settings
-import app.templating as templating
+import app.templating as template
 
 if settings.EMAIL_ENABLED:
     logger.info("Email is enabled")
@@ -50,7 +50,7 @@ async def send_email_confirmation(email: str, name: str, token: str):
     * `name`: The name of the user
     * `token`: The confirmation token
     """
-    bodies = templating.render_email_registration_templates(email, name, token)
+    bodies = template.render_email_registration_templates(email, name, token)
     message = _generate_email_message(
         email, "Confirma a tua conta no site do NEI", bodies
     )
@@ -72,7 +72,7 @@ async def send_password_reset(email: str, name: str, token: str):
     * `name`: The name of the user
     * `token`: The confirmation token
     """
-    bodies = templating.render_password_reset_templates(email, name, token)
+    bodies = template.render_password_reset_templates(email, name, token)
     message = _generate_email_message(
         email, "Recupera a tua password no site do NEI", bodies
     )
@@ -93,7 +93,7 @@ async def send_password_changed(email: str, name: str):
     * `email`: The email of the recipient
     * `name`: The name of the user
     """
-    bodies = templating.render_password_changed_templates(email, name)
+    bodies = template.render_password_changed_templates(email, name)
     message = _generate_email_message(
         email, "A tua password no site do NEI foi alterada", bodies
     )

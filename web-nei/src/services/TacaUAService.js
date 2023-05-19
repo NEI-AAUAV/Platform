@@ -3,7 +3,7 @@ import config from "config";
 
 
 const client = axios.create({
-    baseURL: config.TACAUA_URL,
+    baseURL: config.API_TACAUA_URL,
     timeout: 5000,
 });
 
