@@ -5,12 +5,12 @@ from typing import Any
 from app.core.db.types import DBType
 
 from app.models.table import Table
-from app.api.auth import api_nei_auth, AuthData
+from app.api.auth import api_nei_auth, AuthData, auth_responses
 from app.core.db import DatabaseDep
 from app.core.logging import logger
+from app.utils import NotFoundReCheck
 
 from ._utils import (
-    NotFoundReCheck,
     sanitize_table,
     fetch_table,
     head_permission_check,
@@ -77,6 +77,7 @@ async def common(
 @router.delete(
     "/{table_id}/leave",
     responses={
+        **auth_responses,
         400: {
             "description": "The table head cannot leave a non-empty table or the person doesn't belong to the table"
         },
@@ -98,6 +99,7 @@ async def person_leave_table(
 @router.delete(
     "/{table_id}/remove/{uid}",
     responses={
+        **auth_responses,
         400: {
             "description": "The table head cannot leave a non-empty table or the person doesn't belong to the table"
         },

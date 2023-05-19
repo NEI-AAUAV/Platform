@@ -4,17 +4,17 @@ from pymongo import ReturnDocument
 from pymongo.errors import OperationFailure
 
 from app.models.table import Table
-from app.api.auth import AuthData, api_nei_auth
+from app.api.auth import AuthData, api_nei_auth, auth_responses
 from app.core.db import DatabaseDep
 from app.core.logging import logger
 import app.queries.table as table_queries
+from app.utils import NotFoundReCheck
 
 from ._utils import (
     sanitize_table,
     fetch_table,
     query_check_table_head_permissions,
     head_permission_check,
-    NotFoundReCheck,
 )
 
 router = APIRouter()
@@ -28,10 +28,10 @@ class TableApprovalForm(BaseModel):
 @router.patch(
     "/{table_id}/confirm",
     responses={
+        **auth_responses,
         400: {
             "description": "The status of the table head cannot be changed or the person doesn't belong to the table"
         },
-        403: {"description": "The user doesn't have enough permissions"},
         404: {"description": "Table not found"},
     },
 )

@@ -63,7 +63,7 @@ async def clean_db(
     await db_client.client().drop_database(settings.MONGO_DB)
     yield
     report = request.node.stash[phase_report_key]
-    if not report["setup"].failed:
+    if report["call"].outcome != "failed":
         await db_client.client().drop_database(settings.MONGO_DB)
 
 

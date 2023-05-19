@@ -45,10 +45,6 @@ def sanitize_table(auth: AuthData, table: Table) -> Table:
     return table
 
 
-class NotFoundReCheck(Exception):
-    pass
-
-
 async def fetch_table(table_id: int, db: DBType) -> Table:
     res = await Table.get_collection(db).find_one({"_id": table_id})
 
