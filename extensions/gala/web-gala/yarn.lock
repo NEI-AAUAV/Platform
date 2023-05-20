@@ -990,7 +990,7 @@ chokidar@^3.5.3:
   optionalDependencies:
     fsevents "~2.3.2"
 
-classnames@^2.3.2:
+classnames@^2.2.5, classnames@^2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
   integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
@@ -2515,7 +2515,7 @@ prettier@^2.8.8:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.8.tgz#e8c5d7e98a4305ffe3de2e1fc4aca1a71c28b1da"
   integrity sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==
 
-prop-types@^15.8.1:
+prop-types@^15.6.0, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -2547,6 +2547,14 @@ react-is@^16.13.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-on-visible@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/react-on-visible/-/react-on-visible-1.6.0.tgz#d9ceed7ffba69e4b1486c9709555e5817316f9c7"
+  integrity sha512-y1EhWlIre3xE6uFDlmoSyRkp6lkckWkCJla50GvYKMxrr0HQgItbfRdk3XYnVkobmpf1B4rHPe0Nj1iigYcpqQ==
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
+
 react-refresh@^0.14.0:
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.14.0.tgz#4e02825378a5f227079554d4284889354e5f553e"
@@ -2566,6 +2574,13 @@ react-router@6.11.1:
   integrity sha512-OZINSdjJ2WgvAi7hgNLazrEV8SGn6xrKA+MkJe9wVDMZ3zQ6fdJocUjpCUCI0cNrelWjcvon0S/QK/j0NzL3KA==
   dependencies:
     "@remix-run/router" "1.6.1"
+
+react-wavify@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/react-wavify/-/react-wavify-1.8.0.tgz#922ed05136490d093098f70ec4922b3f44386a87"
+  integrity sha512-8Pxd1vLuC5VBUxvWa2EFYsQLZIjY68KxzM4ztw2ZG6PCAnu/d0lQDCIW+mathr/PH2AAt4A2MJHVPuWs/BLP2w==
+  dependencies:
+    prop-types "^15.8.1"
 
 react@^18.2.0:
   version "18.2.0"
