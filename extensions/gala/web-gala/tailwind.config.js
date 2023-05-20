@@ -10,6 +10,10 @@ export default {
         "light-gold": "#EBD5B5",
         "dark-gold": "#B6A080",
       },
+      backgroundImage: () => ({
+        "gradient-radial":
+          "radial-gradient(50% 50% at 50% 50%, var(--tw-gradient-stops))",
+      }),
     },
   },
   plugins: [daisyui],

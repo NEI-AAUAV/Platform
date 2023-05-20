@@ -3,32 +3,43 @@ import classNames from "classnames";
 type SeatProps = {
   angle: number;
   isTaken: boolean;
+  isVisible: boolean;
+  delay: number;
 };
 
 function cssCalcCoords(axis: number, gap: string) {
-  const minRadius = "(1.25rem + 50%)";
+  const minRadius = "50% + 1.25rem";
   return `calc(${axis} * (${minRadius} + ${gap}))`;
 }
 
-export default function Seat({ angle, isTaken }: SeatProps) {
+export default function Seat({ angle, isTaken, isVisible, delay }: SeatProps) {
   const x = Math.cos(angle);
   const y = Math.sin(angle);
   const gap = "1rem";
 
-  const style = {
-    left: cssCalcCoords(x, gap),
-    bottom: cssCalcCoords(y, gap),
-  };
+  const style = isVisible
+    ? {
+        transform: `translate(${cssCalcCoords(x, gap)}, ${cssCalcCoords(
+          -y,
+          gap,
+        )})`,
+        opacity: 1,
+        "transition-property": "transform, opacity",
+        transition: `0.5s ease-in-out ${delay}ms`,
+      }
+    : { opacity: 0 };
 
   return (
     <div
-      className={classNames(
-        "absolute -translate-x-1/2 translate-y-1/2 aspect-square w-10 rounded-full border-2 border-light-gold",
-        {
-          "bg-dark-gold border-dark-gold": isTaken,
-        },
-      )}
+      className="absolute inset-0 flex justify-center items-center"
       style={style}
-    />
+    >
+      <div
+        className={classNames("aspect-square w-10 rounded-full border-2", {
+          "border-light-gold": !isTaken,
+          "bg-dark-gold border-dark-gold": isTaken,
+        })}
+      />
+    </div>
   );
 }

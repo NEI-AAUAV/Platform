@@ -64,6 +64,224 @@ const testingTables = [
       },
     ],
   },
+  {
+    _id: 0,
+    name: "mesa2",
+    head: "John Doe",
+    seats: 10,
+    persons: [
+      {
+        id: 0,
+        allergies: "",
+        dish: "Meat",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+      {
+        id: 1,
+        allergies: "",
+        dish: "NOR",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    _id: 0,
+    name: "mesa2",
+    head: "John Doe",
+    seats: 5,
+    persons: [
+      {
+        id: 0,
+        allergies: "",
+        dish: "Meat",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+      {
+        id: 1,
+        allergies: "",
+        dish: "NOR",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    _id: 0,
+    name: "mesa2",
+    head: "John Doe",
+    seats: 10,
+    persons: [],
+  },
+  {
+    _id: 0,
+    name: "mesa2",
+    head: "John Doe",
+    seats: 10,
+    persons: [
+      {
+        id: 0,
+        allergies: "",
+        dish: "Meat",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+      {
+        id: 1,
+        allergies: "",
+        dish: "NOR",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    _id: 0,
+    name: "mesa2",
+    head: "John Doe",
+    seats: 10,
+    persons: [
+      {
+        id: 0,
+        allergies: "",
+        dish: "Meat",
+        confirmed: true,
+        companions: [],
+      },
+    ],
+  },
+  {
+    _id: 0,
+    name: "mesa2",
+    head: "John Doe",
+    seats: 10,
+    persons: [
+      {
+        id: 0,
+        allergies: "",
+        dish: "Meat",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+      {
+        id: 1,
+        allergies: "",
+        dish: "NOR",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    _id: 0,
+    name: "mesa2",
+    head: "John Doe",
+    seats: 10,
+    persons: [
+      {
+        id: 0,
+        allergies: "",
+        dish: "Meat",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+      {
+        id: 1,
+        allergies: "",
+        dish: "NOR",
+        confirmed: true,
+        companions: [
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+          {
+            dish: "NOR",
+            allergies: "",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export default function Tables() {
@@ -72,9 +290,9 @@ export default function Tables() {
       <h2 className="text-2xl font-bold text-center m-20">
         Escolhe a tua mesa.
       </h2>
-      <div className="">
+      <div className="grid grid-cols-[repeat(auto-fit,_minmax(13.25rem,_1fr))] gap-10 mx-10">
         {testingTables.map((table) => (
-          <Table key={table._id} table={table} className="m-4" />
+          <Table key={table._id} table={table} />
         ))}
       </div>
     </>

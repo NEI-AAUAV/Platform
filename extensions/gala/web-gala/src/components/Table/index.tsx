@@ -17,29 +17,13 @@ type TableProps = {
     name: string;
     head: string;
     seats: number;
-    persons: {
-      id: number;
-      allergies: string;
-      dish: string;
-      confirmed: boolean;
-      companions: {
-        dish: string;
-        allergies: string;
-      }[];
-    }[];
+    persons: Person[];
   };
   className?: string;
 };
 
 function calculateOccupiedSeats(persons: Person[]) {
-  let occupiedSeats = 0;
-  persons.forEach((person) => {
-    occupiedSeats += 1;
-    if (person.companions.length > 0) {
-      occupiedSeats += person.companions.length;
-    }
-  });
-  return occupiedSeats;
+  return persons.reduce((acc, person) => acc + 1 + person.companions.length, 0);
 }
 
 export default function Table({ table, className }: TableProps) {
@@ -47,8 +31,8 @@ export default function Table({ table, className }: TableProps) {
   const occupiedSeats = calculateOccupiedSeats(persons);
   return (
     <div className={`flex flex-col items-center ${className}`}>
-      <h4 className="font-semibold text-xl">{name}</h4>
-      <h6 className="font-light text-sm uppercase">{head}</h6>
+      <h4 className="font-semibold text-xl z-10">{name}</h4>
+      <h6 className="font-light text-sm uppercase z-10">{head}</h6>
       <VisualTable seats={seats} occupiedSeats={occupiedSeats} />
     </div>
   );
