@@ -155,7 +155,8 @@ def get_note_by_id(
     if not db.get(Note, id):
         raise HTTPException(status_code=404, detail="Invalid Note id")
     
-    zip_file = crud.note.get(db=db, id=id).location
+    file_location = crud.note.get(db=db, id=id).location.split("static")[1]
+    zip_file = "static" + str(file_location)
     print(zip_file)
     list_zip_contents(zip_file)
 
