@@ -12,7 +12,12 @@ from app.core.config import Settings
 from app.core.db.types import DBType
 from app.models.table import Companion, DishType, Table, TablePerson
 
-from ._utils import auth_data, create_test_user, mark_open_timeslot
+from ._utils import (
+    auth_data,
+    create_test_user,
+    mark_open_timeslot,
+    mark_closed_timeslot,
+)
 
 test_table = Table(_id=1, name=None, head=None, seats=3, persons=[])
 
@@ -480,6 +485,35 @@ async def test_edit_table_manager(
     assert mod_test_table2 == db_table_res
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_edit_table_time_slot_closed(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_closed_timeslot(db=db)
+    test_table2 = test_table.copy()
+    test_table2.head = 0
+    test_table2.persons = [
+        dummy_person(id=0, confirmed=True),
+    ]
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    form = TableEditForm(name="GOOD")
+    response = await client.put(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/edit", json=form.dict()
+    )
+    assert response.status_code == 409
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table2 == db_table_res
+
+
 # ===================
 # == RESERVE TABLE ==
 # ===================
@@ -710,6 +744,31 @@ async def test_reserve_table_no_user(
         f"{settings.API_V1_STR}/table/{test_table.id}/reserve", json=form.dict()
     )
     assert response.status_code == 400
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table == db_table_res
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_reserve_table_time_slot_closed(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_closed_timeslot(db=db)
+    await create_test_user(id=0, db=db)
+    await Table.get_collection(db).insert_one(test_table.dict(by_alias=True))
+
+    form = TableReservationForm(dish=DishType.NORMAL, companions=[])
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/{test_table.id}/reserve", json=form.dict()
+    )
+    assert response.status_code == 409
 
     db_res = await Table.get_collection(db).find_one({"_id": test_table.id})
     assert db_res is not None
@@ -1006,6 +1065,36 @@ async def test_confirm_table_full_companions(
     assert test_table2 == db_table_res
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_confirm_table_time_slot_closed(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_closed_timeslot(db=db)
+    test_table2 = test_table.copy()
+    test_table2.head = 0
+    test_table2.persons = [
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=False),
+    ]
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    form = TableApprovalForm(uid=1, confirm=True)
+    response = await client.patch(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/confirm", json=form.dict()
+    )
+    assert response.status_code == 409
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table2 == db_table_res
+
+
 # ====================
 # == TRANSFER TABLE ==
 # ====================
@@ -1173,6 +1262,36 @@ async def test_transfer_table_full_companions(
     assert test_table2 == db_table_res
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_transfer_table_time_slot_closed(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_closed_timeslot(db=db)
+    test_table2 = test_table.copy()
+    test_table2.head = 0
+    test_table2.persons = [
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=False),
+    ]
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    form = TableTransferForm(uid=1)
+    response = await client.patch(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/transfer", json=form.dict()
+    )
+    assert response.status_code == 409
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table2 == db_table_res
+
+
 # =================
 # == LEAVE TABLE ==
 # =================
@@ -1320,6 +1439,35 @@ async def test_leave_table_not_in_table(
     assert db_res is not None
     db_table_res = Table(**db_res)
     assert test_table == db_table_res
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_leave_table_time_slot_closed(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_closed_timeslot(db=db)
+    test_table2 = test_table.copy()
+    test_table2.head = 1
+    test_table2.persons = [
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=True),
+    ]
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    response = await client.delete(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/leave"
+    )
+    assert response.status_code == 409
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table2 == db_table_res
 
 
 # ==================
@@ -1534,6 +1682,35 @@ async def test_remove_table_target_not_in_table(
         f"{settings.API_V1_STR}/table/{test_table2.id}/remove/1"
     )
     assert response.status_code == 400
+
+    db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
+    assert db_res is not None
+    db_table_res = Table(**db_res)
+    assert test_table2 == db_table_res
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_remove_table_time_slots_closed(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_closed_timeslot(db=db)
+    test_table2 = test_table.copy()
+    test_table2.head = 0
+    test_table2.persons = [
+        dummy_person(id=0, confirmed=True),
+        dummy_person(id=1, confirmed=True),
+    ]
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    response = await client.delete(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/remove/1"
+    )
+    assert response.status_code == 409
 
     db_res = await Table.get_collection(db).find_one({"_id": test_table2.id})
     assert db_res is not None

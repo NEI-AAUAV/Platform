@@ -9,7 +9,12 @@ from app.core.config import Settings
 from app.core.db.types import DBType
 from app.models.vote import Vote, VoteCategory, VoteListing
 
-from ._utils import auth_data, create_test_user, mark_open_timeslot
+from ._utils import (
+    auth_data,
+    create_test_user,
+    mark_open_timeslot,
+    mark_closed_timeslot,
+)
 
 test_category = VoteCategory(
     _id=0, category="GOOD", options=["Option 1", "Option 2"], votes=[]
@@ -523,6 +528,32 @@ async def test_cast_vote_bad_option(
         json=form.dict(),
     )
     assert response.status_code == 400
+
+    db_res = await VoteCategory.get_collection(db).find_one({"_id": test_category.id})
+    assert db_res is not None
+    db_category_res = VoteCategory(**db_res)
+    assert test_category == db_category_res
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_cast_vote_time_slot_closed(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_closed_timeslot(db=db)
+    await create_test_user(id=0, db=db)
+    await VoteCategory.get_collection(db).insert_one(test_category.dict(by_alias=True))
+
+    form = VoteForm(option=0)
+    response = await client.put(
+        f"{settings.API_V1_STR}/votes/{test_category.id}/cast",
+        json=form.dict(),
+    )
+    assert response.status_code == 409
 
     db_res = await VoteCategory.get_collection(db).find_one({"_id": test_category.id})
     assert db_res is not None

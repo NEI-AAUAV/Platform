@@ -26,3 +26,15 @@ async def mark_open_timeslot(*, db: DBType) -> None:
     await TimeSlots.get_collection(db).update_one(
         {"_id": TIME_SLOTS_ID}, {"$set": time_slot.dict()}, upsert=True
     )
+
+
+async def mark_closed_timeslot(*, db: DBType) -> None:
+    time_slot = TimeSlots(
+        votesStart=datetime(MINYEAR, 1, 1),
+        votesEnd=datetime(MINYEAR, 1, 1),
+        tablesStart=datetime(MINYEAR, 1, 1),
+        tablesEnd=datetime(MINYEAR, 1, 1),
+    )
+    await TimeSlots.get_collection(db).update_one(
+        {"_id": TIME_SLOTS_ID}, {"$set": time_slot.dict()}, upsert=True
+    )
