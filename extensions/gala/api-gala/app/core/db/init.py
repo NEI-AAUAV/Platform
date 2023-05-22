@@ -1,8 +1,10 @@
+from datetime import datetime
 from pymongo import collation
 from pymongo.errors import CollectionInvalid
 
 from app.models.user import User
 from app.models.table import Table
+from app.models.time_slots import TimeSlots, TIME_SLOTS_ID
 from app.core.logging import logger
 from app.models.vote import VoteCategory
 
@@ -29,6 +31,11 @@ async def init_db(db: DBType) -> None:
         await db.create_collection(VoteCategory.collection(), check_exists=True)
     except CollectionInvalid:
         logger.debug("Vote category collection already exist")
+
+    try:
+        await db.create_collection(TimeSlots.collection(), check_exists=True)
+    except CollectionInvalid:
+        logger.debug("Time slots category collection already exist")
 
     # Create an index over the `id` of the persons documents stored in a table.
     #
@@ -65,4 +72,14 @@ async def init_db(db: DBType) -> None:
             "collMod": VoteCategory.collection(),
             "validator": vote_validator,
         },
+    )
+
+    time_slot = TimeSlots(
+        votesStart=datetime(1970, 1, 1),
+        votesEnd=datetime(1970, 1, 1),
+        tablesStart=datetime(1970, 1, 1),
+        tablesEnd=datetime(1970, 1, 1),
+    )
+    await TimeSlots.get_collection(db).update_one(
+        {"_id": TIME_SLOTS_ID}, {"$setOnInsert": time_slot.dict()}, upsert=True
     )
