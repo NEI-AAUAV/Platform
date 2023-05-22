@@ -9,7 +9,7 @@ from app.core.config import Settings
 from app.core.db.types import DBType
 from app.models.vote import Vote, VoteCategory, VoteListing
 
-from ._utils import auth_data, create_test_user
+from ._utils import auth_data, create_test_user, mark_open_timeslot
 
 test_category = VoteCategory(
     _id=0, category="GOOD", options=["Option 1", "Option 2"], votes=[]
@@ -415,7 +415,10 @@ async def test_edit_category_same_name(
 
 
 @pytest.mark.asyncio
-async def test_cast_vote_logged_out(settings: Settings, client: AsyncClient) -> None:
+async def test_cast_vote_logged_out(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_open_timeslot(db=db)
     response = await client.put(f"{settings.API_V1_STR}/votes/1/cast")
     assert response.status_code == 401
 
@@ -429,6 +432,7 @@ async def test_cast_vote_logged_out(settings: Settings, client: AsyncClient) -> 
 async def test_cast_vote_no_user(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await VoteCategory.get_collection(db).insert_one(test_category.dict(by_alias=True))
     form = VoteForm(option=0)
     response = await client.put(
@@ -445,6 +449,7 @@ async def test_cast_vote_no_user(
     indirect=["client"],
 )
 async def test_cast_vote(settings: Settings, client: AsyncClient, db: DBType) -> None:
+    await mark_open_timeslot(db=db)
     await create_test_user(id=0, db=db)
     await VoteCategory.get_collection(db).insert_one(test_category.dict(by_alias=True))
 
@@ -479,6 +484,7 @@ async def test_cast_vote(settings: Settings, client: AsyncClient, db: DBType) ->
 async def test_cast_vote_already_voted(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await create_test_user(id=0, db=db)
     test_category2 = test_category.copy()
     test_category2.votes = test_category2.votes.copy()
@@ -507,6 +513,7 @@ async def test_cast_vote_already_voted(
 async def test_cast_vote_bad_option(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await create_test_user(id=0, db=db)
     await VoteCategory.get_collection(db).insert_one(test_category.dict(by_alias=True))
 

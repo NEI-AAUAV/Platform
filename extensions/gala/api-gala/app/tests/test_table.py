@@ -12,7 +12,7 @@ from app.core.config import Settings
 from app.core.db.types import DBType
 from app.models.table import Companion, DishType, Table, TablePerson
 
-from ._utils import auth_data, create_test_user
+from ._utils import auth_data, create_test_user, mark_open_timeslot
 
 test_table = Table(_id=1, name=None, head=None, seats=3, persons=[])
 
@@ -359,7 +359,10 @@ async def test_new_table(settings: Settings, client: AsyncClient, db: DBType) ->
 
 
 @pytest.mark.asyncio
-async def test_edit_table_logged_out(settings: Settings, client: AsyncClient) -> None:
+async def test_edit_table_logged_out(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_open_timeslot(db=db)
     response = await client.put(f"{settings.API_V1_STR}/table/1/edit")
     assert response.status_code == 401
 
@@ -370,7 +373,10 @@ async def test_edit_table_logged_out(settings: Settings, client: AsyncClient) ->
     [auth_data(sub=0)],
     indirect=["client"],
 )
-async def test_edit_table_not_found(settings: Settings, client: AsyncClient) -> None:
+async def test_edit_table_not_found(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_open_timeslot(db=db)
     form = TableEditForm(name="BAD")
     response = await client.put(f"{settings.API_V1_STR}/table/1/edit", json=form.dict())
     assert response.status_code == 404
@@ -385,6 +391,7 @@ async def test_edit_table_not_found(settings: Settings, client: AsyncClient) -> 
 async def test_edit_table_unauthorized(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
@@ -413,6 +420,7 @@ async def test_edit_table_unauthorized(
 async def test_edit_table_head(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -446,6 +454,7 @@ async def test_edit_table_head(
 async def test_edit_table_manager(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
@@ -478,8 +487,9 @@ async def test_edit_table_manager(
 
 @pytest.mark.asyncio
 async def test_reserve_table_logged_out(
-    settings: Settings, client: AsyncClient
+    settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     response = await client.post(f"{settings.API_V1_STR}/table/1/reserve")
     assert response.status_code == 401
 
@@ -493,6 +503,7 @@ async def test_reserve_table_logged_out(
 async def test_reserve_table_not_found(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await create_test_user(id=0, db=db)
     form = TableReservationForm(dish=DishType.NORMAL, companions=[])
     response = await client.post(
@@ -510,6 +521,7 @@ async def test_reserve_table_not_found(
 async def test_reserve_table_empty(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await create_test_user(id=0, db=db)
     await Table.get_collection(db).insert_one(test_table.dict(by_alias=True))
 
@@ -543,6 +555,7 @@ async def test_reserve_table_empty(
 async def test_reserve_table_non_empty(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await create_test_user(id=0, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
@@ -580,6 +593,7 @@ async def test_reserve_table_non_empty(
 async def test_reserve_table_already_in_another_table(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await create_test_user(id=0, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
@@ -618,6 +632,7 @@ async def test_reserve_table_already_in_another_table(
 async def test_reserve_table_full_companions(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await create_test_user(id=0, db=db)
     test_table2 = test_table.copy()
     test_table2.seats = 2
@@ -656,6 +671,7 @@ async def test_reserve_table_full_companions(
 async def test_reserve_table_too_many_companions(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await create_test_user(id=0, db=db)
     test_table2 = test_table.copy()
     test_table2.seats = 2
@@ -686,6 +702,7 @@ async def test_reserve_table_too_many_companions(
 async def test_reserve_table_no_user(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await Table.get_collection(db).insert_one(test_table.dict(by_alias=True))
 
     form = TableReservationForm(dish=DishType.NORMAL, companions=[])
@@ -707,8 +724,9 @@ async def test_reserve_table_no_user(
 
 @pytest.mark.asyncio
 async def test_confirm_table_logged_out(
-    settings: Settings, client: AsyncClient
+    settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     response = await client.patch(f"{settings.API_V1_STR}/table/1/confirm")
     assert response.status_code == 401
 
@@ -719,7 +737,10 @@ async def test_confirm_table_logged_out(
     [auth_data()],
     indirect=["client"],
 )
-async def test_confirm_table_not_found(settings: Settings, client: AsyncClient) -> None:
+async def test_confirm_table_not_found(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_open_timeslot(db=db)
     form = TableApprovalForm(uid=0, confirm=True)
     response = await client.patch(
         f"{settings.API_V1_STR}/table/1/confirm", json=form.dict()
@@ -736,6 +757,7 @@ async def test_confirm_table_not_found(settings: Settings, client: AsyncClient) 
 async def test_confirm_table_unauthorized(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
@@ -760,6 +782,7 @@ async def test_confirm_table_unauthorized(
 async def test_confirm_table_head(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -795,6 +818,7 @@ async def test_confirm_table_head(
 async def test_confirm_table_manager(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
@@ -830,6 +854,7 @@ async def test_confirm_table_manager(
 async def test_confirm_table_change_head(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -859,6 +884,7 @@ async def test_confirm_table_change_head(
 async def test_confirm_table_not_in_table(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -888,6 +914,7 @@ async def test_confirm_table_not_in_table(
 async def test_confirm_table_confirm_false(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -923,6 +950,7 @@ async def test_confirm_table_confirm_false(
 async def test_confirm_table_full(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.seats = 2
@@ -954,6 +982,7 @@ async def test_confirm_table_full(
 async def test_confirm_table_full_companions(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.seats = 2
@@ -984,8 +1013,9 @@ async def test_confirm_table_full_companions(
 
 @pytest.mark.asyncio
 async def test_transfer_table_logged_out(
-    settings: Settings, client: AsyncClient
+    settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     response = await client.patch(f"{settings.API_V1_STR}/table/1/transfer")
     assert response.status_code == 401
 
@@ -997,8 +1027,9 @@ async def test_transfer_table_logged_out(
     indirect=["client"],
 )
 async def test_transfer_table_not_found(
-    settings: Settings, client: AsyncClient
+    settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     form = TableTransferForm(uid=0)
     response = await client.patch(
         f"{settings.API_V1_STR}/table/1/transfer", json=form.dict()
@@ -1015,6 +1046,7 @@ async def test_transfer_table_not_found(
 async def test_transfer_table_head(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -1051,6 +1083,7 @@ async def test_transfer_table_head(
 async def test_transfer_table_manager(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
@@ -1087,6 +1120,7 @@ async def test_transfer_table_manager(
 async def test_transfer_table_not_in_table(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -1115,6 +1149,7 @@ async def test_transfer_table_not_in_table(
 async def test_transfer_table_full_companions(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -1144,7 +1179,10 @@ async def test_transfer_table_full_companions(
 
 
 @pytest.mark.asyncio
-async def test_leave_table_logged_out(settings: Settings, client: AsyncClient) -> None:
+async def test_leave_table_logged_out(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_open_timeslot(db=db)
     response = await client.delete(f"{settings.API_V1_STR}/table/1/leave")
     assert response.status_code == 401
 
@@ -1155,7 +1193,10 @@ async def test_leave_table_logged_out(settings: Settings, client: AsyncClient) -
     [auth_data()],
     indirect=["client"],
 )
-async def test_leave_table_not_found(settings: Settings, client: AsyncClient) -> None:
+async def test_leave_table_not_found(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_open_timeslot(db=db)
     response = await client.delete(f"{settings.API_V1_STR}/table/1/leave")
     assert response.status_code == 404
 
@@ -1167,6 +1208,7 @@ async def test_leave_table_not_found(settings: Settings, client: AsyncClient) ->
     indirect=["client"],
 )
 async def test_leave_table(settings: Settings, client: AsyncClient, db: DBType) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
@@ -1201,6 +1243,7 @@ async def test_leave_table(settings: Settings, client: AsyncClient, db: DBType) 
 async def test_leave_table_head(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.name = "GOOD"
@@ -1237,6 +1280,7 @@ async def test_leave_table_head(
 async def test_leave_table_head_non_empty(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.name = "GOOD"
@@ -1266,6 +1310,7 @@ async def test_leave_table_head_non_empty(
 async def test_leave_table_not_in_table(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await Table.get_collection(db).insert_one(test_table.dict(by_alias=True))
 
     response = await client.delete(f"{settings.API_V1_STR}/table/{test_table.id}/leave")
@@ -1283,7 +1328,10 @@ async def test_leave_table_not_in_table(
 
 
 @pytest.mark.asyncio
-async def test_remove_table_logged_out(settings: Settings, client: AsyncClient) -> None:
+async def test_remove_table_logged_out(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_open_timeslot(db=db)
     response = await client.delete(f"{settings.API_V1_STR}/table/1/remove/0")
     assert response.status_code == 401
 
@@ -1294,7 +1342,10 @@ async def test_remove_table_logged_out(settings: Settings, client: AsyncClient) 
     [auth_data()],
     indirect=["client"],
 )
-async def test_remove_table_not_found(settings: Settings, client: AsyncClient) -> None:
+async def test_remove_table_not_found(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await mark_open_timeslot(db=db)
     response = await client.delete(f"{settings.API_V1_STR}/table/1/remove/0")
     assert response.status_code == 404
 
@@ -1308,6 +1359,7 @@ async def test_remove_table_not_found(settings: Settings, client: AsyncClient) -
 async def test_remove_table(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -1342,6 +1394,7 @@ async def test_remove_table(
 async def test_remove_table_head(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.name = "GOOD"
@@ -1378,6 +1431,7 @@ async def test_remove_table_head(
 async def test_remove_table_manager(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.name = "GOOD"
@@ -1414,6 +1468,7 @@ async def test_remove_table_manager(
 async def test_remove_table_head_non_empty(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.name = "GOOD"
@@ -1443,6 +1498,7 @@ async def test_remove_table_head_non_empty(
 async def test_remove_table_not_in_table(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     await Table.get_collection(db).insert_one(test_table.dict(by_alias=True))
 
     response = await client.delete(
@@ -1465,6 +1521,7 @@ async def test_remove_table_not_in_table(
 async def test_remove_table_target_not_in_table(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
+    await mark_open_timeslot(db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.name = "GOOD"
