@@ -4,7 +4,7 @@ from pymongo import ReturnDocument
 
 from app.utils import optional
 from app.core.db import DatabaseDep
-from app.api.auth import AuthData, api_nei_auth, ScopeEnum
+from app.api.auth import AuthData, api_nei_auth, ScopeEnum, auth_responses
 from app.models.time_slots import TimeSlots, TIME_SLOTS_ID
 
 from .util import fetch_time_slots
@@ -17,7 +17,13 @@ class TimeSlotsEditForm(TimeSlots):
     pass
 
 
-@router.put("/")
+@router.put(
+    "/",
+    responses={
+        **auth_responses,
+        400: {"description": "An end date appears before a start date"},
+    },
+)
 async def edit_time_slots(
     form_data: TimeSlotsEditForm,
     *,
