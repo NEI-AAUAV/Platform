@@ -46,9 +46,9 @@ export default function VisualTable({
         "bg-gradient-radial from-light-gold to-[rgba(235, 213, 181, 0)";
       vacancyState = (
         <div
-          className={`w-full h-full flex items-center justify-center overflow-hidden ${backgroundColor}`}
+          className={`flex h-full w-full items-center justify-center overflow-hidden ${backgroundColor}`}
         >
-          <span className="font-bold text-2xl">Livre</span>
+          <span className="text-2xl font-bold">Livre</span>
         </div>
       );
       break;
@@ -56,7 +56,7 @@ export default function VisualTable({
     case seats: {
       vacancyState = (
         <div
-          className={`rounded-full z-10 w-full h-full flex items-center justify-center overflow-hidden ${backgroundColor}`}
+          className={`z-10 flex h-full w-full items-center justify-center overflow-hidden rounded-full ${backgroundColor}`}
         >
           <span className="font-bold">Ocupada</span>
         </div>
@@ -69,7 +69,7 @@ export default function VisualTable({
 
       vacancyState = (
         <div
-          className="relative rounded-full border border-transparent aspect-square flex flex-col items-center justify-center overflow-hidden"
+          className="relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-full border border-transparent"
           style={{
             background:
               "linear-gradient(white, white) padding-box, linear-gradient(to right, #EBD5B5, #B6A080) border-box",
@@ -93,10 +93,10 @@ export default function VisualTable({
               </linearGradient>
             </defs>
           </Wave>
-          <h1 className="text-[2rem] font-bold leading-tight z-10">
+          <h1 className="z-10 text-[2rem] font-bold leading-tight">
             {freeSeats}
           </h1>
-          <h6 className="font-light text-xl leading-tight z-10">LIVRES</h6>
+          <h6 className="z-10 text-xl font-light leading-tight">LIVRES</h6>
         </div>
       );
       break;

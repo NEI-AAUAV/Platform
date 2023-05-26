@@ -28,7 +28,7 @@ export default function Navbar() {
     <>
       <header
         className={classNames(
-          "sm:bg-transparent sm:rounded-none sticky top-0 z-40 p-3 transition-[background-color] text-base-content text-opacity-70",
+          "sticky top-0 z-40 p-3 text-base-content text-opacity-70 transition-[background-color] sm:rounded-none sm:bg-transparent",
           {
             [background]: isOpen,
           },
@@ -39,7 +39,7 @@ export default function Navbar() {
             <LogoIcon className="" />
             <span className="text-xl font-bold">Jantar de Gala</span>
           </Link>
-          <div className="hidden sm:block ml-auto">
+          <div className="ml-auto hidden sm:block">
             <Navigation />
           </div>
           <button
@@ -53,10 +53,10 @@ export default function Navbar() {
         <motion.div
           animate={{ height: isOpen ? "auto" : 0 }}
           className={classNames(
-            " left-0 px-3 sm:hidden overflow-hidden w-full",
+            " left-0 w-full overflow-hidden px-3 sm:hidden",
           )}
         >
-          <Navigation className="pt-8 pb-3" />
+          <Navigation className="pb-3 pt-8" />
         </motion.div>
       </header>
       <div

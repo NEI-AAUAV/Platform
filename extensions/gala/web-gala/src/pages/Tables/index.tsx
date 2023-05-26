@@ -287,10 +287,10 @@ const testingTables = [
 export default function Tables() {
   return (
     <>
-      <h2 className="text-2xl font-bold text-center m-20">
+      <h2 className="m-20 text-center text-2xl font-bold">
         Escolhe a tua mesa.
       </h2>
-      <div className="grid grid-cols-[repeat(auto-fit,_minmax(13.25rem,_1fr))] gap-10 mx-10">
+      <div className="mx-10 grid grid-cols-[repeat(auto-fit,_minmax(13.25rem,_1fr))] gap-10">
         {testingTables.map((table) => (
           <Table key={table._id} table={table} />
         ))}

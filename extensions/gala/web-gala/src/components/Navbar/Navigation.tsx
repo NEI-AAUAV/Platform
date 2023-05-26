@@ -9,7 +9,7 @@ type NavigationProps = {
 export default function Navigation({ className }: NavigationProps) {
   return (
     <nav className={className}>
-      <ul className="flex flex-col gap-4 md:gap-8 sm:flex-row">
+      <ul className="flex flex-col gap-4 sm:flex-row md:gap-8">
         <li>
           <Link to="/tables">
             <FontAwesomeIcon icon={faChair} /> Reservar Lugar

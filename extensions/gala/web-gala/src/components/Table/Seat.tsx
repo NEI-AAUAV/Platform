@@ -31,13 +31,13 @@ export default function Seat({ angle, isTaken, isVisible, delay }: SeatProps) {
 
   return (
     <div
-      className="absolute inset-0 flex justify-center items-center"
+      className="absolute inset-0 flex items-center justify-center"
       style={style}
     >
       <div
         className={classNames("aspect-square w-10 rounded-full border-2", {
           "border-light-gold": !isTaken,
-          "bg-dark-gold border-dark-gold": isTaken,
+          "border-dark-gold bg-dark-gold": isTaken,
         })}
       />
     </div>
