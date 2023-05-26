@@ -4,10 +4,13 @@ import Wave from "react-wavify";
 import Seat from "./Seat";
 
 type VisualTableProps = {
-  seats: number;
-  occupiedSeats: number;
+  table: Table;
   className?: string;
 };
+
+function calculateOccupiedSeats(persons: Person[]) {
+  return persons.reduce((acc, person) => acc + 1 + person.companions.length, 0);
+}
 
 function generateSeats(
   seats: number,
@@ -26,17 +29,22 @@ function generateSeats(
     const delay = i * delayPerSeat;
 
     return (
-      <Seat isTaken={isTaken} angle={angle} isVisible={visible} delay={delay} />
+      <Seat
+        key={i}
+        isTaken={isTaken}
+        angle={angle}
+        isVisible={visible}
+        delay={delay}
+      />
     );
   });
 }
 
-export default function VisualTable({
-  seats,
-  occupiedSeats,
-  className,
-}: VisualTableProps) {
+export default function VisualTable({ table, className }: VisualTableProps) {
   const [visible, setVisible] = useState(false);
+
+  const { seats, persons } = table;
+  const occupiedSeats = calculateOccupiedSeats(persons);
 
   let vacancyState: JSX.Element;
   let backgroundColor = "bg-gradient-to-r from-light-gold to-dark-gold";

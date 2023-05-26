@@ -31,7 +31,7 @@ const table = {
 export default function ComponentsTesting() {
   return (
     <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
-      <TableModal table={table} />
+      <TableModal status="free" table={table} />
     </div>
   );
 }

@@ -24,7 +24,7 @@ export default function Seat({ angle, isTaken, isVisible, delay }: SeatProps) {
           gap,
         )})`,
         opacity: 1,
-        "transition-property": "transform, opacity",
+        transitionProperty: "transform, opacity",
         transition: `0.5s ease-in-out ${delay}ms`,
       }
     : { opacity: 0 };
