@@ -800,6 +800,7 @@ async def test_confirm_table_not_found(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await mark_open_timeslot(db=db)
+    await create_test_user(id=0, db=db)
     form = TableApprovalForm(uid=0, confirm=True)
     response = await client.patch(
         f"{settings.API_V1_STR}/table/1/confirm", json=form.dict()
@@ -817,6 +818,8 @@ async def test_confirm_table_unauthorized(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await mark_open_timeslot(db=db)
+    await create_test_user(id=1, db=db)
+    await create_test_user(id=2, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
@@ -842,6 +845,8 @@ async def test_confirm_table_head(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await mark_open_timeslot(db=db)
+    await create_test_user(id=0, db=db)
+    await create_test_user(id=1, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -878,6 +883,8 @@ async def test_confirm_table_manager(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await mark_open_timeslot(db=db)
+    await create_test_user(id=1, db=db)
+    await create_test_user(id=2, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 1
     test_table2.persons = [
@@ -914,6 +921,8 @@ async def test_confirm_table_change_head(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await mark_open_timeslot(db=db)
+    await create_test_user(id=0, db=db)
+    await create_test_user(id=1, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -944,6 +953,8 @@ async def test_confirm_table_not_in_table(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await mark_open_timeslot(db=db)
+    await create_test_user(id=0, db=db)
+    await create_test_user(id=1, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -974,6 +985,8 @@ async def test_confirm_table_confirm_false(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await mark_open_timeslot(db=db)
+    await create_test_user(id=0, db=db)
+    await create_test_user(id=1, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [
@@ -1010,6 +1023,9 @@ async def test_confirm_table_full(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await mark_open_timeslot(db=db)
+    await create_test_user(id=0, db=db)
+    await create_test_user(id=1, db=db)
+    await create_test_user(id=2, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.seats = 2
@@ -1042,6 +1058,8 @@ async def test_confirm_table_full_companions(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await mark_open_timeslot(db=db)
+    await create_test_user(id=0, db=db)
+    await create_test_user(id=2, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.seats = 2
@@ -1075,6 +1093,8 @@ async def test_confirm_table_time_slot_closed(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await mark_closed_timeslot(db=db)
+    await create_test_user(id=0, db=db)
+    await create_test_user(id=1, db=db)
     test_table2 = test_table.copy()
     test_table2.head = 0
     test_table2.persons = [

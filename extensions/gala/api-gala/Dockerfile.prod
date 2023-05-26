@@ -1,3 +1,15 @@
+FROM node:18 AS email-builder
+# Rebuild emails to make sure the latest templates are being used
+
+WORKDIR /tmp
+
+COPY ./emails-src ./
+
+RUN npm install -g pnpm@8
+RUN pnpm install --frozen-lockfile --prod
+RUN pnpm run export
+RUN pnpm run export --plainText
+
 FROM python:3.10-slim as requirements-stage
 
 WORKDIR /tmp
@@ -25,6 +37,8 @@ RUN pip install --upgrade pip \
     && pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY ./app ./app
+# Copy the email templates that were built
+COPY --from=email-builder /tmp/out ./templates
 
 RUN mkdir static
 RUN mkdir jwt-keys

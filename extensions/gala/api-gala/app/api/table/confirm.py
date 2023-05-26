@@ -1,13 +1,16 @@
-from fastapi import APIRouter, Security, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Security, HTTPException
 from pydantic import BaseModel
 from pymongo import ReturnDocument
 from pymongo.errors import OperationFailure
 
-from app.models.table import Table
-from app.api.auth import AuthData, api_nei_auth, auth_responses
+import app.queries.table as table_queries
 from app.core.db import DatabaseDep
 from app.core.logging import logger
-import app.queries.table as table_queries
+from app.core.email import send_email
+from app.core.config import SettingsDep
+from app.models.table import Table
+from app.models.user import User
+from app.api.auth import AuthData, api_nei_auth, auth_responses
 from app.utils import NotFoundReCheck
 
 from ._utils import (
@@ -40,6 +43,8 @@ async def person_confirm_table(
     form_data: TableApprovalForm,
     *,
     db: DatabaseDep,
+    settings: SettingsDep,
+    background_tasks: BackgroundTasks,
     auth: AuthData = Security(api_nei_auth),
 ) -> Table:
     """Set the status of a person on a table"""
@@ -113,9 +118,34 @@ async def person_confirm_table(
 
     table = Table.parse_obj(res)
 
-    if all(person.id != form_data.uid for person in table.persons):
+    maybe_person = next(
+        (person for person in table.persons if person.id == form_data.uid), None
+    )
+    if maybe_person is None:
         raise HTTPException(
             status_code=400, detail="The person doesn't belong to the table"
+        )
+
+    if form_data.confirm:
+        user_db = await User.get_collection(db).find_one({"_id": maybe_person.id})
+        user = User.parse_obj(user_db)
+
+        table_name = table.name
+
+        if table_name is None:
+            head_db = await User.get_collection(db).find_one({"_id": table.head})
+            head = User.parse_obj(head_db)
+
+            table_name = head.name
+
+        background_tasks.add_task(
+            send_email,
+            user.email,
+            "Foste aceite na mesa",
+            settings=settings,
+            template="accepted",
+            name=user.name,
+            table=table_name,
         )
 
     return sanitize_table(auth, table)
