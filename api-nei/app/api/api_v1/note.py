@@ -6,10 +6,7 @@ import zipfile
 from app import crud
 from app.api import deps
 from app.models.note import Note
-from app.schemas import (NoteInDB,
-                         SubjectInDB,
-                         TeacherInDB,
-                         UserInDB)
+from app.schemas import NoteInDB, SubjectInDB, TeacherInDB, UserInDB
 from app.schemas.note import note_categories
 from app.schemas.pagination import Page, PageParams
 
@@ -19,7 +16,8 @@ router = APIRouter()
 
 @router.get("/subject", status_code=200, response_model=List[SubjectInDB])
 def get_note_subjects(
-    *, db: Session = Depends(deps.get_db),
+    *,
+    db: Session = Depends(deps.get_db),
     _=Depends(deps.short_cache),
     year: Optional[int] = None,
     teacher: Optional[int] = None,
@@ -30,13 +28,18 @@ def get_note_subjects(
     Get all subjects that are associated with a `year`, `student` and `teacher`.
     """
     return crud.note.get_note_subjects(
-        db=db, year=year, teacher_id=teacher, student_id=student,
-        curricular_year=curricular_year)
+        db=db,
+        year=year,
+        teacher_id=teacher,
+        student_id=student,
+        curricular_year=curricular_year,
+    )
 
 
 @router.get("/teacher", status_code=200, response_model=List[TeacherInDB])
 def get_note_teachers(
-    *, db: Session = Depends(deps.get_db),
+    *,
+    db: Session = Depends(deps.get_db),
     _=Depends(deps.short_cache),
     year: Optional[int] = None,
     subject: Optional[int] = None,
@@ -48,14 +51,19 @@ def get_note_teachers(
     `year`, `subject` and `student`.
     """
     return crud.note.get_note_teachers(
-        db=db, year=year, subject_code=subject, student_id=student,
-        curricular_year=curricular_year)
+        db=db,
+        year=year,
+        subject_code=subject,
+        student_id=student,
+        curricular_year=curricular_year,
+    )
 
 
 # Retirado response_model=List[int] pq existe valor null
 @router.get("/year", status_code=200)
 def get_note_years(
-    *, db: Session = Depends(deps.get_db),
+    *,
+    db: Session = Depends(deps.get_db),
     _=Depends(deps.short_cache),
     subject_id: Optional[int] = None,
     student_id: Optional[int] = None,
@@ -67,13 +75,18 @@ def get_note_years(
     `subject`, `student` and `teacher`.
     """
     return crud.note.get_note_years(
-        db=db, subject_code=subject_id, student_id=student_id,
-        teacher_id=teacher_id, curricular_year=curricular_year)
+        db=db,
+        subject_code=subject_id,
+        student_id=student_id,
+        teacher_id=teacher_id,
+        curricular_year=curricular_year,
+    )
 
 
 @router.get("/student", status_code=200, response_model=List[UserInDB])
 def get_note_students(
-    *, db: Session = Depends(deps.get_db),
+    *,
+    db: Session = Depends(deps.get_db),
     _=Depends(deps.short_cache),
     year: Optional[int] = None,
     subject: Optional[int] = None,
@@ -85,13 +98,18 @@ def get_note_students(
     `year`, `subject` and `teacher`.
     """
     return crud.note.get_note_students(
-        db=db, year=year, subject_code=subject, teacher_id=teacher,
-        curricular_year=curricular_year)
+        db=db,
+        year=year,
+        subject_code=subject,
+        teacher_id=teacher,
+        curricular_year=curricular_year,
+    )
 
 
 @router.get("/curricular-year", status_code=200)
 def get_note_curricular_years(
-    *, db: Session = Depends(deps.get_db),
+    *,
+    db: Session = Depends(deps.get_db),
     year: Optional[int] = None,
     subject: Optional[int] = None,
     teacher: Optional[int] = None,
@@ -102,15 +120,17 @@ def get_note_curricular_years(
     `year`, `subject` and `teacher`.
     """
     return crud.note.get_note_curricular_year(
-        db=db, year=year, subject_code=subject, teacher_id=teacher,
-        student_id=student)
+        db=db, year=year, subject_code=subject, teacher_id=teacher, student_id=student
+    )
 
 
 @router.get("/", status_code=200, response_model=Page[NoteInDB])
 def get_notes(
-    *, page_params: PageParams = Depends(PageParams),
+    *,
+    page_params: PageParams = Depends(PageParams),
     categories: List[str] = Query(
-        default=[], alias='category[]',
+        default=[],
+        alias="category[]",
         description="List of categories",
     ),
     year: Optional[int] = None,
@@ -127,37 +147,37 @@ def get_notes(
     categories = categories or note_categories
 
     total, items = crud.note.get_note_by(
-        db=db, categories=categories,
+        db=db,
+        categories=categories,
         year=year,
         subject=subject,
         student=student,
         teacher=teacher,
         curricular_year=curricular_year,
-        page=page_params.page, size=page_params.size)
+        page=page_params.page,
+        size=page_params.size,
+    )
 
     return Page.create(total, items, page_params)
 
 
-def list_zip_contents(zip_file, path=''):
-        with zipfile.ZipFile(zip_file, 'r') as zip_obj:
-            for file in zip_obj.namelist():
-                if file.startswith(path) and file != path:
-                    print(file)
-                    if file.endswith('/'):
-                        list_zip_contents(zip_file, file)
+def list_zip_contents(zip_file, path=""):
+    zip_file = zip_file.encode('cp437').decode('latin-1')
+    with zipfile.ZipFile(zip_file, "r") as zip_obj:
+        for file in zip_obj.namelist():
+            if file.startswith(path) and file != path:
+                print(file)
+                if file.endswith("/"):
+                    list_zip_contents(zip_file, file)
 
 
 @router.get("/{id}", status_code=200, response_model=NoteInDB)
 def get_note_by_id(
-    *, id: int, db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache)
+    *, id: int, db: Session = Depends(deps.get_db), _=Depends(deps.long_cache)
 ) -> Any:
     if not db.get(Note, id):
         raise HTTPException(status_code=404, detail="Invalid Note id")
-    
-    file_location = crud.note.get(db=db, id=id).location.split("static")[1]
-    zip_file = "static" + str(file_location)
-    print(zip_file)
-    list_zip_contents(zip_file)
 
+    file_location = crud.note.get(db=db, id=id)._location
+    list_zip_contents(f"static{file_location}")
     return crud.note.get(db=db, id=id)

@@ -42,7 +42,7 @@ def init_db() -> None:
                 conn.commit()
 
             # Populate Database
-            file = open("./app/db/backup-0001.sql")
+            file = open("./app/db/backup-0002.sql")
             stmts = text(file.read())
             conn.execute(stmts)
             conn.commit()
