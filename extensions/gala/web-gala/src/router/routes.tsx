@@ -32,6 +32,15 @@ const routes = [
         },
       },
       {
+        path: "/testing",
+        async lazy() {
+          const { default: ComponentsTesting } = await import(
+            "@/pages/ComponentsTesting"
+          );
+          return { Component: ComponentsTesting };
+        },
+      },
+      {
         path: "*",
         element: <Navigate to="/" />,
       },
