@@ -7,7 +7,7 @@ import Navigation from "./Navigation";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const background = "bg-white rounded-b-xl";
+  const background = "bg-base-100 rounded-b-xl shadow-xl";
 
   useEffect(() => {
     function handleResize() {
@@ -24,15 +24,22 @@ export default function Navbar() {
     };
   }, []);
 
+  const headerTransition = {
+    transition: `background-color 0.15s ease-in-out ${
+      isOpen ? 0 : 0.1
+    }s, box-shadow 0.15s ease-in-out ${isOpen ? 0.1 : 0}s`,
+  };
+
   return (
     <>
       <header
         className={classNames(
-          "sticky top-0 z-40 p-3 text-base-content text-opacity-70 transition-[background-color] sm:rounded-none sm:bg-transparent",
+          "sticky top-0 z-40 p-5 text-base-content text-opacity-70 sm:rounded-none sm:bg-transparent",
           {
             [background]: isOpen,
           },
         )}
+        style={headerTransition}
       >
         <div className="flex">
           <Link className="flex gap-3" to="/">
@@ -52,6 +59,7 @@ export default function Navbar() {
         </div>
         <motion.div
           animate={{ height: isOpen ? "auto" : 0 }}
+          transition={{ delay: isOpen ? 0.1 : 0, duration: 0.3 }}
           className={classNames(
             " left-0 w-full overflow-hidden px-3 sm:hidden",
           )}
@@ -61,9 +69,12 @@ export default function Navbar() {
       </header>
       <div
         aria-hidden="true"
-        className={classNames("modal z-30 bg-opacity-70", {
-          "modal-open": isOpen,
-        })}
+        className={classNames(
+          "modal z-30 bg-opacity-70 transition-[visibility,opacity]",
+          {
+            "modal-open delay-100": isOpen,
+          },
+        )}
         onClick={() => setIsOpen(false)}
       />
     </>

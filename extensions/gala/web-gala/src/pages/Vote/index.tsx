@@ -1,3 +1,7 @@
 export default function Vote() {
-  return <h1 className="bold">Hi this is the vote page</h1>;
+  return (
+    <h1 className="absolute inset-0 flex items-center justify-center text-7xl">
+      Under Development
+    </h1>
+  );
 }

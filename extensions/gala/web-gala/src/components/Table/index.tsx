@@ -11,7 +11,7 @@ export default function Table({ table, className }: TableProps) {
   return (
     <div className={`flex flex-col items-center ${className}`}>
       <h4 className="z-10 text-xl font-semibold">{name}</h4>
-      <h6 className="z-10 text-sm font-light uppercase">{head}</h6>
+      <h6 className="z-10 mb-6 text-sm font-light uppercase">{head}</h6>
       <VisualTable table={table} />
     </div>
   );
