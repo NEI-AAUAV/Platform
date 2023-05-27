@@ -104,7 +104,9 @@ export default function VisualTable({ table, className }: VisualTableProps) {
           <h1 className="z-10 text-[2rem] font-bold leading-tight">
             {freeSeats}
           </h1>
-          <h6 className="z-10 text-xl font-light leading-tight">LIVRES</h6>
+          <h6 className="z-10 text-xl font-light leading-tight">
+            LIVRE{freeSeats > 1 && "S"}
+          </h6>
         </div>
       );
       break;
