@@ -16,6 +16,8 @@ export { ReactComponent as FileDescriptionIcon } from "./file-description.svg";
 export { ReactComponent as FilePDFIcon } from "./file-pdf.svg";
 export { ReactComponent as FileIcon } from "./file.svg";
 export { ReactComponent as FilterIcon } from "./filter.svg";
+export { ReactComponent as FolderIcon } from "./folder.svg";
+export { ReactComponent as FolderOpenIcon } from "./folder-open.svg";
 export { ReactComponent as FolderZipIcon } from "./folder-zip.svg";
 export { ReactComponent as FullScreenExitIcon } from "./fullscreen-exit.svg";
 export { ReactComponent as FullScreenIcon } from "./fullscreen.svg";

@@ -25,13 +25,13 @@ const item = {
 const GridView = ({ data, setSelected }) => {
   return (
     <motion.div
-      className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3"
+      className="grid w-full grid-cols-[repeat(auto-fit,_minmax(18rem,_1fr))] gap-3"
       variants={container}
       initial="hidden"
       animate="visible"
     >
       {data.map((note, i) => (
-        <motion.div key={i} variants={item}>
+        <motion.div key={i} variants={item} className="w-full max-w-[32rem]">
           <NoteCard
             note={note}
             Icon={note.type?.Icon}
