@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, AnyHttpUrl, constr
 
@@ -9,8 +9,13 @@ from .subject import SubjectInDB
 
 
 note_categories = {
-    'summary', 'tests', 'bibliography', 'slides',
-    'exercises', 'projects', 'notebook'
+    "summary",
+    "tests",
+    "bibliography",
+    "slides",
+    "exercises",
+    "projects",
+    "notebook",
 }
 
 
@@ -20,7 +25,7 @@ class NoteBase(BaseModel):
     teacher_id: Optional[int]
 
     name: constr(max_length=256)
-    location: str ##AnyHttpUrl
+    location: str  ##AnyHttpUrl
     year: Optional[int]
 
     summary: Optional[int]
@@ -32,7 +37,6 @@ class NoteBase(BaseModel):
     notebook: Optional[int]
 
     created_at: datetime
-    size: Optional[int]
 
 
 class NoteInDB(NoteBase):
@@ -40,6 +44,8 @@ class NoteInDB(NoteBase):
     author: Optional[UserInDB]
     subject: SubjectInDB
     teacher: Optional[TeacherInDB]
+    contents: list[str] | None
+    size: int | None
 
     class Config:
         orm_mode = True

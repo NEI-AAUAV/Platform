@@ -1,11 +1,12 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from loguru import logger
 from sqlalchemy.orm import Session
 from typing import Any, List, Optional
-import zipfile
 
 from app import crud
 from app.api import deps
-from app.models.note import Note
+from app.utils import list_zip_contents
 from app.schemas import NoteInDB, SubjectInDB, TeacherInDB, UserInDB
 from app.schemas.note import note_categories
 from app.schemas.pagination import Page, PageParams
@@ -161,23 +162,26 @@ def get_notes(
     return Page.create(total, items, page_params)
 
 
-def list_zip_contents(zip_file, path=""):
-    zip_file = zip_file.encode('cp437').decode('latin-1')
-    with zipfile.ZipFile(zip_file, "r") as zip_obj:
-        for file in zip_obj.namelist():
-            if file.startswith(path) and file != path:
-                print(file)
-                if file.endswith("/"):
-                    list_zip_contents(zip_file, file)
-
-
 @router.get("/{id}", status_code=200, response_model=NoteInDB)
 def get_note_by_id(
-    *, id: int, db: Session = Depends(deps.get_db), _=Depends(deps.long_cache)
+    *,
+    id: int,
+    db: Session = Depends(deps.get_db),
+    _=Depends(deps.long_cache),
 ) -> Any:
-    if not db.get(Note, id):
+    note_obj = crud.note.get(db=db, id=id)
+    if not note_obj:
         raise HTTPException(status_code=404, detail="Invalid Note id")
 
-    file_location = crud.note.get(db=db, id=id)._location
-    list_zip_contents(f"static{file_location}")
-    return crud.note.get(db=db, id=id)
+    note = NoteInDB.from_orm(note_obj)
+    file_path = f"static{note_obj._location}"
+
+    # Check if the file exists
+    if os.path.exists(file_path):
+        if file_path.endswith(".zip"):
+            note.contents = list_zip_contents(file_path)
+        note.size = os.path.getsize(file_path)
+    else:
+        logger.error(f"File '{file_path}' does not exist")
+
+    return note

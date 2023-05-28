@@ -227,7 +227,6 @@ COPY nei."user" (id, iupi, nmec, hashed_password, name, surname, gender, image, 
 196	\N	\N		Bernardo	Figueiredo	\N	\N	\N	\N	\N	{}	2023-01-01 00:00:00	2023-01-01 00:00:00	\N
 197	\N	\N		Alexandre	Cotorobai	\N	\N	\N	\N	\N	{}	2023-01-01 00:00:00	2023-01-01 00:00:00	\N
 198	\N	\N		João	Borges	\N	\N	\N	\N	\N	{}	2023-01-01 00:00:00	2023-01-01 00:00:00	\N
-0	\N	\N	$argon2id$v=19$m=65536,t=3,p=4$IqRUqvW+N8a4d865F4KQ0g$orC7ZOBIJG3t0XOhzmKNaewh7OwgfWuoj2SGEb4OcHQ	string	string	MALE	\N	\N	string	string	{ADMIN}	2023-04-16 22:38:54.634	2023-01-01 00:00:00	2023-01-01
 \.
 
 
@@ -1231,7 +1230,6 @@ COPY nei.user_academic_details__subjects (user_academic_details_id, subject) FRO
 --
 
 COPY nei.user_email (email, user_id, active) FROM stdin;
-dev@dev.dev	0	t
 nei@aauav.pt	1	t
 abbm@ua.pt	2	t
 afmoleirinho@ua.pt	3	t
