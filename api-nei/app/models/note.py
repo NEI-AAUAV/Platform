@@ -38,9 +38,7 @@ class Note(Base):
     projects = Column(SmallInteger)
     notebook = Column(SmallInteger)
 
-    content = Column(Text)
     created_at = Column(DateTime, index=True)
-    size = Column(Integer)
 
     author = relationship("User", foreign_keys=[author_id])
     subject = relationship("Subject", foreign_keys=[subject_id])

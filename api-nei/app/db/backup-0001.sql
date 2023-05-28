@@ -1036,6 +1036,7 @@ INSERT INTO nei.note (id, subject_id, author_id, teacher_id, year, name, locatio
 (382, 14817, 140, 29, 2020, 'Slides teóricos MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_TPs.zip', 0, 0, 0, 1, 0, 0, 0, NULL, '2022-01-31 20:37:14', NULL),
 (385, 14817, 140, 29, 2020, 'Formulário MSF', '/notes/primeiro_ano/segundo_semestre/msf/20_21_Artur_Form.pdf', 1, 0, 0, 0, 0, 0, 0, NULL, '2022-01-31 20:37:14', NULL);
 
+
 SELECT pg_catalog.setval('nei.note_id_seq', 386, false);
 
 

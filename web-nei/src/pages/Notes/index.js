@@ -544,7 +544,7 @@ const Notes = () => {
         <p>
           Junta-te a elas e ajuda-nos a manter este repositório atualizado com
           os conteúdos mais recentes. Partilha connosco os teus através do email{" "}
-          <a href="mailto:nei@aauav.pt">nei@aauav.pt</a>. Contamos com o teu
+          <a className="link link-hover" href="mailto:nei@aauav.pt" target="_blank" rel="noreferrer">nei@aauav.pt</a>. Contamos com o teu
           apoio!
         </p>
       </div>

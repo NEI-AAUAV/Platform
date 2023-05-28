@@ -5,7 +5,7 @@ description = "NEI Service"
 authors = []
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = "^3.10"
 uvicorn = {extras = ["standard"], version = "^0.21.1"}
 pydantic = {extras = ["email"], version = "^1.10.2"}
 SQLAlchemy = "^2.0.4"
