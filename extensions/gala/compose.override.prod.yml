@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  web_nei:
+    environment:
+      ENABLE_GALA: true
+
+  api_gala:
+    image: neiaauav/api-gala:${TAG:-latest}
+    build:
+      context: extensions/gala/api-gala
+      dockerfile: Dockerfile.prod
+    environment:
+      MONGO_SERVER: db_mongo
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      JWT_PUBLIC_KEY_PATH: /jwt.key.pub
+    ports:
+      - 8004:8004
+    volumes:
+      - /jwt-keys/jwt.key.pub:/jwt.key.pub:ro
+    depends_on:
+      db_mongo:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: always
+
+  web_gala:
+    image: neiaauav/web-gala:${TAG:-latest}
+    build:
+      context: extensions/gala/web-gala
+      dockerfile: Dockerfile.prod
+    ports:
+      - 3002:3002
+    networks:
+      - frontend
+    restart: always
+
+  proxy:
+    volumes:
+      - /proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
+      - /proxy/locations.gala.conf:/etc/nginx/conf.d/locations.gala.conf:ro
+      - /proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf
+      - /proxy/nei.web.ua.pt/ssl:/etc/ssl/private
+    depends_on:
+      - api_gala
+      - web_gala

@@ -44,9 +44,7 @@ NOTES = [
         "exercises": 0,
         "projects": 0,
         "notebook": 1,
-        "content": "content text bla bla bla bla bla",
         "created_at": datetime(2022, 8, 4),
-        "size": 1,
     },
     {
         "year": 2021,
@@ -59,9 +57,7 @@ NOTES = [
         "exercises": 0,
         "projects": 0,
         "notebook": 1,
-        "content": "content text bla bla bla bla bla",
         "created_at": datetime(2022, 8, 4),
-        "size": 1,
     },
 ]
 
@@ -101,9 +97,7 @@ note = {
     "exercises": 0,
     "projects": 0,
     "notebook": 1,
-    "content": "content text bla bla bla bla bla",
     "created_at": "2022-10-02T21:31:48.217Z",
-    "size": 1,
 }
 
 update_note = {
@@ -116,9 +110,7 @@ update_note = {
     "exercises": 0,
     "projects": 0,
     "notebook": 1,
-    "content": "Note Alterada",
     "created_at": "2022-10-10T14:35:56.660Z",
-    "size": 0,
 }
 
 

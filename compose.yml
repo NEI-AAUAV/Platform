@@ -6,7 +6,7 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: postgres_test
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
@@ -47,8 +47,10 @@ services:
       context: api-nei
     ports:
       - 8000:8000
+      - 587:587
     environment:
       POSTGRES_SERVER: db_pg
+      POSTGRES_PASSWORD: postgres
       JWT_SECRET_KEY_PATH: /jwt.key
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
     volumes:
@@ -70,6 +72,7 @@ services:
     environment:
       API_NEI_SERVER: api_nei
       POSTGRES_SERVER: db_pg
+      POSTGRES_PASSWORD: postgres
       PUBLIC_KEY: /jwt.key.pub
     volumes:
       - ./api-tacaua:/api_tacaua
@@ -81,23 +84,26 @@ services:
       - backend
     restart: unless-stopped
 
-  # api_family:
-  #   build:
-  #     context: api-family
-  #   ports:
-  #     - 8002:8002
-  #   environment:
-  #     MONGO_SERVER: db_mongo
-  #     PUBLIC_KEY: /jwt.key.pub
-  #   volumes:
-  #     - ./api-family:/api_family
-  #     - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
-  #   depends_on:
-  #     db_mongo:
-  #       condition: service_healthy
-  #   networks:
-  #     - backend
-  #   restart: unless-stopped
+  api_family:
+    build:
+      context: api-family
+    ports:
+      - 8002:8002
+    environment:
+      MONGO_SERVER: db_mongo
+      MONGO_PASSWORD: mongo
+      PUBLIC_KEY: /jwt.key.pub
+    volumes:
+      - ./api-family:/api_family
+      - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
+    depends_on:
+      db_mongo:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+    profiles:
+      - disabled
 
   web_nei:
     build:
@@ -117,8 +123,8 @@ services:
       - 80:80
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf
       - ./proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
+      - ./proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - web_nei
       - api_nei

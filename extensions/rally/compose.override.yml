@@ -8,6 +8,7 @@ services:
       - 8003:8003
     environment:
       POSTGRES_SERVER: db_pg
+      POSTGRES_PASSWORD: postgres
     volumes:
       - ./extensions/rally/api-rally:/api_rally
     depends_on:
@@ -25,9 +26,9 @@ services:
   proxy:
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf
       - ./proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
       - ./proxy/locations.rally.conf:/etc/nginx/conf.d/locations.rally.conf:ro
+      - ./proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - api_rally
       # - web_rally
