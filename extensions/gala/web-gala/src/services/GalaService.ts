@@ -7,7 +7,7 @@ class GalaService {
     return await client.get("/table/list");
   }
 
-  async getTable(id) {
+  async getTable(id: string | number) {
     return await client.get(`/table/${id}`);
   }
 }

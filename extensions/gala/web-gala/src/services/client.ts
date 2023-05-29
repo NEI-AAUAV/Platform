@@ -1,18 +1,19 @@
 import axios from "axios";
-import { useUserStore } from "src/stores/useUserStore";
+import { useUserStore } from "@/stores/useUserStore.ts";
+import config from "@/config";
 
 const UNAUTHORIZED = 401;
 
 let isRefreshing = false;
-let refreshSubscribers = [];
+let refreshSubscribers: ((token?: string) => void) [] = [];
 
 /** Add new pending request to wait for a new access token. */
-function subscribeTokenRefresh(callback) {
+function subscribeTokenRefresh(callback: (token?: string) => void) {
   refreshSubscribers.push(callback);
 }
 
 /** Resolve all pending requests with the new access token. */
-function processQueue(error, token = null) {
+function processQueue(token?: string) {
   refreshSubscribers.map((callback) => callback(token));
   refreshSubscribers = [];
 }
@@ -37,7 +38,7 @@ export async function refreshToken() {
     });
 }
 
-export const createClient = (baseURL) => {
+export const createClient = (baseURL?: string) => {
   const client = axios.create({
     baseURL,
     timeout: 5000,
@@ -83,7 +84,7 @@ export const createClient = (baseURL) => {
           }
         } else {
           return new Promise((resolve) => {
-            subscribeTokenRefresh((token) => {
+            subscribeTokenRefresh((token?: string) => {
               config.headers.Authorization = `Bearer ${token}`;
               resolve(axios.request(config));
             });

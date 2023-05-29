@@ -5,17 +5,9 @@ import routes from "./routes";
 
 import { getSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
-import { refreshToken } from "services/NEIService";
+import { refreshToken } from "services/client";
 
 let ws = getSocket();
-
-const AuthenticatedRoutes = () => {
-  return useRoutes(routes({ isAuth: true }));
-};
-
-const UnauthenticatedRoutes = () => {
-  return useRoutes(routes({ isAuth: false }));
-};
 
 /**
  * Render the pages with protected routes, after knowing if a session exists.
@@ -25,18 +17,13 @@ const UnauthenticatedRoutes = () => {
  */
 const App = () => {
   const { sessionLoading, token } = useUserStore((state) => state);
+  const routing = useRoutes(routes({ isAuth: !!token }));
 
   useEffect(() => {
     refreshToken();
   }, []);
 
-  if (sessionLoading) {
-    return null;
-  } else if (token) {
-    return <AuthenticatedRoutes />;
-  } else {
-    return <UnauthenticatedRoutes />;
-  }
+  return sessionLoading ? null : routing;
 };
 
 export default App;
