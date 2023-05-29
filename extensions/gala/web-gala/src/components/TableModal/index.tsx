@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
 import VisualTable from "@/components/Table/VisualTable";
 import GuestList from "./GuestList";
-import AddUser from "./AddUser";
 import Input from "../Input";
+import AddUserList from "./AddUserList";
 
 type TableModalProps = {
   table: Table;
@@ -38,7 +38,7 @@ function getStatusUiProps(
         </>
       ),
       guestList: false,
-      body: <AddUser />,
+      body: <AddUserList />,
       button: (
         <>
           <FontAwesomeIcon icon={faPlus} /> Criar mesa
@@ -99,7 +99,7 @@ export default function TableModal({
 
   return (
     <form
-      className={`flex flex-col items-center gap-3 rounded-3xl bg-base-100 p-4 shadow-lg md:block  ${className}`}
+      className={`flex flex-col items-center gap-3 rounded-3xl bg-base-100 p-4 shadow-lg md:block ${className}`}
       noValidate
       onSubmit={handleSubmit(formSubmit)}
     >
