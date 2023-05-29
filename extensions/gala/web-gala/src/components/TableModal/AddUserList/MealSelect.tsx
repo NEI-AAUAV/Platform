@@ -1,7 +1,7 @@
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 
 type MealSelectProps = {
   selected: string;
@@ -22,11 +22,14 @@ export default function MealSelect({
   style,
 }: MealSelectProps) {
   return (
-    <div className={`relative ${className}`} style={style}>
+    <div className={`relative w-full ${className}`} style={style}>
       <Listbox value={selected} onChange={setSelected}>
         <Listbox.Button className="flex w-full items-center rounded-3xl bg-light-gold px-3 py-2 text-start">
           {optionMap.get(selected)}
-          <FontAwesomeIcon className="ml-auto" icon={faCaretDown} />
+          <FontAwesomeIcon
+            className="ui-open:rotate-180 ml-auto"
+            icon={faCaretDown}
+          />
         </Listbox.Button>
         {/* [&>*] is the selector for all direct children */}
         <Transition
@@ -38,9 +41,16 @@ export default function MealSelect({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Listbox.Options className="absolute top-full w-full border border-black bg-base-100 [&>*]:cursor-pointer">
-            <Listbox.Option value="NOR">{optionMap.get("NOR")}</Listbox.Option>
-            <Listbox.Option value="VEG">{optionMap.get("VEG")}</Listbox.Option>
+          <Listbox.Options className="absolute top-full z-10 mt-2 w-full overflow-visible rounded-lg border border-light-gold bg-base-100 shadow-[0_4px_16px_rgba(0,_0,_0,_0.25)] [&>*]:cursor-pointer">
+            <Listbox.Option
+              className="border-b border-light-gold px-3 py-2"
+              value="NOR"
+            >
+              {optionMap.get("NOR")}
+            </Listbox.Option>
+            <Listbox.Option className="px-3 py-2" value="VEG">
+              {optionMap.get("VEG")}
+            </Listbox.Option>
           </Listbox.Options>
         </Transition>
       </Listbox>
