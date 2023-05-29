@@ -37,7 +37,6 @@ import Internship from "./pages/Internship";
 import Components from "./pages/Components";
 import Test from "./pages/WSTest";
 import TacauaAdminDemo from "./pages/TacauaAdminDemo";
-import { RallyTascas, rallyTascasRoutes } from "pages/RallyTascas";
 
 const isProd = config.PRODUCTION;
 

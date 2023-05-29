@@ -1,14 +1,17 @@
 {
   "folders": [
     {
-      "path": ".",
+      "path": "../..",
       "name": "root"
     },
     {
       "path": "api-rally"
     },
     {
-      "path": "proxy"
+      "path": "../../api-nei"
+    },
+    {
+      "path": "../../web-nei"
     }
   ],
   "settings": {
@@ -24,9 +27,9 @@
       "**/build": true
     },
     "files.exclude": {
-      "api-*/": true,
-      "web-*/": true,
-      "proxy/": true
+      "**/api-*/": true,
+      "**/web-*/": true,
+      "**/proxy/": true
     }
   }
 }

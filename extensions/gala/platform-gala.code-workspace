@@ -1,14 +1,20 @@
 {
   "folders": [
     {
-      "path": ".",
+      "path": "../..",
       "name": "root"
+    },
+    {
+      "path": "api-gala"
     },
     {
       "path": "web-gala"
     },
     {
-      "path": "proxy"
+      "path": "../../api-nei"
+    },
+    {
+      "path": "../../web-nei"
     }
   ],
   "settings": {
@@ -24,9 +30,9 @@
       "**/build": true
     },
     "files.exclude": {
-      "api-*/": true,
-      "web-*/": true,
-      "proxy/": true
+      "**/api-*/": true,
+      "**/web-*/": true,
+      "**/proxy/": true
     }
   }
 }
