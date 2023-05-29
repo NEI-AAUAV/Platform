@@ -26,13 +26,12 @@ export const useUserStore = create((set, get) => ({
   },
 
   login: ({ token }) => {
-    const { img, ...payload } = token ? parseJWT(token) : {};
+    const payload = token ? parseJWT(token) : {};
 
     set(() => ({
       token,
       sessionLoading: false,
       ...payload,
-      image: img && config.STATIC_NEI_URL + `/users/${payload.sub}/profile.jpg`,
     }));
   },
 

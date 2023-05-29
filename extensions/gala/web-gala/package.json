@@ -11,12 +11,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@headlessui/react": "^1.7.14",
+    "@types/node": "^20.2.5",
+    "axios": "^1.4.0",
+    "classnames": "^2.3.2",
+    "daisyui": "^2.51.6",
     "framer-motion": "^10.12.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.9",
+    "react-on-visible": "^1.6.0",
     "react-router-dom": "^6.11.1",
+    "react-wavify": "^1.8.0",
     "vite-plugin-svgr": "^3.2.0",
-    "vite-tsconfig-paths": "^4.2.0"
+    "vite-tsconfig-paths": "^4.2.0",
+    "zustand": "^4.3.8"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
@@ -38,6 +50,7 @@
     "eslint-plugin-react-refresh": "^0.3.4",
     "postcss": "^8.4.23",
     "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.3.0",
     "tailwindcss": "^3.3.2",
     "ts-reset": "^0.0.1",
     "typescript": "^5.0.2",

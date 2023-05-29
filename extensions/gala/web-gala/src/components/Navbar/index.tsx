@@ -1,38 +1,82 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { LogoIcon, HamburgerIcon } from "@/assets/icons";
 import Navigation from "./Navigation";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const background = isOpen ? "bg-white rounded-b-xl" : "";
+  const background = "bg-base-100 rounded-b-xl shadow-xl";
+
+  useEffect(() => {
+    function handleResize() {
+      const sm = 640;
+      if (window.innerWidth > sm) {
+        setIsOpen(false);
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const headerTransition = {
+    transition: `background-color 0.15s ease-in-out ${
+      isOpen ? 0 : 0.1
+    }s, box-shadow 0.15s ease-in-out ${isOpen ? 0.1 : 0}s`,
+  };
+
   return (
-    <header
-      className={`sm:bg-transparent sm:rounded-none sticky top-0 p-3 transition-[background-color] md:delay-100 ease-linear ${background}`}
-    >
-      <div className="flex">
-        <Link className="flex gap-3" to="/">
-          <LogoIcon className="" />
-          <span className="text-xl font-bold">Jantar de Gala</span>
-        </Link>
-        <div className="hidden sm:block ml-auto">
-          <Navigation />
-        </div>
-        <button
-          className="ml-auto sm:hidden"
-          onClick={() => setIsOpen((prev) => !prev)}
-          type="button"
-        >
-          <HamburgerIcon />
-        </button>
-      </div>
-      <motion.div
-        animate={{ height: isOpen ? "auto" : 0 }}
-        className={`outline fixed left-0 px-3 first-letter:sm:hidden overflow-hidden w-full ${background}`}
+    <>
+      <header
+        className={classNames(
+          "sticky top-0 z-40 p-5 text-base-content text-opacity-70 sm:rounded-none sm:bg-transparent",
+          {
+            [background]: isOpen,
+          },
+        )}
+        style={headerTransition}
       >
-        <Navigation className="pt-8 pb-3" />
-      </motion.div>
-    </header>
+        <div className="flex">
+          <Link className="flex gap-3" to="/">
+            <LogoIcon className="" />
+            <span className="text-xl font-bold">Jantar de Gala</span>
+          </Link>
+          <div className="ml-auto hidden sm:block">
+            <Navigation />
+          </div>
+          <button
+            className="ml-auto sm:hidden"
+            onClick={() => setIsOpen((prev) => !prev)}
+            type="button"
+          >
+            <HamburgerIcon />
+          </button>
+        </div>
+        <motion.div
+          animate={{ height: isOpen ? "auto" : 0 }}
+          transition={{ delay: isOpen ? 0.1 : 0, duration: 0.3 }}
+          className={classNames(
+            " left-0 w-full overflow-hidden px-3 sm:hidden",
+          )}
+        >
+          <Navigation className="pb-3 pt-8" />
+        </motion.div>
+      </header>
+      <div
+        aria-hidden="true"
+        className={classNames(
+          "modal z-30 bg-opacity-70 transition-[visibility,opacity]",
+          {
+            "modal-open delay-100": isOpen,
+          },
+        )}
+        onClick={() => setIsOpen(false)}
+      />
+    </>
   );
 }

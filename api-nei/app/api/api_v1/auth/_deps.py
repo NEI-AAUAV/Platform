@@ -202,7 +202,7 @@ def generate_response(
             "sub": str(user.id),
             "type": ACCESS_TOKEN_TYPE,
             "nmec": user.nmec,
-            "img": user.image is not None,
+            "image": user.image,
             "name": user.name,
             "surname": user.surname,
             "scopes": user.scopes,
