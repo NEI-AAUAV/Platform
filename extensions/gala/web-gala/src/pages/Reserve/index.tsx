@@ -1,3 +1,6 @@
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import TableModal from "../TableModal";
 import Table from "@/components/Table";
 
 const testingTables = [
@@ -29,7 +32,7 @@ const testingTables = [
     ],
   },
   {
-    _id: 0,
+    _id: 1,
     name: "mesa2",
     head: "John Doe",
     seats: 10,
@@ -65,7 +68,7 @@ const testingTables = [
     ],
   },
   {
-    _id: 0,
+    _id: 2,
     name: "mesa2",
     head: "John Doe",
     seats: 10,
@@ -101,7 +104,7 @@ const testingTables = [
     ],
   },
   {
-    _id: 0,
+    _id: 3,
     name: "mesa2",
     head: "John Doe",
     seats: 5,
@@ -137,14 +140,14 @@ const testingTables = [
     ],
   },
   {
-    _id: 0,
+    _id: 4,
     name: "mesa2",
     head: "John Doe",
     seats: 10,
     persons: [],
   },
   {
-    _id: 0,
+    _id: 5,
     name: "mesa2",
     head: "John Doe",
     seats: 10,
@@ -196,7 +199,7 @@ const testingTables = [
     ],
   },
   {
-    _id: 0,
+    _id: 6,
     name: "mesa2",
     head: "John Doe",
     seats: 10,
@@ -211,7 +214,7 @@ const testingTables = [
     ],
   },
   {
-    _id: 0,
+    _id: 7,
     name: "mesa2",
     head: "John Doe",
     seats: 10,
@@ -247,7 +250,7 @@ const testingTables = [
     ],
   },
   {
-    _id: 0,
+    _id: 8,
     name: "mesa2",
     head: "John Doe",
     seats: 10,
@@ -284,7 +287,27 @@ const testingTables = [
   },
 ];
 
-export default function Tables() {
+function useTable(id: string | undefined) {
+  const [tableById, setTableById] = useState<Table>();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (id === undefined) return;
+    // TODO: fetch table from server and separate this hook
+    const tableFromId = testingTables.find(
+      (table) => table._id === parseInt(id, 10),
+    );
+    if (tableFromId === undefined) {
+      navigate("/reserve");
+    }
+    setTableById(tableFromId);
+  }, [id]);
+
+  return tableById;
+}
+
+export default function Reserve() {
+  const { tableId } = useParams();
+  const tablePage = useTable(tableId);
   return (
     <>
       <h2 className="m-20 text-center text-2xl font-bold">
@@ -295,6 +318,7 @@ export default function Tables() {
           <Table key={table._id} table={table} />
         ))}
       </div>
+      {tablePage !== undefined && <TableModal table={tablePage} />}
     </>
   );
 }
