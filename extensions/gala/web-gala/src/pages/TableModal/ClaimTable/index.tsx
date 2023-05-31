@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { useRef } from "react";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
 import Input from "@/components/Input";
 import VisualTable from "@/components/Table/VisualTable";
 import AddUserList from "@/components/TableModal/AddUserList";
-import { useRef, useState } from "react";
+import Button from "@/components/Button";
 
 type ClaimTableProps = {
   table: Table;
@@ -53,12 +54,9 @@ export default function ClaimTable({ table }: ClaimTableProps) {
       <VisualTable table={table} />
       <AddUserList />
       <br />
-      <button
-        type="button"
-        className="rounded-3xl bg-gradient-to-tr from-dark-gold to-light-gold px-4 py-2 font-semibold"
-      >
+      <Button>
         <FontAwesomeIcon icon={faPlus} /> Criar mesa
-      </button>
+      </Button>
     </form>
   );
 }
