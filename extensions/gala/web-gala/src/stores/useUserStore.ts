@@ -2,9 +2,9 @@ import { create } from "zustand";
 import { shallow } from "zustand/shallow";
 
 function parseJWT(token: string) {
-  let base64Url = token.split(".")[1];
-  let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  let jsonPayload = decodeURIComponent(
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const jsonPayload = decodeURIComponent(
     window
       .atob(base64)
       .split("")
@@ -37,7 +37,7 @@ interface UserState extends TokenPayload {
   logout: () => void;
 }
 
-const useUserStore = create<UserState>((set, get) => ({
+const useUserStore = create<UserState>((set) => ({
   sessionLoading: true,
   theme: defaultTheme,
 

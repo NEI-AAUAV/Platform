@@ -4,11 +4,18 @@ const client = createClient("http://localhost/api/gala/v1");
 
 class GalaService {
   async listTables() {
-    return await client.get("/table/list");
+    const response = await client.get<Table[]>("/table/list");
+    return response;
   }
 
   async getTable(id: string | number) {
-    return await client.get(`/table/${id}`);
+    const response = await client.get<Table>(`/table/${id}`);
+    return response;
+  }
+
+  async getUserSelf() {
+    const response = await client.get<User>("/user/self");
+    return response;
   }
 }
 
