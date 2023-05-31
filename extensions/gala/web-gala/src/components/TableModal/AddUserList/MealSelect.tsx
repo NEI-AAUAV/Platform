@@ -1,7 +1,7 @@
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox, Transition } from "@headlessui/react";
-import { Fragment, useRef } from "react";
+import { Fragment } from "react";
 
 type MealSelectProps = {
   selected: string;
@@ -27,7 +27,7 @@ export default function MealSelect({
         <Listbox.Button className="flex w-full items-center rounded-3xl bg-light-gold px-3 py-2 text-start">
           {optionMap.get(selected)}
           <FontAwesomeIcon
-            className="ui-open:rotate-180 ml-auto"
+            className="ml-auto ui-open:rotate-180"
             icon={faCaretDown}
           />
         </Listbox.Button>

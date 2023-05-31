@@ -19,7 +19,7 @@ export default function AddUserList() {
 
   return (
     <div className="flex max-h-56 snap-y snap-proximity flex-col gap-3 overflow-y-scroll px-3">
-      <AddUser className="snap-start scroll-mt-2" />
+      <AddUser isAuth className="snap-start scroll-mt-2" />
       {users.map((user, index) => (
         <AddUser
           key={user.id}

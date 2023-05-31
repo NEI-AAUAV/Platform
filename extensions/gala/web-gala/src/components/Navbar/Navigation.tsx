@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChair, faCheckToSlot } from "@fortawesome/free-solid-svg-icons";
 import { useUserStore, shallow } from "@/stores/useUserStore";
+import Avatar from "../Avatar";
 
 type NavigationProps = {
   className?: string;
@@ -20,10 +21,10 @@ export default function Navigation({ className }: NavigationProps) {
         <li>
           <Link
             className={`block rounded-3xl px-4 py-2 ${
-              location === "/tables" &&
+              location === "/reserve" &&
               "bg-gradient-to-r from-light-gold to-dark-gold"
             }`}
-            to="/tables"
+            to="/reserve"
           >
             <FontAwesomeIcon icon={faChair} /> Reservar Lugar
           </Link>
@@ -42,11 +43,11 @@ export default function Navigation({ className }: NavigationProps) {
         {!!image && (
           <li>
             <Link
-              className={`block overflow-hidden rounded-full border-2  border-light-gold`}
+              className="block overflow-hidden rounded-full border-2 border-light-gold"
               to="/inscription"
               title={name}
             >
-              <img src={image} alt="profile" className="h-9 w-9" />
+              <Avatar src={image} alt="profile" className="h-9 w-9" />
             </Link>
           </li>
         )}

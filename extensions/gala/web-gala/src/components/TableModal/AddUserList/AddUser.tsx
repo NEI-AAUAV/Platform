@@ -5,10 +5,11 @@ import Avatar from "../../Avatar";
 
 type AddUserProps = {
   btn?: { icon: JSX.Element; onClick: () => void };
+  isAuth?: boolean;
   className?: string;
 };
 
-export default function AddUser({ btn, className }: AddUserProps) {
+export default function AddUser({ btn, isAuth, className }: AddUserProps) {
   const icon = btn?.icon;
   const onClick = btn?.onClick;
   const [selected, setSelected] = useState("NOR");
@@ -22,7 +23,7 @@ export default function AddUser({ btn, className }: AddUserProps) {
       className={`grid items-center justify-items-center gap-2 ${className}`}
       style={grid}
     >
-      <Avatar />
+      <Avatar isAuth={isAuth} />
       <MealSelect selected={selected} setSelected={setSelected} />
       <button
         className={`${
@@ -43,4 +44,5 @@ export default function AddUser({ btn, className }: AddUserProps) {
 AddUser.defaultProps = {
   btn: { icon: undefined, onClick: () => {} },
   className: "",
+  isAuth: true,
 };
