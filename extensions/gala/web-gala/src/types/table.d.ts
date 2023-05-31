@@ -1,7 +1,7 @@
 type Table = {
   _id: number;
   name: string;
-  head: string;
+  head: number;
   seats: number;
   persons: Person[];
 };
