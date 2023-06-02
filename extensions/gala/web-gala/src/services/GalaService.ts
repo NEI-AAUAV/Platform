@@ -2,21 +2,24 @@ import { createClient } from "./client";
 
 const client = createClient("http://localhost/api/gala/v1");
 
-class GalaService {
-  async listTables() {
+const GalaService = {
+  listTables: async () => {
     const response = await client.get<Table[]>("/table/list");
     return response;
-  }
-
-  async getTable(id: string | number) {
+  },
+  getTable: async (id: string | number) => {
     const response = await client.get<Table>(`/table/${id}`);
     return response;
-  }
-
-  async getUserSelf() {
-    const response = await client.get<User>("/user/self");
+  },
+  getSessionUser: async () => {
+    const response = await client.get<User>("/user/me");
     return response;
-  }
-}
+  },
 
-export default new GalaService();
+  listUsers: async () => {
+    const response = await client.get<User[]>("/user/list");
+    return response;
+  },
+};
+
+export default GalaService;

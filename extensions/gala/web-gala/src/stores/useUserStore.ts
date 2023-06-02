@@ -8,7 +8,7 @@ function parseJWT(token: string) {
     window
       .atob(base64)
       .split("")
-      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+      .map((c) => `%00${c.charCodeAt(0).toString(16).slice(-2)}`)
       .join(""),
   );
   return JSON.parse(jsonPayload);
@@ -23,7 +23,7 @@ document.body.setAttribute("data-theme", defaultTheme);
 
 interface TokenPayload {
   image?: string;
-  sub?: number;
+  sub?: string;
   name?: string;
   surname?: string;
 }
