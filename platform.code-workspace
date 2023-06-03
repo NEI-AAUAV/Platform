@@ -33,9 +33,9 @@
       "**/build": true
     },
     "files.exclude": {
-      "api-*/": true,
-      "web-*/": false,
-      "proxy/": true
+      "**/api-*/": true,
+      "**/web-*/": true,
+      "**/proxy/": true
     }
   }
 }

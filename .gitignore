@@ -10,8 +10,9 @@ Thumbs.db
 # JetBrains IDE
 .idea/
 
-# Static files
+# Static and backup files
 **/static/*
+**/backups/*
 
 # Node dependencies
 node_modules
