@@ -15,12 +15,12 @@ export default function RequestJoinTable({ table }: RequestJoinTableProps) {
     <div className="flex h-full flex-col items-center gap-10">
       <h1 className="text-3xl font-bold">{table.name}</h1>
       <div className="flex items-center gap-3">
-        <Avatar className="w-5" />
+        <Avatar id={-1} className="w-5" />
         <h6 className="capitalize">{table.head}</h6>
       </div>
       <VisualTable table={table} />
       {form ? (
-        <RequestForm />
+        <RequestForm table={table} />
       ) : (
         <ViewTable persons={table.persons} onClick={() => setForm(true)} />
       )}

@@ -3,10 +3,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "@/components/Button";
 import AddUserList from "@/components/TableModal/AddUserList";
 
-export default function RequestForm() {
+type RequestFormProps = {
+  table: Table;
+};
+function calculateOccupiedSeats(persons: Person[]) {
+  return persons.reduce((acc, person) => acc + 1 + person.companions.length, 0);
+}
+export default function RequestForm({ table }: RequestFormProps) {
   return (
     <form className="flex h-full flex-col">
-      <AddUserList />
+      <AddUserList
+        freeSeats={table.seats - calculateOccupiedSeats(table.persons)}
+      />
       <Button className="mt-auto">
         <FontAwesomeIcon icon={faPaperPlane} /> Enviar Convite
       </Button>
