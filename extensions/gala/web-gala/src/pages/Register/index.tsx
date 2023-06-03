@@ -1,6 +1,6 @@
 import { useUserStore } from "@/stores/useUserStore";
 
-export default function Inscription() {
+export default function Register() {
   const user = useUserStore((state) => state);
   const name = user?.name || "Visitante";
   const id = user?.sub;

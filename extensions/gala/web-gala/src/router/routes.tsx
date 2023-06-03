@@ -41,10 +41,10 @@ const routes = [
         },
       },
       {
-        path: "/inscription",
+        path: "/register",
         async lazy() {
-          const { default: Inscription } = await import("@/pages/Inscription");
-          return { Component: Inscription };
+          const { default: Register } = await import("@/pages/Register");
+          return { Component: Register };
         },
       },
       {
