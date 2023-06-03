@@ -1,7 +1,10 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import TableModal from "../TableModal";
 import Table from "@/components/Table";
+import useTables from "@/hooks/useTables";
+import useTable from "@/hooks/useTable";
+import { set } from "react-hook-form";
 
 const testingTables = [
   {
@@ -11,9 +14,9 @@ const testingTables = [
     seats: 8,
     persons: [
       {
-        id: 0,
+        id: 3,
         allergies: "",
-        dish: "Meat",
+        dish: "VEG",
         confirmed: true,
         companions: [
           {
@@ -24,10 +27,22 @@ const testingTables = [
       },
       {
         id: 1,
-        allergies: "",
+        allergies: "bananas",
         dish: "NOR",
         confirmed: true,
         companions: [],
+      },
+      {
+        id: 2,
+        allergies: "",
+        dish: "NOR",
+        confirmed: false,
+        companions: [
+          {
+            dish: "VEG",
+            allergies: "erva",
+          },
+        ],
       },
     ],
   },
@@ -287,42 +302,57 @@ const testingTables = [
   },
 ];
 
-function useTable() {
-  const [tableById, setTableById] = useState<Table | undefined>(undefined);
-  const navigate = useNavigate();
+function useTablePage() {
+  const { table, setTableId } = useTable(undefined);
   const { tableId } = useParams();
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (tableId === undefined) {
-      setTableById(undefined);
+      setTableId(undefined);
       return;
     }
-    // TODO: fetch table from server and separate this hook
-    const tableFromId = testingTables.find(
-      (table) => table._id === parseInt(tableId, 10),
-    );
-    if (tableFromId === undefined) {
-      navigate("/reserve");
-    }
-    setTableById(tableFromId);
+    setTableId(Number(tableId));
   }, [tableId]);
 
-  return tableById;
+  useEffect(() => {
+    if (table === undefined) {
+      // navigate("/reserve");
+    }
+  }, [table]);
+  return table;
 }
 
+// function useTablePage() {
+//   const { tableId } = useParams();
+//   const navigate = useNavigate();
+//   const { table, setTableId } = useTable(undefined);
+
+//   useEffect(() => {
+//     if (tableId === undefined) {
+//       setTableId(undefined);
+//       navigate("/reserve");
+//       return;
+//     }
+//     setTableId(Number(tableId));
+//   }, [tableId]);
+
+//   useEffect(() => {
+//     if (table === undefined) {
+//       navigate("/reserve");
+//     }
+//   }, [table]);
+
+//   return table;
+// }
+
 export default function Reserve() {
-  const tablePage = useTable();
+  const { tables } = useTables();
+  const tablePage = useTablePage();
 
-  // TODO: Data fetching
-  // useEffect(() => {
-  //   const fetchTables = async () => {
-  //     const response = await GalaService.listTables();
-  //     const { data } = response.statusText;
-
-  //     setStatusN(details);
-  //     setTables(data);
-  //   };
-  //   fetchTables();
-  // }, []);
+  useEffect(() => {
+    console.count("rerendered");
+  });
 
   return (
     <>
@@ -330,8 +360,8 @@ export default function Reserve() {
         Escolhe a tua mesa.
       </h2>
       <div className="mx-10 grid grid-cols-[repeat(auto-fit,_minmax(13.25rem,_1fr))] gap-14">
-        {testingTables.map((table) => (
-          <Link to={`/reserve/${table._id}`}>
+        {tables?.map((table) => (
+          <Link key={table._id} to={`/reserve/${table._id}`}>
             <Table table={table} />
           </Link>
         ))}
