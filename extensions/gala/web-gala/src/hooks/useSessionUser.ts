@@ -6,8 +6,7 @@ export default function useSessionUser() {
   useEffect(() => {
     (async () => {
       const response = await GalaService.getSessionUser();
-      const json = response.data;
-      setSessionUser(json);
+      setSessionUser(response);
     })();
   }, []);
   return { sessionUser };

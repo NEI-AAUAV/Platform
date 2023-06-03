@@ -6,8 +6,7 @@ export default function useUsers() {
   useEffect(() => {
     (async () => {
       const response = await GalaService.listUsers();
-      const json = response.data;
-      setUsers(json);
+      setUsers(response);
     })();
   }, []);
   return { users };

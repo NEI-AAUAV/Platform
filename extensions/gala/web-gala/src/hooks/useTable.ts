@@ -1,20 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import GalaService from "@/services/GalaService";
 
-export default function useTables(id: number | undefined) {
+export default function useTable(id: number | undefined) {
   const [tableId, setTableId] = useState(id);
-  const [tables, setTables] = useState<Table>();
+  // const [table, setTable] = useState<Table>();
 
-  useEffect(() => {
+  const table = useMemo(() => {
+    console.count("useMemo");
     if (tableId === undefined) {
-      return;
+      return undefined;
     }
-    (async () => {
+    return (async () => {
       const response = await GalaService.getTable(tableId);
-      const json = response.data;
-      setTables(json);
+      return response;
     })();
   }, [tableId]);
 
-  return { tables, setTableId };
+  // useEffect(() => {
+  //   console.count("useTable");
+  //   if (tableId === undefined) {
+  //     setTable(undefined);
+  //     return;
+  //   }
+  //   (async () => {
+  //     const response = await GalaService.getTable(tableId);
+  //     setTable(response);
+  //   })();
+  // }, [tableId]);
+
+  return { table, setTableId };
 }
