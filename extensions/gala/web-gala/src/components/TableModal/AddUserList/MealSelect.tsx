@@ -41,7 +41,7 @@ export default function MealSelect({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Listbox.Options className="absolute top-full z-10 mt-2 w-full overflow-visible rounded-lg border border-light-gold bg-base-100 shadow-[0_4px_16px_rgba(0,_0,_0,_0.25)] [&>*]:cursor-pointer">
+          <Listbox.Options className="absolute top-full z-10 mt-2 w-full overflow-visible rounded-2xl border border-light-gold bg-base-100 shadow-[0_4px_16px_rgba(0,_0,_0,_0.25)] [&>*]:cursor-pointer">
             <Listbox.Option
               className="border-b border-light-gold px-3 py-2"
               value="NOR"

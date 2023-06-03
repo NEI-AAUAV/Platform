@@ -3,7 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import AddUser from "./AddUser";
 
-export default function AddUserList() {
+type AddUserListProps = {
+  freeSeats: number;
+};
+
+export default function AddUserList({ freeSeats }: AddUserListProps) {
   const [users, setUsers] = useState<{ id: string }[]>([]);
 
   const handleRemove = (index: number) => {
@@ -11,6 +15,7 @@ export default function AddUserList() {
   };
 
   const handleAdd = () => {
+    if (users.length >= freeSeats - 1) return;
     const newUser = {
       id: Math.random().toString(),
     };
@@ -18,8 +23,8 @@ export default function AddUserList() {
   };
 
   return (
-    <div className="flex max-h-56 snap-y snap-proximity flex-col gap-3 overflow-y-scroll px-3">
-      <AddUser isAuth className="snap-start scroll-mt-2" />
+    <div className="relative flex max-h-56 flex-col gap-3 px-3">
+      <AddUser className="snap-start scroll-mt-2" />
       {users.map((user, index) => (
         <AddUser
           key={user.id}
@@ -31,7 +36,7 @@ export default function AddUserList() {
         />
       ))}
       <button
-        className="sticky bottom-0 mt-2 rounded-3xl bg-base-100 p-2 "
+        className="sticky bottom-0 mt-2 bg-base-100 p-2 "
         type="button"
         onClick={handleAdd}
       >
