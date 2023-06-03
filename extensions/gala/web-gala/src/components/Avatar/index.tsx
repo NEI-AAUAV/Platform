@@ -22,7 +22,7 @@ export default function Avatar({ className, style, id, alt }: AvatarProps) {
     <img
       src={imageSrc}
       alt={alt}
-      className={`block aspect-square w-8 rounded-full ${className}`}
+      className={`inline-block aspect-square w-8 rounded-full ${className}`}
       style={style}
     />
   );
