@@ -10,10 +10,7 @@ type NavigationProps = {
 
 export default function Navigation({ className }: NavigationProps) {
   const location = useLocation().pathname;
-  const { image, name } = useUserStore(
-    (state) => ({ image: state.image, name: state.name }),
-    shallow,
-  );
+  const { name } = useUserStore((state) => ({ name: state.name }), shallow);
 
   return (
     <nav className={className}>
@@ -40,17 +37,12 @@ export default function Navigation({ className }: NavigationProps) {
             <FontAwesomeIcon icon={faCheckToSlot} /> Votar
           </Link>
         </li>
-        {!!image && (
-          <li>
-            <Link
-              className="block overflow-hidden rounded-full border-2 border-light-gold"
-              to="/inscription"
-              title={name}
-            >
-              <Avatar src={image} alt="profile" className="h-9 w-9" />
-            </Link>
-          </li>
-        )}
+        <li>
+          <Link className="rounded-full" to="/register" title={name}>
+            <Avatar alt="profile" className="w-5" />{" "}
+            <span className="sm:hidden">{name}</span>
+          </Link>
+        </li>
       </ul>
     </nav>
   );
