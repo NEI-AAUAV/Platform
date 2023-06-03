@@ -11,7 +11,7 @@ export default function useTable(id: number | undefined) {
       return undefined;
     }
     return (async () => {
-      const response = await GalaService.getTable(tableId);
+      const response = await GalaService.table.getTable(tableId);
       return response;
     })();
   }, [tableId]);

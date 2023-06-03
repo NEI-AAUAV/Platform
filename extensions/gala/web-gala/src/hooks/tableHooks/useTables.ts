@@ -6,7 +6,7 @@ export default function useTables() {
 
   useEffect(() => {
     (async () => {
-      const response = await GalaService.listTables();
+      const response = await GalaService.table.listTables();
       setTables(response);
     })();
   }, []);
