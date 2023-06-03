@@ -2,8 +2,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Suspense, useEffect, useState } from "react";
 import TableModal from "../TableModal";
 import Table from "@/components/Table";
-import useTables from "@/hooks/useTables";
-import useTable from "@/hooks/useTable";
+import useTables from "@/hooks/tableHooks/useTables";
+import useTable from "@/hooks/tableHooks/useTable";
 import { set } from "react-hook-form";
 
 const testingTables = [
@@ -308,19 +308,14 @@ function useTablePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (tableId === undefined) {
-      setTableId(undefined);
-      return;
+    setTableId(tableId ? Number(tableId) : undefined);
+   
+    if (table === null) {
+      navigate("/reserve");
     }
-    setTableId(Number(tableId));
-  }, [tableId]);
+  }, [tableId, table]);
 
-  useEffect(() => {
-    if (table === undefined) {
-      // navigate("/reserve");
-    }
-  }, [table]);
-  return table;
+  return table || undefined;
 }
 
 // function useTablePage() {
