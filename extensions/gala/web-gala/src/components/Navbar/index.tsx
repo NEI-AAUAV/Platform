@@ -7,7 +7,7 @@ import Navigation from "./Navigation";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const background = "bg-base-100 rounded-b-xl shadow-xl";
+  const background = "bg-base-100 shadow-xl";
 
   useEffect(() => {
     function handleResize() {
@@ -61,7 +61,7 @@ export default function Navbar() {
           animate={{ height: isOpen ? "auto" : 0 }}
           transition={{ delay: isOpen ? 0.1 : 0, duration: 0.3 }}
           className={classNames(
-            "left-0 h-0 w-full overflow-hidden px-3 sm:hidden",
+            "absolute left-0 h-0 w-full overflow-hidden rounded-b-xl bg-inherit px-3 sm:hidden",
           )}
         >
           <Navigation className="pb-3 pt-8" />
