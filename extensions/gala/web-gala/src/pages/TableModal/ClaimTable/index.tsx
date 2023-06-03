@@ -12,6 +12,10 @@ type ClaimTableProps = {
   table: Table;
 };
 
+function calculateOccupiedSeats(persons: Person[]) {
+  return persons.reduce((acc, person) => acc + 1 + person.companions.length, 0);
+}
+
 function formSubmit(data: any) {
   console.log(data);
 }
@@ -35,25 +39,28 @@ export default function ClaimTable({ table }: ClaimTableProps) {
       noValidate
       onSubmit={handleSubmit(formSubmit)}
     >
-      <div className="relative">
-        <Input
-          className="px-4 py-3"
-          placeholder="Título da Mesa"
-          {...register("title", { required: true, maxLength: 20 })}
-          ref={titleRef}
+      <div className="flex flex-col items-center gap-3 overflow-y-scroll">
+        <div className="relative">
+          <Input
+            className="px-4 py-3"
+            placeholder="Título da Mesa"
+            {...register("title", { required: true, maxLength: 20 })}
+            ref={titleRef}
+          />
+          <button
+            className="absolute right-0 h-full px-4"
+            type="button"
+            onClick={clearTitle}
+          >
+            <FontAwesomeIcon icon={faXmark} />
+          </button>
+        </div>
+        <h6>Serás o dono da mesa</h6>
+        <VisualTable table={table} />
+        <AddUserList
+          freeSeats={table.seats - calculateOccupiedSeats(table.persons)}
         />
-        <button
-          className="absolute right-0 h-full px-4"
-          type="button"
-          onClick={clearTitle}
-        >
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
       </div>
-      <h6>Serás o dono da mesa</h6>
-      <VisualTable table={table} />
-      <AddUserList />
-      <br />
       <Button>
         <FontAwesomeIcon icon={faPlus} /> Criar mesa
       </Button>
