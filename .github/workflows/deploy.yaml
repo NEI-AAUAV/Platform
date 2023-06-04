@@ -32,6 +32,8 @@ jobs:
         else
           echo "::set-output name=override::,extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml"
         fi
+        echo "compose.prod.yml${{ steps.variables.outputs.override }}"
+        echo "~/deploys/${{ steps.variables.outputs.tag }}/"
     - name: Copy compose files
       uses: appleboy/scp-action@master
       with:
