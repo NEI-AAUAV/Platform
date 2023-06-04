@@ -3,19 +3,24 @@ name: Push and Deploy
 on:
   workflow_dispatch:
     inputs:
-      profiles:
-        description: 'Framework version'
-        required: true
-        default: 'tacaua,family'
+      extension:
+        description: 'Deploy with extension'
+        required: false
+        type: choice
+        options: 
+        - gala
+        - rally
       copy_docker_compose:
-        description: 'Publish artifacts'
+        description: 'Copy docker-compose files to server'
         required: true
         default: 'true'
+        type: boolean
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      PRODUCTION: true
       COMPOSE_PROFILES: ${{ github.event.inputs.profiles }}
     steps:
     - uses: actions/checkout@v3
@@ -26,21 +31,23 @@ jobs:
         docker login -u neiaauav -p $DOCKER_PASSWORD
     - name: Build docker images
       run: |
-        docker-compose -f docker-compose.prod.yaml build
+        make build
     - name: Push docker images
       run: |
-        docker-compose -f docker-compose.prod.yaml push --ignore-push-failures
+        make push FLAGS="--push-extensions"
     - name: Push docker images with tag
       run: |
         export TAG=${GITHUB_SHA::7}
-        docker-compose -f docker-compose.prod.yaml build
-        docker-compose -f docker-compose.prod.yaml push --ignore-push-failures
+        make build
+        make push FLAGS="--push-extensions"
+        echo "::set-output name=tag::${TAG}"
   
   deploy:
     needs: build
     runs-on: self-hosted
     timeout-minutes: 5
     env:
+      PRODUCTION: true
       COMPOSE_PROFILES: ${{ github.event.inputs.profiles }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       EMAIL_SENDER_ADDRESS: ${{ secrets.EMAIL_SENDER_ADDRESS }}
@@ -58,14 +65,15 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
-        source: "docker-compose.prod.yaml,docker-compose.prod.yaml"
-        target: "~/deploy-latest/,~/deploy-${GITHUB_SHA::7}/"
-        overwrite: true
+        source: >
+          "compose.prod.yml${{ github.event.inputs.extension ? 
+          ',extensions/' + github.event.inputs.extension + '/compose.override.prod.yml' : '' }}"
+        target: "~/deploys/${{ needs.build.outputs.tag }}/"
     - name: Deploy with docker-compose
       run: |
         docker stop $(docker ps -aq) || true
         docker rm $(docker ps -aq) || true
         docker image prune -af
         docker builder prune
-        docker-compose -f docker-compose.prod.yaml pull
-        docker-compose -f docker-compose.prod.yaml up -d --remove-orphans --force-recreate
+        make pull
+        make up FLAGS="-d --remove-orphans --force-recreate"

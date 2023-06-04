@@ -1,26 +1,31 @@
-.DEFAULT_GOAL = up
+.DEFAULT_GOAL := up-build
 
-COMPOSE_RUNNER = docker-compose
-COMPOSE_FILE ?= compose.yml
-UFLAGS ?= --build --remove-orphans
+COMPOSE_RUNNER ?= docker-compose
+
+ifeq ($(strip $(PRODUCTION)),)
+  P := 
+else
+  P := .prod
+endif
+
+COMPOSE_FILE := compose$(P).yml
 
 .PHONY: rally gala
 
 rally gala: 
 	@echo "Attaching $@ extension"
-	$(eval COMPOSE_FILE = compose.yml:extensions/$(@)/compose.override.yml)
+	$(eval COMPOSE_FILE = compose$(P).yml:extensions/$(@)/compose.override$(P).yml)
 	@true
 
-.PHONY: up down down-volumes
+.PHONY: up down build push pull
 
-up:
-	@echo "Starting platform containers"
-	COMPOSE_FILE=$(COMPOSE_FILE) $(COMPOSE_RUNNER) up $(UFLAGS)
 
-down:
-	@echo "Removing platform containers"
-	COMPOSE_FILE=$(COMPOSE_FILE) $(COMPOSE_RUNNER) down $(DFLAGS)
+up down build push pull:
+	COMPOSE_FILE=$(COMPOSE_FILE) $(COMPOSE_RUNNER) $(@) $(FLAGS)
 
-down-volumes:
-	@echo "Removing platform containers and volumes"
-	COMPOSE_FILE=$(COMPOSE_FILE) $(COMPOSE_RUNNER) down -v
+up-build: FLAGS := --build --remove-orphans
+up-build: up
+	
+down-volumes: FLAGS := -v
+down-volumes: down
+	
