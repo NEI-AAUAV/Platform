@@ -1,4 +1,4 @@
-name: Build and Test api-nei
+name: Test api-nei
 
 on:
   push:

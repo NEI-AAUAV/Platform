@@ -1,4 +1,4 @@
-name: Build and Test api-gala
+name: Test api-gala
 
 on:
   push:
