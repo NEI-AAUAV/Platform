@@ -18,7 +18,7 @@ on:
 
 jobs:
   copy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: ${{ github.event.inputs.copy_compose == 'true' }}
     steps:
     - uses: actions/checkout@v3
