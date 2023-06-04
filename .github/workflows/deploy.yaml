@@ -34,13 +34,14 @@ jobs:
           echo "targets=~/deploys/compose.${TAG}.yml,~/deploys/compose.override.${TAG}.yml" >> $GITHUB_OUTPUT
         fi
     - name: Copy compose files
-      uses: appleboy/scp-action@master
+      uses: appleboy/scp-action@v0.1.4
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
         source: "${{ steps.variables.outputs.sources }}"
         target: "${{ steps.variables.outputs.targets }}"
+        verbose: true
 
   build:
     runs-on: ubuntu-latest
