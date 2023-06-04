@@ -32,7 +32,7 @@
     "files.exclude": {
       "**/api-*/": true,
       "**/web-*/": true,
-      "**/proxy/": true
+      "**/proxy*/": true
     }
   }
 }

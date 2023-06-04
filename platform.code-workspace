@@ -18,7 +18,7 @@
     },
     {
       "path": "proxy"
-    }
+    },
   ],
   "settings": {
     "liveServer.settings.multiRootWorkspaceName": "root",
@@ -35,7 +35,7 @@
     "files.exclude": {
       "**/api-*/": true,
       "**/web-*/": true,
-      "**/proxy/": true
+      "**/proxy*/": true
     }
   }
 }

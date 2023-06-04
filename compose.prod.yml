@@ -1,10 +1,5 @@
 version: "3.9"
 
-x-proxy-defaults:
-  volumes: &proxy-volumes
-    - /first:/volume
-    - /second:/volume
-
 services:
   db_pg:
     image: postgres:15-alpine
@@ -70,9 +65,9 @@ services:
       IDP_SECRET_KEY: ${IDP_SECRET_KEY}
       RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
     volumes: 
-      - /api-nei/static:/api_nei/static
-      - /jwt-keys/jwt.key:/jwt.key:ro
-      - /jwt-keys/jwt.key.pub:/jwt.key.pub:ro
+      - /deploy/api-nei/static:/api_nei/static
+      - /deploy/keys/jwt.key:/jwt.key:ro
+      - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:
       db_pg:
         condition: service_healthy
@@ -94,8 +89,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PUBLIC_KEY: /jwt.key.pub
     volumes: 
-      - /api-tacaua/static:/api_tacaua/static
-      - /jwt-keys/jwt.key.pub:/jwt.key.pub:ro
+      - /deploy/api-tacaua/static:/api_tacaua/static
+      - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:
       db_pg:
         condition: service_healthy
@@ -117,8 +112,8 @@ services:
       MONGO_PASSWORD: ${MONGO_PASSWORD}
       PUBLIC_KEY: /jwt.key.pub
     volumes:
-      - /api-family/static:/api_family/static
-      - /jwt-keys/jwt.key.pub:/jwt.key.pub:ro
+      - /deploy/api-family/static:/api_family/static
+      - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:
       db_mongo:
         condition: service_healthy
@@ -145,10 +140,10 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - /proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
-      - /proxy/nei.web.ua.pt/default.prod.conf:/etc/nginx/conf.d/default.conf
-      - /proxy/nei.web.ua.pt/ssl:/etc/ssl/private
+      - /deploy/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /deploy/proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
+      - /deploy/proxy/nei.web.ua.pt/default.prod.conf:/etc/nginx/conf.d/default.conf
+      - /deploy/proxy/nei.web.ua.pt/ssl:/etc/ssl/private
     depends_on:
       - web_nei
       - api_nei

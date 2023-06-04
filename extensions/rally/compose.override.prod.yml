@@ -14,7 +14,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       SECRET_KEY: ${SECRET_KEY}
     volumes: 
-      - /api-rally/static:/api_rally/static
+      - /deploy/api-rally/static:/api_rally/static
     depends_on:
       db_pg:
         condition: service_healthy
@@ -27,11 +27,11 @@ services:
 
   proxy:
     volumes:
-      - /proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
-      - /proxy/locations.rally.conf:/etc/nginx/conf.d/locations.rally.conf:ro
-      - /proxy/nei.web.ua.pt/default.prod.conf:/etc/nginx/conf.d/default.conf
-      - /proxy/nei.web.ua.pt/ssl:/etc/ssl/private
+      - /deploy/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /deploy/proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
+      - /deploy/proxy/locations.rally.conf:/etc/nginx/conf.d/locations.rally.conf:ro
+      - /deploy/proxy/nei.web.ua.pt/default.prod.conf:/etc/nginx/conf.d/default.conf
+      - /deploy/proxy/nei.web.ua.pt/ssl:/etc/ssl/private
     depends_on:
       - api_rally
       # - web_rally
