@@ -6,6 +6,7 @@ on:
       extension:
         description: 'Deploy with extension'
         required: false
+        default: ''
         type: choice
         options: 
         - gala
