@@ -19,7 +19,6 @@ on:
 jobs:
   copy:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     if: ${{ github.event.inputs.copy_compose == 'true' }}
     steps:
     - uses: actions/checkout@v3
@@ -41,7 +40,7 @@ jobs:
         password: ${{ secrets.SSH_PASSWORD }}
         source: "${{ steps.variables.outputs.sources }}"
         target: "${{ steps.variables.outputs.targets }}"
-        debug: true
+        timeout: 200s
 
   build:
     runs-on: ubuntu-latest
