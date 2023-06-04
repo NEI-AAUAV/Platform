@@ -30,7 +30,7 @@ jobs:
         echo "targets=compose.${TAG}.yml" >> $GITHUB_OUTPUT
         if [[ -n "${{ github.event.inputs.extension }}" ]]; then
           echo "sources=compose.prod.yml,extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml" >> $GITHUB_OUTPUT
-          echo "targets=~/deploys/compose.${TAG}.yml,~/deploys/compose.override.${TAG}.yml" >> $GITHUB_OUTPUT
+          echo "targets=~/deploys/${TAG}/" >> $GITHUB_OUTPUT
         fi
     - name: Copy compose files
       uses: appleboy/scp-action@v0.1.4
