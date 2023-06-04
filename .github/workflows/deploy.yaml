@@ -26,20 +26,20 @@ jobs:
     - name: Setup variables
       id: variables
       run: |
-        echo "tag=${GITHUB_SHA::7} >> $GITHUB_STATE
+        echo "tag=${{ github.sha::7 }} >> $GITHUB_OUTPUT
         if [[ -n "${{ github.event.inputs.extension }}" ]]; then
-          echo "override=,extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml >> $GITHUB_STATE
+          echo "override=,extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml >> $GITHUB_OUTPUT
         fi
-        echo "compose.prod.yml${{ env.override }}"
-        echo "~/deploys/${{ env.tag }}/"
+        echo "compose.prod.yml${{ steps.variables.outputs.override }}"
+        echo "~/deploys/${{ steps.variables.outputs.tag }}/"
     - name: Copy compose files
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
-        source: "compose.prod.yml${{ env.override }}"
-        target: "~/deploys/${{ env.tag }}/"
+        source: "compose.prod.yml${{ steps.variables.outputs.override }}"
+        target: "~/deploys/${{ steps.variables.outputs.tag }}/"
 
   build:
     runs-on: ubuntu-latest
