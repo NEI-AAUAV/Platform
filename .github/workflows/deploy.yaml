@@ -6,15 +6,14 @@ on:
       extension:
         description: 'Deploy with extension'
         required: false
-        default: ''
         type: choice
         options: 
+        - ''
         - gala
         - rally
       copy_docker_compose:
         description: 'Copy docker-compose files to server'
-        required: true
-        default: 'true'
+        required: false
         type: boolean
 
 jobs:
