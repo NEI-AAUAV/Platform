@@ -11,12 +11,35 @@ on:
         - ''
         - gala
         - rally
-      copy_docker_compose:
-        description: 'Copy docker-compose files to server'
+      copy_compose:
+        description: 'Copy compose files to server'
         required: false
         type: boolean
 
 jobs:
+  copy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.copy_compose == 'true' }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup variables
+        id: variables
+        run: |
+          echo "::set-output name=tag::${GITHUB_SHA::7}"
+          if [[ -z "${{ github.event.inputs.extension }}" ]]; then
+            echo "::set-output name=override::"
+          else
+            echo "::set-output name=override::,extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml"
+          fi
+    - name: Copy docker-compose file
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        source: "compose.prod.yml${{ steps.variables.outputs.override }}"
+        target: "~/deploys/${{ steps.variables.outputs.tag }}/"
+
   build:
     runs-on: ubuntu-latest
     env:
@@ -40,7 +63,6 @@ jobs:
         export TAG=${GITHUB_SHA::7}
         make build
         make push FLAGS="--push-extensions"
-        echo "::set-output name=tag::${TAG}"
   
   deploy:
     needs: build
@@ -57,18 +79,7 @@ jobs:
       IDP_SECRET_KEY: ${{ secrets.IDP_SECRET_KEY }}
       RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
     steps:
-    - uses: actions/checkout@v3
-    - if: github.event.inputs.copy_docker_compose == 'true'
-      name: Copy docker-compose file
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        source: >
-          "compose.prod.yml${{ github.event.inputs.extension ? 
-          ',extensions/' + github.event.inputs.extension + '/compose.override.prod.yml' : '' }}"
-        target: "~/deploys/${{ needs.build.outputs.tag }}/"
+    - uses: actions/checkout@v3    
     - name: Deploy with docker-compose
       run: |
         docker stop $(docker ps -aq) || true
