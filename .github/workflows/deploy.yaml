@@ -28,7 +28,7 @@ jobs:
       run: |
         echo "tag=${GITHUB_SHA::7} >> $GITHUB_OUTPUT
         if [[ -n "${{ github.event.inputs.extension }}" ]]; then
-          echo "override=,extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml >> $GITHUB_OUTPUT
+          echo "override=,extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml" >> $GITHUB_OUTPUT
         fi
         echo "compose.prod.yml${{ steps.variables.outputs.override }}"
         echo "~/deploys/${{ steps.variables.outputs.tag }}/"
