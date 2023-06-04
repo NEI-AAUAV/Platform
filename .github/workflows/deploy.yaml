@@ -41,7 +41,7 @@ jobs:
         password: ${{ secrets.SSH_PASSWORD }}
         source: "${{ steps.variables.outputs.sources }}"
         target: "${{ steps.variables.outputs.targets }}"
-        verbose: true
+        debug: true
 
   build:
     runs-on: ubuntu-latest
