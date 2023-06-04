@@ -19,6 +19,7 @@ on:
 jobs:
   copy:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: ${{ github.event.inputs.copy_compose == 'true' }}
     steps:
     - uses: actions/checkout@v3
@@ -67,10 +68,8 @@ jobs:
   deploy:
     needs: build
     runs-on: self-hosted
-    timeout-minutes: 5
     env:
       PRODUCTION: true
-      COMPOSE_PROFILES: ${{ github.event.inputs.profiles }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       EMAIL_SENDER_ADDRESS: ${{ secrets.EMAIL_SENDER_ADDRESS }}
       EMAIL_SMTP_HOST: ${{ secrets.EMAIL_SMTP_HOST }}

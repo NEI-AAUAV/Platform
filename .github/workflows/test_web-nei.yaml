@@ -1,4 +1,4 @@
-name: Build and Test web-nei
+name: Test web-nei
 
 on:
   push:
