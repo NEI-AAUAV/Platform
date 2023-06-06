@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FrangoIcon } from "@/assets/icons";
 import Avatar from "@/components/Avatar";
+import Guest from "@/components/TableModal/GuestList/Guest";
 
 type AcceptTableProps = {
   persons: Person[];
@@ -31,7 +32,9 @@ export default function AcceptPending({ persons }: AcceptTableProps) {
   const filteredPersons = persons.filter((person) => !person.confirmed);
   return (
     <div className="w-full">
-      <h3 className="text-xl font-semibold">Pendentes de Confirmação</h3>
+      <h3 className="text-xl font-semibold">
+        {filteredPersons.length !== 0 && "Pendentes de Confirmação"}
+      </h3>
       {filteredPersons.map((person) => (
         <div key={person.id} className="">
           <div className="flex items-start gap-2">
@@ -50,7 +53,7 @@ export default function AcceptPending({ persons }: AcceptTableProps) {
             <Avatar id={-1} className="w-6" />
             <div className="">
               <div className="flex items-center gap-1">
-                <span>{person.id}</span>
+                <Guest id={person.id} />
                 <span className="flex gap-1">
                   {iconMap.get(person.dish)}
                   {allergyIcon(person.allergies)}

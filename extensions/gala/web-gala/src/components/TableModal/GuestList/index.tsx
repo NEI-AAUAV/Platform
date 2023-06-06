@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHandDots, faSeedling } from "@fortawesome/free-solid-svg-icons";
 import { FrangoIcon } from "@/assets/icons";
-import Avatar from "@/components/Avatar";
+import Guest from "./Guest";
 
 type GuestListProps = {
   persons: Person[];
@@ -26,11 +26,11 @@ export default function GuestList({ persons }: GuestListProps) {
   return (
     <div className="w-full">
       <h3 className="text-xl font-semibold">Convidad@s</h3>
+      {filteredPersons.length === 0 && <p>Não há convidad@s nesta mesa</p>}
       {filteredPersons.map((person) => (
         <div key={person.id}>
           <div className="flex items-center gap-1">
-            <Avatar id={-1} className="w-6" />
-            <span>{person.id}</span>
+            <Guest id={person.id} />
             <span className="flex gap-1">
               {iconMap.get(person.dish)}
               {allergyIcon(person.allergies)}
