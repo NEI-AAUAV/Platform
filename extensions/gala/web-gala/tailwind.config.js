@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import daisyui from "daisyui";
+import headlessui from "@headlessui/tailwindcss";
 
 export default {
   mode: "jit",
@@ -16,7 +17,7 @@ export default {
       }),
     },
   },
-  plugins: [daisyui],
+  plugins: [daisyui, headlessui],
   daisyui: {
     themes: [
       {

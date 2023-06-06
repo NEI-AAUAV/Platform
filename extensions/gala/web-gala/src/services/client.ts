@@ -5,7 +5,7 @@ import config from "@/config";
 const UNAUTHORIZED = 401;
 
 let isRefreshing = false;
-let refreshSubscribers: ((token?: string) => void) [] = [];
+let refreshSubscribers: ((token?: string) => void)[] = [];
 
 /** Add new pending request to wait for a new access token. */
 function subscribeTokenRefresh(callback: (token?: string) => void) {
@@ -53,7 +53,7 @@ export const createClient = (baseURL?: string) => {
     (error) => {
       // Do something with request error
       return Promise.reject(error);
-    }
+    },
   );
 
   client.interceptors.response.use(
@@ -92,7 +92,7 @@ export const createClient = (baseURL?: string) => {
         }
       }
       return Promise.reject(error);
-    }
+    },
   );
   return client;
 };

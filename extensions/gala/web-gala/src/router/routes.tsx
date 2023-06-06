@@ -18,11 +18,20 @@ const routes = [
         },
       },
       {
-        path: "/tables",
+        path: "/reserve",
         async lazy() {
-          const { default: Tables } = await import("@/pages/Tables");
-          return { Component: Tables };
+          const { default: Reserve } = await import("@/pages/Reserve");
+          return { Component: Reserve };
         },
+        children: [
+          {
+            path: "/reserve/:tableId",
+            async lazy() {
+              const { default: Reserve } = await import("@/pages/Reserve");
+              return { Component: Reserve };
+            },
+          },
+        ],
       },
       {
         path: "/vote",
@@ -32,19 +41,10 @@ const routes = [
         },
       },
       {
-        path: "/inscription",
+        path: "/register",
         async lazy() {
-          const { default: Inscription } = await import("@/pages/Inscription");
-          return { Component: Inscription };
-        },
-      },
-      {
-        path: "/testing",
-        async lazy() {
-          const { default: ComponentsTesting } = await import(
-            "@/pages/ComponentsTesting"
-          );
-          return { Component: ComponentsTesting };
+          const { default: Register } = await import("@/pages/Register");
+          return { Component: Register };
         },
       },
       {

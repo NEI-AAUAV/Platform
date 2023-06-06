@@ -2,13 +2,13 @@ import { create } from "zustand";
 import { shallow } from "zustand/shallow";
 
 function parseJWT(token: string) {
-  let base64Url = token.split(".")[1];
-  let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  let jsonPayload = decodeURIComponent(
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const jsonPayload = decodeURIComponent(
     window
       .atob(base64)
       .split("")
-      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+      .map((c) => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
       .join(""),
   );
   return JSON.parse(jsonPayload);
@@ -23,7 +23,7 @@ document.body.setAttribute("data-theme", defaultTheme);
 
 interface TokenPayload {
   image?: string;
-  sub?: number;
+  sub?: string;
   name?: string;
   surname?: string;
 }
@@ -37,7 +37,7 @@ interface UserState extends TokenPayload {
   logout: () => void;
 }
 
-const useUserStore = create<UserState>((set, get) => ({
+const useUserStore = create<UserState>((set) => ({
   sessionLoading: true,
   theme: defaultTheme,
 

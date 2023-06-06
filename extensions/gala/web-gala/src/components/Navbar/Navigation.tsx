@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChair, faCheckToSlot } from "@fortawesome/free-solid-svg-icons";
 import { useUserStore, shallow } from "@/stores/useUserStore";
+import Avatar from "../Avatar";
 
 type NavigationProps = {
   className?: string;
@@ -9,10 +10,7 @@ type NavigationProps = {
 
 export default function Navigation({ className }: NavigationProps) {
   const location = useLocation().pathname;
-  const { image, name } = useUserStore(
-    (state) => ({ image: state.image, name: state.name }),
-    shallow,
-  );
+  const { name } = useUserStore((state) => state, shallow);
 
   return (
     <nav className={className}>
@@ -20,10 +18,10 @@ export default function Navigation({ className }: NavigationProps) {
         <li>
           <Link
             className={`block rounded-3xl px-4 py-2 ${
-              location === "/tables" &&
+              location.startsWith("/reserve") &&
               "bg-gradient-to-r from-light-gold to-dark-gold"
             }`}
-            to="/tables"
+            to="/reserve"
           >
             <FontAwesomeIcon icon={faChair} /> Reservar Lugar
           </Link>
@@ -31,7 +29,7 @@ export default function Navigation({ className }: NavigationProps) {
         <li>
           <Link
             className={`block rounded-3xl px-4 py-2 ${
-              location === "/vote" &&
+              location.startsWith("/vote") &&
               "bg-gradient-to-r from-light-gold to-dark-gold"
             }`}
             to="/vote"
@@ -39,14 +37,11 @@ export default function Navigation({ className }: NavigationProps) {
             <FontAwesomeIcon icon={faCheckToSlot} /> Votar
           </Link>
         </li>
-        {!!image && (
+        {name !== undefined && (
           <li>
-            <Link
-              className={`block overflow-hidden rounded-full border-2  border-light-gold`}
-              to="/inscription"
-              title={name}
-            >
-              <img src={image} alt="profile" className="h-9 w-9" />
+            <Link className="px-2 py-2" to="/register" title={name}>
+              <Avatar alt="profile" className="w-5" />{" "}
+              <span className="sm:hidden">{name}</span>
             </Link>
           </li>
         )}
