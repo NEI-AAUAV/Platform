@@ -10,7 +10,7 @@ type NavigationProps = {
 
 export default function Navigation({ className }: NavigationProps) {
   const location = useLocation().pathname;
-  const { name } = useUserStore((state) => ({ name: state.name }), shallow);
+  const { name } = useUserStore((state) => state, shallow);
 
   return (
     <nav className={className}>
@@ -18,7 +18,7 @@ export default function Navigation({ className }: NavigationProps) {
         <li>
           <Link
             className={`block rounded-3xl px-4 py-2 ${
-              location === "/reserve" &&
+              location.startsWith("/reserve") &&
               "bg-gradient-to-r from-light-gold to-dark-gold"
             }`}
             to="/reserve"
@@ -29,7 +29,7 @@ export default function Navigation({ className }: NavigationProps) {
         <li>
           <Link
             className={`block rounded-3xl px-4 py-2 ${
-              location === "/vote" &&
+              location.startsWith("/vote") &&
               "bg-gradient-to-r from-light-gold to-dark-gold"
             }`}
             to="/vote"
@@ -37,12 +37,14 @@ export default function Navigation({ className }: NavigationProps) {
             <FontAwesomeIcon icon={faCheckToSlot} /> Votar
           </Link>
         </li>
-        <li>
-          <Link className="rounded-full" to="/register" title={name}>
-            <Avatar alt="profile" className="w-5" />{" "}
-            <span className="sm:hidden">{name}</span>
-          </Link>
-        </li>
+        {name !== undefined && (
+          <li>
+            <Link className="px-2 py-2" to="/register" title={name}>
+              <Avatar alt="profile" className="w-5" />{" "}
+              <span className="sm:hidden">{name}</span>
+            </Link>
+          </li>
+        )}
       </ul>
     </nav>
   );
