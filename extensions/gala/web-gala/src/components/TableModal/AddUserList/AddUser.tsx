@@ -5,7 +5,7 @@ import Avatar from "../../Avatar";
 
 type AddUserProps = {
   btn?: { icon: JSX.Element; onClick: () => void };
-  id?: number;
+  id?: number | null;
   className?: string;
 };
 
@@ -20,7 +20,7 @@ export default function AddUser({ btn, id, className }: AddUserProps) {
 
   return (
     <div
-      className={`grid items-center justify-items-center gap-2 ${className}`}
+      className={`grid items-center justify-start gap-2 ${className}`}
       style={grid}
     >
       <Avatar id={id} />
@@ -44,5 +44,5 @@ export default function AddUser({ btn, id, className }: AddUserProps) {
 AddUser.defaultProps = {
   btn: { icon: undefined, onClick: () => {} },
   className: "",
-  id: -1,
+  id: null,
 };
