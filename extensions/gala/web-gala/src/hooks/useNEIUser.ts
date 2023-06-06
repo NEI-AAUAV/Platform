@@ -1,17 +1,22 @@
 import { useState, useEffect } from "react";
 import NEIService from "@/services/NEIService";
 
-export default function useNEIUser(id: number | undefined) {
+export default function useNEIUser(id: number | null) {
   const [neiUserId, setNEIUserId] = useState(id);
-  const [neiUser, setNEIUser] = useState<NEIUser>();
+  const [neiUser, setNEIUser] = useState<NEIUser | null>(null);
 
   useEffect(() => {
-    if (neiUserId === undefined) {
+    if (neiUserId === null) {
       return;
     }
     (async () => {
-      const response = await NEIService.getUserById(neiUserId);
-      setNEIUser(response);
+      try {
+        const response = await NEIService.getUserById(neiUserId);
+        setNEIUser(response);
+      } catch (error) {
+        console.error(error);
+        setNEIUser(null);
+      }
     })();
   }, [neiUserId]);
 
