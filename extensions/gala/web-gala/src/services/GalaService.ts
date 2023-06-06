@@ -22,7 +22,7 @@ type EditUser = {
   nmec: number;
   email: string;
   name: string;
-  has_paid: boolean;
+  has_payed: boolean;
 };
 
 type CreateUser = {
@@ -80,19 +80,19 @@ const GalaService = {
   },
   user: {
     listUsers: async () => {
-      const response: User[] = await client.get("/user/list");
+      const response: User[] = await client.get("/users/list");
       return response;
     },
-    editUser: async (id: string | number, request: EditUser) => {
-      const response: User = await client.put(`/user/${id}/edit`, request);
+    editUser: async (request: EditUser) => {
+      const response: User = await client.put(`/users/`, request);
       return response;
     },
     createUser: async (request: CreateUser) => {
-      const response: User = await client.post(`/user/new`, request);
+      const response: User = await client.post(`/users/new`, request);
       return response;
     },
     getSessionUser: async () => {
-      const response: User = await client.get("/user/me");
+      const response: User = await client.get("/users/me");
       return response;
     },
   },
