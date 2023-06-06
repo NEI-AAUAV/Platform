@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Background from "@/components/Background";
 
 export default function Home() {
   return (
@@ -18,7 +17,7 @@ export default function Home() {
           </Link>
         </div>
       </div>
-      <Background src="http://localhost/gala/public/home-background.png" />
+      {/* <Background src="http://localhost/gala/public/home-background.png" /> */}
     </>
   );
 }
