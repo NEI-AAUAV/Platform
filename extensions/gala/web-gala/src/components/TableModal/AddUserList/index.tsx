@@ -5,9 +5,13 @@ import AddUser from "./AddUser";
 
 type AddUserListProps = {
   freeSeats: number;
+  className?: string;
 };
 
-export default function AddUserList({ freeSeats }: AddUserListProps) {
+export default function AddUserList({
+  freeSeats,
+  className,
+}: AddUserListProps) {
   const [users, setUsers] = useState<{ id: string }[]>([]);
 
   const handleRemove = (index: number) => {
@@ -23,12 +27,12 @@ export default function AddUserList({ freeSeats }: AddUserListProps) {
   };
 
   return (
-    <div className="relative flex max-h-56 flex-col gap-3 px-3">
-      <AddUser className="snap-start scroll-mt-2" />
+    <div className={`relative flex max-h-56 flex-col gap-3 ${className}`}>
+      <AddUser />
       {users.map((user, index) => (
         <AddUser
           key={user.id}
-          className="snap-start scroll-mt-2"
+          id={-1}
           btn={{
             icon: <FontAwesomeIcon icon={faTrash} />,
             onClick: () => handleRemove(index),
@@ -45,3 +49,7 @@ export default function AddUserList({ freeSeats }: AddUserListProps) {
     </div>
   );
 }
+
+AddUserList.defaultProps = {
+  className: "",
+};
