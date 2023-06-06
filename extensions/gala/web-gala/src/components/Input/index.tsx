@@ -1,26 +1,31 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
+import classNames from "classnames";
 import { forwardRef } from "react";
 
-type InputProps = {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   placeholder?: string;
   style?: React.CSSProperties;
-  props?: React.InputHTMLAttributes<HTMLInputElement>;
-};
+  disabled?: boolean;
+}
 
 const Input = forwardRef(
   (
-    { className, placeholder, style, props }: InputProps,
+    { className, placeholder, style, disabled, ...props }: InputProps,
     ref: React.ForwardedRef<HTMLInputElement>,
   ) => {
     return (
       <input
-        className={`rounded-3xl border border-light-gold focus:border-transparent focus:outline-none focus:ring-2 focus:ring-light-gold ${className}`}
+        className={classNames(
+          "rounded-3xl border border-light-gold focus:border-transparent focus:outline-none focus:ring-2 focus:ring-light-gold disabled:bg-gray-100",
+          className,
+        )}
         type="text"
         placeholder={placeholder}
         style={style}
         ref={ref}
+        disabled={disabled}
         {...props}
       />
     );
@@ -29,7 +34,7 @@ const Input = forwardRef(
 Input.defaultProps = {
   className: "",
   placeholder: "",
-  props: {},
+  disabled: false,
   style: {},
 };
 
