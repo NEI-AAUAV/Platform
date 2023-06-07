@@ -30,7 +30,9 @@ function calculateOccupiedSeats(persons: Person[]) {
 }
 
 export default function ClaimTable({ table }: ClaimTableProps) {
-  const methods = useForm<FormValues>();
+  const methods = useForm<FormValues>({
+    defaultValues: { title: "", dish: "NOR", allergies: "", companions: [] },
+  });
   const titleRef = useRef<HTMLInputElement>(null);
 
   function clearTitle() {
@@ -39,18 +41,19 @@ export default function ClaimTable({ table }: ClaimTableProps) {
   }
 
   const formSubmit: SubmitHandler<FormValues> = (data) => {
-    const reserveRequest = {
-      dish: data.dish,
-      allergies: data.allergies,
-      companions: data.companions,
-    };
+    console.log(data);
+    // const reserveRequest = {
+    //   dish: data.dish,
+    //   allergies: data.allergies,
+    //   companions: data.companions,
+    // };
 
-    const editRequest = {
-      name: data.title,
-    };
+    // const editRequest = {
+    //   name: data.title,
+    // };
 
-    useTableReserve(table._id, reserveRequest);
-    useTableEdit(table._id, editRequest);
+    // useTableReserve(table._id, reserveRequest);
+    // useTableEdit(table._id, editRequest);
   };
   return (
     <div className="items-center sm:flex">
@@ -65,10 +68,7 @@ export default function ClaimTable({ table }: ClaimTableProps) {
               <Input
                 className="px-4 py-3 sm:w-full"
                 placeholder="Título da Mesa"
-                {...methods.register("title", {
-                  required: true,
-                  maxLength: 20,
-                })}
+                {...methods.register("title")}
                 ref={titleRef}
               />
               <button

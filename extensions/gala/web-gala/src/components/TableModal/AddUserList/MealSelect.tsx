@@ -7,6 +7,8 @@ type MealSelectProps = {
   setSelected: React.Dispatch<React.SetStateAction<string>>;
   className?: string;
   style?: React.CSSProperties;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  name: string;
 };
 
 const optionMap = new Map<string, JSX.Element>([
@@ -15,6 +17,8 @@ const optionMap = new Map<string, JSX.Element>([
 ]);
 
 export default function MealSelect({
+  onChange,
+  name,
   selected,
   setSelected,
   className,
@@ -27,6 +31,8 @@ export default function MealSelect({
   return (
     <div className={`relative w-full ${className}`} style={style}>
       <Select
+        onChange={onChange}
+        name={name}
         selected={selected}
         setSelected={setSelected}
         title={
