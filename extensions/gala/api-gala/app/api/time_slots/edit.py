@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timezone
+from app.core.config import SettingsDep
 from fastapi import APIRouter, HTTPException, Security
 from pymongo import ReturnDocument
 
@@ -28,22 +29,27 @@ async def edit_time_slots(
     form_data: TimeSlotsEditForm,
     *,
     db: DatabaseDep,
+    settings: SettingsDep,
     _: AuthData = Security(api_nei_auth, scopes=[ScopeEnum.MANAGER_JANTAR_GALA]),
 ) -> TimeSlots:
     """Edits the time slots"""
     initial = await fetch_time_slots(db)
 
-    now = datetime.now()
+    now = datetime.now(tz=timezone.utc)
 
     tablesStart = form_data.tablesStart or initial.tablesStart
+    if tablesStart.tzinfo is None:
+        tablesStart = tablesStart.replace(tzinfo=timezone.utc)
 
-    if now > tablesStart:
+    if not settings.ALLOW_TIME_SLOTS_PAST and now > tablesStart:
         raise HTTPException(
             status_code=400,
             detail="Tables start date cannot be before the current time",
         )
 
     tablesEnd = form_data.tablesEnd or initial.tablesEnd
+    if tablesEnd.tzinfo is None:
+        tablesEnd = tablesEnd.replace(tzinfo=timezone.utc)
 
     if tablesStart > tablesEnd:
         raise HTTPException(
@@ -51,13 +57,17 @@ async def edit_time_slots(
         )
 
     votesStart = form_data.votesStart or initial.votesStart
+    if votesStart.tzinfo is None:
+        votesStart = votesStart.replace(tzinfo=timezone.utc)
 
-    if now > votesStart:
+    if not settings.ALLOW_TIME_SLOTS_PAST and now > votesStart:
         raise HTTPException(
             status_code=400, detail="Votes start date cannot be before the current time"
         )
 
     votesEnd = form_data.votesEnd or initial.votesEnd
+    if votesEnd.tzinfo is None:
+        votesEnd = votesEnd.replace(tzinfo=timezone.utc)
 
     if votesStart > votesEnd:
         raise HTTPException(
