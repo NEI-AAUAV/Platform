@@ -6,7 +6,6 @@ from fastapi.testclient import TestClient
 from app.core.config import settings
 from app.models import News, User
 from app.tests.conftest import SessionTesting
-from app.schemas.news import StatusEnum, CategoryEnum
 
 
 USERS = [
@@ -39,21 +38,19 @@ USERS = [
 NEWS = [
     {
         "header": "Test1",
-        "status": 1,
+        "public": True,
         "title": "NEWS TITLE PLACEHOLDER",
         "category": "EVENT",
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non diam placerat, ultrices libero sit amet, molestie dui. Praesent at purus sit amet velit aliquet commodo. Maecenas dapibus tellus purus.",
-        "published_by": 2,
         "created_at": datetime.now().isoformat(),
         "author_id": 3,
     },
     {
         "header": "Test2",
-        "status": 0,
+        "public": False,
         "title": "NEWS TITLE PLACEHOLDER",
         "category": "Parceria",
         "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non diam placerat, ultrices libero sit amet, molestie dui. Praesent at purus sit amet velit aliquet commodo. Maecenas dapibus tellus purus.",
-        "published_by": 2,
         "created_at": datetime(2016, 5, 5).isoformat(),
         "author_id": 2,
     },

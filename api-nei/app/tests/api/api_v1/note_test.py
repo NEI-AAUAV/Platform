@@ -14,16 +14,14 @@ SUBJECTS = [
         "name": "random name 0",
         "curricular_year": 1,
         "short": "short",
-        "discontinued": 1,
-        "optional": 1,
+        "public": True,
     },
     {
         "code": 9001,
         "name": "random name",
         "curricular_year": 2,
         "short": "short",
-        "discontinued": 1,
-        "optional": 1,
+        "public": False,
     },
 ]
 

@@ -20,18 +20,14 @@ class NewsBase(BaseModel):
     title: Annotated[str, Field(max_length=256)]
     category: Annotated[str, Field(max_length=256)]
     content: Annotated[str, Field(max_length=20000)]
-    published_by: int
     created_at: datetime
     updated_at: Optional[datetime]
-    changed_by: Optional[int]
     author_id: int
 
 
 class NewsInDB(NewsBase):
     id: int
-    publisher: UserInDB
     author: UserInDB
-    editor: Optional[UserInDB]
 
     class Config:
         orm_mode = True
