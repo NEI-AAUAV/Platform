@@ -27,10 +27,10 @@ jobs:
       run: |
         export TAG=${GITHUB_SHA::7}
         echo "sources=compose.prod.yml" >> $GITHUB_OUTPUT
-        echo "targets=~/deploys/${TAG}/compose.yml" >> $GITHUB_OUTPUT
+        echo "targets=~/deploys/${TAG}/" >> $GITHUB_OUTPUT
         if [[ -n "${{ github.event.inputs.extension }}" ]]; then
-          echo "sources=compose.prod.yml,extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml" >> $GITHUB_OUTPUT
-          echo "targets=~/deploys/${TAG}/compose.yml,~/deploys/${TAG}/compose.${{ github.event.inputs.extension }}.yml" >> $GITHUB_OUTPUT
+          mv extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml compose.${{ github.event.inputs.extension }}.prod.yml
+          echo "sources=compose.prod.yml,compose.${{ github.event.inputs.extension }}.prod.yml" >> $GITHUB_OUTPUT
         fi
     - name: Copy compose files
       uses: appleboy/scp-action@v0.1.4
