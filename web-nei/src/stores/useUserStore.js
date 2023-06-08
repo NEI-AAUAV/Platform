@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
 import { parseJWT } from "utils";
-import config from "config"
 
 const defaultTheme =
   localStorage.getItem("th") ||

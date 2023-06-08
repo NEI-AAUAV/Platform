@@ -102,7 +102,7 @@ const data = [
         name: "Jantar de Gala",
         link: config.WEB_GALA_URL,
     },
-    config.ENABLE_RALLY && {
+    config.ENABLE_RALLY && !!localStorage.getItem('tt') && {
         name: "Jantar de Gala",
         link: config.WEB_RALLY_URL,
     }

@@ -1,3 +1,4 @@
+import { local } from "d3";
 import { sample } from "lodash";
 
 const registeredCommands = {
@@ -15,7 +16,18 @@ const registeredCommands = {
   rm: executeRm,
   mario: { runner: executeMario, hidden: true },
   deti: executeDeti,
+  tester: executeTester,
 };
+
+function executeTester(args, state) {
+  if (!['enable', 'disable'].includes(args[0])) return "tester: missing operand 'enable' or 'disable'";
+  if (args[0] === "enable") {
+    localStorage.setItem("tester", 1);
+  } else if (args[0] === "disable") {
+    localStorage.removeItem("tester");
+  }
+  return "refresh the page and check the new features";
+}
 
 function executeLs(args, state) {
   return sample([
