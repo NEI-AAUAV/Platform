@@ -38,6 +38,8 @@ class Settings(BaseSettings):
     ## Algorithm to use when signing JWT tokens
     JWT_ALGORITHM: str = "ES512"
 
+    ALLOW_TIME_SLOTS_PAST: bool = os.getenv("ALLOW_TIME_SLOTS_PAST", "False") == "True"
+
     class Config:
         frozen = True
         case_sensitive = True
