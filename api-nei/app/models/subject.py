@@ -6,11 +6,8 @@ from app.core.config import settings
 
 class Subject(Base):
     code = Column(Integer, primary_key=True, autoincrement=False)
-    course_id = Column(
-        Integer,
-        ForeignKey(settings.SCHEMA_NAME + '.course.code'))
-    curricular_year = Column(Integer, nullable=False)
+    public = Column(Boolean, default=False)
+    curricular_year = Column(Integer)
     name = Column(String(128), nullable=False)
-    short = Column(String(8), nullable=False)
-    discontinued = Column(Boolean)
-    optional = Column(Boolean)
+    short = Column(String(8))
+    link = Column(String(2048))

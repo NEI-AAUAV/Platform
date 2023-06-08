@@ -6,7 +6,7 @@ from typing import Any, List
 from app import crud
 from app.api import deps
 from app.schemas import SeniorStudentCreate, SeniorStudentInDB, SeniorStudentUpdate
-from app.models.senior_student import SeniorStudent
+from app.models.senior import SeniorStudent
 
 router = APIRouter()
 

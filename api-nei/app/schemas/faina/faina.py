@@ -2,7 +2,7 @@ from pydantic import BaseModel, AnyHttpUrl
 
 from typing import Optional, List
 from .faina_member import FainaMemberInDB
-from .types import MandateStr
+from app.schemas.types import MandateStr
 
 
 class FainaBase(BaseModel):

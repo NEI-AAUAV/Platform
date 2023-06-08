@@ -7,7 +7,7 @@ from jose import jwt
 
 from app.core.config import settings
 from app.models import User
-from app.models.email import UserEmail
+from app.models.user.user_email import UserEmail
 from app.tests.conftest import SessionTesting
 from app.api.api_v1.auth.register import _create_email_verification_token
 from app.api.api_v1.auth._deps import Token, hash_password

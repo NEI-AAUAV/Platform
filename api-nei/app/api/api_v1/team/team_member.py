@@ -7,7 +7,7 @@ from loguru import logger
 from app import crud
 from app.api import deps
 from app.schemas import TeamMemberCreate, TeamMemberInDB, TeamMemberUpdate, TeamMandates
-from app.models.team_member import TeamMember
+from app.models.team import TeamMember
 
 router = APIRouter()
 

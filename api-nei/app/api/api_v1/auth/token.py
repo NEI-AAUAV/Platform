@@ -19,7 +19,7 @@ from app.schemas import (
     CourseCreate,
     SubjectCreate,
     UserCreate,
-    UserAcademicDetailsCreate,
+    UserMatriculationCreate,
     UserUpdate,
 )
 
@@ -47,10 +47,9 @@ async def get_token(
     oauth_token: str = None,
     *,
     db: Session = Depends(deps.get_db),
-    # background_tasks: BackgroundTasks,
+    background_tasks: BackgroundTasks,
 ) -> Response:
     if oauth_token is None:
-        print(settings.IDP_SECRET_KEY)
         # Step 1: Request Token
         oauth = AsyncOAuth1Client(
             settings.IDP_KEY, client_secret=settings.IDP_SECRET_KEY)
@@ -68,6 +67,8 @@ async def get_token(
     else:
         if oauth_token not in tokens:
             raise HTTPException(status_code=404, detail="Token not found")
+        
+        print(oauth_verifier, oauth_token, tokens[oauth_token])
 
         # Step 3: Access Token
         oauth = AsyncOAuth1Client(
@@ -78,9 +79,11 @@ async def get_token(
             verifier=oauth_verifier,
         )
         oauth_tokens = await oauth.fetch_access_token(access_token_url)
+        print(oauth_tokens)
         token = oauth_tokens.get("oauth_token")
         token_secret = oauth_tokens.get("oauth_token_secret")
         data = await get_data(token, token_secret, scopes=["name", "uu"])
+        # background_tasks.add_task(get_data, token, token_secret, scopes=["student_info", "student_courses"])
 
         name, uu = (
             data["name"],
@@ -131,7 +134,9 @@ async def get_data(token, token_secret, scopes):
     data = {}
     for s in scopes:
         res = await oauth.get(f"{get_data_url}?scope={s}&format=json")
+        print(res, token, token_secret, scopes)
         res = res.json()
+        print(res)
         if s == "student_info":
             data["student_info"] = res["NewDataSet"]["ObterDadosAluno"]
         elif s == "student_courses":

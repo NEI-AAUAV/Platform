@@ -6,7 +6,7 @@ from pydantic import BaseModel, constr, AnyHttpUrl, root_validator, Field
 
 from app.utils import include, validate_to_json
 
-from .user_academic_details import UserAcademicDetailsInBD
+from .user_matriculation import UserMatriculationInBD
 
 
 class GenderEnum(str, Enum):
@@ -66,7 +66,7 @@ class UserInDB(UserBase):
     updated_at: datetime
     birthday: Optional[date]
     scopes: List[ScopeEnum] = []
-    academic_details: list[UserAcademicDetailsInBD] | list  
+    matriculation: list[UserMatriculationInBD] | list  
     # TODO: sometimes i need to put list, but it feels wrong, fix this
 
     class Config:

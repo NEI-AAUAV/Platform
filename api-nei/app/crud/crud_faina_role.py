@@ -1,6 +1,6 @@
 from app.crud.base import CRUDBase
-from app.models.faina_role import FainaRole
-from app.schemas.faina_role import FainaRoleCreate, FainaRoleUpdate
+from app.models.faina import FainaRole
+from app.schemas.faina import FainaRoleCreate, FainaRoleUpdate
 
 
 class CRUDFainaRole(CRUDBase[FainaRole, FainaRoleCreate, FainaRoleUpdate]):

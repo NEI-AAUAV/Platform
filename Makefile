@@ -1,15 +1,19 @@
+# Default goal when running make without arguments
 .DEFAULT_GOAL := up-build
 
+# Overwrite this if you have docker compose plugin instead of standalone
 COMPOSE_RUNNER ?= docker-compose
 
+# Define the compose environment file to use
 ifeq ($(strip $(PRODUCTION)),)
   P := 
 else
   P := .prod
 endif
-
 COMPOSE_FILE := compose$(P).yml
 
+
+# Attach extensions to the compose file
 .PHONY: rally gala
 
 rally gala: 
@@ -17,15 +21,17 @@ rally gala:
 	$(eval COMPOSE_FILE = compose$(P).yml:extensions/$(@)/compose.override$(P).yml)
 	@true
 
-.PHONY: up down build push pull
 
+# Choose the compose goal to run
+.PHONY: up down build push pull
 
 up down build push pull:
 	COMPOSE_FILE=$(COMPOSE_FILE) $(COMPOSE_RUNNER) $(@) $(FLAGS)
 
-up-build: FLAGS := --build --remove-orphans
-up-build: up
+
+# Some goal aliases for convenience
+up-build:
+	COMPOSE_FILE=$(COMPOSE_FILE) $(COMPOSE_RUNNER) up --build --remove-orphans $(FLAGS)
 	
-down-volumes: FLAGS := -v
-down-volumes: down
-	
+down-volumes:
+	COMPOSE_FILE=$(COMPOSE_FILE) $(COMPOSE_RUNNER) down -v $(FLAGS)

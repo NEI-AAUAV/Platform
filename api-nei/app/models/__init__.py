@@ -1,7 +1,9 @@
+from .faina import FainaMember, FainaRole, Faina
+from .senior import SeniorStudent, Senior
+from .team import TeamColaborator, TeamMember, TeamRole
+from .video import Video, VideoTag
 from .course import Course
 from .device_login import DeviceLogin
-from .faina_member import FainaMember
-from .faina_role import FainaRole
 from .faina import Faina
 from .history import History
 from .merch import Merch
@@ -11,14 +13,7 @@ from .partner import Partner
 from .redirect import Redirect
 from .rgm import Rgm
 from .rgm import Rgm
-from .senior_student import SeniorStudent
 from .senior import Senior
 from .subject import Subject
 from .teacher import Teacher
-from .team_colaborator import TeamColaborator
-from .team_member import TeamMember
-from .team_role import TeamRole
-from .user_academic_details import UserAcademicDetails
 from .user import User
-from .video_tag import VideoTag
-from .video import Video

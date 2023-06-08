@@ -51,9 +51,9 @@ const NewsArticle = () => {
                 <Col md={4} sm={12}>
                     <h5><b>Criado em:</b> {article.created_at?.split('T').at(0)}</h5>
                 </Col>
-                {article.last_change_at != null &&
+                {article.updated_at != null &&
                     <Col md={4} sm={12}>
-                        <h5><b>Modificado em:</b> {article.last_change_at?.split('T').at(0)}</h5>
+                        <h5><b>Modificado em:</b> {article.updated_at?.split('T').at(0)}</h5>
                     </Col>
                 }
             </Row>

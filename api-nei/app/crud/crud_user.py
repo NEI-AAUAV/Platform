@@ -11,8 +11,7 @@ from starlette.datastructures import UploadFile as StarletteUploadFile
 from loguru import logger
 from app.exception import FileFormatException
 from app.crud.base import CRUDBase
-from app.models.user import User
-from app.models.email import UserEmail
+from app.models.user import User, UserEmail
 from app.schemas.user import UserCreate, UserUpdate
 from app.core.config import settings
 

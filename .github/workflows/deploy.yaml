@@ -27,10 +27,10 @@ jobs:
       run: |
         export TAG=${GITHUB_SHA::7}
         echo "sources=compose.prod.yml" >> $GITHUB_OUTPUT
-        echo "targets=compose.${TAG}.yml" >> $GITHUB_OUTPUT
+        echo "targets=~/deploys/${TAG}/compose.yml" >> $GITHUB_OUTPUT
         if [[ -n "${{ github.event.inputs.extension }}" ]]; then
           echo "sources=compose.prod.yml,extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml" >> $GITHUB_OUTPUT
-          echo "targets=~/deploys/${TAG}/" >> $GITHUB_OUTPUT
+          echo "targets=~/deploys/${TAG}/compose.yml,~/deploys/${TAG}/compose.${{ github.event.inputs.extension }}.yml" >> $GITHUB_OUTPUT
         fi
     - name: Copy compose files
       uses: appleboy/scp-action@v0.1.4
@@ -40,7 +40,7 @@ jobs:
         password: ${{ secrets.SSH_PASSWORD }}
         source: "${{ steps.variables.outputs.sources }}"
         target: "${{ steps.variables.outputs.targets }}"
-        timeout: 200s
+        timeout: 100s
 
   build:
     runs-on: ubuntu-latest
@@ -59,12 +59,12 @@ jobs:
         make build
     - name: Push docker images
       run: |
-        make push FLAGS="--push-extensions"
+        make push FLAGS="--ignore-push-failures"
     - name: Push docker images with tag
       run: |
         export TAG=${GITHUB_SHA::7}
         make build
-        make push FLAGS="--push-extensions"
+        make push FLAGS="--ignore-push-failures"
   
   deploy:
     needs: build

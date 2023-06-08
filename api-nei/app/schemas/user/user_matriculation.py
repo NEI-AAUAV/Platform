@@ -5,26 +5,26 @@ from pydantic import BaseModel, Field
 
 from app.utils import include
 
-from .subject import SubjectInDB
+from app.schemas.subject import SubjectInDB
 
 
 @include(['created_at'])
-class UserAcademicDetailsBase(BaseModel):
+class UserMatriculationBase(BaseModel):
     user_id: int
     course_id: int
     curricular_year: int
     created_at: datetime = Field(default_factory=datetime.now)
 
 
-class UserAcademicDetailsCreate(UserAcademicDetailsBase):
+class UserMatriculationCreate(UserMatriculationBase):
     pass
 
 
-class UserAcademicDetailsUpdate(UserAcademicDetailsBase):
+class UserMatriculationUpdate(UserMatriculationBase):
     pass
 
 
-class UserAcademicDetailsInBD(UserAcademicDetailsBase):
+class UserMatriculationInBD(UserMatriculationBase):
     id: int
     subjects: List[SubjectInDB]
 

@@ -2,8 +2,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
 from app.crud.base import CRUDBase
-from app.models.faina_member import FainaMember
-from app.schemas.faina_member import FainaMemberCreate, FainaMemberUpdate
+from app.models.faina import FainaMember
+from app.schemas.faina import FainaMemberCreate, FainaMemberUpdate
 
 
 class CRUDFainaMember(CRUDBase[FainaMember, FainaMemberCreate, FainaMemberUpdate]):

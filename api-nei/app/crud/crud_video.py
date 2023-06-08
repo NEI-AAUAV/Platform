@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
-from app.models.video import Video, video__video_tags
-from app.models.video_tag import VideoTag
+from app.models.video import Video, video__video_tags, VideoTag
 from app.schemas.video import VideoCreate, VideoUpdate
 
 from typing import List, Tuple, Set

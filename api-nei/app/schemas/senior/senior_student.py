@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from typing_extensions import Annotated
 
-from .user import UserInDB
+from app.schemas.user import UserInDB
 
 
 class SeniorStudentBase(BaseModel):

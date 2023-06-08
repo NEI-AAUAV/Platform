@@ -5,7 +5,7 @@ from typing import Any, List
 from app import crud
 from app.api import deps
 from app.schemas import TeamRoleCreate, TeamRoleInDB, TeamRoleUpdate
-from app.models.team_role import TeamRole
+from app.models.team import TeamRole
 
 router = APIRouter()
 

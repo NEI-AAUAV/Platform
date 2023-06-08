@@ -4,8 +4,8 @@ from typing import Optional, List
 from typing_extensions import Annotated
 
 from .team_role import TeamRoleInDB
-from .user import UserInDB
-from .types import MandateStr
+from app.schemas.user import UserInDB
+from app.schemas.types import MandateStr
 
 
 

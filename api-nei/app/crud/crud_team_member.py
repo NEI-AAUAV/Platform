@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
-from app.models.team_member import TeamMember
-from app.schemas.team_member import TeamMemberCreate, TeamMemberUpdate
+from app.models.team import TeamMember
+from app.schemas.team import TeamMemberCreate, TeamMemberUpdate
 
 from typing import List
 

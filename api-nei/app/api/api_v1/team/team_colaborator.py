@@ -5,7 +5,7 @@ from typing import Any, List
 from app import crud
 from app.api import deps
 from app.schemas import TeamColaboratorCreate, TeamColaboratorInDB, TeamColaboratorUpdate
-from app.models.team_colaborator import TeamColaborator
+from app.models.team import TeamColaborator
 
 router = APIRouter()
 

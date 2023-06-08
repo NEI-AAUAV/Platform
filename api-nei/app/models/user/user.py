@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import AnyHttpUrl
-from sqlalchemy import Column, Integer, String, DateTime, Enum, Text, Boolean, Date
+from sqlalchemy import Column, Integer, String, DateTime, Enum, Text, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -28,7 +28,7 @@ class User(Base):
     created_at = Column(DateTime, nullable=False, index=True)
     birthday = Column(Date)
 
-    academic_details = relationship("UserAcademicDetails")
+    matriculation = relationship("UserMatriculation")
 
     @hybrid_property
     def image(self) -> Optional[AnyHttpUrl]:

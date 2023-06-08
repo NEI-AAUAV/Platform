@@ -4,7 +4,7 @@ from typing import Optional
 from typing_extensions import Annotated
 
 from .faina_role import FainaRoleInDB
-from .user import UserInDB
+from app.schemas.user import UserInDB
 
 
 class FainaMemberBase(BaseModel):

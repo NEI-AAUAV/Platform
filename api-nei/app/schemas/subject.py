@@ -6,21 +6,21 @@ from pydantic import BaseModel, Field
 
 class SubjectBase(BaseModel):
     code: int
+    curricular_year: Optional[int]
     name: Annotated[Optional[str], Field(max_length=60)]
-    curricular_year: int
     short: Annotated[Optional[str], Field(max_length=5)]
-    discontinued: bool
-    optional: bool
-    # course_id: int
+    public: Optional[bool]
+    link: Annotated[Optional[str], Field(max_length=2048)]
+
 
 class SubjectCreate(SubjectBase):
     pass
 
+
 class SubjectUpdate(SubjectBase):
     pass
 
-class SubjectInDB(SubjectBase):
-    code: int
 
+class SubjectInDB(SubjectBase):
     class Config:
         orm_mode = True

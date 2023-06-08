@@ -1,4 +1,3 @@
-from app.models import faina_role
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import Any, List
@@ -6,7 +5,7 @@ from typing import Any, List
 from app import crud
 from app.api import deps
 from app.schemas import FainaRoleCreate, FainaRoleInDB, FainaRoleUpdate
-from app.models.faina_role import FainaRole
+from app.models.faina import FainaRole
 
 router = APIRouter()
 

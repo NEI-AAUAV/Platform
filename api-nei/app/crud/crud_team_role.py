@@ -1,6 +1,6 @@
 from app.crud.base import CRUDBase
-from app.models.team_role import TeamRole
-from app.schemas.team_role import TeamRoleCreate, TeamRoleUpdate
+from app.models.team import TeamRole
+from app.schemas.team import TeamRoleCreate, TeamRoleUpdate
 
 
 class CRUDTeamRole(CRUDBase[TeamRole, TeamRoleCreate, TeamRoleUpdate]):

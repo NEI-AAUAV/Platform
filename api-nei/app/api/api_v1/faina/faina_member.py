@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app import crud
 from app.api import deps
 from app.schemas import FainaMemberCreate, FainaMemberInDB, FainaMemberUpdate
-from app.models.faina_member import FainaMember
+from app.models.faina import FainaMember
 
 
 router = APIRouter()

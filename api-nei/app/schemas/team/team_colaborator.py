@@ -2,8 +2,8 @@ from pydantic import BaseModel
 
 from typing import Optional
 
-from .user import UserInDB
-from .types import MandateStr
+from app.schemas.user import UserInDB
+from app.schemas.types import MandateStr
 
 
 
