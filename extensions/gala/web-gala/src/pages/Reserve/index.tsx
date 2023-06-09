@@ -6,6 +6,7 @@ import Table from "@/components/Table";
 import useTables from "@/hooks/tableHooks/useTables";
 import useSessionUser from "@/hooks/userHooks/useSessionUser";
 import { useUserStore } from "@/stores/useUserStore";
+import useLoginLink from "@/hooks/useLoginLink";
 
 function calculateOccupiedSeats(persons: Person[]) {
   return persons.reduce((acc, person) => acc + 1 + person.companions.length, 0);
@@ -23,6 +24,7 @@ export default function Reserve() {
     if (isLoading) return false;
     return tables.some((t) => t.persons.some((p) => p.id === sessionUser?._id));
   }, [tables, sessionUser, isLoading]);
+  const loginLink = useLoginLink();
 
   function linkLocation(table: Table) {
     const occupied = calculateOccupiedSeats(table.persons);
@@ -44,7 +46,7 @@ export default function Reserve() {
             <br />
             <a
               className="btn-md btn mb-8 mt-4 rounded-full bg-black/70 font-bold normal-case text-white backdrop-blur sm:text-[1.25rem]"
-              href="http://localhost/auth/login/"
+              href={loginLink}
             >
               Iniciar sessão
             </a>
