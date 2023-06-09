@@ -19,6 +19,7 @@ export default {
   },
   plugins: [daisyui, headlessui],
   daisyui: {
+    logs: false,
     themes: [
       {
         light: {

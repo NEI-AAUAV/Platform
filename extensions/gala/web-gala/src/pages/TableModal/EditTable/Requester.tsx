@@ -1,11 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import {
   faCheck,
   faHandDots,
   faSeedling,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Avatar from "@/components/Avatar";
 import useNEIUser from "@/hooks/useNEIUser";
@@ -16,6 +15,7 @@ import { FrangoIcon } from "@/assets/icons";
 type RequesterProps = {
   person: Person;
   tableId: number;
+  mutate: () => void;
 };
 
 const orange = { color: "#DD8500" };
@@ -36,10 +36,9 @@ const gridTemplate = {
   gridTemplateColumns: "max-content 1fr",
 };
 
-export default function Requester({ person, tableId }: RequesterProps) {
+export default function Requester({ person, tableId, mutate }: RequesterProps) {
   const { neiUser } = useNEIUser(person.id);
   const rejectConfirmModalRef = useRef<HTMLDialogElement>(null);
-  const navigate = useNavigate();
   async function acceptGuest(userId: number) {
     await useTableConfirm(tableId, { uid: userId, confirm: true });
   }
@@ -61,7 +60,7 @@ export default function Requester({ person, tableId }: RequesterProps) {
             className="flex aspect-square w-6 items-center justify-center rounded-full bg-light-gold"
             onClick={async () => {
               await acceptGuest(person.id);
-              navigate(0);
+              mutate();
             }}
           >
             <FontAwesomeIcon icon={faCheck} />
@@ -89,11 +88,11 @@ export default function Requester({ person, tableId }: RequesterProps) {
               `+${person.companions.length} companions`}
           </span>
           <span className="flex gap-1">
-            {person.companions.map((companion) => (
-              <>
+            {person.companions.map((companion, idx) => (
+              <Fragment key={idx}>
                 {iconMap.get(companion.dish)}
                 {allergyIcon(companion.allergies)}
-              </>
+              </Fragment>
             ))}
           </span>
         </div>
@@ -110,7 +109,7 @@ export default function Requester({ person, tableId }: RequesterProps) {
             onClick={async () => {
               rejectConfirmModalRef.current!.close();
               await rejectGuest(person.id);
-              navigate(0);
+              mutate();
             }}
           >
             Yes

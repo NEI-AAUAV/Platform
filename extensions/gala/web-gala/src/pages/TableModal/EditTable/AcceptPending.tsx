@@ -3,9 +3,14 @@ import Requester from "./Requester";
 type AcceptTableProps = {
   persons: Person[];
   tableId: number;
+  mutate: () => void;
 };
 
-export default function AcceptPending({ persons, tableId }: AcceptTableProps) {
+export default function AcceptPending({
+  persons,
+  tableId,
+  mutate,
+}: AcceptTableProps) {
   const filteredPersons = persons.filter((person) => !person.confirmed);
 
   return (
@@ -16,7 +21,7 @@ export default function AcceptPending({ persons, tableId }: AcceptTableProps) {
       {filteredPersons.map((person) => (
         <div key={person.id} className="">
           <div className="flex items-start gap-2">
-            <Requester person={person} tableId={tableId} />
+            <Requester person={person} tableId={tableId} mutate={mutate} />
           </div>
         </div>
       ))}

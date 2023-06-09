@@ -3,14 +3,13 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { faCaretDown, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
 import { useUserStore } from "@/stores/useUserStore";
-import { useGalaUserStore } from "@/stores/useGalaUserStore";
 import Button from "@/components/Button";
 import useUserCreate from "@/hooks/userHooks/useUserCreate";
-import service from "@/services/GalaService";
+import useSessionUser from "@/hooks/userHooks/useSessionUser";
 
 type FormValues = {
   matriculation: number | null;
@@ -22,25 +21,22 @@ export default function Register() {
   const navigate = useNavigate();
 
   const [selected, setSelected] = useState<number | null>(null);
+  const { sessionUser, isLoading, mutate: galaUserRefetch } = useSessionUser();
+
+  useEffect(() => {
+    if (!isLoading) galaUserRefetch();
+  }, []);
+
   const { sessionLoading, sub } = useUserStore((state) => ({
     sessionLoading: state.sessionLoading,
     sub: state.sub,
   }));
 
   const methods = useForm<FormValues>({
-    defaultValues: async () => {
-      let user;
-      try {
-        user = await service.user.getSessionUser();
-        setSelected(user?.matriculation ?? null);
-      } catch (error) {
-        console.error(error);
-      }
-      return {
-        matriculation: user?.matriculation ?? null,
-        nmec: user?.nmec ?? null,
-        has_payed: user?.has_payed ?? false,
-      };
+    values: {
+      matriculation: sessionUser?.matriculation ?? null,
+      nmec: sessionUser?.nmec ?? null,
+      has_payed: sessionUser?.has_payed ?? false,
     },
   });
 
@@ -59,7 +55,7 @@ export default function Register() {
         nmec: data.nmec,
         matriculation: data.matriculation,
       });
-      useGalaUserStore.setState(user);
+      galaUserRefetch(user);
     } catch (error) {
       console.error(error);
       return;
@@ -67,7 +63,7 @@ export default function Register() {
     navigate("/");
   };
 
-  const inGala = !!methods.formState.defaultValues?.nmec;
+  const inGala = !!sessionUser?.nmec;
 
   return (
     <div className="mx-16 sm:mx-auto sm:max-w-xl">

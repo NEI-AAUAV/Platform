@@ -14,6 +14,7 @@ import Avatar from "@/components/Avatar";
 
 type ClaimTableProps = {
   table: Table;
+  mutate: () => void;
 };
 
 type FormValues = {
@@ -30,7 +31,7 @@ function calculateOccupiedSeats(persons: Person[]) {
   return persons.reduce((acc, person) => acc + 1 + person.companions.length, 0);
 }
 
-export default function ClaimTable({ table }: ClaimTableProps) {
+export default function ClaimTable({ table, mutate }: ClaimTableProps) {
   const methods = useForm<FormValues>({
     defaultValues: {
       title: "",
@@ -65,12 +66,9 @@ export default function ClaimTable({ table }: ClaimTableProps) {
       name: data.title,
     };
     useTableReserve(table._id, reserveRequest)
-      .then(() => {
-        useTableEdit(table._id, editRequest).then(() => {
-          navigate(0);
-        });
-      })
+      .then(() => useTableEdit(table._id, editRequest))
       .finally(() => {
+        mutate();
         navigate("/reserve");
       });
   };
