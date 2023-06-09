@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import Input from "@/components/Input";
 import VisualTable from "@/components/Table/VisualTable";
@@ -31,29 +32,47 @@ function calculateOccupiedSeats(persons: Person[]) {
 
 export default function ClaimTable({ table }: ClaimTableProps) {
   const methods = useForm<FormValues>({
-    defaultValues: { title: "", dish: "NOR", allergies: "", companions: [] },
+    defaultValues: {
+      title: "",
+      dish: "NOR",
+      allergies: "",
+      companions: [],
+    },
   });
-  const titleRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
+  const titleRef = useRef<HTMLInputElement | null>(null);
+  const { ref, ...rest } = methods.register("title", {
+    required: "Title is required",
+    minLength: {
+      value: 3,
+      message: "Title must be at least 3 characters long",
+    },
+  });
   function clearTitle() {
     titleRef.current!.value = "";
     titleRef.current?.focus();
   }
 
-  const formSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
-    // const reserveRequest = {
-    //   dish: data.dish,
-    //   allergies: data.allergies,
-    //   companions: data.companions,
-    // };
+  const formSubmit: SubmitHandler<FormValues> = async (data) => {
+    const reserveRequest = {
+      dish: data.dish,
+      allergies: data.allergies,
+      companions: data.companions,
+    };
 
-    // const editRequest = {
-    //   name: data.title,
-    // };
-
-    // useTableReserve(table._id, reserveRequest);
-    // useTableEdit(table._id, editRequest);
+    const editRequest = {
+      name: data.title,
+    };
+    useTableReserve(table._id, reserveRequest)
+      .then(() => {
+        useTableEdit(table._id, editRequest).then(() => {
+          navigate(0);
+        });
+      })
+      .finally(() => {
+        navigate("/reserve");
+      });
   };
   return (
     <div className="items-center sm:flex">
@@ -63,14 +82,22 @@ export default function ClaimTable({ table }: ClaimTableProps) {
           noValidate
           onSubmit={methods.handleSubmit(formSubmit)}
         >
-          <div className="flex flex-col items-center gap-3 overflow-y-scroll px-3 pt-1 sm:items-start">
+          <div className="flex flex-col items-center gap-3 overflow-y-auto overflow-x-hidden px-10 pt-1 sm:items-start">
             <div className="relative sm:w-full">
               <Input
                 className="px-4 py-3 sm:w-full"
                 placeholder="Título da Mesa"
-                {...methods.register("title")}
-                ref={titleRef}
+                {...rest}
+                ref={(e) => {
+                  ref(e);
+                  titleRef.current = e;
+                }}
               />
+              {methods.formState.errors.title && (
+                <div className="text-xs text-red-500">
+                  {methods.formState.errors.title.message}
+                </div>
+              )}
               <button
                 className="absolute right-0 h-full px-4"
                 type="button"
