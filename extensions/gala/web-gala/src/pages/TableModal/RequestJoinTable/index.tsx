@@ -15,6 +15,7 @@ import useTableReserve from "@/hooks/tableHooks/useTableReserve";
 
 type RequestJoinTableProps = {
   table: Table;
+  mutate: () => void;
 };
 
 type FormValues = {
@@ -26,7 +27,10 @@ type FormValues = {
   }[];
 };
 
-export default function RequestJoinTable({ table }: RequestJoinTableProps) {
+export default function RequestJoinTable({
+  table,
+  mutate,
+}: RequestJoinTableProps) {
   const [form, setForm] = useState(false);
   const { neiUser } = useNEIUser(table.head);
   const methods = useForm<FormValues>({
@@ -40,8 +44,8 @@ export default function RequestJoinTable({ table }: RequestJoinTableProps) {
 
   const formSubmit: SubmitHandler<FormValues> = async (data) => {
     await useTableReserve(table._id, data);
+    mutate();
     navigate("/reserve");
-    navigate(0);
   };
 
   return (

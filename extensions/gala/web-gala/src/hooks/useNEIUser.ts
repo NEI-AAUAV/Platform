@@ -1,24 +1,13 @@
-import { useState, useEffect } from "react";
+import useSWR from "swr";
 import NEIService from "@/services/NEIService";
 
 export default function useNEIUser(id: number | null) {
-  const [neiUserId, setNEIUserId] = useState(id);
-  const [neiUser, setNEIUser] = useState<NEIUser | null>(null);
+  const { data, error, isLoading } = useSWR<NEIUser>(
+    id === null ? null : ["/nei/user", id],
+    () => NEIService.getUserById(id!),
+    // Don't refresh the user unless 60 seconds have passed
+    { dedupingInterval: 60_000 },
+  );
 
-  useEffect(() => {
-    if (neiUserId === null) {
-      return;
-    }
-    (async () => {
-      try {
-        const response = await NEIService.getUserById(neiUserId);
-        setNEIUser(response);
-      } catch (error) {
-        console.error(error);
-        setNEIUser(null);
-      }
-    })();
-  }, [neiUserId]);
-
-  return { neiUser, setNEIUserId };
+  return { neiUser: data, isLoading, isError: error };
 }

@@ -10,22 +10,32 @@ import EditTable from "./EditTable";
 import useSessionUser from "@/hooks/userHooks/useSessionUser";
 import useTables from "@/hooks/tableHooks/useTables";
 import ViewTable from "./ViewTable";
+import useTable from "@/hooks/tableHooks/useTable";
 
 const ClaimTable = lazy(() => import("./ClaimTable"));
 
 type TableModalProps = {
-  table: Table;
+  tableId: number;
 };
 
 function calculateOccupiedSeats(persons: Person[]) {
   return persons.reduce((acc, person) => acc + 1 + person.companions.length, 0);
 }
 
-function getModalPage(table: Table) {
-  const currentUserId = useUserStore((state) => state?.sub);
-  const occupied = calculateOccupiedSeats(table.persons);
+function getModalPage(tableId: number) {
+  const { table, isLoading, mutate } = useTable(tableId);
+
+  useEffect(() => {
+    if (!isLoading) mutate();
+  }, []);
+
+  if (isLoading) return null;
+  if (table === undefined) return <Navigate to="/reserve" />;
+
   const { tables } = useTables();
   const { sessionUser } = useSessionUser();
+  const occupied = calculateOccupiedSeats(table.persons);
+  const currentUserId = useUserStore((state) => state?.sub);
 
   const inAnyTable = tables.some((t) =>
     t.persons.some((p) => p.id === sessionUser?._id),
@@ -34,18 +44,18 @@ function getModalPage(table: Table) {
   const inTable = table.persons.some((p) => p.id === sessionUser?._id);
 
   if (occupied === 0 && !inAnyTable) {
-    return <ClaimTable table={table} />;
+    return <ClaimTable table={table} mutate={mutate} />;
   }
 
   if (String(table.head) === currentUserId) {
-    return <EditTable table={table} />;
+    return <EditTable table={table} mutate={mutate} />;
   }
   if (inAnyTable && occupied > 0) {
-    return <ViewTable table={table} inTable={inTable} />;
+    return <ViewTable table={table} inTable={inTable} mutate={mutate} />;
   }
 
   if (String(table.head) !== currentUserId && !inAnyTable) {
-    return <RequestJoinTable table={table} />;
+    return <RequestJoinTable table={table} mutate={mutate} />;
   }
 
   // wtf is this
@@ -69,10 +79,10 @@ function useModal() {
   return modalRef;
 }
 
-export default function TableModal({ table }: TableModalProps) {
-  const navigate = useNavigate();
-  const modalPage = getModalPage(table);
+export default function TableModal({ tableId }: TableModalProps) {
   const modalRef = useModal();
+  const navigate = useNavigate();
+  const modalPage = getModalPage(tableId);
 
   return (
     <dialog

@@ -9,9 +9,10 @@ import Avatar from "@/components/Avatar";
 
 type EditTableProps = {
   table: Table;
+  mutate: () => void;
 };
 
-export default function EditTable({ table }: EditTableProps) {
+export default function EditTable({ table, mutate }: EditTableProps) {
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const [error, setError] = useState(false);
   return (
@@ -39,8 +40,15 @@ export default function EditTable({ table }: EditTableProps) {
                 setError(true);
                 return;
               }
+
               setError(false);
-              useTableEdit(table._id, { name: titleRef.current?.value ?? "" });
+
+              // Skip editing if the value didn't change
+              if (titleRef.current?.value === table.name) return;
+
+              useTableEdit(table._id, {
+                name: titleRef.current?.value ?? "",
+              }).then(mutate);
               titleRef.current!.readOnly = true;
             }}
             onInput={() => {
@@ -72,7 +80,11 @@ export default function EditTable({ table }: EditTableProps) {
         </h5>
         <VisualTable className="sm:hidden" table={table} />
         <GuestList persons={table.persons} />
-        <AcceptPending persons={table.persons} tableId={table._id} />
+        <AcceptPending
+          persons={table.persons}
+          tableId={table._id}
+          mutate={mutate}
+        />
       </div>
       <VisualTable className="ml-auto mr-20 hidden sm:block" table={table} />
     </div>

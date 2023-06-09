@@ -1,37 +1,17 @@
-import { useState, useEffect } from "react";
 import GalaService from "@/services/GalaService";
+import useTables from "./useTables";
 
-export default function useTable(id: number | undefined) {
-  const [tableId, setTableId] = useState(id);
-  const [table, setTable] = useState<Table | null>();
+export default function useTable(id: number) {
+  const { tables, isLoading, mutate: mutateTables } = useTables();
+  const table = tables.find((table) => table._id === id);
 
-  useEffect(() => {
-    if (!tableId) {
-      setTable(undefined);
-      return;
-    }
-    (async () => {
-      try {
-        const response = await GalaService.table.getTable(tableId);
-        setTable(response);
-      } catch (error) {
-        console.error(error);
-        setTable(null);
-      }
-    })();
-  }, [tableId]);
+  const mutate = function () {
+    mutateTables(async (tables) => {
+      if (!tables) return tables;
+      const newTable = await GalaService.table.getTable(id);
+      return tables.map((table) => (table._id === id ? newTable : table));
+    });
+  };
 
-  // useEffect(() => {
-  //   console.count("useTable");
-  //   if (tableId === undefined) {
-  //     setTable(undefined);
-  //     return;
-  //   }
-  //   (async () => {
-  //     const response = await GalaService.getTable(tableId);
-  //     setTable(response);
-  //   })();
-  // }, [tableId]);
-
-  return { table, setTableId };
+  return { table, mutate, isLoading };
 }

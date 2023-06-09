@@ -8,9 +8,10 @@ import useNEIUser from "@/hooks/useNEIUser";
 
 type ViewTableProps = {
   table: Table;
+  mutate: () => void;
   inTable?: boolean;
 };
-export default function ViewTable({ table, inTable }: ViewTableProps) {
+export default function ViewTable({ table, inTable, mutate }: ViewTableProps) {
   const { neiUser } = useNEIUser(table.head);
   const navigate = useNavigate();
   return (
@@ -28,8 +29,8 @@ export default function ViewTable({ table, inTable }: ViewTableProps) {
             <Button
               onClick={async () => {
                 await useTableLeave(table._id);
+                mutate();
                 navigate("/reserve");
-                navigate(0);
               }}
             >
               Leave Table
