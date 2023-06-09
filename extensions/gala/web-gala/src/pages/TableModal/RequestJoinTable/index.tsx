@@ -1,4 +1,8 @@
+/* eslint-disable react/jsx-props-no-spreading */
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { faPaperPlane, faChair } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Avatar from "@/components/Avatar";
@@ -7,41 +11,78 @@ import RequestForm from "./RequestForm";
 import Button from "@/components/Button";
 import useNEIUser from "@/hooks/useNEIUser";
 import GuestList from "@/components/TableModal/GuestList";
+import useTableReserve from "@/hooks/tableHooks/useTableReserve";
 
 type RequestJoinTableProps = {
   table: Table;
 };
 
+type FormValues = {
+  dish: "NOR" | "VEG";
+  allergies: string;
+  companions: {
+    dish: "NOR" | "VEG";
+    allergies: string;
+  }[];
+};
+
 export default function RequestJoinTable({ table }: RequestJoinTableProps) {
   const [form, setForm] = useState(false);
   const { neiUser } = useNEIUser(table.head);
+  const methods = useForm<FormValues>({
+    defaultValues: {
+      dish: "NOR",
+      allergies: "",
+      companions: [],
+    },
+  });
+  const navigate = useNavigate();
+
+  const formSubmit: SubmitHandler<FormValues> = async (data) => {
+    await useTableReserve(table._id, data);
+    navigate("/reserve");
+    navigate(0);
+  };
 
   return (
     <div className="items-center sm:flex">
-      <form className="flex flex-col items-center gap-3">
-        <div className="flex flex-col items-center gap-3 overflow-y-scroll px-3 sm:w-full sm:items-start">
-          <h1 className="text-3xl font-bold">{table.name}</h1>
-          <div className="mb-10 flex items-center gap-3">
-            <Avatar id={table.head} className="w-[18px]" />
-            <h6 className="capitalize">{`${neiUser?.name} ${neiUser?.surname}`}</h6>
+      <FormProvider {...methods}>
+        <form
+          noValidate
+          onSubmit={methods.handleSubmit(formSubmit)}
+          className="flex flex-col items-center gap-3"
+        >
+          <div className="flex flex-col items-center gap-3 overflow-y-scroll px-3 sm:w-full sm:items-start">
+            <h1 className="text-3xl font-bold">{table.name}</h1>
+            <div className="mb-10 flex items-center gap-3">
+              <Avatar id={table.head} className="w-[18px]" />
+              <h6 className="capitalize">{`${neiUser?.name} ${neiUser?.surname}`}</h6>
+            </div>
+            <VisualTable className="sm:hidden" table={table} />
+            {form ? (
+              <RequestForm table={table} />
+            ) : (
+              <GuestList persons={table.persons} />
+            )}
           </div>
-          <VisualTable className="sm:hidden" table={table} />
-          {form ? (
-            <RequestForm table={table} />
-          ) : (
-            <GuestList persons={table.persons} />
-          )}
-        </div>
-        {form ? (
-          <Button className="sticky bottom-0 mt-4 w-full">
-            <FontAwesomeIcon icon={faPaperPlane} /> Enviar Convite
-          </Button>
-        ) : (
-          <Button className="mt-4 w-full" onClick={() => setForm(true)}>
+          <Button
+            className={classNames("mt-4 w-full", {
+              hidden: form,
+            })}
+            onClick={() => setForm(true)}
+          >
             <FontAwesomeIcon icon={faChair} /> Pedir convite para esta mesa
           </Button>
-        )}
-      </form>
+          <Button
+            className={classNames("sticky bottom-0 mt-4 w-full", {
+              hidden: !form,
+            })}
+            submit
+          >
+            <FontAwesomeIcon icon={faPaperPlane} /> Enviar Convite
+          </Button>
+        </form>
+      </FormProvider>
       <VisualTable className="ml-auto mr-20 hidden sm:block" table={table} />
     </div>
   );

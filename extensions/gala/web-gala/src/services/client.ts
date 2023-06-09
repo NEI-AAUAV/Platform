@@ -20,7 +20,7 @@ function processQueue(token?: string) {
 
 /** Attempt to login with refresh token cookie. */
 export async function refreshToken() {
-  return await axios
+  return axios
     .create({
       baseURL: config.API_NEI_URL,
       timeout: 5000,
@@ -79,17 +79,15 @@ export const createClient = (baseURL?: string) => {
           if (token) {
             config.retry = true;
             return axios.request(config);
-          } else {
-            return Promise.reject("Session Expired");
           }
-        } else {
-          return new Promise((resolve) => {
-            subscribeTokenRefresh((token?: string) => {
-              config.headers.Authorization = `Bearer ${token}`;
-              resolve(axios.request(config));
-            });
-          });
+          return Promise.reject("Session Expired");
         }
+        return new Promise((resolve) => {
+          subscribeTokenRefresh((token?: string) => {
+            config.headers.Authorization = `Bearer ${token}`;
+            resolve(axios.request(config));
+          });
+        });
       }
       return Promise.reject(error);
     },

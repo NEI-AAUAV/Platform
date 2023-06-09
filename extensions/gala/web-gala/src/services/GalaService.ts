@@ -1,6 +1,7 @@
+import config from "@/config";
 import { createClient } from "./client";
 
-const client = createClient("http://localhost/api/gala/v1");
+const client = createClient(`${config.BASE_URL}/api/gala/v1`);
 
 type ReserveTable = {
   dish: string;
@@ -18,8 +19,8 @@ type Confirmation = {
 
 type EditUser = {
   id: number;
-  matriculation: number;
-  nmec: number;
+  matriculation: number | null;
+  nmec: number | null;
   email: string;
   name: string;
   has_payed: boolean;
@@ -27,7 +28,7 @@ type EditUser = {
 
 type CreateUser = {
   email: string;
-  matriculation: number;
+  matriculation: number | null;
 };
 
 const GalaService = {
@@ -84,11 +85,11 @@ const GalaService = {
       return response;
     },
     editUser: async (request: EditUser) => {
-      const response: User = await client.put(`/users/`, request);
+      const response: User = await client.put(`/users`, request);
       return response;
     },
     createUser: async (request: CreateUser) => {
-      const response: User = await client.post(`/users/new`, request);
+      const response: User = await client.post(`/users`, request);
       return response;
     },
     getSessionUser: async () => {

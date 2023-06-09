@@ -30,6 +30,8 @@ export default function Navbar() {
     }s, box-shadow 0.15s ease-in-out ${isOpen ? 0.1 : 0}s`,
   };
 
+  const [counter, setCounter] = useState(0);
+
   return (
     <>
       <header
@@ -42,10 +44,23 @@ export default function Navbar() {
         style={headerTransition}
       >
         <div className="flex">
-          <Link className="flex gap-3" to="/">
-            <LogoIcon className="" />
-            <span className="text-xl font-bold">Jantar de Gala</span>
-          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              setCounter((prev) => prev + 1);
+              if (counter > 68) {
+                setCounter(() => 0);
+                window.location.href =
+                  "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+              }
+            }}
+          >
+            <Link className="flex gap-3" to="/">
+              <LogoIcon className="" />
+              <span className="text-xl font-bold">Jantar de Gala</span>
+            </Link>
+          </button>
+
           <div className="ml-auto hidden sm:block">
             <Navigation />
           </div>

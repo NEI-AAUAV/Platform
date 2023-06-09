@@ -1,5 +1,8 @@
 import GalaService from "@/services/GalaService";
 
-export default function useTableUserRemove(id: number, uid: number | string) {
-  GalaService.table.tableRemoveUser(id, uid);
+export default async function useTableUserRemove(
+  id: number,
+  uid: number | string,
+) {
+  await GalaService.table.tableRemoveUser(id, uid);
 }

@@ -4,7 +4,7 @@ import pathlib
 from fastapi import Depends
 
 from pydantic import BaseSettings
-from typing import Annotated, List, TypeAlias
+from typing import Annotated, List, TypeAlias, Optional
 
 
 # Project Directories
@@ -37,6 +37,21 @@ class Settings(BaseSettings):
     )
     ## Algorithm to use when signing JWT tokens
     JWT_ALGORITHM: str = "ES512"
+
+    # Email settings
+    EMAIL_ENABLED: bool = os.getenv("EMAIL_ENABLED", "False") == "True"
+    ## The domain to add to the Message-id Header
+    EMAIL_DOMAIN: str = "nei.web.ua.pt"
+    ## Address to send email as
+    EMAIL_SENDER_ADDRESS: Optional[str] = os.getenv("EMAIL_SENDER_ADDRESS")
+    ## SMTP Host address to which email requests will be made
+    EMAIL_SMTP_HOST: Optional[str] = os.getenv("EMAIL_SMTP_HOST")
+    ## SMTP Host port
+    EMAIL_SMTP_PORT: int = int(os.getenv("EMAIL_SMTP_PORT", 587))
+    ## Username to use for authentication with the smtp server
+    EMAIL_SMTP_USER: Optional[str] = os.getenv("EMAIL_SMTP_USER")
+    ## Password to use for authentication with the smtp server
+    EMAIL_SMTP_PASSWORD: Optional[str] = os.getenv("EMAIL_SMTP_PASSWORD")
 
     ALLOW_TIME_SLOTS_PAST: bool = os.getenv("ALLOW_TIME_SLOTS_PAST", "False") == "True"
 

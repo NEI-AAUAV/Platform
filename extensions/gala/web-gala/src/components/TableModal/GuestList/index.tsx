@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+import { Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHandDots, faSeedling } from "@fortawesome/free-solid-svg-icons";
 import { FrangoIcon } from "@/assets/icons";
@@ -21,37 +23,42 @@ function allergyIcon(allergies: string) {
   );
 }
 
+const gridTemplate = {
+  gridTemplateColumns: "max-content 1fr",
+};
+
 export default function GuestList({ persons }: GuestListProps) {
   const filteredPersons = persons.filter((person) => person.confirmed);
   return (
     <div className="w-full">
       <h3 className="text-xl font-semibold">Convidad@s</h3>
       {filteredPersons.length === 0 && <p>Não há convidad@s nesta mesa</p>}
-      {filteredPersons.map((person) => (
-        <div key={person.id}>
-          <div className="flex items-center gap-1">
-            <Guest id={person.id} />
-            <span className="flex gap-1">
-              {iconMap.get(person.dish)}
-              {allergyIcon(person.allergies)}
-            </span>
+      <div className="flex flex-col gap-1">
+        {filteredPersons.map((person) => (
+          <div
+            key={person.id}
+            className="grid items-center gap-1"
+            style={gridTemplate}
+          >
+            <Guest person={person} />
+            <div />
+            <div className="flex items-center gap-1">
+              <span className="font-light">
+                {person.companions.length > 0 &&
+                  `+${person.companions.length} companions`}
+              </span>
+              <span className="flex gap-1">
+                {person.companions.map((companion, index) => (
+                  <Fragment key={index}>
+                    {iconMap.get(companion.dish)}
+                    {allergyIcon(companion.allergies)}
+                  </Fragment>
+                ))}
+              </span>
+            </div>
           </div>
-          <div className="ml-8 flex items-center gap-1">
-            <span className="font-light">
-              {person.companions.length > 0 &&
-                `+${person.companions.length} companions`}
-            </span>
-            <span className="flex gap-1">
-              {person.companions.map((companion) => (
-                <>
-                  {iconMap.get(companion.dish)}
-                  {allergyIcon(companion.allergies)}
-                </>
-              ))}
-            </span>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

@@ -8,8 +8,10 @@ type SelectProps<T> = {
   title: JSX.Element;
   options: [JSX.Element, T][];
   className?: string;
+  onChange: (e: T) => void;
 };
 export default function Select<T>({
+  onChange,
   selected,
   setSelected,
   title,
@@ -18,7 +20,13 @@ export default function Select<T>({
 }: SelectProps<T>) {
   return (
     <div className={`relative w-full ${className}`}>
-      <Listbox value={selected} onChange={setSelected}>
+      <Listbox
+        value={selected}
+        onChange={(e) => {
+          setSelected(e);
+          onChange(e);
+        }}
+      >
         <Listbox.Button className="flex w-full items-center rounded-3xl bg-light-gold px-3 py-2 text-start">
           {title}
         </Listbox.Button>

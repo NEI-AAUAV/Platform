@@ -3,10 +3,13 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { lazy, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import RequestJoinTable from "./RequestJoinTable";
 import { useUserStore } from "@/stores/useUserStore";
 import EditTable from "./EditTable";
+import useSessionUser from "@/hooks/userHooks/useSessionUser";
+import useTables from "@/hooks/tableHooks/useTables";
+import ViewTable from "./ViewTable";
 
 const ClaimTable = lazy(() => import("./ClaimTable"));
 
@@ -21,21 +24,32 @@ function calculateOccupiedSeats(persons: Person[]) {
 function getModalPage(table: Table) {
   const currentUserId = useUserStore((state) => state?.sub);
   const occupied = calculateOccupiedSeats(table.persons);
+  const { tables } = useTables();
+  const { sessionUser } = useSessionUser();
 
-  if (occupied === 0) {
+  const inAnyTable = tables.some((t) =>
+    t.persons.some((p) => p.id === sessionUser?._id),
+  );
+
+  const inTable = table.persons.some((p) => p.id === sessionUser?._id);
+
+  if (occupied === 0 && !inAnyTable) {
     return <ClaimTable table={table} />;
   }
 
   if (String(table.head) === currentUserId) {
     return <EditTable table={table} />;
   }
+  if (inAnyTable && occupied > 0) {
+    return <ViewTable table={table} inTable={inTable} />;
+  }
 
-  if (String(table.head) !== currentUserId) {
+  if (String(table.head) !== currentUserId && !inAnyTable) {
     return <RequestJoinTable table={table} />;
   }
 
   // wtf is this
-  return <div id="na" />;
+  return <Navigate to="/reserve" />;
 }
 
 function useModal() {

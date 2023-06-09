@@ -2,6 +2,7 @@
 
 from typing import AsyncGenerator
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 
@@ -13,6 +14,7 @@ from app.core.db.init import init_db
 from app.core.db.types import DBType
 from app.core.logging import init_logging
 from app.core.config import Settings, get_settings
+from app.core.email import init_emails
 
 
 @asynccontextmanager
@@ -24,6 +26,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     )
     db: DBType = await app.dependency_overrides.get(get_db, get_db)(settings, client)
     await init_db(db)
+    init_emails(settings)
     yield
     client.close()
 
@@ -41,6 +44,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(router, prefix=settings.API_V1_STR)
+app.mount(settings.STATIC_STR, StaticFiles(directory="static"), name="static")
 
 if __name__ == "__main__":
     # Use this for debugging purposes only
