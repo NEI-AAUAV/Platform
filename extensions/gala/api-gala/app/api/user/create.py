@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 class UserCreateForm(BaseModel):
-    email: str
+    nmec: int
     matriculation: Optional[Matriculation] = None
 
 
@@ -26,8 +26,7 @@ async def create_user(
     user = User(
         _id=auth.sub,
         matriculation=form_data.matriculation,
-        nmec=auth.nmec,
-        email=form_data.email,
+        nmec=form_data.nmec,
         name=auth.name,
     )
 

@@ -6,28 +6,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
-import useSessionUser from "@/hooks/userHooks/useSessionUser";
 import { useUserStore } from "@/stores/useUserStore";
 import { useGalaUserStore } from "@/stores/useGalaUserStore";
 import Button from "@/components/Button";
 import useUserCreate from "@/hooks/userHooks/useUserCreate";
-import useUserEdit from "@/hooks/userHooks/useUserEdit";
 import service from "@/services/GalaService";
 
 type FormValues = {
-  name: string;
-  email: string;
   matriculation: number | null;
   nmec: number | null;
   has_payed: boolean | null;
 };
 
 export default function Register() {
-  const { sessionUser } = useSessionUser();
-  const userState = useUserStore((state) => state);
   const navigate = useNavigate();
 
-  const [selected, setSelected] = useState<number | null>();
+  const [selected, setSelected] = useState<number | null>(null);
   const { sessionLoading, sub } = useUserStore((state) => ({
     sessionLoading: state.sessionLoading,
     sub: state.sub,
@@ -35,19 +29,20 @@ export default function Register() {
 
   const methods = useForm<FormValues>({
     defaultValues: async () => {
-      const user = await service.user.getSessionUser();
-      setSelected(user?.matriculation ?? null);
+      let user;
+      try {
+        user = await service.user.getSessionUser();
+        setSelected(user?.matriculation ?? null);
+      } catch (error) {
+        console.error(error);
+      }
       return {
-        name:
-          user?.name ?? `${userState?.name ?? ""} ${userState?.surname ?? ""}`,
-        email: user?.email ?? "",
         matriculation: user?.matriculation ?? null,
         nmec: user?.nmec ?? null,
         has_payed: user?.has_payed ?? false,
       };
     },
   });
-
 
   const options: [JSX.Element, number | null][] = [
     [<>1º Ano</>, 1],
@@ -60,17 +55,8 @@ export default function Register() {
 
   const formSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      if (sessionUser === undefined) {
-        await useUserCreate({
-          email: data.email,
-          matriculation: data.matriculation,
-        });
-      }
-      const user = await useUserEdit({
-        id: sessionUser?._id ?? 0,
-        name: data.name,
+      const user = await useUserCreate({
         nmec: data.nmec,
-        email: data.email,
         matriculation: data.matriculation,
       });
       useGalaUserStore.setState(user);

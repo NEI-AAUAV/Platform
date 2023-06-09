@@ -150,11 +150,11 @@ async def test_create_user_logged_out(settings: Settings, client: AsyncClient) -
     indirect=["client"],
 )
 async def test_create_user(settings: Settings, client: AsyncClient, db: DBType) -> None:
-    form = UserCreateForm(email="test@local.test")
+    form = UserCreateForm(nmec=100000)
     response = await client.post(f"{settings.API_V1_STR}/users", json=form.dict())
     assert response.status_code == 200
     user_res = User(**response.json())
-    assert user_res.email == form.email
+    assert user_res.nmec == form.nmec
 
     db_res = await User.get_collection(db).find_one({"_id": user_res.id})
 
@@ -173,7 +173,7 @@ async def test_create_user_repeated(
     settings: Settings, client: AsyncClient, db: DBType
 ) -> None:
     await User.get_collection(db).insert_one(test_user.dict(by_alias=True))
-    form = UserCreateForm(email="test@local.test")
+    form = UserCreateForm(nmec=100000)
     response = await client.post(f"{settings.API_V1_STR}/users", json=form.dict())
     assert response.status_code == 409
 

@@ -27,7 +27,7 @@ type EditUser = {
 };
 
 type CreateUser = {
-  email: string;
+  nmec: number | null;
   matriculation: number | null;
 };
 

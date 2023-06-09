@@ -10,7 +10,7 @@ class Matriculation(BaseModel):
 class User(BaseDocument):
     id: int = Field(alias="_id")
     matriculation: Optional[Matriculation]
-    nmec: Optional[int]
-    email: str
+    nmec: int
+    email: Optional[str]
     name: str
     has_payed: bool = False
