@@ -27,6 +27,7 @@ interface TokenPayload {
   sub?: string;
   name?: string;
   surname?: string;
+  scopes?: string[];
 }
 
 interface UserState extends TokenPayload {

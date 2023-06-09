@@ -41,6 +41,13 @@ const routes = [
         },
       },
       {
+        path: "/admin",
+        async lazy() {
+          const { default: Admin } = await import("@/pages/Admin");
+          return { Component: Admin };
+        },
+      },
+      {
         path: "/register",
         async lazy() {
           const { default: Register } = await import("@/pages/Register");

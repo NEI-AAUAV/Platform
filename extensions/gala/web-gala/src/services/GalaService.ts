@@ -19,11 +19,7 @@ type Confirmation = {
 
 type EditUser = {
   id: number;
-  matriculation: number | null;
-  nmec: number | null;
-  email: string;
-  name: string;
-  has_payed?: boolean;
+  has_payed: boolean;
 };
 
 type CreateUser = {
@@ -85,7 +81,7 @@ const GalaService = {
   },
   user: {
     listUsers: async () => {
-      const response: User[] = await client.get("/users/list");
+      const response: User[] = await client.get("/users");
       return response;
     },
     editUser: async (request: EditUser) => {
