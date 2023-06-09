@@ -56,15 +56,15 @@ jobs:
         docker login -u neiaauav -p $DOCKER_PASSWORD
     - name: Build docker images
       run: |
-        make build
+        make ${{ github.event.inputs.extension }} build
     - name: Push docker images
       run: |
-        make push FLAGS="--ignore-push-failures"
+        make ${{ github.event.inputs.extension }} push FLAGS="--ignore-push-failures"
     - name: Push docker images with tag
       run: |
         export TAG=${GITHUB_SHA::7}
-        make build
-        make push FLAGS="--ignore-push-failures"
+        make ${{ github.event.inputs.extension }} build
+        make ${{ github.event.inputs.extension }} push FLAGS="--ignore-push-failures"
   
   deploy:
     needs: build
@@ -86,5 +86,5 @@ jobs:
         docker rm $(docker ps -aq) || true
         docker image prune -af
         docker builder prune
-        make pull
-        make up FLAGS="-d --remove-orphans --force-recreate"
+        make ${{ github.event.inputs.extension }} pull
+        make ${{ github.event.inputs.extension }} up FLAGS="-d --remove-orphans --force-recreate"
