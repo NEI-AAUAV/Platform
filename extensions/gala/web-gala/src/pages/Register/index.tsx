@@ -27,9 +27,16 @@ export default function Register() {
   const userState = useUserStore((state) => state);
   const navigate = useNavigate();
 
+  const [selected, setSelected] = useState<number | null>();
+  const { sessionLoading, sub } = useUserStore((state) => ({
+    sessionLoading: state.sessionLoading,
+    sub: state.sub,
+  }));
+
   const methods = useForm<FormValues>({
     defaultValues: async () => {
       const user = await service.user.getSessionUser();
+      setSelected(user?.matriculation ?? null);
       return {
         name:
           user?.name ?? `${userState?.name ?? ""} ${userState?.surname ?? ""}`,
@@ -40,14 +47,7 @@ export default function Register() {
       };
     },
   });
-  const { sessionLoading, sub } = useUserStore((state) => ({
-    sessionLoading: state.sessionLoading,
-    sub: state.sub,
-  }));
 
-  const [selected, setSelected] = useState<number | null>(
-    sessionUser?.matriculation ?? null,
-  );
 
   const options: [JSX.Element, number | null][] = [
     [<>1º Ano</>, 1],
@@ -72,7 +72,6 @@ export default function Register() {
         nmec: data.nmec,
         email: data.email,
         matriculation: data.matriculation,
-        has_payed: sessionUser?.has_payed ?? false,
       });
       useGalaUserStore.setState(user);
     } catch (error) {
@@ -134,7 +133,7 @@ export default function Register() {
             Matrícula <br />
             <Select
               onChange={(e) => {
-                methods.setValue("matriculation", e);
+                methods.setValue("matriculation", e ?? null);
               }}
               title={
                 <>

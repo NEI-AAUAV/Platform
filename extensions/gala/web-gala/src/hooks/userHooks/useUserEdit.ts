@@ -6,7 +6,7 @@ type EditUser = {
   email: string;
   matriculation: number | null;
   nmec: number | null;
-  has_payed: boolean;
+  has_payed?: boolean;
 };
 
 export default async function useUserEdit(request: EditUser) {

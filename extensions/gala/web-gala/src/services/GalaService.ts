@@ -23,7 +23,7 @@ type EditUser = {
   nmec: number | null;
   email: string;
   name: string;
-  has_payed: boolean;
+  has_payed?: boolean;
 };
 
 type CreateUser = {
