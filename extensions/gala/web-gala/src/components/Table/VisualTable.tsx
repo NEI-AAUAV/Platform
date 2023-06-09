@@ -9,7 +9,9 @@ type VisualTableProps = {
 };
 
 function calculateOccupiedSeats(persons: Person[]) {
-  return persons.reduce((acc, person) => acc + 1 + person.companions.length, 0);
+  return persons
+    .filter((person) => person.confirmed)
+    .reduce((acc, person) => acc + 1 + person.companions.length, 0);
 }
 
 function generateSeats(

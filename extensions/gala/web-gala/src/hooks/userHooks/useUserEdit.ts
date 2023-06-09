@@ -4,8 +4,8 @@ type EditUser = {
   id: number;
   name: string;
   email: string;
-  matriculation: number;
-  nmec: number;
+  matriculation: number | null;
+  nmec: number | null;
   has_payed: boolean;
 };
 

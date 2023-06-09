@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "@/components/Select";
 
 type MealSelectProps = {
-  selected: string;
-  setSelected: React.Dispatch<React.SetStateAction<string>>;
+  selected: "NOR" | "VEG";
+  setSelected: React.Dispatch<React.SetStateAction<"NOR" | "VEG">>;
   className?: string;
   style?: React.CSSProperties;
+  onChange: (e: "NOR" | "VEG") => void;
 };
 
 const optionMap = new Map<string, JSX.Element>([
@@ -15,12 +16,13 @@ const optionMap = new Map<string, JSX.Element>([
 ]);
 
 export default function MealSelect({
+  onChange,
   selected,
   setSelected,
   className,
   style,
 }: MealSelectProps) {
-  const options: [JSX.Element, string][] = [
+  const options: [JSX.Element, "NOR" | "VEG"][] = [
     [optionMap.get("NOR") ?? <>Error</>, "NOR"],
     [optionMap.get("VEG") ?? <>Error</>, "VEG"],
   ];
@@ -29,6 +31,7 @@ export default function MealSelect({
       <Select
         selected={selected}
         setSelected={setSelected}
+        onChange={onChange}
         title={
           <>
             {optionMap.get(selected)}
