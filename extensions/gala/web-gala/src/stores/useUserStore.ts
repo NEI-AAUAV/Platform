@@ -1,6 +1,6 @@
-import config from "@/config";
 import { create } from "zustand";
 import { shallow } from "zustand/shallow";
+import config from "@/config";
 
 function parseJWT(token: string) {
   const base64Url = token.split(".")[1];
@@ -55,7 +55,7 @@ const useUserStore = create<UserState>((set) => ({
       token,
       sessionLoading: false,
       ...payload,
-      image: image || `${config.BASE_URL}/gala/public/default-profile.svg`,
+      image: image || `${config.BASE_URL}/gala/default-profile.svg`,
     }));
   },
 

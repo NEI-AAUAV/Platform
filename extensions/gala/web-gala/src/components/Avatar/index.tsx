@@ -8,7 +8,7 @@ type AvatarProps = {
   id?: number | null;
   alt?: string;
 };
-const defaultImage = `${config.BASE_URL}/gala/public/default-profile.svg`;
+const defaultImage = `${config.BASE_URL}/gala/default-profile.svg`;
 
 export default function Avatar({ className, style, id, alt }: AvatarProps) {
   let neiUserImage: string | undefined;
