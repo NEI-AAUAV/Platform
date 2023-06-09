@@ -16,6 +16,6 @@ FROM nginx:1.20-alpine
 
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=build-stage /web_gala/build /usr/share/nginx/html
+COPY --from=build-stage /web_gala/dist /usr/share/nginx/html
 
 EXPOSE 3002
