@@ -1,6 +1,6 @@
-import config from "@/config";
 import { create } from "zustand";
 import { shallow } from "zustand/shallow";
+import config from "@/config";
 
 function parseJWT(token: string) {
   const base64Url = token.split(".")[1];
