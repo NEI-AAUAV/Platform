@@ -3,12 +3,15 @@ from typing import List
 
 from app.models.user import User
 from app.core.db import DatabaseDep
-from app.api.auth import AuthData, api_nei_auth, ScopeEnum
+from app.api.auth import AuthData, api_nei_auth, auth_responses, ScopeEnum
 
 router = APIRouter()
 
 
-@router.get("/")
+@router.get(
+    "/",
+    responses=auth_responses,
+)
 async def list_users(
     *,
     db: DatabaseDep,
@@ -19,7 +22,13 @@ async def list_users(
     return list(map(lambda user: User.parse_obj(user), res))
 
 
-@router.get("/me")
+@router.get(
+    "/me",
+    responses={
+        **auth_responses,
+        404: {"description": "User doesn't exist"},
+    },
+)
 async def get_self(
     *,
     db: DatabaseDep,
