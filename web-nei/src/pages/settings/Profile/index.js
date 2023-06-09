@@ -69,9 +69,6 @@ function UserProfile() {
       }),
   });
 
-  window.user = user;
-  window.show = getValues;
-
   const registerFile = (name, options = {}) => {
     return {
       ...register(name, options),

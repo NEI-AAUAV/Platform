@@ -9,6 +9,7 @@ type SelectProps<T> = {
   options: [JSX.Element, T][];
   className?: string;
   onChange: (e: T) => void;
+  disabled?: boolean;
 };
 export default function Select<T>({
   onChange,
@@ -17,6 +18,7 @@ export default function Select<T>({
   title,
   options,
   className,
+  disabled,
 }: SelectProps<T>) {
   return (
     <div className={`relative w-full ${className}`}>
@@ -27,7 +29,12 @@ export default function Select<T>({
           onChange(e);
         }}
       >
-        <Listbox.Button className="flex w-full items-center rounded-3xl bg-light-gold px-3 py-2 text-start">
+        <Listbox.Button
+          className={classNames(
+            "flex w-full items-center rounded-3xl bg-light-gold px-3 py-2 text-start !text-inherit",
+            { "btn-disabled": disabled },
+          )}
+        >
           {title}
         </Listbox.Button>
         {/* [&>*] is the selector for all direct children */}

@@ -9,6 +9,6 @@ type EditUser = {
   has_payed: boolean;
 };
 
-export default function useUserEdit(request: EditUser) {
-  GalaService.user.editUser(request);
+export default async function useUserEdit(request: EditUser) {
+  return await GalaService.user.editUser(request);
 }

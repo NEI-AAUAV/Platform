@@ -22,9 +22,9 @@ const registeredCommands = {
 function executeTester(args, state) {
   if (!['enable', 'disable'].includes(args[0])) return "tester: missing operand 'enable' or 'disable'";
   if (args[0] === "enable") {
-    localStorage.setItem("tester", 1);
+    localStorage.setItem("tt", 1);
   } else if (args[0] === "disable") {
-    localStorage.removeItem("tester");
+    localStorage.removeItem("tt");
   }
   return "refresh the page and check the new features";
 }

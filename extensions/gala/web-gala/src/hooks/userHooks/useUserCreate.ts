@@ -5,6 +5,6 @@ type CreateUser = {
   matriculation: number | null;
 };
 
-export default function useUserCreate(request: CreateUser) {
-  GalaService.user.createUser(request);
+export default async function useUserCreate(request: CreateUser) {
+  return await GalaService.user.createUser(request);
 }

@@ -8,15 +8,18 @@ import Input from "@/components/Input";
 import Select from "@/components/Select";
 import useSessionUser from "@/hooks/userHooks/useSessionUser";
 import { useUserStore } from "@/stores/useUserStore";
+import { useGalaUserStore } from "@/stores/useGalaUserStore";
 import Button from "@/components/Button";
 import useUserCreate from "@/hooks/userHooks/useUserCreate";
 import useUserEdit from "@/hooks/userHooks/useUserEdit";
+import service from "@/services/GalaService";
 
 type FormValues = {
   name: string;
   email: string;
   matriculation: number | null;
   nmec: number | null;
+  has_payed: boolean | null;
 };
 
 export default function Register() {
@@ -25,13 +28,16 @@ export default function Register() {
   const navigate = useNavigate();
 
   const methods = useForm<FormValues>({
-    defaultValues: {
-      name:
-        sessionUser?.name ??
-        `${userState?.name ?? ""} ${userState?.surname ?? ""}`,
-      email: sessionUser?.email ?? "",
-      matriculation: sessionUser?.matriculation ?? null,
-      nmec: sessionUser?.nmec ?? null,
+    defaultValues: async () => {
+      const user = await service.user.getSessionUser();
+      return {
+        name:
+          user?.name ?? `${userState?.name ?? ""} ${userState?.surname ?? ""}`,
+        email: user?.email ?? "",
+        matriculation: user?.matriculation ?? null,
+        nmec: user?.nmec ?? null,
+        has_payed: user?.has_payed ?? false,
+      };
     },
   });
   const { sessionLoading, sub } = useUserStore((state) => ({
@@ -53,23 +59,30 @@ export default function Register() {
   ];
 
   const formSubmit: SubmitHandler<FormValues> = async (data) => {
-    if (sessionUser === undefined) {
-      await useUserCreate({
+    try {
+      if (sessionUser === undefined) {
+        await useUserCreate({
+          email: data.email,
+          matriculation: data.matriculation,
+        });
+      }
+      const user = await useUserEdit({
+        id: sessionUser?._id ?? 0,
+        name: data.name,
+        nmec: data.nmec,
         email: data.email,
         matriculation: data.matriculation,
+        has_payed: sessionUser?.has_payed ?? false,
       });
+      useGalaUserStore.setState(user);
+    } catch (error) {
+      console.error(error);
+      return;
     }
-
-    await useUserEdit({
-      id: sessionUser?._id ?? 0,
-      name: data.name,
-      nmec: data.nmec,
-      email: data.email,
-      matriculation: data.matriculation,
-      has_payed: sessionUser?.has_payed ?? false,
-    });
     navigate("/");
   };
+
+  const inGala = !!methods.formState.defaultValues?.nmec;
 
   return (
     <div className="mx-16 sm:mx-auto sm:max-w-xl">
@@ -93,6 +106,7 @@ export default function Register() {
                   message: "O número mecanográfico deve conter apenas números",
                 },
               })}
+              disabled={inGala}
             />
             {methods.formState.errors.nmec && (
               <p className="text-red-500">
@@ -103,7 +117,7 @@ export default function Register() {
           <div className="my-6 w-full">
             Estado do Pagamento <br />
             <div className="rounded-3xl border border-light-gold bg-gray-100 px-4 py-1">
-              {!sessionUser?.has_payed ? (
+              {!methods.getValues().has_payed ? (
                 "Deves enviar o teu pagamento para o 9xx xxx xxx, via MB WAY."
               ) : (
                 <>
@@ -124,7 +138,9 @@ export default function Register() {
               }}
               title={
                 <>
-                  Escolhe a tua Matrícula{" "}
+                  {options.find(
+                    ([, v]) => v === methods.getValues().matriculation,
+                  )?.[0] || "Escolhe a tua Matrícula "}
                   <FontAwesomeIcon
                     className="ml-auto ui-open:rotate-180"
                     icon={faCaretDown}
@@ -134,9 +150,10 @@ export default function Register() {
               selected={selected}
               setSelected={setSelected}
               options={options}
+              disabled={inGala}
             />
           </div>
-          <Button submit>Submeter</Button>
+          {!inGala && <Button submit>Submeter</Button>}
         </form>
       </FormProvider>
     </div>
