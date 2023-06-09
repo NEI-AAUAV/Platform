@@ -3,13 +3,13 @@ import Navbar from "@/components/Navbar";
 
 const backgrounds = {
   home: {
-    backgroundImage: "url('http://localhost/gala/public/home-background.png')",
+    backgroundImage: "url('http://localhost/gala/home-background.png')",
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
   notHome: {
     backgroundImage:
-      "url('http://localhost/gala/public/not-home-background.png')",
+      "url('http://localhost/gala/not-home-background.png')",
     backgroundSize: "100vh",
     backgroundPosition: "top left",
   },
