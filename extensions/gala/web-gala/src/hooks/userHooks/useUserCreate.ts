@@ -2,7 +2,7 @@ import GalaService from "@/services/GalaService";
 
 type CreateUser = {
   email: string;
-  matriculation: number;
+  matriculation: number | null;
 };
 
 export default function useUserCreate(request: CreateUser) {

@@ -1,4 +1,6 @@
-let HOST, PRODUCTION, BASE_URL;
+let HOST;
+let PRODUCTION;
+let BASE_URL;
 
 const scheme = {
   HTTP: "http://",

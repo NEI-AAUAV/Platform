@@ -5,9 +5,9 @@ type Confirmation = {
   confirm: boolean;
 };
 
-export default function useTableConfirm(
+export default async function useTableConfirm(
   id: string | number,
   request: Confirmation,
 ) {
-  GalaService.table.confirmTable(id, request);
+  await GalaService.table.confirmTable(id, request);
 }
