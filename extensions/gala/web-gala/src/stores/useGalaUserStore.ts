@@ -7,11 +7,9 @@ interface GalaUserStore {
   email?: string;
   name?: string;
   has_payed?: boolean;
-  inGala: () => boolean;
 }
 
-const useGalaUserStore = create<GalaUserStore>((set, get) => ({
-  inGala: () => !!get().nmec,
+const useGalaUserStore = create<GalaUserStore>(() => ({
 }));
 
 export { useGalaUserStore };
