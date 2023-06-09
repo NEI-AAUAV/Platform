@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useUserStore } from "@/stores/useUserStore";
 import useSessionUser from "@/hooks/userHooks/useSessionUser";
-import config from "@/config";
+import useLoginLink from "@/hooks/useLoginLink";
 
 export default function Home() {
   const { sessionLoading, sub } = useUserStore((state) => ({
@@ -9,10 +9,11 @@ export default function Home() {
     sub: state.sub,
   }));
   const { sessionUser } = useSessionUser();
+  const loginLink = useLoginLink();
 
   function navigateTo(path: string) {
     if (!sessionLoading && sub === undefined) {
-      return `${config.BASE_URL}/auth/login/`;
+      return loginLink;
     }
     if (sessionUser === undefined) {
       return "/register";
@@ -30,7 +31,11 @@ export default function Home() {
           className="mt-12 rounded-full bg-black/70 px-8 py-4 font-bold text-white backdrop-blur sm:text-[1.25rem]"
           to={navigateTo("/reserve")}
         >
-          {!sessionLoading && sub === undefined ? "Login" : (!sessionUser ? "Efetuar inscrição" : "Reservar Lugar")}
+          {!sessionLoading && sub === undefined
+            ? "Login"
+            : !sessionUser
+            ? "Efetuar inscrição"
+            : "Reservar Lugar"}
         </Link>
       </div>
     </div>
