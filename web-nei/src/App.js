@@ -19,8 +19,6 @@ const App = () => {
   const { sessionLoading, token } = useUserStore((state) => state);
   const routing = useRoutes(routes({ isAuth: !!token }));
 
-  console.log(process.env.NODE_ENV, process.env.REACT_APP_ENABLE_GALA, process.env.REACT_APP_ENABLE_RALLY);
-
   useEffect(() => {
     refreshToken();
   }, []);

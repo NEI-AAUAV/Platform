@@ -3,7 +3,7 @@ version: "3.9"
 services:
   web_nei:
     environment:
-      ENABLE_GALA: true
+      ENABLE_GALA: 'True'
 
   api_gala:
     build:
