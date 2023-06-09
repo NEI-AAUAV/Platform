@@ -27,6 +27,7 @@ async def create_user(
         _id=auth.sub,
         matriculation=form_data.matriculation,
         nmec=form_data.nmec,
+        email=auth.email,
         name=auth.name,
     )
 

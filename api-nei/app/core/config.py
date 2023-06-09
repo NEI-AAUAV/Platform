@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY_PATH: str = os.getenv("JWT_SECRET_KEY_PATH", "../dev-keys/jwt.key")
     JWT_PUBLIC_KEY_PATH: str = os.getenv("JWT_PUBLIC_KEY_PATH", "../dev-keys/jwt.key.pub")
     ## How long access tokens are valid for
-    ACCESS_TOKEN_EXPIRE: timedelta = timedelta(minutes=10)
+    ACCESS_TOKEN_EXPIRE: timedelta = timedelta(hours=1)
     ## How long refresh tokens are valid for
     REFRESH_TOKEN_EXPIRE: timedelta = timedelta(days=7)
     ## How long the email confirmation tokens are valid for

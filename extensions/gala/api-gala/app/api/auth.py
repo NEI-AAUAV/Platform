@@ -43,6 +43,7 @@ class AuthData(BaseModel):
     sub: int
     nmec: Optional[int]
     name: str
+    email: str
     surname: str
     scopes: List[ScopeEnum]
 

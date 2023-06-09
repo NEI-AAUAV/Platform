@@ -12,6 +12,7 @@ from email_validator import caching_resolver
 
 from app.models.user import User
 from app.models.device_login import DeviceLogin
+from app.models.user.user_email import UserEmail
 from app.schemas.user import ScopeEnum
 from app.core.config import settings
 
@@ -173,6 +174,9 @@ def generate_response(
     access token in the body
     """
 
+    # FIXME: refactor this to have a clean way of setting primary emails
+    user_email = db.query(UserEmail).filter(user.id == UserEmail.user_id).first()
+
     # Measure once the current time, the same value must be passed to the
     # created device login and refreshed token otherwise the token could be
     # denied because the dates mismatch.
@@ -202,6 +206,7 @@ def generate_response(
             "sub": str(user.id),
             "type": ACCESS_TOKEN_TYPE,
             "nmec": user.nmec,
+            "email": user_email.email,
             "image": user.image,
             "name": user.name,
             "surname": user.surname,

@@ -11,6 +11,6 @@ class User(BaseDocument):
     id: int = Field(alias="_id")
     matriculation: Optional[Matriculation]
     nmec: int
-    email: Optional[str]
+    email: str
     name: str
     has_payed: bool = False
