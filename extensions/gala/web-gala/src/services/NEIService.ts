@@ -1,6 +1,7 @@
+import config from "@/config";
 import { createClient } from "./client";
 
-const client = createClient("http://localhost/api/nei/v1");
+const client = createClient(`${config.BASE_URL}/api/nei/v1`);
 
 const NEIService = {
   getUserById: async (id: string | number) => {

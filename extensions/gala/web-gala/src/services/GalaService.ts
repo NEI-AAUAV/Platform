@@ -1,6 +1,7 @@
+import config from "@/config";
 import { createClient } from "./client";
 
-const client = createClient("http://localhost/api/gala/v1");
+const client = createClient(`${config.BASE_URL}/api/gala/v1`);
 
 type ReserveTable = {
   dish: string;

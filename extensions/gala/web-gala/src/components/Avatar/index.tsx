@@ -1,3 +1,4 @@
+import config from "@/config";
 import useNEIUser from "@/hooks/useNEIUser";
 import { useUserStore } from "@/stores/useUserStore";
 
@@ -7,7 +8,7 @@ type AvatarProps = {
   id?: number | null;
   alt?: string;
 };
-const defaultImage = "http://localhost/gala/public/default-profile.svg";
+const defaultImage = `${config.BASE_URL}/gala/public/default-profile.svg`;
 
 export default function Avatar({ className, style, id, alt }: AvatarProps) {
   let neiUserImage: string | undefined;

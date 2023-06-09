@@ -1,15 +1,15 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import config from "@/config";
 
 const backgrounds = {
   home: {
-    backgroundImage: "url('http://localhost/gala/public/home-background.png')",
+    backgroundImage: `url('${config.BASE_URL}/gala/public/home-background.png')`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
   notHome: {
-    backgroundImage:
-      "url('http://localhost/gala/public/not-home-background.png')",
+    backgroundImage: `url('${config.BASE_URL}/gala/public/not-home-background.png')`,
     backgroundSize: "100vh",
     backgroundPosition: "top left",
   },

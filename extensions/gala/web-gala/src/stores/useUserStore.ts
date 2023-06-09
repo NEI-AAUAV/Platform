@@ -1,3 +1,4 @@
+import config from "@/config";
 import { create } from "zustand";
 import { shallow } from "zustand/shallow";
 
@@ -54,7 +55,7 @@ const useUserStore = create<UserState>((set) => ({
       token,
       sessionLoading: false,
       ...payload,
-      image: image || `http://localhost/gala/public/default-profile.svg`,
+      image: image || `${config.BASE_URL}/gala/public/default-profile.svg`,
     }));
   },
 
