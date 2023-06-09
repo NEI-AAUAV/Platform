@@ -98,11 +98,11 @@ const data = [
         name: "TacauaAdminDemo",
         link: "/WStacaua-admin-demo",
     },
-    config.ENABLE_GALA && {
+    config.ENABLE_GALA && !!localStorage.getItem('tt') && {
         name: "Jantar de Gala",
         link: config.WEB_GALA_URL,
     },
-    config.ENABLE_RALLY && !!localStorage.getItem('tt') && {
+    config.ENABLE_RALLY && {
         name: "Jantar de Gala",
         link: config.WEB_RALLY_URL,
     }
