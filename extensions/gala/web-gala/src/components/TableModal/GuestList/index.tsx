@@ -23,6 +23,10 @@ function allergyIcon(allergies: string) {
   );
 }
 
+const gridTemplate = {
+  gridTemplateColumns: "max-content 1fr",
+};
+
 export default function GuestList({ persons }: GuestListProps) {
   const filteredPersons = persons.filter((person) => person.confirmed);
   return (
@@ -31,15 +35,14 @@ export default function GuestList({ persons }: GuestListProps) {
       {filteredPersons.length === 0 && <p>Não há convidad@s nesta mesa</p>}
       <div className="flex flex-col gap-1">
         {filteredPersons.map((person) => (
-          <div key={person.id}>
+          <div
+            key={person.id}
+            className="grid items-center gap-1"
+            style={gridTemplate}
+          >
+            <Guest person={person} />
+            <div />
             <div className="flex items-center gap-1">
-              <Guest id={person.id} />
-              <span className="flex gap-1">
-                {iconMap.get(person.dish)}
-                {allergyIcon(person.allergies)}
-              </span>
-            </div>
-            <div className="ml-8 flex items-center gap-1">
               <span className="font-light">
                 {person.companions.length > 0 &&
                   `+${person.companions.length} companions`}
