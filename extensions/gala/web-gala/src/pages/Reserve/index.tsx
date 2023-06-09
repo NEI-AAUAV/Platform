@@ -44,7 +44,7 @@ export default function Reserve() {
   function linkLocation(table: Table) {
     const occupied = calculateOccupiedSeats(table.persons);
 
-    if (inAnyTable && occupied === 0) {
+    if (!sub || (inAnyTable && occupied === 0)) {
       return "";
     }
     return `/reserve/${table._id}`;
@@ -52,23 +52,37 @@ export default function Reserve() {
 
   return (
     <>
-      <h2 className="m-20 text-center text-2xl font-bold">
-        Escolhe a tua mesa.
-      </h2>
+      {!sub ? (
+        <>
+          <h2 className="m-20 mb-0 text-center text-2xl font-bold">
+            Inicia sessão para escolheres a tua mesa.
+            <br/>
+            <a
+              className="btn-md btn mt-4 mb-8 rounded-full bg-black/70 font-bold normal-case text-white backdrop-blur sm:text-[1.25rem]"
+              href="http://localhost/auth/login/"
+            >
+              Iniciar sessão
+            </a>
+          </h2>
+        </>
+      ) : (
+        <h2 className="m-20 text-center text-2xl font-bold">
+          Escolhe a tua mesa.
+        </h2>
+      )}
       <div className="m-10 grid grid-cols-[repeat(auto-fit,_minmax(13.25rem,_1fr))] gap-14">
         {tables?.map((table) => (
           <Link
             key={table._id}
             to={linkLocation(table)}
             className={classNames({
-              "cursor-default": linkLocation(table) === "",
+              "cursor-default": !sub || linkLocation(table) === "",
             })}
           >
             <Table table={table} />
           </Link>
         ))}
       </div>
-      {!sessionLoading && sub === undefined && <Navigate to="/" />}
       {tablePage !== undefined && <TableModal table={tablePage} />}
     </>
   );

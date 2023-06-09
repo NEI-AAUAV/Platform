@@ -37,6 +37,10 @@ const GalaService = {
       const response: Table[] = await client.get("/table/list");
       return response;
     },
+    listTablesPublic: async () => {
+      const response: Table[] = await client.get("/table/list/public");
+      return response;
+    },
     getTable: async (id: string | number) => {
       const response: Table = await client.get(`/table/${id}`);
       return response;

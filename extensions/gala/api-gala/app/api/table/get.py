@@ -10,6 +10,27 @@ from ._utils import sanitize_table, fetch_table
 router = APIRouter()
 
 
+
+@router.get(
+    "/list/public",
+    responses={
+        **auth_responses,
+    },
+)
+async def list_tables(
+    *,
+    db: DatabaseDep,
+) -> List[Table]:
+    """List all available tables"""
+    res = await Table.get_collection(db).find().to_list(None)
+
+    def mapper(table_res: Any) -> Table:
+        table = Table.parse_obj(table_res)
+        return table
+
+    return list(map(mapper, res))
+
+
 @router.get(
     "/list",
     responses={

@@ -28,7 +28,7 @@ async def create_user(
         matriculation=form_data.matriculation,
         nmec=form_data.nmec,
         email=auth.email,
-        name=auth.name,
+        name=f"{auth.name} {auth.surname}",
     )
 
     try:
