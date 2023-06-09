@@ -3,12 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from "@/components/Select";
 
 type MealSelectProps = {
-  selected: string;
-  setSelected: React.Dispatch<React.SetStateAction<string>>;
+  selected: "NOR" | "VEG";
+  setSelected: React.Dispatch<React.SetStateAction<"NOR" | "VEG">>;
   className?: string;
   style?: React.CSSProperties;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  name: string;
+  onChange: (e: "NOR" | "VEG") => void;
 };
 
 const optionMap = new Map<string, JSX.Element>([
@@ -18,23 +17,21 @@ const optionMap = new Map<string, JSX.Element>([
 
 export default function MealSelect({
   onChange,
-  name,
   selected,
   setSelected,
   className,
   style,
 }: MealSelectProps) {
-  const options: [JSX.Element, string][] = [
+  const options: [JSX.Element, "NOR" | "VEG"][] = [
     [optionMap.get("NOR") ?? <>Error</>, "NOR"],
     [optionMap.get("VEG") ?? <>Error</>, "VEG"],
   ];
   return (
     <div className={`relative w-full ${className}`} style={style}>
       <Select
-        onChange={onChange}
-        name={name}
         selected={selected}
         setSelected={setSelected}
+        onChange={onChange}
         title={
           <>
             {optionMap.get(selected)}

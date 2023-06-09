@@ -1,6 +1,6 @@
 import { Listbox, Transition } from "@headlessui/react";
 import classNames from "classnames";
-import { ChangeEvent, Fragment } from "react";
+import { Fragment } from "react";
 
 type SelectProps<T> = {
   selected: T;
@@ -8,12 +8,10 @@ type SelectProps<T> = {
   title: JSX.Element;
   options: [JSX.Element, T][];
   className?: string;
-  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-  name: string;
+  onChange: (e: T) => void;
 };
 export default function Select<T>({
   onChange,
-  name,
   selected,
   setSelected,
   title,
@@ -25,10 +23,9 @@ export default function Select<T>({
       <Listbox
         value={selected}
         onChange={(e) => {
-          onChange(e);
           setSelected(e);
+          onChange(e);
         }}
-        name={name}
       >
         <Listbox.Button className="flex w-full items-center rounded-3xl bg-light-gold px-3 py-2 text-start">
           {title}
