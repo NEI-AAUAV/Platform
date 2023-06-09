@@ -25,10 +25,10 @@ export default function Admin() {
   return (
     <div>
       <div className="my-20 overflow-x-auto">
-        <table className="mx-auto table ">
+        <table className="mx-auto table">
           {/* head */}
           <thead>
-            <tr>
+            <tr className="[&_th]:bg-primary/50">
               <th></th>
               <th>NMec</th>
               <th>Email</th>
@@ -39,7 +39,7 @@ export default function Admin() {
           </thead>
           <tbody>
             {users.map((user: User) => (
-              <tr className="group [&_td]:hover:bg-base-200 [&_th]:hover:bg-base-200">
+              <tr className="group [&_td]:hover:bg-primary/20 [&_th]:hover:bg-primary/20">
                 <th>{user._id}</th>
                 <td>{user.nmec}</td>
                 <td>{user.email}</td>

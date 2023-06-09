@@ -27,11 +27,13 @@ export default function Reserve() {
   function linkLocation(table: Table) {
     const occupied = calculateOccupiedSeats(table.persons);
 
-    if (!sub || (inAnyTable && occupied === 0)) {
+    if (!sub || !sessionUser || (inAnyTable && occupied === 0)) {
       return "";
     }
     return `/reserve/${table._id}`;
   }
+
+  console.log(sessionUser);
 
   return (
     <>
@@ -48,6 +50,17 @@ export default function Reserve() {
             </a>
           </h2>
         </>
+      ) : !sessionUser ? (
+        <h2 className="m-20 text-center text-2xl font-bold">
+          Efetua a inscrição para escolheres a tua mesa.
+          <br />
+          <Link
+            className="btn-md btn mb-8 mt-4 rounded-full bg-black/70 font-bold normal-case text-white backdrop-blur sm:text-[1.25rem]"
+            to="/register"
+          >
+            Efetuar inscrição
+          </Link>
+        </h2>
       ) : (
         <h2 className="m-20 text-center text-2xl font-bold">
           Escolhe a tua mesa.
@@ -62,7 +75,7 @@ export default function Reserve() {
               key={table._id}
               to={location}
               className={classNames({
-                "cursor-default": !sub || location === "",
+                "cursor-default": !sub || !sessionUser || location === "",
               })}
             >
               <Table table={table} />

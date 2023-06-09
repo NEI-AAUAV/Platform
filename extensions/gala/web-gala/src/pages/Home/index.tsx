@@ -30,7 +30,7 @@ export default function Home() {
           className="mt-12 rounded-full bg-black/70 px-8 py-4 font-bold text-white backdrop-blur sm:text-[1.25rem]"
           to={navigateTo("/reserve")}
         >
-          {!sessionLoading && sub === undefined ? "Login" : "Reservar Lugar"}
+          {!sessionLoading && sub === undefined ? "Login" : (!sessionUser ? "Efetuar inscrição" : "Reservar Lugar")}
         </Link>
       </div>
     </div>
