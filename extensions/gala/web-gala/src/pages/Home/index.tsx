@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useUserStore } from "@/stores/useUserStore";
 import useSessionUser from "@/hooks/userHooks/useSessionUser";
+import config from "@/config";
 
 export default function Home() {
   const { sessionLoading, sub } = useUserStore((state) => ({
@@ -11,7 +12,7 @@ export default function Home() {
 
   function navigateTo(path: string) {
     if (!sessionLoading && sub === undefined) {
-      return "http://localhost/auth/login/";
+      return `${config.BASE_URL}/auth/login/`;
     }
     if (sessionUser === undefined) {
       return "/register";

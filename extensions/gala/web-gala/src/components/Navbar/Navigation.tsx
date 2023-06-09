@@ -4,6 +4,7 @@ import { faChair, faCheckToSlot } from "@fortawesome/free-solid-svg-icons";
 import { useUserStore, shallow } from "@/stores/useUserStore";
 import Avatar from "../Avatar";
 import useSessionUser from "@/hooks/userHooks/useSessionUser";
+import config from "@/config";
 
 type NavigationProps = {
   className?: string;
@@ -19,7 +20,7 @@ export default function Navigation({ className }: NavigationProps) {
   const { sessionUser } = useSessionUser();
   function navigateTo(path: string) {
     if (!sessionLoading && sub === undefined) {
-      return "http://localhost/auth/login/";
+      return `${config.BASE_URL}/auth/login/`;
     }
     if (sessionUser === undefined) {
       return "/register";
