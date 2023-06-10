@@ -2457,119 +2457,112 @@ INSERT INTO nei.video_tag (id, name, color) VALUES
 -- Name: faina_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.faina_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.faina_id_seq', 11, false);
 
 
 --
 -- Name: faina_member_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.faina_member_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.faina_member_id_seq', 108, false);
 
 
 --
 -- Name: faina_role_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.faina_role_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.faina_role_id_seq', 11, false);
 
 
 --
 -- Name: merch_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.merch_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.merch_id_seq', 6, false);
 
 
 --
 -- Name: news_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.news_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.news_id_seq', 27, false);
 
 
 --
 -- Name: note_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.note_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.note_id_seq', 386, false);
 
 
 --
 -- Name: partner_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.partner_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.partner_id_seq', 3, false);
 
 
 --
 -- Name: redirect_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.redirect_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.redirect_id_seq', 10, false);
 
 
 --
 -- Name: rgm_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.rgm_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.rgm_id_seq', 56, false);
 
 
 --
 -- Name: senior_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.senior_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.senior_id_seq', 5, false);
 
 
 --
 -- Name: teacher_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.teacher_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.teacher_id_seq', 41, false);
 
 
---
+--nei\.user_matriculation
 -- Name: team_member_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.team_member_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.team_member_id_seq', 412, false);
 
 
 --
 -- Name: team_role_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.team_role_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.team_role_id_seq', 19, false);
 
 
 --
 -- Name: user_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.user_id_seq', 1, false);
-
-
---
--- Name: user_matriculation_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
---
-
-SELECT pg_catalog.setval('nei.user_matriculation_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.user_id_seq', 222, true);
 
 
 --
 -- Name: video_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.video_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.video_id_seq', 8, false);
 
 
 --
 -- Name: video_tag_id_seq; Type: SEQUENCE SET; Schema: nei; Owner: postgres
 --
 
-SELECT pg_catalog.setval('nei.video_tag_id_seq', 1, false);
+SELECT pg_catalog.setval('nei.video_tag_id_seq', 7, false);
 
 
 --

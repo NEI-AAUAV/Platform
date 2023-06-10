@@ -12,18 +12,18 @@ const Register = () => {
   const {
     register,
     handleSubmit,
+    setError,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    criteriaMode: "all",
+  });
 
-  console.log("🚀 ~ file: index.jsx:29 ~ Register ~ errors:", errors);
   const password = watch("password", "");
 
   const { reCaptchaLoaded, generateReCaptchaToken } = useReCaptcha();
 
   const formSubmitted = async (data) => {
-    console.log("🚀 ~ file: index.jsx:43 ~ formSubmitted ~ event:", data);
-
     delete data.confirmPassword;
 
     const token = await generateReCaptchaToken("register");
@@ -33,15 +33,22 @@ const Register = () => {
         navigate("/");
       })
       .catch((error) => {
-        console.error("Could not register user.");
+        const status = error?.response?.status;
+        if (status === 409) {
+          setError("root.serverError", {
+            type: status,
+          });
+          return;
+        }
+        console.error(error);
       });
   };
 
   return (
     <>
-      <div className="z-10 m-auto flex h-fit max-w-lg flex-col rounded-box bg-base-200 py-8 px-3 align-middle shadow-md sm:max-w-xl xs:px-14">
+      <div className="rounded-box z-10 m-auto flex h-fit max-w-lg flex-col bg-base-200 px-3 py-8 align-middle shadow-md xs:px-14 sm:max-w-xl">
         <div className="mb-2 text-center text-3xl font-bold">Criar Conta</div>
-        <p className="m-auto mb-8 max-w-sm text-xs sm:text-sm text-center">
+        <p className="m-auto mb-8 max-w-sm text-center text-xs sm:text-sm">
           Este site é protegido pelo reCAPTCHA e aplicam-se a{" "}
           <a
             className="link-primary link whitespace-nowrap"
@@ -63,7 +70,7 @@ const Register = () => {
           noValidate
           onSubmit={handleSubmit(formSubmitted)}
         >
-          <div className="mb-1 flex w-full gap-3 flex-col justify-between sm:flex-row">
+          <div className="mb-1 flex w-full flex-col justify-between gap-3 sm:flex-row">
             <Input
               className="grow sm:mr-2"
               id="name"
@@ -75,12 +82,16 @@ const Register = () => {
                 required: { value: true, message: "Nome é obrigatório" },
                 minLength: {
                   value: 2,
-                  message: "O nome tem de ter pelo menos 2 carateres",
+                  message: "Nome demasiado curto",
+                },
+                maxLength: {
+                  value: 20,
+                  message: "Nome demasiado longo",
                 },
               })}
             ></Input>
             <Input
-              className="grow mt-5 sm:ml-2 sm:mt-0"
+              className="mt-5 grow sm:ml-2 sm:mt-0"
               id="lastName"
               label="Sobrenome"
               error={errors?.lastName}
@@ -90,7 +101,11 @@ const Register = () => {
                 required: { value: true, message: "Nome é obrigatório" },
                 minLength: {
                   value: 2,
-                  message: "O nome tem de ter pelo menos 2 carateres",
+                  message: "Nome demasiado curto",
+                },
+                maxLength: {
+                  value: 20,
+                  message: "Nome demasiado longo",
                 },
               })}
             ></Input>
@@ -149,6 +164,18 @@ const Register = () => {
           >
             Registar
           </button>
+          {errors.root?.serverError?.type === 409 && (
+            <>
+              <p className="message-error mx-auto text-center">
+                Email já em uso.
+                <br /> Se não sabes a palavra-passe, recupera a tua conta{" "}
+                <Link to="/auth/forgot" className="link">
+                  aqui
+                </Link>
+                .
+              </p>
+            </>
+          )}
         </form>
         <p className="m-auto mt-2 text-xs sm:text-sm">
           Terás de ativar o teu email no email que indicares.
