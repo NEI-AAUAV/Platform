@@ -64,6 +64,11 @@ const routes = ({ isAuth }) => [
       { path: "/auth/verify", element: <EmailVerify /> },
       { path: "/auth/reset", element: <ResetPassword /> },
       { path: "/*", element: <Error404 /> },
+      // These must be here and not behind the auth checks, because if they aren't
+      // the router would automatically redirect to the homepage after login, and
+      // the redirection logic wouldn't work.
+      { path: "/auth/login", element: <Login /> },
+      { path: "/auth/register", element: <Register /> },
       // { path: "/estagios", element: <Internship /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
     ],
@@ -81,10 +86,8 @@ const routes = ({ isAuth }) => [
     path: "/",
     element: !isAuth ? <Layout /> : <Navigate to="/" />,
     children: [
-      { path: "/redirect", element: <Login onRedirect /> },
       { path: "/auth/register", element: <Register /> },
       { path: "/auth/login", element: <Login /> },
-      { path: "/auth/forgot", element: <ForgotPassword /> },
     ],
   },
   {

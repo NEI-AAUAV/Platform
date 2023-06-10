@@ -28,13 +28,20 @@ const Login = ({ onRedirect }) => {
   const [response, setResponse] = useLoading({
     status: onRedirect && Status.loadingLoginIdP,
   });
+  const { sessionLoading, token } = useUserStore((state) => state);
+
+  const redirect_to = searchParams.get("redirect_to");
+
+  useEffect(() => {
+    if (!sessionLoading && token) {
+      if (redirect_to) window.location.replace(redirect_to);
+      else navigate("/");
+    }
+  }, [sessionLoading, token]);
 
   // UseEffect to handle the response from the API
   useEffect(() => {
     switch (response.status) {
-      case Status.success:
-        navigate("/");
-        break;
       case Status.errorLogin:
         addErrors();
         break;
@@ -112,12 +119,7 @@ const Login = ({ onRedirect }) => {
       .login(formData)
       .then(({ access_token }) => {
         useUserStore.getState().login({ token: access_token });
-        setResponse(
-          {
-            status: Status.success,
-          },
-          1000
-        );
+        setResponse({ status: Status.success }, 0);
       })
       .catch((e) => {
         console.error(e);
@@ -224,7 +226,15 @@ const Login = ({ onRedirect }) => {
           </p>
           <p className="m-auto mt-2 text-xs sm:text-sm">
             Não estás registado?{" "}
-            <Link to={"/auth/register"} className="link-primary link">
+            <Link
+              to={{
+                pathname: "/auth/register",
+                search: redirect_to
+                  ? `?redirect_to=${encodeURIComponent(redirect_to)}`
+                  : null,
+              }}
+              className="link-primary link"
+            >
               Cria uma conta aqui.
             </Link>
           </p>
