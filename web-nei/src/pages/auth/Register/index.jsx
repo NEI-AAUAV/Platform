@@ -1,14 +1,17 @@
 import NEIService from "services/NEIService";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useReCaptcha } from "utils/hooks";
 import { useForm } from "react-hook-form";
 import { Input } from "components/form";
+import { useUserStore } from "stores/useUserStore";
+import { useEffect } from "react";
 
 const emailRegex =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const {
     register,
     handleSubmit,
@@ -18,6 +21,16 @@ const Register = () => {
   } = useForm({
     criteriaMode: "all",
   });
+  const { sessionLoading, token } = useUserStore((state) => state);
+
+  const redirect_to = searchParams.get("redirect_to");
+
+  useEffect(() => {
+    if (!sessionLoading && token) {
+      if (redirect_to) window.location.replace(redirect_to);
+      else navigate("/");
+    }
+  }, [sessionLoading, token]);
 
   const password = watch("password", "");
 
@@ -30,7 +43,8 @@ const Register = () => {
     data.recaptcha_token = token;
     NEIService.register(data)
       .then((response) => {
-        navigate("/");
+        if (redirect_to) window.location.replace(redirect_to);
+        else navigate("/");
       })
       .catch((error) => {
         const status = error?.response?.status;
@@ -182,7 +196,15 @@ const Register = () => {
         </p>
         <p className="m-auto mt-2 text-xs sm:text-sm">
           Já estás registado?{" "}
-          <Link to={"/auth/login"} className="link-primary link">
+          <Link
+            to={{
+              pathname: "/auth/login",
+              search: redirect_to
+                ? `?redirect_to=${encodeURIComponent(redirect_to)}`
+                : null,
+            }}
+            className="link-primary link"
+          >
             Inicia sessão aqui.
           </Link>
         </p>
