@@ -55,10 +55,10 @@ export default function Navigation({ className }: NavigationProps) {
           </li>
         )}
         {name !== undefined && (
-          <li>
-            <Link className="px-2 py-2" to="/register" title={name}>
-              <Avatar alt="profile" className="w-5" />{" "}
-              <span className="sm:hidden">{name}</span>
+          <li className="flex items-center">
+            <Link className="px-2" to="/register" title={name}>
+              <Avatar alt="profile" className="my-auto w-5" />{" "}
+              <span className="my-auto sm:hidden">{name}</span>
             </Link>
           </li>
         )}
