@@ -1,6 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChair, faCheckToSlot, faUsersGear } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChair,
+  faCheckToSlot,
+  faUsersGear,
+} from "@fortawesome/free-solid-svg-icons";
 import { useUserStore, shallow } from "@/stores/useUserStore";
 import Avatar from "../Avatar";
 
@@ -21,7 +25,7 @@ export default function Navigation({ className }: NavigationProps) {
               location.startsWith("/reserve") &&
               "bg-gradient-to-r from-light-gold to-dark-gold"
             }`}
-            to={"/reserve"}
+            to="/reserve"
           >
             <FontAwesomeIcon icon={faChair} /> Reservar Lugar
           </Link>
@@ -32,7 +36,7 @@ export default function Navigation({ className }: NavigationProps) {
               location.startsWith("/vote") &&
               "bg-gradient-to-r from-light-gold to-dark-gold"
             }`}
-            to={"/vote"}
+            to="/vote"
           >
             <FontAwesomeIcon icon={faCheckToSlot} /> Votar
           </Link>
@@ -44,7 +48,7 @@ export default function Navigation({ className }: NavigationProps) {
                 location.startsWith("/admin") &&
                 "bg-gradient-to-r from-light-gold to-dark-gold"
               }`}
-              to={"/admin"}
+              to="/admin"
             >
               <FontAwesomeIcon icon={faUsersGear} /> Admin
             </Link>

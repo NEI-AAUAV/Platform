@@ -4,8 +4,7 @@ import { useMemo } from "react";
 import TableModal from "../TableModal";
 import Table from "@/components/Table";
 import useTables from "@/hooks/tableHooks/useTables";
-import useSessionUser from "@/hooks/userHooks/useSessionUser";
-import { useUserStore } from "@/stores/useUserStore";
+import useSessionUser, { State } from "@/hooks/userHooks/useSessionUser";
 import useLoginLink from "@/hooks/useLoginLink";
 
 function calculateOccupiedSeats(persons: Person[]) {
@@ -15,11 +14,7 @@ function calculateOccupiedSeats(persons: Person[]) {
 export default function Reserve() {
   const { tableId } = useParams();
   const { tables, isLoading } = useTables();
-  const { sub } = useUserStore((state) => ({
-    sessionLoading: state.sessionLoading,
-    sub: state.sub,
-  }));
-  const { sessionUser } = useSessionUser();
+  const { sessionUser, state } = useSessionUser();
   const inAnyTable = useMemo(() => {
     if (isLoading) return false;
     return tables.some((t) => t.persons.some((p) => p.id === sessionUser?._id));
@@ -29,45 +24,41 @@ export default function Reserve() {
   function linkLocation(table: Table) {
     const occupied = calculateOccupiedSeats(table.persons);
 
-    if (!sub || !sessionUser || (inAnyTable && occupied === 0)) {
+    if (state !== State.REGISTERED || (inAnyTable && occupied === 0)) {
       return "";
     }
     return `/reserve/${table._id}`;
   }
 
-  console.log(sessionUser);
+  const header = {
+    [State.NONE]: {
+      text: "Inicia sessão para escolheres a tua mesa.",
+      label: "Iniciar sessão",
+      link: loginLink,
+    },
+    [State.AUTHENTICATED]: {
+      text: "Efetua a inscrição para escolheres a tua mesa.",
+      label: "Efetuar inscrição",
+      link: "/register",
+    },
+    [State.REGISTERED]: {
+      text: "Escolhe a tua mesa.",
+    },
+  };
 
   return (
     <>
-      {!sub ? (
-        <>
-          <h2 className="m-20 mb-0 text-center text-2xl font-bold">
-            Inicia sessão para escolheres a tua mesa.
-            <br />
-            <a
-              className="btn-md btn mb-8 mt-4 rounded-full bg-black/70 font-bold normal-case text-white backdrop-blur sm:text-[1.25rem]"
-              href={loginLink}
-            >
-              Iniciar sessão
-            </a>
-          </h2>
-        </>
-      ) : !sessionUser ? (
-        <h2 className="m-20 text-center text-2xl font-bold">
-          Efetua a inscrição para escolheres a tua mesa.
-          <br />
+      <h2 className="m-20 text-center text-2xl font-bold">
+        <span className="block">{header[state].text}</span>
+        {header[state].link && (
           <Link
             className="btn-md btn mb-8 mt-4 rounded-full bg-black/70 font-bold normal-case text-white backdrop-blur sm:text-[1.25rem]"
-            to="/register"
+            to={header[state].link || ""}
           >
-            Efetuar inscrição
+            {header[state].label}
           </Link>
-        </h2>
-      ) : (
-        <h2 className="m-20 text-center text-2xl font-bold">
-          Escolhe a tua mesa.
-        </h2>
-      )}
+        )}
+      </h2>
       <div className="m-10 grid grid-cols-[repeat(auto-fit,_minmax(13.25rem,_1fr))] gap-14">
         {tables?.map((table) => {
           const location = linkLocation(table);
@@ -77,7 +68,7 @@ export default function Reserve() {
               key={table._id}
               to={location}
               className={classNames({
-                "cursor-default": !sub || !sessionUser || location === "",
+                "cursor-default": state !== State.REGISTERED,
               })}
             >
               <Table table={table} />

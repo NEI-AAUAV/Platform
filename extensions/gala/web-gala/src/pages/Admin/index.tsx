@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-
-import service from "@/services/GalaService";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faCheck } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+
+import service from "@/services/GalaService";
 
 export default function Admin() {
   const [users, setUsers] = useState<User[]>([]);
@@ -17,8 +17,8 @@ export default function Admin() {
   }
 
   useEffect(() => {
-    service.user.listUsers().then((users) => {
-      setUsers(users);
+    service.user.listUsers().then((u) => {
+      setUsers(u);
     });
   }, []);
 
@@ -47,7 +47,7 @@ export default function Admin() {
                 <td>{user.name}</td>
                 <td>
                   {user.has_payed ? (
-                    <div className="flex gap-3 items-center">
+                    <div className="flex items-center gap-3">
                       <FontAwesomeIcon
                         className="text-[#198754]"
                         icon={faCircleCheck}
@@ -55,7 +55,7 @@ export default function Admin() {
                       Pago
                     </div>
                   ) : (
-                    <div className="flex gap-3 items-center">
+                    <div className="flex items-center gap-3">
                       <FontAwesomeIcon
                         className="text-primary"
                         icon={faCheck}

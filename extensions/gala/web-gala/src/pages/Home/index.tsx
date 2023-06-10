@@ -20,6 +20,10 @@ export default function Home() {
     }
     return path;
   }
+
+  let label = !sessionUser ? "Efetuar inscrição" : "Reservar Lugar";
+  label = !sessionLoading && sub === undefined ? "Login" : label;
+
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center">
       <div className="mx-4 flex flex-col items-center text-center text-base-content text-opacity-70">
@@ -31,11 +35,7 @@ export default function Home() {
           className="mt-12 rounded-full bg-black/70 px-8 py-4 font-bold text-white backdrop-blur sm:text-[1.25rem]"
           to={navigateTo("/reserve")}
         >
-          {!sessionLoading && sub === undefined
-            ? "Login"
-            : !sessionUser
-            ? "Efetuar inscrição"
-            : "Reservar Lugar"}
+          {label}
         </Link>
       </div>
     </div>

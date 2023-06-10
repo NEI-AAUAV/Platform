@@ -25,6 +25,7 @@ document.body.setAttribute("data-theme", defaultTheme);
 interface TokenPayload {
   image?: string;
   sub?: string;
+  email?: string;
   name?: string;
   surname?: string;
   scopes?: string[];

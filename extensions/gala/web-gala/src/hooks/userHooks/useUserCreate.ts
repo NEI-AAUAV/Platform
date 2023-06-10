@@ -6,5 +6,5 @@ type CreateUser = {
 };
 
 export default async function useUserCreate(request: CreateUser) {
-  return await GalaService.user.createUser(request);
+  return GalaService.user.createUser(request);
 }

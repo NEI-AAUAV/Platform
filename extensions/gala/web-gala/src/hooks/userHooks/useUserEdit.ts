@@ -6,5 +6,5 @@ type EditUser = {
 };
 
 export default async function useUserEdit(request: EditUser) {
-  return await GalaService.user.editUser(request);
+  return GalaService.user.editUser(request);
 }
