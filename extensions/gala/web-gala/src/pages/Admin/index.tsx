@@ -2,10 +2,49 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleCheck,
+  faCheck,
+  faSeedling,
+  faHandDots,
+} from "@fortawesome/free-solid-svg-icons";
 
+import { FrangoIcon } from "@/assets/icons";
 import service from "@/services/GalaService";
 import Input from "@/components/Input";
+import useTables from "@/hooks/tableHooks/useTables";
+
+const orange = { color: "#DD8500" };
+const green = { color: "#198754" };
+const red = { color: "#DC3545" };
+
+const iconMap = new Map([
+  ["NOR", <FrangoIcon style={orange} />],
+  ["VEG", <FontAwesomeIcon icon={faSeedling} style={green} />],
+]);
+
+type InfoProps = {
+  title: string;
+  values: number[];
+};
+
+function Info({ title, values }: InfoProps) {
+  return (
+    <div className="rounded-lg border border-secondary bg-white p-2 px-4">
+      <div className="flex items-center justify-between">
+        <div className="truncate text-sm font-medium text-gray-500">
+          <span className="max-sm:hidden">Total de </span>
+          {title}
+          <p className="text-xl text-gray-900 [&_b]:before:font-medium [&_b]:before:content-['_/_'] first:[&_b]:before:content-none">
+            {values.map((v) => (
+              <b>{v}</b>
+            ))}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Admin() {
   const [users, setUsers] = useState<User[]>([]);
@@ -13,12 +52,22 @@ export default function Admin() {
   const confirmPaymentModalRef = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate();
   const selectedUser = useRef<number | null>(null);
+  const { tables } = useTables();
 
   useEffect(() => {
-    service.user.listUsers().then((u) => {
-      setUsers(u);
+    service.user.listUsers().then((data) => {
+      setUsers(data);
     });
   }, []);
+
+  const persons: Person[] = tables.reduce((acc: Person[], table) => {
+    return acc.concat(table.persons);
+  }, []);
+
+  const usersExtended: UserExtended[] = users.map((u) => {
+    const match = persons.find((p) => p.id === u._id);
+    return { companions: [], ...u, ...match } as UserExtended;
+  });
 
   function modalConfirmPayment(id: number) {
     selectedUser.current = id;
@@ -32,34 +81,39 @@ export default function Admin() {
     });
   }
 
+  const sumOfAllCompanions = persons.reduce(
+    (sum, p) => sum + (p.companions.length ?? 0),
+    0,
+  );
+
+  const sumOfAllVegetarians = persons.reduce(
+    (sum, p) =>
+      sum +
+      (p.dish === "VEG" ? 1 : 0) +
+      (p.companions.filter((c: Companion) => c.dish === "VEG").length ?? 0),
+    0,
+  );
+
+  const sumOfAllPayments = users.reduce(
+    (sum, u) => sum + (u.has_payed ? 1 : 0),
+    0,
+  );
+
   return (
-    <div>
-      <div>
-        {/* info cards for statistics */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-lg bg-white p-4 shadow-md">
-            <div className="flex items-center justify-between">
-              <div className="truncate text-sm font-medium text-gray-500">
-                Total de inscritos
-                <div className="text-2xl font-bold text-gray-900">
-                  {users.length}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-lg bg-white p-4 shadow-md">
-            <div className="flex items-center justify-between">
-              <div className="truncate text-sm font-medium text-gray-500">
-                Total de inscritos
-                <div className="text-2xl font-bold text-gray-900">
-                  {users.length}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="mx-auto mt-12 max-w-7xl">
+      {/* info cards for statistics */}
+      <div className="mb-6 grid grid-cols-2 gap-4 xs:grid-cols-[repeat(auto-fit,_minmax(16rem,16rem))]">
+        <Info
+          title="Reservas / Inscritos"
+          values={[
+            persons.length + sumOfAllCompanions,
+            users.length + sumOfAllCompanions,
+          ]}
+        />
+        <Info title="Vegetarianos" values={[sumOfAllVegetarians]} />
+        <Info title="Pagamentos" values={[sumOfAllPayments, users.length]} />
       </div>
-      <div className="relative ml-auto w-fit">
+      <div className="relative mx-auto w-fit xs:ml-auto xs:mr-0">
         <Input
           className="input-sm w-72 pl-4 pr-36"
           type="number"
@@ -78,37 +132,44 @@ export default function Admin() {
           Adicionar mesa
         </button>
       </div>
-      <div className="my-20 overflow-x-auto">
-        <table className="mx-auto table">
+      <div className="my-10 overflow-x-auto">
+        <table className="mx-auto table w-full leading-[1rem] [&_*]:py-1 [&_*]:text-[0.8rem]">
           {/* head */}
           <thead>
-            <tr className="[&_th]:bg-primary/50">
-              <th />
-              <th>NMec</th>
+            <tr className="border-b-2 border-primary [&_th]:bg-transparent">
+              <th className="!bg-base-100">NMec</th>
               <th>Email</th>
-              <th>Matrícula</th>
               <th>Nome</th>
+              <th>Matrícula</th>
+              <th>Prato</th>
               <th>Estado do Pagamento</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user: User) => (
+            {usersExtended.map((user: UserExtended) => [
               <tr
                 key={user._id}
-                className="group [&_td]:hover:bg-primary/20 [&_th]:hover:bg-primary/20"
+                className="group [&_td]:hover:bg-[#F9F2E8] [&_th]:hover:bg-[#F9F2E8]"
               >
-                <th>{user._id}</th>
-                <td>{user.nmec}</td>
+                <th>{user.nmec}</th>
                 <td>{user.email}</td>
-                <td>{user.matriculation} ano</td>
                 <td>{user.name}</td>
+                <td>
+                  {user.matriculation ? `${user.matriculation}º ano` : "Outro"}
+                </td>
+                <td>
+                  <div className="flex items-center gap-3">
+                    {iconMap.get(user.dish)}
+                    {user.allergies && (
+                      <FontAwesomeIcon style={red} icon={faHandDots} />
+                    )}
+                    <span>{user.allergies}</span>
+                  </div>
+                </td>
                 <td>
                   {user.has_payed ? (
                     <div className="flex items-center gap-3">
-                      <FontAwesomeIcon
-                        className="text-[#198754]"
-                        icon={faCircleCheck}
-                      />
+                      <FontAwesomeIcon style={green} icon={faCircleCheck} />
                       Pago
                     </div>
                   ) : (
@@ -117,9 +178,9 @@ export default function Admin() {
                         className="text-primary"
                         icon={faCheck}
                       />
-                      A aguardar confirmação
+                      A aguardar
                       <button
-                        className="btn-primary btn-xs btn rounded-full opacity-0 group-hover:opacity-100"
+                        className="btn-primary btn-xs btn mr-3 rounded-full opacity-0 group-hover:opacity-100"
                         onClick={() => modalConfirmPayment(user._id)}
                         type="button"
                       >
@@ -128,8 +189,27 @@ export default function Admin() {
                     </div>
                   )}
                 </td>
-              </tr>
-            ))}
+              </tr>,
+              ...user.companions.map((c, idx) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <tr key={idx}>
+                  <th />
+                  <td />
+                  <td />
+                  <td />
+                  <td>
+                    <div className="flex items-center gap-3">
+                      {iconMap.get(c.dish)}
+                      {c.allergies && (
+                        <FontAwesomeIcon style={red} icon={faHandDots} />
+                      )}
+                      <span>{c.allergies}</span>
+                    </div>
+                  </td>
+                  <td />
+                </tr>
+              )),
+            ])}
           </tbody>
         </table>
       </div>

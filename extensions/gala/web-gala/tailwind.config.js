@@ -7,6 +7,9 @@ export default {
   content: ["./src/**/*.{html,js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      screens: {
+        xs: "576px",
+      },
       colors: {
         "light-gold": "#EBD5B5",
         "dark-gold": "#B6A080",

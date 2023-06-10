@@ -28,7 +28,7 @@ export default function Layout() {
       style={getBackground(location)}
     >
       <Navbar />
-      <div className="mx-auto max-w-screen-2xl">
+      <div className="mx-auto max-w-screen-2xl px-1">
         <Outlet />
       </div>
     </div>
