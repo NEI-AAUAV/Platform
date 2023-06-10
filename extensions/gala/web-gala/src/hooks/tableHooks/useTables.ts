@@ -1,15 +1,20 @@
 import useSWR from "swr";
 import GalaService from "@/services/GalaService";
-import useSessionUser from "../userHooks/useSessionUser";
+import useSessionUser, { State } from "../userHooks/useSessionUser";
 
 export default function useTables() {
-  const { sessionUser, isLoading: isUserLoading, isError } = useSessionUser();
+  const {
+    sessionUser,
+    state,
+    isLoading: isUserLoading,
+    isError,
+  } = useSessionUser();
   const { data, error, isLoading, mutate } = useSWR<Table[]>(
     () => (isUserLoading && !isError ? null : ["/table/list", sessionUser]),
     () =>
-      sessionUser
-        ? GalaService.table.listTables()
-        : GalaService.table.listTablesPublic(),
+      state === State.NONE
+        ? GalaService.table.listTablesPublic()
+        : GalaService.table.listTables(),
     { refreshInterval: 30_000, dedupingInterval: 15_000 },
   );
 

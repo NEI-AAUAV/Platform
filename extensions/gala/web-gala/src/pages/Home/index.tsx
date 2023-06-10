@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useUserStore } from "@/stores/useUserStore";
-import useSessionUser from "@/hooks/userHooks/useSessionUser";
+import useSessionUser, { State } from "@/hooks/userHooks/useSessionUser";
 import useLoginLink from "@/hooks/useLoginLink";
 
 export default function Home() {
@@ -8,7 +8,7 @@ export default function Home() {
     sessionLoading: state.sessionLoading,
     sub: state.sub,
   }));
-  const { sessionUser } = useSessionUser();
+  const { sessionUser, state } = useSessionUser();
   const loginLink = useLoginLink();
 
   function navigateTo(path: string) {
@@ -21,8 +21,11 @@ export default function Home() {
     return path;
   }
 
-  let label = !sessionUser ? "Efetuar inscrição" : "Reservar Lugar";
-  label = !sessionLoading && sub === undefined ? "Login" : label;
+  const label = {
+    [State.NONE]: "Iniciar sessão",
+    [State.AUTHENTICATED]: "Efetuar inscrição",
+    [State.REGISTERED]: "Reservar Lugar",
+  };
 
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center">
@@ -35,7 +38,7 @@ export default function Home() {
           className="mt-12 rounded-full bg-black/70 px-8 py-4 font-bold text-white backdrop-blur sm:text-[1.25rem]"
           to={navigateTo("/reserve")}
         >
-          {label}
+          {label[state]}
         </Link>
       </div>
     </div>
