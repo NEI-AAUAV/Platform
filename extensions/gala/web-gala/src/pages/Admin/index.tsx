@@ -107,6 +107,7 @@ function TimeSlots({ start, end }: TimeSlotsProps) {
     const openDate = new Date(openingTime);
     const closeDate = new Date(closingTime);
     const currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() - 1);
     if (currentDate < openDate) {
       return "Por abrir";
     }

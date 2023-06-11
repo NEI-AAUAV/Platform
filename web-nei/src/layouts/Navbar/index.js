@@ -5,6 +5,7 @@ import classNames from "classnames";
 import LinkAdapter from "utils/LinkAdapter";
 import { useWindowSize, useWindowScroll } from "utils/hooks";
 import logo from "assets/images/logo.png";
+import { GalaLogo } from "assets/icons/extensions";
 
 import service from "services/NEIService";
 import { useUserStore } from "stores/useUserStore";
@@ -56,7 +57,7 @@ const Navbar = () => {
     if (windowSize.width < 1024) {
       setNavItems(dataCompacted(4));
     } else {
-      setNavItems(dataCompacted(7));
+      setNavItems(dataCompacted(5));
     }
   }, [windowSize.width]);
 
@@ -164,7 +165,10 @@ const Navbar = () => {
                       </a>
                       <ul className="!rounded-box w-52 border border-base-300 bg-base-200 p-2 shadow">
                         {dropdown.map(
-                          ({ name, link, disabled, external, reload }, index) => (
+                          (
+                            { name, link, disabled, external, reload },
+                            index
+                          ) => (
                             <li
                               key={index}
                               className={classNames({
@@ -189,11 +193,21 @@ const Navbar = () => {
               )}
             </ul>
           </div>
-          <div className="navbar-end !w-fit grow gap-x-3">
+          {/* Jantar Gala Button */}
+          <Link
+            to={`${config.BASE_URL}/gala`}
+            reloadDocument
+            className="btn-ghost btn-sm btn-circle btn gap-1.5 bg-[#C7B191] text-base-300 hover:bg-[#B9A383] md:!w-fit md:!px-3"
+          >
+            <span className="hidden lg:block">Jantar</span>
+            <span className="hidden md:block">Gala</span>
+            <GalaLogo />
+          </Link>
+          <div className="navbar-end !w-fit grow gap-x-3 pl-3">
             <div
               className={classNames("flex gap-x-3 p-1", { hidden: openMobile })}
             >
-              <label className="swap btn-ghost swap-rotate btn-sm btn-circle btn">
+              <label className="swap-rotate swap btn-ghost btn-sm btn-circle btn">
                 <input
                   type="checkbox"
                   onChange={toggleTheme}
