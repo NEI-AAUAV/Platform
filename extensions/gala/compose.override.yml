@@ -12,6 +12,7 @@ services:
       MONGO_SERVER: db_mongo
       MONGO_PASSWORD: mongo
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
+      ALLOW_TIME_SLOTS_PAST: 'True'
     ports:
       - 8004:8004
     volumes:
@@ -45,7 +46,6 @@ services:
     depends_on:
       - api_gala
       - web_gala
-
 
 volumes:
   gala_modules:

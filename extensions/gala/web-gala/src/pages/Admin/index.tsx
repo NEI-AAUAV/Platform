@@ -1,5 +1,7 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,11 +9,16 @@ import {
   faCheck,
   faSeedling,
   faHandDots,
+  faXmark,
+  faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
 
 import { FrangoIcon } from "@/assets/icons";
 import service from "@/services/GalaService";
 import Input from "@/components/Input";
+import useTime from "@/hooks/timeHooks/useTime";
+import useTimeEdit from "@/hooks/timeHooks/useTimeEdit";
 import useTables from "@/hooks/tableHooks/useTables";
 
 const orange = { color: "#DD8500" };
@@ -30,25 +37,158 @@ type InfoProps = {
 
 function Info({ title, values }: InfoProps) {
   return (
-    <div className="rounded-lg border border-secondary bg-white p-2 px-4">
-      <div className="flex items-center justify-between">
-        <div className="truncate text-sm font-medium text-gray-500">
+    <div className="rounded-lg bg-base-200 p-2 px-4 shadow">
+      <div className="mx-auto flex items-center justify-between max-xs:max-w-[18rem]">
+        <div className="w-full text-sm font-medium text-gray-500 max-xs:flex max-xs:justify-between">
           <span className="max-sm:hidden">Total de </span>
-          {title}
-          <p className="text-xl text-gray-900 [&_b]:before:font-medium [&_b]:before:content-['_/_'] first:[&_b]:before:content-none">
-            {values.map((v) => (
-              <b>{v}</b>
+          <span>{title}</span>
+          <div className="whitespace-nowrap text-xl text-gray-900 [&_b]:before:font-medium [&_b]:before:content-['_/_'] first:[&_b]:before:content-none">
+            {values.map((v, idx) => (
+              <b key={idx}>{v}</b>
             ))}
-          </p>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default function Admin() {
-  const [users, setUsers] = useState<User[]>([]);
+interface TimeSlotsProps {
+  start: "tablesStart" | "votesStart";
+  end: "tablesEnd" | "votesEnd";
+}
+
+function TimeSlots({ start, end }: TimeSlotsProps) {
+  const { time } = useTime();
+  const [notDirty, setNotDirty] = useState(false);
+  const [openingTime, setOpeningTime] = useState<string | undefined>();
+  const [closingTime, setClosingTime] = useState<string | undefined>();
+
+  useEffect(() => {
+    setOpeningTime(time?.[start].slice(0, 16));
+    setClosingTime(time?.[end].slice(0, 16));
+  }, [time]);
+
+  useEffect(() => {
+    setNotDirty(
+      (time?.[start].startsWith(openingTime || "") &&
+        time?.[end].startsWith(closingTime || "")) ??
+        false,
+    );
+  }, [openingTime, closingTime]);
+
+  const handleOpeningTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setOpeningTime(event.target.value);
+  };
+
+  const handleClosingTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setClosingTime(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (!time) return;
+    useTimeEdit({ [start]: openingTime, [end]: closingTime }).then((res) => {
+      setNotDirty(
+        (res[start].startsWith(openingTime || "") &&
+          res[end].startsWith(closingTime || "")) ??
+          false,
+      );
+      time[start] = openingTime || "";
+      time[end] = closingTime || "";
+    });
+  };
+
+  const timeSlotsStatus = useCallback(() => {
+    if (!openingTime || !closingTime) return "";
+    const openDate = new Date(openingTime);
+    const closeDate = new Date(closingTime);
+    const currentDate = new Date();
+    if (currentDate < openDate) {
+      return "Por abrir";
+    }
+    if (currentDate >= openDate && currentDate <= closeDate) {
+      return "Aberto";
+    }
+    return "Fechado";
+  }, [openingTime, closingTime]);
+
+  return (
+    <form className="flex flex-col gap-2">
+      <label className="flex items-center justify-between gap-2">
+        <span>Abrir</span>
+        <Input
+          type="datetime-local"
+          className="input-sm"
+          value={openingTime}
+          onChange={handleOpeningTimeChange}
+        />
+      </label>
+      <label className="flex items-center justify-between gap-2">
+        <span>Fechar</span>
+        <Input
+          type="datetime-local"
+          className="input-sm"
+          value={closingTime}
+          onChange={handleClosingTimeChange}
+        />
+      </label>
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-bold text-gray-500">
+          {timeSlotsStatus()}
+        </span>
+        <button
+          className="btn-primary btn-sm btn rounded-full normal-case"
+          onClick={handleSubmit}
+          disabled={notDirty}
+          type="button"
+        >
+          Alterar abertura
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function AddTable() {
   const [tableSize, setTableSize] = useState<number | undefined>();
+
+  function addTable() {
+    if (!tableSize) return;
+    service.table.createTable({ seats: tableSize }).then(() => {
+      window.location.pathname = "/gala/reserve";
+    });
+  }
+
+  return (
+    <div className="relative mx-auto h-fit w-fit xs:ml-auto xs:mr-0">
+      <Input
+        className="input-sm w-full pr-36"
+        type="number"
+        min={1}
+        placeholder="Nº Lugares"
+        onChange={(e) =>
+          setTableSize(parseInt(e.target.value, 10) || undefined)
+        }
+        value={tableSize || ""}
+      />
+      <button
+        className="btn-primary btn-sm btn absolute h-full !-translate-x-[100%] whitespace-nowrap rounded-full normal-case"
+        type="button"
+        onClick={addTable}
+      >
+        Adicionar mesa
+      </button>
+    </div>
+  );
+}
+
+export default function Admin() {
+  const [controlCardOpen, setControlCardOpen] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
   const confirmPaymentModalRef = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate();
   const selectedUser = useRef<number | null>(null);
@@ -74,13 +214,6 @@ export default function Admin() {
     confirmPaymentModalRef.current!.showModal();
   }
 
-  function addTable() {
-    if (!tableSize) return;
-    service.table.createTable({ seats: tableSize }).then(() => {
-      window.location.pathname = "/gala/reserve";
-    });
-  }
-
   const sumOfAllCompanions = persons.reduce(
     (sum, p) => sum + (p.companions.length ?? 0),
     0,
@@ -101,8 +234,8 @@ export default function Admin() {
 
   return (
     <div className="mx-auto mt-12 max-w-7xl">
-      {/* info cards for statistics */}
-      <div className="mb-6 grid grid-cols-2 gap-4 xs:grid-cols-[repeat(auto-fit,_minmax(16rem,16rem))]">
+      {/* Info cards for statistics */}
+      <div className="flex gap-3 max-xs:flex-col xs:gap-4 xs:[&_*]:basis-60">
         <Info
           title="Reservas / Inscritos"
           values={[
@@ -113,28 +246,44 @@ export default function Admin() {
         <Info title="Vegetarianos" values={[sumOfAllVegetarians]} />
         <Info title="Pagamentos" values={[sumOfAllPayments, users.length]} />
       </div>
-      <div className="relative mx-auto w-fit xs:ml-auto xs:mr-0">
-        <Input
-          className="input-sm w-72 pl-4 pr-36"
-          type="number"
-          min={1}
-          placeholder="Nº Lugares"
-          onChange={(e) =>
-            setTableSize(parseInt(e.target.value, 10) || undefined)
-          }
-          value={tableSize || ""}
-        />
+
+      {/* Control card */}
+      <div
+        className={classNames(
+          "relative mt-6 grid grid-cols-[repeat(auto-fit,_minmax(18rem,18rem))] justify-center gap-x-20 gap-y-10 bg-base-200 shadow",
+          !controlCardOpen
+            ? "mb-6 ml-auto w-fit rounded-full bg-black/70 p-[1.45rem] text-white backdrop-blur hover:bg-neutral-focus"
+            : "mb-10 rounded-lg p-4",
+        )}
+      >
+        {controlCardOpen && (
+          <>
+            <div className="flex basis-0 flex-col">
+              <h2 className="mb-4 font-bold">Reservar Lugar</h2>
+              <TimeSlots start="tablesStart" end="tablesEnd" />
+            </div>
+            <div className="flex basis-0 flex-col">
+              <h2 className="mb-4 font-bold">Votar</h2>
+              <TimeSlots start="votesStart" end="votesEnd" />
+            </div>
+            <div className="flex basis-0 flex-col">
+              <h2 className="mb-4 font-bold">Mesas</h2>
+              <AddTable />
+            </div>
+          </>
+        )}
         <button
-          className="btn-primary btn-sm btn absolute h-full !-translate-x-[100%] whitespace-nowrap rounded-full rounded-l-none"
+          className="absolute right-2 top-2 h-8 w-8 leading-none"
           type="button"
-          onClick={addTable}
+          onClick={() => setControlCardOpen(!controlCardOpen)}
         >
-          Adicionar mesa
+          <FontAwesomeIcon icon={controlCardOpen ? faXmark : faEllipsis} />
         </button>
       </div>
-      <div className="my-10 overflow-x-auto">
+
+      {/* Table */}
+      <div className="overflow-x-auto">
         <table className="mx-auto table w-full leading-[1rem] [&_*]:py-1 [&_*]:text-[0.8rem]">
-          {/* head */}
           <thead>
             <tr className="border-b-2 border-primary [&_th]:bg-transparent">
               <th className="!bg-base-100">NMec</th>
@@ -180,7 +329,7 @@ export default function Admin() {
                       />
                       A aguardar
                       <button
-                        className="btn-primary btn-xs btn mr-3 rounded-full opacity-0 group-hover:opacity-100"
+                        className="btn-primary btn-xs btn mr-3 rounded-full normal-case opacity-0 group-hover:opacity-100"
                         onClick={() => modalConfirmPayment(user._id)}
                         type="button"
                       >

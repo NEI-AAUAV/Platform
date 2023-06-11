@@ -31,6 +31,7 @@ export default {
           accent: "#B6A080",
           neutral: "#3D4451",
           "base-100": "#FFFFFF",
+          "base-200": "#FAFAFA",
           "base-content": "#000000",
           info: "#0284c7",
           success: "#198754",
