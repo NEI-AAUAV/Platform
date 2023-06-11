@@ -32,6 +32,21 @@ function allergyIcon(allergies: string) {
   );
 }
 
+function countVegetarians(person: Person) {
+  return person.companions.filter((companion) => companion.dish === "VEG")
+    .length;
+}
+
+function countNormal(person: Person) {
+  return person.companions.filter((companion) => companion.dish === "NOR")
+    .length;
+}
+
+function countAllergies(person: Person) {
+  return person.companions.filter((companion) => companion.allergies.length > 0)
+    .length;
+}
+
 const gridTemplate = {
   gridTemplateColumns: "max-content 1fr",
 };
@@ -57,7 +72,7 @@ export default function Requester({ person, tableId, mutate }: RequesterProps) {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className="flex aspect-square w-6 items-center justify-center rounded-full bg-light-gold"
+            className="flex aspect-square w-[18px] items-center justify-center rounded-full bg-light-gold p-1"
             onClick={async () => {
               await acceptGuest(person.id);
               mutate();
@@ -66,13 +81,13 @@ export default function Requester({ person, tableId, mutate }: RequesterProps) {
             <FontAwesomeIcon icon={faCheck} />
           </button>
           <button
-            className="flex aspect-square w-6 items-center justify-center rounded-full bg-light-gold"
+            className="flex aspect-square w-[18px] items-center justify-center rounded-full bg-light-gold p-1"
             type="button"
             onClick={() => modalRejectConfirm()}
           >
             <FontAwesomeIcon icon={faXmark} />
           </button>
-          <Avatar id={person.id} className="w-8" />
+          <Avatar id={person.id} className="w-[18px]" />
         </div>
         <div className="flex items-center gap-1">
           <span>{`${neiUser?.name} ${neiUser?.surname}`}</span>
@@ -82,18 +97,36 @@ export default function Requester({ person, tableId, mutate }: RequesterProps) {
           </span>
         </div>
         <div />
-        <div className="flex items-center gap-1">
-          <span className="font-light">
+        <div className="flex items-center gap-2 font-light">
+          <span>
             {person.companions.length > 0 &&
               `+${person.companions.length} companions`}
           </span>
-          <span className="flex gap-1">
-            {person.companions.map((companion, idx) => (
-              <Fragment key={idx}>
-                {iconMap.get(companion.dish)}
-                {allergyIcon(companion.allergies)}
-              </Fragment>
-            ))}
+          <span className="flex items-center gap-2">
+            {countNormal(person) > 0 && (
+              <span className="flex items-center gap-1">
+                <span className="text-sm text-base-content/70">
+                  {countNormal(person)}
+                </span>
+                <FrangoIcon style={orange} />
+              </span>
+            )}
+            {countVegetarians(person) > 0 && (
+              <span className="flex items-center gap-1">
+                <span className="text-sm text-base-content/70">
+                  {countVegetarians(person)}
+                </span>
+                <FontAwesomeIcon icon={faSeedling} style={green} />
+              </span>
+            )}
+            {countAllergies(person) > 0 && (
+              <span className="flex items-center gap-1">
+                <span className="text-sm text-base-content/70">
+                  {countAllergies(person)}
+                </span>
+                <FontAwesomeIcon icon={faHandDots} style={red} />
+              </span>
+            )}
           </span>
         </div>
       </div>

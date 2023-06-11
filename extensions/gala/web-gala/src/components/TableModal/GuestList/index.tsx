@@ -12,15 +12,19 @@ const orange = { color: "#DD8500" };
 const green = { color: "#198754" };
 const red = { color: "#DC3545" };
 
-const iconMap = new Map([
-  ["NOR", <FrangoIcon style={orange} />],
-  ["VEG", <FontAwesomeIcon icon={faSeedling} style={green} />],
-]);
+function countVegetarians(person: Person) {
+  return person.companions.filter((companion) => companion.dish === "VEG")
+    .length;
+}
 
-function allergyIcon(allergies: string) {
-  return (
-    allergies.length > 0 && <FontAwesomeIcon icon={faHandDots} style={red} />
-  );
+function countNormal(person: Person) {
+  return person.companions.filter((companion) => companion.dish === "NOR")
+    .length;
+}
+
+function countAllergies(person: Person) {
+  return person.companions.filter((companion) => companion.allergies.length > 0)
+    .length;
 }
 
 const gridTemplate = {
@@ -42,18 +46,36 @@ export default function GuestList({ persons }: GuestListProps) {
           >
             <Guest person={person} />
             <div />
-            <div className="flex items-center gap-1">
-              <span className="font-light">
+            <div className="flex items-center gap-2 font-light">
+              <span>
                 {person.companions.length > 0 &&
                   `+${person.companions.length} companions`}
               </span>
               <span className="flex gap-1">
-                {person.companions.map((companion, index) => (
-                  <Fragment key={index}>
-                    {iconMap.get(companion.dish)}
-                    {allergyIcon(companion.allergies)}
-                  </Fragment>
-                ))}
+                {countNormal(person) > 0 && (
+                  <span className="flex items-center gap-1">
+                    <span className="text-sm text-base-content/70">
+                      {countNormal(person)}
+                    </span>
+                    <FrangoIcon style={orange} />
+                  </span>
+                )}
+                {countVegetarians(person) > 0 && (
+                  <span className="flex items-center gap-1">
+                    <span className="text-sm text-base-content/70">
+                      {countVegetarians(person)}
+                    </span>
+                    <FontAwesomeIcon icon={faSeedling} style={green} />
+                  </span>
+                )}
+                {countAllergies(person) > 0 && (
+                  <span className="flex items-center gap-1">
+                    <span className="text-sm text-base-content/70">
+                      {countAllergies(person)}
+                    </span>
+                    <FontAwesomeIcon icon={faHandDots} style={red} />
+                  </span>
+                )}
               </span>
             </div>
           </div>
