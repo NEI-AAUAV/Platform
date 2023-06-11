@@ -49,20 +49,20 @@ export default function RequestJoinTable({
   };
 
   return (
-    <div className="items-center sm:flex">
+    <div className="md:grid md:h-[max(100%,auto)] md:grid-cols-[1fr_min-content] md:gap-8">
       <FormProvider {...methods}>
         <form
           noValidate
           onSubmit={methods.handleSubmit(formSubmit)}
           className="flex flex-col items-center gap-3"
         >
-          <div className="flex flex-col items-center gap-3 overflow-y-scroll px-3 sm:w-full sm:items-start">
+          <div className="flex flex-col items-center gap-3 overflow-y-scroll px-3">
             <h1 className="text-3xl font-bold">{table.name}</h1>
             <div className="mb-10 flex items-center gap-3">
               <Avatar id={table.head} className="w-[18px]" />
               <h6 className="capitalize">{`${neiUser?.name} ${neiUser?.surname}`}</h6>
             </div>
-            <VisualTable className="sm:hidden" table={table} />
+            <VisualTable className="md:hidden" table={table} />
             {form ? (
               <RequestForm table={table} />
             ) : (
@@ -87,7 +87,9 @@ export default function RequestJoinTable({
           </Button>
         </form>
       </FormProvider>
-      <VisualTable className="ml-auto mr-20 hidden sm:block" table={table} />
+      <div className="flex items-center justify-center">
+        <VisualTable className="hidden md:block" table={table} />
+      </div>
     </div>
   );
 }

@@ -73,17 +73,17 @@ export default function ClaimTable({ table, mutate }: ClaimTableProps) {
       });
   };
   return (
-    <div className="items-center sm:flex">
+    <div className="md:grid md:h-[max(100%,auto)] md:grid-cols-[1fr_min-content] md:gap-8">
       <FormProvider {...methods}>
         <form
           className="flex flex-col items-center gap-3"
           noValidate
           onSubmit={methods.handleSubmit(formSubmit)}
         >
-          <div className="flex flex-col items-center gap-3 overflow-y-auto overflow-x-hidden px-10 pt-1 sm:items-start">
-            <div className="relative sm:w-full">
+          <div className="flex flex-col items-center gap-3 overflow-y-auto overflow-x-hidden md:items-start">
+            <div className="relative md:w-full">
               <Input
-                className="px-4 py-3 sm:w-full"
+                className="px-4 py-3 md:w-full"
                 placeholder="Título da Mesa"
                 {...rest}
                 ref={(e) => {
@@ -107,9 +107,9 @@ export default function ClaimTable({ table, mutate }: ClaimTableProps) {
             <h6>
               <Avatar className="w-[18px]" /> Serás o dono da mesa
             </h6>
-            <VisualTable className="sm:hidden" table={table} />
+            <VisualTable className="md:hidden" table={table} />
             <AddUserList
-              className="sm:mt-10"
+              className="md:mt-10"
               freeSeats={table.seats - calculateOccupiedSeats(table.persons)}
             />
           </div>
@@ -118,7 +118,9 @@ export default function ClaimTable({ table, mutate }: ClaimTableProps) {
           </Button>
         </form>
       </FormProvider>
-      <VisualTable className="ml-auto mr-20 hidden sm:block" table={table} />
+      <div className="flex items-center justify-center">
+        <VisualTable className="hidden md:block" table={table} />
+      </div>
     </div>
   );
 }
