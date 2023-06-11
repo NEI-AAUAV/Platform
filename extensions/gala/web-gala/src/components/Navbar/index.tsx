@@ -15,7 +15,7 @@ export default function Navbar() {
     }s, box-shadow 0.15s ease-in-out ${isOpen ? 0.1 : 0}s`,
   };
   const [counter, setCounter] = useState(0);
-  const { x } = useWindowScroll();
+  const { y } = useWindowScroll();
 
   useEffect(() => {
     function handleResize() {
@@ -36,10 +36,10 @@ export default function Navbar() {
     <>
       <header
         className={classNames(
-          "sticky top-0 z-40 p-5 text-base-content text-opacity-70 md:rounded-none md:bg-transparent",
+          "sticky top-0 z-40 p-5 text-base-content text-opacity-70 md:rounded-none",
           {
             [background]: isOpen,
-            "backdrop-blur": x !== undefined && x > 0,
+            "bg-white/50 shadow backdrop-blur": y !== undefined && y > 0,
           },
         )}
         style={headerTransition}
