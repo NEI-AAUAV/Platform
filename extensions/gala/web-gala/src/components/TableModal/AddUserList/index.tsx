@@ -18,20 +18,8 @@ export default function AddUserList({
     name: "companions",
   });
 
-  // const handleRemove = (index: number) => {
-  //   setUsers(users.filter((_, i) => i !== index));
-  // };
-
-  // const handleAdd = () => {
-  //   if (users.length >= freeSeats - 1) return;
-  //   const newUser = {
-  //     id: Math.random().toString(),
-  //   };
-  //   setUsers([...users, newUser]);
-  // };
-
   return (
-    <div className={`relative flex max-h-56 flex-col gap-3 ${className}`}>
+    <div className={`relative flex flex-col gap-3 ${className}`}>
       <AddUser
         setDish={(dish) => setValue(`dish`, dish)}
         setAllergies={(allergies) => setValue(`allergies`, allergies)}
