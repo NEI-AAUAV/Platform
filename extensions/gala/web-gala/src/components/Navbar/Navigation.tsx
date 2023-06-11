@@ -18,7 +18,7 @@ export default function Navigation({ className }: NavigationProps) {
 
   return (
     <nav className={className}>
-      <ul className="flex flex-col gap-4 sm:flex-row md:gap-8">
+      <ul className="flex flex-col gap-4 md:flex-row md:gap-8">
         <li>
           <Link
             className={`block rounded-3xl px-4 py-2 ${

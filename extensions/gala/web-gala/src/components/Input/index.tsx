@@ -18,7 +18,7 @@ const Input = forwardRef(
     return (
       <input
         className={classNames(
-          "rounded-3xl border border-light-gold focus:border-transparent focus:outline-none focus:ring-2 focus:ring-light-gold disabled:bg-gray-100",
+          "rounded-3xl border border-light-gold px-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-light-gold disabled:bg-gray-100",
           className,
         )}
         type="text"

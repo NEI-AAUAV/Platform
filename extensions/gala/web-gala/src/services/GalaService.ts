@@ -27,6 +27,13 @@ type CreateUser = {
   matriculation: number | null;
 };
 
+type EditTimeSlots = {
+  votesStart?: string;
+  votesEnd?: string;
+  tablesStart?: string;
+  tablesEnd?: string;
+};
+
 const GalaService = {
   table: {
     listTables: async () => {
@@ -94,6 +101,16 @@ const GalaService = {
     },
     getSessionUser: async () => {
       const response: User = await client.get("/users/me");
+      return response;
+    },
+  },
+  time: {
+    getTimeSlots: async () => {
+      const response: TimeSlots = await client.get(`/slots`);
+      return response;
+    },
+    editTimeSlots: async (request: EditTimeSlots) => {
+      const response: TimeSlots = await client.put(`/slots`, request);
       return response;
     },
   },
