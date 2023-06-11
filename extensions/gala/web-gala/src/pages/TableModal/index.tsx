@@ -1,8 +1,6 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { lazy, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import RequestJoinTable from "./RequestJoinTable";
 import { useUserStore } from "@/stores/useUserStore";
@@ -11,8 +9,7 @@ import useSessionUser from "@/hooks/userHooks/useSessionUser";
 import useTables from "@/hooks/tableHooks/useTables";
 import ViewTable from "./ViewTable";
 import useTable from "@/hooks/tableHooks/useTable";
-
-const ClaimTable = lazy(() => import("./ClaimTable"));
+import ClaimTable from "./ClaimTable";
 
 type TableModalProps = {
   tableId: number;
@@ -87,9 +84,9 @@ export default function TableModal({ tableId }: TableModalProps) {
   return (
     <dialog
       ref={modalRef}
-      className="flex h-screen max-h-none w-screen max-w-none items-center justify-center overflow-y-scroll bg-transparent p-0 backdrop:bg-black/50"
+      className="relative m-0 grid h-screen max-h-none w-screen max-w-none items-center overflow-y-scroll bg-transparent p-0 text-base-content/70 backdrop:bg-black/50"
     >
-      <div className="relative z-10 m-10 w-full rounded-3xl bg-base-100 p-6 sm:max-w-3xl">
+      <div className="relative z-10 mx-2 h-4/5 rounded-3xl bg-base-100 p-8 md:mx-auto md:aspect-video md:h-auto">
         <button
           className="absolute right-4 top-4 leading-none"
           type="button"
