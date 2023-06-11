@@ -28,7 +28,7 @@ export default function Guest({ person }: GuestProps) {
   return (
     <>
       <Avatar id={person.id} className="w-[18px]" />
-      <div className="flex items-center">
+      <div className="flex items-center gap-1">
         <span>{`${neiUser?.name} ${neiUser?.surname}`}</span>{" "}
         <span className="flex gap-1">
           {iconMap.get(person.dish)}
