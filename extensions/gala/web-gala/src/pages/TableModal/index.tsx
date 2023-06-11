@@ -81,6 +81,16 @@ export default function TableModal({ tableId }: TableModalProps) {
   const navigate = useNavigate();
   const modalPage = getModalPage(tableId);
 
+  useEffect(() => {
+    function cancelHandler(e: Event) {
+      e.preventDefault();
+    }
+    modalRef.current?.addEventListener("cancel", cancelHandler);
+    return () => {
+      modalRef.current?.removeEventListener("cancel", cancelHandler);
+    };
+  }, []);
+
   return (
     <dialog
       ref={modalRef}
