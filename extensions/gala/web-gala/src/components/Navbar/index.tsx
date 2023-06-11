@@ -4,10 +4,18 @@ import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { LogoIcon, HamburgerIcon } from "@/assets/icons";
 import Navigation from "./Navigation";
+import useWindowScroll from "@/hooks/useWindowScroll";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const background = "bg-base-100 shadow-xl";
+  const headerTransition = {
+    transition: `background-color 0.15s ease-in-out ${
+      isOpen ? 0 : 0.1
+    }s, box-shadow 0.15s ease-in-out ${isOpen ? 0.1 : 0}s`,
+  };
+  const [counter, setCounter] = useState(0);
+  const { x } = useWindowScroll();
 
   useEffect(() => {
     function handleResize() {
@@ -24,14 +32,6 @@ export default function Navbar() {
     };
   }, []);
 
-  const headerTransition = {
-    transition: `background-color 0.15s ease-in-out ${
-      isOpen ? 0 : 0.1
-    }s, box-shadow 0.15s ease-in-out ${isOpen ? 0.1 : 0}s`,
-  };
-
-  const [counter, setCounter] = useState(0);
-
   return (
     <>
       <header
@@ -39,6 +39,7 @@ export default function Navbar() {
           "sticky top-0 z-40 p-5 text-base-content text-opacity-70 md:rounded-none md:bg-transparent",
           {
             [background]: isOpen,
+            "backdrop-blur": x !== undefined && x > 0,
           },
         )}
         style={headerTransition}

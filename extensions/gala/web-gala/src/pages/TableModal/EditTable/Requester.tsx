@@ -4,7 +4,7 @@ import {
   faSeedling,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { Fragment, useRef } from "react";
+import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Avatar from "@/components/Avatar";
 import useNEIUser from "@/hooks/useNEIUser";

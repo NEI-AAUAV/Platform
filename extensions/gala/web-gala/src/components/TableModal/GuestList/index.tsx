@@ -1,5 +1,4 @@
 /* eslint-disable react/no-array-index-key */
-import { Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHandDots, faSeedling } from "@fortawesome/free-solid-svg-icons";
 import { FrangoIcon } from "@/assets/icons";
