@@ -67,26 +67,28 @@ export default function Requester({ person, tableId, mutate }: RequesterProps) {
   }
   return (
     <>
-      <div className="grid items-center gap-1" style={gridTemplate}>
+      <div className="grid items-center gap-2" style={gridTemplate}>
         {/* <Guest id={person.id} /> */}
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            className="flex aspect-square w-[18px] items-center justify-center rounded-full bg-light-gold p-1"
-            onClick={async () => {
-              await acceptGuest(person.id);
-              mutate();
-            }}
-          >
-            <FontAwesomeIcon icon={faCheck} />
-          </button>
-          <button
-            className="flex aspect-square w-[18px] items-center justify-center rounded-full bg-light-gold p-1"
-            type="button"
-            onClick={() => modalRejectConfirm()}
-          >
-            <FontAwesomeIcon icon={faXmark} />
-          </button>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              className="flex aspect-square w-[18px] items-center justify-center rounded-full bg-light-gold p-1"
+              onClick={async () => {
+                await acceptGuest(person.id);
+                mutate();
+              }}
+            >
+              <FontAwesomeIcon icon={faCheck} />
+            </button>
+            <button
+              className="flex aspect-square w-[18px] items-center justify-center rounded-full bg-light-gold p-1"
+              type="button"
+              onClick={() => modalRejectConfirm()}
+            >
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
+          </div>
           <Avatar id={person.id} className="w-[18px]" />
         </div>
         <div className="flex items-center gap-1">

@@ -78,7 +78,7 @@ export default function RequestJoinTable({
             <FontAwesomeIcon icon={faChair} /> Pedir convite para esta mesa
           </Button>
           <Button
-            className={classNames("sticky bottom-0 mt-4 w-full", {
+            className={classNames("sticky bottom-0 w-full", {
               hidden: !form,
             })}
             submit

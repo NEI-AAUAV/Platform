@@ -113,7 +113,7 @@ export default function ClaimTable({ table, mutate }: ClaimTableProps) {
               freeSeats={table.seats - calculateOccupiedSeats(table.persons)}
             />
           </div>
-          <Button className="mt-3" submit>
+          <Button submit>
             <FontAwesomeIcon icon={faPlus} /> Criar mesa
           </Button>
         </form>

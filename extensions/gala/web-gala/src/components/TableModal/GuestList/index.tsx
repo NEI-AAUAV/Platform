@@ -36,7 +36,7 @@ export default function GuestList({ persons }: GuestListProps) {
     <div className="w-full">
       <h3 className="text-xl font-semibold">Convidad@s</h3>
       {filteredPersons.length === 0 && <p>Não há convidad@s nesta mesa</p>}
-      <div className="flex flex-col gap-1">
+      <div className="mt-2 flex flex-col gap-1">
         {filteredPersons.map((person) => (
           <div
             key={person.id}

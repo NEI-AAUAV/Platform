@@ -17,11 +17,11 @@ export default function EditTable({ table, mutate }: EditTableProps) {
   const [error, setError] = useState(false);
   return (
     <div className="md:grid md:h-[max(100%,auto)] md:grid-cols-[1fr_min-content] md:gap-8">
-      <div className="">
-        <span className="flex shrink">
+      <div className="flex flex-col items-center">
+        <span className="flex">
           <textarea
             rows={1}
-            className="block select-none resize-none overflow-hidden rounded-3xl px-4 py-2 text-3xl font-bold focus:border-transparent focus:outline-none focus:ring-2 focus:ring-light-gold"
+            className="block w-72 select-none resize-none overflow-hidden rounded-3xl px-4 py-2 text-3xl font-bold focus:border-transparent focus:outline-none focus:ring-2 focus:ring-light-gold"
             readOnly
             placeholder="Sem nome"
             defaultValue={table.name ?? ""}
@@ -78,7 +78,7 @@ export default function EditTable({ table, mutate }: EditTableProps) {
         <h5 className="sm:mb-10">
           <Avatar className="w-[1.125rem]" /> És o dono desta mesa
         </h5>
-        <VisualTable className="md:hidden" table={table} />
+        <VisualTable className="w-min md:hidden" table={table} />
         <GuestList persons={table.persons} />
         <AcceptPending
           persons={table.persons}
