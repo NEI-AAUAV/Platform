@@ -11,8 +11,8 @@ export default function Navbar() {
 
   useEffect(() => {
     function handleResize() {
-      const sm = 640;
-      if (window.innerWidth > sm) {
+      const md = 640;
+      if (window.innerWidth > md) {
         setIsOpen(false);
       }
     }
@@ -36,7 +36,7 @@ export default function Navbar() {
     <>
       <header
         className={classNames(
-          "sticky top-0 z-40 p-5 text-base-content text-opacity-70 sm:rounded-none sm:bg-transparent",
+          "sticky top-0 z-40 p-5 text-base-content text-opacity-70 md:rounded-none md:bg-transparent",
           {
             [background]: isOpen,
           },
@@ -61,11 +61,11 @@ export default function Navbar() {
             </Link>
           </button>
 
-          <div className="ml-auto hidden sm:block">
+          <div className="ml-auto hidden md:block">
             <Navigation />
           </div>
           <button
-            className="ml-auto sm:hidden"
+            className="ml-auto md:hidden"
             onClick={() => setIsOpen((prev) => !prev)}
             type="button"
           >
@@ -76,7 +76,7 @@ export default function Navbar() {
           animate={{ height: isOpen ? "auto" : 0 }}
           transition={{ delay: isOpen ? 0.1 : 0, duration: 0.3 }}
           className={classNames(
-            "absolute left-0 h-0 w-full overflow-hidden rounded-b-xl bg-inherit px-3 sm:hidden",
+            "absolute left-0 h-0 w-full overflow-hidden rounded-b-xl bg-inherit px-3 md:hidden",
           )}
         >
           <Navigation className="pb-3 pt-8" />
