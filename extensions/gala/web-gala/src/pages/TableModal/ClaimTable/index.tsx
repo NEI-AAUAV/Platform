@@ -76,14 +76,14 @@ export default function ClaimTable({ table, mutate }: ClaimTableProps) {
     <div className="md:grid md:h-[max(100%,auto)] md:grid-cols-[1fr_min-content] md:gap-8">
       <FormProvider {...methods}>
         <form
-          className="flex flex-col items-center gap-3"
+          className="flex w-full flex-col"
           noValidate
           onSubmit={methods.handleSubmit(formSubmit)}
         >
-          <div className="flex flex-col items-center gap-3 overflow-y-auto overflow-x-hidden md:items-start">
-            <div className="relative md:w-full">
+          <div className="flex w-full flex-col items-center overflow-y-auto overflow-x-hidden md:items-start">
+            <div className="relative w-full md:w-full">
               <Input
-                className="px-4 py-3 md:w-full"
+                className="px-4 py-3"
                 placeholder="Título da Mesa"
                 {...rest}
                 ref={(e) => {
@@ -104,9 +104,9 @@ export default function ClaimTable({ table, mutate }: ClaimTableProps) {
                 <FontAwesomeIcon icon={faXmark} />
               </button>
             </div>
-            <h6>
+            <h5 className="flex items-center gap-1">
               <Avatar className="w-[18px]" /> Serás o dono da mesa
-            </h6>
+            </h5>
             <VisualTable className="md:hidden" table={table} />
             <AddUserList
               className="md:mt-10"
