@@ -6,3 +6,5 @@ type User = {
   name: string;
   has_payed: boolean;
 };
+
+type UserExtended = User & Person;
