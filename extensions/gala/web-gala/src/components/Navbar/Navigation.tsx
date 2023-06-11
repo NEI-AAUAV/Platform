@@ -41,7 +41,8 @@ export default function Navigation({ className }: NavigationProps) {
             <FontAwesomeIcon icon={faCheckToSlot} /> Votar
           </Link>
         </li>
-        {scopes?.includes("admin") && (
+        {(scopes?.includes("admin") ||
+          scopes?.includes("manager-jantar-gala")) && (
           <li>
             <Link
               className={`block rounded-3xl px-4 py-2 ${

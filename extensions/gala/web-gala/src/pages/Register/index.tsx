@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { faCaretDown, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -68,7 +68,7 @@ export default function Register() {
   return (
     <div className="mx-16 sm:mx-auto sm:max-w-xl">
       {!sessionLoading && sub === undefined && <Navigate to="/" />}
-      <h1 className="my-16 text-center text-3xl font-bold">Inscrição</h1>
+      <h1 className="mb-8 mt-16 text-center text-3xl font-bold">Inscrição</h1>
       <FormProvider {...methods}>
         <form
           className="flex flex-col items-center"
@@ -98,8 +98,29 @@ export default function Register() {
           <div className="my-6 w-full">
             Estado do Pagamento <br />
             <div className="rounded-3xl border border-light-gold bg-gray-100 px-4 py-1">
-              {!methods.getValues().has_payed ? (
-                "Deves enviar o teu pagamento para o 9xx xxx xxx, via MB WAY."
+              {methods.getValues().has_payed ? (
+                <>
+                  Deves enviar o teu pagamento para o <b>927 144 824</b>, via MB
+                  WAY com a descrição:
+                  <br />
+                  <em>{"Jantar de Gala - <nome> <nmec>"}</em>
+                  <br />
+                  <br />
+                  <b className="block text-center text-primary">
+                    ... ou de preferência ...
+                  </b>
+                  <br />
+                  Enviar o comprovatido para{" "}
+                  <a
+                    href="mailto:galacomissao.nei@gmail.com"
+                    className="link font-bold"
+                  >
+                    galacomissao.nei@gmail.com
+                  </a>{" "}
+                  com o assunto:
+                  <br />
+                  <em>{"Comprovativo de Pagamento - <nome> <nmec>"}</em>
+                </>
               ) : (
                 <>
                   <FontAwesomeIcon
@@ -137,6 +158,32 @@ export default function Register() {
           {!inGala && <Button submit>Submeter</Button>}
         </form>
       </FormProvider>
+      <h1 className="mb-8 mt-16 text-center text-3xl font-bold">
+        Para os Finalistas
+      </h1>
+      <p>
+        Caro(a) finalista,
+        <br />
+        Parabéns pela conclusão desta etapa importante!
+        <br />
+        Deste mais um passo na longa caminhada que ainda tens à tua frente.
+        <br />
+        Mas nós não queremos que fiques esquecido!
+        <br />
+        Desta forma gostariamos que preenchesses o seguinte forms de modo a
+        podermos preparar-te um miminho!
+      </p>
+      <div className="text-center">
+        <Link
+          className="btn-secondary btn-wide btn mb-32 mt-8 rounded-full normal-case"
+          to="https://forms.gle/CcSHMJWnC56HUSLh9"
+          target="_blank"
+          rel="noopener noreferrer"
+          type="button"
+        >
+          Formulário
+        </Link>
+      </div>
     </div>
   );
 }
