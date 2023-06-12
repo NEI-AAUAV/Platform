@@ -177,7 +177,7 @@ function AddTable() {
         value={tableSize || ""}
       />
       <button
-        className="btn-primary btn-sm btn absolute h-full !-translate-x-[100%] whitespace-nowrap rounded-full normal-case"
+        className="btn-primary btn-sm btn absolute right-0 top-0 mt-[2px] whitespace-nowrap rounded-full normal-case"
         type="button"
         onClick={addTable}
       >

@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useUserStore, shallow } from "@/stores/useUserStore";
 import Avatar from "../Avatar";
+import classNames from "classnames";
 
 type NavigationProps = {
   className?: string;
@@ -56,8 +57,16 @@ export default function Navigation({ className }: NavigationProps) {
           </li>
         )}
         {name !== undefined && (
-          <li className="flex items-center">
-            <Link className="px-2" to="/register" title={name}>
+          <li className="">
+            <Link
+              className={classNames(
+                "block rounded-3xl px-1 py-1",
+                location.startsWith("/register") &&
+                  "bg-gradient-to-r from-light-gold to-dark-gold",
+              )}
+              to="/register"
+              title={name}
+            >
               <Avatar alt="profile" className="my-auto w-5" />{" "}
               <span className="my-auto sm:hidden">{name}</span>
             </Link>

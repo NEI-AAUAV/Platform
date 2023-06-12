@@ -24,7 +24,7 @@ export default function Layout() {
   const location = useLocation().pathname;
   return (
     <div
-      className="min-h-screen w-screen bg-no-repeat text-base-content/70"
+      className="min-h-screen bg-no-repeat text-base-content/70"
       style={getBackground(location)}
     >
       <Navbar />

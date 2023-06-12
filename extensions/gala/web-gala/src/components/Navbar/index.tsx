@@ -39,7 +39,8 @@ export default function Navbar() {
           "sticky top-0 z-40 p-5 text-base-content text-opacity-70 md:rounded-none",
           {
             [background]: isOpen,
-            "bg-white/50 shadow backdrop-blur": y !== undefined && y > 0,
+            "bg-white/40 shadow backdrop-blur":
+              !isOpen && y !== undefined && y > 0,
           },
         )}
         style={headerTransition}
@@ -77,7 +78,7 @@ export default function Navbar() {
           animate={{ height: isOpen ? "auto" : 0 }}
           transition={{ delay: isOpen ? 0.1 : 0, duration: 0.3 }}
           className={classNames(
-            "absolute left-0 h-0 w-full overflow-hidden rounded-b-xl bg-inherit px-3 md:hidden",
+            "absolute left-0 right-0 h-0 overflow-hidden rounded-b-xl bg-inherit px-3 md:hidden",
           )}
         >
           <Navigation className="pb-3 pt-8" />
