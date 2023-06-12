@@ -88,6 +88,7 @@ const routes = ({ isAuth }) => [
     children: [
       { path: "/auth/register", element: <Register /> },
       { path: "/auth/login", element: <Login /> },
+      { path: "/auth/forgot", element: <ForgotPassword /> },
     ],
   },
   {
