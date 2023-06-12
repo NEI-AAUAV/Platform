@@ -36,47 +36,52 @@ export default function GuestList({ persons }: GuestListProps) {
     <div className="w-full">
       <h3 className="text-xl font-semibold">Convidad@s</h3>
       {filteredPersons.length === 0 && <p>Não há convidad@s nesta mesa</p>}
-      <div className="mt-2 flex flex-col gap-1">
+      <div className="mt-2 flex flex-col gap-2">
         {filteredPersons.map((person) => (
           <div
             key={person.id}
-            className="grid items-center gap-1"
+            className="grid items-center gap-2"
             style={gridTemplate}
           >
             <Guest person={person} />
-            <div />
-            <div className="flex items-center gap-2 font-light">
-              <span>
-                {person.companions.length > 0 &&
-                  `+${person.companions.length} companions`}
-              </span>
-              <span className="flex gap-1">
-                {countNormal(person) > 0 && (
-                  <span className="flex items-center gap-1">
-                    <span className="text-sm text-base-content/70">
-                      {countNormal(person)}
-                    </span>
-                    <FrangoIcon style={orange} />
+            {/* Companions */}
+            {person.companions.length > 0 && (
+              <>
+                <div />
+                <div className="flex items-center gap-2 font-light">
+                  <span>
+                    {person.companions.length > 0 &&
+                      `+${person.companions.length} companions`}
                   </span>
-                )}
-                {countVegetarians(person) > 0 && (
-                  <span className="flex items-center gap-1">
-                    <span className="text-sm text-base-content/70">
-                      {countVegetarians(person)}
-                    </span>
-                    <FontAwesomeIcon icon={faSeedling} style={green} />
+                  <span className="flex gap-2">
+                    {countNormal(person) > 0 && (
+                      <span className="flex items-center gap-2">
+                        <span className="text-sm text-base-content/70">
+                          {countNormal(person)}
+                        </span>
+                        <FrangoIcon style={orange} />
+                      </span>
+                    )}
+                    {countVegetarians(person) > 0 && (
+                      <span className="flex items-center gap-2">
+                        <span className="text-sm text-base-content/70">
+                          {countVegetarians(person)}
+                        </span>
+                        <FontAwesomeIcon icon={faSeedling} style={green} />
+                      </span>
+                    )}
+                    {countAllergies(person) > 0 && (
+                      <span className="flex items-center gap-2">
+                        <span className="text-sm text-base-content/70">
+                          {countAllergies(person)}
+                        </span>
+                        <FontAwesomeIcon icon={faHandDots} style={red} />
+                      </span>
+                    )}
                   </span>
-                )}
-                {countAllergies(person) > 0 && (
-                  <span className="flex items-center gap-1">
-                    <span className="text-sm text-base-content/70">
-                      {countAllergies(person)}
-                    </span>
-                    <FontAwesomeIcon icon={faHandDots} style={red} />
-                  </span>
-                )}
-              </span>
-            </div>
+                </div>
+              </>
+            )}
           </div>
         ))}
       </div>

@@ -54,6 +54,7 @@ const gridTemplate = {
 export default function Requester({ person, tableId, mutate }: RequesterProps) {
   const { neiUser } = useNEIUser(person.id);
   const rejectConfirmModalRef = useRef<HTMLDialogElement>(null);
+
   async function acceptGuest(userId: number) {
     await useTableConfirm(tableId, { uid: userId, confirm: true });
   }
@@ -65,15 +66,16 @@ export default function Requester({ person, tableId, mutate }: RequesterProps) {
   async function rejectGuest(userId: number) {
     await useTableUserRemove(tableId, userId);
   }
+
   return (
     <>
       <div className="grid items-center gap-2" style={gridTemplate}>
         {/* <Guest id={person.id} /> */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <button
               type="button"
-              className="flex aspect-square w-[18px] items-center justify-center rounded-full bg-light-gold p-1"
+              className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-light-gold p-1"
               onClick={async () => {
                 await acceptGuest(person.id);
                 mutate();
@@ -82,7 +84,7 @@ export default function Requester({ person, tableId, mutate }: RequesterProps) {
               <FontAwesomeIcon icon={faCheck} />
             </button>
             <button
-              className="flex aspect-square w-[18px] items-center justify-center rounded-full bg-light-gold p-1"
+              className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-light-gold p-1"
               type="button"
               onClick={() => modalRejectConfirm()}
             >
@@ -91,46 +93,48 @@ export default function Requester({ person, tableId, mutate }: RequesterProps) {
           </div>
           <Avatar id={person.id} className="w-[18px]" />
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <span>{`${neiUser?.name} ${neiUser?.surname}`}</span>
-          <span className="flex gap-1">
+          <span className="flex gap-2">
             {iconMap.get(person.dish)}
             {allergyIcon(person.allergies)}
           </span>
         </div>
-        <div />
-        <div className="flex items-center gap-2 font-light">
-          <span>
-            {person.companions.length > 0 &&
-              `+${person.companions.length} companions`}
-          </span>
-          <span className="flex items-center gap-2">
-            {countNormal(person) > 0 && (
-              <span className="flex items-center gap-1">
-                <span className="text-sm text-base-content/70">
-                  {countNormal(person)}
-                </span>
-                <FrangoIcon style={orange} />
+        {/* Companions */}
+        {person.companions.length > 0 && (
+          <>
+            <div />
+            <div className="flex items-center gap-2 font-light">
+              <span>{`+${person.companions.length} companions`}</span>
+              <span className="flex items-center gap-2">
+                {countNormal(person) > 0 && (
+                  <span className="flex items-center gap-2">
+                    <span className="text-sm text-base-content/70">
+                      {countNormal(person)}
+                    </span>
+                    <FrangoIcon style={orange} />
+                  </span>
+                )}
+                {countVegetarians(person) > 0 && (
+                  <span className="flex items-center gap-2">
+                    <span className="text-sm text-base-content/70">
+                      {countVegetarians(person)}
+                    </span>
+                    <FontAwesomeIcon icon={faSeedling} style={green} />
+                  </span>
+                )}
+                {countAllergies(person) > 0 && (
+                  <span className="flex items-center gap-2">
+                    <span className="text-sm text-base-content/70">
+                      {countAllergies(person)}
+                    </span>
+                    <FontAwesomeIcon icon={faHandDots} style={red} />
+                  </span>
+                )}
               </span>
-            )}
-            {countVegetarians(person) > 0 && (
-              <span className="flex items-center gap-1">
-                <span className="text-sm text-base-content/70">
-                  {countVegetarians(person)}
-                </span>
-                <FontAwesomeIcon icon={faSeedling} style={green} />
-              </span>
-            )}
-            {countAllergies(person) > 0 && (
-              <span className="flex items-center gap-1">
-                <span className="text-sm text-base-content/70">
-                  {countAllergies(person)}
-                </span>
-                <FontAwesomeIcon icon={faHandDots} style={red} />
-              </span>
-            )}
-          </span>
-        </div>
+            </div>
+          </>
+        )}
       </div>
       <dialog
         className="overflow-hidden rounded-3xl p-0 backdrop:bg-black backdrop:opacity-50"

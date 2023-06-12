@@ -70,15 +70,13 @@ const NoteCard = ({ note, link, className, Icon, onClick, title, style }) => {
           )}
         </div>
         <div className="flex flex-col">
-          <h5 className="mt-2 w-full break-words">
-            {note?.name}
-          </h5>
+          <h5 className="mt-2 w-full break-words">{note?.name}</h5>
 
-          <div className="mt-2 flex flex-wrap gap-1">
+          <div className="mt-2 flex flex-wrap gap-2">
             {getTags().map((tag, index) => (
               <span
                 key={index}
-                className="badge badge-sm border-0 font-bold text-white truncate justify-start"
+                className="badge badge-sm justify-start truncate border-0 font-bold text-white"
                 style={{ backgroundColor: `hsl(${tag.color})` }}
               >
                 {tag.name}

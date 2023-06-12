@@ -62,13 +62,13 @@ export default function RequestJoinTable({
         <form
           noValidate
           onSubmit={methods.handleSubmit(formSubmit)}
-          className="flex h-full flex-col items-center md:items-start"
+          className="flex h-full flex-col items-center gap-8 md:items-start"
         >
           <div className="flex w-full flex-col items-center gap-8 overflow-y-auto px-3 md:items-start">
             <div>
               <h1 className="text-3xl font-bold">{table.name}</h1>
               <div className="flex items-center">
-                <h5 className="flex items-center gap-1 capitalize">
+                <h5 className="flex items-center gap-2 capitalize">
                   <Avatar id={table.head} className="w-[18px]" />
                   {`${neiUser?.name} ${neiUser?.surname}`}
                 </h5>

@@ -109,8 +109,10 @@ const Document2 = ({
             {description}
           </p>
           <div
-            className="tooltip avatar mr-1 ml-auto"
-            data-tip={`Feito por ${author?.name || ""} ${author?.surname || ""}`}
+            className="tooltip avatar ml-auto mr-1"
+            data-tip={`Feito por ${author?.name || ""} ${
+              author?.surname || ""
+            }`}
           >
             <div className="mask mask-circle w-6">
               <img src="https://placeimg.com/192/192/people" />
@@ -118,11 +120,11 @@ const Document2 = ({
           </div>
         </div>
         <div className="flex w-[calc(100%-40px)] flex-col">
-          <h5 className="w-full mt-2 overflow-hidden text-ellipsis break-keep">
+          <h5 className="mt-2 w-full overflow-hidden text-ellipsis break-keep">
             {name}
           </h5>
 
-          <div className="mt-2 flex flex-wrap gap-1">
+          <div className="mt-2 flex flex-wrap gap-2">
             {tags &&
               tags.map((tag, index) => (
                 <span
