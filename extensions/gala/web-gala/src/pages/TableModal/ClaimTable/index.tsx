@@ -44,10 +44,14 @@ export default function ClaimTable({ table, mutate }: ClaimTableProps) {
 
   const titleRef = useRef<HTMLInputElement | null>(null);
   const { ref, ...rest } = methods.register("title", {
-    required: "Title is required",
+    required: "O nome é obrigatório",
     minLength: {
       value: 3,
-      message: "Title must be at least 3 characters long",
+      message: "O nome deve ter entre 3 a 20 caracteres",
+    },
+    maxLength: {
+      value: 20,
+      message: "O nome deve ter entre 3 a 20 caracteres",
     },
   });
   function clearTitle() {
@@ -83,7 +87,7 @@ export default function ClaimTable({ table, mutate }: ClaimTableProps) {
           <div className="flex w-full flex-col items-center overflow-y-auto overflow-x-hidden md:items-start">
             <div className="relative w-full md:w-full">
               <Input
-                className="px-4 py-3"
+                className="py-3 pl-4 pr-8"
                 placeholder="Título da Mesa"
                 {...rest}
                 ref={(e) => {
@@ -97,7 +101,7 @@ export default function ClaimTable({ table, mutate }: ClaimTableProps) {
                 </div>
               )}
               <button
-                className="absolute right-0 top-0 h-full px-4"
+                className="absolute right-0 top-4 px-4"
                 type="button"
                 onClick={clearTitle}
               >
