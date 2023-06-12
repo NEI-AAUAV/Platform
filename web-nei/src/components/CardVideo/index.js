@@ -12,7 +12,7 @@ const CardVideo = ({ video, className }) => {
       <div className="m-4">
         <h2 className="font-bold">{video.title}</h2>
 
-        <div className="flex justify-end gap-1">
+        <div className="flex justify-end gap-2">
           <h5 className="mr-auto font-semibold text-primary">
             {video.subtitle}
           </h5>

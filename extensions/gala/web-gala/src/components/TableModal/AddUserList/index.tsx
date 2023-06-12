@@ -19,7 +19,7 @@ export default function AddUserList({
   });
 
   return (
-    <div className={`relative flex flex-col gap-3 ${className}`}>
+    <div className={`relative flex max-h-64 flex-col gap-3 ${className}`}>
       <AddUser
         setDish={(dish) => setValue(`dish`, dish)}
         setAllergies={(allergies) => setValue(`allergies`, allergies)}

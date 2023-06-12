@@ -49,18 +49,30 @@ export default function RequestJoinTable({
   };
 
   return (
-    <div className="md:grid md:h-[max(100%,auto)] md:grid-cols-[1fr_min-content] md:gap-8">
+    <div
+      className={classNames(
+        "h-full md:grid md:grid-cols-[1fr_min-content] md:gap-8",
+        {
+          "md:h-auto": form,
+          "md:h-full": !form,
+        },
+      )}
+    >
       <FormProvider {...methods}>
         <form
           noValidate
           onSubmit={methods.handleSubmit(formSubmit)}
-          className="flex flex-col items-center gap-3"
+          className="flex h-full flex-col items-center gap-8 md:items-start"
         >
-          <div className="flex flex-col items-center gap-3 overflow-y-scroll px-3">
-            <h1 className="text-3xl font-bold">{table.name}</h1>
-            <div className="mb-10 flex items-center gap-3">
-              <Avatar id={table.head} className="w-[18px]" />
-              <h6 className="capitalize">{`${neiUser?.name} ${neiUser?.surname}`}</h6>
+          <div className="flex w-full flex-col items-center gap-8 overflow-y-auto px-3 md:items-start">
+            <div>
+              <h1 className="text-3xl font-bold">{table.name}</h1>
+              <div className="flex items-center">
+                <h5 className="flex items-center gap-2 capitalize">
+                  <Avatar id={table.head} className="w-[18px]" />
+                  {`${neiUser?.name} ${neiUser?.surname}`}
+                </h5>
+              </div>
             </div>
             <VisualTable className="md:hidden" table={table} />
             {form ? (
@@ -70,7 +82,7 @@ export default function RequestJoinTable({
             )}
           </div>
           <Button
-            className={classNames("mt-4 w-full", {
+            className={classNames("mt-auto w-full", {
               hidden: form,
             })}
             onClick={() => setForm(true)}
@@ -78,7 +90,7 @@ export default function RequestJoinTable({
             <FontAwesomeIcon icon={faChair} /> Pedir convite para esta mesa
           </Button>
           <Button
-            className={classNames("sticky bottom-0 mt-4 w-full", {
+            className={classNames("sticky bottom-0 mt-auto w-full", {
               hidden: !form,
             })}
             submit

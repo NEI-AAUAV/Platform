@@ -14,13 +14,15 @@ import classNames from "classnames";
 
 const Footer = () => (
   <footer className="relative mt-auto">
-    <div className="footer mx-auto flex h-16 w-full max-w-[90rem] items-center justify-center gap-4 py-4 px-1 sm:px-4 flex-row sm:justify-between">
+    <div className="footer mx-auto flex h-16 w-full max-w-[90rem] flex-row items-center justify-center gap-4 px-1 py-4 sm:justify-between sm:px-4">
       <div className="grid-flow-col items-center">
         <p className="xs:ml-2">
-          &copy; {new Date().getFullYear()} - <span className="hidden sm:inline-block">All right reserved by</span>{" "}NEI-AAUAv.
+          &copy; {new Date().getFullYear()} -{" "}
+          <span className="hidden sm:inline-block">All right reserved by</span>{" "}
+          NEI-AAUAv.
         </p>
       </div>
-      <div className="grid-flow-col gap-1.5 sm:gap-3 md:place-self-center md:justify-self-end">
+      <div className="grid-flow-col gap-2.5 sm:gap-3 md:place-self-center md:justify-self-end">
         {data.map(({ icon, url, secondary }, index) => (
           <a
             key={index}
@@ -49,12 +51,12 @@ const MainFooter = () => {
           theme === "dark" ? `url(${blackMapBg})` : `url(${whiteMapBg})`,
       }}
     >
-      <div className="footer mx-auto w-full max-w-[90rem] p-3 xs:p-10 text-base-content md:justify-normal justify-center">
+      <div className="footer mx-auto w-full max-w-[90rem] justify-center p-3 text-base-content xs:p-10 md:justify-normal">
         <div>
           <img
             src={theme === "dark" ? whiteLogo : blackLogo}
             alt="NEI"
-            className="h-24 md:h-32 -mt-2"
+            className="-mt-2 h-24 md:h-32"
           />
           <p className="ml-2">
             Núcleo de Estudantes de Informática da AAUAv

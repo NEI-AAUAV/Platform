@@ -69,9 +69,98 @@ export default function Register() {
     <div className="mx-16 sm:mx-auto sm:max-w-xl">
       {!sessionLoading && sub === undefined && <Navigate to="/" />}
       <h1 className="mb-8 mt-16 text-center text-3xl font-bold">Inscrição</h1>
+      <div className="[&_b]:font-semibold [&_p]:mt-3">
+        <p>
+          O jantar terá um custo de <b>38€ (inclui transporte)</b> onde poderás
+          contar com:
+        </p>
+        <ul className="list-inside list-disc pl-6">
+          <li>Entradas</li>
+          <li>Sopa</li>
+          <li>
+            Pratos Principais:
+            <ul className="list-inside list-decimal pl-6">
+              <li>Carne : Arroz de Pato</li>
+              <li>Vegetariano/Vegan : Tofu com legumes salteados</li>
+            </ul>
+          </li>
+          <li>Sobremesa</li>
+          <li>AfterParty (Bar aberto)</li>
+        </ul>
+        <p>
+          O pagamento realiza-se por <b>MB Way</b> para os números da respetiva
+          matrículas.
+        </p>
+        <p>
+          Após a submissão do formulário tens <b>48h</b> para realizar o
+          pagamento com a seguinte descrição{" "}
+          <b>{'"Pagamento Jantar de Gala de <Nome> - <Nmec>"'}</b> e enviar o
+          comprovativo para{" "}
+          <a
+            href="mailto:galacomissao.nei@gmail.com"
+            className="link-hover link font-semibold"
+          >
+            galacomissao.nei@gmail.com
+          </a>{" "}
+          com o mesmo assunto.
+        </p>
+        <p>Pagamento:</p>
+        <table className="ml-6">
+          {[
+            ["1ª", "967 892 167", "Sara Almeida"],
+            ["2ª", "916 162 223", "Roberto Castro"],
+            ["3ª", "934 656 375", "Marta Inácio"],
+            ["4ª", "925 097 774", "Renato Dias"],
+            ["5ª+", "927 144 824", "Tiago Gomes"],
+          ].map(([year, number, name]) => (
+            <tr>
+              <th className="w-14 text-left font-mono">{year}</th>
+              <td className="w-32 font-mono">{number}</td>
+              <td>({name})</td>
+            </tr>
+          ))}
+        </table>
+        <p>
+          Caso não o faças dentro do prazo, a tua inscrição fica sem efeito.
+        </p>
+        <p>
+          O pagamento do jantar dos acompanhantes deve ser realizada juntamente
+          do pagamento normal (mesma transferência)
+        </p>
+        <p>Na eventualidade de não compareceres, não serás reembolsado.</p>
+        <p>
+          Inscreve-te até dia <b>16 de junho (15h)</b>.{" "}
+          <b>Inscrições Limitadas</b>
+        </p>
+        <p>
+          Qualquer dúvida não hesites!!! <br />
+          Insta:{" "}
+          <a
+            href="https://www.instagram.com/jantardegalaei/"
+            className="link-hover link font-semibold"
+          >
+            @jantardegalaei
+          </a>{" "}
+          <br />
+          Email:{" "}
+          <a
+            href="mailto:galacomissao.nei@gmail.com"
+            className="link-hover link font-semibold"
+          >
+            galacomissao.nei@gmail.com
+          </a>{" "}
+          /{" "}
+          <a
+            href="mailto:neiaauav@gmail.com"
+            className="link-hover link font-semibold"
+          >
+            neiaauav@gmail.com
+          </a>
+        </p>
+      </div>
       <FormProvider {...methods}>
         <form
-          className="flex flex-col items-center"
+          className="mt-5 flex flex-col items-center"
           noValidate
           onSubmit={methods.handleSubmit(formSubmit)}
         >
@@ -98,28 +187,13 @@ export default function Register() {
           <div className="my-6 w-full">
             Estado do Pagamento <br />
             <div className="rounded-3xl border border-light-gold bg-gray-100 px-4 py-1">
-              {methods.getValues().has_payed ? (
+              {!methods.getValues().has_payed ? (
                 <>
-                  Deves enviar o teu pagamento para o <b>927 144 824</b>, via MB
-                  WAY com a descrição:
-                  <br />
-                  <em>{"Jantar de Gala - <nome> <nmec>"}</em>
-                  <br />
-                  <br />
-                  <b className="block text-center text-primary">
-                    ... ou de preferência ...
-                  </b>
-                  <br />
-                  Enviar o comprovatido para{" "}
-                  <a
-                    href="mailto:galacomissao.nei@gmail.com"
-                    className="link font-bold"
-                  >
-                    galacomissao.nei@gmail.com
-                  </a>{" "}
-                  com o assunto:
-                  <br />
-                  <em>{"Comprovativo de Pagamento - <nome> <nmec>"}</em>
+                  <FontAwesomeIcon
+                    className="opacity-30"
+                    icon={faCircleCheck}
+                  />{" "}
+                  Por confirmar
                 </>
               ) : (
                 <>
@@ -155,10 +229,10 @@ export default function Register() {
               disabled={inGala}
             />
           </div>
-          {!inGala && <Button submit>Submeter</Button>}
+          {!inGala && <Button submit>Efetuar inscrição</Button>}
         </form>
       </FormProvider>
-      <h1 className="mb-8 mt-16 text-center text-3xl font-bold">
+      <h1 className="mb-8 mt-20 text-center text-3xl font-bold">
         Para os Finalistas
       </h1>
       <p>
@@ -175,13 +249,12 @@ export default function Register() {
       </p>
       <div className="text-center">
         <Link
-          className="btn-secondary btn-wide btn mb-32 mt-8 rounded-full normal-case"
           to="https://forms.gle/CcSHMJWnC56HUSLh9"
           target="_blank"
           rel="noopener noreferrer"
           type="button"
         >
-          Formulário
+          <Button className="mb-32 mt-5">Aceder Formulário</Button>
         </Link>
       </div>
     </div>

@@ -31,7 +31,7 @@ export default function Select<T>({
       >
         <Listbox.Button
           className={classNames(
-            "flex w-full items-center rounded-3xl bg-light-gold px-3 py-2 text-start !text-inherit",
+            "flex w-full items-center rounded-3xl bg-light-gold px-3 py-2 text-start !text-inherit hover:saturate-150",
             { "btn-disabled": disabled },
           )}
         >

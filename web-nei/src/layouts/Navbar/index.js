@@ -159,7 +159,7 @@ const Navbar = () => {
                       tabIndex={0}
                       onMouseDown={(e) => e.preventDefault()}
                     >
-                      <a className="gap-1">
+                      <a className="gap-2">
                         {name}
                         <ExpandMoreIcon />
                       </a>
@@ -197,7 +197,7 @@ const Navbar = () => {
           <Link
             to={`${config.BASE_URL}/gala`}
             reloadDocument
-            className="btn-ghost btn-sm btn-circle btn gap-1.5 bg-[#C7B191] text-base-300 hover:bg-[#B9A383] md:!w-fit md:!px-3"
+            className="btn-ghost btn-sm btn-circle btn gap-2.5 bg-[#C7B191] text-base-300 hover:bg-[#B9A383] md:!w-fit md:!px-3"
           >
             <span className="hidden lg:block">Jantar</span>
             <span className="hidden md:block">Gala</span>
@@ -207,7 +207,7 @@ const Navbar = () => {
             <div
               className={classNames("flex gap-x-3 p-1", { hidden: openMobile })}
             >
-              <label className="swap-rotate swap btn-ghost btn-sm btn-circle btn">
+              <label className="swap btn-ghost swap-rotate btn-sm btn-circle btn">
                 <input
                   type="checkbox"
                   onChange={toggleTheme}
@@ -237,7 +237,7 @@ const Navbar = () => {
                 <div className="dropdown-end dropdown">
                   <label
                     tabIndex={0}
-                    className="btn-outline btn-sm btn flex-nowrap !px-0.5 align-middle md:gap-1"
+                    className="btn-outline btn-sm btn flex-nowrap !px-0.5 align-middle md:gap-2"
                   >
                     <div className="avatar md:mr-1">
                       <div className="mask mask-circle w-7">

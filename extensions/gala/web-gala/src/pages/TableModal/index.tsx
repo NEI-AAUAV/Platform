@@ -81,12 +81,22 @@ export default function TableModal({ tableId }: TableModalProps) {
   const navigate = useNavigate();
   const modalPage = getModalPage(tableId);
 
+  useEffect(() => {
+    function cancelHandler(e: Event) {
+      e.preventDefault();
+    }
+    modalRef.current?.addEventListener("cancel", cancelHandler);
+    return () => {
+      modalRef.current?.removeEventListener("cancel", cancelHandler);
+    };
+  }, []);
+
   return (
     <dialog
       ref={modalRef}
       className="relative m-0 grid h-screen max-h-none w-screen max-w-none items-center overflow-y-scroll bg-transparent p-0 text-base-content/70 backdrop:bg-black/50"
     >
-      <div className="relative z-10 mx-2 h-4/5 rounded-3xl bg-base-100 p-8 md:mx-auto md:aspect-video md:h-auto">
+      <div className="relative z-10 my-16 rounded-3xl bg-base-100 px-4 py-12 sm:px-12 md:mx-auto md:h-auto">
         <button
           className="absolute right-4 top-4 leading-none"
           type="button"

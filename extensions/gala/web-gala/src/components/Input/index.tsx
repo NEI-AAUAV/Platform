@@ -16,18 +16,20 @@ const Input = forwardRef(
     ref: React.ForwardedRef<HTMLInputElement>,
   ) => {
     return (
-      <input
-        className={classNames(
-          "rounded-3xl border border-light-gold px-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-light-gold disabled:bg-gray-100",
-          className,
-        )}
-        type="text"
-        placeholder={placeholder}
-        style={style}
-        ref={ref}
-        disabled={disabled}
-        {...props}
-      />
+      <div className="p-[2px]">
+        <input
+          className={classNames(
+            "w-full rounded-3xl border border-light-gold px-3 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-light-gold disabled:bg-gray-100",
+            className,
+          )}
+          type="text"
+          placeholder={placeholder}
+          style={style}
+          ref={ref}
+          disabled={disabled}
+          {...props}
+        />
+      </div>
     );
   },
 );

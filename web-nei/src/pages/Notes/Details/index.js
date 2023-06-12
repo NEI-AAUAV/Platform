@@ -66,7 +66,7 @@ const DetailsContents = ({ contents }) => {
       <div className="file-folder">
         <div
           className={classNames(
-            "flex gap-1 rounded px-1",
+            "flex gap-2 rounded px-1",
             children
               ? "cursor-pointer hover:bg-base-content/10"
               : "cursor-default"
@@ -96,7 +96,7 @@ const DetailsContents = ({ contents }) => {
 
   return (
     <>
-      <dt className="align-center my-1 flex gap-1.5 font-bold">Conteúdo</dt>
+      <dt className="align-center my-1 flex gap-2.5 font-bold">Conteúdo</dt>
       <dd className="group">
         {Object.entries(contentsTree).map(([name, props]) => (
           <Folder key={name} name={name} {...props} />
@@ -232,7 +232,7 @@ const Details = ({
               </span>
             ))}
           </div>
-          <div className="my-6 flex flex-col gap-1 px-4 text-center">
+          <div className="my-6 flex flex-col gap-2 px-4 text-center">
             <a
               className="btn-sm btn"
               href={note.location}
@@ -261,7 +261,7 @@ const Details = ({
             <dl>
               {!!note.year && (
                 <>
-                  <dt className="align-center mt-1 flex gap-1.5 font-bold">
+                  <dt className="align-center mt-1 flex gap-2.5 font-bold">
                     <span>Ano letivo</span>
                     <button
                       className="btn-ghost btn-xs btn-circle btn text-primary"
@@ -280,7 +280,7 @@ const Details = ({
               )}
               {!!note.subject && (
                 <>
-                  <dt className="align-center mt-1 flex gap-1.5 font-bold">
+                  <dt className="align-center mt-1 flex gap-2.5 font-bold">
                     <span>Cadeira</span>
                     <button
                       className="btn-ghost btn-xs btn-circle btn text-primary"
@@ -297,7 +297,7 @@ const Details = ({
               )}
               {!!note.author && (
                 <>
-                  <dt className="align-center mt-1 flex gap-1.5 font-bold">
+                  <dt className="align-center mt-1 flex gap-2.5 font-bold">
                     <span>Autor</span>
                     <button
                       className="btn-ghost btn-xs btn-circle btn text-primary"
@@ -316,7 +316,7 @@ const Details = ({
               )}
               {!!note.teacher && (
                 <>
-                  <dt className="mt-1 flex gap-1 font-bold">
+                  <dt className="mt-1 flex gap-2 font-bold">
                     <span>Docente</span>
                     <button
                       className="btn-ghost btn-xs btn-circle btn text-primary"
