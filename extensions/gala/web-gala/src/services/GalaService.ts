@@ -34,6 +34,12 @@ type EditTimeSlots = {
   tablesEnd?: string;
 };
 
+export type Limits = {
+  maxRegistrations: number;
+};
+
+export type EditLimits = Partial<Limits>;
+
 const GalaService = {
   table: {
     listTables: async () => {
@@ -111,6 +117,16 @@ const GalaService = {
     },
     editTimeSlots: async (request: EditTimeSlots) => {
       const response: TimeSlots = await client.put(`/slots`, request);
+      return response;
+    },
+  },
+  limits: {
+    getLimits: async () => {
+      const response: Limits = await client.get(`/limits`);
+      return response;
+    },
+    editTimeSlots: async (request: EditLimits) => {
+      const response: Limits = await client.put(`/limits`, request);
       return response;
     },
   },
