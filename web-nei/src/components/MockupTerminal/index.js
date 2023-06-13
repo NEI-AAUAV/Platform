@@ -7,40 +7,19 @@ import "./index.css";
 
 const terminalInput = {
   curr: 0,
-  commands: [
-    { original: "", mutated: null },
-    { original: "ssh leand@ro", mutated: null },
-    { original: "ls", mutated: null },
-    { original: "cd lixo", mutated: null },
-  ],
+  commands: [{ original: "", mutated: null }],
 };
 
-const initialOutput = [
-  {
-    type: "prompt",
-    user: "guest",
-    hostname: "aauav-nei",
-    cwd: "~",
-    cmdline: "cd lixo",
-  },
-  {
-    type: "prompt",
-    user: "guest",
-    hostname: "aauav-nei",
-    cwd: "~/lixo",
-    cmdline: "ls",
-  },
-  { type: "output", output: "lixo2\nreadme.md\nsomething.sh" },
-];
+const initialOutput = [];
 const initialState = {
   user: "guest",
   hostname: "aauav-nei",
-  cwd: "~/lixo",
+  cwd: "/home/guest",
   outputOffset: 0,
 };
 
 const MockupTerminal = () => {
-  const surname = useUserStore((state) => state.surname)?.toLowerCase();
+  const { name, surname } = useUserStore((state) => state);
 
   const inputRef = useRef(null);
   const terminalRef = useRef(null);
@@ -54,7 +33,8 @@ const MockupTerminal = () => {
     currMutated != null ? currMutated : input.commands[input.curr].original;
 
   useEffect(() => {
-    if (surname) {
+    if (name) {
+      const username = `${name}_${surname}`.toLowerCase();
       const oldState = { ...state };
       setOutput((output) => [
         ...output,
@@ -63,18 +43,18 @@ const MockupTerminal = () => {
           user: oldState.user,
           hostname: oldState.hostname,
           cwd: oldState.cwd,
-          cmdline: `ssh ${surname}@nei`,
+          cmdline: `ssh ${username}@nei`,
         },
-        { type: "output", output: `${surname}@nei's password: ` },
+        { type: "output", output: `${username}@nei's password: ` },
       ]);
       setState((state) => ({
         ...state,
-        user: surname,
+        user: username,
         hostname: "nei",
         cwd: "~",
       }));
     }
-  }, [surname]);
+  }, [name, surname]);
 
   useEffect(() => {
     const elem = inputRef.current;

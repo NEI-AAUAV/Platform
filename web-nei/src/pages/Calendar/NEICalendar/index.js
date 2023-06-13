@@ -20,6 +20,7 @@ import { useLoading } from "utils/hooks";
 
 import CalendarMonth from "./CalendarMonth";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
 
 const calendarEvents = { _all: {} };
 
@@ -58,7 +59,10 @@ const swipePower = (offset, velocity) => {
 const NEICalendar = () => {
   const today = new Date();
   const windowSize = useWindowSize();
-  const [[year, month], setDate] = useState([today.getFullYear(), today.getMonth()]);
+  const [[year, month], setDate] = useState([
+    today.getFullYear(),
+    today.getMonth(),
+  ]);
   const [direction, setDirection] = useState(0);
 
   const [selEvent, setSelEvent] = useState(null);
@@ -102,7 +106,7 @@ const NEICalendar = () => {
   //   setOpenEventModal(false);
   // }
 
-  const fetchEvents = async () => {    
+  const fetchEvents = async () => {
     function addMonthEvents(year, month) {
       const monthKey = dateKey(year, month);
 
