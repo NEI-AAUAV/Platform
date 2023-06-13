@@ -10,14 +10,8 @@ from ._utils import sanitize_table, fetch_table
 router = APIRouter()
 
 
-
-@router.get(
-    "/list/public",
-    responses={
-        **auth_responses,
-    },
-)
-async def list_tables(
+@router.get("/list/public")
+async def list_tables_public(
     *,
     db: DatabaseDep,
 ) -> List[Table]:
@@ -26,7 +20,7 @@ async def list_tables(
 
     def mapper(table_res: Any) -> Table:
         table = Table.parse_obj(table_res)
-        return table
+        return sanitize_table(None, table)
 
     return list(map(mapper, res))
 

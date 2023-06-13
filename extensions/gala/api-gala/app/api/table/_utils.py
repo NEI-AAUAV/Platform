@@ -1,5 +1,5 @@
+from typing import Any, Optional
 from fastapi import HTTPException
-from typing import Any
 
 from app.core.db.types import DBType
 from app.models.table import Table
@@ -33,11 +33,12 @@ def head_permission_check(
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
 
-def sanitize_table(auth: AuthData, table: Table) -> Table:
-    if not table_head_permissions(auth, table):
+def sanitize_table(auth: Optional[AuthData], table: Table) -> Table:
+    if auth is None or not table_head_permissions(auth, table):
         table.persons = list(
             filter(
-                lambda person: person.confirmed or person.id == auth.sub,
+                lambda person: person.confirmed
+                or (auth is not None and person.id == auth.sub),
                 table.persons,
             )
         )

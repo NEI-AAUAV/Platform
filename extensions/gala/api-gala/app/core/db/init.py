@@ -5,6 +5,7 @@ from pymongo.errors import CollectionInvalid
 from app.models.user import User
 from app.models.table import Table
 from app.models.time_slots import TimeSlots, TIME_SLOTS_ID
+from app.models.limits import Limits, LIMITS_ID
 from app.core.logging import logger
 from app.models.vote import VoteCategory
 
@@ -35,7 +36,12 @@ async def init_db(db: DBType) -> None:
     try:
         await db.create_collection(TimeSlots.collection(), check_exists=True)
     except CollectionInvalid:
-        logger.debug("Time slots category collection already exist")
+        logger.debug("Time slots collection already exist")
+
+    try:
+        await db.create_collection(Limits.collection(), check_exists=True)
+    except CollectionInvalid:
+        logger.debug("Limits collection already exist")
 
     # Create an index over the `id` of the persons documents stored in a table.
     #
@@ -82,4 +88,9 @@ async def init_db(db: DBType) -> None:
     )
     await TimeSlots.get_collection(db).update_one(
         {"_id": TIME_SLOTS_ID}, {"$setOnInsert": time_slot.dict()}, upsert=True
+    )
+
+    limits = Limits(maxRegistrations=200)
+    await Limits.get_collection(db).update_one(
+        {"_id": LIMITS_ID}, {"$setOnInsert": limits.dict()}, upsert=True
     )
