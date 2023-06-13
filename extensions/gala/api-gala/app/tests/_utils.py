@@ -8,7 +8,9 @@ from app.api.auth import AuthData, ScopeEnum
 
 
 def auth_data(*, sub: int = 0, scopes: List[ScopeEnum] = []) -> AuthData:
-    return AuthData(sub=sub, nmec=0, name="J", surname="C", scopes=scopes)
+    return AuthData(
+        sub=sub, nmec=0, name="J", surname="C", email="dev@dev.dev", scopes=scopes
+    )
 
 
 async def create_test_user(*, id: int, db: DBType) -> None:
