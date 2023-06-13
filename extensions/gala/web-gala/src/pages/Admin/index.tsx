@@ -20,6 +20,8 @@ import Input from "@/components/Input";
 import useTime from "@/hooks/timeHooks/useTime";
 import useTimeEdit from "@/hooks/timeHooks/useTimeEdit";
 import useTables from "@/hooks/tableHooks/useTables";
+import useLimits from "@/hooks/useLimits";
+import GalaService from "@/services/GalaService";
 
 const orange = { color: "#DD8500" };
 const green = { color: "#198754" };
@@ -165,7 +167,7 @@ function AddTable() {
   }
 
   return (
-    <div className="relative mx-auto h-fit w-fit xs:ml-auto xs:mr-0">
+    <div className="w-50 relative mx-auto h-fit xs:ml-auto xs:mr-0">
       <Input
         className="input-sm w-full pr-36"
         type="number"
@@ -184,6 +186,69 @@ function AddTable() {
         Adicionar mesa
       </button>
     </div>
+  );
+}
+
+function RegistrationLimit() {
+  const { limits, refresh } = useLimits();
+  const [maxRegistrations, setMaxRegistrations] = useState<number>(0);
+
+  useEffect(() => {
+    if (!limits) return;
+    setMaxRegistrations(limits.maxRegistrations);
+  }, [limits]);
+
+  function updateMaxRegistrations() {
+    if (limits?.maxRegistrations == maxRegistrations) return;
+    GalaService.limits.editTimeSlots({ maxRegistrations });
+    refresh();
+  }
+
+  return (
+    <div className="w-50 relative mx-auto h-fit xs:ml-auto xs:mr-0">
+      <Input
+        className="input-sm w-full pr-24"
+        type="number"
+        min={1}
+        placeholder="Máximo inscrições"
+        onChange={(e) => {
+          const num = parseInt(e.target.value, 10);
+          if (num === null) return;
+          setMaxRegistrations(num);
+        }}
+        value={maxRegistrations}
+      />
+      <button
+        className="btn-primary btn-sm btn absolute right-0 top-0 mt-[2px] whitespace-nowrap rounded-full normal-case"
+        type="button"
+        onClick={updateMaxRegistrations}
+      >
+        Atualizar
+      </button>
+    </div>
+  );
+}
+
+function ControlCardInner() {
+  return (
+    <>
+      <div className="flex basis-0 flex-col">
+        <h2 className="mb-4 font-bold">Reservar Lugar</h2>
+        <TimeSlots start="tablesStart" end="tablesEnd" />
+      </div>
+      <div className="flex basis-0 flex-col">
+        <h2 className="mb-4 font-bold">Votar</h2>
+        <TimeSlots start="votesStart" end="votesEnd" />
+      </div>
+      <div className="flex basis-0 flex-col">
+        <h2 className="mb-4 font-bold">Mesas</h2>
+        <AddTable />
+      </div>
+      <div className="flex basis-0 flex-col">
+        <h2 className="mb-4 font-bold">Máximo inscrições</h2>
+        <RegistrationLimit />
+      </div>
+    </>
   );
 }
 
@@ -257,22 +322,7 @@ export default function Admin() {
             : "mb-10 rounded-lg p-4",
         )}
       >
-        {controlCardOpen && (
-          <>
-            <div className="flex basis-0 flex-col">
-              <h2 className="mb-4 font-bold">Reservar Lugar</h2>
-              <TimeSlots start="tablesStart" end="tablesEnd" />
-            </div>
-            <div className="flex basis-0 flex-col">
-              <h2 className="mb-4 font-bold">Votar</h2>
-              <TimeSlots start="votesStart" end="votesEnd" />
-            </div>
-            <div className="flex basis-0 flex-col">
-              <h2 className="mb-4 font-bold">Mesas</h2>
-              <AddTable />
-            </div>
-          </>
-        )}
+        {controlCardOpen && <ControlCardInner />}
         <button
           className="absolute right-2 top-2 h-8 w-8 leading-none"
           type="button"
