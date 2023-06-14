@@ -4,9 +4,12 @@ from pymongo.errors import DuplicateKeyError
 from typing import Optional
 
 from app.models.user import User, Matriculation
+from app.models.table import Table
 from app.core.db import DatabaseDep
 from app.api.auth import AuthData, api_nei_auth, auth_responses
 from app.api.limits.util import fetch_limits
+
+import app.queries.table as table_queries
 
 router = APIRouter()
 
@@ -32,8 +35,31 @@ async def create_user(
     """Creates a new user"""
     limits = await fetch_limits(db)
     registrations = await User.get_collection(db).count_documents({})
+    companions = (
+        await Table.get_collection(db)
+        .aggregate(
+            [
+                {
+                    "$project": {
+                        "count": {"$sum": table_queries.num_confirmed_companions},
+                    }
+                },
+                {
+                    "$group": {
+                        "_id": None,
+                        "total": {"$sum": "$count"},
+                    },
+                },
+            ]
+        )
+        .to_list(None)
+    )
+    companions = companions[0]["total"] if companions else 0
 
-    if registrations >= limits.maxRegistrations:
+    # FIXME: this is bad, it assumes that users do not change the current number of companions
+    # the fix would be to require the number of companions on the inscription
+    # but the requirements needed were incomplete at the time of development
+    if registrations + companions >= limits.maxRegistrations:
         raise HTTPException(status_code=409, detail="Registrations are closed")
 
     user = User(

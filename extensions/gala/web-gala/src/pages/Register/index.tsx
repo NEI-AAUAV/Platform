@@ -21,6 +21,8 @@ export default function Register() {
   const navigate = useNavigate();
 
   const [selected, setSelected] = useState<number | null>(null);
+  const [error, setError] = useState<boolean>(false);
+
   const { sessionUser, isLoading, mutate: galaUserRefetch } = useSessionUser();
 
   useEffect(() => {
@@ -57,6 +59,7 @@ export default function Register() {
       });
       galaUserRefetch(user);
     } catch (error) {
+      setError(true);
       console.error(error);
       return;
     }
@@ -230,6 +233,11 @@ export default function Register() {
             />
           </div>
           {!inGala && <Button submit>Efetuar inscrição</Button>}
+          {error && (
+            <p className="text-center text-red-500">
+              As inscrições atingiram o limite
+            </p>
+          )}
         </form>
       </FormProvider>
       <h1 className="mb-8 mt-20 text-center text-3xl font-bold">

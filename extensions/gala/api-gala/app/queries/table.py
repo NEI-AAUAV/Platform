@@ -1,4 +1,13 @@
 # The number of confirmed persons
+num_confirmed_companions = {
+    "$reduce": {
+        "input": "$persons",
+        "initialValue": 0,
+        "in": {"$add": ["$$value", {"$size": "$$this.companions"}]},
+    },
+}
+
+# The number of confirmed persons
 num_confirmed_persons = {
     "$reduce": {
         "input": "$persons",
