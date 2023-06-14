@@ -35,7 +35,7 @@ async def create_user(
     """Creates a new user"""
     limits = await fetch_limits(db)
     registrations = await User.get_collection(db).count_documents({})
-    companions = (
+    query = (
         await Table.get_collection(db)
         .aggregate(
             [
@@ -54,7 +54,7 @@ async def create_user(
         )
         .to_list(None)
     )
-    companions = companions[0]["total"] if companions else 0
+    companions = query[0]["total"] if query else 0
 
     # FIXME: this is bad, it assumes that users do not change the current number of companions
     # the fix would be to require the number of companions on the inscription
