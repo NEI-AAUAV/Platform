@@ -197,11 +197,17 @@ const Navbar = () => {
           <Link
             to={`${config.BASE_URL}/gala`}
             reloadDocument
-            className="btn-ghost btn-sm btn-circle btn gap-2.5 bg-[#C7B191] text-base-300 hover:bg-[#B9A383] md:!w-fit md:!px-3"
+            className="btn-ghost btn-sm btn-circle btn
+              gap-2.5 border-0
+              bg-gradient-to-r from-[#EBD585] to-[#B6A080]
+              md:!w-fit md:!px-3
+              hover:brightness-90"
           >
-            <span className="hidden lg:block">Jantar</span>
-            <span className="hidden md:block">Gala</span>
-            <GalaLogo />
+            <span className="hidden md:block text-black/70">
+              <span className="hidden lg:inline-block lg:me-1">Jantar</span>
+              <span className="hidden md:inline-block">Gala</span>
+            </span>
+            <GalaLogo className="fill-black/70" />
           </Link>
           <div className="navbar-end !w-fit grow gap-x-3 pl-3">
             <div
