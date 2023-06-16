@@ -69,7 +69,7 @@ export default function Register() {
   const inGala = !!sessionUser?.nmec;
 
   return (
-    <div className="mx-auto max-w-xl">
+    <div className="p-xl-0 mx-auto max-w-xl p-4 text-justify">
       {!sessionLoading && sub === undefined && <Navigate to="/" />}
       <h1 className="mb-8 mt-16 text-center text-3xl font-bold">Inscrição</h1>
       <div className="[&_b]:font-semibold [&_p]:mt-3">
