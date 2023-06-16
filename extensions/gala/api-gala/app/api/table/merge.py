@@ -7,7 +7,6 @@ from app.models.table import Table
 from app.api.auth import AuthData, api_nei_auth, auth_responses
 from app.core.db import DatabaseDep
 from app.core.logging import logger
-from app.utils import NotFoundReCheck
 
 from ._utils import (
     sanitize_table,
@@ -28,9 +27,15 @@ class TableMergeForm(BaseModel):
     responses={
         **auth_responses,
         404: {"description": "Table not found"},
-        409: {"description": "Cannot merge table with itself"},
-        409: {"description": "Cannot merge empty tables"},
-        409: {"description": "No space available to merge tables"},
+        409: {
+            "description": "<br>".join(
+                [
+                    "Cannot merge table with itself",
+                    "No space available to merge tables",
+                    "Cannot merge empty tables",
+                ]
+            )
+        },
     },
 )
 async def merge_table(
