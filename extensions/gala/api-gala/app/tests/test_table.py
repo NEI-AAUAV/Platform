@@ -5,6 +5,7 @@ from app.api.auth import ScopeEnum
 from app.api.table.confirm import TableApprovalForm
 from app.api.table.create import TableCreateForm
 from app.api.table.edit import TableEditForm
+from app.api.table.merge import TableMergeForm
 from app.api.table.reserve import TableReservationForm
 from app.api.table.transfer import TableTransferForm
 
@@ -1736,3 +1737,175 @@ async def test_remove_table_time_slots_closed(
     assert db_res is not None
     db_table_res = Table(**db_res)
     assert test_table2 == db_table_res
+
+
+# ===================
+# === MERGE TABLE ===
+# ===================
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_merge_table_not_found(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    await Table.get_collection(db).insert_one(test_table.dict(by_alias=True))
+    form = TableMergeForm(tid=2)
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/1/merge", json=form.dict()
+    )
+    assert response.status_code == 404
+
+    form = TableMergeForm(tid=1)
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/2/merge", json=form.dict()
+    )
+    assert response.status_code == 404
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_merge_table_empty(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    test_table1 = Table(
+        _id=1,
+        name="Mesa#1",
+        head=0,
+        seats=3,
+        persons=[dummy_person(id=0, confirmed=True)],
+    )
+    test_table2 = Table(_id=2, name=None, head=None, seats=3, persons=[])
+
+    await Table.get_collection(db).insert_one(test_table1.dict(by_alias=True))
+    await Table.get_collection(db).insert_one(test_table2.dict(by_alias=True))
+
+    form = TableMergeForm(tid=2)
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/1/merge", json=form.dict()
+    )
+    assert response.status_code == 409
+    response = response.json()
+    assert response["detail"] == "Cannot merge empty tables"
+
+    form = TableMergeForm(tid=1)
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/2/merge", json=form.dict()
+    )
+    assert response.status_code == 409
+    response = response.json()
+    assert response["detail"] == "Cannot merge empty tables"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_merge_table_without_space(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    test_table1 = Table(
+        _id=1,
+        name="Mesa#1",
+        head=1,
+        seats=3,
+        persons=[
+            dummy_person(id=1, confirmed=True),
+            dummy_person(
+                id=2, confirmed=True, companions=[Companion(dish=DishType.NORMAL)]
+            ),
+        ],
+    )
+    test_table2 = Table(
+        _id=2,
+        name="Mesa#2",
+        head=3,
+        seats=3,
+        persons=[
+            dummy_person(id=3, confirmed=True),
+        ],
+    )
+    await Table.get_collection(db).insert_many(
+        [test_table1.dict(by_alias=True), test_table2.dict(by_alias=True)]
+    )
+
+    form = TableMergeForm(tid=test_table2.id)
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/{test_table1.id}/merge", json=form.dict()
+    )
+    assert response.status_code == 409
+    response = response.json()
+    assert response["detail"] == "No space available to merge tables"
+
+    form = TableMergeForm(tid=test_table1.id)
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/merge", json=form.dict()
+    )
+    assert response.status_code == 409
+    response = response.json()
+    assert response["detail"] == "No space available to merge tables"
+
+    form = TableMergeForm(tid=test_table1.id, force_merge=True)
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/merge", json=form.dict()
+    )
+    assert response.status_code == 200
+    table_res = Table(**response.json())
+    assert table_res.id == test_table2.id
+    assert table_res.name == test_table2.name
+    assert table_res.head == test_table2.head
+    assert table_res.seats == test_table2.seats + 1
+    assert table_res.persons == test_table2.persons + test_table1.persons
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "client",
+    [auth_data(sub=0)],
+    indirect=["client"],
+)
+async def test_merge_table_with_space(
+    settings: Settings, client: AsyncClient, db: DBType
+) -> None:
+    test_table1 = Table(
+        _id=1,
+        name="Mesa#1",
+        head=1,
+        seats=3,
+        persons=[
+            dummy_person(id=1, confirmed=True),
+            dummy_person(
+                id=2, confirmed=True, companions=[Companion(dish=DishType.NORMAL)]
+            ),
+        ],
+    )
+    test_table2 = Table(
+        _id=2,
+        name="Mesa#2",
+        head=3,
+        seats=4,
+        persons=[
+            dummy_person(id=3, confirmed=True),
+        ],
+    )
+    await Table.get_collection(db).insert_many(
+        [test_table1.dict(by_alias=True), test_table2.dict(by_alias=True)]
+    )
+
+    form = TableMergeForm(tid=test_table1.id, force_merge=False)
+    response = await client.post(
+        f"{settings.API_V1_STR}/table/{test_table2.id}/merge", json=form.dict()
+    )
+    assert response.status_code == 200
+    table_res = Table(**response.json())
+    assert table_res.seats == test_table2.seats

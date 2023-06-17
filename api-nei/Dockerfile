@@ -9,6 +9,10 @@ RUN apt-get update && apt-get -y install libpq-dev gcc libmagic1
 RUN pip install --upgrade pip \
     pip install --no-cache-dir --upgrade poetry
 
+COPY poetry.lock pyproject.toml ./
+
+RUN poetry install --no-root
+
 COPY . .
 
 RUN poetry install

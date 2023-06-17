@@ -9,9 +9,11 @@ RUN apt-get update && apt-get -y install libpq-dev gcc libmagic1
 RUN pip install --upgrade pip \
     pip install --no-cache-dir --upgrade poetry
 
-COPY . .
+COPY poetry.lock pyproject.toml ./
 
-RUN poetry install
+RUN poetry install --no-root
+
+COPY . .
 
 EXPOSE 8004
 CMD poetry run uvicorn app.main:app --host 0.0.0.0 --port 8004 --reload
