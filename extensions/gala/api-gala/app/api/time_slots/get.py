@@ -16,7 +16,6 @@ router = APIRouter()
 async def get_time_slots(
     *,
     db: DatabaseDep,
-    _: AuthData = Security(api_nei_auth),
 ) -> TimeSlots:
     """Gets the current time slots config"""
     return await fetch_time_slots(db)

@@ -70,7 +70,7 @@ async def merge_table(
     table1_missing_seats = table2.confirmed_seats() - (
         table1.seats - table1.confirmed_seats()
     )
-    table2_persons = [p.dict() for p in table2.persons if p.confirmed]
+    table2_persons = [p.dict() for p in table2.persons]
 
     try:
         # Oportunistic path - Everything goes well
@@ -81,7 +81,7 @@ async def merge_table(
                     "$set": {
                         "persons": [],
                         "head": None,
-                    }
+                    },
                 },
             ],
             return_document=ReturnDocument.AFTER,
@@ -102,12 +102,14 @@ async def merge_table(
                                 "else": "$seats",
                             },
                         },
-                    }
+                    },
                 },
             ],
             return_document=ReturnDocument.AFTER,
         )
         if res is None:
+            # What if it goes wrong here? then we lose the data from the other table
+            # Oh well...
             raise OperationFailure("Something went wrong")
 
     except OperationFailure as e:

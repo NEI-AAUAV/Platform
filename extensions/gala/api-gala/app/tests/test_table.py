@@ -1885,17 +1885,18 @@ async def test_merge_table_with_space(
         persons=[
             dummy_person(id=1, confirmed=True),
             dummy_person(
-                id=2, confirmed=True, companions=[Companion(dish=DishType.NORMAL)]
+                id=2, confirmed=False, companions=[Companion(dish=DishType.NORMAL)]
             ),
         ],
     )
     test_table2 = Table(
         _id=2,
         name="Mesa#2",
-        head=3,
-        seats=4,
+        head=0,
+        seats=5,
         persons=[
-            dummy_person(id=3, confirmed=True),
+            dummy_person(id=0, confirmed=True),
+            dummy_person(id=3, confirmed=False),
         ],
     )
     await Table.get_collection(db).insert_many(
@@ -1909,3 +1910,4 @@ async def test_merge_table_with_space(
     assert response.status_code == 200
     table_res = Table(**response.json())
     assert table_res.seats == test_table2.seats
+    assert table_res.persons == test_table2.persons + test_table1.persons
