@@ -2,13 +2,15 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import RequestJoinTable from "./RequestJoinTable";
-import { useUserStore } from "@/stores/useUserStore";
-import EditTable from "./EditTable";
-import useSessionUser from "@/hooks/userHooks/useSessionUser";
+import classNames from "classnames";
+import { AnimatePresence, motion } from "framer-motion";
+import useSessionUser, { State } from "@/hooks/userHooks/useSessionUser";
+import useTime, { TimeStatus } from "@/hooks/timeHooks/useTime";
 import useTables from "@/hooks/tableHooks/useTables";
-import ViewTable from "./ViewTable";
 import useTable from "@/hooks/tableHooks/useTable";
+import RequestJoinTable from "./RequestJoinTable";
+import EditTable from "./EditTable";
+import ViewTable from "./ViewTable";
 import ClaimTable from "./ClaimTable";
 
 type TableModalProps = {
@@ -30,9 +32,9 @@ function getModalPage(tableId: number) {
   if (table === undefined) return <Navigate to="/reserve" />;
 
   const { tables } = useTables();
-  const { sessionUser } = useSessionUser();
+  const { sessionUser, state } = useSessionUser();
+  const { time } = useTime();
   const occupied = calculateOccupiedSeats(table.persons);
-  const currentUserId = useUserStore((state) => state?.sub);
 
   const inAnyTable = tables.some((t) =>
     t.persons.some((p) => p.id === sessionUser?._id),
@@ -40,23 +42,25 @@ function getModalPage(tableId: number) {
 
   const inTable = table.persons.some((p) => p.id === sessionUser?._id);
 
+  if (!time) return null;
+
+  if (state !== State.REGISTERED || time?.tablesStatus !== TimeStatus.OPEN) {
+    return <ViewTable table={table} inTable={false} mutate={mutate} />;
+  }
   if (occupied === 0 && !inAnyTable) {
     return <ClaimTable table={table} mutate={mutate} />;
   }
-
-  if (String(table.head) === currentUserId) {
+  if (String(table.head) === sessionUser.sub) {
     return <EditTable table={table} mutate={mutate} />;
   }
   if (inAnyTable && occupied > 0) {
     return <ViewTable table={table} inTable={inTable} mutate={mutate} />;
   }
-
-  if (String(table.head) !== currentUserId && !inAnyTable) {
+  if (String(table.head) !== sessionUser.sub && !inAnyTable) {
     return <RequestJoinTable table={table} mutate={mutate} />;
   }
-
   // wtf is this
-  return <Navigate to="/reserve" />;
+  return <ViewTable table={table} inTable={false} mutate={mutate} />;
 }
 
 function useModal() {
@@ -85,6 +89,7 @@ export default function TableModal({ tableId }: TableModalProps) {
     function cancelHandler(e: Event) {
       e.preventDefault();
     }
+
     modalRef.current?.addEventListener("cancel", cancelHandler);
     return () => {
       modalRef.current?.removeEventListener("cancel", cancelHandler);
@@ -94,18 +99,30 @@ export default function TableModal({ tableId }: TableModalProps) {
   return (
     <dialog
       ref={modalRef}
-      className="relative m-0 grid h-screen max-h-none w-screen max-w-none items-center overflow-y-scroll bg-transparent p-0 text-base-content/70 backdrop:bg-black/50"
+      className={classNames(
+        "relative m-0 grid h-screen max-h-none w-screen max-w-none items-center overflow-y-scroll bg-transparent p-0 text-base-content/70 backdrop:bg-black/50",
+        // !modalPage && "hidden",
+      )}
     >
-      <div className="relative z-10 my-16 rounded-3xl bg-base-100 px-4 py-12 sm:px-12 md:mx-auto md:h-auto">
-        <button
-          className="absolute right-4 top-4 leading-none"
-          type="button"
-          onClick={() => navigate("/reserve")}
-        >
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
-        {modalPage}
-      </div>
+      <AnimatePresence>
+        {!!modalPage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="relative z-10 my-16 rounded-3xl bg-base-100 px-4 py-12 sm:px-12 md:mx-auto md:h-auto"
+          >
+            <button
+              className="absolute right-4 top-4 leading-none"
+              type="button"
+              onClick={() => navigate("/reserve")}
+            >
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
+            {modalPage}
+          </motion.div>
+        )}
+      </AnimatePresence>
       <Link className="absolute inset-0 -z-10" to="/reserve" />
     </dialog>
   );

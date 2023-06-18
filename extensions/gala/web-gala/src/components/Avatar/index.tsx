@@ -19,6 +19,10 @@ export default function Avatar({ className, style, id, alt }: AvatarProps) {
 
   const imageSrc = id === null ? useUserStore((state) => state.image) : idImage;
 
+  if (!imageSrc) {
+    return null;
+  }
+
   return (
     <img
       src={imageSrc}

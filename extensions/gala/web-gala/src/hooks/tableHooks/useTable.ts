@@ -5,7 +5,7 @@ export default function useTable(id: number) {
   const { tables, isLoading, mutate: mutateTables } = useTables();
   const table = tables.find((table) => table._id === id);
 
-  const mutate = function () {
+  const mutate = () => {
     mutateTables(async (tables) => {
       if (!tables) return tables;
       const newTable = await GalaService.table.getTable(id);

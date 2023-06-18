@@ -1,6 +1,4 @@
-import classNames from "classnames";
 import { Link, useParams } from "react-router-dom";
-import { useMemo } from "react";
 import TableModal from "../TableModal";
 import Table from "@/components/Table";
 import useTables from "@/hooks/tableHooks/useTables";
@@ -8,34 +6,13 @@ import useSessionUser, { State } from "@/hooks/userHooks/useSessionUser";
 import useLoginLink from "@/hooks/useLoginLink";
 import useTime, { TimeStatus } from "@/hooks/timeHooks/useTime";
 
-function calculateOccupiedSeats(persons: Person[]) {
-  return persons.reduce((acc, person) => acc + 1 + person.companions.length, 0);
-}
-
 export default function Reserve() {
   const { tableId } = useParams();
-  const { tables, isLoading } = useTables();
-  const { sessionUser, state } = useSessionUser();
+  const { tables } = useTables();
+  const { state } = useSessionUser();
   const { time } = useTime();
 
-  const inAnyTable = useMemo(() => {
-    if (isLoading) return false;
-    return tables.some((t) => t.persons.some((p) => p.id === sessionUser?._id));
-  }, [tables, sessionUser, isLoading]);
   const loginLink = useLoginLink();
-
-  function linkLocation(table: Table) {
-    const occupied = calculateOccupiedSeats(table.persons);
-
-    if (
-      state !== State.REGISTERED ||
-      time?.tablesStatus !== TimeStatus.OPEN ||
-      (inAnyTable && occupied === 0)
-    ) {
-      return "";
-    }
-    return `/reserve/${table._id}`;
-  }
 
   const header = {
     [State.NONE]: {
@@ -74,18 +51,10 @@ export default function Reserve() {
       )}
       <div className="m-10 grid grid-cols-[repeat(auto-fit,_minmax(13.25rem,_1fr))] gap-14">
         {tables?.map((table) => {
-          const location = linkLocation(table);
+          const location = `/reserve/${table._id}`;
 
           return (
-            <Link
-              key={table._id}
-              to={location}
-              className={classNames({
-                "cursor-default":
-                  state !== State.REGISTERED ||
-                  time?.tablesStatus !== TimeStatus.OPEN,
-              })}
-            >
+            <Link key={table._id} to={location}>
               <Table table={table} />
             </Link>
           );

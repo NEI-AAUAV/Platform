@@ -15,7 +15,6 @@ import {
 import classNames from "classnames";
 
 import { FrangoIcon } from "@/assets/icons";
-import service from "@/services/GalaService";
 import Input from "@/components/Input";
 import useTime from "@/hooks/timeHooks/useTime";
 import useTimeEdit from "@/hooks/timeHooks/useTimeEdit";
@@ -161,7 +160,7 @@ function AddTable() {
 
   function addTable() {
     if (!tableSize) return;
-    service.table.createTable({ seats: tableSize }).then(() => {
+    GalaService.table.createTable({ seats: tableSize }).then(() => {
       window.location.pathname = "/gala/reserve";
     });
   }
@@ -199,7 +198,7 @@ function RegistrationLimit() {
   }, [limits]);
 
   function updateMaxRegistrations() {
-    if (limits?.maxRegistrations == maxRegistrations) return;
+    if (limits?.maxRegistrations === maxRegistrations) return;
     GalaService.limits.editTimeSlots({ maxRegistrations });
     refresh();
   }
@@ -261,7 +260,7 @@ export default function Admin() {
   const { tables } = useTables();
 
   useEffect(() => {
-    service.user.listUsers().then((data) => {
+    GalaService.user.listUsers().then((data) => {
       setUsers(data);
     });
   }, []);
@@ -392,7 +391,7 @@ export default function Admin() {
               </tr>,
               ...user.companions.map((c, idx) => (
                 // eslint-disable-next-line react/no-array-index-key
-                <tr key={idx}>
+                <tr key={`c${idx}`}>
                   <th />
                   <td />
                   <td />
@@ -417,7 +416,9 @@ export default function Admin() {
         className="overflow-hidden rounded-3xl p-0 backdrop:bg-black backdrop:opacity-50"
         ref={confirmPaymentModalRef}
       >
-        <h2 className="border-b border-black/20 p-4">Are you sure?</h2>
+        <h2 className="border-b border-black/20 p-8">
+          Tens a certeza que queres confirmar o pagamento?
+        </h2>
         <div className="grid grid-cols-2">
           <button
             type="button"
@@ -425,21 +426,21 @@ export default function Admin() {
             onClick={async () => {
               confirmPaymentModalRef.current!.close();
               if (selectedUser.current === null) return;
-              await service.user.editUser({
+              await GalaService.user.editUser({
                 id: selectedUser.current,
                 has_payed: true,
               });
               navigate(0);
             }}
           >
-            Yes
+            Sim
           </button>
           <button
             type="button"
             className="p-4"
             onClick={() => confirmPaymentModalRef.current!.close()}
           >
-            No
+            Não
           </button>
         </div>
       </dialog>

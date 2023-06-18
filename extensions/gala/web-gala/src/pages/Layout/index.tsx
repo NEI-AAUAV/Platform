@@ -4,12 +4,12 @@ import config from "@/config";
 
 const backgrounds = {
   home: {
-    backgroundImage: `url('${config.BASE_URL}/gala/home-background.png')`,
+    backgroundImage: `url('${config.BASE_URL}/gala/home-background.jpg')`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
   notHome: {
-    backgroundImage: `url('${config.BASE_URL}/gala/not-home-background.png')`,
+    backgroundImage: `url('${config.BASE_URL}/gala/not-home-background.jpg')`,
     backgroundSize: "100vh",
     backgroundPosition: "top left",
   },

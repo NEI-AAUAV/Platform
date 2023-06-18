@@ -28,6 +28,7 @@ const getTimeStatus = (startTime: string, endTime: string) => {
 
 export default function useTime() {
   const [time, setTime] = useState<TimeExtended>();
+
   useEffect(() => {
     (async () => {
       const response = await GalaService.time.getTimeSlots();

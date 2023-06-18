@@ -5,9 +5,9 @@ import {
   faCheckToSlot,
   faUsersGear,
 } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
 import { useUserStore, shallow } from "@/stores/useUserStore";
 import Avatar from "../Avatar";
-import classNames from "classnames";
 
 type NavigationProps = {
   className?: string;

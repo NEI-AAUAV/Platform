@@ -17,7 +17,9 @@ type EditTableProps = {
 
 export default function EditTable({ table, mutate }: EditTableProps) {
   const titleRef = useRef<HTMLTextAreaElement>(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(
+    {} as { name?: boolean; server?: boolean },
+  );
   const navigate = useNavigate();
   useEffect(() => {
     if (titleRef.current?.value === undefined) return;
@@ -61,11 +63,11 @@ export default function EditTable({ table, mutate }: EditTableProps) {
                   titleRef.current?.value.length < 3 ||
                   titleRef.current?.value.length > 20
                 ) {
-                  setError(true);
+                  setError({ ...error, name: true });
                   return;
                 }
 
-                setError(false);
+                setError({ ...error, name: false });
 
                 // Skip editing if the value didn't change
                 if (titleRef.current?.value === table.name) return;
@@ -94,7 +96,7 @@ export default function EditTable({ table, mutate }: EditTableProps) {
               <FontAwesomeIcon icon={faPen} />
             </button>
           </span>
-          {error && (
+          {error?.name && (
             <div className="text-xs text-red-500">
               O nome da mesa deve ter entre 3 a 20 caracteres
             </div>
@@ -110,16 +112,30 @@ export default function EditTable({ table, mutate }: EditTableProps) {
           tableId={table._id}
           mutate={mutate}
         />
-        <Button
-          className="mt-auto w-full"
-          onClick={async () => {
-            await useTableLeave(table._id);
-            mutate();
-            navigate("/reserve");
-          }}
-        >
-          Leave Table
-        </Button>
+        <div className="w-full">
+          <Button
+            className="mt-auto w-full"
+            onClick={async () => {
+              try {
+                await useTableLeave(table._id);
+              } catch (e: any) {
+                if (e?.response?.status === 400) {
+                  setError({ ...error, server: true });
+                }
+                return;
+              }
+              mutate();
+              navigate("/reserve");
+            }}
+          >
+            Sair da mesa
+          </Button>
+          {error?.server && (
+            <div className="mt-1 text-xs text-red-500">
+              Donos de mesas só podem sair se a mesa estiver vazia
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex items-center justify-center">
         <VisualTable className="hidden md:block" table={table} />

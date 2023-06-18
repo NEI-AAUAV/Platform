@@ -140,7 +140,9 @@ export default function Requester({ person, tableId, mutate }: RequesterProps) {
         className="overflow-hidden rounded-3xl p-0 backdrop:bg-black backdrop:opacity-50"
         ref={rejectConfirmModalRef}
       >
-        <h2 className="border-b border-black/20 p-4">Are you sure?</h2>
+        <h2 className="border-b border-black/20 p-8">
+          Tens a certeza que queres rejeitar o pedido?
+        </h2>
         <div className="grid grid-cols-2">
           <button
             type="button"
@@ -151,14 +153,14 @@ export default function Requester({ person, tableId, mutate }: RequesterProps) {
               mutate();
             }}
           >
-            Yes
+            Sim
           </button>
           <button
             type="button"
             className="p-4"
             onClick={() => rejectConfirmModalRef.current!.close()}
           >
-            No
+            Não
           </button>
         </div>
       </dialog>
