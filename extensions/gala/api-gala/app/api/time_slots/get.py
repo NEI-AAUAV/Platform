@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Security
+from fastapi import APIRouter
 
 from app.models.time_slots import TimeSlots
 from app.core.db import DatabaseDep
-from app.api.auth import AuthData, api_nei_auth, auth_responses
+from app.api.auth import auth_responses
 
 from .util import fetch_time_slots
 
