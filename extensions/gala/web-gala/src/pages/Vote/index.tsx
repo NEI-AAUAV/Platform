@@ -8,7 +8,7 @@ export default function Vote() {
   return (
     <>
       <h2 className="m-20 text-center text-2xl font-bold">
-        <span className="block">Título</span>
+        <span className="block">Vota nas categorias.</span>
       </h2>
       <div className="mx-4 my-10 grid gap-8">
         <VoteCard />

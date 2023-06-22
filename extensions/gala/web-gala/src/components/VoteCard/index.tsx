@@ -1,6 +1,6 @@
 import { faGraduationCap, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Avatar from "../Avatar";
+import Option from "./Option";
 
 export default function VoteCard() {
   return (
@@ -19,30 +19,10 @@ export default function VoteCard() {
       </div>
 
       <div id="options" className="flex flex-col gap-4">
-        <div className="flex flex-row items-center gap-2 rounded-lg border border-[#EBD5B5] bg-gradient-to-r from-[#EBD5B5] to-[#B6A080] p-2 shadow-[0_2px_6px_0px_rgba(182,160,128,0.25)]">
-          <Avatar id={null} className="w-[16px] flex-initial" />
-          <p>
-            <span className="font-semibold">João</span> Capucho
-          </p>
-        </div>
-        <div className="flex flex-row items-center gap-2 rounded-lg border border-[#EBD5B5] p-2 shadow-[0_2px_6px_0px_rgba(182,160,128,0.25)]">
-          <Avatar id={null} className="w-[16px] flex-initial" />
-          <p>
-            <span className="font-semibold">Leandro</span> Silva
-          </p>
-        </div>
-        <div className="flex flex-row items-center gap-2 rounded-lg border border-[#EBD5B5] p-2 shadow-[0_2px_6px_0px_rgba(182,160,128,0.25)]">
-          <Avatar id={null} className="w-[16px] flex-initial" />
-          <p>
-            <span className="font-semibold">Rúben</span> Garrido
-          </p>
-        </div>
-        <div className="flex flex-row items-center gap-2 rounded-lg border border-[#EBD5B5] p-2 shadow-[0_2px_6px_0px_rgba(182,160,128,0.25)]">
-          <Avatar id={null} className="w-[16px] flex-initial" />
-          <p>
-            <span className="font-semibold">Zakhar</span> Kruptsala
-          </p>
-        </div>
+        <Option name="João" surname="Capucho" selected />
+        <Option name="Leandro" surname="Silva" />
+        <Option name="Rúben" surname="Garrido" />
+        <Option name="Zakhar" surname="Kruptsala" />
       </div>
     </div>
   );
