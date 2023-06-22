@@ -16,7 +16,7 @@ export default function Vote() {
         <VoteCard />
 
         <Button className={classNames("w-full")} submit>
-          <FontAwesomeIcon icon={faPaperPlane} /> Enviar Convite
+          <FontAwesomeIcon icon={faPaperPlane} /> Enviar votações
         </Button>
       </div>
     </>
