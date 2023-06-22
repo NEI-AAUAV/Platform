@@ -40,6 +40,17 @@ export type Limits = {
 
 export type EditLimits = Partial<Limits>;
 
+type VoteCategoryCreate = {
+  category: string;
+  options: string[];
+};
+
+export type VoteCategoryEdit = Partial<VoteCategoryCreate>;
+
+type VoteCategoryCast = {
+  option: number;
+};
+
 const GalaService = {
   table: {
     listTables: async () => {
@@ -127,6 +138,28 @@ const GalaService = {
     },
     editTimeSlots: async (request: EditLimits) => {
       const response: Limits = await client.put(`/limits`, request);
+      return response;
+    },
+  },
+  vote: {
+    listCategories: async () => {
+      const response: Vote[] = await client.get("/votes/list");
+      return response;
+    },
+    getCategory: async (id: string | number) => {
+      const response: Vote = await client.get(`/votes/${id}`);
+      return response;
+    },
+    createVote: async (request: VoteCategoryCreate) => {
+      const response: Vote = await client.post("/votes/new");
+      return response;
+    },
+    editVote: async (id: string | number, request: VoteCategoryEdit) => {
+      const response: Vote = await client.put(`/votes/${id}/edit`, request);
+      return response;
+    },
+    castVote: async (id: string | number, request: VoteCategoryCast) => {
+      const response: Vote = await client.put(`/votes/${id}/cast`, request);
       return response;
     },
   },
