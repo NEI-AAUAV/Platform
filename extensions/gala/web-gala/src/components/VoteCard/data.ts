@@ -15,7 +15,7 @@ const data: Data = {
     "Paradinha e Vânia": "Casa Do Povo/paradinhavania.jpeg",
     "Paulo, João e Artur": "Casa Do Povo/PauloJoaoArtur.jpeg",
     Regina: "Casa Do Povo/regina.jpeg",
-    "Sara, Joaqueim, Aoki e Carolina": "Casa Do Povo/SaraALmeidaJoaquim.jpeg",
+    "Sara, Joaquim, Aoki e Carolina": "Casa Do Povo/SaraALmeidaJoaquim.jpeg",
   },
   c3: {
     "João Varela e Carolina Prata": "Casal Do Ano/JoaoVarelaCarolinaPrata.jpeg",
