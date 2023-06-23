@@ -1,12 +1,10 @@
 import classNames from "classnames";
-import { UseFormGetValues, UseFormSetValue } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 
 type OptionProps = {
   name: string;
   surname: string;
-  hasVoted: boolean;
-  setValue?: UseFormSetValue<any>;
-  getValues?: UseFormGetValues<any>;
+  disabled?: boolean;
   optionIdx?: number;
   catId?: number;
 };
@@ -14,27 +12,28 @@ type OptionProps = {
 export default function Option({
   name,
   surname,
-  hasVoted,
-  setValue,
-  getValues,
   optionIdx,
+  disabled,
   catId,
 }: OptionProps) {
+  const { setValue } = useFormContext();
+  const currentSelected = useWatch({
+    name: `votes.${catId}.option`,
+  });
+
   return (
     <button
       type="button"
-      disabled={hasVoted}
+      disabled={disabled}
       className={classNames(
         "flex flex-row items-center gap-2 rounded-lg border border-[#EBD5B5] p-2 shadow-[0_2px_6px_0px_rgba(182,160,128,0.25)]",
         {
           "bg-gradient-to-r from-[#EBD5B5] to-[#B6A080]":
-            getValues && getValues(`votes.${catId}.option`) === `${optionIdx}`,
+            currentSelected === optionIdx,
         },
       )}
       onClick={() => {
-        if (setValue && getValues) {
-          setValue(`votes.${catId}.option`, `${optionIdx}`);
-        }
+        setValue(`votes.${catId}.option`, optionIdx);
       }}
     >
       <span className="font-semibold">{name}</span> {surname}
@@ -43,8 +42,5 @@ export default function Option({
 }
 
 Option.defaultProps = {
-  setValue: () => {},
-  getValues: () => {},
-  optionIdx: 0,
-  catId: 0,
+  disabled: false,
 };

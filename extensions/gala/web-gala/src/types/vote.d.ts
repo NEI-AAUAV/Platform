@@ -3,5 +3,5 @@ type Vote = {
   category: string;
   options: string[];
   scores: number[];
-  already_voted: boolean;
+  already_voted: number | null;
 };
