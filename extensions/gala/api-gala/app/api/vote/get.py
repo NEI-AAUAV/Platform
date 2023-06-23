@@ -1,9 +1,9 @@
 from typing import Any, List
 from fastapi import APIRouter, Security
 
-from app.api.auth import AuthData, api_nei_auth, auth_responses
+from app.api.auth import AuthData, ScopeEnum, api_nei_auth, auth_responses
 from app.core.db import DatabaseDep
-from app.models.vote import VoteCategory, VoteListing
+from app.models.vote import Vote, VoteCategory, VoteListing
 
 from ._utils import fetch_category
 
@@ -11,12 +11,13 @@ router = APIRouter()
 
 
 def anonymize_category(category: VoteCategory, auth: AuthData) -> VoteListing:
-    already_voted = False
+    already_voted = None
     scores = [0] * len(category.options)
 
     for vote in category.votes:
         scores[vote.option] += 1
-        already_voted |= vote.uid == auth.sub
+        if vote.uid == auth.sub:
+            already_voted = vote.option
 
     return VoteListing(
         _id=category.id,
@@ -61,3 +62,18 @@ async def get_category(
     """Get a single vote category"""
     category = await fetch_category(category_id, db)
     return anonymize_category(category, auth)
+
+
+@router.get(
+    "/{category_id}/votes",
+    responses={**auth_responses, 404: {"description": "Vote category not found"}},
+)
+async def get_votes(
+    category_id: int,
+    *,
+    db: DatabaseDep,
+    _: AuthData = Security(api_nei_auth, scopes=[ScopeEnum.MANAGER_JANTAR_GALA]),
+) -> List[Vote]:
+    """Get a single vote category"""
+    category = await fetch_category(category_id, db)
+    return category.votes

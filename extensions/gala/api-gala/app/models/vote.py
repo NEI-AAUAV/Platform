@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, Field
 from app.models import BaseDocument
 
@@ -20,4 +20,4 @@ class VoteListing(BaseDocument):
     category: str
     options: List[str]
     scores: List[int]
-    already_voted: bool
+    already_voted: Optional[int]
