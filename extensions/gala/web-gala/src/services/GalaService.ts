@@ -150,10 +150,10 @@ const GalaService = {
       const response: Vote = await client.get(`/votes/${id}`);
       return response;
     },
-    createVote: async (request: VoteCategoryCreate) => {
-      const response: Vote = await client.post("/votes/new");
-      return response;
-    },
+    // createVote: async (request: VoteCategoryCreate) => {
+    //   const response: Vote = await client.post("/votes/new");
+    //   return response;
+    // },
     editVote: async (id: string | number, request: VoteCategoryEdit) => {
       const response: Vote = await client.put(`/votes/${id}/edit`, request);
       return response;
