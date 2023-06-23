@@ -38,6 +38,7 @@ export default function VoteCard({ vote, setValue, getValues }: Props) {
 
           const name = parts.length !== 0 ? parts[0] : "";
           const surname = parts.length !== 0 ? parts[parts.length - 1] : "";
+          if (vote.already_voted) return;
 
           return (
             <Option
