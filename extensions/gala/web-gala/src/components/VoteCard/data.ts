@@ -51,13 +51,13 @@ const data: Data = {
     "João Matos": "Informatico:a/JoaoMatos.jpeg",
     "João Reis": "Informatico:a/JoaoReis.jpg",
     "João Roldão": "Informatico:a/roldao.jpeg",
-    "Rui Machado": "Informatico:a/RuiMachado.jpeg",
     "Tiago Sora": "Informatico:a/TiagoSora.jpeg",
   },
   c9: {
     "Marta Inácio": "Informatico:a/marta.jpeg",
     "Marta Fradique": "Informatico:a/MartaFradique.jpeg",
     "Raquel Paradinha": "Informatico:a/paradinha.jpeg",
+    "Rui Machado": "Informatico:a/RuiMachado.jpeg",
   },
   c10: {
     "Daniel Ferreira": "O:A Academico/DanielFerreira.jpeg",
