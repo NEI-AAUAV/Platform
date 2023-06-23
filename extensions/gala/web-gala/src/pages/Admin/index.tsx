@@ -21,6 +21,8 @@ import useTimeEdit from "@/hooks/timeHooks/useTimeEdit";
 import useTables from "@/hooks/tableHooks/useTables";
 import useLimits from "@/hooks/useLimits";
 import GalaService from "@/services/GalaService";
+import Vote from "../Vote";
+import VoteResults from "@/components/VoteCard/VoteResults";
 
 const orange = { color: "#DD8500" };
 const green = { color: "#198754" };
@@ -444,6 +446,9 @@ export default function Admin() {
           </button>
         </div>
       </dialog>
+
+      {/* Vote Results */}
+      <VoteResults />
     </div>
   );
 }
