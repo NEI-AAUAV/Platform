@@ -5,15 +5,32 @@ import {
   MockupTerminal,
   MultipleRangeInput,
   CardMerch,
+  GameCard,
   SportsCard,
 } from "components";
 
 import { CalendarViewMonthIcon, ViewAgendaIcon } from "assets/icons/google";
 
+
+const props = {
+  'modalidade': "Futsal Masculino",
+  'img1': "https://nei.web.ua.pt/static/media/nei.b8a8878d0d6a342a45a7e09a34363ee5.svg",
+  'team1': "EI",
+  'img2': "https://nei.web.ua.pt/static/media/nei.b8a8878d0d6a342a45a7e09a34363ee5.svg",
+  'team2': "EI",
+  'live': true,
+  'time': "10:30",
+  'score1': "20",
+  'score2': "20",
+  'penalti1': "6",
+  'penalti2': "5"
+} 
+
 const Components = () => {
   const [btnActive, setBtnActive] = useState(true);
   return (
     <div>
+      <GameCard props={props}/>
       <h1>Daisy UI Color Names</h1>
       <div className="overflow-y-auto">
         <table className="flex flex-start p-6 w-fit">
