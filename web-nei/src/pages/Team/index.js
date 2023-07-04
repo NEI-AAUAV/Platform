@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import Person from "./components/Person.js";
 import { Spinner } from "react-bootstrap";
 import Typist from "react-typist";
 import { motion } from "framer-motion";
@@ -142,7 +141,7 @@ const Team = () => {
                       alt=""
                     />
 
-                    <p className="mb-1 text-lg font-bold">{user?.name}</p>
+                    <p className="mb-1 text-lg font-bold">{user?.name} {user?.surname}</p>
                     <p className="mb-2 text-gray-500">{role?.name}</p>
                     <ul className="flex justify-center space-x-1 sm:mt-0">
                       {!!user?.github && (
@@ -150,6 +149,7 @@ const Team = () => {
                           <a
                             href={user?.github}
                             target="_blank"
+                            rel="noreferrer"
                             className="btn-ghost btn-xs btn-circle btn"
                           >
                             <GithubIcon />
@@ -161,6 +161,7 @@ const Team = () => {
                           <a
                             href={user?.linkedin}
                             target="_blank"
+                            rel="noreferrer"
                             className="btn-ghost btn-xs btn-circle btn"
                           >
                             <LinkedinIcon />
@@ -180,10 +181,10 @@ const Team = () => {
                 <h4 className="opacity-80">Colaboradores</h4>
                 <div className="divider mt-1 grow" />
               </div>
-              <div className="mt-2 grid grid-cols-2 xs:grid-cols-3 md:grid-cols-4">
+              <div className="mt-2 grid grid-cols-[repeat(auto-fit,_minmax(28ch,_1fr))]">
                 {collaborators?.map(({ user_id, user }) => (
-                  <h5 key={user_id} className="px-7 sm:px-14">
-                    {user?.name}
+                  <h5 key={user_id} className="px-7">
+                    {user?.name} {user?.surname}
                   </h5>
                 ))}
               </div>

@@ -60,6 +60,10 @@ const data = [
         link: "/faina",
       },
       {
+        name: "Família de Faina",
+        link: "/family",
+      },
+      {
         name: "Diário do Tux",
         link: "/tux",
         disabled: config.PRODUCTION,
@@ -84,10 +88,6 @@ const data = [
   //   name: "Rally Tascas",
   //   link: "/breakthebars",
   // },
-  {
-    name: "Famílias",
-    link: "/family",
-  },
   {
     name: "Finalistas",
     link: "/seniors",

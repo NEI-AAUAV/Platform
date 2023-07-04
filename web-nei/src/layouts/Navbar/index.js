@@ -127,7 +127,7 @@ const Navbar = () => {
         )}
       >
         <div ref={navRef} className="navbar mx-auto h-20 w-full max-w-[90rem]">
-          <div className="navbar-start !w-fit basis-[100px]">
+          <div className="navbar-start !w-fit basis-[80px]">
             <Link to="/">
               <img
                 role="button"
@@ -194,21 +194,24 @@ const Navbar = () => {
             </ul>
           </div>
           {/* Jantar Gala Button */}
-          <Link
-            to={`${config.BASE_URL}/gala`}
-            reloadDocument
-            className="btn-ghost btn-sm btn-circle btn
+          {config.ENABLE_GALA && (
+            <Link
+              to={`${config.BASE_URL}/gala`}
+              reloadDocument
+              className="btn-ghost btn-sm btn-circle btn
               gap-2.5 border-0
               bg-gradient-to-r from-[#EBD5B5] to-[#B6A080]
-              md:!w-fit md:!px-3
-              hover:brightness-90"
-          >
-            <span className="hidden md:block text-black/70">
-              <span className="hidden lg:inline-block lg:me-1">Jantar</span>
-              <span className="hidden md:inline-block">Gala</span>
-            </span>
-            <GalaLogo className="fill-black/70" />
-          </Link>
+              hover:brightness-90 md:!w-fit
+              md:!px-3"
+            >
+              <span className="hidden text-black/70 md:block">
+                <span className="hidden lg:me-1 lg:inline-block">Jantar</span>
+                <span className="hidden md:inline-block">Gala</span>
+              </span>
+              <GalaLogo className="fill-black/70" />
+            </Link>
+          )}
+
           <div className="navbar-end !w-fit grow gap-x-3 pl-3">
             <div
               className={classNames("flex gap-x-3 p-1", { hidden: openMobile })}

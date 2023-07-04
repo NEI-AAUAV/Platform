@@ -62,6 +62,7 @@ const Faina = () => {
             members.push({
               role: response[i].members[j].role.name,
               name: response[i].members[j].member.name,
+              surname: response[i].members[j].member.surname,
             });
           }
         }
@@ -155,7 +156,7 @@ const Faina = () => {
                     <span className="font-medium text-[#D7A019]">
                       {person.role}
                     </span>
-                    {` ${person.name}`}
+                    {` ${person.name} ${person.surname}`}
                   </span>
                 </Fragment>
               ))}
