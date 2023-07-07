@@ -1,7 +1,21 @@
 import classNames from "classnames";
-import React, { memo, useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import { CloseIcon, ExpandMoreIcon } from "assets/icons/google";
+
+/*
+ * Returns a normalized string with the diatrics removed and lower cased for better
+ * results when matching against a search.
+ *
+ * @param {String} data The string to be normalized
+ * @return {String} The normalized string
+ */
+function normalizeString(data) {
+  return data
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase();
+}
 
 /**
  * Autocomplete input.
@@ -10,7 +24,13 @@ import { CloseIcon, ExpandMoreIcon } from "assets/icons/google";
  * @param {String} value the selected item's key
  * @param {Function} onChange callback to be called when an item is selected
  */
-const Autocomplete = ({ items, value, onChange, placeholder, renderOption }) => {
+const Autocomplete = ({
+  items,
+  value,
+  onChange,
+  placeholder,
+  renderOption,
+}) => {
   const ref = useRef(null);
   const [text, setText] = useState("");
   const [options, setOptions] = useState(items);
@@ -25,10 +45,15 @@ const Autocomplete = ({ items, value, onChange, placeholder, renderOption }) => 
       setOptions(items);
       return;
     }
-    if (text !== getLabelSelected()) {
+    // Check if an item isn't selected already or if the search is empty
+    if (text !== getLabelSelected() && /\S/.test(text)) {
+      // Normalize the search string and trim it
+      const normalizedSearch = normalizeString(text).trim();
+      // Search if any item includes the noramalized search string
       const newItems = items.filter(({ label }) =>
-        label.toLowerCase().includes(text.toLowerCase())
+        normalizeString(label).includes(normalizedSearch)
       );
+
       setOptions(newItems);
     } else {
       setOptions(items);

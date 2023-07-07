@@ -17,12 +17,7 @@ import classNames from "classnames";
 import Autocomplete from "components/Autocomplete";
 import { ExpandMoreIcon, ExpandLessIcon } from "assets/icons/google";
 
-const FamilySidebar = ({
-  insignias,
-  year,
-  setInsignias,
-  setYear,
-}) => {
+const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
   const [endYear, setEndYear] = useState(MAX_YEAR);
   const [fainaNames, setFainaNames] = useState(false);
   const [selName, setSelName] = useState(null);
@@ -85,7 +80,7 @@ const FamilySidebar = ({
             items={searchData.map((item) => ({
               key: item.id,
               label: item.name,
-              color: item.color
+              color: item.color,
             }))}
             value={selName}
             onChange={handleChange}
