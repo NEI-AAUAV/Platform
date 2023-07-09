@@ -40,6 +40,8 @@ services:
     networks:
       - backend
     restart: unless-stopped
+    profiles:
+      - disabled
 
   api_nei:
     build:

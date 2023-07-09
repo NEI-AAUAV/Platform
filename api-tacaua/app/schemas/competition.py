@@ -129,11 +129,12 @@ class Metadata(BaseModel):
 
 
 class CompetitionBase(BaseModel):
+    number: Optional[int]
     division: Optional[int]
     name: constr(max_length=50)
     started: bool = False   # when False, can only add, update, swap teams
     public: bool = False
-    metadata: Metadata = Field(alias='metadata_')
+    metadata: Metadata = Field(alias='_metadata')
 
 
 class CompetitionCreate(CompetitionBase):

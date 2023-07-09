@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from .api_v1 import modality, competition, team, participant, course, group, match
+from .v1 import modality, competition, team, participant, course, group, match
 
 api_v1_router = APIRouter()
 api_v1_router.include_router(modality.router, prefix="/modality", tags=["Modalidade"])

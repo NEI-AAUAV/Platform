@@ -25,14 +25,11 @@ def get_multi_modality(
 
 @router.post("/", status_code=201, response_model=Modality)
 async def create_modality(
-    modality_in: ModalityCreate = Form(..., alias='modality'),
-    image: Optional[UploadFile] = File(None),
+    modality_in: ModalityCreate,
     db: Session = Depends(deps.get_db),
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     modality = crud.modality.create(db, obj_in=modality_in)
-    modality = await crud.modality.update_image(
-        db=db, db_obj=modality, image=image)
     return modality
 
 
@@ -53,16 +50,11 @@ def get_modality(
 async def update_modality(
     id: int,
     request: Request,
-    modality_in: ModalityUpdate = Form(..., alias='modality'),
-    image: Optional[UploadFile] = File(None),
+    modality_in: ModalityUpdate,
     db: Session = Depends(deps.get_db),
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
 ) -> Any:
     modality = crud.modality.update(db, id=id, obj_in=modality_in)
-    form = await request.form()
-    if 'image' in form:
-        modality = await crud.modality.update_image(
-            db=db, db_obj=modality, image=image)
     return modality
 
 

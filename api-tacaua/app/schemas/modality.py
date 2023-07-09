@@ -53,7 +53,6 @@ class ModalityUpdate(ModalityBase):
 
 class ModalityLazy(ModalityBase):
     id: int
-    image: Optional[AnyHttpUrl]
 
     class Config:
         orm_mode = True

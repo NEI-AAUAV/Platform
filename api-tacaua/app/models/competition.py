@@ -15,11 +15,12 @@ class Competition(Base):
         nullable=False,
         index=True
     )
+    number = Column(SmallInteger)   # Used to order competitions
     division = Column(SmallInteger)
     name = Column(String(50), nullable=False)
     started = Column(Boolean, default=False)
     public = Column(Boolean, default=False)
-    metadata_ = Column('metadata', JSON)
+    _metadata = Column('metadata', JSON)
 
     groups = relationship(
         "Group",
@@ -28,7 +29,7 @@ class Competition(Base):
         lazy='joined',
     )
 
-    @validates("metadata_")
+    @validates("_metadata")
     def validate_metadata(self, key, value):
         Metadata.validate(value)
         return value

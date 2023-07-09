@@ -15,7 +15,7 @@ competition_data = {
     "name": "string",
     "started": False,
     "public": False,
-    "metadata_": {
+    "_metadata": {
         "rank_by": "Vitórias",
         "system": "Eliminação Direta",
         "third_place_match": False,
@@ -85,9 +85,10 @@ def setup_teams(connection: Connection):
     (2, [1]),
     (1, []),
     (0, []),
+    # 5 teams -> 3 rounds -> 1 quarter-final match, 2 semi-final matches, 1 final match
 ])
-def test_get_matches_per_round(input, expected):
-    assert crud.group.get_matches_per_round(input) == expected
+def test_get_single_elimination_matches_per_round(input, expected):
+    assert crud.group.get_single_elimination_matches_per_round(input) == expected
 
 
 @pytest.mark.parametrize('execution_number', range(2))
@@ -103,6 +104,11 @@ def test_get_matches_per_round(input, expected):
     (2, [(1, 0, 0)]),
     (1, []),
     (0, []),
+    # 5 teams -> 3 rounds -> 1 quarter-final match, 2 semi-final matches, 1 final match
+    # initial setup:
+    #   quarter-finals: (1 match with both teams, , )
+    #   semi-finals:    (1 match with both teams, 1 match with one teams, )
+    #   final:          ( , , 1 match without teams)
 ], key=lambda _: random.random()))
 def test_update_single_elimination(
     input, expected, execution_number, db: SessionTesting
@@ -121,6 +127,7 @@ def test_update_single_elimination(
         'teams_id': rand_teams_id})
 
     if not expected:
+        # Insuficient number of teams to create matches
         assert not group.matches
     n = 0
     group_matches = sorted(group.matches, key=lambda m: m.round)

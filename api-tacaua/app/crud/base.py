@@ -23,7 +23,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
 
     def get(self, db: Session, *, id: Any) -> Optional[ModelType]:
-        obj = db.query(self.model).get(id)
+        obj = db.get(self.model, id)
         if not obj:
             raise NotFoundException(
                 detail=f"{self.model.__name__} Not Found")

@@ -47,7 +47,7 @@ competition_data = {
     "name": "string",
     "started": False,
     "public": False,
-    "metadata_": {
+    "_metadata": {
         "rank_by": "Vitórias",
         "system": "Eliminação Direta",
         "third_place_match": False,

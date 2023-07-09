@@ -24,7 +24,7 @@ competition_data = {
     "name": "string",
     "started": False,
     "public": False,
-    "metadata_": {
+    "_metadata": {
         "rank_by": "Vitórias",
         "system": "Eliminação Direta",
         "third_place_match": False
@@ -75,34 +75,18 @@ def test_get_inexistent_modality(client: TestClient) -> None:
 
 
 def test_create_modality(client: TestClient) -> None:
-    image = Image.new('RGB', size=(50, 50))
-    image_file = BytesIO()
-    image.save(image_file, 'JPEG')
-    image_file.seek(0)
-
-    files = {
-        "image": ('img.JPG', image_file, 'image/jpeg'),
-    }
-    r = client.post(URL_PREFIX, data={'modality': json.dumps(modality_data)},
-                    files=files, allow_redirects=True)
+    
+    r = client.post(URL_PREFIX, json=modality_data,
+                    allow_redirects=True)
     assert r.status_code == 201
     data = r.json()
     assert 'id' in data
-    assert 'image' in data
     assert 'competitions' in data
     assert len(data['competitions']) == 0
     assert data.items() >= modality_data.items()
 
 
 def test_update_modality(db: SessionTesting, client: TestClient) -> None:
-    image = Image.new('RGB', size=(50, 50))
-    image_file = BytesIO()
-    image.save(image_file, 'JPEG')
-    image_file.seek(0)
-
-    files = {
-        "image": ('img.JPG', image_file, 'image/jpeg'),
-    }
     modality = db.query(Modality).first()
     modality_partial_data = {
         "year": 1,
@@ -110,13 +94,12 @@ def test_update_modality(db: SessionTesting, client: TestClient) -> None:
         "sport": "Andebol",
     }
     r = client.put(f"{URL_PREFIX}/{modality.id}",
-                   data={'modality': json.dumps(modality_partial_data)},
-                   files=files, allow_redirects=True)
+                   json=modality_partial_data,
+                   allow_redirects=True)
     assert r.status_code == 200
     data = r.json()
     assert 'id' in data
     assert data['id'] == modality.id
-    assert 'image' in data
     assert 'competitions' in data
     assert not data.items() >= modality_data.items()
     assert data.items() >= modality_partial_data.items()

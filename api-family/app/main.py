@@ -3,7 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 # from app.db.init_db import init_db
-from app.api.api_v1 import api_v1_router
+from app.api.v1 import api_v1_router
 from app.core.logging import init_logging
 from app.core.config import settings
 

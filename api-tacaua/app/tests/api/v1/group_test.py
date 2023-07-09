@@ -21,7 +21,7 @@ competition_data = {
     "name": "string",
     "started": False,
     "public": False,
-    "metadata_": {
+    "_metadata": {
         "rank_by": "Vitórias",
         "system": "Eliminação Direta",
         "third_place_match": False,
@@ -85,7 +85,7 @@ def test_create_group(db: SessionTesting, client: TestClient) -> None:
 
 def test_update_group_with_team_in_modality(db: SessionTesting, client: TestClient) -> None:
     group = db.query(Group).first()
-    competition = db.query(Competition).get(group.competition_id)
+    competition = db.get(Competition, group.competition_id)
     teams = db.query(Team).filter(Team.modality_id == competition.modality_id).all()
 
     r = client.put(f"{URL_PREFIX}/{group.id}", json={'teams_id': [teams[0].id]})
@@ -98,7 +98,7 @@ def test_update_group_with_team_in_modality(db: SessionTesting, client: TestClie
 
 def test_update_group_with_team_not_in_modality(db: SessionTesting, client: TestClient) -> None:
     group = db.query(Group).first()
-    competition = db.query(Competition).get(group.competition_id)
+    competition = db.get(Competition, group.competition_id)
     teams = db.query(Team).filter(Team.modality_id != competition.modality_id).all()
 
     r = client.put(f"{URL_PREFIX}/{group.id}", json={'teams_id': [teams[0].id]})

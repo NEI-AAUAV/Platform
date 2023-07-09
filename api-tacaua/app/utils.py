@@ -7,12 +7,11 @@ from fastapi import FastAPI
 from fastapi.routing import APIRoute
 
 
-class Ignore(BaseModel):
-    # TODO: remove this maybe
-    pass
-
-
 class EnumList(Enum):
+    """An Enum convertable to a list of values.
+
+    This can be useful to return a list of possible values for a frontend form.
+    """
 
     @classmethod
     def list(cls):
@@ -25,6 +24,7 @@ def validate_to_json(cls: Type[BaseModel]):
     This is useful to validate requests with a form data containing an image
     file and a schema stringified.
     """
+
     def __get_validators__(cls):
         yield cls.validate_to_json
 
@@ -33,14 +33,14 @@ def validate_to_json(cls: Type[BaseModel]):
             return cls(**json.loads(value))
         return value
 
-    setattr(cls, '__get_validators__', classmethod(__get_validators__))
-    setattr(cls, 'validate_to_json', classmethod(validate_to_json))
+    setattr(cls, "__get_validators__", classmethod(__get_validators__))
+    setattr(cls, "validate_to_json", classmethod(validate_to_json))
     return cls
 
 
 def update_schema_name(app: FastAPI, function: Callable, name: str) -> None:
     """
-    Updates the Pydantic schema name for a FastAPI function that takes
+    Update the Pydantic schema name for a FastAPI function that takes
     in a fastapi.UploadFile = File(...) or bytes = File(...).
 
     This is a known issue that was reported on FastAPI#1442 in which
