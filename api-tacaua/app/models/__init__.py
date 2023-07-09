@@ -5,3 +5,4 @@ from .match import Match
 from .modality import Modality
 from .participant import Participant
 from .team import Team
+from .standings import Standings
