@@ -45,4 +45,10 @@ def create_team_member(
 def update_team_member(
     *, team_update_in: TeamMemberUpdate, db: Session = Depends(deps.get_db), id: int
 ) -> dict:
+    """ testing, db.get(TeamMember, id) does not work
+    obj = db.query(TeamMember).filter(TeamMember.user_id == id).first()
+    print(obj.mandate)
+    print(obj.user.name)
+    print(obj.role.name)
+    """
     return crud.team_member.update(db=db, obj_in=team_update_in, db_obj=db.get(TeamMember, id))
