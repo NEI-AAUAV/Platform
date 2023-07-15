@@ -6,38 +6,38 @@ authors = []
 
 [tool.poetry.dependencies]
 python = "^3.10"
-uvicorn = {extras = ["standard"], version = "^0.21.1"}
-pydantic = {extras = ["email"], version = "^1.10.2"}
-SQLAlchemy = "^2.0.4"
+pydantic = {extras = ["email", "dotenv"], version = "^1.10.2"}
+SQLAlchemy = {extras = ["postgresql-psycopg2binary"], version = "^2.0.4"}
 alembic = "^1.6.5"
+# TODO: We only seem to use this for Annotated, but this has been available in typing
+# 		since 3.9, so it can be removed.
 typing-extensions = "^4.2.0"
 aiofiles = "^0.8.0"
-requests = "^2.28.1"
 loguru = "^0.6.0"
 Pillow = "^9.2.0"
 python-multipart = "^0.0.5"
-pytest = "^7.1.3"
-flake8 = "^6.0.0"
-mypy = "^1.1.1"
-sqlalchemy-stubs = "^0.4"
-h11 = "^0.14.0"
-httpcore = "^0.16.2"
 websockets = "^10.4"
 fastapi = "0.83.0"
 orjson = "^3.8.6"
-psycopg2-binary = "^2.9.5"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 passlib = {extras = ["argon2"], version = "^1.7.4"}
 email-validator = "^1.3.1"
 aiosmtplib = "^2.0.1"
 jinja2 = "^3.1.2"
 httpx = "^0.23.3"
-python-dotenv = "^1.0.0"
 python-magic = "^0.4.27"
 authlib = "^1.2.0"
 
+[tool.poetry.group.test.dependencies]
+pytest = "^7.1.3"
+requests = "^2.28.1"
+
 [tool.poetry.group.dev.dependencies]
+mypy = "^1.1.1"
+flake8 = "^6.0.0"
 autopep8 = "^2.0.1"
+sqlalchemy-stubs = "^0.4"
+uvicorn = {extras = ["standard"], version = "^0.21.1"}
 
 [build-system]
 requires = ["poetry-core"]
