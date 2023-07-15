@@ -11,37 +11,8 @@ on:
         - ''
         - gala
         - rally
-      copy_compose:
-        description: 'Copy compose files to server'
-        required: false
-        type: boolean
 
 jobs:
-  copy:
-    runs-on: self-hosted
-    if: ${{ github.event.inputs.copy_compose == 'true' }}
-    steps:
-    - uses: actions/checkout@v3
-    - name: Setup variables
-      id: variables
-      run: |
-        export TAG=${GITHUB_SHA::7}
-        echo "sources=compose.prod.yml" >> $GITHUB_OUTPUT
-        echo "targets=~/deploys/${TAG}/" >> $GITHUB_OUTPUT
-        if [[ -n "${{ github.event.inputs.extension }}" ]]; then
-          mv extensions/${{ github.event.inputs.extension }}/compose.override.prod.yml compose.${{ github.event.inputs.extension }}.prod.yml
-          echo "sources=compose.prod.yml,compose.${{ github.event.inputs.extension }}.prod.yml" >> $GITHUB_OUTPUT
-        fi
-    - name: Copy compose files
-      uses: appleboy/scp-action@v0.1.4
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        source: "${{ steps.variables.outputs.sources }}"
-        target: "${{ steps.variables.outputs.targets }}"
-        timeout: 100s
-
   build:
     runs-on: ubuntu-latest
     env:
@@ -71,12 +42,6 @@ jobs:
         set: |
           *.cache-to=type=gha,scope=cached-stage,mode=max
           *.cache-from=type=gha,scope=cached-stage
-
-    # - name: Push docker images with tag
-    #   run: |
-    #     export TAG=${GITHUB_SHA::7}
-    #     make ${{ github.event.inputs.extension }} build
-    #     make ${{ github.event.inputs.extension }} push FLAGS="--ignore-push-failures"
   
   deploy:
     needs: build
