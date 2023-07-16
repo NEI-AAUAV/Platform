@@ -9,3 +9,4 @@ api_v1_router.include_router(participant.router, prefix="/participant", tags=["P
 api_v1_router.include_router(course.router, prefix="/course", tags=["Curso"])
 api_v1_router.include_router(group.router, prefix="/group", tags=["Grupo"])
 api_v1_router.include_router(match.router, prefix="/match", tags=["Match"])
+api_v1_router.include_router(match.router, prefix="/standings", tags=["Standings"])
