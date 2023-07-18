@@ -9,7 +9,13 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    labels:
+      ofelia.enabled: "true"
+      # Run the job at 4h37 every day to minimize db load
+      ofelia.job-exec.cleanup_logins.schedule: "0 37 4 * * *"
+      ofelia.job-exec.cleanup_logins.command: "psql -U postgres -d postgres -f /scripts/cleanup-logins.sql"
     volumes: 
+      - ./scripts/:/scripts/:ro
       # - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
       # - ./api-rally/app/db/setup.sql:/docker-entrypoint-initdb.d/rally-0001.sql
       - pg_data:/var/lib/postgresql/data
@@ -152,6 +158,17 @@ services:
     networks:
       - backend
       - frontend
+    restart: always
+
+  ofelia:
+    image: mcuadros/ofelia:latest
+    depends_on:
+      - db_pg
+    command: daemon --docker
+    volumes:
+      - ${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock:ro
+    networks:
+      - backend
     restart: always
 
 networks:
