@@ -7,7 +7,7 @@ import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     viteTsconfigPaths(),
     react(),
@@ -15,7 +15,10 @@ export default defineConfig({
     ViteImageOptimizer({}),
     visualizer(),
   ],
+  esbuild: {
+    pure: mode === "production" ? ["console.log"] : [],
+  },
   build: {
     outDir: "build",
   },
-});
+}));
