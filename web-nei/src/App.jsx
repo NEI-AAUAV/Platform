@@ -4,7 +4,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import routes from "./routes";
 
 import { getSocket } from "services/SocketService";
-import { useUserStore } from "stores/useUserStore";
 import { refreshToken } from "services/client";
 
 let ws = getSocket();
@@ -16,14 +15,13 @@ let ws = getSocket();
  * while it is waiting for the server response.
  */
 const App = () => {
-  const { sessionLoading, token } = useUserStore((state) => state);
-  const router = createBrowserRouter(routes({ isAuth: !!token }));
+  const router = createBrowserRouter(routes);
 
   useEffect(() => {
     refreshToken();
   }, []);
 
-  return sessionLoading ? null : <RouterProvider router={router} />;
+  return <RouterProvider router={router} />;
 };
 
 export default App;

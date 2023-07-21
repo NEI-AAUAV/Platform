@@ -4,10 +4,24 @@ import { Navigate } from "react-router-dom";
 import config from "config";
 
 import Layout, { FullLayout, CleanLayout } from "./layouts/Layout";
+import { useUserStore } from "stores/useUserStore";
 
 const isProd = config.PRODUCTION;
 
-const routes = ({ isAuth }) => [
+function ProtectedRoute({
+  children,
+  loggedIn = true,
+  redirect = "/auth/login",
+}) {
+  const { sessionLoading, token } = useUserStore((state) => state);
+
+  if (sessionLoading) return null;
+
+  if (!!token === loggedIn) return children;
+  else return <Navigate to={redirect} />;
+}
+
+const routes = [
   {
     path: "/",
     element: <Layout />,
@@ -19,15 +33,30 @@ const routes = ({ isAuth }) => [
       { path: "/videos/:id", lazy: () => import("./pages/Video") },
       { path: "/teams", lazy: () => import("./pages/Team") },
       { path: "/rgm", lazy: () => import("./pages/RGM") },
-      !isProd && { path: "/news/:id?", lazy: () => import("./pages/News/NewsList") },
+      !isProd && {
+        path: "/news/:id?",
+        lazy: () => import("./pages/News/NewsList"),
+      },
       !isProd && { path: "/history", lazy: () => import("./pages/History") },
-      !isProd && { path: "/seniors/:course?", lazy: () => import("./pages/Seniors") },
+      !isProd && {
+        path: "/seniors/:course?",
+        lazy: () => import("./pages/Seniors"),
+      },
       { path: "/faina", lazy: () => import("./pages/Faina") },
       !isProd && { path: "/taca-ua", lazy: () => import("./pages/Sports") },
-      !isProd && { path: "/taca-ua/:id/:view?", lazy: () => import("./pages/SportModality") },
-      !isProd && { path: "/components", lazy: () => import("./pages/Components") },
+      !isProd && {
+        path: "/taca-ua/:id/:view?",
+        lazy: () => import("./pages/SportModality"),
+      },
+      !isProd && {
+        path: "/components",
+        lazy: () => import("./pages/Components"),
+      },
       !isProd && { path: "/WSTest", lazy: () => import("./pages/WSTest") },
-      !isProd && { path: "/WStacaua-admin-demo", lazy: () => import("./pages/TacauaAdminDemo") },
+      !isProd && {
+        path: "/WStacaua-admin-demo",
+        lazy: () => import("./pages/TacauaAdminDemo"),
+      },
       { path: "/auth/verify", lazy: () => import("./pages/auth/EmailVerify") },
       { path: "/auth/reset", lazy: () => import("./pages/auth/ResetPassword") },
       // These must be here and not behind the auth checks, because if they aren't
@@ -42,12 +71,38 @@ const routes = ({ isAuth }) => [
   },
   {
     path: "/",
-    element: isAuth ? <Layout /> : <Navigate to="/" />,
+    element: (
+      <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
+    ),
     children: [
-      { path: "/settings/profile", lazy: () => import("./pages/settings/Profile") },
-      !isProd && { path: "/settings/family", lazy: () => import("./pages/settings/Family") },
-      !isProd && { path: "/settings/account", lazy: () => import("./pages/settings/Account") },
-      { path: "/auth/forgot", lazy: () => import("./pages/auth/ForgotPassword") },
+      {
+        path: "/settings/profile",
+        lazy: () => import("./pages/settings/Profile"),
+      },
+      !isProd && {
+        path: "/settings/family",
+        lazy: () => import("./pages/settings/Family"),
+      },
+      !isProd && {
+        path: "/settings/account",
+        lazy: () => import("./pages/settings/Account"),
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: (
+      <ProtectedRoute loggedIn={false} redirect="/">
+        <Layout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "/auth/forgot",
+        lazy: () => import("./pages/auth/ForgotPassword"),
+      },
     ],
   },
   {
