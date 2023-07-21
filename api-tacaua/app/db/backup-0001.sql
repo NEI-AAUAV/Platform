@@ -1,1 +1,63 @@
 SELECT * FROM tacaua."group";
+
+INSERT INTO tacaua.modality (year, type, frame, sport, image) 
+VALUES
+(2022, 'COLECTIVE', 'MIXED', 'HANDBALL', NULL),
+(2022, 'COLECTIVE', 'FEMININE', 'BASKETBALL', NULL),
+(2022, 'COLECTIVE', 'MASCULINE', 'BASKETBALL', NULL),
+(2022, 'COLLECTIVE', 'MIXED', 'FOOTBALL', NULL), -- Mixed?????
+(2022, 'COLECTIVE', 'FEMININE', 'FUTSAL', NULL),
+(2022, 'COLECTIVE', 'MASCULINE', 'FUTSAL', NULL),
+(2022, 'COLECTIVE', 'FEMININE', 'VOLEYBALL', NULL),
+(2022, 'COLECTIVE', 'MASCULINE', 'VOLEYBALL', NULL);
+
+INSERT INTO tacaua.course (name, short, color, image)
+VALUES
+('Fisioterapia', 'NAE-ESSUA-FT', NULL, NULL),
+('Eng. Mecânica', 'NEEMec', NULL, NULL), 
+('Biotecnologia', 'NEQ-BT', NULL, NULL), 
+('Economia', 'NEEC', NULL, NULL), 
+('Biologia', 'NEB', NULL, NULL), 
+('Contabilidade', 'NAE-ISCA-C', NULL, NULL),
+('Eng. Biomédica', 'NEEF-EB', NULL, NULL),
+('AP', 'NEAP', NULL, NULL),
+('Ed. Básica', 'NEEB', NULL, NULL),
+('Gestão', 'NEG', NULL, NULL),
+('EET', 'NEEET', NULL, NULL),
+('ECT', 'NEECT', NULL, NULL),
+('CBM', 'NECiB', NULL, NULL),
+('EGI', 'AEGIA', NULL, NULL),
+('Gestão Comercial', 'NAE-ESTGA-GC', NULL, NULL),
+('Eng. Civil', 'NEBEC', NULL, NULL),
+('Eng. Materiais', 'NEM', NULL, NULL),
+('GPT', 'NEGPT', NULL, NULL),
+('Eng. Materiais', 'NEM', NULL, NULL),
+('Psicologia', 'NEP', NULL, NULL),
+('Matemática', 'NEMat', NULL, NULL),
+('Ciências do Mar', 'NECM', NULL, NULL),
+('MTC', 'NENTC', NULL, NULL),
+('Design', 'NED', NULL, NULL),
+('Bioquímica', 'NEQ-BQ', NULL, NULL),
+('Tecnol. Informação', 'NAE-ESTGA-TI', NULL, NULL),
+('Eng. Química', 'NEEQu', NULL, NULL),
+('Eng. Física', 'NEEF-EF', NULL, NULL),
+('LRE', 'NELRE', NULL, NULL),
+('Eng. Informática', 'NEI', NULL, NULL),
+('Eng. Computacional', 'NEEF-EC', NULL, NULL),
+('Finanças', 'NAE-ISCA-F', NULL, NULL),
+('Marketing', 'NAE-ISCA-M', NULL, NULL),
+('DPT', 'NAE-ESAN-DPT', NULL, NULL),
+('MOG', '', NULL, NULL),
+('Eng. Ambiente', 'NEEA', NULL, NULL),
+('Música', 'NEMu', NULL, NULL),
+('Química', 'NEQ-Q', NULL, NULL),
+('Enfermagem', 'NAE-ESSUA-ENF', NULL, NULL),
+('EGI B', 'AEGIA', NULL, NULL),  -- mudar short? "AEGIA B"?
+('EMI', 'NAE-ESTGA-EMI', NULL, NULL),
+('Biol. Geologia', 'NEBG', NULL, NULL),
+('Geologia', 'NEGeo', NULL, NULL),
+('Eng. Mec B', 'NEEMec', NULL, NULL),
+('Contabilidade B', 'NAE-ISCA-C', NULL, NULL),
+('EET B', 'NEEET', NULL, NULL),
+('CBM B', 'NECiB', NULL, NULL),
+('Física', 'NEEF-F', NULL, NULL);
