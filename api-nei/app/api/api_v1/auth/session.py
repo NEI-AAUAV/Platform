@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Cookie, Response, status
 
+from loguru import logger
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
 from jose import JWTError
 from datetime import datetime
-from typing import Literal
 
 from app import crud
 from app.api import deps
@@ -21,6 +20,7 @@ from ._deps import (
 
 router = APIRouter()
 
+
 def _validate_refresh_token(db, token):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -29,7 +29,6 @@ def _validate_refresh_token(db, token):
     )
 
     if token is None:
-        print("1")
         raise credentials_exception
 
     try:
@@ -41,45 +40,46 @@ def _validate_refresh_token(db, token):
         issued_at = payload["iat"]
         token_type = payload["type"]
     except (JWTError, ValueError, KeyError):
-        print("2")
-
         raise credentials_exception
 
     # Check that the token is a refresh token
     if token_type != REFRESH_TOKEN_TYPE:
-        print("3")
-
         raise credentials_exception
-    
-    print(user_id, session_id)
 
     # Get the token's session from the database
     device_login = db.query(DeviceLogin).get((user_id, session_id))
     if device_login is None:
-        print("4")
-
         raise credentials_exception
 
     # Safety check that the session hasn't expired, the token should already
     # encode this.
     if device_login.expires_at < datetime.now():
-        print("5")
+        logger.warning(f"Token that should be expired was accepted")
+        # Remove the device login from the database since it's no longer used
+        db.delete(device_login)
+        db.commit()
 
         raise credentials_exception
 
     # Check that this token issue date isn't before the last token refresh, if
     # this happens it might mean someone got the token and is trying to replay it
     if int(device_login.refreshed_at.timestamp()) > issued_at:
-        print("6")
+        logger.warning(f"A refresh token was resubmitted")
+        # Preemptively remove the device login in order to prevent the token
+        # from being used by a malicious third party.
+        db.delete(device_login)
+        db.commit()
 
         raise credentials_exception
 
     user = crud.user.get(db, user_id)
     if user is None:
-        print("7")
+        # The user no longer exists so the device login is no longer useful.
+        db.delete(device_login)
+        db.commit()
 
         raise credentials_exception
-    
+
     return user, device_login
 
 
@@ -89,8 +89,7 @@ def _validate_refresh_token(db, token):
     response_model=Token,
 )
 async def refresh(
-    db: Session = Depends(deps.get_db), 
-    refresh: str | None = Cookie(default=None)
+    db: Session = Depends(deps.get_db), refresh: str | None = Cookie(default=None)
 ):
     user, device_login = _validate_refresh_token(db, refresh)
     return generate_response(db, user, device_login)
@@ -144,13 +143,13 @@ async def verify(
 async def logout(
     response: Response,
     db: Session = Depends(deps.get_db),
-    refresh: str | None = Cookie(default=None)
+    refresh: str | None = Cookie(default=None),
 ):
     # remove the refresh token cookie from the client
     response.delete_cookie("refresh")
-    
+
     _, device_login = _validate_refresh_token(db, refresh)
-    
+
     # invalidate the user's token and clear it from the server-side
     db.delete(device_login)
     db.commit()
