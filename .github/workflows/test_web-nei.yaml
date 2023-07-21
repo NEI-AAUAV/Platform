@@ -31,9 +31,11 @@ jobs:
         working-directory: ./web-nei
         run: yarn install --frozen-lockfile
 
-      - name: Run tests
-        working-directory: ./web-nei
-        run: yarn test --passWithNoTests # We don't have tests so `passWithNoTests` is necessary
+      # TODO: Add test runner to the new vite build system 
+      #
+      # - name: Run tests
+      #   working-directory: ./web-nei
+      #   run: yarn test --passWithNoTests # We don't have tests so `passWithNoTests` is necessary
 
       - name: Build
         working-directory: ./web-nei
