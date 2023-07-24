@@ -64,12 +64,13 @@ export function Component() {
     Promise.all([
       service.getTeamMembers({ ...params }).then((members) => {
         members.sort(
-          ({ role: a }, { role: b }) =>
+          ({ role: a }, { role: b }) => 
             b?.weight - a?.weight || a?.name?.localeCompare(b?.name)
         );
+        const vogaln = members.filter(({ role }) => role?.weight === 4).length;
         setTeam([
-          { members: members.slice(0, 2), title: "Coordenação" },
-          { members: members.slice(2, -3), title: "Vogais" },
+          { members: members.slice(0, -3-vogaln), title: "Coordenação" },
+          { members: members.slice(-3-vogaln, -3), title: "Vogais" },
           { members: members.slice(-3), title: "Mesa da RGM" },
         ]);
       }),
