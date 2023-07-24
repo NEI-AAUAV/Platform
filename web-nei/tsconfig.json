@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": "build",
+    "baseUrl": "src"
+  },
+  "include": ["src"]
+}

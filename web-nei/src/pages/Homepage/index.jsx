@@ -27,12 +27,12 @@ import bg2 from "assets/images/nei-outline2.svg";
 import { motion } from "framer-motion";
 
 // Animation
-const animationBase = parseFloat(process.env.REACT_APP_ANIMATION_BASE);
+const animationBase = parseFloat(import.meta.env.VITE_ANIMATION_BASE);
 const animationIncrement = parseFloat(
-  process.env.REACT_APP_ANIMATION_INCREMENT
+  import.meta.env.VITE_ANIMATION_INCREMENT
 );
 
-const Homepage = () => {
+export function Component() {
   const containerRef = [useRef(null), useRef(null)];
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -174,6 +174,4 @@ const Homepage = () => {
       </div>
     </>
   );
-};
-
-export default Homepage;
+}
