@@ -1,6 +1,7 @@
 SELECT * FROM tacaua."group";
 
 
+
 INSERT INTO tacaua.modality (id, year, type, frame, sport, image) 
 VALUES
 (1, 2022, 'COLECTIVE', 'MIXED', 'HANDBALL', NULL),
