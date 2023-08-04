@@ -280,3 +280,80 @@ VALUES
 (24, 8, 'Bioquímica', NULL),
 (21, 8, 'Ciências do Mar', NULL),
 (10, 8, 'Gestão', NULL);
+
+
+
+INSERT INTO tacaua.competition (modality_id, division, name, started, public, metadata)
+VALUES
+(6, 1, 'Fase de grupos', TRUE, TRUE, NULL),
+(6, 2, 'Fase de grupos', TRUE, TRUE, NULL),
+(6, 2, 'Liguilha', TRUE, TRUE, NULL),
+(6, NULL, 'Playoffs', TRUE, TRUE, NULL);
+
+
+
+INSERT INTO tacaua.group (competition_id, number, name)
+VALUES
+(1, 1, 'Grupo único'),
+(2, 1, 'Grupo A'),
+(2, 2, 'Grupo B'),
+(2, 3, 'Grupo C'),
+(3, 1, 'Grupo único'),
+(4, 1, 'Grupo único');
+
+
+INSERT INTO tacaua.group_teams (group_id, team_id)
+VALUES
+(1, 117),
+(1, 118),
+(1, 119),
+(1, 120),
+(1, 121),
+(1, 122),
+(1, 123),
+(1, 124),
+(1, 125),
+(1, 126),
+(1, 127),
+(1, 128),
+(2, 129),
+(2, 130),
+(2, 131),
+(2, 132),
+(2, 133),
+(2, 134),
+(2, 135),
+(2, 136),
+(2, 137),
+(2, 138),
+(3, 139),
+(3, 140),
+(3, 141),
+(3, 142),
+(3, 143),
+(3, 144),
+(3, 145),
+(3, 146),
+(3, 147),
+(3, 148),
+(4, 149),
+(4, 150),
+(4, 151),
+(4, 152),
+(4, 153),
+(4, 154),
+(4, 155),
+(4, 156),
+(4, 157),
+(4, 158),
+(5, 140),
+(5, 149),
+(5, 130),
+(6, 117),
+(6, 118),
+(6, 119),
+(6, 120),
+(6, 140),
+(6, 129),
+(6, 139),
+(6, 149);
