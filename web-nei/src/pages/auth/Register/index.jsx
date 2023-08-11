@@ -9,7 +9,7 @@ import { useEffect } from "react";
 const emailRegex =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-const Register = () => {
+export function Component() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const {
@@ -211,6 +211,4 @@ const Register = () => {
       </div>
     </>
   );
-};
-
-export default Register;
+}

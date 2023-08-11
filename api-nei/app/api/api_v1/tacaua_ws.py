@@ -1,9 +1,8 @@
 from fastapi import Body, WebSocket, APIRouter, WebSocketDisconnect
-from typing import Any, Dict, List   
+from typing import Any, Dict, List
 from enum import Enum
 import json
 from loguru import logger
-from pytest import Session
 
 router = APIRouter()
 
@@ -11,10 +10,12 @@ router = APIRouter()
 class ConnectionType(Enum):
     GENERAL = 0
 
+
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: Dict[ConnectionType , List[WebSocket]] = {ConnectionType.GENERAL: []}
-
+        self.active_connections: Dict[ConnectionType, List[WebSocket]] = {
+            ConnectionType.GENERAL: []
+        }
 
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
@@ -26,7 +27,6 @@ class ConnectionManager:
         logger.info(self.active_connections)
         self.active_connections[ConnectionType.GENERAL].append(websocket)
 
-
     def disconnect(self, websocket: WebSocket):
         # wait for 5 seconds to see if user is changing page ???
         for key in self.active_connections:
@@ -34,23 +34,23 @@ class ConnectionManager:
                 self.active_connections[key].remove(websocket)
                 break
 
-
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
-
 
     async def broadcast(self, connection_type: ConnectionType, message: dict):
         for websocket in self.active_connections[connection_type]:
             await websocket.send_json(message)
 
-
-    async def change_connection_type(self, websocket: WebSocket, new_type: ConnectionType):
+    async def change_connection_type(
+        self, websocket: WebSocket, new_type: ConnectionType
+    ):
         for key in self.active_connections:
             if websocket in self.active_connections[key]:
                 self.active_connections[key].remove(websocket)
                 self.active_connections[new_type].append(websocket)
                 break
-            
+
+
 manager = ConnectionManager()
 
 """
@@ -77,6 +77,7 @@ Send
 }
 """
 
+
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
@@ -87,8 +88,13 @@ async def websocket_endpoint(websocket: WebSocket):
             match data["topic"]:
                 case "LIVE_GAME":
                     logger.info("LIVE_GAME", data)
-                    data = {"topic": "LIVE_GAMES", "game": {"id": 1, "team1": 'NEI', "team2": "NEEET"}}
-                    await manager.broadcast(connection_type=ConnectionType.GENERAL, message=data)
+                    data = {
+                        "topic": "LIVE_GAMES",
+                        "game": {"id": 1, "team1": "NEI", "team2": "NEEET"},
+                    }
+                    await manager.broadcast(
+                        connection_type=ConnectionType.GENERAL, message=data
+                    )
 
     except WebSocketDisconnect:
         manager.disconnect(websocket)
@@ -99,4 +105,3 @@ async def websocket_broadcast(*, data_in: dict = Body()):
     logger.info(data_in)
     await manager.broadcast(connection_type=ConnectionType.GENERAL, message=data_in)
     return {"status": "success", "message": "All websockets were notified."}
-   
