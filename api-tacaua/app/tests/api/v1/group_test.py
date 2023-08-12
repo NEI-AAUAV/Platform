@@ -8,7 +8,7 @@ from app.models import Modality, Competition, Group, Course, Team
 from app.tests.conftest import SessionTesting
 
 
-URL_PREFIX = f"{settings.API_V1_STR}/group"
+URL_PREFIX = f"{settings.API_V1_STR}/groups"
 
 modality_data = {
     "year": 0,
