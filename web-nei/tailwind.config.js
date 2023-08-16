@@ -142,12 +142,12 @@ module.exports = {
           // "neutral-content": "#777777",
 
           // Base
-          "base-100": "#EBEBEB",
-          "base-200": "#F2F2F2",
-          "base-300": "#FBFBFB",
-          "--ds-base-primary": "#EBEBEB",
-          "--ds-base-secondary": "#F2F2F2",
-          "base-content": "#2A2A2A",
+          "base-100": "#F3F3F3",
+          "base-200": "#F9F9F9",
+          "base-300": "#FFFFFF",
+          "--ds-base-primary": "#F3F3F3",
+          "--ds-base-secondary": "#F9F9F9",
+          "base-content": "#101010",
 
           // Content
           "secondary-content": "#ffffff",
