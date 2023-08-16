@@ -175,12 +175,12 @@ module.exports = {
           // "neutral-focus": "#1F1F1F",
           // "neutral-content": "#B0B0B0",
           // Base
-          "base-100": "#141414",
-          "base-200": "#161616",
-          "base-300": "#1A1A1A",
-          "--ds-base-primary": "#141414",
-          "--ds-base-secondary": "#161616",
-          "base-content": "#C0C0C0",
+          "base-100": "#101010",
+          "base-200": "#171717",
+          "base-300": "#1F1F1F",
+          "--ds-base-primary": "#101010",
+          "--ds-base-secondary": "#171717",
+          "base-content": "#EFEFEF",
           // Content
           "secondary-content": "#ffffff",
         },
