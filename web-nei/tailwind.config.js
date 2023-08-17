@@ -1,3 +1,5 @@
+const { createThemes } = require('tw-colors');
+
 module.exports = {
   mode: "jit",
   content: [
@@ -34,87 +36,35 @@ module.exports = {
         wiggle: "wiggle 0.2s ease-in-out 0s 2",
       },
       colors: {
-        // Primary
-        primary: {
-          DEFAULT: "#0D873E",
-          100: "#CBF9CC",
-          200: "#9BF3A4",
-          300: "#64DB7C",
-          400: "#3AB760",
-          500: "#0D873E",
-          600: "#09743E",
-          700: "#06613C",
-          800: "#044E38",
-          900: "#024034",
-        },
-        // Success
-        success: {
-          DEFAULT: "#37AB26",
-          100: "#E0FBD6",
-          200: "#BDF7AF",
-          300: "#8CE783",
-          400: "#5FD05F",
-          500: "#31B23C",
-          600: "#239938",
-          700: "#188034",
-          800: "#0F672E",
-          900: "#09552B",
-        },
-        // Info
-        info: {
-          DEFAULT: "#07A2AE",
-          100: "#D0E6FB",
-          200: "#A2CBF8",
-          300: "#71A6EA",
-          400: "#4B83D6",
-          500: "#1A55BC",
-          600: "#1341A1",
-          700: "#0D3087",
-          800: "#08216D",
-          900: "#04175A",
-        },
-        // Warning
-        warning: {
-          DEFAULT: "#DCA825",
-          100: "#FEF8CB",
-          200: "#FEEE98",
-          300: "#FCE265",
-          400: "#FAD53E",
-          500: "#F7C100",
-          600: "#D4A100",
-          700: "#B18200",
-          800: "#8F6600",
-          900: "#765100",
-        },
-        // Error
-        error: {
-          DEFAULT: "#E83E34",
-          100: "#FCD4D8",
-          200: "#FAAABA",
-          300: "#F17EA0",
-          400: "#E35B92",
-          500: "#D12B7E",
-          600: "#B31F78",
-          700: "#96156F",
-          800: "#790D63",
-          900: "#64085B",
-        },
-
-        // Neutral
-        // neutral: "var(--ds-neutral)",
-        // "neutral-focus": "var(--ds-neutral-focus)",
-        // "neutral-content": "var(--ds-neutral-content)",
-
-        // Base
-        base: {
-          primary: "var(--ds-base-primary)",
-          secondary: "var(--ds-base-secondary)",
-        },
-      },
+        primary: "#0D873E",
+        success: "#37AB26",
+        info: "#07A2AE",
+        warning: "#DCA825",
+        error: "#E83E34",
+      }
     },
   },
   variants: {},
-  plugins: [require("daisyui"), require("@emotion/react")],
+  plugins: [
+    require("daisyui"),
+    require("@emotion/react"),
+    createThemes({
+      'light': {
+        base: {
+          primary: "#f3f3f3",
+          secondary: "#f9f9f9",
+        },
+      },
+      'dark': {
+        base: {
+          primary: "#101010",
+          secondary: "#171717",
+        },
+      }
+    }, {
+      getThemeClassName: (themeName) => `${themeName}`
+    })
+  ],
   daisyui: {
     logs: false,
     themes: [
