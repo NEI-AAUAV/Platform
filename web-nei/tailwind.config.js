@@ -57,7 +57,13 @@ module.exports = {
           300: "#FFFFFF",
           400: "#FFFFFF"
         },
-        
+        text: {
+          primary: "#101010",
+          secondary: "#404040",
+          100: "#101010",
+          200: "#404040",
+          300: "#707070"
+        },
         error: "#E83E34"
       },
       'dark': {
@@ -68,6 +74,13 @@ module.exports = {
           200: "#171717",
           300: "#1F1F1F",
           400: "#282828"
+        },
+        text: {
+          primary: "#EFEFEF",
+          secondary: "#BFBFBF",
+          100: "#EFEFEF",
+          200: "#BFBFBF",
+          300: "#8F8F8F"
         },
         error: "#C82643"
       }
