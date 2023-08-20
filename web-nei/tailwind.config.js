@@ -64,6 +64,7 @@ module.exports = {
           200: "#404040",
           300: "#707070"
         },
+        light: "#FFFFFF",
         error: "#E83E34"
       },
       'dark': {
@@ -82,6 +83,7 @@ module.exports = {
           200: "#BFBFBF",
           300: "#8F8F8F"
         },
+        light: "#EFEFEF",
         error: "#C82643"
       }
     }, {
