@@ -50,15 +50,24 @@ module.exports = {
     createThemes({
       'light': {
         base: {
-          primary: "#f3f3f3",
-          secondary: "#f9f9f9",
+          primary: "#F3F3F3",
+          secondary: "#F9F9F9",
+          100: "#F3F3F3",
+          200: "#F9F9F9",
+          300: "#FFFFFF",
+          400: "#FFFFFF"
         },
+        
         error: "#E83E34"
       },
       'dark': {
         base: {
           primary: "#101010",
           secondary: "#171717",
+          100: "#101010",
+          200: "#171717",
+          300: "#1F1F1F",
+          400: "#282828"
         },
         error: "#C82643"
       }
