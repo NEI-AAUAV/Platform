@@ -40,7 +40,6 @@ module.exports = {
         success: "#37AB26",
         info: "#07A2AE",
         warning: "#DCA825",
-        error: "#E83E34",
       }
     },
   },
@@ -54,12 +53,14 @@ module.exports = {
           primary: "#f3f3f3",
           secondary: "#f9f9f9",
         },
+        error: "#E83E34"
       },
       'dark': {
         base: {
           primary: "#101010",
           secondary: "#171717",
         },
+        error: "#C82643"
       }
     }, {
       getThemeClassName: (themeName) => `${themeName}`
