@@ -1,4 +1,4 @@
-let HOST, PRODUCTION, BASE_URL, WS_SCHEME;
+let HOST, BASE_URL, WS_SCHEME;
 
 const scheme = {
   WS: "ws://",
