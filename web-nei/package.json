@@ -31,9 +31,6 @@
     "tsparticles-interaction-particles-repulse": "^2.9.3",
     "tsparticles-plugin-polygon-mask": "^2.9.3",
     "tw-colors": "^2.0.3",
-    "vite": "^4.4.4",
-    "vite-plugin-svgr": "^3.2.0",
-    "vite-tsconfig-paths": "^4.2.0",
     "zustand": "^4.0.0-rc.3"
   },
   "scripts": {
