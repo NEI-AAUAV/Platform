@@ -97,7 +97,7 @@ module.exports = {
       {
         light: {
           ...require("daisyui/src/colors/themes")["[data-theme=light]"],
-          primary: "#26AB55",
+          primary: "#12A14D",
           "primary-content": "#141414",
           secondary: "#3EAB65",
           accent: "#26AB55",
@@ -132,12 +132,13 @@ module.exports = {
       {
         dark: {
           ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
-          primary: "#26AB55",
+          primary: "#0F8A42",
           "primary-content": "#FFFFFF",
           secondary: "#3EAB65",
           accent: "#26AB55",
+          
           // System
-          error: "#E83E34",
+          error: "#C82643",
           "error-content": "#64085B",
           warning: "#FEF8CB",
           "warning-content": "#765100",
@@ -150,6 +151,7 @@ module.exports = {
           // neutral: "#262626",
           // "neutral-focus": "#1F1F1F",
           // "neutral-content": "#B0B0B0",
+
           // Base
           "base-100": "#101010",
           "base-200": "#171717",
