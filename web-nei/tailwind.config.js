@@ -36,7 +36,6 @@ module.exports = {
         wiggle: "wiggle 0.2s ease-in-out 0s 2",
       },
       colors: {
-        primary: "#0D873E",
         success: "#37AB26",
         info: "#07A2AE",
         warning: "#DCA825",
@@ -64,6 +63,7 @@ module.exports = {
           200: "#404040",
           300: "#707070"
         },
+        primary: "#12A14D",
         light: "#FFFFFF",
         error: "#E83E34"
       },
@@ -83,6 +83,7 @@ module.exports = {
           200: "#BFBFBF",
           300: "#8F8F8F"
         },
+        primary: "#0F8A42",
         light: "#EFEFEF",
         error: "#C82643"
       }
