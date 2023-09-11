@@ -30,7 +30,7 @@ def test_get_redirect(client: TestClient) -> None:
     redirectAlias = "Test1"
     r = client.get(f"{settings.API_V1_STR}/redirect/?alias={redirectAlias}")
     data = r.json()
-    assert data["redirect"] == "redirecforTest1"
+    assert data["redirect"] == "static/nei/redirecforTest1"
 
 
 def test_redirect_error(client: TestClient) -> None:
