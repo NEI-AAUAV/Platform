@@ -1,7 +1,8 @@
 import re
 from typing import Any
 
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from sqlalchemy import Enum
+from sqlalchemy.orm import declared_attr, as_declarative
 from app.core.config import settings
 
 
@@ -17,11 +18,28 @@ class Base:
         e.g.: `TacaUAMember` converts to `taca_ua_member`.
         """
         names = re.findall(r"[A-Z][a-z]+|[A-Z]+(?![a-z])", cls.__name__)
-        return '_'.join(names).lower()
+        return "_".join(names).lower()
 
-    __table_args__ = (
-        {"schema": settings.SCHEMA_NAME},
-    )
+    __table_args__ = {"schema": settings.SCHEMA_NAME}
 
     def dict(self):
-       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        """Convert the SQLAlchemy model to a dictionary."""
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+class BaseEnum(Enum):
+    """Base class for SQLAlchemy Enum types.
+
+    Ensure that the Enum schema is inherited from the table
+    and generate its name automatically.
+    """
+
+    def __init__(self, *enums: object, **kw: Any):
+        name = kw.get("name", None)
+        if name is None and isinstance(enums[0], type):
+            # If `enums` is a class, use the class name to generate the name automatically
+            # e.g.: `TypeEnum` converts to `type_enum`.
+            names = re.findall(r"[A-Z][a-z]+|[A-Z]+(?![a-z])", enums[0].__name__)
+            kw["name"] = "_".join(names).lower()
+
+        super().__init__(*enums, inherit_schema=True, **kw)

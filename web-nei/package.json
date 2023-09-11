@@ -13,7 +13,6 @@
     "daisyui": "^2.45.0",
     "flowbite-datepicker": "^1.2.2",
     "framer-motion": "9.1.7",
-    "html-react-parser": "^3.0.9",
     "lodash": "^4.17.21",
     "popmotion": "^11.0.5",
     "postcss": "^8.4.20",
@@ -25,27 +24,24 @@
     "react-hook-form": "^7.43.9",
     "react-icons": "^4.4.0",
     "react-particles": "^2.9.3",
-    "react-router": "6.10.0",
-    "react-router-dom": "6.10.0",
-    "react-scripts": "^5.0.1",
+    "react-router-dom": "^6.14.2",
     "react-typist": "^2.0.5",
     "tailwindcss": "^3.2.4",
     "tsparticles": "^2.9.3",
     "tsparticles-interaction-particles-repulse": "^2.9.3",
     "tsparticles-plugin-polygon-mask": "^2.9.3",
+    "tw-colors": "^2.0.3",
     "zustand": "^4.0.0-rc.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview",
     "analyze": "source-map-explorer build/static/js/*.js --html ./sme-result.html && open sme-result.html"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -61,12 +57,20 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/user-event": "^14.4.3",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.4",
-    "source-map-explorer": "^2.5.3"
+    "rollup-plugin-visualizer": "^5.9.2",
+    "sharp": "^0.32.3",
+    "source-map-explorer": "^2.5.3",
+    "svgo": "^3.0.2",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.4",
+    "vite-plugin-image-optimizer": "^1.1.6",
+    "vite-plugin-svgr": "^3.2.0",
+    "vite-tsconfig-paths": "^4.2.0"
   },
   "peerDependencies": {
     "@emotion/react": "^11.10.0"

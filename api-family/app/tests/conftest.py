@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from fastapi.responses import ORJSONResponse
 
-from app.api.api_v1 import api_v1_router
+from app.api.v1 import api_v1_router
 from app.core.config import settings
 
 

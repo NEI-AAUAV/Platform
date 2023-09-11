@@ -8,7 +8,7 @@ from app.utils import validate_to_json
 class CourseBase(BaseModel):
     name: constr(max_length=60)
     short: constr(max_length=16)
-    color: constr(max_length=30) = "white"
+    color: Optional[constr(max_length=30)]
 
 
 @validate_to_json

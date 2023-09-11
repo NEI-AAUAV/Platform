@@ -9,4 +9,4 @@ RUN yarn install --silent
 COPY . .
 
 EXPOSE 3000
-CMD yarn start --port 3000
+CMD yarn start --port 3000 --strictPort --host 0.0.0.0

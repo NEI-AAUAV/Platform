@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { Input, Spacer, Loading } from "@nextui-org/react";
 import { TabButton } from "../components/Customized";
 

@@ -14,7 +14,7 @@ from app.api.auth import verify_scopes
 from app.api.api import api_v1_router
 from app.core.config import settings
 from app.db.base_class import Base
-from app.api.api_v1.match import ws_send_update
+from app.api.v1.match import ws_send_update
 
 # Since we import app.main, the code in it will be executed,
 # including the definition of the table models.

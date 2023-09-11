@@ -10,8 +10,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
+      - ./scripts/:/scripts/:ro
       - ./api-nei/app/db/backup-0006.sql:/docker-entrypoint-initdb.d/backup.sql:ro
       - pg_data:/var/lib/postgresql/data
+    labels:
+      ofelia.enabled: "true"
+      # Set the interval to 5 minutes for testing
+      ofelia.job-exec.cleanup_logins.schedule: "@every 5m"
+      ofelia.job-exec.cleanup_logins.command: "psql -U postgres -d postgres -f /scripts/cleanup-logins.sql"
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s
@@ -40,6 +46,8 @@ services:
     networks:
       - backend
     restart: unless-stopped
+    profiles:
+      - disabled
 
   api_nei:
     build:
@@ -132,6 +140,17 @@ services:
     networks:
       - backend
       - frontend
+    restart: unless-stopped
+
+  ofelia:
+    image: mcuadros/ofelia:latest
+    depends_on:
+      - db_pg
+    command: daemon --docker
+    volumes:
+      - ${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock:ro
+    networks:
+      - backend
     restart: unless-stopped
 
 networks:
