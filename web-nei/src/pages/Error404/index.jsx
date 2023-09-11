@@ -15,10 +15,10 @@ export function Component() {
     useEffect(() => {
         if (!pathname) return;
 
-        const alias = pathname.substring(1);
+        const alias = pathname.substring(1).toLowerCase();
 
-        if (alias === "404") {
-            setLoading(false);
+        if (alias === "404") { 
+            setLoading(false); 
             return;
         }
 
