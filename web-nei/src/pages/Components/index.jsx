@@ -7,30 +7,80 @@ import {
   CardMerch,
   GameCard,
   SportsCard,
+  CardHall,
 } from "components";
 
 import { CalendarViewMonthIcon, ViewAgendaIcon } from "assets/icons/google";
 
 
 const props = {
-  'modalidade': "Futsal Masculino",
-  'img1': "https://nei.web.ua.pt/static/media/nei.b8a8878d0d6a342a45a7e09a34363ee5.svg",
-  'team1': "EI",
-  'img2': "https://nei.web.ua.pt/static/media/nei.b8a8878d0d6a342a45a7e09a34363ee5.svg",
-  'team2': "EI",
-  'live': true,
-  'time': "10:30",
-  'score1': "20",
-  'score2': "20",
-  'penalti1': "6",
-  'penalti2': "5"
+  'place':1
 }
 
 export function Component() {
   const [btnActive, setBtnActive] = useState(true);
   return (
     <div>
-      <GameCard props={props} />
+      <CardHall place={3}
+                modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "Voleibol 4x4 Femenino",
+                frame: "Masculino",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Fase de Grupos",
+                    division: 2,
+                    id: 1,
+                  },
+                  {
+                    name: "Playoffs",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}></CardHall>
+      <CardHall place={1}
+                modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "Voleibol 4x4 Femenino",
+                frame: "Masculino",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Fase de Grupos",
+                    division: 2,
+                    id: 1,
+                  },
+                  {
+                    name: "Playoffs",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}></CardHall>
+      <CardHall place={2}
+                modality={{
+                image:
+                  "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                sport: "Voleibol 4x4 Femenino",
+                frame: "Masculino",
+                type: "Coletivo",
+                competitions: [
+                  {
+                    name: "Fase de Grupos",
+                    division: 2,
+                    id: 1,
+                  },
+                  {
+                    name: "Playoffs",
+                    division: 2,
+                    id: 2,
+                  },
+                ],
+              }}></CardHall>
       <h1>Daisy UI Color Names</h1>
       <div className="overflow-y-auto">
         <table className="flex flex-start p-6 w-fit">
