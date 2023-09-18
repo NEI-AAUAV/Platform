@@ -43,7 +43,7 @@ const routes = [
         lazy: () => import("./pages/Seniors"),
       },
       { path: "/faina", lazy: () => import("./pages/Faina") },
-      !isProd && { path: "/taca-ua", lazy: () => import("./pages/Sports") },
+      !isProd && { path: "/taca-ua", lazy: () => import("./pages/TacauaHomePage") },
       !isProd && {
         path: "/taca-ua/:id/:view?",
         lazy: () => import("./pages/SportModality"),

@@ -38,7 +38,7 @@ const GameCard = ({ props }) => {
     const [isShown2, setIsShown2] = useState(false);
 
     return (
-        <div class="card h-70 max-w-lg bg-base-300 group  rounded-b-[20px]">
+        <div class="card h-70 max-w-lg bg-base-300 group  rounded-b-[20px] drop-shadow-lg">
             <div class="grid grid-cols-2 pt-4 pr-4 pl-4 text-base-content font-bold">
                 <p>{props.sport} {props.type}</p>
                 <p class="text-right">Grupo  {props.Group} | Jornada {props.jornada}</p>
@@ -49,7 +49,7 @@ const GameCard = ({ props }) => {
                 {time}
             </div>
             <div
-                className={`relative text-blue-400 border-none brightness-75 group-hover:brightness-110 h-1 ${gradient} transition-[filter] transition-duration-400`}
+                className={`relative text-blue-400 border-none brightness-75 w-full scale-x-[0.25] place-self-center group-hover:brightness-110 group-hover:scale-100 h-1 ${gradient} transition transition-duration-400`}
             >
                 <div
                     className={`absolute opacity-0 -inset-[1px] blur-lg ${gradient} group-hover:opacity-100 brightness-110 transition-opacity transition-duration-400 `}
