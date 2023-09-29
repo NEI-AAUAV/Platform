@@ -15,7 +15,7 @@ class Redirect(Base):
 
     @hybrid_property
     def redirect(self) -> Optional[AnyHttpUrl]:
-        return self._redirect
+        return self._redirect and settings.STATIC_URL + self._redirect
 
     @redirect.setter
     def redirect(self, redirect: Optional[AnyHttpUrl]):

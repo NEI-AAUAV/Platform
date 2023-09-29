@@ -11,7 +11,7 @@ from app.models import Course
 from app.tests.conftest import SessionTesting
 
 
-URL_PREFIX = f"{settings.API_V1_STR}/course"
+URL_PREFIX = f"{settings.API_V1_STR}/courses"
 
 course_data = {
     "name": "Eng. Informática",
