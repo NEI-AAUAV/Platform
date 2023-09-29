@@ -38,7 +38,7 @@ const GameCard = ({ props }) => {
     const [isShown2, setIsShown2] = useState(false);
 
     return (
-        <div class="card h-70 max-w-lg bg-base-300 group  rounded-b-[20px] drop-shadow-lg">
+        <div class="flex-none h-70 max-w-lg w-96 bg-base-300 group  rounded-b-[20px] drop-shadow-lg">
             <div class="grid grid-cols-2 pt-4 pr-4 pl-4 text-base-content font-bold">
                 <p>{props.sport} {props.type}</p>
                 <p class="text-right">Grupo  {props.Group} | Jornada {props.jornada}</p>

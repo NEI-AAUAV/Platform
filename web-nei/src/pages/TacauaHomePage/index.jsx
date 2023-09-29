@@ -3,10 +3,12 @@ import { useUserStore } from "stores/useUserStore";
 import Typist from "react-typist";
 import backgroundImg from "../Sports/img/unknown2.png";
 import nei from "../Sports/img/nei.png";
-import { SportsCard,CardHall,GameCard } from "components";
+import { SportsCard,CardHall,GameCard,Carousel } from "components";
 
 
 export function Component() {
+
+
     
     
     return (
@@ -149,7 +151,7 @@ export function Component() {
                         <button class="btn btn-primary place-self-center">Últimos Jogos</button>
                         <button class="btn btn-neutral place-self-center">Próximos Jogos</button>
                     </div>
-                    <div className="flex gap-x-6 [&>*]:grow">
+                    <Carousel width={300}>
                         <GameCard props={{
                             sport:"Futsal",
                             live:1,
@@ -195,11 +197,51 @@ export function Component() {
                             img2:nei
                         }}
                         />
-                    </div>
+                    </Carousel>
                 </div>
                 <div className="grid gap-8 w-full p-8 bg-base-200 rounded-[20px]">
                     <h4 className="place-self-center font-bold text-2xl">Deti Hall</h4>
-                    <div className="flex gap-8 [&>*]:grow">
+                    <Carousel width={300}>
+                        <CardHall place={3}
+                        modality={{
+                        image:
+                        "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                        sport: "Voleibol 4x4 Femenino",
+                        frame: "Masculino",
+                        type: "Coletivo",
+                        competitions: [
+                        {
+                            name: "Fase de Grupos",
+                            division: 2,
+                            id: 1,
+                        },
+                        {
+                            name: "Playoffs",
+                            division: 2,
+                            id: 2,
+                        },
+                        ],
+                        }}/>
+                        <CardHall place={3}
+                        modality={{
+                        image:
+                        "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                        sport: "Voleibol 4x4 Femenino",
+                        frame: "Masculino",
+                        type: "Coletivo",
+                        competitions: [
+                        {
+                            name: "Fase de Grupos",
+                            division: 2,
+                            id: 1,
+                        },
+                        {
+                            name: "Playoffs",
+                            division: 2,
+                            id: 2,
+                        },
+                        ],
+                        }}/>
                         <CardHall place={3}
                         modality={{
                         image:
@@ -280,7 +322,27 @@ export function Component() {
                                     },
                                     ],
                                 }}/>
-                    </div>
+                        <CardHall place={2}
+                                    modality={{
+                                    image:
+                                    "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
+                                    sport: "Voleibol 4x4 Femenino",
+                                    frame: "Masculino",
+                                    type: "Coletivo",
+                                    competitions: [
+                                    {
+                                        name: "Fase de Grupos",
+                                        division: 2,
+                                        id: 1,
+                                    },
+                                    {
+                                        name: "Playoffs",
+                                        division: 2,
+                                        id: 2,
+                                    },
+                                    ],
+                                }}/>
+                    </Carousel>
                 </div>
         </div>
     );

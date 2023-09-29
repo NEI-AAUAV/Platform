@@ -67,7 +67,8 @@ const CardHall = ({ place, modality, className }) => {
 
 
     return (
-        <div className={`${className} flex flex-col items-center max-w-xs py-10 ${gradient} rounded-[20px]`}>
+        <div className={`${className} flex-none w-72`}>
+        <div className={`flex flex-col items-center py-10 ${gradient} rounded-[20px]`}>
             <img src="https://i.imgur.com/XLUTJiE.png"/>
             <div className="font-bold text-xl text-center p-5">{place}º lugar</div>
             <div className="flex flex-row font-medium text-md text-center py-1">
@@ -75,6 +76,7 @@ const CardHall = ({ place, modality, className }) => {
                 <span className="px-1">{sport}</span>
             </div>
             <div className="font-light text-sm text-center p-1">2022/2023</div>
+        </div>
         </div>
     )
 }

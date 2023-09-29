@@ -11,3 +11,4 @@ export { default as GameCard  } from "./GameCard";
 export { default as CardHall  } from "./CardHall";
 export { default as SportsCard } from "./SportsCard";
 export { default as TabsButton } from "./TabsButton";
+export { default as Carousel } from "./Carousel";
