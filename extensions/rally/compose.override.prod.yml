@@ -4,7 +4,7 @@ services:
   api_rally:
     image: neiaauav/api-rally:${TAG:-latest}
     build:
-      context: api-rally
+      context: extensions/rally/api-rally
       dockerfile: Dockerfile.prod
     ports:
       - 8003:8003
