@@ -58,7 +58,7 @@ const GRADIENTS_DARK = {
   "E-Sports CS:GO": "bg-gradient-to-r from-[#BB460C] to-[#E9B75B]",
 };
 
-const SportsCard = ({ modality, className }) => {
+const SportsCard = ({ modality, className, refe }) => {
   const { image, sport, frame, type, competitions } = modality;
   const theme = useUserStore((state) => state.theme);
 
@@ -75,8 +75,8 @@ const SportsCard = ({ modality, className }) => {
   ));
 
   return (
-    <div
-      className={`bg-base-300 rounded-2xl shadow-md shadow-gray max-w-[420px] group ${className}`}
+    <div ref={refe}
+      className={`bg-base-300 rounded-2xl shadow-md shadow-gray max-w-[420px] group flex-none ${className}`}
     >
       <div className="flex p-4">
         <img

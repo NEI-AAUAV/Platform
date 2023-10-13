@@ -19,7 +19,7 @@ const GRADIENTS_DARK = {
     "E-Sports CS:GO": "bg-gradient-to-r from-[#BB460C] to-[#E9B75B]",
 };
 
-const GameCard = ({ props }) => {
+const GameCard = ({ props, refe }) => {
     const theme = useUserStore((state) => state.theme);
 
     const gradients = theme === "light" ? GRADIENTS_LIGHT : GRADIENTS_DARK;
@@ -38,7 +38,7 @@ const GameCard = ({ props }) => {
     const [isShown2, setIsShown2] = useState(false);
 
     return (
-        <div class="flex-none h-70 max-w-lg w-96 bg-base-300 group  rounded-b-[20px] drop-shadow-lg">
+        <div ref={refe} class="flex-none h-70 max-w-lg w-full lg:w-96  bg-base-300 group  rounded-[20px] drop-shadow-lg">
             <div class="grid grid-cols-2 pt-4 pr-4 pl-4 text-base-content font-bold">
                 <p>{props.sport} {props.type}</p>
                 <p class="text-right">Grupo  {props.Group} | Jornada {props.jornada}</p>
@@ -63,7 +63,7 @@ const GameCard = ({ props }) => {
                     )}
                 </div>
                 <div className="text-base-content">
-                    <p className="text-center text-4xl font-bold">{props.score1} - {props.score2}</p>
+                    <p className="text-center text-3xl lg:text-4xl font-bold">{props.score1} - {props.score2}</p>
                     <p className="text-center text-2xl font-bold">({props.penalti1}) - ({props.penalti2})</p>
                 </div>
                 <div onMouseEnter={() => setIsShown2(true)} onMouseLeave={() => setIsShown2(false)} className="flex flex-col justify-center">
