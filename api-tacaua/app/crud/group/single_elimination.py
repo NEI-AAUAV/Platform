@@ -12,14 +12,27 @@ def update_single_elimination_matches(
     """Recreate match bracket according to existent teams."""
     # TODO: not using metadata for 3rd match
 
-    matches = db.query(Match).filter(Match.group_id == group.id).all()
+    # Remove the sqlalchemy instrumentation from the matches list
+    # to allows us to manipulate it like a normal list.
+    matches = list(group.matches)
+    # Get the ids of ll
     teams_id = {t.id for t in group.teams}
-    for m in matches[:]:
-        # Delete matches without both teams
-        # or with teams out of group
-        if not teams_id.issuperset((m.team1_id, m.team2_id)):
-            matches.remove(m)
+
+    # Function for filtering matches were teams aren't in the group
+    # anymore while removing them from the DB.
+    def match_predicate(m: Match) -> bool:
+        """
+        Checks wether the teams in the match belong to the group.
+
+        Removes the matches that no longer belong from the database.
+        """
+        cond = teams_id.issuperset((m.team1_id, m.team2_id))
+        if not cond:
             db.delete(m)
+        return cond
+
+    # Iterator of matches that already existed in the database
+    matches = list(filter(match_predicate, matches))
 
     teams_id_assigned = {
         tid for m in matches for tid in (m.team1_id, m.team2_id) if tid is not None
@@ -31,8 +44,7 @@ def update_single_elimination_matches(
 
     for r, matches_count in enumerate(matches_count_per_round):
         for _ in range(matches_count):
-            if matches:
-                # Add leaf match
+            if len(matches) != 0:
                 m = matches.pop()
                 m.round = r + 1
             else:
@@ -61,7 +73,7 @@ def update_single_elimination_matches(
                     }
                     matches_count_per_round[r - 1] -= 2
                 m = Match(**match_data)
-            db.add(m)
+                db.add(m)
             matches_per_round[r].append(m)
 
 
