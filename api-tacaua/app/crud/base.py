@@ -1,7 +1,7 @@
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from typing import Any, Dict, Generic, List, Type, TypeVar, Union
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, lazyload, raiseload
 
 from app.exception import NotFoundException
 from app.db.base_class import Base
@@ -22,11 +22,26 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         self.model = model
 
-    def get(self, db: Session, *, id: Any) -> Optional[ModelType]:
-        obj = db.get(self.model, id)
+    def get(
+        self,
+        db: Session,
+        *,
+        id: Any,
+        update: bool = False,
+        defer: List[Any] = [],
+        raise_load: List[Any] = [],
+    ) -> ModelType:
+        extra_config = {}
+        if defer != []:
+            options = extra_config.setdefault("options", [])
+            options.append(lazyload(*defer))
+        if raise_load != []:
+            options = extra_config.setdefault("options", [])
+            options.append(raiseload(*raise_load))
+
+        obj = db.get(self.model, id, with_for_update=update, **extra_config)
         if not obj:
-            raise NotFoundException(
-                detail=f"{self.model.__name__} Not Found")
+            raise NotFoundException(detail=f"{self.model.__name__} Not Found")
         return obj
 
     def get_multi(
@@ -43,11 +58,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_obj
 
     def update(
-        self,
-        db: Session,
-        *,
-        id: int,
-        obj_in: Union[UpdateSchemaType, Dict[str, Any]]
+        self, db: Session, *, id: int, obj_in: Union[UpdateSchemaType, Dict[str, Any]]
     ) -> ModelType:
         db_obj = self.get(db, id=id)
         obj_data = jsonable_encoder(db_obj)
