@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, List, Type, TypeVar, Union
+from typing import Any, Dict, Generic, List, Type, TypeVar, Union, Literal
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.orm import Session, lazyload, raiseload
@@ -27,7 +27,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db: Session,
         *,
         id: Any,
-        update: bool = False,
+        with_for: Union[Literal["update"], Literal["share"], None] = None,
         defer: List[Any] = [],
         raise_load: List[Any] = [],
     ) -> ModelType:
@@ -39,7 +39,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             options = extra_config.setdefault("options", [])
             options.append(raiseload(*raise_load))
 
-        obj = db.get(self.model, id, with_for_update=update, **extra_config)
+        if with_for == "update":
+            extra_config["with_for_update"] = True
+        elif with_for == "share":
+            extra_config["with_for_update"] = {"read": True}
+
+        obj = db.get(self.model, id, **extra_config)
         if not obj:
             raise NotFoundException(detail=f"{self.model.__name__} Not Found")
         return obj

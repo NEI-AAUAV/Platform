@@ -44,8 +44,8 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
                 )
             )
 
-            group = self.get(db, id=id, update=True, defer=[Group.matches])
             obj_data = jsonable_encoder(group)
+            group = self.get(db, id=id, with_for="update", defer=[Group.matches])
             if isinstance(obj_in, dict):
                 update_data = obj_in
             else:
@@ -89,7 +89,10 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
         Matches are created according to the competition system.
         """
         competition = crud.competition.get(
-            db, id=group.competition_id, update=True, raise_load=[Competition.groups]
+            db,
+            id=group.competition_id,
+            with_for="share",
+            raise_load=[Competition.groups],
         )
         teams = [t for t in group.teams if t.id in teams_id]
         teams_id_diff = set(teams_id) - {t.id for t in teams}
