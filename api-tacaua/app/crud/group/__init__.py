@@ -32,17 +32,20 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
         db.refresh(db_obj)
         return db_obj
 
+    def lock_for_teams_update(self, db: Session) -> None:
+        db.execute(
+            sqlalchemy.text(
+                f"LOCK TABLE ONLY {settings.SCHEMA_NAME}.{Match.__tablename__}, {settings.SCHEMA_NAME}.{Team.__tablename__} IN EXCLUSIVE MODE;"
+            )
+        )
+
     def update(
         self, db: Session, *, id: int, obj_in: Union[GroupUpdate, Dict[str, Any]]
     ) -> Group:
         with db.begin_nested():
             # Lock the matches and teams tables to prevent updates
             # (read queries with no update intention are still allowed).
-            db.execute(
-                sqlalchemy.text(
-                    f"LOCK TABLE ONLY {settings.SCHEMA_NAME}.{Match.__tablename__}, {settings.SCHEMA_NAME}.{Team.__tablename__} IN EXCLUSIVE MODE;"
-                )
-            )
+            self.lock_for_teams_update(db)
 
             # Load the group with a `FOR UPDATE` lock to ensure it isn't changed while we are making changes
             # and that other queries that need to ensure integrity of keys don't read it while we modify it.
@@ -65,7 +68,18 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
             # updated
             if "teams_id" in update_data:
                 teams_id = update_data["teams_id"]
-                group = self.update_teams(db, group=group, teams_id=teams_id)
+                # Get the competition the group belongs to, locking it with `FOR SHARE` to
+                # make sure it isn't updated while we are using it, we won't update it so the
+                # weaker suffices.
+                competition = crud.competition.get(
+                    db,
+                    id=group.competition_id,
+                    with_for="share",
+                    raise_load=[Competition.groups],
+                )
+                group = self.update_teams(
+                    db, group=group, teams_id=teams_id, competition=competition
+                )
 
             # Convert the model to JSON to allow iteration trough the keys
             for field in jsonable_encoder(group):
@@ -99,31 +113,18 @@ class CRUDGroup(CRUDBase[Group, GroupCreate, GroupUpdate]):
         swap_group.number = group.number
         return group
 
-    def update_teams(self, db: Session, *, group: Group, teams_id: Set[int]) -> Group:
+    def update_teams(
+        self, db: Session, *, group: Group, teams_id: Set[int], competition: Competition
+    ) -> Group:
         """Update the matches in a group when the teams are updated.
 
         This ensures consistency between the matches and the teams.
         Matches are created according to the competition system.
         """
-        # Get the competition the group belongs to, locking it with `FOR SHARE` to
-        # make sure it isn't updated while we are using it, we won't update it so the
-        # weaker suffices.
-        competition = crud.competition.get(
-            db,
-            id=group.competition_id,
-            with_for="share",
-            raise_load=[Competition.groups],
-        )
         # Get the teams that are already in the group and are in the update data
         teams = [t for t in group.teams if t.id in teams_id]
         # Calculate the ids of the new teams (if there are any)
         teams_id_diff = set(teams_id) - {t.id for t in teams}
-
-        # Check if no changes were made to the teams belonging to the
-        # group, if so bail early.
-        if len(teams) == len(group.teams) and not teams_id_diff:
-            # Nothing to update
-            return group
 
         # Fetch the modified teams, no lock is needed since the table lock is held
         teams_diff: List[Team] = (

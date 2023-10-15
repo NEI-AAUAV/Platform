@@ -48,6 +48,35 @@ class CRUDCompetition(CRUDBase[Competition, CompetitionCreate, CompetitionUpdate
                     db, competition=competition, number=number
                 )
 
+            if "_metadata" in update_data:
+                metadata = update_data.pop("_metadata")
+
+                if (
+                    not ("system" in metadata)
+                    or competition._metadata["system"] == metadata.system
+                ):
+                    metadata["system"] = competition._metadata["system"]
+                    validate_model(Metadata, metadata)
+                    for field in jsonable_encoder(competition._metadata):
+                        if field in metadata:
+                            # `setattr` can't be used here, because the JSON field is a
+                            # `MutableDict` and `setattr` bypasses the state tracking
+                            # causing the value to not be changed.
+                            competition._metadata[field] = metadata[field]
+                else:
+                    Metadata.validate(metadata)
+                    competition._metadata = metadata
+
+                # Make sure the metadata is updated so that the Group's update routines
+                # can see the fresh data.
+                db.flush([competition])
+                crud.group.lock_for_teams_update(db)
+
+                for group in competition.groups:
+                    teams_id = {t.id for t in group.teams}
+                    crud.group.update_teams(
+                        db, group=group, teams_id=teams_id, competition=competition
+                    )
 
             for field in jsonable_encoder(competition):
                 if field in update_data:
