@@ -44,6 +44,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         elif with_for == "share":
             extra_config["with_for_update"] = {"read": True}
 
+        extra_config["populate_existing"] = with_for is not None
+
         obj = db.get(self.model, id, **extra_config)
         if not obj:
             raise NotFoundException(detail=f"{self.model.__name__} Not Found")
