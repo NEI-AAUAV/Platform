@@ -1,16 +1,16 @@
+from typing import Any
 from fastapi.encoders import jsonable_encoder
+from pydantic import validate_model
 from sqlalchemy.orm import Session
 
 import app.crud as crud
 from app.crud.base import CRUDBase
 from app.exception import NotFoundException
-from app.schemas.competition import CompetitionCreate, CompetitionUpdate
 from app.models.competition import Competition
-from app.core.logging import logger
+from app.schemas.competition import CompetitionCreate, CompetitionUpdate, Metadata
 
 
 class CRUDCompetition(CRUDBase[Competition, CompetitionCreate, CompetitionUpdate]):
-
     def create(self, db: Session, *, obj_in: CompetitionCreate) -> Competition:
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)
@@ -30,45 +30,80 @@ class CRUDCompetition(CRUDBase[Competition, CompetitionCreate, CompetitionUpdate
         return db_obj
 
     def update(
-        self, db: Session, *, id: int, obj_in: CompetitionUpdate | dict[str, any]
+        self, db: Session, *, id: int, obj_in: CompetitionUpdate | dict[str, Any]
     ) -> Competition:
-        db_obj = self.get(db, id=id)
-        obj_data = jsonable_encoder(db_obj)
-        if isinstance(obj_in, dict):
-            update_data = obj_in
-        else:
-            update_data = obj_in.dict(exclude_unset=True)
+        with db.begin_nested():
+            competition = self.get(
+                db, id=id, with_for="update", defer=[Competition.groups]
+            )
 
-        if "number" in update_data:
-            number = update_data.pop("number")
-            db_obj = self.update_number(db, db_obj=db_obj, number=number)
+            if isinstance(obj_in, dict):
+                update_data = obj_in
+            else:
+                update_data = obj_in.dict(exclude_unset=True)
 
-        for field in obj_data:
-            if field in update_data:
-                setattr(db_obj, field, update_data[field])
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
-    
-    def update_number(self, db: Session, *, db_obj: Competition, number: int) -> Competition:
+            if "number" in update_data:
+                number = update_data.pop("number")
+                competition = self.update_number(
+                    db, competition=competition, number=number
+                )
+
+            if "_metadata" in update_data:
+                metadata = update_data.pop("_metadata")
+
+                if (
+                    not ("system" in metadata)
+                    or competition._metadata["system"] == metadata.system
+                ):
+                    metadata["system"] = competition._metadata["system"]
+                    validate_model(Metadata, metadata)
+                    for field in jsonable_encoder(competition._metadata):
+                        if field in metadata:
+                            # `setattr` can't be used here, because the JSON field is a
+                            # `MutableDict` and `setattr` bypasses the state tracking
+                            # causing the value to not be changed.
+                            competition._metadata[field] = metadata[field]
+                else:
+                    Metadata.validate(metadata)
+                    competition._metadata = metadata
+
+                # Make sure the metadata is updated so that the Group's update routines
+                # can see the fresh data.
+                db.flush([competition])
+                crud.group.lock_for_teams_update(db)
+
+                for group in competition.groups:
+                    teams_id = {t.id for t in group.teams}
+                    crud.group.update_teams(
+                        db, group=group, teams_id=teams_id, competition=competition
+                    )
+
+            for field in jsonable_encoder(competition):
+                if field in update_data:
+                    setattr(competition, field, update_data[field])
+
+        db.refresh(competition)
+        return competition
+
+    def update_number(
+        self, db: Session, *, competition: Competition, number: int
+    ) -> Competition:
         """Swap the order of two competitions."""
-        db_obj2 = (
+        swap_competition = (
             db.query(Competition)
             .filter(
-                Competition.modality_id == db_obj.modality_id, Competition.number == number
+                Competition.modality_id == competition.modality_id,
+                Competition.number == number,
             )
+            .populate_existing()
+            .with_for_update()
             .one_or_none()
         )
-        if not db_obj2:
+        if not swap_competition:
             raise NotFoundException(f"Exchange Competition Not Found")
-        setattr(db_obj, "number", number)
-        setattr(db_obj2, "number", db_obj.number)
-        db.add(db_obj)
-        db.add(db_obj2)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
+        competition.number = number
+        swap_competition.number = competition.number
+        return competition
 
 
 competition = CRUDCompetition(Competition)

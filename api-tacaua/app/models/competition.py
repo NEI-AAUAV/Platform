@@ -1,6 +1,6 @@
-from sqlalchemy import Column, SmallInteger, Integer, String, JSON, ForeignKey, Boolean
+from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship, validates
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import Column, SmallInteger, Integer, String, JSON, ForeignKey, Boolean
 
 from app.core.config import settings
 from app.schemas.competition import Metadata
@@ -13,20 +13,20 @@ class Competition(Base):
         Integer,
         ForeignKey(settings.SCHEMA_NAME + ".modality.id", ondelete="CASCADE"),
         nullable=False,
-        index=True
+        index=True,
     )
-    number = Column(SmallInteger)   # Used to order competitions
+    number = Column(SmallInteger)  # Used to order competitions
     division = Column(SmallInteger)
     name = Column(String(50), nullable=False)
     started = Column(Boolean, default=False)
     public = Column(Boolean, default=False)
-    _metadata = Column('metadata', JSON)
+    _metadata = Column("metadata", MutableDict.as_mutable(JSON))
 
     groups = relationship(
         "Group",
         cascade="all",
         passive_deletes=True,
-        lazy='joined',
+        lazy="joined",
     )
 
     @validates("_metadata")
