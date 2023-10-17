@@ -8,9 +8,10 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
+from app import crud
 from app.db.session import SessionLocal
 from app.models.user import User
-from app.schemas.user import TokenData
+from app.schemas.user import AdminUser, DetailedUser, StaffUser
 
 
 # to get a string like this run:
@@ -69,7 +70,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-):
+) -> DetailedUser:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -77,38 +78,41 @@ async def get_current_user(
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: Optional[str] = payload.get("sub")
-        if username is None:
+        user_id: Optional[str] = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
 
-    user = get_user(db, username=token_data.username)
+    user = crud.user.get(db, id=int(user_id))
     if user is None:
         raise credentials_exception
-    return user
+    return DetailedUser.model_validate(user)
 
 
-async def get_participant(curr_user: User = Depends(get_current_user)):
+async def get_participant(
+    curr_user: DetailedUser = Depends(get_current_user),
+) -> DetailedUser:
     if curr_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return curr_user
 
 
-async def get_staff(curr_user: User = Depends(get_participant)):
+async def get_staff(curr_user: DetailedUser = Depends(get_participant)) -> StaffUser:
     if not curr_user.staff_checkpoint_id:
         raise HTTPException(status_code=401, detail="User without staff permissions")
-    return curr_user
+    return StaffUser.model_validate(curr_user)
 
 
-async def get_admin(curr_user: User = Depends(get_participant)):
+async def get_admin(curr_user: DetailedUser = Depends(get_participant)) -> AdminUser:
     if not curr_user.is_admin:
         raise HTTPException(status_code=401, detail="User without admin permissions")
-    return curr_user
+    return AdminUser.model_validate(curr_user)
 
 
-async def get_admin_or_staff(curr_user: User = Depends(get_participant)):
+async def get_admin_or_staff(
+    curr_user: DetailedUser = Depends(get_participant),
+) -> DetailedUser:
     if not curr_user.is_admin and not curr_user.staff_checkpoint_id:
         raise HTTPException(status_code=401, detail="User without permissions")
     return curr_user

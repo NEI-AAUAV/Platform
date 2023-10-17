@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app import crud
 from app.api import deps
 from app.exception import NotFoundException
-from app.schemas.user import StaffUserInDB, DetailedUser
+from app.schemas.user import StaffUser, DetailedUser
 from app.schemas.team import ListingTeam
 from app.schemas.checkpoint import CheckPointInDB
 
@@ -41,7 +41,7 @@ def get_next_checkpoint(
 def get_checkpoint_teams(
     *,
     db: Session = Depends(deps.get_db),
-    admin_or_staff_user: StaffUserInDB = Depends(deps.get_admin_or_staff)
+    admin_or_staff_user: StaffUser = Depends(deps.get_admin_or_staff)
 ) -> Any:
     """
     If a staff is authenticated, returned all teams that just passed

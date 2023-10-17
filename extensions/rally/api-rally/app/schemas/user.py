@@ -3,13 +3,12 @@ from typing import Literal, Optional
 from pydantic import BaseModel, ConfigDict
 
 
-class Token(BaseModel):
+class LoginResult(BaseModel):
     access_token: str
     token_type: str
-
-
-class TokenData(BaseModel):
-    username: str
+    name: str
+    staff_checkpoint_id: Optional[int]
+    is_admin: bool
 
 
 class UserBase(BaseModel):
@@ -44,15 +43,18 @@ class DetailedUser(UserBase):
 
     id: int
     name: str
-
-
-class StaffUserInDB(DetailedUser):
+    disabled: bool
     is_admin: bool
+    staff_checkpoint_id: Optional[int]
+
+
+class AdminListingUser(DetailedUser):
+    username: str
+
+
+class StaffUser(DetailedUser):
     staff_checkpoint_id: int
 
 
-class AdminUserInDB(StaffUserInDB):
-    name: str
+class AdminUser(DetailedUser):
     is_admin: Literal[True]
-    username: Optional[str] = None
-    hashed_password: str

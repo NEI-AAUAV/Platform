@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app import crud
 from app.api import deps
 from app.models.team import Team
-from app.schemas.user import AdminUser, StaffUser, DetailedUser
+from app.schemas.user import AdminUser, DetailedUser
 from app.schemas.team import (
     AdminCheckPointSelect,
     TeamCreate,
@@ -45,21 +45,21 @@ def get_teams(*, db: Session = Depends(deps.get_db)) -> List[ListingTeam]:
     return list(map(build_listing, teams))
 
 
-def _checkpoint_id(user: StaffUser, form: AdminCheckPointSelect) -> int:
-    if (
-        not user.is_admin
-        and form.checkpoint_id is not None
-        and form.checkpoint_id != user.staff_checkpoint_id
-    ):
+def _checkpoint_id(user: DetailedUser, form: AdminCheckPointSelect) -> int:
+    checkpoint_id = form.checkpoint_id
+
+    if checkpoint_id is None:
+        if user.staff_checkpoint_id is None:
+            raise HTTPException(
+                status_code=400, detail="Admin doesn't have a default checkpoint"
+            )
+        checkpoint_id = user.staff_checkpoint_id
+    elif not user.is_admin and checkpoint_id != user.staff_checkpoint_id:
         raise HTTPException(
             status_code=401, detail="Only admins can specify the checkpoint"
         )
 
-    return (
-        form.checkpoint_id
-        if form.checkpoint_id is not None
-        else user.staff_checkpoint_id
-    )
+    return checkpoint_id
 
 
 @router.put("/{id}/checkpoint", status_code=201)
@@ -68,7 +68,7 @@ def add_checkpoint(
     db: Session = Depends(deps.get_db),
     id: int,
     obj_in: TeamScoresUpdate,
-    staff_user: StaffUser = Depends(deps.get_admin_or_staff)
+    staff_user: DetailedUser = Depends(deps.get_admin_or_staff)
 ) -> DetailedTeam:
     checkpoint_id = _checkpoint_id(staff_user, obj_in)
     team_db = crud.team.add_checkpoint(
@@ -86,7 +86,7 @@ def activate_cards(
     db: Session = Depends(deps.get_db),
     id: int,
     obj_in: TeamCardsUpdate,
-    staff_user: StaffUser = Depends(deps.get_admin_or_staff)
+    staff_user: DetailedUser = Depends(deps.get_admin_or_staff)
 ) -> DetailedTeam:
     checkpoint_id = _checkpoint_id(staff_user, obj_in)
     team_db = crud.team.activate_cards(
@@ -108,7 +108,7 @@ def create_team(
     *,
     db: Session = Depends(deps.get_db),
     team_in: TeamCreate,
-    admin_user: DetailedUser = Depends(deps.get_admin)
+    _: AdminUser = Depends(deps.get_admin)
 ) -> DetailedTeam:
     return DetailedTeam.model_validate(crud.team.create(db=db, obj_in=team_in))
 
@@ -119,6 +119,6 @@ def update_team(
     db: Session = Depends(deps.get_db),
     id: int,
     team_in: TeamUpdate,
-    admin_user: AdminUser = Depends(deps.get_admin)
+    _: AdminUser = Depends(deps.get_admin)
 ) -> DetailedTeam:
     return DetailedTeam.model_validate(crud.team.update(db=db, id=id, obj_in=team_in))

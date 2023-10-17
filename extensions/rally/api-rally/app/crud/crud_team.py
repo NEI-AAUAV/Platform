@@ -17,6 +17,8 @@ from app.schemas.team import (
     TeamCardsUpdate,
 )
 
+from ._deps import unique_key_error_regex
+
 locked_arrays = [
     "times",
     "question_scores",
@@ -24,6 +26,8 @@ locked_arrays = [
     "pukes",
     "skips",
 ]
+
+_name_unique_error_regex = unique_key_error_regex(Team.name.name)
 
 
 class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
@@ -98,7 +102,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
             if e.orig is None:
                 raise
 
-            if "Key (name)=(string) already exists" in str(e.orig):
+            if _name_unique_error_regex.search(str(e.orig)) is not None:
                 raise HTTPException(status_code=400, detail="Team name already exists")
 
             raise
