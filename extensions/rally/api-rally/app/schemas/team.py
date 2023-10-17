@@ -58,10 +58,12 @@ class TeamMeInDB(TeamInDB):
 
 
 class StaffScoresTeamUpdate(BaseModel):
+    skips: int = 0
     question_score: bool = False
     time_score: Annotated[int, Field(strict=True, ge=0)] = 0
     pukes: Annotated[int, Field(strict=True, ge=0)] = 0
-    skips: int = 0
+    # For admin's only
+    checkpoint_id: Optional[int] = None
 
 
 class StaffCardsTeamUpdate(BaseModel):

@@ -32,12 +32,27 @@ def add_checkpoint(
     db: Session = Depends(deps.get_db),
     id: int,
     obj_in: StaffScoresTeamUpdate,
-    staff_user: StaffUserInDB = Depends(deps.get_staff)
+    staff_user: StaffUserInDB = Depends(deps.get_admin_or_staff)
 ) -> Any:
-    team = crud.team.get(db=db, id=id)
+    if (
+        not staff_user.is_admin
+        and obj_in.checkpoint_id is not None
+        and obj_in.checkpoint_id != staff_user.staff_checkpoint_id
+    ):
+        raise HTTPException(
+            status_code=401, detail="Only admins can specify the checkpoint"
+        )
 
+    checkpoint_id = (
+        obj_in.checkpoint_id
+        if obj_in.checkpoint_id is not None
+        else staff_user.staff_checkpoint_id
+    )
     return crud.team.add_checkpoint(
-        db=db, team=team, checkpoint_id=staff_user.staff_checkpoint_id, obj_in=obj_in
+        db=db,
+        id=id,
+        checkpoint_id=checkpoint_id,
+        obj_in=obj_in,
     )
 
 
