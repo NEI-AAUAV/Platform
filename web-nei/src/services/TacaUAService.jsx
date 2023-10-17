@@ -104,7 +104,15 @@ const TacaUAService = {
 
   //----Match----
   async updateMatch(id, data) {
-    return await client.put(`/matchs/${id}`, data);
+    return await client.put(`/matches/${id}`, data);
+  },
+
+  async get_next_matches(data) {
+    return await client.get("/matches/next_played", data);
+  },
+
+  async get_last_matches(data) {
+    return await client.get("/matches/last_played", data);
   },
 
   //----Standing----

@@ -66,10 +66,38 @@ class CRUDMatch(CRUDBase[Match, MatchCreate, MatchUpdate]):
                 altered.append(team2_match)
 
             # Update the current match with all the new data
-            for key, value in obj_in.dict().items():
+            for returnkey, value in obj_in.dict().items():
                 setattr(this_match, key, value)
 
         return altered
+
+    def get_last_played(self, db: Session, amount: int):
+        matches = db.query(self.model).order_by(self.model.date).all()
+
+        # find first game that hasn't been played i.e winner == None
+
+        for i, match in enumerate(matches):
+            if match.winner is None:
+                break
+
+        # return last ammount games
+        if i - amount < 0:
+            return matches[:i]
+        return matches[i - amount : i]
+
+    def get_next_played(self, db: Session, amount: int):
+        matches = db.query(self.model).order_by(self.model.date).all()
+
+        # find first game that hasn't been played i.e winner == None
+
+        for i, match in enumerate(matches):
+            if match.winner is None:
+                break
+
+        # return last ammount games
+        if i + amount > len(matches):
+            return matches[i + 1 :]
+        return matches[i + 1 : i + amount + 1]
 
 
 match = CRUDMatch(Match)
