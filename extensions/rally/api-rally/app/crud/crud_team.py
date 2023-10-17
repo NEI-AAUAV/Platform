@@ -8,19 +8,25 @@ from sqlalchemy.orm import Session
 from app.exception import APIException, CardNotActiveException, CardEffectException
 from app.crud.base import CRUDBase
 from app.models.team import Team
-from app.schemas.team import TeamCreate, TeamUpdate, StaffScoresTeamUpdate, StaffCardsTeamUpdate
+from app.schemas.team import (
+    TeamCreate,
+    TeamUpdate,
+    StaffScoresTeamUpdate,
+    StaffCardsTeamUpdate,
+)
 
 
 class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
-
     def update_classification(self, db: Session) -> None:
         teams = self.get_multi(db=db)
 
-        all_time_scores = [t.time_scores + [0] *
-                           (8-len(t.time_scores)) for t in teams]
+        all_time_scores = [
+            t.time_scores + [0] * (8 - len(t.time_scores)) for t in teams
+        ]
 
-        min_time_scores = [min(map(lambda s: s or math.inf, l))
-                           for l in zip(*all_time_scores)]
+        min_time_scores = [
+            min(map(lambda s: s or math.inf, l)) for l in zip(*all_time_scores)
+        ]
 
         def calc_time_score(_):
             i, s = _
@@ -40,15 +46,33 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
                 return (s - 1 if c2 else s) * -8
             return abs(s) * 4
 
-        uniform_scores = {t.id: [
-            list(map(calc_time_score, enumerate(t.time_scores))),
-            list(map(calc_question_scores, [
-                 (t.card1 == i + 1, s) for i, s in enumerate(t.question_scores)])),
-            list(map(calc_pukes, [(t.card3 == i + 1, s)
-                 for i, s in enumerate(t.pukes)])),
-            list(map(calc_skips, [(t.card2 == i + 1, s)
-                 for i, s in enumerate(t.skips)]))
-        ] for t in teams}
+        uniform_scores = {
+            t.id: [
+                list(map(calc_time_score, enumerate(t.time_scores))),
+                list(
+                    map(
+                        calc_question_scores,
+                        [
+                            (t.card1 == i + 1, s)
+                            for i, s in enumerate(t.question_scores)
+                        ],
+                    )
+                ),
+                list(
+                    map(
+                        calc_pukes,
+                        [(t.card3 == i + 1, s) for i, s in enumerate(t.pukes)],
+                    )
+                ),
+                list(
+                    map(
+                        calc_skips,
+                        [(t.card2 == i + 1, s) for i, s in enumerate(t.skips)],
+                    )
+                ),
+            ]
+            for t in teams
+        }
 
         def calc_total(scores):
             return sum(sum(l) for l in scores)
@@ -56,8 +80,8 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         teams.sort(key=lambda t: (-calc_total(uniform_scores[t.id]), t.name))
 
         for i, team in enumerate(teams):
-            setattr(team, 'total', int(calc_total(uniform_scores[team.id])))
-            setattr(team, 'classification', i + 1)
+            setattr(team, "total", int(calc_total(uniform_scores[team.id])))
+            setattr(team, "classification", i + 1)
             db.add(team)
         db.commit()
 
@@ -118,7 +142,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         pity = len(team.times) == 7
         chance = random.random() > 0.6
         if chance or pity:
-            for card in random.sample(('card1', 'card2', 'card3'), 3):
+            for card in random.sample(("card1", "card2", "card3"), 3):
                 if getattr(team, card) == -1:
                     setattr(team, card, 0)
                     if chance:
@@ -130,11 +154,14 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         db.refresh(team)
         return team
 
-    def activate_cards(self, db: Session, team: Team, checkpoint_id: int, obj_in: StaffCardsTeamUpdate) -> Team:
+    def activate_cards(
+        self, db: Session, team: Team, checkpoint_id: int, obj_in: StaffCardsTeamUpdate
+    ) -> Team:
         # can only activate after scores have been done
         if len(team.times) != checkpoint_id:
             raise APIException(
-                status_code=400, detail="Checkpoint not in order, or already passed")
+                status_code=400, detail="Checkpoint not in order, or already passed"
+            )
 
         # question pass
         if obj_in.card1:

@@ -15,14 +15,15 @@ from app.schemas.user import TokenData
 
 # to get a string like this run:
 # openssl rand -hex 32
-SECRET_KEY = os.getenv("SECRET_KEY", "4bd9e1c86c459885f0f0be7a1ce5aba0c8765359a65d7c0080f12e775f5e61b1")
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "4bd9e1c86c459885f0f0be7a1ce5aba0c8765359a65d7c0080f12e775f5e61b1"
+)
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60*24
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 
 def get_db() -> Generator:
     db = SessionLocal()
-    db.curr_user_id = None
     try:
         yield db
     finally:
@@ -48,10 +49,10 @@ def get_user(db, username: str) -> Optional[User]:
 
 def authenticate_user(db: Session, username: str, password: str) -> Optional[User]:
     user = get_user(db, username)
-    if not user:
-        return
+    if user is None:
+        return None
     if not verify_password(password, user.hashed_password):
-        return
+        return None
     return user
 
 
@@ -66,7 +67,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def get_current_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -74,12 +77,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
+        username: Optional[str] = payload.get("sub")
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
+
     user = get_user(db, username=token_data.username)
     if user is None:
         raise credentials_exception
