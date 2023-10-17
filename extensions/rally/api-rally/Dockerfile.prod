@@ -2,13 +2,18 @@ FROM python:3.10-slim as requirements-stage
 
 WORKDIR /tmp
 
-RUN pip install --upgrade pip \
-    pip install --upgrade poetry
+# Bundle multiple commands in order to produce fewer layers
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libpq-dev gcc \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install poetry
 
 COPY ./pyproject.toml ./poetry.lock* /tmp/
 
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main \
+    && pip install --target=/opt/dependencies --no-compile --no-cache-dir -r requirements.txt
 
+# Runtime stage
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.10-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -16,17 +21,12 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /api_rally
 
-COPY --from=requirements-stage /tmp/requirements.txt requirements.txt
+RUN mkdir static
 
-RUN apt-get update \
-    && apt-get -y install libpq-dev gcc
-
-RUN pip install --upgrade pip \
-    && pip install --no-cache-dir --upgrade -r requirements.txt
+COPY --from=requirements-stage /opt/dependencies /opt/dependencies
+ENV PYTHONPATH="${PYTHONPATH}:/opt/dependencies"
 
 COPY ./app ./app
-
-RUN mkdir static
 
 EXPOSE 8003
 CMD gunicorn app.main:app --bind 0.0.0.0:8003 -k uvicorn.workers.UvicornWorker --forwarded-allow-ips="*"
