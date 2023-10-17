@@ -32,6 +32,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             for field in jsonable_encoder(db_obj):
                 if field in update_data:
                     setattr(db_obj, field, update_data[field])
+            db.commit()
         return db_obj
 
 

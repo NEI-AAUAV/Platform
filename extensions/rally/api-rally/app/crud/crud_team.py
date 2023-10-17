@@ -1,6 +1,6 @@
 import math
 import random
-from typing import List
+from typing import List, Sequence
 from datetime import datetime
 
 from sqlalchemy.orm import Session
@@ -25,9 +25,7 @@ locked_arrays = [
 
 
 class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
-    def update_classification_unlocked(self, db: Session) -> None:
-        teams = list(self.get_multi(db=db, for_update=True))
-
+    def calculate_min_time_scores(self, teams: Sequence[Team]) -> List[float]:
         all_time_scores = [
             t.time_scores + [0] * (8 - len(t.time_scores)) for t in teams
         ]
@@ -37,6 +35,11 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
             for scores in zip(*all_time_scores)
         ]
 
+        return min_time_scores
+
+    def calculate_checkpoint_score(
+        self, checkpoint: int, *, team: Team, min_time_scores: List[float]
+    ):
         def calc_time_score(checkpoint: int, score: int) -> int:
             return int(min_time_scores[checkpoint] / score * 10) if score != 0 else 0
 
@@ -51,22 +54,27 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
                 return (skips - 1 if used_card else skips) * -8
             return abs(skips) * 4
 
-        for t in teams:
-            total_score = sum(
-                calc_time_score(i, s) for i, s in enumerate(t.time_scores)
+        return (
+            calc_time_score(checkpoint, team.time_scores[checkpoint])
+            + calc_question_scores(
+                team.card1 == checkpoint + 1, team.question_scores[checkpoint]
             )
-            total_score += sum(
-                calc_question_scores(t.card1 == i + 1, c)
-                for i, c in enumerate(t.question_scores)
-            )
-            total_score += sum(
-                calc_skips(t.card2 == i + 1, s) for i, s in enumerate(t.skips)
-            )
-            total_score += sum(
-                calc_pukes(t.card3 == i + 1, p) for i, p in enumerate(t.pukes)
-            )
+            + calc_skips(team.card2 == checkpoint + 1, team.skips[checkpoint])
+            + calc_pukes(team.card3 == checkpoint + 1, team.pukes[checkpoint])
+        )
 
-            t.total = total_score
+    def update_classification_unlocked(self, db: Session):
+        teams = list(self.get_multi(db=db, for_update=True))
+
+        min_time_scores = self.calculate_min_time_scores(teams)
+
+        for t in teams:
+            t.total = sum(
+                self.calculate_checkpoint_score(
+                    i, team=t, min_time_scores=min_time_scores
+                )
+                for i in range(len(t.times))
+            )
 
         teams.sort(key=lambda t: (-t.total, t.name))
 
@@ -74,9 +82,10 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
             team.classification = i + 1
             db.add(team)
 
-    def update_classification(self, db: Session) -> None:
+    def update_classification(self, db: Session):
         with db.begin_nested():
             self.update_classification_unlocked(db)
+            db.commit()
 
     def create(self, db: Session, *, obj_in: TeamCreate) -> Team:
         team = super().create(db, obj_in=obj_in)
@@ -100,39 +109,42 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
                 last_size = size
 
             team = super().update_unlocked(db_obj=team, obj_in=obj_in)
+            db.commit()
 
         self.update_classification(db=db)
         db.refresh(team)
         return team
 
     def add_checkpoint(
-        self, db: Session, team: Team, checkpoint_id: int, obj_in: StaffScoresTeamUpdate
+        self, db: Session, *, id: int, checkpoint_id: int, obj_in: StaffScoresTeamUpdate
     ) -> Team:
-        time = datetime.now()
-        # can only update when no scores have been done
-        if len(team.times) != checkpoint_id - 1:
-            raise APIException(
-                status_code=400, detail="Checkpoint not in order, or already passed"
-            )
+        with db.begin_nested():
+            team = self.get(db=db, id=id, for_update=True)
 
-        team.question_scores.append(obj_in.question_score)
-        team.time_scores.append(obj_in.time_score)
-        team.pukes.append(obj_in.pukes)
-        team.skips.append(obj_in.skips)
-        team.times.append(time)
+            time = datetime.now()
+            # can only update when no scores have been done
+            if len(team.times) != checkpoint_id - 1:
+                raise APIException(
+                    status_code=400, detail="Checkpoint not in order, or already passed"
+                )
 
-        # add cards randomly
-        pity = len(team.times) == 7
-        chance = random.random() > 0.6
-        if chance or pity:
-            for card in random.sample(("card1", "card2", "card3"), 3):
-                if getattr(team, card) == -1:
-                    setattr(team, card, 0)
-                    if chance:
-                        break
+            team.question_scores.append(obj_in.question_score)
+            team.time_scores.append(obj_in.time_score)
+            team.pukes.append(obj_in.pukes)
+            team.skips.append(obj_in.skips)
+            team.times.append(time)
 
-        db.add(team)
-        db.commit()
+            # add cards randomly
+            pity = len(team.times) == 7
+            chance = random.random() > 0.6
+            if chance or pity:
+                for card in random.sample(("card1", "card2", "card3"), 3):
+                    if getattr(team, card) == -1:
+                        setattr(team, card, 0)
+                        if chance:
+                            break
+
+            db.commit()
         self.update_classification(db=db)
         db.refresh(team)
         return team
@@ -178,6 +190,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
             team = self.activate_cards_unlocked(
                 team=team, checkpoint_id=checkpoint_id, obj_in=obj_in
             )
+            db.commit()
         self.update_classification(db=db)
         db.refresh(team)
         return team

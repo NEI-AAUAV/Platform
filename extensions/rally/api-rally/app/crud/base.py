@@ -64,6 +64,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         with db.begin_nested():
             db_obj = self.get(db, id=id, for_update=True)
             db_obj = self.update_unlocked(db_obj=db_obj, obj_in=obj_in)
+            db.commit()
         return db_obj
 
     def remove(self, db: Session, *, id: int) -> ModelType:
