@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from app import crud
 from app.api import deps
 from app.exception import NotFoundException
-from app.schemas.user import StaffUserInDB, UserInDB
-from app.schemas.team import TeamMeInDB
+from app.schemas.user import StaffUserInDB, DetailedUser
+from app.schemas.team import ListingTeam
 from app.schemas.checkpoint import CheckPointInDB
 
 
@@ -23,7 +23,7 @@ def get_checkpoints(*, db: Session = Depends(deps.get_db)) -> Any:
 def get_next_checkpoint(
     *,
     db: Session = Depends(deps.get_db),
-    curr_user: UserInDB = Depends(deps.get_participant)
+    curr_user: DetailedUser = Depends(deps.get_participant)
 ) -> Any:
     """Return the next checkpoint a team must head to."""
     if curr_user.team_id is None:
@@ -37,7 +37,7 @@ def get_next_checkpoint(
     return checkpoint
 
 
-@router.get("/teams", status_code=200, response_model=List[TeamMeInDB])
+@router.get("/teams", status_code=200, response_model=List[ListingTeam])
 def get_checkpoint_teams(
     *,
     db: Session = Depends(deps.get_db),

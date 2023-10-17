@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app import crud
 from app.api import deps
-from app.schemas.user import UserUpdate, UserInDB, AdminUserInDB
+from app.schemas.user import UserUpdate, DetailedUser, AdminUserInDB
 
 router = APIRouter()
 
@@ -40,18 +40,18 @@ async def login(
 async def get_users(
     *,
     db: Session = Depends(deps.get_db),
-    admin_user: UserInDB = Depends(deps.get_admin)
+    admin_user: DetailedUser = Depends(deps.get_admin)
 ):
     return crud.user.get_multi(db=db)
 
 
-@router.put("/{id}", response_model=UserInDB)
+@router.put("/{id}", response_model=DetailedUser)
 async def create_user(
     *,
     db: Session = Depends(deps.get_db),
     id: int,
     obj_in: UserUpdate,
-    admin_user: UserInDB = Depends(deps.get_admin)
+    admin_user: DetailedUser = Depends(deps.get_admin)
 ):
     if obj_in.team_id:
         team = crud.team.get(db=db, id=obj_in.team_id)

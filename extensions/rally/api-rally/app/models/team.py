@@ -11,7 +11,7 @@ from app.models.user import User
 
 class Team(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str]
+    name: Mapped[str] = mapped_column(unique=True)
 
     question_scores: Mapped[List[bool]] = mapped_column(
         MutableList.as_mutable(ARRAY(Boolean)), default=[]

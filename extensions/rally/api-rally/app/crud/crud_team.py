@@ -2,6 +2,8 @@ import math
 import random
 from typing import List, Sequence
 from datetime import datetime
+from fastapi import HTTPException
+from sqlalchemy.exc import IntegrityError
 
 from sqlalchemy.orm import Session
 
@@ -11,8 +13,8 @@ from app.models.team import Team
 from app.schemas.team import (
     TeamCreate,
     TeamUpdate,
-    StaffScoresTeamUpdate,
-    StaffCardsTeamUpdate,
+    TeamScoresUpdate,
+    TeamCardsUpdate,
 )
 
 locked_arrays = [
@@ -88,7 +90,19 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
             db.commit()
 
     def create(self, db: Session, *, obj_in: TeamCreate) -> Team:
-        team = super().create(db, obj_in=obj_in)
+        try:
+            team = super().create(db, obj_in=obj_in)
+        except IntegrityError as e:
+            db.rollback()
+
+            if e.orig is None:
+                raise
+
+            if "Key (name)=(string) already exists" in str(e.orig):
+                raise HTTPException(status_code=400, detail="Team name already exists")
+
+            raise
+
         self.update_classification(db=db)
         db.refresh(team)
         return team
@@ -116,7 +130,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         return team
 
     def add_checkpoint(
-        self, db: Session, *, id: int, checkpoint_id: int, obj_in: StaffScoresTeamUpdate
+        self, db: Session, *, id: int, checkpoint_id: int, obj_in: TeamScoresUpdate
     ) -> Team:
         with db.begin_nested():
             team = self.get(db=db, id=id, for_update=True)
@@ -150,7 +164,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         return team
 
     def activate_cards_unlocked(
-        self, *, team: Team, checkpoint_id: int, obj_in: StaffCardsTeamUpdate
+        self, *, team: Team, checkpoint_id: int, obj_in: TeamCardsUpdate
     ) -> Team:
         # can only activate after scores have been done
         if len(team.times) != checkpoint_id:
@@ -183,7 +197,7 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         return team
 
     def activate_cards(
-        self, db: Session, *, id: int, checkpoint_id: int, obj_in: StaffCardsTeamUpdate
+        self, db: Session, *, id: int, checkpoint_id: int, obj_in: TeamCardsUpdate
     ) -> Team:
         with db.begin_nested():
             team = self.get(db=db, id=id, for_update=True)

@@ -32,14 +32,21 @@ class UserUpdate(UserBase):
     password: Optional[str] = None
 
 
-class UserInDB(UserBase):
+class ListingUser(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     name: str
 
 
-class StaffUserInDB(UserInDB):
+class DetailedUser(UserBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+
+
+class StaffUserInDB(DetailedUser):
     is_admin: bool
     staff_checkpoint_id: int
 

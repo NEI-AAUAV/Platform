@@ -3,14 +3,10 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from .user import UserInDB
+from .user import ListingUser
 
 
-class TeamBase(BaseModel):
-    name: Optional[str] = None
-
-
-class TeamListing(BaseModel):
+class ListingTeam(BaseModel):
     """
     The schema returned when listing multiple teams
     """
@@ -23,22 +19,7 @@ class TeamListing(BaseModel):
     last_checkpoint_score: Optional[int] = None
 
 
-class TeamCreate(TeamBase):
-    name: str
-
-
-class TeamUpdate(TeamBase):
-    question_scores: Optional[List[bool]] = None
-    time_scores: Optional[List[int]] = None
-    times: Optional[List[datetime]] = None
-    pukes: Optional[List[int]] = None
-    skips: Optional[List[int]] = None
-    card1: Optional[int] = None
-    card2: Optional[int] = None
-    card3: Optional[int] = None
-
-
-class TeamInDB(TeamBase):
+class DetailedTeam(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -50,25 +31,41 @@ class TeamInDB(TeamBase):
     skips: List[int]
     total: int
     classification: int
-    members: List[UserInDB]
-
-
-class TeamMeInDB(TeamInDB):
     card1: int
     card2: int
     card3: int
+    members: List[ListingUser]
 
 
-class StaffScoresTeamUpdate(BaseModel):
-    skips: int = 0
-    question_score: bool = False
-    time_score: Annotated[int, Field(strict=True, ge=0)] = 0
-    pukes: Annotated[int, Field(strict=True, ge=0)] = 0
+class TeamCreate(BaseModel):
+    name: str
+
+
+class TeamUpdate(BaseModel):
+    name: Optional[str] = None
+    question_scores: Optional[List[bool]] = None
+    time_scores: Optional[List[int]] = None
+    times: Optional[List[datetime]] = None
+    pukes: Optional[List[int]] = None
+    skips: Optional[List[int]] = None
+    card1: Optional[int] = None
+    card2: Optional[int] = None
+    card3: Optional[int] = None
+
+
+class AdminCheckPointSelect(BaseModel):
     # For admin's only
     checkpoint_id: Optional[int] = None
 
 
-class StaffCardsTeamUpdate(BaseModel):
+class TeamScoresUpdate(AdminCheckPointSelect):
+    skips: int = 0
+    question_score: bool = False
+    time_score: Annotated[int, Field(strict=True, ge=0)] = 0
+    pukes: Annotated[int, Field(strict=True, ge=0)] = 0
+
+
+class TeamCardsUpdate(AdminCheckPointSelect):
     card1: Optional[bool] = None
     card2: Optional[bool] = None
     card3: Optional[bool] = None

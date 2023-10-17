@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from app.models import Team, User
 from app.core.config import settings
-from app.schemas.team import StaffScoresTeamUpdate
+from app.schemas.team import TeamScoresUpdate
 from app.tests.conftest import Session
 
 team = [
@@ -52,7 +52,7 @@ def test_add_checkpoint(client: TestClient, db: Session) -> None:
 
     r = client.put(
         f"{settings.API_V1_STR}/team/{id}/checkpoint",
-        json=StaffScoresTeamUpdate(question_score=True).model_dump(),
+        json=TeamScoresUpdate(question_score=True).model_dump(),
     )
     data = r.json()
     assert r.status_code == 201
