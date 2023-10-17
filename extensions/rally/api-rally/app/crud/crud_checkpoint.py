@@ -10,7 +10,7 @@ from app.schemas.checkpoint import CheckPointCreate, CheckPointUpdate
 
 class CRUDCheckPoint(CRUDBase[CheckPoint, CheckPointCreate, CheckPointUpdate]):
     def get_next(self, db: Session, team_id: int) -> Optional[CheckPoint]:
-        team = db.query(Team).get(team_id)
+        team = db.get(Team, team_id)
 
         if team is not None:
             index = len(team.times) + 1

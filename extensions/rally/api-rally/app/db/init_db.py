@@ -20,9 +20,8 @@ def init_db() -> None:
     all_schemas = inspector.get_schema_names()
     for schema in Base.metadata._schemas:
         if schema not in all_schemas:
-            with engine.connect() as connection:
+            with engine.begin() as connection:
                 connection.execute(CreateSchema(schema))
-                connection.commit()
 
     Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)
