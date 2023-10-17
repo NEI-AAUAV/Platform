@@ -10,6 +10,17 @@ class TeamBase(BaseModel):
     name: Optional[str] = None
 
 
+class TeamListing(BaseModel):
+    """
+    The schema returned when listing multiple teams
+    """
+
+    id: int
+    name: str
+    total: int
+    classification: int
+
+
 class TeamCreate(TeamBase):
     name: str
 

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import TypeAdapter
 from sqlalchemy.orm import Session
 from typing import Any, List
 
@@ -7,6 +8,7 @@ from app.api import deps
 from app.schemas.user import AdminUserInDB, StaffUserInDB, UserInDB
 from app.schemas.team import (
     TeamCreate,
+    TeamListing,
     TeamUpdate,
     TeamInDB,
     TeamMeInDB,
@@ -17,9 +19,11 @@ from app.schemas.team import (
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=List[TeamInDB])
-def get_teams(*, db: Session = Depends(deps.get_db)) -> Any:
-    return crud.team.get_multi(db)
+@router.get("/", status_code=200)
+def get_teams(*, db: Session = Depends(deps.get_db)) -> List[TeamListing]:
+    teams = crud.team.get_multi(db)
+    TeamListAdapter = TypeAdapter(List[TeamListing])
+    return TeamListAdapter.validate_python(teams)
 
 
 @router.put("/{id}/checkpoint", status_code=201, response_model=TeamMeInDB)
@@ -45,10 +49,8 @@ def activate_cards(
     obj_in: StaffCardsTeamUpdate,
     staff_user: StaffUserInDB = Depends(deps.get_staff)
 ) -> Any:
-    team = crud.team.get(db=db, id=id)
-
     return crud.team.activate_cards(
-        db=db, team=team, checkpoint_id=staff_user.staff_checkpoint_id, obj_in=obj_in
+        db, id=id, checkpoint_id=staff_user.staff_checkpoint_id, obj_in=obj_in
     )
 
 
