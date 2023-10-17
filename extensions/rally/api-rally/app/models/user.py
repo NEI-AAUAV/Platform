@@ -1,17 +1,21 @@
-from sqlalchemy import String, Column, Integer, Boolean, ForeignKey
+from typing import Optional
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import mapped_column, Mapped
 
+from app.models.base import Base
 from app.core.config import settings
-from app.db.base_class import Base
 
 
 class User(Base):
-    __tablename__ = "user"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String, unique=True)
-    name = Column(String)
-    team_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".team.id"), nullable=True)
-    staff_checkpoint_id = Column(Integer, ForeignKey(settings.SCHEMA_NAME + ".checkpoint.id"), nullable=True)
-    is_admin = Column(Boolean, default=False)
-    disabled = Column(Boolean, default=False)
-    hashed_password = Column(String)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(unique=True)
+    name: Mapped[str]
+    team_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey(f"{settings.SCHEMA_NAME}.team.id")
+    )
+    staff_checkpoint_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey(f"{settings.SCHEMA_NAME}.check_point.id")
+    )
+    is_admin: Mapped[bool] = mapped_column(default=False)
+    disabled: Mapped[bool] = mapped_column(default=False)
+    hashed_password: Mapped[str]

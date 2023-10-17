@@ -1,10 +1,9 @@
-from sqlalchemy.schema import CreateSchema, DropSchema
-from sqlalchemy import event
+from sqlalchemy.schema import CreateSchema
+from sqlalchemy import inspect
 
 from app.core.config import settings
-from .base import Base
+from app.models.base import Base
 from .session import engine
-
 
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
@@ -17,8 +16,13 @@ def init_db() -> None:
     # But if you don't want to use migrations, create
     # the tables with Base.metadata.create_all(bind=engine)
 
-    if not engine.dialect.has_schema(engine, schema=settings.SCHEMA_NAME):
-        engine.execute(CreateSchema(settings.SCHEMA_NAME))
+    inspector = inspect(engine)
+    all_schemas = inspector.get_schema_names()
+    for schema in Base.metadata._schemas:
+        if schema not in all_schemas:
+            with engine.connect() as connection:
+                connection.execute(CreateSchema(schema))
+                connection.commit()
 
     Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)

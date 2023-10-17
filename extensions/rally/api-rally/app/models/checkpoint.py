@@ -1,13 +1,10 @@
-from sqlalchemy import String, Column, ARRAY, DateTime, Integer
-from typing import Union
-from sqlalchemy.ext.mutable import MutableList
-from app.db.base_class import Base
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.models.base import Base
 
 
 class CheckPoint(Base):
-    __tablename__ = "checkpoint"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    shot_name = Column(String)
-    description = Column(String)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    shot_name: Mapped[str]
+    description: Mapped[str]

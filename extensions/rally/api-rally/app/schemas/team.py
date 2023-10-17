@@ -1,33 +1,35 @@
-from typing import Optional, List, Any, Union
+from typing import Optional, List, Annotated
 from datetime import datetime
 
-from pydantic import BaseModel, conint
+from pydantic import BaseModel, ConfigDict, Field
 
 from .user import UserInDB
 
 
 class TeamBase(BaseModel):
-    name: str
+    name: Optional[str] = None
 
 
 class TeamCreate(TeamBase):
-    ...
+    name: str
 
 
 class TeamUpdate(TeamBase):
-    name: Optional[str]
-    question_scores: Optional[List[bool]]
-    time_scores: Optional[List[int]]
-    times: Optional[List[datetime]]
-    pukes: Optional[List[int]]
-    skips: Optional[List[int]]
-    card1: Optional[int]
-    card2: Optional[int]
-    card3: Optional[int]
+    question_scores: Optional[List[bool]] = None
+    time_scores: Optional[List[int]] = None
+    times: Optional[List[datetime]] = None
+    pukes: Optional[List[int]] = None
+    skips: Optional[List[int]] = None
+    card1: Optional[int] = None
+    card2: Optional[int] = None
+    card3: Optional[int] = None
 
 
 class TeamInDB(TeamBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
+    name: str
     question_scores: List[bool]
     time_scores: List[int]
     times: List[datetime]
@@ -36,9 +38,6 @@ class TeamInDB(TeamBase):
     total: int
     classification: int
     members: List[UserInDB]
-
-    class Config:
-        orm_mode = True
 
 
 class TeamMeInDB(TeamInDB):
@@ -49,12 +48,12 @@ class TeamMeInDB(TeamInDB):
 
 class StaffScoresTeamUpdate(BaseModel):
     question_score: bool = False
-    time_score: conint(ge=0) = 0
-    pukes: conint(ge=0) = 0
+    time_score: Annotated[int, Field(strict=True, ge=0)] = 0
+    pukes: Annotated[int, Field(strict=True, ge=0)] = 0
     skips: int = 0
 
 
 class StaffCardsTeamUpdate(BaseModel):
-    card1: Optional[bool]
-    card2: Optional[bool]
-    card3: Optional[bool]
+    card1: Optional[bool] = None
+    card2: Optional[bool] = None
+    card3: Optional[bool] = None

@@ -1,6 +1,4 @@
-from pydantic import BaseModel
-from typing import Optional, List, Union
-from datetime import datetime
+from pydantic import BaseModel, ConfigDict
 
 
 class CheckPointBase(BaseModel):
@@ -13,8 +11,11 @@ class CheckPointCreate(CheckPointBase):
     id: int
 
 
-class CheckPointInDB(CheckPointBase):
-    id: int
+class CheckPointUpdate(BaseModel):
+    pass
 
-    class Config:
-        orm_mode = True
+
+class CheckPointInDB(CheckPointBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int

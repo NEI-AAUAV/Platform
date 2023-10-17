@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Literal, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class Token(BaseModel):
@@ -9,38 +9,43 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: Optional[str] = None
+    username: str
 
 
 class UserBase(BaseModel):
-    team_id: Optional[int]
-    name: str
+    name: Optional[str] = None
+    team_id: Optional[int] = None
 
 
 class UserCreate(UserBase):
-    username: Optional[str]
-    staff_checkpoint_id: int = None
+    name: str
+    username: Optional[str] = None
+    staff_checkpoint_id: Optional[int] = None
     is_admin: bool = False
     password: str
 
 
 class UserUpdate(UserBase):
-    name: Optional[str]
-    username: Optional[str]
-    staff_checkpoint_id: Optional[int]
-    is_admin: Optional[bool]
-    password: Optional[str]
+    username: Optional[str] = None
+    staff_checkpoint_id: Optional[int] = None
+    is_admin: Optional[bool] = None
+    password: Optional[str] = None
 
 
 class UserInDB(UserBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
-
-    class Config:
-        orm_mode = True
+    name: str
 
 
-class AdminUserInDB(UserInDB):
-    username: Optional[str]
-    staff_checkpoint_id: int = None
-    is_admin: bool = False
+class StaffUserInDB(UserInDB):
+    is_admin: bool
+    staff_checkpoint_id: int
+
+
+class AdminUserInDB(StaffUserInDB):
+    name: str
+    is_admin: Literal[True]
+    username: Optional[str] = None
     hashed_password: str

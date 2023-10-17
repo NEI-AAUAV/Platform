@@ -67,29 +67,46 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         db.refresh(team)
         return team
 
-    def update(self, db: Session, *, id: int, obj_in: Union[TeamUpdate, Dict[str, Any]]) -> Team:
+    def update(
+        self, db: Session, *, id: int, obj_in: Union[TeamUpdate, Dict[str, Any]]
+    ) -> Team:
         team = self.get(db=db, id=id)
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
-            update_data = obj_in.dict(exclude_unset=True)
+            update_data = obj_in.model_dump(exclude_unset=True)
 
-        if (len({len(update_data.get(key) or getattr(team, key)) for key in
-                 ('times', 'question_scores', 'time_scores', 'pukes', 'skips')}) != 1):
-            raise APIException(
-                status_code=400, detail="Lists must have the same size")
+        if (
+            len(
+                {
+                    len(update_data.get(key) or getattr(team, key))
+                    for key in (
+                        "times",
+                        "question_scores",
+                        "time_scores",
+                        "pukes",
+                        "skips",
+                    )
+                }
+            )
+            != 1
+        ):
+            raise APIException(status_code=400, detail="Lists must have the same size")
 
         team = super().update(db, id=id, obj_in=obj_in)
         self.update_classification(db=db)
         db.refresh(team)
         return team
 
-    def add_checkpoint(self, db: Session, team: Team, checkpoint_id: int, obj_in: StaffScoresTeamUpdate) -> Team:
+    def add_checkpoint(
+        self, db: Session, team: Team, checkpoint_id: int, obj_in: StaffScoresTeamUpdate
+    ) -> Team:
         time = datetime.now()
         # can only update when no scores have been done
         if len(team.times) != checkpoint_id - 1:
             raise APIException(
-                status_code=400, detail="Checkpoint not in order, or already passed")
+                status_code=400, detail="Checkpoint not in order, or already passed"
+            )
 
         team.question_scores.append(obj_in.question_score)
         team.time_scores.append(obj_in.time_score)
