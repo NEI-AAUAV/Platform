@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import TypeAdapter
-from sqlalchemy.orm import Session
+import math
 from typing import Any, List
+from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException
 
 from app import crud
 from app.api import deps
+from app.models.team import Team
 from app.schemas.user import AdminUserInDB, StaffUserInDB, UserInDB
 from app.schemas.team import (
     TeamCreate,
@@ -22,8 +23,27 @@ router = APIRouter()
 @router.get("/", status_code=200)
 def get_teams(*, db: Session = Depends(deps.get_db)) -> List[TeamListing]:
     teams = crud.team.get_multi(db)
-    TeamListAdapter = TypeAdapter(List[TeamListing])
-    return TeamListAdapter.validate_python(teams)
+
+    min_time_scores = crud.team.calculate_min_time_scores(teams)
+
+    def build_listing(team: Team) -> TeamListing:
+        listing = TeamListing(
+            id=team.id,
+            name=team.name,
+            total=team.total,
+            classification=team.classification,
+        )
+
+        last_checkpoint = len(team.times) - 1 if len(team.times) > 0 else None
+        if last_checkpoint is not None:
+            listing.last_checkpoint_time = team.times[last_checkpoint]
+            listing.last_checkpoint_score = crud.team.calculate_checkpoint_score(
+                last_checkpoint, team=team, min_time_scores=min_time_scores
+            )
+
+        return listing
+
+    return list(map(build_listing, teams))
 
 
 @router.put("/{id}/checkpoint", status_code=201, response_model=TeamMeInDB)

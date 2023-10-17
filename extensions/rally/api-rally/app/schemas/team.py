@@ -19,6 +19,8 @@ class TeamListing(BaseModel):
     name: str
     total: int
     classification: int
+    last_checkpoint_time: Optional[datetime] = None
+    last_checkpoint_score: Optional[int] = None
 
 
 class TeamCreate(TeamBase):
