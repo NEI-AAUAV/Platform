@@ -1,13 +1,11 @@
 from typing import List
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 
 from app import crud
 from app.api import deps
-from app.models.team import Team
 from app.schemas.user import AdminUser, DetailedUser
 from app.schemas.team import (
-    AdminCheckPointSelect,
     TeamCreate,
     ListingTeam,
     TeamUpdate,
@@ -16,50 +14,15 @@ from app.schemas.team import (
     TeamCardsUpdate,
 )
 
+from ._deps import get_checkpoint_id
+
 router = APIRouter()
 
 
 @router.get("/", status_code=200)
 def get_teams(*, db: Session = Depends(deps.get_db)) -> List[ListingTeam]:
     teams = crud.team.get_multi(db)
-
-    min_time_scores = crud.team.calculate_min_time_scores(teams)
-
-    def build_listing(team: Team) -> ListingTeam:
-        listing = ListingTeam(
-            id=team.id,
-            name=team.name,
-            total=team.total,
-            classification=team.classification,
-        )
-
-        last_checkpoint = len(team.times) - 1 if len(team.times) > 0 else None
-        if last_checkpoint is not None:
-            listing.last_checkpoint_time = team.times[last_checkpoint]
-            listing.last_checkpoint_score = crud.team.calculate_checkpoint_score(
-                last_checkpoint, team=team, min_time_scores=min_time_scores
-            )
-
-        return listing
-
-    return list(map(build_listing, teams))
-
-
-def _checkpoint_id(user: DetailedUser, form: AdminCheckPointSelect) -> int:
-    checkpoint_id = form.checkpoint_id
-
-    if checkpoint_id is None:
-        if user.staff_checkpoint_id is None:
-            raise HTTPException(
-                status_code=400, detail="Admin doesn't have a default checkpoint"
-            )
-        checkpoint_id = user.staff_checkpoint_id
-    elif not user.is_admin and checkpoint_id != user.staff_checkpoint_id:
-        raise HTTPException(
-            status_code=401, detail="Only admins can specify the checkpoint"
-        )
-
-    return checkpoint_id
+    return crud.team.convert_to_listing(teams)
 
 
 @router.put("/{id}/checkpoint", status_code=201)
@@ -70,7 +33,7 @@ def add_checkpoint(
     obj_in: TeamScoresUpdate,
     staff_user: DetailedUser = Depends(deps.get_admin_or_staff)
 ) -> DetailedTeam:
-    checkpoint_id = _checkpoint_id(staff_user, obj_in)
+    checkpoint_id = get_checkpoint_id(staff_user, obj_in)
     team_db = crud.team.add_checkpoint(
         db=db,
         id=id,
@@ -88,7 +51,7 @@ def activate_cards(
     obj_in: TeamCardsUpdate,
     staff_user: DetailedUser = Depends(deps.get_admin_or_staff)
 ) -> DetailedTeam:
-    checkpoint_id = _checkpoint_id(staff_user, obj_in)
+    checkpoint_id = get_checkpoint_id(staff_user, obj_in)
     team_db = crud.team.activate_cards(
         db, id=id, checkpoint_id=checkpoint_id, obj_in=obj_in
     )

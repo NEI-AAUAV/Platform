@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from app import crud
 from app.db.session import SessionLocal
 from app.models.user import User
-from app.schemas.user import AdminUser, DetailedUser, StaffUser
+from app.schemas.user import AdminUser, DetailedUser
 
 
 # to get a string like this run:
@@ -96,12 +96,6 @@ async def get_participant(
     if curr_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return curr_user
-
-
-async def get_staff(curr_user: DetailedUser = Depends(get_participant)) -> StaffUser:
-    if not curr_user.staff_checkpoint_id:
-        raise HTTPException(status_code=401, detail="User without staff permissions")
-    return StaffUser.model_validate(curr_user)
 
 
 async def get_admin(curr_user: DetailedUser = Depends(get_participant)) -> AdminUser:

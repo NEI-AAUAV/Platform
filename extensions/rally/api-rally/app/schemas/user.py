@@ -52,9 +52,5 @@ class AdminListingUser(DetailedUser):
     username: str
 
 
-class StaffUser(DetailedUser):
-    staff_checkpoint_id: int
-
-
 class AdminUser(DetailedUser):
     is_admin: Literal[True]

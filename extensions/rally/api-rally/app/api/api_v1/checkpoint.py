@@ -1,30 +1,35 @@
-from typing import Any, List
+from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import TypeAdapter
 from sqlalchemy.orm import Session
 
 from app import crud
 from app.api import deps
 from app.exception import NotFoundException
-from app.schemas.user import StaffUser, DetailedUser
-from app.schemas.team import ListingTeam
-from app.schemas.checkpoint import CheckPointInDB
+from app.schemas.user import DetailedUser
+from app.schemas.team import AdminCheckPointSelect, ListingTeam
+from app.schemas.checkpoint import DetailedCheckPoint
 
+from ._deps import get_checkpoint_id
 
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=List[CheckPointInDB])
-def get_checkpoints(*, db: Session = Depends(deps.get_db)) -> Any:
-    return crud.checkpoint.get_multi(db=db)
+@router.get("/", status_code=200)
+def get_checkpoints(*, db: Session = Depends(deps.get_db)) -> List[DetailedCheckPoint]:
+    DetailedCheckPointListAdapter = TypeAdapter(List[DetailedCheckPoint])
+    return DetailedCheckPointListAdapter.validate_python(
+        crud.checkpoint.get_multi(db=db)
+    )
 
 
-@router.get("/me", status_code=200, response_model=CheckPointInDB)
+@router.get("/me", status_code=200)
 def get_next_checkpoint(
     *,
     db: Session = Depends(deps.get_db),
     curr_user: DetailedUser = Depends(deps.get_participant)
-) -> Any:
+) -> DetailedCheckPoint:
     """Return the next checkpoint a team must head to."""
     if curr_user.team_id is None:
         raise HTTPException(status_code=409, detail="User doesn't belong to a team")
@@ -34,23 +39,24 @@ def get_next_checkpoint(
     if checkpoint is None:
         raise NotFoundException(detail="Checkpoint Not Found")
 
-    return checkpoint
+    return DetailedCheckPoint.model_validate(checkpoint)
 
 
-@router.get("/teams", status_code=200, response_model=List[ListingTeam])
+@router.get("/teams", status_code=200)
 def get_checkpoint_teams(
     *,
     db: Session = Depends(deps.get_db),
-    admin_or_staff_user: StaffUser = Depends(deps.get_admin_or_staff)
-) -> Any:
+    select: Annotated[AdminCheckPointSelect, Depends()],
+    admin_or_staff_user: DetailedUser = Depends(deps.get_admin_or_staff)
+) -> List[ListingTeam]:
     """
     If a staff is authenticated, returned all teams that just passed
     through a staff's checkpoint.
     If an admin is authenticated, returned all teams.
     """
-    if admin_or_staff_user.is_admin:
-        return crud.team.get_multi(db)
-
-    return crud.team.get_by_checkpoint(
-        db=db, checkpoint_id=admin_or_staff_user.staff_checkpoint_id
-    )
+    if admin_or_staff_user.is_admin and select.checkpoint_id is None:
+        teams = crud.team.get_multi(db)
+    else:
+        checkpoint_id = get_checkpoint_id(admin_or_staff_user, select)
+        teams = crud.team.get_by_checkpoint(db=db, checkpoint_id=checkpoint_id)
+    return crud.team.convert_to_listing(teams)

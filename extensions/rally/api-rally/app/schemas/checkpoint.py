@@ -15,7 +15,7 @@ class CheckPointUpdate(BaseModel):
     pass
 
 
-class CheckPointInDB(CheckPointBase):
+class DetailedCheckPoint(CheckPointBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

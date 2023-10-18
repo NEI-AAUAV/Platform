@@ -3,6 +3,8 @@ import random
 from typing import List, Sequence
 from datetime import datetime
 from fastapi import HTTPException
+from sqlalchemy import func
+from sqlalchemy.dialects.postgresql.base import select
 from sqlalchemy.exc import IntegrityError
 
 from sqlalchemy.orm import Session
@@ -11,6 +13,7 @@ from app.exception import APIException, CardNotActiveException, CardEffectExcept
 from app.crud.base import CRUDBase
 from app.models.team import Team
 from app.schemas.team import (
+    ListingTeam,
     TeamCreate,
     TeamUpdate,
     TeamScoresUpdate,
@@ -213,9 +216,31 @@ class CRUDTeam(CRUDBase[Team, TeamCreate, TeamUpdate]):
         db.refresh(team)
         return team
 
-    def get_by_checkpoint(self, db: Session, checkpoint_id: int) -> List[Team]:
-        teams = self.get_multi(db=db)
-        return [t for t in teams if len(t.times) == checkpoint_id]
+    def get_by_checkpoint(self, db: Session, checkpoint_id: int) -> Sequence[Team]:
+        stmt = select(Team).where(func.cardinality(Team.times) == checkpoint_id)
+        return db.scalars(stmt).all()
+
+    def convert_to_listing(self, teams: Sequence[Team]) -> List[ListingTeam]:
+        min_time_scores = self.calculate_min_time_scores(teams)
+
+        def build_listing(team: Team) -> ListingTeam:
+            listing = ListingTeam(
+                id=team.id,
+                name=team.name,
+                total=team.total,
+                classification=team.classification,
+            )
+
+            last_checkpoint = len(team.times) - 1 if len(team.times) > 0 else None
+            if last_checkpoint is not None:
+                listing.last_checkpoint_time = team.times[last_checkpoint]
+                listing.last_checkpoint_score = self.calculate_checkpoint_score(
+                    last_checkpoint, team=team, min_time_scores=min_time_scores
+                )
+
+            return listing
+
+        return list(map(build_listing, teams))
 
 
 team = CRUDTeam(Team)
