@@ -1,6 +1,6 @@
 import pytest
 import typing
-from typing import Generator, Any
+from typing import Dict, Generator, Any
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -14,6 +14,7 @@ from app.api.deps import get_db, get_current_user
 from app.api.api import api_v1_router
 from app.core.config import settings
 from app.models import Base, User
+from app.schemas.user import DetailedUser
 
 
 # Create a PostgreSQL DB specifically for testing and
@@ -77,10 +78,17 @@ def client(
     The `db` fixture will override the `get_db` dependency that is
     injected into routes.
     """
-    user: User = typing.cast(User, getattr(request, "param", None))
+    user = getattr(request, "param", None)
 
-    def pass_trough_auth() -> User:
-        return user
+    def pass_trough_auth() -> DetailedUser:
+        if isinstance(user, DetailedUser):
+            return user
+        else:
+            data = typing.cast(Dict[str, Any], user)
+            default_user = DetailedUser(
+                id=0, name="test_user", disabled=False, is_admin=False
+            )
+            return DetailedUser(**{**default_user.model_dump(), **data})
 
     def _get_test_db():
         try:
@@ -89,7 +97,7 @@ def client(
             pass
 
     app.dependency_overrides[get_db] = _get_test_db
-    if user:
+    if user is not None:
         app.dependency_overrides[get_current_user] = pass_trough_auth
     with TestClient(app) as client:
         yield client

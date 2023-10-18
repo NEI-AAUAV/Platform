@@ -100,7 +100,7 @@ async def get_participant(
 
 async def get_admin(curr_user: DetailedUser = Depends(get_participant)) -> AdminUser:
     if not curr_user.is_admin:
-        raise HTTPException(status_code=401, detail="User without admin permissions")
+        raise HTTPException(status_code=403, detail="User without admin permissions")
     return AdminUser.model_validate(curr_user)
 
 
@@ -108,5 +108,5 @@ async def get_admin_or_staff(
     curr_user: DetailedUser = Depends(get_participant),
 ) -> DetailedUser:
     if not curr_user.is_admin and not curr_user.staff_checkpoint_id:
-        raise HTTPException(status_code=401, detail="User without permissions")
+        raise HTTPException(status_code=403, detail="User without permissions")
     return curr_user

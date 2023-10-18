@@ -45,7 +45,7 @@ class DetailedUser(UserBase):
     name: str
     disabled: bool
     is_admin: bool
-    staff_checkpoint_id: Optional[int]
+    staff_checkpoint_id: Optional[int] = None
 
 
 class AdminListingUser(DetailedUser):

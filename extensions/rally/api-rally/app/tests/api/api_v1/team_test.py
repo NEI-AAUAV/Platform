@@ -2,7 +2,7 @@ import pytest
 
 from fastapi.testclient import TestClient
 
-from app.models import Team, User
+from app.models import Team
 from app.core.config import settings
 from app.schemas.team import TeamScoresUpdate
 from app.tests.conftest import Session
@@ -28,7 +28,7 @@ def setup_database(db: Session):
 
 @pytest.mark.parametrize(
     "client",
-    [User()],
+    [{}],
     indirect=["client"],
 )
 def test_get_teams(client: TestClient) -> None:
@@ -42,7 +42,7 @@ def test_get_teams(client: TestClient) -> None:
 
 @pytest.mark.parametrize(
     "client",
-    [User(staff_checkpoint_id=1)],
+    [{"staff_checkpoint_id": 1}],
     indirect=["client"],
 )
 def test_add_checkpoint(client: TestClient, db: Session) -> None:
@@ -64,7 +64,7 @@ def test_add_checkpoint(client: TestClient, db: Session) -> None:
 
 @pytest.mark.parametrize(
     "client",
-    [User(is_admin=True)],
+    [{"is_admin": True}],
     indirect=["client"],
 )
 def test_create_team(client: TestClient) -> None:
@@ -74,12 +74,84 @@ def test_create_team(client: TestClient) -> None:
     assert data["name"] == "Test3"
 
 
+# =================
+# == UPDATE TEAM ==
+# =================
+
+
+def test_update_team_unauthenticated(client: TestClient, db: Session) -> None:
+    team = db.query(Team).first()
+    assert team is not None
+    id = team.id
+
+    r = client.put(
+        f"{settings.API_V1_STR}/team/{id}",
+        json={
+            "name": "Test1",
+            "pukes": [0],
+            "skips": [0],
+            "time_scores": [100],
+            "question_scores": [True],
+            "times": ["2021-05-01T12:00:00"],
+        },
+    )
+    assert r.status_code == 401
+
+
 @pytest.mark.parametrize(
     "client",
-    [User(is_admin=True)],
+    [{}],
     indirect=["client"],
 )
-def test_update_team(client: TestClient, db: Session) -> None:
+def test_update_team_normal_user(client: TestClient, db: Session) -> None:
+    team = db.query(Team).first()
+    assert team is not None
+    id = team.id
+
+    r = client.put(
+        f"{settings.API_V1_STR}/team/{id}",
+        json={
+            "name": "Test1",
+            "pukes": [0],
+            "skips": [0],
+            "time_scores": [100],
+            "question_scores": [True],
+            "times": ["2021-05-01T12:00:00"],
+        },
+    )
+    assert r.status_code == 403
+
+
+@pytest.mark.parametrize(
+    "client",
+    [{"staff_checkpoint_id": 1}],
+    indirect=["client"],
+)
+def test_update_team_staff(client: TestClient, db: Session) -> None:
+    team = db.query(Team).first()
+    assert team is not None
+    id = team.id
+
+    r = client.put(
+        f"{settings.API_V1_STR}/team/{id}",
+        json={
+            "name": "Test1",
+            "pukes": [0],
+            "skips": [0],
+            "time_scores": [100],
+            "question_scores": [True],
+            "times": ["2021-05-01T12:00:00"],
+        },
+    )
+    assert r.status_code == 403
+
+
+@pytest.mark.parametrize(
+    "client",
+    [{"is_admin": True}],
+    indirect=["client"],
+)
+def test_update_team_admin(client: TestClient, db: Session) -> None:
     team = db.query(Team).first()
     assert team is not None
     id = team.id
@@ -96,7 +168,6 @@ def test_update_team(client: TestClient, db: Session) -> None:
         },
     )
     data = r.json()
-    print(data)
     assert r.status_code == 200
     assert data["name"] == "Test1"
     assert data["pukes"] == [0]
