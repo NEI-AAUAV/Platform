@@ -26,9 +26,23 @@ def setup_database(db: Session):
     db.commit()
 
 
+# ===============
+# == GET TEAMS ==
+# ===============
+
+
+def test_get_teams_unauthenticated(client: TestClient) -> None:
+    r = client.get(f"{settings.API_V1_STR}/team/")
+    data = r.json()
+    assert r.status_code == 200
+    assert len(data) == 2
+    assert data[0].keys() >= team[0].keys()
+    assert "id" in data[0]
+
+
 @pytest.mark.parametrize(
     "client",
-    [{}],
+    [{}, {"staff_checkpoint_id": 1}, {"is_admin": True}],
     indirect=["client"],
 )
 def test_get_teams(client: TestClient) -> None:
@@ -40,12 +54,12 @@ def test_get_teams(client: TestClient) -> None:
     assert "id" in data[0]
 
 
-@pytest.mark.parametrize(
-    "client",
-    [{"staff_checkpoint_id": 1}],
-    indirect=["client"],
-)
-def test_add_checkpoint(client: TestClient, db: Session) -> None:
+# ====================
+# == ADD CHECKPOINT ==
+# ====================
+
+
+def test_add_checkpoint_unauthenticated(client: TestClient, db: Session) -> None:
     team = db.query(Team).first()
     assert team is not None
     id = team.id
@@ -53,6 +67,40 @@ def test_add_checkpoint(client: TestClient, db: Session) -> None:
     r = client.put(
         f"{settings.API_V1_STR}/team/{id}/checkpoint",
         json=TeamScoresUpdate(question_score=True).model_dump(),
+    )
+    assert r.status_code == 401
+
+
+@pytest.mark.parametrize(
+    "client",
+    [{}],
+    indirect=["client"],
+)
+def test_add_checkpoint_normal_user(client: TestClient, db: Session) -> None:
+    team = db.query(Team).first()
+    assert team is not None
+    id = team.id
+
+    r = client.put(
+        f"{settings.API_V1_STR}/team/{id}/checkpoint",
+        json=TeamScoresUpdate(question_score=True).model_dump(),
+    )
+    assert r.status_code == 403
+
+
+@pytest.mark.parametrize(
+    "client",
+    [{"staff_checkpoint_id": 1}, {"is_admin": True}],
+    indirect=["client"],
+)
+def test_add_checkpoint_authenticated(client: TestClient, db: Session) -> None:
+    team = db.query(Team).first()
+    assert team is not None
+    id = team.id
+
+    r = client.put(
+        f"{settings.API_V1_STR}/team/{id}/checkpoint",
+        json=TeamScoresUpdate(question_score=True, checkpoint_id=1).model_dump(),
     )
     data = r.json()
     assert r.status_code == 201
@@ -62,12 +110,32 @@ def test_add_checkpoint(client: TestClient, db: Session) -> None:
     assert len(data["times"]) == 1
 
 
+# =================
+# == CREATE TEAM ==
+# =================
+
+
+def test_create_team_unauthenticated(client: TestClient) -> None:
+    r = client.post(f"{settings.API_V1_STR}/team/", json={"name": "Test3"})
+    assert r.status_code == 401
+
+
+@pytest.mark.parametrize(
+    "client",
+    [{}, {"staff_checkpoint_id": 1}],
+    indirect=["client"],
+)
+def test_create_team_not_admin(client: TestClient) -> None:
+    r = client.post(f"{settings.API_V1_STR}/team/", json={"name": "Test3"})
+    assert r.status_code == 403
+
+
 @pytest.mark.parametrize(
     "client",
     [{"is_admin": True}],
     indirect=["client"],
 )
-def test_create_team(client: TestClient) -> None:
+def test_create_team_admin(client: TestClient) -> None:
     r = client.post(f"{settings.API_V1_STR}/team/", json={"name": "Test3"})
     data = r.json()
     assert r.status_code == 201
@@ -100,34 +168,10 @@ def test_update_team_unauthenticated(client: TestClient, db: Session) -> None:
 
 @pytest.mark.parametrize(
     "client",
-    [{}],
+    [{}, {"staff_checkpoint_id": 1}],
     indirect=["client"],
 )
-def test_update_team_normal_user(client: TestClient, db: Session) -> None:
-    team = db.query(Team).first()
-    assert team is not None
-    id = team.id
-
-    r = client.put(
-        f"{settings.API_V1_STR}/team/{id}",
-        json={
-            "name": "Test1",
-            "pukes": [0],
-            "skips": [0],
-            "time_scores": [100],
-            "question_scores": [True],
-            "times": ["2021-05-01T12:00:00"],
-        },
-    )
-    assert r.status_code == 403
-
-
-@pytest.mark.parametrize(
-    "client",
-    [{"staff_checkpoint_id": 1}],
-    indirect=["client"],
-)
-def test_update_team_staff(client: TestClient, db: Session) -> None:
+def test_update_team_not_admin(client: TestClient, db: Session) -> None:
     team = db.query(Team).first()
     assert team is not None
     id = team.id
