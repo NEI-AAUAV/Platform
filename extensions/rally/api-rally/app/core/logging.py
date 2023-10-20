@@ -4,11 +4,14 @@ Configure handlers and formats for application loggers."""
 import logging
 import sys
 from pprint import pformat
+from types import FrameType
+from typing import Optional
 
 # if you dont like imports of private modules
 # you can move it to typing.py module
 from loguru import logger
 from loguru._defaults import LOGURU_FORMAT
+
 from app.core.config import settings
 
 
@@ -20,14 +23,16 @@ class InterceptHandler(logging.Handler):
 
     def emit(self, record: logging.LogRecord):
         # Get corresponding Loguru level if it exists
+        level: str | int
         try:
             level = logger.level(record.levelname).name
         except ValueError:
             level = record.levelno
 
         # Find caller from where originated the logged message
-        frame, depth = logging.currentframe(), 2
-        while frame.f_code.co_filename == logging.__file__:
+        frame: Optional[FrameType] = logging.currentframe()
+        depth = 0
+        while frame and (depth == 0 or frame.f_code.co_filename == logging.__file__):
             frame = frame.f_back
             depth += 1
 

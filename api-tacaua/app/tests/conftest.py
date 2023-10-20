@@ -39,8 +39,12 @@ def connection():
     """
     connection = engine.connect()
     if not engine.dialect.has_schema(connection, schema=settings.SCHEMA_NAME):
-        event.listen(Base.metadata, "before_create",
-                     CreateSchema(settings.SCHEMA_NAME), insert=True)
+        event.listen(
+            Base.metadata,
+            "before_create",
+            CreateSchema(settings.SCHEMA_NAME),
+            insert=True,
+        )
 
     Base.metadata.reflect(bind=engine, schema=settings.SCHEMA_NAME)
     Base.metadata.create_all(bind=engine, checkfirst=True)
@@ -66,7 +70,7 @@ def db(connection: Connection) -> Generator[SessionTesting, Any, None]:
 
 @pytest.fixture(scope="session")
 def app() -> Generator[FastAPI, Any, None]:
-    """ Create a new application for the test session. """
+    """Create a new application for the test session."""
 
     _app = FastAPI(default_response_class=ORJSONResponse)
     _app.include_router(api_v1_router, prefix=settings.API_V1_STR)
@@ -74,15 +78,13 @@ def app() -> Generator[FastAPI, Any, None]:
 
 
 @pytest.fixture(scope="function")
-def client(
-    app: FastAPI,
-    db: SessionTesting
-) -> Generator[TestClient, Any, None]:
+def client(app: FastAPI, db: SessionTesting) -> Generator[TestClient, Any, None]:
     """Create a new TestClient that uses the `app` and `db` fixture.
 
     The `db` fixture will override the `get_db` dependency that is
     injected into routes.
     """
+
     def _get_test_db():
         try:
             yield db
@@ -101,7 +103,9 @@ def client(
         }
 
     def _ws_send_update(data):
-        data = requests.post(f"http://{settings.API_NEI_SERVER}:8000/api/nei/v1/ws/broadcast", data)
+        data = requests.post(
+            f"http://{settings.API_NEI_SERVER}:8000/api/nei/v1/ws/broadcast", data
+        )
         assert data["status"] == "success"
 
     app.dependency_overrides[get_db] = _get_test_db

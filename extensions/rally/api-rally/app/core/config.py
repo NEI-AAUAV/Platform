@@ -1,30 +1,35 @@
 import os
 import pathlib
+from urllib.parse import urljoin
 
-from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
-from typing import List, Optional, Union
-
+from typing import Any, List, Union
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import AnyHttpUrl, PostgresDsn, field_validator
 
 # Project Directories
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
-
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(case_sensitive=True)
+
     PRODUCTION: bool = os.getenv("ENV") == "production"
 
     API_V1_STR: str = "/api/rally/v1"
     STATIC_STR: str = "/static/rally"
 
-    HOST: AnyHttpUrl = ("https://nei.web.ua.pt" if PRODUCTION else
-                        "http://localhost:8000")
-    STATIC_URL: AnyHttpUrl = HOST + STATIC_STR
+    HOST: AnyHttpUrl = AnyHttpUrl(
+        "https://nei.web.ua.pt" if PRODUCTION else "http://localhost:8000"
+    )
+    STATIC_URL: AnyHttpUrl = AnyHttpUrl(urljoin(str(HOST), STATIC_STR))
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["https://nei.web.ua.pt" if PRODUCTION else
-                                              "http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
+        AnyHttpUrl("https://nei.web.ua.pt" if PRODUCTION else "http://localhost:3000")
+    ]
 
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
-    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+    @field_validator("BACKEND_CORS_ORIGINS", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: Any) -> Union[List[str], str]:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
         elif isinstance(v, (list, str)):
@@ -33,23 +38,20 @@ class Settings(BaseSettings):
 
     # PostgreSQL DB
     SCHEMA_NAME: str = "rally_tascas"
-    POSTGRES_SERVER: str = os.getenv('POSTGRES_SERVER', 'localhost')
-    POSTGRES_USER: str = os.getenv('POSTGRES_USER', "postgres")
-    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', "postgres")
-    POSTGRES_DB: str = os.getenv('POSTGRES_DB', "postgres")
-    POSTGRES_URI: Optional[
-        PostgresDsn
-    ] = f"postgresql://{POSTGRES_USER}" \
-        f":{POSTGRES_PASSWORD}@{POSTGRES_SERVER}" \
+    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "postgres")
+    POSTGRES_URI: PostgresDsn = PostgresDsn(
+        f"postgresql://{POSTGRES_USER}"
+        f":{POSTGRES_PASSWORD}@{POSTGRES_SERVER}"
         f":5432/{POSTGRES_DB}"
-    TEST_POSTGRES_URI: Optional[
-        PostgresDsn
-    ] = f"postgresql://{POSTGRES_USER}" \
-        f":{POSTGRES_PASSWORD}@{POSTGRES_SERVER}" \
+    )
+    TEST_POSTGRES_URI: PostgresDsn = PostgresDsn(
+        f"postgresql://{POSTGRES_USER}"
+        f":{POSTGRES_PASSWORD}@{POSTGRES_SERVER}"
         f":5432/{POSTGRES_DB}_test"
-
-    class Config:
-        case_sensitive = True
+    )
 
 
 settings = Settings()

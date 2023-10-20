@@ -1,41 +1,32 @@
-import React from "react";
-
 import equipa from "../img/equipa.jpg";
-import { Row } from "react-bootstrap";
-import Image from "react-bootstrap/Image";
+import player from "../img/dani.jpeg";
+import nei from "../img/nei.png";
 
-import "./index.css";
-import Player from "./TeamCards";
-
-const animationBase = parseFloat(import.meta.env.VITE_ANIMATION_BASE);
-const animationIncrement = parseFloat(
-  import.meta.env.VITE_ANIMATION_INCREMENT
-);
+import { TacaUATeam } from "components/TacaUATeam";
 
 const SportTeam = () => {
-
   return (
-    <> 
-      <div>
-        <Row>
-          <Image
-            src={equipa}
-            rounded
-            fluid
-            className="slideUpFade"
-            style={{
-            animationDelay: animationBase + animationIncrement * 0 + "s",
-            marginBottom: 50,
-            marginTop: 50,
-            }}
-          ></Image>
-        </Row> 
-      </div>
-
-      <div style={{ marginTop: "1rem" }}>  
-        <Player/>
-      </div>
-    </>
+    <div className="p-8">
+      <TacaUATeam
+        name={"NEI"}
+        admin={true}
+        image={equipa}
+        participants={[
+          { id: 0, name: "Marco António" },
+          { id: 1, image: equipa, name: "Marco António" },
+          { id: 2, image: player, name: "Marco António" },
+          { id: 3, image: nei, name: "Marco António" },
+          { id: 4, name: "Marco António" },
+          { id: 5, name: "Marco António" },
+          { id: 6, image: player, name: "Marco António" },
+          {
+            id: 7,
+            image: player,
+            name: "Marco António AEi3uir hgu82y891y 897",
+          },
+        ]}
+      />
+    </div>
   );
 };
 
