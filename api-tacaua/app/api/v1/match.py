@@ -33,15 +33,46 @@ async def update_match(
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_TACAUA]),
     background_tasks: BackgroundTasks,
 ) -> any:
-    data = MatchList(data = crud.match.update(db, id=id, obj_in=match_in))
-                                                # not my fault we're using datetime
-    background_tasks.add_task(ws_send_update, orjson.loads(orjson.dumps(data.dict()).decode()))
+    data = MatchList(data=crud.match.update(db, id=id, obj_in=match_in))
+    # not my fault we're using datetime
+    background_tasks.add_task(
+        ws_send_update, orjson.loads(orjson.dumps(data.dict()).decode())
+    )
     return data
 
 
+@router.get(
+    "/last_played/",
+    status_code=200,
+    response_model=MatchList,
+)
+async def get_last_played(
+    *,
+    db: Session = Depends(deps.get_db),
+    amount: int = 5,
+) -> Any:
+    return MatchList(data=crud.match.get_last_played(db, amount=amount))
+
+
+@router.get(
+    "/next_played",
+    status_code=200,
+    response_model=MatchList,
+)
+async def get_next_played(
+    *,
+    db: Session = Depends(deps.get_db),
+    amount: int = 5,
+) -> Any:
+    return MatchList(data=crud.match.get_next_played(db, amount=amount))
+
+
 def ws_send_update(data):
-    requests.post(f"http://{settings.API_NEI_SERVER}:8000/api/nei/v1/ws/broadcast", json=data)
-    
+    requests.post(
+        f"http://{settings.API_NEI_SERVER}:8000/api/nei/v1/ws/broadcast", json=data
+    )
+
+
 """ jic
 
 @router.post(
