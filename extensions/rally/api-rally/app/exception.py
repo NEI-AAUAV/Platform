@@ -1,14 +1,10 @@
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse
-
-from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
 
 
 class APIException(HTTPException):
     """Light wrapper around HTTPException that allows specifying defaults via class property"""
 
     status_code = 400
-    detail = None
     headers = None
 
     def __init__(self, *args, **kwargs):

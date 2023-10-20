@@ -1,46 +1,56 @@
-from typing import Optional
+from typing import Literal, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
-class Token(BaseModel):
+class LoginResult(BaseModel):
     access_token: str
     token_type: str
-
-
-class TokenData(BaseModel):
-    username: Optional[str] = None
+    name: str
+    staff_checkpoint_id: Optional[int]
+    is_admin: bool
 
 
 class UserBase(BaseModel):
-    team_id: Optional[int]
-    name: str
+    name: Optional[str] = None
+    team_id: Optional[int] = None
 
 
 class UserCreate(UserBase):
-    username: Optional[str]
-    staff_checkpoint_id: int = None
+    name: str
+    username: Optional[str] = None
+    staff_checkpoint_id: Optional[int] = None
     is_admin: bool = False
     password: str
 
 
 class UserUpdate(UserBase):
-    name: Optional[str]
-    username: Optional[str]
-    staff_checkpoint_id: Optional[int]
-    is_admin: Optional[bool]
-    password: Optional[str]
+    username: Optional[str] = None
+    staff_checkpoint_id: Optional[int] = None
+    is_admin: Optional[bool] = None
+    password: Optional[str] = None
 
 
-class UserInDB(UserBase):
+class ListingUser(UserBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
-
-    class Config:
-        orm_mode = True
+    name: str
 
 
-class AdminUserInDB(UserInDB):
-    username: Optional[str]
-    staff_checkpoint_id: int = None
-    is_admin: bool = False
-    hashed_password: str
+class DetailedUser(UserBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    disabled: bool
+    is_admin: bool
+    staff_checkpoint_id: Optional[int] = None
+
+
+class AdminListingUser(DetailedUser):
+    username: str
+
+
+class AdminUser(DetailedUser):
+    is_admin: Literal[True]

@@ -1,10 +1,8 @@
 import pytest
 
-from sqlalchemy.engine import Connection
-
 import app.crud as crud
 from app.models.team import Team
-from app.tests.conftest import SessionTesting
+from app.tests.conftest import Session
 
 
 teams = [
@@ -19,7 +17,7 @@ teams = [
         "card1": 0,
         "card2": 2,
         "card3": 3,
-        "classification": -1, # 1
+        "classification": -1,  # 1
     },
     {
         "name": "Arroz",
@@ -32,7 +30,7 @@ teams = [
         "card1": 3,
         "card2": 2,
         "card3": 0,
-        "classification": -1, # 2
+        "classification": -1,  # 2
     },
     {
         "name": "Doce",
@@ -41,24 +39,24 @@ teams = [
         "times": ["2022-11-30T19:40:00", "2022-11-30T20:00:00"],
         "pukes": [0, 1],  # [0, -20]
         "skips": [0, 0],  # [0, 0]
-        "total": 0,     # 3.5
+        "total": 0,  # 3.5
         "card1": -1,
         "card2": 0,
         "card3": 0,
-        "classification": -1, # 3
+        "classification": -1,  # 3
     },
     {
         "name": "Ovos",
-        "question_scores": [False], # [6]
-        "time_scores": [180],   # [10]
+        "question_scores": [False],  # [6]
+        "time_scores": [180],  # [10]
         "times": ["2022-11-30T20:05:00"],
-        "pukes": [2],   # [-20]
-        "skips": [1],   # [-8]
+        "pukes": [2],  # [-20]
+        "skips": [1],  # [-8]
         "total": 0,  # -12
         "card1": 1,
         "card2": -1,
         "card3": 1,
-        "classification": -1, # 5
+        "classification": -1,  # 5
     },
     {
         "name": "Moles",
@@ -71,19 +69,19 @@ teams = [
         "card1": -1,
         "card2": -1,
         "card3": -1,
-        "classification": -1, # 4
+        "classification": -1,  # 4
     },
 ]
 
 
 @pytest.fixture(autouse=True)
-def setup_database(db: SessionTesting):
+def setup_database(db: Session):
     for team in teams:
         db.add(Team(**team))
     db.commit()
 
 
-def test_update_classification(db: SessionTesting):
+def test_update_classification(db: Session):
     crud.team.update_classification(db=db)
     teams = crud.team.get_multi(db=db)
 
@@ -92,7 +90,7 @@ def test_update_classification(db: SessionTesting):
         "Arroz": (2, 13),
         "Doce": (3, 3.5),
         "Ovos": (5, -12),
-        "Moles": (4, 0)
+        "Moles": (4, 0),
     }
     for team in teams:
         assert team.classification == results[team.name][0]
