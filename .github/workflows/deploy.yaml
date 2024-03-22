@@ -1,0 +1,82 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      extension:
+        description: 'Deploy with extension'
+        required: false
+        type: choice
+        options: 
+        - ''
+        - gala
+        - rally
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PRODUCTION: true
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to Github Packages
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Get compose files
+      id: compose-files
+      run: |
+        echo "COMPOSE_FILE=$(make ${{ github.event.inputs.extension }} files)" >> "$GITHUB_OUTPUT"
+
+    - name: Build and push
+      uses: docker/bake-action@v3
+      with:
+        push: true
+        files: ${{ steps.compose-files.outputs.COMPOSE_FILE }}
+        set: |
+          *.cache-to=type=gha,scope=cached-stage,mode=max
+          *.cache-from=type=gha,scope=cached-stage
+  
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    env:
+      PRODUCTION: true
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+      EMAIL_SENDER_ADDRESS: ${{ secrets.EMAIL_SENDER_ADDRESS }}
+      EMAIL_SMTP_HOST: ${{ secrets.EMAIL_SMTP_HOST }}
+      EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
+      EMAIL_SMTP_USER: ${{ secrets.EMAIL_SMTP_USER }}
+      IDP_SECRET_KEY: ${{ secrets.IDP_SECRET_KEY }}
+      RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: neiaauav
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Login to Github Packages
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Deploy with docker-compose
+      run: |
+        make ${{ github.event.inputs.extension }} pull
+        make ${{ github.event.inputs.extension }} up FLAGS="-d --remove-orphans"
+        docker container prune -f
+        docker image prune -af
+        docker builder prune

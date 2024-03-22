@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  web_nei:
+    environment:
+      ENABLE_GALA: 'True'
+
+  api_gala:
+    build:
+      context: extensions/gala/api-gala
+    environment:
+      MONGO_SERVER: db_mongo
+      MONGO_PASSWORD: mongo
+      JWT_PUBLIC_KEY_PATH: /jwt.key.pub
+      ALLOW_TIME_SLOTS_PAST: 'True'
+    ports:
+      - 8004:8004
+    volumes:
+      - ./extensions/gala/api-gala:/api_gala
+      - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
+    depends_on:
+      db_mongo:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+
+  web_gala:
+    build:
+      context: extensions/gala/web-gala
+    ports:
+      - 3002:3002
+    volumes:
+      - gala_modules:/web_gala/node_modules
+      - ./extensions/gala/web-gala:/web_gala
+    networks:
+      - frontend
+    restart: unless-stopped
+
+  proxy:
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
+      - ./proxy/locations.gala.conf:/etc/nginx/conf.d/locations.gala.conf:ro
+      - ./proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - api_gala
+      - web_gala
+
+volumes:
+  gala_modules:
+    driver: local

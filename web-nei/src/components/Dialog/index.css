@@ -1,0 +1,22 @@
+
+.Dialog--top-left,
+.Dialog--top-right {
+  top: calc(100% + 6px);
+}
+
+.Dialog--bottom-right,
+.Dialog--top-right {
+  margin-right: 0;
+  right: 2px;
+}
+
+.Dialog--bottom-left,
+.Dialog--top-left {
+  left: 2px;
+  margin-left: 0;
+}
+
+.Dialog--bottom-left,
+.Dialog--bottom-right {
+  bottom: calc(100% + 6px);
+}

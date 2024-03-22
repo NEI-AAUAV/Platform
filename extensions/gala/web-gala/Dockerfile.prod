@@ -1,0 +1,21 @@
+FROM node:18-alpine AS build-stage
+
+WORKDIR /web_gala
+
+COPY ./package.json ./
+
+COPY ./yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN GENERATE_SOURCEMAP=false yarn build
+
+FROM nginx:1.20-alpine
+
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=build-stage /web_gala/dist /usr/share/nginx/html/gala
+
+EXPOSE 3002

@@ -1,0 +1,13 @@
+ Ativação de conta. 
+
+Olá {{name}},
+{{reason}} 
+
+Para concluir a criação da tua conta, segue o link:
+
+({{endpoint}}?token={{token}})
+
+Se achas que houve um engano no envio deste email por favor contacta-nos. 
+
+Cumprimentos,
+A equipa do NEI

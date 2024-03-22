@@ -1,0 +1,23 @@
+FROM node:18-alpine AS build-stage
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+RUN npm install -g pnpm
+
+WORKDIR /web_rally
+
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+
+RUN GENERATE_SOURCEMAP=false pnpm build
+
+FROM nginx:1.20-alpine
+
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=build-stage /web_rally/dist /usr/share/nginx/html/rally
+
+EXPOSE 3003

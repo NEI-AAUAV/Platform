@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "emails-src",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "email dev",
+    "export": "email export"
+  },
+  "dependencies": {
+    "@react-email/components": "^0.0.6",
+    "react": "^18.2.0",
+    "react-email": "1.9.3"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.6"
+  }
+}

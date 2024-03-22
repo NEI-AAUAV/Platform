@@ -1,0 +1,268 @@
+/* If font are changed or updated, don't forget to also update the preload links on the index.html */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Azeret+Mono:100,200,300,regular,500,600,700,800,900,100italic,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 145 80% 35%;
+    --primary-foreground: 355.7 100% 97.3%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 142.1 76.2% 36.3%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 0 0% 95%;
+
+    --card: 24 9.8% 10%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 145 80% 30%;
+    --primary-foreground: 144.9 80.4% 10%;
+
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 142.4 71.8% 29.2%;
+  }
+
+  html {
+    font-family: "Ubuntu", sans-serif;
+  }
+
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+
+  h3 {
+    @apply text-2xl;
+  }
+
+  h4 {
+    @apply text-xl;
+  }
+
+  h5 {
+    @apply text-lg;
+  }
+
+  h6 {
+    @apply text-sm;
+  }
+
+  .modal {
+    @apply !z-30;
+  }
+
+  .tooltip {
+    @apply !z-30;
+  }
+
+  .menu :where(li) > :where(*:not(ul)) {
+    @apply !px-3 !py-2;
+  }
+
+  /* .menu > :where(li:focus) > :where(ul) {
+    display: list-item !important;
+  } */
+
+  .badge-outline {
+    @apply !bg-transparent;
+  }
+
+  .btn {
+    @apply !rounded-full;
+    @apply !normal-case;
+  }
+
+  .btn-outline.btn-primary {
+    background-color: hsl(var(--p) / 0.1);
+  }
+
+  .btn-outline.btn-secondary {
+    background-color: hsl(var(--s) / 0.1);
+  }
+
+  .btn-outline.btn-accent {
+    background-color: hsl(var(--a) / 0.1);
+  }
+
+  .btn-outline.btn-info {
+    background-color: hsl(var(--in) / 0.1);
+  }
+
+  .btn-outline.btn-success {
+    background-color: hsl(var(--su) / 0.1);
+  }
+
+  .btn-outline.btn-warning {
+    background-color: hsl(var(--wa) / 0.1);
+  }
+
+  .btn-outline.btn-error {
+    background-color: hsl(var(--er) / 0.1);
+  }
+
+  .btn-group > .btn {
+    @apply !rounded-none;
+  }
+
+  .btn-group > .btn:first-of-type {
+    @apply !rounded-l-full;
+  }
+
+  .btn-group > .btn:last-of-type {
+    @apply !rounded-r-full;
+  }
+
+  .input,
+  .file-input {
+    @apply !rounded-full;
+    transition: outline 0.3s !important;
+    outline: 2px solid transparent !important;
+  }
+
+  .input:focus {
+    outline: 2px solid hsla(var(--bc) / 0.2) !important;
+  }
+
+  .input-error {
+    @apply animate-wiggle;
+  }
+
+  .message-error {
+    @apply text-error px-1 py-2 text-xs font-medium;
+  }
+
+  .message-error::before {
+    content: "⚠ ";
+  }
+
+  /* For Webkit-based browsers (Chrome, Safari and Opera) */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    scroll-padding: 10px;
+  }
+
+  /* For IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    scroll-margin: 20px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.grecaptcha-badge {
+  visibility: hidden;
+}
+
+/* animations */
+.animation {
+  opacity: 0;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  transition: 0.3s ease all;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.slideUpFade {
+  transform: translateY(20px);
+  opacity: 0;
+  animation-name: slideUp, fadeIn;
+  animation-duration: 0.7s;
+  animation-delay: 0.4s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}

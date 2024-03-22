@@ -1,0 +1,79 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap");
+
+#treeei {
+  position: absolute;
+  overflow: hidden;
+  background: hsl(var(--b1));
+}
+
+#treeei svg.treeei path {
+  fill: none;
+  stroke: silver;
+}
+
+#treeei svg.treeei g.label text {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+
+  font-family: "Ubuntu", sans-serif;
+  font-size: 0.75em;
+  -webkit-transition: font-size 0.3s;
+  -moz-transition: font-size 0.3s;
+  -o-transition: font-size 0.3s;
+  transition: font-size 0.3s;
+  fill: hsl(var(--bc) / 0.9);
+  font-weight: medium;
+}
+
+#treeei svg.treeei g.label.label-small text {
+  font-size: 0.75em !important;
+  -webkit-transition: font-size 0.3s;
+  -moz-transition: font-size 0.3s;
+  -o-transition: font-size 0.3s;
+  transition: font-size 0.3s;
+}
+
+#treeei svg.treeei g.label text {
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+#treeei svg.treeei g.label text.text-faina {
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-weight: bold;
+}
+
+#treeei svg.treeei g.label.label-faina.show text {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+#treeei svg.treeei g.label.label-faina.show text.text-faina {
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+#treeei svg.treeei circle.profile-border,
+#treeei svg.treeei rect.insignia {
+  filter: drop-shadow(1px 2px 2px hsl(var(--b2)));
+}
+
+[data-theme="dark"] #treeei svg.treeei rect.insignia:not(.NEI):not(.AETTUA) {
+  filter: invert(1) drop-shadow(1px 2px 2px hsl(var(--b2))) !important;
+}
+
+#treeei svg.treeei circle.profile-border {
+  fill: hsl(var(--b1));
+  stroke: silver;
+  stroke-width: 1.5;
+}
+
+#treeei svg.treeei defs marker#dot circle {
+  fill: silver;
+}

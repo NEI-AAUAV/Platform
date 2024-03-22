@@ -1,0 +1,9 @@
+# docker
+Dockerfile*
+
+# static files
+static/*
+!static/**/.gitkeep
+
+# Environment files
+.env

@@ -1,0 +1,21 @@
+FROM node:18-alpine as build-stage
+
+WORKDIR /web_nei
+
+COPY ./package.json ./
+
+COPY ./yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN GENERATE_SOURCEMAP=false yarn build
+
+FROM nginx:1.20-alpine
+
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=build-stage /web_nei/build /usr/share/nginx/html
+
+EXPOSE 3000

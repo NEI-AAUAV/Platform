@@ -1,0 +1,14 @@
+[flake8]
+max-line-length = 79
+per-file-ignores =
+    app/tests/conftest.py:F811
+exclude =
+    .git
+    .github
+    __pycache__
+    __init__.py
+    .mypy_cache
+    .pytest_cache
+    .venv
+    .vscode
+    alembic

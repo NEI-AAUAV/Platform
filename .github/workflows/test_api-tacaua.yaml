@@ -1,0 +1,67 @@
+name: Test api-tacaua
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/api-tacaua.yaml'
+      - 'api-tacaua/**/*'
+      - 'api-nei/**/*'
+  pull_request:
+    paths:
+      - '.github/workflows/api-tacaua.yaml'
+      - 'api-tacaua/**/*'
+      - 'api-nei/**/*'
+  workflow_dispatch:
+
+jobs:
+  api-tacaua:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: postgres_test
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout repository files
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install poetry
+        run: |
+          pip install --upgrade pip setuptools
+          pip install -U poetry
+
+      - name: Install system libraries
+        run: sudo apt-get -y install libpq-dev gcc
+
+      - name: Install dependencies for api-nei
+        working-directory: ./api-nei
+        run: poetry install --no-interaction --no-root
+
+      - name: Start api-nei in the background
+        working-directory: ./api-nei
+        run: poetry run uvicorn app.main:app --port 8000 &
+
+      - name: Install dependencies
+        working-directory: ./api-tacaua
+        run: poetry install --no-interaction --no-root
+
+      - name: Run tests
+        working-directory: ./api-tacaua
+        run: poetry run pytest

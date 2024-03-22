@@ -1,0 +1,12 @@
+Olá {{name}}!
+
+Foste aceite na mesa "{{table}}"
+
+--------------------------------------------------------------------------------
+
+Estás a receber este email porque te inscreveste no jantar de gala.
+
+--------------------------------------------------------------------------------
+
+Cumprimentos,
+A comissão de gala
