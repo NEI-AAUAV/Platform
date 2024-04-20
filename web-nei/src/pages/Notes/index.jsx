@@ -434,7 +434,7 @@ export function Component() {
         <div className="flex grow flex-col gap-5">
           <div className="flex justify-between">
             <TabsButton
-              tabs={[<GridViewIcon />, !config.PRODUCTION && <ViewListIcon />]}
+              tabs={[<GridViewIcon />] + !config.PRODUCTION ? [<ViewListIcon />] : []}
               selected={view}
               setSelected={setView}
             />

@@ -58,13 +58,12 @@ export function Component() {
           tabs={[
             <>
               <CalendarViewMonthIcon /> Mês
-            </>,
-            !config.PRODUCTION && (
-              <>
-                <ViewAgendaIcon /> Agenda
-              </>
-            ),
-          ]}
+            </>
+          ] + !config.PRODUCTION ? [(
+            <>
+              <ViewAgendaIcon /> Agenda
+            </>
+          )] : []}
           selected={view}
           setSelected={setView}
         />
