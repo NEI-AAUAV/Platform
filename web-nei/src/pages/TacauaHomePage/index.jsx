@@ -5,6 +5,7 @@ import Typist from "react-typist";
 import backgroundImg from "../Sports/img/unknown2.png";
 import nei from "../Sports/img/nei.png";
 import { SportsCard,CardHall,GameCard,Carousel } from "components";
+import service from "services/TacaUAService"
 
 //react query
 
@@ -13,11 +14,26 @@ export function Component() {
 
     const [width, setWidth] = useState(window.innerWidth);
 
-    useEffect(() =>{
-        const handleWindowSize = () => {
-            setWidth(window.innerWidth);
-        };
+    const cardHallRef = useRef(null);
+    const cardGameRef = useRef(null);
+    const cardSportref = useRef(null);
+    //const [cardHallwidth, setCardHallwidth] = useState(0);
+    const [cardGamewidth, setCardGamewidth] = useState(0);
+    const [cardSportwidth, setCardSportwidth] = useState(0);
+    const [lastGames,setLastGames] = useState(false);
+    const [sports,setSports] = useState([]);
+    const [modalities,setmodalities] = useState([]);
+    const [matches,setMatches] = useState([]);
 
+    const handleWindowSize = () => {
+        console.log("update Sizes")
+        setWidth(window.innerWidth);
+        //setCardHallwidth(cardHallRef.current.offsetWidth);
+        setCardGamewidth(cardGameRef.current.offsetWidth);
+        setCardSportwidth(cardSportref.current.offsetWidth);
+    };
+
+    useEffect(() =>{
         window.addEventListener('resize',handleWindowSize);
 
         return () => {
@@ -25,20 +41,44 @@ export function Component() {
         };
     }, []);
 
+    useEffect(()=>{
+        if(cardGameRef.current != null){
+            setCardGamewidth(cardGameRef.current.offsetWidth);
+        }
+    },[matches])
 
-    const cardHallRef = useRef(null);
-    const cardGameRef = useRef(null);
-    const cardSportref = useRef(null);
+    useEffect(()=>{
+        if(cardSportref.current != null){
+            setCardSportwidth(cardSportref.current.offsetWidth);
+        }
+    },[matches])
 
-    const [cardHallwidth, setCardHallwidth] = useState(0);
-    const [cardGamewidth, setCardGamewidth] = useState(0);
-    const [cardSportwidth, setCardSportwidth] = useState(0);
+    useEffect(() =>{
+        service.getModalities().then((data =>{
+            console.log("modalidaes",data)
+            setSports(data.modalities || [])
+            setmodalities(data.sports)
+        }))
+    },[])
 
-    useLayoutEffect(() => {
-        setCardHallwidth(cardHallRef.current.offsetWidth);
-        setCardGamewidth(cardGameRef.current.offsetWidth);
-        setCardSportwidth(cardSportref.current.offsetWidth);
-    }, []);
+    useEffect(() =>{
+        if(lastGames){
+            service.get_last_matches().then((data =>{
+                console.log(data.data)
+                setMatches(data.data || [])
+            }))
+        }else{
+            service.get_next_matches().then((data =>{
+                console.log(data.data)
+                setMatches(data.data || [])
+            }))
+        }
+    },[lastGames])
+
+    const getSportById = (id) => {
+        const woof = sports.filter((sport) => id == sport.id)
+        return woof[0]
+    }
 
     
     
@@ -63,121 +103,15 @@ export function Component() {
                             <button class="btn btn-primary place-self-center">Instcrever</button>
                         </div>
                         <div className="absolute flex top-1/2 flex-wrap gap-8 [&>*]:grow [&>*]:shrink [&>*]:basis-96 [&>*]:flex [&>*]:justify-center [&>*>*]:grow [&>*>*]:shrink p-4">
-                            <div>
-                                <SportsCard refe={cardSportref}
-                                modality={{
-                                    image:
-                                    "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                    sport: "Atletismo",
-                                    frame: "Masculino",
-                                    type: "Coletivo",
-                                    competitions: [
-                                    {
-                                        name: "Fase de Grupos",
-                                        division: 1,
-                                        id: 1,
-                                    },
-                                    {
-                                        name: "Playoffs",
-                                        division: 2,
-                                        id: 2,
-                                    },
-                                    ],
-                                }}
-                                />
-                            </div>
-                            <div>
-                                <SportsCard
-                                modality={{
-                                    image:
-                                    "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                    sport: "Andebol",
-                                    frame: "Masculino",
-                                    type: "Coletivo",
-                                    competitions: [
-                                    {
-                                        name: "Fase de Grupos",
-                                        division: 2,
-                                        id: 1,
-                                    },
-                                    {
-                                        name: "Playoffs",
-                                        division: 2,
-                                        id: 2,
-                                    },
-                                    ],
-                                }}
-                                />
-                            </div>
-                            <div>
-                                <SportsCard
-                                modality={{
-                                    image:
-                                    "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                    sport: "Basquetebol",
-                                    frame: "Masculino",
-                                    type: "Coletivo",
-                                    competitions: [
-                                    {
-                                        name: "Fase de Grupos",
-                                        division: 10,
-                                        id: 1,
-                                    },
-                                    {
-                                        name: "Playoffs",
-                                        division: 2,
-                                        id: 2,
-                                    },
-                                    ],
-                                }}
-                                />
-                            </div>
-                            <div>
-                                <SportsCard
-                                modality={{
-                                    image:
-                                    "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                    sport: "Futsal",
-                                    frame: "Masculino",
-                                    type: "Coletivo",
-                                    competitions: [
-                                    {
-                                        name: "Fase de Bananas",
-                                        division: 1,
-                                        id: 1,
-                                    },
-                                    {
-                                        name: "Playoffs",
-                                        division: 2,
-                                        id: 2,
-                                    },
-                                    ],
-                                }}
-                                />
-                            </div>
-                            <div>
-                                <SportsCard
-                                modality={{
-                                    image:
-                                    "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                    sport: "Futebol 7",
-                                    frame: "Monkey",
-                                    type: "Coletivo",
-                                    competitions: [
-                                    {
-                                        name: "Ooga Booga",
-                                        division: 1,
-                                        id: 1,
-                                    },
-                                    {
-                                        name: "Aaa ooh",
-                                        division: 2,
-                                        id: 2,
-                                    },
-                                    ],
-                                }}
-                                />
-                            </div>
+                            {sports.map((sport,index) =>{
+                                return(
+                                    <div>
+                                        <SportsCard refe={cardSportref}
+                                        modality={sport}
+                                        />
+                                    </div>
+                                )
+                            })}
                         </div>
                     </div>
                     <div className="grid gap-8 w-full p-8 bg-base-200 rounded-[20px] place-content-center place-items-center">
@@ -186,54 +120,35 @@ export function Component() {
                             <button class="btn btn-neutral place-self-center">Próximos Jogos</button>
                         </div>
                         <Carousel width={cardGamewidth} buttons={true}>
-                            <GameCard refe={cardGameRef} props={{
-                                sport:"Futsal",
-                                live:1,
-                                type:"Masculino",
-                                date:"1 Janeiro",
-                                score1:"10",
-                                score2:"11",
-                                team1:"Informatica",
-                                team2:"Linguas",
+                            {matches.map((match,index)=>{
+                                let date = new Date(match.date)
+                              return(<GameCard refe={cardGameRef} props={{
+                                sport:getSportById(match.team1.modality_id).sport,
+                                live:match.live,
+                                type:getSportById(match.team1.modality_id).frame,
+                                date:date.getDay().toLocaleString('en-US', {
+                                    minimumIntegerDigits: 2,
+                                    useGrouping: false
+                                  })
+                                  +"/"+date.getMonth().toLocaleString('en-US', {
+                                    minimumIntegerDigits: 2,
+                                    useGrouping: false
+                                    })
+                                  +"/"+date.getFullYear(),
+                                score1:match.score1,
+                                score2:match.score2,
+                                team1:match.team1.course.name,
+                                team2:match.team2.course.name,
                                 penalti1:"1",
                                 penalti2:"2",
                                 img1:nei,
                                 img2:nei
                             }}
-                            />
-                            <GameCard props={{
-                                sport:"Futsal",
-                                live:1,
-                                type:"Masculino",
-                                date:"1 Janeiro",
-                                score1:"10",
-                                score2:"11",
-                                team1:"Informatica",
-                                team2:"Linguas",
-                                penalti1:"1",
-                                penalti2:"2",
-                                img1:nei,
-                                img2:nei
-                            }}
-                            />
-                            <GameCard props={{
-                                sport:"Futsal",
-                                live:1,
-                                type:"Masculino",
-                                date:"1 Janeiro",
-                                score1:"10",
-                                score2:"11",
-                                team1:"Informatica",
-                                team2:"Linguas",
-                                penalti1:"1",
-                                penalti2:"2",
-                                img1:nei,
-                                img2:nei
-                            }}
-                            />
+                            />)
+                            })}
                         </Carousel>
                     </div>
-                    <div className="grid gap-8 w-full p-8 bg-base-200 rounded-[20px]">
+                    {/* <div className="grid gap-8 w-full p-8 bg-base-200 rounded-[20px]">
                         <h4 className="place-self-center font-bold text-2xl">Deti Hall</h4>
                         <Carousel width={cardHallwidth} buttons={true}>
                             <CardHall place={3} width={width} refe={cardHallRef}
@@ -256,128 +171,8 @@ export function Component() {
                             },
                             ],
                             }}/>
-                            <CardHall place={3} width={width}
-                            modality={{
-                            image:
-                            "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                            sport: "Voleibol 4x4 Femenino",
-                            frame: "Masculino",
-                            type: "Coletivo",
-                            competitions: [
-                            {
-                                name: "Fase de Grupos",
-                                division: 2,
-                                id: 1,
-                            },
-                            {
-                                name: "Playoffs",
-                                division: 2,
-                                id: 2,
-                            },
-                            ],
-                            }}/>
-                            <CardHall place={3} width={width}
-                            modality={{
-                            image:
-                            "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                            sport: "Voleibol 4x4 Femenino",
-                            frame: "Masculino",
-                            type: "Coletivo",
-                            competitions: [
-                            {
-                                name: "Fase de Grupos",
-                                division: 2,
-                                id: 1,
-                            },
-                            {
-                                name: "Playoffs",
-                                division: 2,
-                                id: 2,
-                            },
-                            ],
-                            }}/>
-                            <CardHall place={2} width={width}
-                            modality={{
-                            image:
-                            "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                            sport: "Voleibol 4x4 Femenino",
-                            frame: "Masculino",
-                            type: "Coletivo",
-                            competitions: [
-                            {
-                                name: "Fase de Grupos",
-                                division: 2,
-                                id: 1,
-                            },
-                            {
-                                name: "Playoffs",
-                                division: 2,
-                                id: 2,
-                            },
-                            ],
-                            }}/>
-                            <CardHall place={1} width={width}
-                                        modality={{
-                                        image:
-                                        "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                        sport: "Voleibol 4x4 Femenino",
-                                        frame: "Masculino",
-                                        type: "Coletivo",
-                                        competitions: [
-                                        {
-                                            name: "Fase de Grupos",
-                                            division: 2,
-                                            id: 1,
-                                        },
-                                        {
-                                            name: "Playoffs",
-                                            division: 2,
-                                            id: 2,
-                                        },
-                                        ],
-                                    }}/>
-                            <CardHall place={2} width={width}
-                                        modality={{
-                                        image:
-                                        "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                        sport: "Voleibol 4x4 Femenino",
-                                        frame: "Masculino",
-                                        type: "Coletivo",
-                                        competitions: [
-                                        {
-                                            name: "Fase de Grupos",
-                                            division: 2,
-                                            id: 1,
-                                        },
-                                        {
-                                            name: "Playoffs",
-                                            division: 2,
-                                            id: 2,
-                                        },
-                                        ],
-                                    }}/>
-                            <CardHall place={2} width={width}
-                                        modality={{
-                                        image:
-                                        "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                        sport: "Voleibol 4x4 Femenino",
-                                        frame: "Masculino",
-                                        type: "Coletivo",
-                                        competitions: [
-                                        {
-                                            name: "Fase de Grupos",
-                                            division: 2,
-                                            id: 1,
-                                        },
-                                        {
-                                            name: "Playoffs",
-                                            division: 2,
-                                            id: 2,
-                                        },
-                                        ],
-                                    }}/>
                         </Carousel>
-                    </div>
+                    </div> */}
             </div>
         );
     }else{
@@ -396,48 +191,13 @@ export function Component() {
                         </div>
                         <div className="absolute top-[55%] w-full p-8">
                         <Carousel width={cardSportwidth} buttons={false}>
-                                <SportsCard className={"w-full"} refe={cardSportref}
-                                modality={{
-                                    image:
-                                    "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                    sport: "Futsal",
-                                    frame: "Masculino",
-                                    type: "Coletivo",
-                                    competitions: [
-                                    {
-                                        name: "Fase de Bananas",
-                                        division: 1,
-                                        id: 1,
-                                    },
-                                    {
-                                        name: "Playoffs",
-                                        division: 2,
-                                        id: 2,
-                                    },
-                                    ],
-                                }}
-                                />
-                                <SportsCard className={"w-full"}
-                                modality={{
-                                    image:
-                                    "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                    sport: "Futebol 7",
-                                    frame: "Monkey",
-                                    type: "Coletivo",
-                                    competitions: [
-                                    {
-                                        name: "Ooga Booga",
-                                        division: 1,
-                                        id: 1,
-                                    },
-                                    {
-                                        name: "Aaa ooh",
-                                        division: 2,
-                                        id: 2,
-                                    },
-                                    ],
-                                }}
-                                />
+                                {sports.map((sport,index) =>{
+                                return(
+                                       <SportsCard refe={cardSportref} className={"w-full flex-none"}
+                                        modality={sport}
+                                        />
+                                )
+                            })}
                         </Carousel>
                         </div>
                 </div>
@@ -447,54 +207,35 @@ export function Component() {
                             <button class="btn btn-neutral place-self-center">Próximos Jogos</button>
                         </div>
                         <div className="grid gap-2">
-                            <GameCard refe={cardGameRef} props={{
-                                sport:"Futsal",
-                                live:1,
-                                type:"Masculino",
-                                date:"1 Janeiro",
-                                score1:"10",
-                                score2:"11",
-                                team1:"Informatica",
-                                team2:"Linguas",
-                                penalti1:"1",
-                                penalti2:"2",
-                                img1:nei,
-                                img2:nei
-                            }}
-                            />
-                            <GameCard props={{
-                                sport:"Futsal",
-                                live:1,
-                                type:"Masculino",
-                                date:"1 Janeiro",
-                                score1:"10",
-                                score2:"11",
-                                team1:"Informatica",
-                                team2:"Linguas",
-                                penalti1:"1",
-                                penalti2:"2",
-                                img1:nei,
-                                img2:nei
-                            }}
-                            />
-                            <GameCard props={{
-                                sport:"Futsal",
-                                live:1,
-                                type:"Masculino",
-                                date:"1 Janeiro",
-                                score1:"10",
-                                score2:"11",
-                                team1:"Informatica",
-                                team2:"Linguas",
-                                penalti1:"1",
-                                penalti2:"2",
-                                img1:nei,
-                                img2:nei
-                            }}
-                            />
+                            {matches.map((match,index)=>{
+                                    let date = new Date(match.date)
+                                return(<GameCard refe={cardGameRef} props={{
+                                    sport:getSportById(match.team1.modality_id).sport,
+                                    live:match.live,
+                                    type:getSportById(match.team1.modality_id).frame,
+                                    date:date.getDay().toLocaleString('en-US', {
+                                        minimumIntegerDigits: 2,
+                                        useGrouping: false
+                                    })
+                                    +"/"+date.getMonth().toLocaleString('en-US', {
+                                        minimumIntegerDigits: 2,
+                                        useGrouping: false
+                                        })
+                                    +"/"+date.getFullYear(),
+                                    score1:match.score1,
+                                    score2:match.score2,
+                                    team1:match.team1.course.name,
+                                    team2:match.team2.course.name,
+                                    penalti1:"1",
+                                    penalti2:"2",
+                                    img1:nei,
+                                    img2:nei
+                                }}
+                                />)
+                                })}
                         </div> 
                 </div>
-                <div className="grid gap-8 w-full p-6 bg-base-200 rounded-[20px]">
+                {/* <div className="grid gap-8 w-full p-6 bg-base-200 rounded-[20px]">
                         <h4 className="place-self-center font-bold text-2xl">Deti Hall</h4>
                         <Carousel width={cardHallwidth} buttons={false}>
                             <CardHall place={3} width={width} refe={cardHallRef}
@@ -537,108 +278,8 @@ export function Component() {
                             },
                             ],
                             }}/>
-                            <CardHall place={3} width={width}
-                            modality={{
-                            image:
-                            "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                            sport: "Voleibol 4x4 Femenino",
-                            frame: "Masculino",
-                            type: "Coletivo",
-                            competitions: [
-                            {
-                                name: "Fase de Grupos",
-                                division: 2,
-                                id: 1,
-                            },
-                            {
-                                name: "Playoffs",
-                                division: 2,
-                                id: 2,
-                            },
-                            ],
-                            }}/>
-                            <CardHall place={2} width={width}
-                            modality={{
-                            image:
-                            "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                            sport: "Voleibol 4x4 Femenino",
-                            frame: "Masculino",
-                            type: "Coletivo",
-                            competitions: [
-                            {
-                                name: "Fase de Grupos",
-                                division: 2,
-                                id: 1,
-                            },
-                            {
-                                name: "Playoffs",
-                                division: 2,
-                                id: 2,
-                            },
-                            ],
-                            }}/>
-                            <CardHall place={1} width={width}
-                                        modality={{
-                                        image:
-                                        "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                        sport: "Voleibol 4x4 Femenino",
-                                        frame: "Masculino",
-                                        type: "Coletivo",
-                                        competitions: [
-                                        {
-                                            name: "Fase de Grupos",
-                                            division: 2,
-                                            id: 1,
-                                        },
-                                        {
-                                            name: "Playoffs",
-                                            division: 2,
-                                            id: 2,
-                                        },
-                                        ],
-                                    }}/>
-                            <CardHall place={2} width={width}
-                                        modality={{
-                                        image:
-                                        "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                        sport: "Voleibol 4x4 Femenino",
-                                        frame: "Masculino",
-                                        type: "Coletivo",
-                                        competitions: [
-                                        {
-                                            name: "Fase de Grupos",
-                                            division: 2,
-                                            id: 1,
-                                        },
-                                        {
-                                            name: "Playoffs",
-                                            division: 2,
-                                            id: 2,
-                                        },
-                                        ],
-                                    }}/>
-                            <CardHall place={2} width={width}
-                                        modality={{
-                                        image:
-                                        "https://cdn.discordapp.com/attachments/1079366558759014493/1092206368762642452/image.png",
-                                        sport: "Voleibol 4x4 Femenino",
-                                        frame: "Masculino",
-                                        type: "Coletivo",
-                                        competitions: [
-                                        {
-                                            name: "Fase de Grupos",
-                                            division: 2,
-                                            id: 1,
-                                        },
-                                        {
-                                            name: "Playoffs",
-                                            division: 2,
-                                            id: 2,
-                                        },
-                                        ],
-                                    }}/>
                         </Carousel>
-                    </div>
+                </div> */}
             </div>
         );
 

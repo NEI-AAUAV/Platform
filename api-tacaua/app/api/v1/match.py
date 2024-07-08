@@ -42,7 +42,7 @@ async def update_match(
 
 
 @router.get(
-    "/last_played/",
+    "/last_played",
     status_code=200,
     response_model=MatchList,
 )

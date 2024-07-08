@@ -64,19 +64,19 @@ const SportsCard = ({ modality, className, refe }) => {
 
   const gradients = theme === "light" ? GRADIENTS_LIGHT : GRADIENTS_DARK;
   const gradient = gradients[sport] ?? "";
-  const division =
-    competitions?.length > 0 && competitions[0]?.division
-      ? `${competitions[0].division}ª Divisão`
-      : null;
+  //const division =
+  //  competitions?.length > 0 && competitions[0]?.division
+  //    ? `${competitions[0].division}ª Divisão`
+  //    : null;
 
-  const firstCompetitions = competitions.slice(0, 2);
-  const competitionsNode = firstCompetitions.map((competition) => (
-    <li key={competition.id}>{competition.name}</li>
-  ));
+  //const firstCompetitions = competitions.slice(0, 2);
+  //const competitionsNode = firstCompetitions.map((competition) => (
+  //  <li key={competition.id}>{competition.name}</li>
+  //));
 
   return (
     <div ref={refe}
-      className={`bg-base-300 rounded-2xl shadow-md shadow-gray max-w-[420px] group flex-none ${className}`}
+      className={`bg-base-300 rounded-2xl shadow-md shadow-gray max-w-[420px] group ${className}`}
     >
       <div className="flex p-4">
         <img
@@ -100,8 +100,8 @@ const SportsCard = ({ modality, className, refe }) => {
       </div>
 
       <div className="p-4 breadcrumbs text-secondary-content font-bold">
-        <ul>{competitionsNode}</ul>
-        <span className="text-sm text-neutral-content">{division}</span>
+        
+        
       </div>
     </div>
   );
