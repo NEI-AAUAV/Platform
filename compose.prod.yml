@@ -81,30 +81,30 @@ services:
       - backend
     restart: always
 
-  api_tacaua:
-    image: ghcr.io/nei-aauav/api-tacaua:${TAG:-latest}
-    build:
-      context: api-tacaua
-      dockerfile: Dockerfile.prod
-    ports:
-      - 8001:8001
-    environment:
-      ENV: production
-      API_NEI_SERVER: api_nei
-      POSTGRES_SERVER: db_pg
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PUBLIC_KEY: /jwt.key.pub
-    volumes: 
-      - /deploy/api-tacaua/static:/api_tacaua/static
-      - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
-    depends_on:
-      db_pg:
-        condition: service_healthy
-    networks:
-      - backend
-    restart: always
-    profiles:
-      - disabled
+  # api_tacaua:
+  #   image: ghcr.io/nei-aauav/api-tacaua:${TAG:-latest}
+  #   build:
+  #     context: api-tacaua
+  #     dockerfile: Dockerfile.prod
+  #   ports:
+  #     - 8001:8001
+  #   environment:
+  #     ENV: production
+  #     API_NEI_SERVER: api_nei
+  #     POSTGRES_SERVER: db_pg
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     PUBLIC_KEY: /jwt.key.pub
+  #   volumes: 
+  #     - /deploy/api-tacaua/static:/api_tacaua/static
+  #     - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
+  #   depends_on:
+  #     db_pg:
+  #       condition: service_healthy
+  #   networks:
+  #     - backend
+  #   restart: always
+  #   profiles:
+  #     - disabled
 
   api_family:
     image: ghcr.io/nei-aauav/api-family:${TAG:-latest}
@@ -154,7 +154,7 @@ services:
       - web_nei
       - api_nei
       # - api_tacaua
-      # - api_family
+      - api_family
     networks:
       - backend
       - frontend
