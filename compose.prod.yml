@@ -106,28 +106,28 @@ services:
   #   profiles:
   #     - disabled
 
-  api_family:
-    image: ghcr.io/nei-aauav/api-family:${TAG:-latest}
-    build:
-      context: api-family
-      dockerfile: Dockerfile.prod
-    ports:
-      - 8002:8002
-    environment:
-      MONGO_SERVER: db_mongo
-      MONGO_PASSWORD: ${MONGO_PASSWORD}
-      PUBLIC_KEY: /jwt.key.pub
-    volumes:
-      - /deploy/api-family/static:/api_family/static
-      - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
-    depends_on:
-      db_mongo:
-        condition: service_healthy
-    networks:
-      - backend
-    restart: always
-    profiles:
-      - disabled
+  # api_family:
+  #   image: ghcr.io/nei-aauav/api-family:${TAG:-latest}
+  #   build:
+  #     context: api-family
+  #     dockerfile: Dockerfile.prod
+  #   ports:
+  #     - 8002:8002
+  #   environment:
+  #     MONGO_SERVER: db_mongo
+  #     MONGO_PASSWORD: ${MONGO_PASSWORD}
+  #     PUBLIC_KEY: /jwt.key.pub
+  #   volumes:
+  #     - /deploy/api-family/static:/api_family/static
+  #     - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
+  #   depends_on:
+  #     db_mongo:
+  #       condition: service_healthy
+  #   networks:
+  #     - backend
+  #   restart: always
+  #   profiles:
+  #     - disabled
 
   web_nei:
     image: ghcr.io/nei-aauav/web-nei:${TAG:-latest}
@@ -154,7 +154,7 @@ services:
       - web_nei
       - api_nei
       # - api_tacaua
-      - api_family
+      # - api_family
     networks:
       - backend
       - frontend
