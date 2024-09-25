@@ -211,6 +211,20 @@ const Navbar = () => {
               <GalaLogo className="fill-black/70" />
             </Link>
           )}
+          <Link 
+              to={`${config.BASE_URL}/arraial`}
+              reloadDocument
+              className="btn-ghost btn-sm btn-circle btn
+              gap-2.5 border-0
+              bg-gradient-to-r from-[#1167b1] to-[#236533]
+              hover:brightness-90 md:!w-fit
+              md:!px-3"
+            >
+              <span className="hidden text-black/70 md:block">
+                <span className="hidden lg:me-1 lg:inline-block">Arrail</span>
+                <span className="hidden md:inline-block">do DETI</span>
+              </span>
+          </Link>
 
           <div className="navbar-end !w-fit grow gap-x-3 pl-3">
             <div
