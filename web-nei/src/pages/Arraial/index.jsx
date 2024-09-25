@@ -12,7 +12,7 @@ export function Component() {
     const [pointsList, setPointsList] = useState([{nucleo: 'NEEETA', value: 0}, {nucleo: 'NEECT', value: 0}, {nucleo: 'NEI', value: 0}])
     const [selectedValue, setSelectedValue] = useState('NEEETA');
     const [number, setNumber] = useState('');
-    const auth_users = ["manager_arrail1@lmao.pt", "manager_arrail2@omega.pt", "manager_arrail3@lul.pt"]
+    const auth_users = ["manager_arraial1@ua.pt", "manager_arraial2@omega.pt", "manager_arraial3@ua.pt"]
     const {email} = useUserStore((state) => state);
     const auth = auth_users.includes(email)
 
