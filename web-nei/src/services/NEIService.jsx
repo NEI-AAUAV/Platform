@@ -159,6 +159,14 @@ const NEIService = {
     formData.append("password", password);
     return await client.post(`/auth/magic?token=${token}`, formData);
   },
+
+  async getArraialPoints() {
+    return await client.get("/arraial/points");
+  },
+  
+  async updateArraialPoints(data) {
+    return await client.put("/arraial/points", data)
+  }
 };
 
 // Export a singleton service
