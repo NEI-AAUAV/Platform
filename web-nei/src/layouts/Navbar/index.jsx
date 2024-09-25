@@ -221,8 +221,7 @@ const Navbar = () => {
               md:!px-3"
             >
               <span className="hidden text-black/70 md:block">
-                <span className="hidden lg:me-1 lg:inline-block">Arrail</span>
-                <span className="hidden md:inline-block">do DETI</span>
+                <span className="hidden md:inline-block">Arraial do DETI</span>
               </span>
           </Link>
 
