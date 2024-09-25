@@ -49,7 +49,7 @@ services:
     restart: always
 
   api_nei:
-    image: ghcr.io/nei-aauav/api-nei-pub:${TAG:-latest}
+    image: ghcr.io/nei-aauav/api-nei:${TAG:-latest}
     build:
       context: api-nei
       dockerfile: Dockerfile.prod
@@ -107,7 +107,7 @@ services:
   #     - disabled
 
   api_family:
-    image: ghcr.io/nei-aauav/api-family-pub:${TAG:-latest}
+    image: ghcr.io/nei-aauav/api-family:${TAG:-latest}
     build:
       context: api-family
       dockerfile: Dockerfile.prod
@@ -130,7 +130,7 @@ services:
       - disabled
 
   web_nei:
-    image: ghcr.io/nei-aauav/web-nei-pub:${TAG:-latest}
+    image: ghcr.io/nei-aauav/web-nei:${TAG:-latest}
     build:
       context: web-nei
       dockerfile: Dockerfile.prod
