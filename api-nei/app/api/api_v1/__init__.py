@@ -16,7 +16,6 @@ from . import (
     tacaua_ws,
     auth,
     event,
-    arraial,
 )
 
 
@@ -36,4 +35,3 @@ router.include_router(user.router, prefix="/user", tags=["User"])
 router.include_router(tacaua_ws.router, tags=["WebSocket"])
 router.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 router.include_router(event.router, prefix="/event", tags=["Events"])
-router.include_router(arraial.router, prefix="/arraial", tags=["Arraial"])

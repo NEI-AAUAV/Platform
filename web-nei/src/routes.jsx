@@ -43,7 +43,10 @@ const routes = [
         lazy: () => import("./pages/Seniors"),
       },
       { path: "/faina", lazy: () => import("./pages/Faina") },
-      !isProd && { path: "/taca-ua", lazy: () => import("./pages/TacauaHomePage") },
+      !isProd && {
+        path: "/taca-ua",
+        lazy: () => import("./pages/TacauaHomePage"),
+      },
       !isProd && {
         path: "/taca-ua/:modalityId/:tab/:competitionId?",
         lazy: () => import("./pages/SportDetails"),
@@ -65,7 +68,6 @@ const routes = [
       // the redirection logic wouldn't work.
       { path: "/auth/login", lazy: () => import("./pages/auth/Login") },
       { path: "/auth/register", lazy: () => import("./pages/auth/Register") },
-      { path: "/arraial", lazy: () => import("./pages/Arraial") },
       // { path: "/estagios", element: <Internship /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
       { path: "/*", lazy: () => import("./pages/Error404") },
