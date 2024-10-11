@@ -123,7 +123,7 @@ const Navbar = () => {
             : "border-transparent",
           windowScroll.y > 0
             ? "bg-base-100/80 shadow backdrop-blur"
-            : "bg-transparent"
+            : "bg-transparent",
         )}
       >
         <div ref={navRef} className="navbar mx-auto h-20 w-full max-w-[90rem]">
@@ -167,7 +167,7 @@ const Navbar = () => {
                         {dropdown.map(
                           (
                             { name, link, disabled, external, reload },
-                            index
+                            index,
                           ) => (
                             <li
                               key={index}
@@ -185,11 +185,11 @@ const Navbar = () => {
                                 {!!external && <OpenInNewIcon />}
                               </LinkAdapter>
                             </li>
-                          )
+                          ),
                         )}
                       </ul>
                     </li>
-                  )
+                  ),
               )}
             </ul>
           </div>
@@ -211,19 +211,6 @@ const Navbar = () => {
               <GalaLogo className="fill-black/70" />
             </Link>
           )}
-          <Link 
-              to={`${config.BASE_URL}/arraial`}
-              reloadDocument
-              className="btn-ghost btn-sm btn-circle btn
-              gap-2.5 border-0
-              bg-gradient-to-r from-[#1167b1] to-[#236533]
-              hover:brightness-90 md:!w-fit
-              md:!px-3"
-            >
-              <span className="hidden text-black/70 md:block">
-                <span className="hidden md:inline-block">Arraial do DETI</span>
-              </span>
-          </Link>
 
           <div className="navbar-end !w-fit grow gap-x-3 pl-3">
             <div
@@ -353,11 +340,11 @@ const Navbar = () => {
                             {!!external && <OpenInNewIcon />}
                           </LinkAdapter>
                         </li>
-                      )
+                      ),
                     )}
                   </ul>
                 </li>
-              )
+              ),
             )}
           </ul>
         </div>

@@ -199,8 +199,6 @@ module.exports = {
           light: "#EFEFEF",
           error: "#C82643",
         },
-        light: "#FFFFFF",
-        error: "#E83E34",
       },
       {
         getThemeClassName: (themeName) => `${themeName}`,
