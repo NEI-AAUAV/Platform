@@ -76,6 +76,16 @@ const data = [
     ],
   },
   {
+    name: "Taça UA",
+    dropdown: [
+      {
+        name: "Cancioneiro",
+        link: import.meta.env.BASE_URL + "tacaua-assets/CancioneiroClaque.pdf",
+        external: true,
+      },
+    ],
+  },
+  {
     name: "Notícias",
     link: "/news",
     disabled: config.PRODUCTION,
