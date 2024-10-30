@@ -86,6 +86,9 @@ const Navbar = () => {
 
   /** Dropdown animation for navbar mobile items */
   function toggleMobileDropdown(e) {
+    if (e.target.nodeName === "svg") {
+      e.target.parentElement.click()
+    }
     const nav = navMobileRef.current;
     const dropdown = e.target.nextSibling;
     if (!dropdown) return;
