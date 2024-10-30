@@ -1,5 +1,6 @@
 title: "[Bug/Issue Report] "
 labels: ["Issue"]
+category: "Bug Reports"
 body:
   - type: textarea
     attributes:
