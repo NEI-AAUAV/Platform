@@ -1,0 +1,47 @@
+title: "[Bug/Issue Report] "
+labels: ["Issue"]
+category: "Bug Reports"
+body:
+  - type: textarea
+    attributes:
+      label: Describe the bug / provide steps to reproduce it
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: dropdown
+    id: system
+    attributes:
+      label: What system are you seeing the problem on?
+      multiple: true
+      options:
+        - Mobile
+        - Desktop
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - Other (Please specify in the bug description or other fields)
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant console log output
+      description: If you can provide any output from the developer console of the browser that you may find helpful.
+    validations:
+      required: false
+  - type: textarea
+    id: other
+    attributes:
+      label: Extra information
+      description: Extra information you might deem necessary.
+    validations:
+      required: false
