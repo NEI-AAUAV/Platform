@@ -14,9 +14,9 @@ const registeredCommands = {
   cp: executeCp,
   whoami: executeWhoami,
   rm: executeRm,
-  mario: { runner: executeMario, hidden: true },
   deti: executeDeti,
   tester: executeTester,
+  "parentes/ambos/humano/mar/ardente" : { runner: executeFaina, hidden: true},
 };
 
 function executeTester(args, state) {
@@ -139,6 +139,10 @@ function executeCp(args, state) {
   );
 }
 
+function executeFaina(args, state) {
+  return "Jardim do Alboi às 15:24. Sem atrasos";
+}
+
 function executeWhoami(args, state) {
   return state.user;
 }
@@ -158,27 +162,6 @@ function executeRm(args, state) {
   );
 }
 
-function executeMario() {
-  return `
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠴⠒⠚⠉⠉⠉⠓⠲⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⡠⠊⠁⠀⢀⢄⠒⢀⡠⢄⠀⠀⠈⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⢀⠞⠁⠀⠀⢠⢁⣾⢷⡾⣿⡌⡆⠀⠀⠀⠈⢧⡀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢠⠏⠀⠀⠀⠀⠈⣸⣟⣀⣁⣙⣛⡇⠀⠀⠀⠀⠀⢳⡀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⡞⠀⠀⠀⢀⠄⠂⠉⢀⣀⣀⣀⠀⠈⠁⠂⢄⠀⠀⠀⢧⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⡇⠀⢀⠔⡡⢔⣨⣥⠔⠒⠒⠒⢲⣮⣥⣂⠄⠑⡄⠀⢸⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢳⠀⢘⢀⠔⠟⠋⡙⡣⠀⠀⠠⣛⣉⠉⠇⠑⢄⡰⠀⡸⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢠⠗⢌⢩⠀⠀⠂⣞⣢⠀⠀⢰⡚⣦⢡⠀⠀⠸⢡⠚⢧⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢺⠈⣻⠀⡄⠀⠂⠻⠛⠉⠉⠉⠻⡟⠈⠀⠀⢦⢸⡁⢸⡆⠀⠀⠀⠀
-⢀⡖⠒⢄⠘⢆⠈⡋⠁⣷⣦⡄⠀⠀⠀⠀⠀⢠⣴⣾⡆⠀⠋⢀⡼⡼⠉⠙⡄⠀
-⠘⡆⠀⠸⡄⠈⠑⢷⠀⠉⠻⣿⣦⣀⣀⣀⣤⣿⡿⠋⠀⢀⠗⠋⠀⡇⠀⠀⡇⠀
-⠀⢧⠀⠀⣇⣀⡀⠀⠳⣤⣀⠀⠀⠫⠍⠩⠍⠀⠀⣀⡴⠋⠀⡤⢤⡇⠀⢸⡃⠀
-⡴⠉⠀⠀⠃⠀⠙⠲⠊⠙⠉⠹⠢⢄⣀⣀⡀⡔⠋⢻⠙⡲⠛⠃⠀⠁⠀⠈⠉⣆
-⢧⠀⠀⠀⠀⠀⠀⠀⡇⠀⢀⠀⠀⢀⣀⣀⠀⠇⢀⡀⡀⡇⠀⠀⠀⠀⡀⠀⠀⡟
-⠈⢣⣐⠘⠐⠀⠀⣠⣇⣿⣁⡱⠀⠀⠀⠀⠀⠀⣏⢉⣧⣰⢀⠀⠀⠃⠁⣁⠜⠁
-⠀⠀⠈⠙⠒⠶⠶⠚⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠀⢻⠙⠒⠒⠚⠉⠁⠀⠀
-
-        O mario vai ao enterro`;
-}
 function executeDeti() {
   return `Fato de treino do deti com os boys a girar no aquário
 Tentei ir para a biblio mas não há espaço em nenhum lado
