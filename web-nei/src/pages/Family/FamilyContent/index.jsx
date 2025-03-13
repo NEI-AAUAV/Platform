@@ -8,15 +8,13 @@ import { buildTree, centerTree, filterTree, patterns } from "../data";
 const FamilyContent = ({ insignias, year, auth }) => {
 
   useEffect(() => {
-    if (auth) {
       buildTree();
       centerTree();
-    }
-  }, [auth]);
+  }, []);
 
   useEffect(() => {
-    if (auth) filterTree(insignias, year);
-  }, [insignias, year, auth]);
+    filterTree(insignias, year);
+  }, [insignias, year]);
 
   return (
     <svg className="treeei" width="100%" height="100%" viewBox="0 0 800 600">

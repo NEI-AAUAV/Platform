@@ -20,39 +20,12 @@ import FamilySidebar from "./FamilySidebar";
 import "./index.css";
 
 export function Component() {
-  const [auth, setAuth] = useState(!!localStorage.getItem("treeei"));
-  const [pass, setPass] = useState("");
   const [expanded, setExpanded] = useState(false);
   const [sidebarOpened, setSidebarOpened] = useState(window.innerWidth >= 768);
 
   const [insignias, setInsignias] = useState([]);
   const [year, setYear] = useState(MAX_YEAR);
 
-  const validatePass = () => {
-    if (pass.toLowerCase()) {
-      localStorage.setItem("treeei", true);
-      setAuth(true);
-    }
-  };
-
-  if (!auth) {
-    return (
-      <div
-        className="flex grow items-center justify-center"
-      >
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <input
-            type="password"
-            className="input-bordered input w-56 pr-[4.5rem] placeholder:font-normal placeholder:text-base-content/50"
-            placeholder="Password"
-            onChange={(e) => setPass(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && validatePass()}
-            value={pass}
-          />
-        </div>
-      </div>
-    );
-  }
   return (
     <motion.div
       className="w-full"
@@ -84,7 +57,7 @@ export function Component() {
           onChange={(e) => setSidebarOpened(e.target.checked)}
         />
         <div className="drawer-content !overflow-hidden">
-          <FamilyContent insignias={insignias} year={year} auth={auth} />
+          <FamilyContent insignias={insignias} year={year} />
         </div>
         <div
           className={classNames(
