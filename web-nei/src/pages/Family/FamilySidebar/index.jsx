@@ -1,4 +1,4 @@
-import { Fragment, useState, useCallback } from "react";
+import { Fragment, useState, useCallback, useEffect } from "react";
 
 import {
   MAX_YEAR,
@@ -18,16 +18,20 @@ import Autocomplete from "components/Autocomplete";
 import { ExpandMoreIcon, ExpandLessIcon } from "assets/icons/google";
 
 const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
-  const [endYear, setEndYear] = useState(MAX_YEAR);
-  const [fainaNames, setFainaNames] = useState(false);
+  const [endYear, setEndYear] = useState(-1);
+  // const [fainaNames, setFainaNames] = useState(false);
   const [selName, setSelName] = useState(null);
   const theme = useUserStore((state) => state.theme);
 
-  const toggeFainaNames = () => {
-    changeLabels(!fainaNames);
-    setFainaNames(!fainaNames);
-  };
+  // const toggeFainaNames = () => {
+  //   changeLabels(!fainaNames);
+  //   setFainaNames(!fainaNames);
+  // };
 
+  useEffect(() => {
+    setEndYear(MAX_YEAR);
+  }, []);
+  
   const toggleInsignias = (name) => {
     const i = insignias.indexOf(name);
 
@@ -131,7 +135,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
               />
             )}
           /> */}
-
+{/* 
       <h5 className="px-3 pt-3 opacity-80">Nomes</h5>
       <div className="px-5 py-3">
         <div
@@ -143,7 +147,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
         >
           Mostrar nomes de faina
         </div>
-      </div>
+      </div> */}
 
       <h5 className="px-3 pt-3 opacity-80">Matrículas</h5>
       <div className="flex justify-start gap-10 px-5 py-3">

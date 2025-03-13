@@ -1,0 +1,629 @@
+[
+    {
+        "father" : "João Reis",
+        "children" : [{
+            "start_year" : 23,
+            "sex" : "M",
+            "name" : "Alexandre Andrade"
+        },
+        {
+            "start_year" : 23,
+            "sex" :"M",
+            "name" : "Dinis Cunha"
+        },
+        {
+            "start_year" : 23,
+            "sex" : "M",
+            "name" : "Dinis Sousa"
+        },
+        {
+            "start_year" : 23,
+            "sex" : "M",
+            "name" : "Gonçalo Ribau"
+        },
+        {
+            "start_year" : 23,
+            "sex" : "M",
+            "name" : "Gabriel Gonçalves"
+        }
+        ]
+    },
+    {
+        "father" : "Paulo Pereira",
+        "children" : [{
+            "start_year" : 23,
+            "sex": "M",
+            "name": "André Martins"
+        },
+        {
+            "start_year" : 23,
+            "sex": "M",
+            "name": "Eduardo Romano"
+        },
+        {
+            "start_year" : 23,
+            "sex": "M",
+            "name": "João Silva"
+        },
+        {
+            "start_year" : 23,
+            "sex": "M",
+            "name": "Rafael Fernandes"
+        },
+        {
+            "start_year" : 23,
+            "sex": "M",
+            "name": "Samuel Vinhas"
+        }]
+    },
+    {
+        "father" : "João Borges",
+        "children" : [
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Eduardo Rosário"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Filipe Nogueira"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Miguel Neto"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Tiago Oliveira"
+            }
+        ]
+    },
+    {
+        "father" : "Marta Inácio",
+        "children" : [
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Bernardo Martins"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "António Santos"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "João Pedro Pereira"
+            }
+        ]
+    },
+    {
+        "father" : "Rita Jesus",
+        "children" : [
+            {
+                "start_year" : 23,
+                "sex": "F",
+                "name": "Catarina Ribeiro"
+            }
+        ]
+    },
+    {
+        "father" : "Dani Figueiredo",
+        "children" : [
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Diego Aguilar"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Paulo Cunha"
+            },
+            {
+                "start_year" : 23,
+                "sex": "F",
+                "name": "Crijecia Nova"
+            }
+        ]
+    },
+    {
+        "father" : "Vasco Vouzela",
+        "children" : [
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "João Cabral"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Gonçalo Floro"
+            }
+        ]
+    },
+    {
+        "father" : "Liliana Ribeiro",
+        "children" : [
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Diogo Duarte"
+            }
+        ]
+    },
+    {
+        "father" : "Sara Almeida",
+        "children" : [
+            {
+                "start_year" : 23,
+                "sex": "F",
+                "name": "Ana Francisco"
+            }
+        ]
+    },
+    {
+        "father" : "João Roldão",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "António Videira"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Pedro Fonseca"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Martim Dias"
+            }
+        ]
+    },
+    {
+        "father" : "Rui Machado",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Tomás Xavier"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Rodrigo Simões"
+            }
+        ]
+    },
+    {
+        "father" : "Mariana Perna",
+        "children" : [
+            {
+                "start_year" : 23,
+                "sex": "F",
+                "name": "Matilde Rodrigues"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Rodrigo Costa"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Tiago Coelho"
+            }
+        ]
+    },
+    {
+        "father" : "Eduardo Santos",
+        "children" : [
+            {
+                "start_year" : 23,
+                "sex": "F",
+                "name": "Mariana Marques"
+            },
+            {
+                "start_year" : 23,
+                "sex": "F",
+                "name": "Marta Almeida"
+            }
+        ]
+    },
+    {
+        "father" : "Lia Cardoso",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "F",
+                "name": "Maria Mané"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Rodrigo Sampaio"
+            }
+        ]
+    },
+    {
+        "father" : "Raquel Paradinha",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Francisco Baptista"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Henrique Lopes"
+            }
+        ]
+    },
+    {
+        "father" : "João Almeida Matos",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Diogo Ruivo"
+            }
+        ]
+    },
+    {
+        "father" : "Paulo Pinto",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "David Cálix"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Tiago Oliveira"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Francisco Silva"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "João Barreira"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Lucas Ruivo"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Tomás Gameiro"
+            }
+        ]
+    },
+    {
+        "father" : "João Varela",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "F",
+                "name": "Inês Lourenço"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Pedro Rocha"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Gonçalo Figueiredo"
+            }
+        ]
+    },
+    {
+        "father" : "Henrique Lopes",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Simão Silva"
+            }
+        ]
+    },
+    {
+        "father" : "Pedro Miguel Marques",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Luís Correia"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Marcos Costa"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Gabriel Riquito"
+            },
+            {
+                "start_year" : 23,
+                "sex": "F",
+                "name": "Ana Ribeiro"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Gonçalo Almeida"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Gonçalo Calvo"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Rafael Ferreira"
+            }
+        ]
+    },
+    {
+        "father" : "Alexandre Cotorobai",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Eduardo Laranjeiro"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "João Pereira"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "João Tomásio"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Bernardo Coelho"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "José Bagagemm"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Luis Tojal"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Simão Santos"
+            }
+        ]
+    },
+    {
+        "father" : "Abel Teixeira",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "José Mendes"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Francisco Correia"
+            }
+        ]
+    },
+    {
+        "father" : "José Marques",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Luís Godinho"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Duarte Ribeiro"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "João Neves"
+            }
+        ]
+    },
+    {
+        "father" : "Igor Coelho",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "João Farias"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Martim Gil"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Gil Guedes"
+            }
+        ]
+    },
+    {
+        "father" : "Zakhar Kruptsala",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Claudino Martins"
+            }
+        ]
+    },
+    {
+        "father" : "Hugo Correia",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Guilherme Gomes"
+            },
+            {
+                "start_year" : 24,
+                "sex": "F",
+                "name": "Maria Gonçalves"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Fernando Santos"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Bernardo Reis"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Filipe Marques"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Rodrigo Santos"
+            },
+            {
+                "start_year" : 23,
+                "sex": "M",
+                "name": "Tiago Mendes"
+            }
+        ]
+    },
+    {
+        "father" : "António Alberto",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Alan Marques"
+            }
+        ]
+    },
+    {
+        "father" : "Matilde Teixeira",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "F",
+                "name": "Margarida Pinheiro"
+            }
+        ]
+    },
+    {
+        "father" : "Tiago Gomes",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Francisco Ferreira"
+            }
+        ]
+    },
+    {
+        "father" : "Filipe Seabra Gonçalves",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Bernardo Santos"
+            }
+        ]
+    },
+    {
+        "father" : "João Sousa",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Samuel Ramos"
+            }
+        ]
+    },
+    {
+        "father" : "Vânia Morais",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "F",
+                "name": "Matilde Sarabando"
+            }
+        ]
+    },
+    {
+        "father" : "Raquel Vinagre",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Tiago Costa"
+            },
+            {
+                "start_year" : 24,
+                "sex": "F",
+                "name": "Inês Batista"
+            },
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Hugo Gonçalves"
+            }
+        ]
+    },
+    {
+        "father" : "Guilherme Mesquita",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "M",
+                "name": "Henrique Madeira"
+            }
+        ]
+    },
+    {
+        "father" : "Hugo Ribeiro",
+        "children" : [
+            {
+                "start_year" : 24,
+                "sex": "F",
+                "name": "Maria Quinteiro"
+            }
+        ]
+    }
+]

@@ -13,7 +13,7 @@ import pa from "assets/icons/pa.svg";
 import heartBorder from "assets/icons/heart_border.svg";
 
 export const MIN_YEAR = 8;
-export const MAX_YEAR = 22;
+export const MAX_YEAR = 24  ;
 
 export const colors = [
   "#006600",
@@ -134,7 +134,7 @@ function showLabelFaina({ fainaNames, start_year }, end_year) {
 
 function labelFamilies(node) {
   if (node.parent) {
-    if (node.parent.id === "000") {
+    if (node.parent.id === 0) {
       node.family = node.id; // head of the family
     } else {
       node.family = node.parent.family;

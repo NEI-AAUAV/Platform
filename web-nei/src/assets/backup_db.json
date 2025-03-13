@@ -1,7 +1,7 @@
 {
     "users": [
         {
-            "id": 0,
+            "id": "000",
             "nmec": null,
             "start_year": null,
             "end_year": null,
@@ -10,12 +10,12 @@
             "name": ""
         },
         {
-            "id": 1,
+            "id": "J19",
             "nmec": null,
             "start_year": 8,
             "end_year": 12,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Diogo Paiva",
             "image": "",
             "organizations": [
@@ -32,12 +32,12 @@
             ]
         },
         {
-            "id": 2,
+            "id": "J20",
             "nmec": null,
             "start_year": 8,
             "end_year": 12,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Marco Miranda",
             "image": "",
             "organizations": [
@@ -48,12 +48,12 @@
             ]
         },
         {
-            "id": 3,
+            "id": "J12",
             "nmec": null,
             "start_year": 9,
             "end_year": 13,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Joana Silva",
             "image": "",
             "organizations": [
@@ -79,12 +79,12 @@
             ]
         },
         {
-            "id": 4,
+            "id": "J13",
             "nmec": null,
             "start_year": 9,
             "end_year": 13,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Rita Jesus",
             "image": "",
             "organizations": [
@@ -104,12 +104,12 @@
             ]
         },
         {
-            "id": 5,
+            "id": "J15",
             "nmec": null,
             "start_year": 9,
             "end_year": 14,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Joana Coelho",
             "image": "",
             "organizations": [
@@ -125,12 +125,12 @@
             ]
         },
         {
-            "id": 6,
+            "id": "J16",
             "nmec": null,
             "start_year": 9,
             "end_year": 13,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Jo\u00e3o Costa",
             "image": "",
             "organizations": [
@@ -146,12 +146,12 @@
             ]
         },
         {
-            "id": 7,
+            "id": "J17",
             "nmec": null,
             "start_year": 9,
             "end_year": 13,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Filipe Silva",
             "image": "",
             "organizations": [
@@ -162,12 +162,12 @@
             ]
         },
         {
-            "id": 8,
+            "id": "J18",
             "nmec": null,
             "start_year": 9,
             "end_year": 13,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Daniel Rodrigues",
             "image": "",
             "organizations": [
@@ -183,12 +183,12 @@
             ]
         },
         {
-            "id": 9,
+            "id": "A41",
             "nmec": 59791,
             "start_year": 10,
             "end_year": 14,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Pedro Neves",
             "image": "",
             "organizations": [
@@ -208,12 +208,12 @@
             ]
         },
         {
-            "id": 10,
+            "id": "J05",
             "nmec": 60151,
             "start_year": 10,
             "end_year": 14,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "F\u00e1bio Almeida",
             "image": "",
             "organizations": [
@@ -228,12 +228,12 @@
             ]
         },
         {
-            "id": 11,
+            "id": "J06",
             "nmec": 60890,
             "start_year": 10,
             "end_year": 14,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Carlos Pacheco",
             "image": "",
             "organizations": [
@@ -244,12 +244,12 @@
             ]
         },
         {
-            "id": 12,
+            "id": "J07",
             "nmec": 60729,
             "start_year": 10,
             "end_year": 14,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "S\u00e9rgio Martins",
             "image": "",
             "organizations": [
@@ -264,12 +264,12 @@
             ]
         },
         {
-            "id": 13,
+            "id": "J09",
             "nmec": null,
             "start_year": 10,
             "end_year": 14,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Marcos Silva",
             "image": "",
             "organizations": [
@@ -289,12 +289,12 @@
             ]
         },
         {
-            "id": 14,
+            "id": "J14",
             "nmec": null,
             "start_year": 10,
             "end_year": 12,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Diogo Ramos",
             "image": "",
             "organizations": [
@@ -305,12 +305,12 @@
             ]
         },
         {
-            "id": 15,
+            "id": "A03",
             "nmec": 65726,
             "start_year": 11,
             "end_year": 15,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Emanuel Laranjo",
             "image": "",
             "organizations": [
@@ -326,12 +326,12 @@
             ]
         },
         {
-            "id": 16,
+            "id": "A26",
             "nmec": 64770,
             "start_year": 11,
             "end_year": 16,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Guilherme Moura",
             "image": "",
             "organizations": [
@@ -352,12 +352,12 @@
             ]
         },
         {
-            "id": 17,
+            "id": "A57",
             "nmec": 65256,
             "start_year": 11,
             "end_year": 15,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Lu\u00eds Filipe Santos",
             "image": "",
             "organizations": [
@@ -382,12 +382,12 @@
             ]
         },
         {
-            "id": 18,
+            "id": "J04",
             "nmec": 67448,
             "start_year": 11,
             "end_year": 15,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Ana Ortega",
             "image": "",
             "organizations": [
@@ -398,12 +398,12 @@
             ]
         },
         {
-            "id": 19,
+            "id": "J10",
             "nmec": 65791,
             "start_year": 11,
             "end_year": 13,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Andreia Ferreira",
             "image": "",
             "organizations": [
@@ -414,12 +414,12 @@
             ]
         },
         {
-            "id": 20,
+            "id": "J11",
             "nmec": 81963,
             "start_year": 11,
             "end_year": 13,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Jos\u00e9 Ribeiro",
             "image": "",
             "organizations": [
@@ -430,12 +430,12 @@
             ]
         },
         {
-            "id": 21,
+            "id": "002",
             "nmec": 69988,
             "start_year": 12,
             "end_year": 17,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Alex Santos",
             "image": "",
             "organizations": [
@@ -450,12 +450,12 @@
             ]
         },
         {
-            "id": 22,
+            "id": "A01",
             "nmec": 67840,
             "start_year": 12,
             "end_year": 17,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Rafael Martins",
             "image": "",
             "organizations": [
@@ -494,12 +494,12 @@
             ]
         },
         {
-            "id": 23,
+            "id": "A36",
             "nmec": 68661,
             "start_year": 12,
             "end_year": 17,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Jo\u00e3o Alegria",
             "image": "",
             "organizations": [
@@ -525,12 +525,12 @@
             ]
         },
         {
-            "id": 24,
+            "id": "A47",
             "nmec": 70066,
             "start_year": 12,
             "end_year": 17,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Jo\u00e3o Crist\u00f3v\u00e3o Freitas",
             "image": "",
             "organizations": [
@@ -546,12 +546,12 @@
             ]
         },
         {
-            "id": 25,
+            "id": "A50",
             "nmec": 72978,
             "start_year": 12,
             "end_year": 14,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Lu\u00eds Oliveira",
             "image": "",
             "organizations": [
@@ -562,22 +562,22 @@
             ]
         },
         {
-            "id": 26,
+            "id": "A52",
             "nmec": 68761,
             "start_year": 12,
             "end_year": 14,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Gon\u00e7alo Mac\u00e1rio",
             "image": ""
         },
         {
-            "id": 27,
+            "id": "A53",
             "nmec": 68304,
             "start_year": 12,
             "end_year": 14,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Sara Fur\u00e3o",
             "image": "",
             "organizations": [
@@ -588,22 +588,22 @@
             ]
         },
         {
-            "id": 28,
+            "id": "A54",
             "nmec": 72757,
             "start_year": 12,
             "end_year": 14,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Filipa Carvalho",
             "image": ""
         },
         {
-            "id": 29,
+            "id": "A55",
             "nmec": 68729,
             "start_year": 12,
             "end_year": 14,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Rita Portas",
             "image": "",
             "organizations": [
@@ -620,12 +620,12 @@
             ]
         },
         {
-            "id": 30,
+            "id": "C02",
             "nmec": 68281,
             "start_year": 12,
             "end_year": 14,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Maxlaine Moreira",
             "image": "",
             "organizations": [
@@ -640,12 +640,12 @@
             ]
         },
         {
-            "id": 31,
+            "id": "J02",
             "nmec": 73156,
             "start_year": 12,
             "end_year": 16,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Bruno Pinto",
             "image": "",
             "organizations": [
@@ -656,12 +656,12 @@
             ]
         },
         {
-            "id": 32,
+            "id": "J03",
             "nmec": 68484,
             "start_year": 12,
             "end_year": 14,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Miguel Antunes",
             "image": "",
             "organizations": [
@@ -677,12 +677,12 @@
             ]
         },
         {
-            "id": 33,
+            "id": "J08",
             "nmec": 67828,
             "start_year": 12,
             "end_year": 14,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Catarina Vinagre",
             "image": "",
             "organizations": [
@@ -693,12 +693,12 @@
             ]
         },
         {
-            "id": 34,
+            "id": "003",
             "nmec": 72059,
             "start_year": 13,
             "end_year": 17,
             "sex": "M",
-            "parent": 22,
+            "parent": "A01",
             "name": "Bruno Barbosa",
             "image": "",
             "organizations": [
@@ -718,22 +718,22 @@
             ]
         },
         {
-            "id": 35,
+            "id": "A04",
             "nmec": 72982,
             "start_year": 13,
             "end_year": 17,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "David Oliveira",
             "image": ""
         },
         {
-            "id": 36,
+            "id": "A09",
             "nmec": 72403,
             "start_year": 13,
             "end_year": 17,
             "sex": "F",
-            "parent": 30,
+            "parent": "C02",
             "name": "Mimi Cunha",
             "image": "",
             "organizations": [
@@ -749,12 +749,12 @@
             ]
         },
         {
-            "id": 37,
+            "id": "A19",
             "nmec": 73941,
             "start_year": 13,
             "end_year": 17,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Pedro Matos",
             "image": "",
             "organizations": [
@@ -765,12 +765,12 @@
             ]
         },
         {
-            "id": 38,
+            "id": "A32",
             "nmec": 72219,
             "start_year": 13,
             "end_year": 17,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "David Ferreira",
             "image": "",
             "organizations": [
@@ -791,12 +791,12 @@
             ]
         },
         {
-            "id": 39,
+            "id": "A38",
             "nmec": 73241,
             "start_year": 13,
             "end_year": 18,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "B\u00e1rbara Jael",
             "image": "",
             "organizations": [
@@ -813,12 +813,12 @@
             ]
         },
         {
-            "id": 40,
+            "id": "A02",
             "nmec": 76724,
             "start_year": 14,
             "end_year": 18,
             "sex": "M",
-            "parent": 22,
+            "parent": "A01",
             "name": "Paulo Seixas",
             "image": "",
             "organizations": [
@@ -830,22 +830,22 @@
             ]
         },
         {
-            "id": 41,
+            "id": "A37",
             "nmec": 76747,
             "start_year": 14,
             "end_year": 16,
             "sex": "M",
-            "parent": 23,
+            "parent": "A36",
             "name": "Pedro Rodrigues",
             "image": ""
         },
         {
-            "id": 42,
+            "id": "A42",
             "nmec": 76368,
             "start_year": 14,
             "end_year": 16,
             "sex": "M",
-            "parent": 9,
+            "parent": "A41",
             "name": "Jo\u00e3o Pa\u00fal",
             "image": "",
             "organizations": [
@@ -860,12 +860,12 @@
             ]
         },
         {
-            "id": 43,
+            "id": "A43",
             "nmec": 76604,
             "start_year": 14,
             "end_year": 18,
             "sex": "F",
-            "parent": 9,
+            "parent": "A41",
             "name": "In\u00eas Correia",
             "image": "",
             "organizations": [
@@ -887,32 +887,32 @@
             ]
         },
         {
-            "id": 44,
+            "id": "A48",
             "nmec": 76501,
             "start_year": 14,
             "end_year": 18,
             "sex": "F",
-            "parent": 24,
+            "parent": "A47",
             "name": "Andreia Machado",
             "image": ""
         },
         {
-            "id": 45,
+            "id": "A49",
             "nmec": 76341,
             "start_year": 14,
             "end_year": 18,
             "sex": "M",
-            "parent": 24,
+            "parent": "A47",
             "name": "Daniel Silva",
             "image": ""
         },
         {
-            "id": 46,
+            "id": "A91",
             "nmec": 76609,
             "start_year": 14,
             "end_year": 18,
             "sex": "M",
-            "parent": 26,
+            "parent": "A52",
             "name": "Andr\u00e9 Moleirinho",
             "image": "",
             "organizations": [
@@ -928,22 +928,22 @@
             ]
         },
         {
-            "id": 47,
+            "id": "A92",
             "nmec": 77091,
             "start_year": 14,
             "end_year": 18,
             "sex": "M",
-            "parent": 27,
+            "parent": "A53",
             "name": "Francisco Oliveira",
             "image": ""
         },
         {
-            "id": 48,
+            "id": "A93",
             "nmec": 76610,
             "start_year": 14,
             "end_year": 18,
             "sex": "M",
-            "parent": 27,
+            "parent": "A53",
             "name": "Hugo Pintor",
             "image": "",
             "organizations": [
@@ -965,12 +965,12 @@
             ]
         },
         {
-            "id": 49,
+            "id": "J01",
             "nmec": 76667,
             "start_year": 14,
             "end_year": 18,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Marco Ventura",
             "image": "",
             "organizations": [
@@ -981,12 +981,12 @@
             ]
         },
         {
-            "id": 50,
+            "id": "004",
             "nmec": 79663,
             "start_year": 15,
             "end_year": 19,
             "sex": "F",
-            "parent": 34,
+            "parent": "003",
             "name": "Andreia Patroc\u00ednio",
             "image": "",
             "organizations": [
@@ -1011,12 +1011,12 @@
             ]
         },
         {
-            "id": 51,
+            "id": "005",
             "nmec": 80038,
             "start_year": 15,
             "end_year": 19,
             "sex": "F",
-            "parent": 34,
+            "parent": "003",
             "name": "Carolina Albuquerque",
             "image": "",
             "organizations": [
@@ -1037,12 +1037,12 @@
             ]
         },
         {
-            "id": 52,
+            "id": "006",
             "nmec": 80390,
             "start_year": 15,
             "end_year": 19,
             "sex": "M",
-            "parent": 21,
+            "parent": "002",
             "name": "Jo\u00e3o Artur Costa",
             "image": "",
             "organizations": [
@@ -1066,12 +1066,12 @@
             ]
         },
         {
-            "id": 53,
+            "id": "007",
             "nmec": 80041,
             "start_year": 15,
             "end_year": 21,
             "sex": "M",
-            "parent": 15,
+            "parent": "A03",
             "name": "Jo\u00e3o Ferreira",
             "image": "",
             "organizations": [
@@ -1086,12 +1086,12 @@
             ]
         },
         {
-            "id": 54,
+            "id": "008",
             "nmec": 79923,
             "start_year": 15,
             "end_year": null,
             "sex": "M",
-            "parent": 15,
+            "parent": "A03",
             "name": "Jo\u00e3o Magalh\u00e3es",
             "image": "",
             "organizations": [
@@ -1111,12 +1111,12 @@
             ]
         },
         {
-            "id": 55,
+            "id": "009",
             "nmec": 79901,
             "start_year": 15,
             "end_year": null,
             "sex": "M",
-            "parent": 15,
+            "parent": "A03",
             "name": "Jos\u00e9 Moreira",
             "image": "",
             "organizations": [
@@ -1135,72 +1135,72 @@
             ]
         },
         {
-            "id": 56,
+            "id": "A05",
             "nmec": 80069,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 35,
+            "parent": "A04",
             "name": "Daniel Gon\u00e7alves",
             "image": ""
         },
         {
-            "id": 57,
+            "id": "A06",
             "nmec": 80870,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 34,
+            "parent": "003",
             "name": "Ant\u00f3nio Castanheira",
             "image": ""
         },
         {
-            "id": 58,
+            "id": "A10",
             "nmec": 79900,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 36,
+            "parent": "A09",
             "name": "Fred Av\u00f3",
             "image": ""
         },
         {
-            "id": 59,
+            "id": "A11",
             "nmec": 79958,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 36,
+            "parent": "A09",
             "name": "Nuno Silva",
             "image": ""
         },
         {
-            "id": 60,
+            "id": "A15",
             "nmec": 80246,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 21,
+            "parent": "002",
             "name": "Diogo Jorge Ferreira",
             "image": ""
         },
         {
-            "id": 61,
+            "id": "A16",
             "nmec": 79930,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 21,
+            "parent": "002",
             "name": "Jo\u00e3o Soares",
             "image": ""
         },
         {
-            "id": 62,
+            "id": "A20",
             "nmec": 79962,
             "start_year": 15,
             "end_year": 19,
             "sex": "M",
-            "parent": 37,
+            "parent": "A19",
             "name": "Carlos Soares",
             "image": "",
             "organizations": [
@@ -1224,12 +1224,12 @@
             ]
         },
         {
-            "id": 63,
+            "id": "A27",
             "nmec": 79997,
             "start_year": 15,
             "end_year": 19,
             "sex": "M",
-            "parent": 16,
+            "parent": "A26",
             "name": "Tiago Cardoso",
             "image": "",
             "organizations": [
@@ -1249,42 +1249,42 @@
             ]
         },
         {
-            "id": 64,
+            "id": "A28",
             "nmec": 80298,
             "start_year": 15,
             "end_year": 19,
             "sex": "M",
-            "parent": 16,
+            "parent": "A26",
             "name": "Saveliy Ivanov",
             "image": ""
         },
         {
-            "id": 65,
+            "id": "A29",
             "nmec": 79957,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 16,
+            "parent": "A26",
             "name": "Miguel Sim\u00f5es",
             "image": ""
         },
         {
-            "id": 66,
+            "id": "A33",
             "nmec": 80149,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 38,
+            "parent": "A32",
             "name": "Daniel Lopes",
             "image": ""
         },
         {
-            "id": 67,
+            "id": "A34",
             "nmec": 81882,
             "start_year": 15,
             "end_year": null,
             "sex": "M",
-            "parent": 38,
+            "parent": "A32",
             "name": "David Fernandes",
             "image": "",
             "organizations": [
@@ -1305,32 +1305,32 @@
             ]
         },
         {
-            "id": 68,
+            "id": "A35",
             "nmec": 80308,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 38,
+            "parent": "A32",
             "name": "Manuel Felizardo",
             "image": ""
         },
         {
-            "id": 69,
+            "id": "A39",
             "nmec": 80049,
             "start_year": 15,
             "end_year": null,
             "sex": "F",
-            "parent": 39,
+            "parent": "A38",
             "name": "Ana Filipa Almeida",
             "image": ""
         },
         {
-            "id": 70,
+            "id": "A44",
             "nmec": 80013,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 42,
+            "parent": "A42",
             "name": "Dimitri Silva",
             "image": "",
             "organizations": [
@@ -1341,42 +1341,42 @@
             ]
         },
         {
-            "id": 71,
+            "id": "A51",
             "nmec": 80050,
             "start_year": 15,
             "end_year": null,
             "sex": "F",
-            "parent": 25,
+            "parent": "A50",
             "name": "Salom\u00e9 Lopes",
             "image": ""
         },
         {
-            "id": 72,
+            "id": "A56",
             "nmec": 80228,
             "start_year": 15,
             "end_year": 17,
             "sex": "M",
-            "parent": 29,
+            "parent": "A55",
             "name": "Diego Trovisco",
             "image": ""
         },
         {
-            "id": 73,
+            "id": "A58",
             "nmec": 78444,
             "start_year": 15,
             "end_year": null,
             "sex": "M",
-            "parent": 17,
+            "parent": "A57",
             "name": "Nuno Matamba",
             "image": ""
         },
         {
-            "id": 74,
+            "id": "A59",
             "nmec": 79994,
             "start_year": 15,
             "end_year": null,
             "sex": "M",
-            "parent": 17,
+            "parent": "A57",
             "name": "Gon\u00e7alo Almeida",
             "image": "",
             "organizations": [
@@ -1396,52 +1396,52 @@
             ]
         },
         {
-            "id": 75,
+            "id": "A60",
             "nmec": 81859,
             "start_year": 15,
             "end_year": 15,
             "sex": "M",
-            "parent": 17,
+            "parent": "A57",
             "name": "Bruno Alves",
             "image": ""
         },
         {
-            "id": 76,
+            "id": "A94",
             "nmec": 80365,
             "start_year": 15,
             "end_year": 15,
             "sex": "F",
-            "parent": 28,
+            "parent": "A54",
             "name": "Rita Oliveira",
             "image": ""
         },
         {
-            "id": 77,
+            "id": "A95",
             "nmec": 80081,
             "start_year": 15,
             "end_year": 15,
             "sex": "M",
-            "parent": 46,
+            "parent": "A91",
             "name": "F\u00e1bio Rog\u00e3o",
             "image": ""
         },
         {
-            "id": 78,
+            "id": "B52",
             "nmec": 78191,
             "start_year": 16,
             "end_year": 21,
             "sex": "M",
-            "parent": 63,
+            "parent": "A27",
             "name": "Isaac dos Anjos",
             "image": ""
         },
         {
-            "id": 79,
+            "id": "010",
             "nmec": 84802,
             "start_year": 16,
             "end_year": null,
             "sex": "M",
-            "parent": 45,
+            "parent": "A49",
             "name": "Francisco Silveira",
             "image": "",
             "organizations": [
@@ -1452,12 +1452,12 @@
             ]
         },
         {
-            "id": 80,
+            "id": "011",
             "nmec": 84904,
             "start_year": 16,
             "end_year": 18,
             "sex": "F",
-            "parent": 50,
+            "parent": "004",
             "name": "Sandra Andrade",
             "image": "",
             "organizations": [
@@ -1468,12 +1468,12 @@
             ]
         },
         {
-            "id": 81,
+            "id": "015",
             "nmec": 84732,
             "start_year": 16,
             "end_year": null,
             "sex": "M",
-            "parent": 34,
+            "parent": "003",
             "name": "Jo\u00e3o Ab\u00edlio Rodrigues",
             "image": "",
             "organizations": [
@@ -1495,12 +1495,12 @@
             ]
         },
         {
-            "id": 82,
+            "id": "A07",
             "nmec": 85132,
             "start_year": 16,
             "end_year": null,
             "sex": "M",
-            "parent": 34,
+            "parent": "003",
             "name": "Sim\u00e3o Arrais",
             "image": "",
             "organizations": [
@@ -1511,12 +1511,12 @@
             ]
         },
         {
-            "id": 83,
+            "id": "A08",
             "nmec": 84781,
             "start_year": 16,
             "end_year": null,
             "sex": "F",
-            "parent": 34,
+            "parent": "003",
             "name": "Mariana Sequeira",
             "image": "",
             "organizations": [
@@ -1543,32 +1543,32 @@
             ]
         },
         {
-            "id": 84,
+            "id": "A12",
             "nmec": 86044,
             "start_year": 16,
             "end_year": 18,
             "sex": "F",
-            "parent": 36,
+            "parent": "A09",
             "name": "Rafaela Vieira",
             "image": ""
         },
         {
-            "id": 85,
+            "id": "A13",
             "nmec": 85084,
             "start_year": 16,
             "end_year": 18,
             "sex": "F",
-            "parent": 36,
+            "parent": "A09",
             "name": "Carolina Marques",
             "image": ""
         },
         {
-            "id": 86,
+            "id": "A14",
             "nmec": 84793,
             "start_year": 16,
             "end_year": 18,
             "sex": "M",
-            "parent": 36,
+            "parent": "A09",
             "name": "Daniel Nunes",
             "image": "",
             "organizations": [
@@ -1580,12 +1580,12 @@
             ]
         },
         {
-            "id": 87,
+            "id": "A17",
             "nmec": 84735,
             "start_year": 16,
             "end_year": null,
             "sex": "M",
-            "parent": 21,
+            "parent": "002",
             "name": "Pedro Ferreira",
             "image": "",
             "organizations": [
@@ -1607,62 +1607,62 @@
             ]
         },
         {
-            "id": 88,
+            "id": "A18",
             "nmec": 85122,
             "start_year": 16,
             "end_year": 18,
             "sex": "M",
-            "parent": 21,
+            "parent": "002",
             "name": "Filipe Pires",
             "image": ""
         },
         {
-            "id": 89,
+            "id": "A21",
             "nmec": 84711,
             "start_year": 16,
             "end_year": null,
             "sex": "F",
-            "parent": 37,
+            "parent": "A19",
             "name": "Catarina Xavier",
             "image": ""
         },
         {
-            "id": 90,
+            "id": "A22",
             "nmec": 84798,
             "start_year": 16,
             "end_year": 18,
             "sex": "M",
-            "parent": 37,
+            "parent": "A19",
             "name": "Pedro Fajardo",
             "image": ""
         },
         {
-            "id": 91,
+            "id": "A23",
             "nmec": 84796,
             "start_year": 16,
             "end_year": 18,
             "sex": "M",
-            "parent": 37,
+            "parent": "A19",
             "name": "Vitor Fajardo",
             "image": ""
         },
         {
-            "id": 92,
+            "id": "A24",
             "nmec": 84759,
             "start_year": 16,
             "end_year": 18,
             "sex": "M",
-            "parent": 37,
+            "parent": "A19",
             "name": "Rafael Batista",
             "image": ""
         },
         {
-            "id": 93,
+            "id": "A25",
             "nmec": 84986,
             "start_year": 16,
             "end_year": null,
             "sex": "M",
-            "parent": 37,
+            "parent": "A19",
             "name": "Pedro Matos",
             "image": "",
             "organizations": [
@@ -1674,32 +1674,32 @@
             ]
         },
         {
-            "id": 94,
+            "id": "A30",
             "nmec": 84811,
             "start_year": 16,
             "end_year": null,
             "sex": "M",
-            "parent": 16,
+            "parent": "A26",
             "name": "Andr\u00e9 Gomes",
             "image": ""
         },
         {
-            "id": 95,
+            "id": "A31",
             "nmec": 85002,
             "start_year": 16,
             "end_year": 18,
             "sex": "M",
-            "parent": 16,
+            "parent": "A26",
             "name": "Lu\u00eds Cardoso",
             "image": ""
         },
         {
-            "id": 96,
+            "id": "A40",
             "nmec": 84921,
             "start_year": 16,
             "end_year": null,
             "sex": "M",
-            "parent": 39,
+            "parent": "A38",
             "name": "Rafael Direito",
             "image": "",
             "organizations": [
@@ -1721,12 +1721,12 @@
             ]
         },
         {
-            "id": 97,
+            "id": "A45",
             "nmec": 85044,
             "start_year": 16,
             "end_year": null,
             "sex": "M",
-            "parent": 42,
+            "parent": "A42",
             "name": "Lu\u00eds Costa",
             "image": "",
             "organizations": [
@@ -1747,32 +1747,32 @@
             ]
         },
         {
-            "id": 98,
+            "id": "A46",
             "nmec": 84702,
             "start_year": 16,
             "end_year": 18,
             "sex": "M",
-            "parent": 42,
+            "parent": "A42",
             "name": "Lu\u00eds Pais Alves",
             "image": ""
         },
         {
-            "id": 99,
+            "id": "B26",
             "nmec": 84899,
             "start_year": 16,
             "end_year": 18,
             "sex": "M",
-            "parent": 63,
+            "parent": "A27",
             "name": "Ricardo Castor",
             "image": ""
         },
         {
-            "id": 100,
+            "id": "B47",
             "nmec": 85113,
             "start_year": 16,
             "end_year": 18,
             "sex": "M",
-            "parent": 62,
+            "parent": "A20",
             "name": "Cl\u00e1udio Costa",
             "image": "",
             "organizations": [
@@ -1788,12 +1788,12 @@
             ]
         },
         {
-            "id": 101,
+            "id": "B48",
             "nmec": 84746,
             "start_year": 16,
             "end_year": null,
             "sex": "M",
-            "parent": 87,
+            "parent": "A17",
             "name": "Rafael Teixeira",
             "image": "",
             "organizations": [
@@ -1815,12 +1815,12 @@
             ]
         },
         {
-            "id": 102,
+            "id": "012",
             "nmec": 89334,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 51,
+            "parent": "005",
             "name": "Andr\u00e9 Alves",
             "image": "",
             "organizations": [
@@ -1831,22 +1831,22 @@
             ]
         },
         {
-            "id": 103,
+            "id": "013",
             "nmec": 88751,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 50,
+            "parent": "004",
             "name": "Andr\u00e9 Gual",
             "image": ""
         },
         {
-            "id": 104,
+            "id": "014",
             "nmec": 90451,
             "start_year": 17,
             "end_year": 21,
             "sex": "F",
-            "parent": 51,
+            "parent": "005",
             "name": "Carina Neves",
             "image": "",
             "organizations": [
@@ -1875,22 +1875,22 @@
             ]
         },
         {
-            "id": 105,
+            "id": "016",
             "nmec": 88837,
             "start_year": 17,
             "end_year": 18,
             "sex": "F",
-            "parent": 50,
+            "parent": "004",
             "name": "Mariana Gameiro",
             "image": ""
         },
         {
-            "id": 106,
+            "id": "017",
             "nmec": 88821,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 50,
+            "parent": "004",
             "name": "Pedro Escaleira",
             "image": "",
             "organizations": [
@@ -1907,12 +1907,12 @@
             ]
         },
         {
-            "id": 107,
+            "id": "018",
             "nmec": 88886,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 62,
+            "parent": "A20",
             "name": "Tiago Mendes",
             "image": "",
             "organizations": [
@@ -1927,12 +1927,12 @@
             ]
         },
         {
-            "id": 108,
+            "id": "019",
             "nmec": 89016,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 34,
+            "parent": "003",
             "name": "Tom\u00e1s Costa",
             "image": "",
             "organizations": [
@@ -1944,12 +1944,12 @@
             ]
         },
         {
-            "id": 109,
+            "id": "A63",
             "nmec": 88888,
             "start_year": 17,
             "end_year": 21,
             "sex": "M",
-            "parent": 36,
+            "parent": "A09",
             "name": "Lu\u00eds Silva",
             "image": "",
             "organizations": [
@@ -1968,22 +1968,22 @@
             ]
         },
         {
-            "id": 110,
+            "id": "A64",
             "nmec": 89265,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 36,
+            "parent": "A09",
             "name": "Diogo Andrade",
             "image": ""
         },
         {
-            "id": 111,
+            "id": "A83",
             "nmec": 89296,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 37,
+            "parent": "A19",
             "name": "Tom\u00e1s Batista",
             "image": "",
             "organizations": [
@@ -1995,22 +1995,22 @@
             ]
         },
         {
-            "id": 112,
+            "id": "A84",
             "nmec": 89236,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 37,
+            "parent": "A19",
             "name": "Jo\u00e3o Dias",
             "image": ""
         },
         {
-            "id": 113,
+            "id": "A85",
             "nmec": 88830,
             "start_year": 17,
             "end_year": 19,
             "sex": "F",
-            "parent": 62,
+            "parent": "A20",
             "name": "Marta Ferreira",
             "image": "",
             "organizations": [
@@ -2036,22 +2036,22 @@
             ]
         },
         {
-            "id": 114,
+            "id": "B07",
             "nmec": 89059,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 39,
+            "parent": "A38",
             "name": "Jo\u00e3o Carvalho",
             "image": ""
         },
         {
-            "id": 115,
+            "id": "B08",
             "nmec": 89348,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 39,
+            "parent": "A38",
             "name": "Diogo Silva",
             "image": "",
             "organizations": [
@@ -2063,22 +2063,22 @@
             ]
         },
         {
-            "id": 116,
+            "id": "B12",
             "nmec": 88889,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 23,
+            "parent": "A36",
             "name": "Rui Melo",
             "image": ""
         },
         {
-            "id": 117,
+            "id": "B13",
             "nmec": 88887,
             "start_year": 17,
             "end_year": 19,
             "sex": "F",
-            "parent": 43,
+            "parent": "A43",
             "name": "Fl\u00e1via Figueiredo",
             "image": "",
             "organizations": [
@@ -2090,22 +2090,22 @@
             ]
         },
         {
-            "id": 118,
+            "id": "B19",
             "nmec": 89341,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 74,
+            "parent": "A59",
             "name": "Daniel Pinto",
             "image": ""
         },
         {
-            "id": 119,
+            "id": "B20",
             "nmec": 88808,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 74,
+            "parent": "A59",
             "name": "Jo\u00e3o Vasconcelos",
             "image": "",
             "organizations": [
@@ -2117,12 +2117,12 @@
             ]
         },
         {
-            "id": 120,
+            "id": "B22",
             "nmec": 89156,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 67,
+            "parent": "A34",
             "name": "Pedro Oliveira",
             "image": "",
             "organizations": [
@@ -2134,62 +2134,62 @@
             ]
         },
         {
-            "id": 121,
+            "id": "B23",
             "nmec": 88903,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 67,
+            "parent": "A34",
             "name": "Jos\u00e9 Vaz",
             "image": ""
         },
         {
-            "id": 122,
+            "id": "B24",
             "nmec": 89206,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 67,
+            "parent": "A34",
             "name": "Jos\u00e9 Frias",
             "image": ""
         },
         {
-            "id": 123,
+            "id": "B25",
             "nmec": 89069,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 122,
+            "parent": "B24",
             "name": "Pedro Miguel Marques",
             "image": ""
         },
         {
-            "id": 124,
+            "id": "B27",
             "nmec": 89093,
             "start_year": 17,
             "end_year": 21,
             "sex": "F",
-            "parent": 62,
+            "parent": "A20",
             "name": "Alina Yanchuk",
             "image": ""
         },
         {
-            "id": 125,
+            "id": "B34",
             "nmec": 89323,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 51,
+            "parent": "005",
             "name": "Edgar Morais",
             "image": ""
         },
         {
-            "id": 126,
+            "id": "B38",
             "nmec": 88931,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 57,
+            "parent": "A06",
             "name": "Vasco Ramos",
             "image": "",
             "organizations": [
@@ -2206,102 +2206,102 @@
             ]
         },
         {
-            "id": 127,
+            "id": "B43",
             "nmec": 89337,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 52,
+            "parent": "006",
             "name": "Andr\u00e9 Catarino",
             "image": ""
         },
         {
-            "id": 128,
+            "id": "B44",
             "nmec": 89331,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 52,
+            "parent": "006",
             "name": "Miguel Mota",
             "image": ""
         },
         {
-            "id": 129,
+            "id": "B45",
             "nmec": 89066,
             "start_year": 17,
             "end_year": null,
             "sex": "M",
-            "parent": 52,
+            "parent": "006",
             "name": "Lu\u00eds Fonseca",
             "image": ""
         },
         {
-            "id": 130,
+            "id": "D01",
             "nmec": 89022,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 82,
+            "parent": "A07",
             "name": "Jo\u00e3o Pedro Vasconcelos",
             "image": ""
         },
         {
-            "id": 131,
+            "id": "D02",
             "nmec": 88831,
             "start_year": 17,
             "end_year": 19,
             "sex": "M",
-            "parent": 47,
+            "parent": "A92",
             "name": "Andr\u00e9 Amorim",
             "image": ""
         },
         {
-            "id": 132,
+            "id": "020",
             "nmec": 91268,
             "start_year": 18,
             "end_year": 19,
             "sex": "M",
-            "parent": 50,
+            "parent": "004",
             "name": "Abel Rodrigues",
             "image": ""
         },
         {
-            "id": 133,
+            "id": "021",
             "nmec": 93333,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 107,
+            "parent": "018",
             "name": "Afonso Silva",
             "image": ""
         },
         {
-            "id": 134,
+            "id": "022",
             "nmec": 93302,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 53,
+            "parent": "007",
             "name": "Bruno Bastos",
             "image": ""
         },
         {
-            "id": 135,
+            "id": "023",
             "nmec": 93248,
             "start_year": 18,
             "end_year": 20,
             "sex": "F",
-            "parent": 54,
+            "parent": "008",
             "name": "Carolina Ara\u00fajo",
             "image": ""
         },
         {
-            "id": 136,
+            "id": "024",
             "nmec": 93015,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 81,
+            "parent": "015",
             "name": "Daniel Gomes",
             "image": "",
             "organizations": [
@@ -2313,22 +2313,22 @@
             ]
         },
         {
-            "id": 137,
+            "id": "025",
             "nmec": 93200,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 55,
+            "parent": "009",
             "name": "Diogo Guimar\u00e3es Silva",
             "image": ""
         },
         {
-            "id": 138,
+            "id": "026",
             "nmec": 92963,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 104,
+            "parent": "014",
             "name": "Duarte Mort\u00e1gua",
             "image": "",
             "organizations": [
@@ -2345,12 +2345,12 @@
             ]
         },
         {
-            "id": 139,
+            "id": "027",
             "nmec": 93107,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 50,
+            "parent": "004",
             "name": "Eduardo Santos",
             "image": "027",
             "organizations": [
@@ -2384,12 +2384,12 @@
             ]
         },
         {
-            "id": 140,
+            "id": "028",
             "nmec": 92972,
             "start_year": 18,
             "end_year": 20,
             "sex": "M",
-            "parent": 51,
+            "parent": "005",
             "name": "Gon\u00e7alo Matos",
             "image": "",
             "organizations": [
@@ -2401,12 +2401,12 @@
             ]
         },
         {
-            "id": 141,
+            "id": "029",
             "nmec": 93195,
             "start_year": 18,
             "end_year": 20,
             "sex": "M",
-            "parent": 81,
+            "parent": "015",
             "name": "Hugo Paiva",
             "image": "",
             "organizations": [
@@ -2428,12 +2428,12 @@
             ]
         },
         {
-            "id": 142,
+            "id": "030",
             "nmec": 93446,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 50,
+            "parent": "004",
             "name": "Leandro Silva",
             "image": "030",
             "organizations": [
@@ -2450,22 +2450,22 @@
             ]
         },
         {
-            "id": 143,
+            "id": "031",
             "nmec": 93989,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 52,
+            "parent": "006",
             "name": "Lu\u00eds Valentim",
             "image": ""
         },
         {
-            "id": 144,
+            "id": "032",
             "nmec": 93430,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 102,
+            "parent": "012",
             "name": "M\u00e1rio Silva",
             "image": "",
             "organizations": [
@@ -2477,12 +2477,12 @@
             ]
         },
         {
-            "id": 145,
+            "id": "033",
             "nmec": 93150,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 79,
+            "parent": "010",
             "name": "Pedro Bastos",
             "image": "",
             "organizations": [
@@ -2515,32 +2515,32 @@
             ]
         },
         {
-            "id": 146,
+            "id": "034",
             "nmec": 93103,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 51,
+            "parent": "005",
             "name": "Pedro Tavares",
             "image": ""
         },
         {
-            "id": 147,
+            "id": "035",
             "nmec": 93118,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 54,
+            "parent": "008",
             "name": "Ricardo Cruz",
             "image": ""
         },
         {
-            "id": 148,
+            "id": "036",
             "nmec": 92952,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 52,
+            "parent": "006",
             "name": "Rui Filipe Fernandes",
             "image": "036",
             "organizations": [
@@ -2559,12 +2559,12 @@
             ]
         },
         {
-            "id": 149,
+            "id": "A65",
             "nmec": 91322,
             "start_year": 18,
             "end_year": null,
             "sex": "F",
-            "parent": 84,
+            "parent": "A12",
             "name": "Isadora Loredo",
             "image": "",
             "organizations": [
@@ -2576,32 +2576,32 @@
             ]
         },
         {
-            "id": 150,
+            "id": "B01",
             "nmec": 93124,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 54,
+            "parent": "008",
             "name": "Afonso Rodrigues",
             "image": ""
         },
         {
-            "id": 151,
+            "id": "B02",
             "nmec": 92969,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 54,
+            "parent": "008",
             "name": "Diogo Carvalho",
             "image": ""
         },
         {
-            "id": 152,
+            "id": "B04",
             "nmec": 93019,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 96,
+            "parent": "A40",
             "name": "Lucas Botto",
             "image": "",
             "organizations": [
@@ -2613,12 +2613,12 @@
             ]
         },
         {
-            "id": 153,
+            "id": "B05",
             "nmec": 93456,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 96,
+            "parent": "A40",
             "name": "Tiago Oliveira",
             "image": "",
             "organizations": [
@@ -2635,12 +2635,12 @@
             ]
         },
         {
-            "id": 154,
+            "id": "B06",
             "nmec": 93169,
             "start_year": 18,
             "end_year": null,
             "sex": "F",
-            "parent": 96,
+            "parent": "A40",
             "name": "Margarida Martins",
             "image": "B06",
             "organizations": [
@@ -2667,82 +2667,82 @@
             ]
         },
         {
-            "id": 155,
+            "id": "B09",
             "nmec": 93168,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 39,
+            "parent": "A38",
             "name": "Renan Ferreira",
             "image": ""
         },
         {
-            "id": 156,
+            "id": "B14",
             "nmec": 94521,
             "start_year": 18,
             "end_year": 20,
             "sex": "M",
-            "parent": 117,
+            "parent": "B13",
             "name": "Orlando Macedo",
             "image": ""
         },
         {
-            "id": 157,
+            "id": "B15",
             "nmec": 95278,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 97,
+            "parent": "A45",
             "name": "Diogo Cunha",
             "image": ""
         },
         {
-            "id": 158,
+            "id": "B16",
             "nmec": 93320,
             "start_year": 18,
             "end_year": null,
             "sex": "F",
-            "parent": 97,
+            "parent": "A45",
             "name": "Maria In\u00eas Rocha",
             "image": ""
         },
         {
-            "id": 159,
+            "id": "B17",
             "nmec": 93257,
             "start_year": 18,
             "end_year": 20,
             "sex": "F",
-            "parent": 97,
+            "parent": "A45",
             "name": "Mariana Santos",
             "image": ""
         },
         {
-            "id": 160,
+            "id": "B18",
             "nmec": 93016,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 97,
+            "parent": "A45",
             "name": "Anthony Pereira",
             "image": ""
         },
         {
-            "id": 161,
+            "id": "B21",
             "nmec": 93310,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 74,
+            "parent": "A59",
             "name": "Gon\u00e7alo Pereira",
             "image": ""
         },
         {
-            "id": 162,
+            "id": "B40",
             "nmec": 93127,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 86,
+            "parent": "A14",
             "name": "Diogo Moreira",
             "image": "",
             "organizations": [
@@ -2754,32 +2754,32 @@
             ]
         },
         {
-            "id": 163,
+            "id": "B49",
             "nmec": 93346,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 100,
+            "parent": "B47",
             "name": "Alexandra Carvalho",
             "image": ""
         },
         {
-            "id": 164,
+            "id": "B50",
             "nmec": 93078,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 100,
+            "parent": "B47",
             "name": "Jo\u00e3o Soares",
             "image": ""
         },
         {
-            "id": 165,
+            "id": "B51",
             "nmec": 93080,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 100,
+            "parent": "B47",
             "name": "Dinis Cruz",
             "image": "",
             "organizations": [
@@ -2790,32 +2790,32 @@
             ]
         },
         {
-            "id": 166,
+            "id": "D03",
             "nmec": 93367,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 79,
+            "parent": "010",
             "name": "Rafael Batista",
             "image": ""
         },
         {
-            "id": 167,
+            "id": "D04",
             "nmec": 93221,
             "start_year": 18,
             "end_year": null,
             "sex": "M",
-            "parent": 79,
+            "parent": "010",
             "name": "Pedro Santos",
             "image": ""
         },
         {
-            "id": 168,
+            "id": "037",
             "nmec": 98470,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 52,
+            "parent": "006",
             "name": "Artur Rom\u00e3o",
             "image": "",
             "organizations": [
@@ -2830,12 +2830,12 @@
             ]
         },
         {
-            "id": 169,
+            "id": "038",
             "nmec": 98629,
             "start_year": 19,
             "end_year": null,
             "sex": "F",
-            "parent": 108,
+            "parent": "019",
             "name": "Marta Fradique",
             "image": "",
             "organizations": [
@@ -2847,22 +2847,22 @@
             ]
         },
         {
-            "id": 170,
+            "id": "039",
             "nmec": 98515,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 51,
+            "parent": "005",
             "name": "Vicente Costa",
             "image": ""
         },
         {
-            "id": 171,
+            "id": "082",
             "nmec": 98513,
             "start_year": 19,
             "end_year": null,
             "sex": "F",
-            "parent": 109,
+            "parent": "A63",
             "name": "Eva Bartolomeu",
             "image": "",
             "organizations": [
@@ -2874,12 +2874,12 @@
             ]
         },
         {
-            "id": 172,
+            "id": "A61",
             "nmec": 98474,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 54,
+            "parent": "008",
             "name": "Jo\u00e3o Reis",
             "image": "",
             "organizations": [
@@ -2898,42 +2898,42 @@
             ]
         },
         {
-            "id": 173,
+            "id": "A66",
             "nmec": 98323,
             "start_year": 19,
             "end_year": null,
             "sex": "F",
-            "parent": 84,
+            "parent": "A12",
             "name": "Raquel Ferreira",
             "image": "A66"
         },
         {
-            "id": 174,
+            "id": "A67",
             "nmec": 97953,
             "start_year": 19,
             "end_year": 21,
             "sex": "F",
-            "parent": 84,
+            "parent": "A12",
             "name": "Andreia Portela",
             "image": ""
         },
         {
-            "id": 175,
+            "id": "A68",
             "nmec": 98546,
             "start_year": 19,
             "end_year": null,
             "sex": "F",
-            "parent": 84,
+            "parent": "A12",
             "name": "Patr\u00edcia Dias",
             "image": ""
         },
         {
-            "id": 176,
+            "id": "A69",
             "nmec": 98498,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 145,
+            "parent": "033",
             "name": "Dani Figueiredo",
             "image": "",
             "organizations": [
@@ -2944,12 +2944,12 @@
             ]
         },
         {
-            "id": 177,
+            "id": "A70",
             "nmec": 98521,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 139,
+            "parent": "027",
             "name": "Lu\u00eds Martins",
             "image": "",
             "organizations": [
@@ -2961,12 +2961,12 @@
             ]
         },
         {
-            "id": 178,
+            "id": "A71",
             "nmec": 98008,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 104,
+            "parent": "014",
             "name": "Gon\u00e7alo Leal Silva",
             "image": "",
             "organizations": [
@@ -2978,22 +2978,22 @@
             ]
         },
         {
-            "id": 179,
+            "id": "A72",
             "nmec": 97484,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 104,
+            "parent": "014",
             "name": "Pedro Monteiro",
             "image": "A72"
         },
         {
-            "id": 180,
+            "id": "A73",
             "nmec": 98396,
             "start_year": 19,
             "end_year": 21,
             "sex": "M",
-            "parent": 70,
+            "parent": "A44",
             "name": "Vitor Francisco Dias",
             "image": "",
             "organizations": [
@@ -3005,12 +3005,12 @@
             ]
         },
         {
-            "id": 181,
+            "id": "A75",
             "nmec": 98390,
             "start_year": 19,
             "end_year": null,
             "sex": "F",
-            "parent": 62,
+            "parent": "A20",
             "name": "Mariana Rosa",
             "image": "",
             "organizations": [
@@ -3031,22 +3031,22 @@
             ]
         },
         {
-            "id": 182,
+            "id": "A76",
             "nmec": 98495,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 104,
+            "parent": "014",
             "name": "Andr\u00e9 Freixo",
             "image": ""
         },
         {
-            "id": 183,
+            "id": "A77",
             "nmec": 98039,
             "start_year": 19,
             "end_year": null,
             "sex": "F",
-            "parent": 52,
+            "parent": "006",
             "name": "Daniela Dias",
             "image": "",
             "organizations": [
@@ -3058,32 +3058,32 @@
             ]
         },
         {
-            "id": 184,
+            "id": "A78",
             "nmec": 97631,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 52,
+            "parent": "006",
             "name": "Nuno Fahla",
             "image": ""
         },
         {
-            "id": 185,
+            "id": "A79",
             "nmec": 98452,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 52,
+            "parent": "006",
             "name": "Dinis Lei",
             "image": ""
         },
         {
-            "id": 186,
+            "id": "A80",
             "nmec": 98430,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 52,
+            "parent": "006",
             "name": "Paulo Pereira",
             "image": "",
             "organizations": [
@@ -3108,12 +3108,12 @@
             ]
         },
         {
-            "id": 187,
+            "id": "A81",
             "nmec": 98119,
             "start_year": 19,
             "end_year": 21,
             "sex": "M",
-            "parent": 111,
+            "parent": "A83",
             "name": "F\u00e1bio Martins",
             "image": "",
             "organizations": [
@@ -3130,22 +3130,22 @@
             ]
         },
         {
-            "id": 188,
+            "id": "A82",
             "nmec": 97689,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 111,
+            "parent": "A83",
             "name": "Luca Pereira",
             "image": ""
         },
         {
-            "id": 189,
+            "id": "A86",
             "nmec": 98491,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 113,
+            "parent": "A85",
             "name": "Pedro Sobral",
             "image": "",
             "organizations": [
@@ -3164,22 +3164,22 @@
             ]
         },
         {
-            "id": 190,
+            "id": "A87",
             "nmec": 98388,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 113,
+            "parent": "A85",
             "name": "Ricardo Rodriguez",
             "image": ""
         },
         {
-            "id": 191,
+            "id": "A89",
             "nmec": 98597,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 107,
+            "parent": "018",
             "name": "Z\u00e9 Pedro Trigo",
             "image": "",
             "organizations": [
@@ -3196,32 +3196,32 @@
             ]
         },
         {
-            "id": 192,
+            "id": "A96",
             "nmec": 98083,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 67,
+            "parent": "A34",
             "name": "Filipe Seabra Gon\u00e7alves",
             "image": ""
         },
         {
-            "id": 193,
+            "id": "A97",
             "nmec": 97636,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 67,
+            "parent": "A34",
             "name": "Vasco Regal Sousa",
             "image": ""
         },
         {
-            "id": 194,
+            "id": "A98",
             "nmec": 98155,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 67,
+            "parent": "A34",
             "name": "Jo\u00e3o Borges",
             "image": "",
             "organizations": [
@@ -3233,12 +3233,12 @@
             ]
         },
         {
-            "id": 195,
+            "id": "A99",
             "nmec": 97673,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 67,
+            "parent": "A34",
             "name": "Pedro Duarte",
             "image": "",
             "organizations": [
@@ -3250,12 +3250,12 @@
             ]
         },
         {
-            "id": 196,
+            "id": "B10",
             "nmec": 97880,
             "start_year": 19,
             "end_year": null,
             "sex": "F",
-            "parent": 115,
+            "parent": "B08",
             "name": "Camila Fonseca",
             "image": "",
             "organizations": [
@@ -3267,22 +3267,22 @@
             ]
         },
         {
-            "id": 197,
+            "id": "B11",
             "nmec": 98292,
             "start_year": 19,
             "end_year": null,
             "sex": "F",
-            "parent": 115,
+            "parent": "B08",
             "name": "Catarina Oliveira",
             "image": ""
         },
         {
-            "id": 198,
+            "id": "B28",
             "nmec": 98607,
             "start_year": 19,
             "end_year": null,
             "sex": "F",
-            "parent": 107,
+            "parent": "018",
             "name": "Diana Siso",
             "image": "",
             "organizations": [
@@ -3294,12 +3294,12 @@
             ]
         },
         {
-            "id": 199,
+            "id": "B30",
             "nmec": 98599,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 124,
+            "parent": "B27",
             "name": "Miguel Ferreira",
             "image": "B30",
             "organizations": [
@@ -3316,22 +3316,22 @@
             ]
         },
         {
-            "id": 200,
+            "id": "B29",
             "nmec": 93343,
             "start_year": 19,
             "end_year": null,
             "sex": "F",
-            "parent": 107,
+            "parent": "018",
             "name": "Isabel Ros\u00e1rio",
             "image": ""
         },
         {
-            "id": 201,
+            "id": "B39",
             "nmec": 98380,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 126,
+            "parent": "B38",
             "name": "Renato Dias",
             "image": "",
             "organizations": [
@@ -3358,22 +3358,22 @@
             ]
         },
         {
-            "id": 202,
+            "id": "B41",
             "nmec": 98679,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 109,
+            "parent": "A63",
             "name": "Jo\u00e3o Bernardo",
             "image": "B41"
         },
         {
-            "id": 203,
+            "id": "B42",
             "nmec": 98595,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 109,
+            "parent": "A63",
             "name": "Diogo Cruz",
             "image": "",
             "organizations": [
@@ -3385,12 +3385,12 @@
             ]
         },
         {
-            "id": 204,
+            "id": "083",
             "nmec": 97787,
             "start_year": 19,
             "end_year": null,
             "sex": "M",
-            "parent": 0,
+            "parent": "000",
             "name": "Vicente Barros",
             "image": "",
             "organizations": [
@@ -3407,22 +3407,22 @@
             ]
         },
         {
-            "id": 205,
+            "id": "075",
             "nmec": 103600,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 189,
+            "parent": "A86",
             "name": "Guilherme Antunes",
             "image": ""
         },
         {
-            "id": 206,
+            "id": "076",
             "nmec": 103696,
             "start_year": 20,
             "end_year": null,
             "sex": "F",
-            "parent": 204,
+            "parent": "083",
             "name": "Catarina Costa",
             "image": "",
             "organizations": [
@@ -3434,52 +3434,52 @@
             ]
         },
         {
-            "id": 207,
+            "id": "077",
             "nmec": 103415,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 187,
+            "parent": "A81",
             "name": "Jo\u00e3o Sousa",
             "image": ""
         },
         {
-            "id": 208,
+            "id": "Z77",
             "nmec": 103730,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 186,
+            "parent": "A80",
             "name": "Jo\u00e3o Morais",
             "image": ""
         },
         {
-            "id": 209,
+            "id": "078",
             "nmec": 103182,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 171,
+            "parent": "082",
             "name": "Jo\u00e3o Matos",
             "image": ""
         },
         {
-            "id": 210,
+            "id": "079",
             "nmec": 103341,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 186,
+            "parent": "A80",
             "name": "Jo\u00e3o Almeida Matos",
             "image": ""
         },
         {
-            "id": 211,
+            "id": "080",
             "nmec": 102534,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 145,
+            "parent": "033",
             "name": "Rafael Gon\u00e7alves",
             "image": "",
             "organizations": [
@@ -3491,12 +3491,12 @@
             ]
         },
         {
-            "id": 212,
+            "id": "081",
             "nmec": 104142,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 186,
+            "parent": "A80",
             "name": "Tiago Sora",
             "image": "",
             "organizations": [
@@ -3508,22 +3508,22 @@
             ]
         },
         {
-            "id": 213,
+            "id": "B31",
             "nmec": 103426,
             "start_year": 20,
             "end_year": 20,
             "sex": "M",
-            "parent": 139,
+            "parent": "027",
             "name": "Jo\u00e3o Campos",
             "image": ""
         },
         {
-            "id": 214,
+            "id": "B32",
             "nmec": 103300,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 139,
+            "parent": "027",
             "name": "Tom\u00e1s Almeida",
             "image": "",
             "organizations": [
@@ -3535,12 +3535,12 @@
             ]
         },
         {
-            "id": 215,
+            "id": "B33",
             "nmec": 103234,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 139,
+            "parent": "027",
             "name": "Paulo Pinto",
             "image": "",
             "organizations": [
@@ -3556,12 +3556,12 @@
             ]
         },
         {
-            "id": 216,
+            "id": "B35",
             "nmec": 102491,
             "start_year": 20,
             "end_year": null,
             "sex": "F",
-            "parent": 104,
+            "parent": "014",
             "name": "Raquel Paradinha",
             "image": "",
             "organizations": [
@@ -3577,172 +3577,172 @@
             ]
         },
         {
-            "id": 217,
+            "id": "B36",
             "nmec": 102383,
             "start_year": 20,
             "end_year": null,
             "sex": "F",
-            "parent": 104,
+            "parent": "014",
             "name": "V\u00e2nia Morais",
             "image": ""
         },
         {
-            "id": 218,
+            "id": "B37",
             "nmec": 104333,
             "start_year": 20,
             "end_year": 20,
             "sex": "M",
-            "parent": 104,
+            "parent": "014",
             "name": "Andr\u00e9 Francisco",
             "image": ""
         },
         {
-            "id": 219,
+            "id": "B46",
             "nmec": 103935,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 148,
+            "parent": "036",
             "name": "Jos\u00e9 Lopes",
             "image": ""
         },
         {
-            "id": 220,
+            "id": "062",
             "nmec": 102432,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 184,
+            "parent": "A78",
             "name": "Pedro Rodrigues",
             "image": ""
         },
         {
-            "id": 221,
+            "id": "111",
             "nmec": 103070,
             "start_year": 20,
             "end_year": null,
             "sex": "M",
-            "parent": 215,
+            "parent": "B33",
             "name": "Eduardo Lopes",
             "image": ""
         },
         {
-            "id": 222,
+            "id": "040",
             "nmec": 107489,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 179,
+            "parent": "A72",
             "name": "Alexandre Cotorobai",
             "image": "040"
         },
         {
-            "id": 223,
+            "id": "041",
             "nmec": 105937,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 183,
+            "parent": "A77",
             "name": "B\u00e1rbara Galiza",
             "image": ""
         },
         {
-            "id": 224,
+            "id": "042",
             "nmec": 108536,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 182,
+            "parent": "A76",
             "name": "Cristiano Nicolau",
             "image": ""
         },
         {
-            "id": 225,
+            "id": "043",
             "nmec": 107603,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 139,
+            "parent": "027",
             "name": "Daniel Madureira",
             "image": ""
         },
         {
-            "id": 226,
+            "id": "044",
             "nmec": 110183,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 109,
+            "parent": "A63",
             "name": "David Sanches",
             "image": ""
         },
         {
-            "id": 227,
+            "id": "045",
             "nmec": 107457,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 142,
+            "parent": "030",
             "name": "Diana Miranda",
             "image": "045"
         },
         {
-            "id": 228,
+            "id": "046",
             "nmec": 108712,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 169,
+            "parent": "038",
             "name": "Diogo Falc\u00e3o",
             "image": "046"
         },
         {
-            "id": 229,
+            "id": "047",
             "nmec": 108902,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 176,
+            "parent": "A69",
             "name": "Diogo Almeida",
             "image": ""
         },
         {
-            "id": 230,
+            "id": "C01",
             "nmec": 107647,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 54,
+            "parent": "008",
             "name": "Diogo Silva",
             "image": ""
         },
         {
-            "id": 231,
+            "id": "048",
             "nmec": 107359,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 172,
+            "parent": "A61",
             "name": "Duarte Cruz",
             "image": ""
         },
         {
-            "id": 232,
+            "id": "049",
             "nmec": 107876,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 169,
+            "parent": "038",
             "name": "Gabriel Teixeira",
             "image": ""
         },
         {
-            "id": 233,
+            "id": "050",
             "nmec": 108133,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 181,
+            "parent": "A75",
             "name": "Gon\u00e7alo Sousa",
             "image": "",
             "organizations": [
@@ -3754,22 +3754,22 @@
             ]
         },
         {
-            "id": 234,
+            "id": "051",
             "nmec": 107853,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 191,
+            "parent": "A89",
             "name": "Gon\u00e7alo Ferreira",
             "image": ""
         },
         {
-            "id": 235,
+            "id": "052",
             "nmec": 108215,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 192,
+            "parent": "A96",
             "name": "Hugo Correia",
             "image": "",
             "organizations": [
@@ -3786,22 +3786,22 @@
             ]
         },
         {
-            "id": 236,
+            "id": "053",
             "nmec": 104429,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 178,
+            "parent": "A71",
             "name": "Joana Gomes",
             "image": ""
         },
         {
-            "id": 237,
+            "id": "054",
             "nmec": 107403,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 148,
+            "parent": "036",
             "name": "Jo\u00e3o Lu\u00eds",
             "image": "",
             "organizations": [
@@ -3813,42 +3813,42 @@
             ]
         },
         {
-            "id": 238,
+            "id": "055",
             "nmec": 109089,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 192,
+            "parent": "A96",
             "name": "Joaquim Rosa",
             "image": ""
         },
         {
-            "id": 239,
+            "id": "056",
             "nmec": 108840,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 142,
+            "parent": "030",
             "name": "Jos\u00e9 Gameiro",
             "image": ""
         },
         {
-            "id": 240,
+            "id": "A74",
             "nmec": 107188,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 180,
+            "parent": "A73",
             "name": "Jos\u00e9 Pedro Mendes",
             "image": ""
         },
         {
-            "id": 241,
+            "id": "057",
             "nmec": 108713,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 139,
+            "parent": "027",
             "name": "Liliana Ribeiro",
             "image": "",
             "organizations": [
@@ -3860,12 +3860,12 @@
             ]
         },
         {
-            "id": 242,
+            "id": "058",
             "nmec": 107658,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 178,
+            "parent": "A71",
             "name": "Rafaela Abrunhosa",
             "image": "058",
             "organizations": [
@@ -3882,12 +3882,12 @@
             ]
         },
         {
-            "id": 243,
+            "id": "059",
             "nmec": 108067,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 172,
+            "parent": "A61",
             "name": "Mariana Perna",
             "image": "059",
             "organizations": [
@@ -3898,12 +3898,12 @@
             ]
         },
         {
-            "id": 244,
+            "id": "060",
             "nmec": 107826,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 181,
+            "parent": "A75",
             "name": "Marta In\u00e1cio",
             "image": "060",
             "organizations": [
@@ -3914,12 +3914,12 @@
             ]
         },
         {
-            "id": 245,
+            "id": "061",
             "nmec": 108193,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 181,
+            "parent": "A75",
             "name": "Matilde Teixeira",
             "image": "",
             "organizations": [
@@ -3936,12 +3936,12 @@
             ]
         },
         {
-            "id": 246,
+            "id": "A90",
             "nmec": 107463,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 191,
+            "parent": "A89",
             "name": "Pedro Rei",
             "image": "",
             "organizations": [
@@ -3953,83 +3953,83 @@
             ]
         },
         {
-            "id": 247,
+            "id": "063",
             "nmec": 107476,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 54,
+            "parent": "008",
             "name": "Rafael Vila\u00e7a",
             "image": ""
         },
         {
-            "id": 248,
+            "id": "064",
             "nmec": 105925,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 139,
+            "parent": "027",
             "name": "Rafael Kauati",
             "image": ""
         },
         {
-            "id": 249,
+            "id": "A88",
             "nmec": 107340,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 190,
+            "parent": "A87",
             "name": "Rafael Ferreira",
             "image": ""
         },
         {
-            "id": 250,
+            "id": "065",
             "nmec": 108782,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 172,
+            "parent": "A61",
             "name": "Rafaela Dias",
             "image": ""
         },
         {
-            "id": 251,
+            "id": "066",
             "nmec": 107298,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 299,
+            "parent": "X00",
             "name": "Rodrigo Azevedo",
             "image": "",
             "patrao": "X00"
         },
         {
-            "id": 252,
+            "id": "067",
             "nmec": 107634,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 190,
+            "parent": "A87",
             "name": "Rodrigo Gra\u00e7a",
             "image": ""
         },
         {
-            "id": 253,
+            "id": "068",
             "nmec": 108969,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 177,
+            "parent": "A70",
             "name": "Rodrigo Aguiar",
             "image": ""
         },
         {
-            "id": 254,
+            "id": "069",
             "nmec": 108307,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 178,
+            "parent": "A71",
             "name": "Tiago Gomes",
             "image": "",
             "organizations": [
@@ -4046,461 +4046,461 @@
             ]
         },
         {
-            "id": 255,
+            "id": "070",
             "nmec": 109018,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 184,
+            "parent": "A78",
             "name": "Tom\u00e1s Victal",
             "image": ""
         },
         {
-            "id": 256,
+            "id": "071",
             "nmec": 108624,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 191,
+            "parent": "A89",
             "name": "Tom\u00e1s Matos",
             "image": "071"
         },
         {
-            "id": 257,
+            "id": "072",
             "nmec": 108130,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 139,
+            "parent": "027",
             "name": "Vasco Vouzela",
             "image": ""
         },
         {
-            "id": 258,
+            "id": "073",
             "nmec": 107323,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 171,
+            "parent": "082",
             "name": "Vasco Faria",
             "image": ""
         },
         {
-            "id": 259,
+            "id": "074",
             "nmec": 107186,
             "start_year": 21,
             "end_year": null,
             "sex": "M",
-            "parent": 145,
+            "parent": "033",
             "name": "Vitor Santos",
             "image": ""
         },
         {
-            "id": 260,
+            "id": "B03",
             "nmec": 108796,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 192,
+            "parent": "A96",
             "name": "Sara Almeida",
             "image": ""
         },
         {
-            "id": 261,
+            "id": "137",
             "nmec": 107548,
             "start_year": 21,
             "end_year": null,
             "sex": "F",
-            "parent": 171,
+            "parent": "082",
             "name": "Lia Cardoso",
             "image": ""
         },
         {
-            "id": 262,
+            "id": "100",
             "nmec": 113655,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 123,
+            "parent": "B25",
             "name": "Abel Teixeira",
             "image": ""
         },
         {
-            "id": 263,
+            "id": "101",
             "nmec": 113480,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 192,
+            "parent": "A96",
             "name": "Afonso Ferreira",
             "image": ""
         },
         {
-            "id": 264,
+            "id": "102",
             "nmec": 114220,
             "start_year": 22,
             "end_year": null,
             "sex": "F",
-            "parent": 172,
+            "parent": "A61",
             "name": "Ana Rita",
             "image": ""
         },
         {
-            "id": 265,
+            "id": "103",
             "nmec": 113962,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 136,
+            "parent": "024",
             "name": "Andr\u00e9 Alves",
             "image": ""
         },
         {
-            "id": 266,
+            "id": "104",
             "nmec": 113613,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 194,
+            "parent": "A98",
             "name": "Andr\u00e9 Dora",
             "image": ""
         },
         {
-            "id": 267,
+            "id": "105",
             "nmec": 114622,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 194,
+            "parent": "A98",
             "name": "Ant\u00f3nio Alberto",
             "image": ""
         },
         {
-            "id": 268,
+            "id": "106",
             "nmec": 114246,
             "start_year": 22,
             "end_year": null,
             "sex": "F",
-            "parent": 181,
+            "parent": "A75",
             "name": "Carolina Prata",
             "image": ""
         },
         {
-            "id": 269,
+            "id": "107",
             "nmec": 113475,
             "start_year": 22,
             "end_year": null,
             "sex": "F",
-            "parent": 244,
+            "parent": "060",
             "name": "Carolina Silva",
             "image": ""
         },
         {
-            "id": 270,
+            "id": "108",
             "nmec": 113384,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 123,
+            "parent": "B25",
             "name": "Danilo Silva",
             "image": ""
         },
         {
-            "id": 271,
+            "id": "109",
             "nmec": 112714,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 145,
+            "parent": "033",
             "name": "Diogo Costa",
             "image": ""
         },
         {
-            "id": 272,
+            "id": "110",
             "nmec": 114137,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 186,
+            "parent": "A80",
             "name": "Diogo Fernandes",
             "image": ""
         },
         {
-            "id": 273,
+            "id": "112",
             "nmec": 114640,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 193,
+            "parent": "A97",
             "name": "Filipe Oliveira",
             "image": ""
         },
         {
-            "id": 274,
+            "id": "113",
             "nmec": 112841,
             "start_year": 22,
             "end_year": null,
             "sex": "F",
-            "parent": 168,
+            "parent": "037",
             "name": "Francisca Silva",
             "image": ""
         },
         {
-            "id": 275,
+            "id": "114",
             "nmec": 113786,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 190,
+            "parent": "A87",
             "name": "Gabriel Silva",
             "image": ""
         },
         {
-            "id": 276,
+            "id": "115",
             "nmec": 113207,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 172,
+            "parent": "A61",
             "name": "Guilherme Amaral",
             "image": ""
         },
         {
-            "id": 277,
+            "id": "116",
             "nmec": 113968,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 139,
+            "parent": "027",
             "name": "Guilherme Rosa",
             "image": ""
         },
         {
-            "id": 278,
+            "id": "117",
             "nmec": 112957,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 109,
+            "parent": "A63",
             "name": "Guilherme Mesquita",
             "image": ""
         },
         {
-            "id": 279,
+            "id": "118",
             "nmec": 113585,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 194,
+            "parent": "A98",
             "name": "Henrique Oliveira",
             "image": ""
         },
         {
-            "id": 280,
+            "id": "119",
             "nmec": 114588,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 204,
+            "parent": "083",
             "name": "Henrique Teixeira",
             "image": ""
         },
         {
-            "id": 281,
+            "id": "120",
             "nmec": 113889,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 300,
+            "parent": "X01",
             "name": "Hugo Castro",
             "image": "",
             "patrao": "MS DEP 79647"
         },
         {
-            "id": 282,
+            "id": "121",
             "nmec": 113402,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 192,
+            "parent": "A96",
             "name": "Hugo Ribeiro",
             "image": ""
         },
         {
-            "id": 283,
+            "id": "122",
             "nmec": 113532,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 300,
+            "parent": "X01",
             "name": "Igor Coelho",
             "image": "",
             "patrao": "MS DEP 79647"
         },
         {
-            "id": 284,
+            "id": "123",
             "nmec": 113920,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 204,
+            "parent": "083",
             "name": "Jo\u00e3o Rold\u00e3o",
             "image": ""
         },
         {
-            "id": 285,
+            "id": "124",
             "nmec": 113780,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 186,
+            "parent": "A80",
             "name": "Jo\u00e3o Varela",
             "image": ""
         },
         {
-            "id": 286,
+            "id": "125",
             "nmec": 113144,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 190,
+            "parent": "A87",
             "name": "Jo\u00e3o Viegas",
             "image": ""
         },
         {
-            "id": 287,
+            "id": "126",
             "nmec": 113713,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 142,
+            "parent": "030",
             "name": "Jo\u00e3o Capucho",
             "image": ""
         },
         {
-            "id": 288,
+            "id": "127",
             "nmec": 113482,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 203,
+            "parent": "B42",
             "name": "Jo\u00e3o Neto",
             "image": ""
         },
         {
-            "id": 289,
+            "id": "128",
             "nmec": 114321,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 194,
+            "parent": "A98",
             "name": "Jos\u00e9 Marques",
             "image": ""
         },
         {
-            "id": 290,
+            "id": "129",
             "nmec": 113403,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 186,
+            "parent": "A80",
             "name": "Jos\u00e9 Oliveira",
             "image": ""
         },
         {
-            "id": 291,
+            "id": "130",
             "nmec": 113534,
             "start_year": 22,
             "end_year": null,
             "sex": "F",
-            "parent": 139,
+            "parent": "027",
             "name": "Maria Linhares",
             "image": ""
         },
         {
-            "id": 292,
+            "id": "131",
             "nmec": 114614,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 172,
+            "parent": "A61",
             "name": "Martim Santos",
             "image": ""
         },
         {
-            "id": 293,
+            "id": "132",
             "nmec": 113736,
             "start_year": 22,
             "end_year": null,
             "sex": "F",
-            "parent": 243,
+            "parent": "059",
             "name": "Raquel Vinagre",
             "image": ""
         },
         {
-            "id": 294,
+            "id": "133",
             "nmec": 114129,
             "start_year": 22,
             "end_year": null,
             "sex": "F",
-            "parent": 172,
+            "parent": "A61",
             "name": "Regina Tavares",
             "image": ""
         },
         {
-            "id": 295,
+            "id": "134",
             "nmec": 113765,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 109,
+            "parent": "A63",
             "name": "Rui Machado",
             "image": ""
         },
         {
-            "id": 296,
+            "id": "135",
             "nmec": 112665,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 181,
+            "parent": "A75",
             "name": "Tom\u00e1s Br\u00e1s",
             "image": ""
         },
         {
-            "id": 297,
+            "id": "136",
             "nmec": 112981,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 123,
+            "parent": "B25",
             "name": "Tom\u00e1s Fernandes",
             "image": ""
         },
         {
-            "id": 298,
+            "id": "138",
             "nmec": 114478,
             "start_year": 22,
             "end_year": null,
             "sex": "M",
-            "parent": 192,
+            "parent": "A96",
             "name": "Zakhar Kruptsala",
             "image": ""
         },
         {
-            "id": 299,
+            "id": "X00",
             "nmec": 99619,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Raquel Santos",
             "image": "",
             "course": "from ESSUA"
         },
         {
-            "id": 300,
+            "id": "X01",
             "nmec": null,
             "sex": "F",
-            "parent": 0,
+            "parent": "000",
             "name": "Moitinho",
             "image": "",
             "course": null,
@@ -4511,916 +4511,6 @@
                     "role": "Mestre do Salgado"
                 }
             ]
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Alexandre Andrade",
-            "id": 301,
-            "nmec": null,
-            "parent": 172,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Dinis Cunha",
-            "id": 302,
-            "nmec": null,
-            "parent": 172,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Dinis Sousa",
-            "id": 303,
-            "nmec": null,
-            "parent": 172,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Gon\u00e7alo Ribau",
-            "id": 304,
-            "nmec": null,
-            "parent": 172,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Gabriel Gon\u00e7alves",
-            "id": 305,
-            "nmec": null,
-            "parent": 172,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Andr\u00e9 Martins",
-            "id": 306,
-            "nmec": null,
-            "parent": 186,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Eduardo Romano",
-            "id": 307,
-            "nmec": null,
-            "parent": 186,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Jo\u00e3o Silva",
-            "id": 308,
-            "nmec": null,
-            "parent": 186,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Rafael Fernandes",
-            "id": 309,
-            "nmec": null,
-            "parent": 186,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Samuel Vinhas",
-            "id": 310,
-            "nmec": null,
-            "parent": 186,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Eduardo Ros\u00e1rio",
-            "id": 311,
-            "nmec": null,
-            "parent": 194,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Filipe Nogueira",
-            "id": 312,
-            "nmec": null,
-            "parent": 194,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Miguel Neto",
-            "id": 313,
-            "nmec": null,
-            "parent": 194,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Tiago Oliveira",
-            "id": 314,
-            "nmec": null,
-            "parent": 194,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Bernardo Martins",
-            "id": 315,
-            "nmec": null,
-            "parent": 244,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Ant\u00f3nio Santos",
-            "id": 316,
-            "nmec": null,
-            "parent": 244,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Jo\u00e3o Pedro Pereira",
-            "id": 317,
-            "nmec": null,
-            "parent": 244,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "F",
-            "name": "Catarina Ribeiro",
-            "id": 318,
-            "nmec": null,
-            "parent": 4,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Diego Aguilar",
-            "id": 319,
-            "nmec": null,
-            "parent": 176,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Paulo Cunha",
-            "id": 320,
-            "nmec": null,
-            "parent": 176,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "F",
-            "name": "Crijecia Nova",
-            "id": 321,
-            "nmec": null,
-            "parent": 176,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Jo\u00e3o Cabral",
-            "id": 322,
-            "nmec": null,
-            "parent": 257,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Gon\u00e7alo Floro",
-            "id": 323,
-            "nmec": null,
-            "parent": 257,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Diogo Duarte",
-            "id": 324,
-            "nmec": null,
-            "parent": 241,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "F",
-            "name": "Ana Francisco",
-            "id": 325,
-            "nmec": null,
-            "parent": 260,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Ant\u00f3nio Videira",
-            "id": 326,
-            "nmec": null,
-            "parent": 284,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Pedro Fonseca",
-            "id": 327,
-            "nmec": null,
-            "parent": 284,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Martim Dias",
-            "id": 328,
-            "nmec": null,
-            "parent": 284,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Tom\u00e1s Xavier",
-            "id": 329,
-            "nmec": null,
-            "parent": 295,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Rodrigo Sim\u00f5es",
-            "id": 330,
-            "nmec": null,
-            "parent": 295,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "F",
-            "name": "Matilde Rodrigues",
-            "id": 331,
-            "nmec": null,
-            "parent": 243,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Rodrigo Costa",
-            "id": 332,
-            "nmec": null,
-            "parent": 243,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Tiago Coelho",
-            "id": 333,
-            "nmec": null,
-            "parent": 243,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "F",
-            "name": "Mariana Marques",
-            "id": 334,
-            "nmec": null,
-            "parent": 139,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "F",
-            "name": "Marta Almeida",
-            "id": 335,
-            "nmec": null,
-            "parent": 139,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "F",
-            "name": "Maria Man\u00e9",
-            "id": 336,
-            "nmec": null,
-            "parent": 261,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Rodrigo Sampaio",
-            "id": 337,
-            "nmec": null,
-            "parent": 261,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Francisco Baptista",
-            "id": 338,
-            "nmec": null,
-            "parent": 216,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Henrique Lopes",
-            "id": 339,
-            "nmec": null,
-            "parent": 216,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Diogo Ruivo",
-            "id": 340,
-            "nmec": null,
-            "parent": 210,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "David C\u00e1lix",
-            "id": 341,
-            "nmec": null,
-            "parent": 215,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Tiago Oliveira",
-            "id": 342,
-            "nmec": null,
-            "parent": 215,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Francisco Silva",
-            "id": 343,
-            "nmec": null,
-            "parent": 215,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Jo\u00e3o Barreira",
-            "id": 344,
-            "nmec": null,
-            "parent": 215,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Lucas Ruivo",
-            "id": 345,
-            "nmec": null,
-            "parent": 215,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Tom\u00e1s Gameiro",
-            "id": 346,
-            "nmec": null,
-            "parent": 215,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "F",
-            "name": "In\u00eas Louren\u00e7o",
-            "id": 347,
-            "nmec": null,
-            "parent": 285,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Pedro Rocha",
-            "id": 348,
-            "nmec": null,
-            "parent": 285,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Gon\u00e7alo Figueiredo",
-            "id": 349,
-            "nmec": null,
-            "parent": 285,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Sim\u00e3o Silva",
-            "id": 350,
-            "nmec": null,
-            "parent": 339,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Lu\u00eds Correia",
-            "id": 351,
-            "nmec": null,
-            "parent": 123,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Marcos Costa",
-            "id": 352,
-            "nmec": null,
-            "parent": 123,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Gabriel Riquito",
-            "id": 353,
-            "nmec": null,
-            "parent": 123,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "F",
-            "name": "Ana Ribeiro",
-            "id": 354,
-            "nmec": null,
-            "parent": 123,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Gon\u00e7alo Almeida",
-            "id": 355,
-            "nmec": null,
-            "parent": 123,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Gon\u00e7alo Calvo",
-            "id": 356,
-            "nmec": null,
-            "parent": 123,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Rafael Ferreira",
-            "id": 357,
-            "nmec": null,
-            "parent": 123,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Eduardo Laranjeiro",
-            "id": 358,
-            "nmec": null,
-            "parent": 222,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Jo\u00e3o Pereira",
-            "id": 359,
-            "nmec": null,
-            "parent": 222,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Jo\u00e3o Tom\u00e1sio",
-            "id": 360,
-            "nmec": null,
-            "parent": 222,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Bernardo Coelho",
-            "id": 361,
-            "nmec": null,
-            "parent": 222,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Jos\u00e9 Bagagemm",
-            "id": 362,
-            "nmec": null,
-            "parent": 222,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Luis Tojal",
-            "id": 363,
-            "nmec": null,
-            "parent": 222,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Sim\u00e3o Santos",
-            "id": 364,
-            "nmec": null,
-            "parent": 222,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Jos\u00e9 Mendes",
-            "id": 365,
-            "nmec": null,
-            "parent": 262,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Francisco Correia",
-            "id": 366,
-            "nmec": null,
-            "parent": 262,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Lu\u00eds Godinho",
-            "id": 367,
-            "nmec": null,
-            "parent": 289,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Duarte Ribeiro",
-            "id": 368,
-            "nmec": null,
-            "parent": 289,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Jo\u00e3o Neves",
-            "id": 369,
-            "nmec": null,
-            "parent": 289,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Jo\u00e3o Farias",
-            "id": 370,
-            "nmec": null,
-            "parent": 283,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Martim Gil",
-            "id": 371,
-            "nmec": null,
-            "parent": 283,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Gil Guedes",
-            "id": 372,
-            "nmec": null,
-            "parent": 283,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Claudino Martins",
-            "id": 373,
-            "nmec": null,
-            "parent": 298,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Guilherme Gomes",
-            "id": 374,
-            "nmec": null,
-            "parent": 235,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "F",
-            "name": "Maria Gon\u00e7alves",
-            "id": 375,
-            "nmec": null,
-            "parent": 235,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Fernando Santos",
-            "id": 376,
-            "nmec": null,
-            "parent": 235,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Bernardo Reis",
-            "id": 377,
-            "nmec": null,
-            "parent": 235,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Filipe Marques",
-            "id": 378,
-            "nmec": null,
-            "parent": 235,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Rodrigo Santos",
-            "id": 379,
-            "nmec": null,
-            "parent": 235,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 23,
-            "sex": "M",
-            "name": "Tiago Mendes",
-            "id": 380,
-            "nmec": null,
-            "parent": 235,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Alan Marques",
-            "id": 381,
-            "nmec": null,
-            "parent": 267,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "F",
-            "name": "Margarida Pinheiro",
-            "id": 382,
-            "nmec": null,
-            "parent": 245,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Francisco Ferreira",
-            "id": 383,
-            "nmec": null,
-            "parent": 254,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Bernardo Santos",
-            "id": 384,
-            "nmec": null,
-            "parent": 192,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Samuel Ramos",
-            "id": 385,
-            "nmec": null,
-            "parent": 207,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "F",
-            "name": "Matilde Sarabando",
-            "id": 386,
-            "nmec": null,
-            "parent": 217,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Tiago Costa",
-            "id": 387,
-            "nmec": null,
-            "parent": 293,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "F",
-            "name": "In\u00eas Batista",
-            "id": 388,
-            "nmec": null,
-            "parent": 293,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Hugo Gon\u00e7alves",
-            "id": 389,
-            "nmec": null,
-            "parent": 293,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "M",
-            "name": "Henrique Madeira",
-            "id": 390,
-            "nmec": null,
-            "parent": 278,
-            "end_year": null,
-            "image": ""
-        },
-        {
-            "start_year": 24,
-            "sex": "F",
-            "name": "Maria Quinteiro",
-            "id": 391,
-            "nmec": null,
-            "parent": 282,
-            "end_year": null,
-            "image": ""
         }
     ]
 }
