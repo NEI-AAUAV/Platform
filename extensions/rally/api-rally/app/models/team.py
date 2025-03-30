@@ -13,28 +13,13 @@ class Team(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(unique=True)
 
-    question_scores: Mapped[List[bool]] = mapped_column(
-        MutableList.as_mutable(ARRAY(Boolean)), default=[]
-    )
-    time_scores: Mapped[List[int]] = mapped_column(
-        MutableList.as_mutable(ARRAY(Integer)), default=[]
-    )
     times: Mapped[List[datetime]] = mapped_column(
         MutableList.as_mutable(ARRAY(DateTime(timezone=False))), default=[]
-    )
-    pukes: Mapped[List[int]] = mapped_column(
-        MutableList.as_mutable(ARRAY(Integer)), default=[]
-    )
-    skips: Mapped[List[int]] = mapped_column(
-        MutableList.as_mutable(ARRAY(Integer)), default=[]
     )
 
     score_per_checkpoint: Mapped[List[int]] = mapped_column(ARRAY(Integer), default=[])
 
     total: Mapped[int] = mapped_column(default=0)
-    card1: Mapped[int] = mapped_column(default=-1)
-    card2: Mapped[int] = mapped_column(default=-1)
-    card3: Mapped[int] = mapped_column(default=-1)
     classification: Mapped[int] = mapped_column(default=-1)
 
     members: Mapped[List[User]] = relationship()

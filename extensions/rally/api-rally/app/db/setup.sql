@@ -74,15 +74,9 @@ ALTER SEQUENCE rally_tascas.checkpoint_id_seq OWNED BY rally_tascas.checkpoint.i
 CREATE TABLE rally_tascas.team (
     id integer NOT NULL,
     name character varying,
-    question_scores boolean[],
-    time_scores integer[],
     times timestamp without time zone[],
-    pukes integer[],
-    skips integer[],
+    score_per_checkpoint integer[],
     total integer,
-    card1 integer,
-    card2 integer,
-    card3 integer,
     classification integer
 );
 
@@ -192,19 +186,19 @@ INSERT INTO rally_tascas.checkpoint (id, name, shot_name, description) VALUES
 -- Data for Name: team; Type: TABLE DATA; Schema: rally_tascas; Owner: postgres
 --
 
-INSERT INTO rally_tascas.team (id, name, question_scores, time_scores, times, pukes, skips, total, card1, card2, card3, classification) VALUES
-(1, 'Lambada de mão aberta', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(2, 'Seca Extrema', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(3, 'Uisqe konhaque tudo', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(4, 'Não tavas capaz não vinhas', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(5, 'equipa xl', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(6, 'Tasca do Pai Jorge', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(7, 'Pink stars', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(8, 'Mmmm tenso', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(9, 'Diga diga', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(10, 'Psicoalcolémicos', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(11, 'eu não bebo', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1),
-(12, 'T-Bag Drinkers', array[]::boolean[], array[]::integer[], array[]::timestamp without time zone[], array[]::integer[], array[]::integer[], 0, -1, -1, -1, -1);
+INSERT INTO rally_tascas.team (id, name, score_per_checkpoint, times, total, classification) VALUES
+(1, 'Lambada de mão aberta', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(2, 'Seca Extrema', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(3, 'Uisqe konhaque tudo', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(4, 'Não tavas capaz não vinhas', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(5, 'equipa xl', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(6, 'Tasca do Pai Jorge', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(7, 'Pink stars', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(8, 'Mmmm tenso', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(9, 'Diga diga', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(10, 'Psicoalcolémicos', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(11, 'eu não bebo', array[]::integer[], array[]::timestamp without time zone[], 0, -1),
+(12, 'T-Bag Drinkers',  array[]::integer[], array[]::timestamp without time zone[], 0, -1);
 
 
 --
