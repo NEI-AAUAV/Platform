@@ -10,7 +10,7 @@ services:
       dockerfile: Dockerfile.prod
     environment:
       MONGO_SERVER: db_mongo
-      MONGO_PASSWORD: mongo
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
       ALLOW_TIME_SLOTS_PAST: 'True'
     ports:
