@@ -60,10 +60,12 @@ export default function Vote() {
         <h2 className="pt-20 text-center text-[3rem] font-bold sm:text-[4rem]">
           <span className="text-light-gold block font-gala">Votações</span>
         </h2>
-        <div className="mx-4 mt-10 grid gap-8">
+        <div className="flex justify-center items-center min-h-screen">
+        <div className="mx-4 mt-10 grid gap-8 w-full max-w-md">
           {votes.map((vote) => (
             <VoteCard key={vote._id} vote={vote} />
           ))}
+        </div>
         </div>
         {state === State.REGISTERED && (
           <div className="font-gala sticky bottom-0 mt-5 px-4 pb-10 pt-5 max-w-md justify-center mx-auto">
