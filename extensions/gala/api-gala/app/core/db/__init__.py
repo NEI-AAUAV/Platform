@@ -14,7 +14,7 @@ class DatabaseClient:
 
     def __init__(self, settings: Settings) -> None:
         self._client = AsyncIOMotorClient(
-            settings.MONGO_SERVER,
+            "platform-db_mongo-1",
             27017,
             username=settings.MONGO_USER,
             password=settings.MONGO_PASSWORD,
