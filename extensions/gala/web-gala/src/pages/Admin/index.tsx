@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import {  useEffect } from "react";
+// import {  useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import {
@@ -15,7 +15,7 @@ import {  useEffect } from "react";
 // import useTimeEdit from "@/hooks/timeHooks/useTimeEdit";
 // import useTables from "@/hooks/tableHooks/useTables";
 // import useLimits from "@/hooks/useLimits";
-import GalaService from "@/services/GalaService";
+// import GalaService from "@/services/GalaService";
 import VoteResults from "@/components/VoteCard/VoteResults";
 
 // const orange = { color: "#DD8500" };
@@ -249,17 +249,17 @@ import VoteResults from "@/components/VoteCard/VoteResults";
 
 export default function Admin() {
   // const [controlCardOpen, setControlCardOpen] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
+  // const [users, setUsers] = useState<User[]>([]);
   // const confirmPaymentModalRef = useRef<HTMLDialogElement>(null);
   // const navigate = useNavigate();
   // const selectedUser = useRef<number | null>(null);
   // const { tables } = useTables();
 
-  useEffect(() => {
-    GalaService.user.listUsers().then((data) => {
-      setUsers(data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   GalaService.user.listUsers().then((data) => {
+  //     setUsers(data);
+  //   });
+  // }, []);
 
   // const persons: Person[] = tables.reduce((acc: Person[], table) => {
   //   return acc.concat(table.persons);

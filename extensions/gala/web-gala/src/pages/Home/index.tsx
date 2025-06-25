@@ -18,7 +18,7 @@ export default function Home() {
 
   const loginLink = useLoginLink();
   const { state, sessionUser, isLoading, mutate: galaUserRefetch } = useSessionUser();
-  const [error, setError] = useState<boolean>(false);
+  const [_, setError] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isLoading) galaUserRefetch();
