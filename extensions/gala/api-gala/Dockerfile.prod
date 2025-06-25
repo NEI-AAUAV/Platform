@@ -6,7 +6,7 @@ WORKDIR /tmp
 COPY ./emails-src ./
 
 RUN npm install -g pnpm@8
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --prod
 RUN pnpm run export
 RUN pnpm run export --plainText
 
