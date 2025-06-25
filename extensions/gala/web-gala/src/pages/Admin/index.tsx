@@ -1,264 +1,259 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleCheck,
-  faCheck,
-  faSeedling,
-  faHandDots,
-  faXmark,
-  faEllipsis,
-} from "@fortawesome/free-solid-svg-icons";
-import classNames from "classnames";
+import {  useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import {
+//   faSeedling,
+// } from "@fortawesome/free-solid-svg-icons";
+// import classNames from "classnames";
 
-import { FrangoIcon } from "@/assets/icons";
-import Input from "@/components/Input";
-import useTime from "@/hooks/timeHooks/useTime";
-import useTimeEdit from "@/hooks/timeHooks/useTimeEdit";
-import useTables from "@/hooks/tableHooks/useTables";
-import useLimits from "@/hooks/useLimits";
+// import { FrangoIcon } from "@/assets/icons";
+// import Input from "@/components/Input";
+// import useTime from "@/hooks/timeHooks/useTime";
+// import useTimeEdit from "@/hooks/timeHooks/useTimeEdit";
+// import useTables from "@/hooks/tableHooks/useTables";
+// import useLimits from "@/hooks/useLimits";
 import GalaService from "@/services/GalaService";
 import VoteResults from "@/components/VoteCard/VoteResults";
 
-const orange = { color: "#DD8500" };
-const green = { color: "#198754" };
-const red = { color: "#DC3545" };
+// const orange = { color: "#DD8500" };
+// const green = { color: "#198754" };
+// const red = { color: "#DC3545" };
 
-const iconMap = new Map([
-  ["NOR", <FrangoIcon style={orange} />],
-  ["VEG", <FontAwesomeIcon icon={faSeedling} style={green} />],
-]);
+// const iconMap = new Map([
+//   ["NOR", <FrangoIcon style={orange} />],
+//   ["VEG", <FontAwesomeIcon icon={faSeedling} style={green} />],
+// ]);
 
-type InfoProps = {
-  title: string;
-  values: number[];
-};
+// type InfoProps = {
+//   title: string;
+//   values: number[];
+// };
 
-function Info({ title, values }: InfoProps) {
-  return (
-    <div className="rounded-lg bg-base-200 p-2 px-4 shadow">
-      <div className="mx-auto flex items-center justify-between max-xs:max-w-[18rem]">
-        <div className="w-full text-sm font-medium text-gray-500 max-xs:flex max-xs:justify-between">
-          <span className="max-sm:hidden">Total de </span>
-          <span>{title}</span>
-          <div className="whitespace-nowrap text-xl text-gray-900 [&_b]:before:font-medium [&_b]:before:content-['_/_'] first:[&_b]:before:content-none">
-            {values.map((v, idx) => (
-              <b key={idx}>{v}</b>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+// function Info({ title, values }: InfoProps) {
+//   return (
+//     <div className="rounded-lg bg-base-200 p-2 px-4 shadow">
+//       <div className="mx-auto flex items-center justify-between max-xs:max-w-[18rem]">
+//         <div className="w-full text-sm font-medium text-gray-500 max-xs:flex max-xs:justify-between">
+//           <span className="max-sm:hidden">Total de </span>
+//           <span>{title}</span>
+//           <div className="whitespace-nowrap text-xl text-gray-900 [&_b]:before:font-medium [&_b]:before:content-['_/_'] first:[&_b]:before:content-none">
+//             {values.map((v, idx) => (
+//               <b key={idx}>{v}</b>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
 
-interface TimeSlotsProps {
-  start: "tablesStart" | "votesStart";
-  end: "tablesEnd" | "votesEnd";
-}
+// interface TimeSlotsProps {
+//   start: "tablesStart" | "votesStart";
+//   end: "tablesEnd" | "votesEnd";
+// }
 
-function TimeSlots({ start, end }: TimeSlotsProps) {
-  const { time } = useTime();
-  const [notDirty, setNotDirty] = useState(false);
-  const [openingTime, setOpeningTime] = useState<string | undefined>();
-  const [closingTime, setClosingTime] = useState<string | undefined>();
+// function TimeSlots({ start, end }: TimeSlotsProps) {
+//   const { time } = useTime();
+//   const [notDirty, setNotDirty] = useState(false);
+//   const [openingTime, setOpeningTime] = useState<string | undefined>();
+//   const [closingTime, setClosingTime] = useState<string | undefined>();
 
-  useEffect(() => {
-    setOpeningTime(time?.[start].slice(0, 16));
-    setClosingTime(time?.[end].slice(0, 16));
-  }, [time]);
+//   useEffect(() => {
+//     setOpeningTime(time?.[start].slice(0, 16));
+//     setClosingTime(time?.[end].slice(0, 16));
+//   }, [time]);
 
-  useEffect(() => {
-    setNotDirty(
-      (time?.[start].startsWith(openingTime || "") &&
-        time?.[end].startsWith(closingTime || "")) ??
-        false,
-    );
-  }, [openingTime, closingTime]);
+//   useEffect(() => {
+//     setNotDirty(
+//       (time?.[start].startsWith(openingTime || "") &&
+//         time?.[end].startsWith(closingTime || "")) ??
+//         false,
+//     );
+//   }, [openingTime, closingTime]);
 
-  const handleOpeningTimeChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setOpeningTime(event.target.value);
-  };
+//   const handleOpeningTimeChange = (
+//     event: React.ChangeEvent<HTMLInputElement>,
+//   ) => {
+//     setOpeningTime(event.target.value);
+//   };
 
-  const handleClosingTimeChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setClosingTime(event.target.value);
-  };
+//   const handleClosingTimeChange = (
+//     event: React.ChangeEvent<HTMLInputElement>,
+//   ) => {
+//     setClosingTime(event.target.value);
+//   };
 
-  const handleSubmit = () => {
-    if (!time) return;
-    useTimeEdit({ [start]: openingTime, [end]: closingTime }).then((res) => {
-      setNotDirty(
-        (res[start].startsWith(openingTime || "") &&
-          res[end].startsWith(closingTime || "")) ??
-          false,
-      );
-      time[start] = openingTime || "";
-      time[end] = closingTime || "";
-    });
-  };
+//   const handleSubmit = () => {
+//     if (!time) return;
+//     useTimeEdit({ [start]: openingTime, [end]: closingTime }).then((res) => {
+//       setNotDirty(
+//         (res[start].startsWith(openingTime || "") &&
+//           res[end].startsWith(closingTime || "")) ??
+//           false,
+//       );
+//       time[start] = openingTime || "";
+//       time[end] = closingTime || "";
+//     });
+//   };
 
-  const timeSlotsStatus = useCallback(() => {
-    if (!openingTime || !closingTime) return "";
-    const openDate = new Date(openingTime);
-    const closeDate = new Date(closingTime);
-    const currentDate = new Date();
-    currentDate.setHours(currentDate.getHours() - 1);
-    if (currentDate < openDate) {
-      return "Por abrir";
-    }
-    if (currentDate >= openDate && currentDate <= closeDate) {
-      return "Aberto";
-    }
-    return "Fechado";
-  }, [openingTime, closingTime]);
+//   const timeSlotsStatus = useCallback(() => {
+//     if (!openingTime || !closingTime) return "";
+//     const openDate = new Date(openingTime);
+//     const closeDate = new Date(closingTime);
+//     const currentDate = new Date();
+//     currentDate.setHours(currentDate.getHours() - 1);
+//     if (currentDate < openDate) {
+//       return "Por abrir";
+//     }
+//     if (currentDate >= openDate && currentDate <= closeDate) {
+//       return "Aberto";
+//     }
+//     return "Fechado";
+//   }, [openingTime, closingTime]);
 
-  return (
-    <form className="flex flex-col gap-2">
-      <label className="flex items-center justify-between gap-2">
-        <span>Abrir</span>
-        <Input
-          type="datetime-local"
-          className="input-sm"
-          value={openingTime}
-          onChange={handleOpeningTimeChange}
-        />
-      </label>
-      <label className="flex items-center justify-between gap-2">
-        <span>Fechar</span>
-        <Input
-          type="datetime-local"
-          className="input-sm"
-          value={closingTime}
-          onChange={handleClosingTimeChange}
-        />
-      </label>
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-bold text-gray-500">
-          {timeSlotsStatus()}
-        </span>
-        <button
-          className="btn-primary btn-sm btn rounded-full normal-case"
-          onClick={handleSubmit}
-          disabled={notDirty}
-          type="button"
-        >
-          Alterar abertura
-        </button>
-      </div>
-    </form>
-  );
-}
+//   return (
+//     <form className="flex flex-col gap-2">
+//       <label className="flex items-center justify-between gap-2">
+//         <span>Abrir</span>
+//         <Input
+//           type="datetime-local"
+//           className="input-sm"
+//           value={openingTime}
+//           onChange={handleOpeningTimeChange}
+//         />
+//       </label>
+//       <label className="flex items-center justify-between gap-2">
+//         <span>Fechar</span>
+//         <Input
+//           type="datetime-local"
+//           className="input-sm"
+//           value={closingTime}
+//           onChange={handleClosingTimeChange}
+//         />
+//       </label>
+//       <div className="flex items-center justify-between">
+//         <span className="text-sm font-bold text-gray-500">
+//           {timeSlotsStatus()}
+//         </span>
+//         <button
+//           className="btn-primary btn-sm btn rounded-full normal-case"
+//           onClick={handleSubmit}
+//           disabled={notDirty}
+//           type="button"
+//         >
+//           Alterar abertura
+//         </button>
+//       </div>
+//     </form>
+//   );
+// }
 
-function AddTable() {
-  const [tableSize, setTableSize] = useState<number | undefined>();
+// function AddTable() {
+//   const [tableSize, setTableSize] = useState<number | undefined>();
 
-  function addTable() {
-    if (!tableSize) return;
-    GalaService.table.createTable({ seats: tableSize }).then(() => {
-      window.location.pathname = "/gala/reserve";
-    });
-  }
+//   function addTable() {
+//     if (!tableSize) return;
+//     GalaService.table.createTable({ seats: tableSize }).then(() => {
+//       window.location.pathname = "/gala/reserve";
+//     });
+//   }
 
-  return (
-    <div className="w-50 relative mx-auto h-fit xs:ml-auto xs:mr-0">
-      <Input
-        className="input-sm w-full pr-36"
-        type="number"
-        min={1}
-        placeholder="Nº Lugares"
-        onChange={(e) =>
-          setTableSize(parseInt(e.target.value, 10) || undefined)
-        }
-        value={tableSize || ""}
-      />
-      <button
-        className="btn-primary btn-sm btn absolute right-0 top-0 mt-[2px] whitespace-nowrap rounded-full normal-case"
-        type="button"
-        onClick={addTable}
-      >
-        Adicionar mesa
-      </button>
-    </div>
-  );
-}
+//   return (
+//     <div className="w-50 relative mx-auto h-fit xs:ml-auto xs:mr-0">
+//       <Input
+//         className="input-sm w-full pr-36"
+//         type="number"
+//         min={1}
+//         placeholder="Nº Lugares"
+//         onChange={(e) =>
+//           setTableSize(parseInt(e.target.value, 10) || undefined)
+//         }
+//         value={tableSize || ""}
+//       />
+//       <button
+//         className="btn-primary btn-sm btn absolute right-0 top-0 mt-[2px] whitespace-nowrap rounded-full normal-case"
+//         type="button"
+//         onClick={addTable}
+//       >
+//         Adicionar mesa
+//       </button>
+//     </div>
+//   );
+// }
 
-function RegistrationLimit() {
-  const { limits, refresh } = useLimits();
-  const [maxRegistrations, setMaxRegistrations] = useState<number>(0);
+// function RegistrationLimit() {
+//   const { limits, refresh } = useLimits();
+//   const [maxRegistrations, setMaxRegistrations] = useState<number>(0);
 
-  useEffect(() => {
-    if (!limits) return;
-    setMaxRegistrations(limits.maxRegistrations);
-  }, [limits]);
+//   useEffect(() => {
+//     if (!limits) return;
+//     setMaxRegistrations(limits.maxRegistrations);
+//   }, [limits]);
 
-  function updateMaxRegistrations() {
-    if (limits?.maxRegistrations === maxRegistrations) return;
-    GalaService.limits.editTimeSlots({ maxRegistrations });
-    refresh();
-  }
+//   function updateMaxRegistrations() {
+//     if (limits?.maxRegistrations === maxRegistrations) return;
+//     GalaService.limits.editTimeSlots({ maxRegistrations });
+//     refresh();
+//   }
 
-  return (
-    <div className="w-50 relative mx-auto h-fit xs:ml-auto xs:mr-0">
-      <Input
-        className="input-sm w-full pr-24"
-        type="number"
-        min={1}
-        placeholder="Máximo inscrições"
-        onChange={(e) => {
-          const num = parseInt(e.target.value, 10);
-          if (num === null) return;
-          setMaxRegistrations(num);
-        }}
-        value={maxRegistrations}
-      />
-      <button
-        className="btn-primary btn-sm btn absolute right-0 top-0 mt-[2px] whitespace-nowrap rounded-full normal-case"
-        type="button"
-        onClick={updateMaxRegistrations}
-      >
-        Atualizar
-      </button>
-    </div>
-  );
-}
+//   return (
+//     <div className="w-50 relative mx-auto h-fit xs:ml-auto xs:mr-0">
+//       <Input
+//         className="input-sm w-full pr-24"
+//         type="number"
+//         min={1}
+//         placeholder="Máximo inscrições"
+//         onChange={(e) => {
+//           const num = parseInt(e.target.value, 10);
+//           if (num === null) return;
+//           setMaxRegistrations(num);
+//         }}
+//         value={maxRegistrations}
+//       />
+//       <button
+//         className="btn-primary btn-sm btn absolute right-0 top-0 mt-[2px] whitespace-nowrap rounded-full normal-case"
+//         type="button"
+//         onClick={updateMaxRegistrations}
+//       >
+//         Atualizar
+//       </button>
+//     </div>
+//   );
+// }
 
-function ControlCardInner() {
-  return (
-    <>
-      <div className="flex basis-0 flex-col">
-        <h2 className="mb-4 font-bold">Reservar Lugar</h2>
-        <TimeSlots start="tablesStart" end="tablesEnd" />
-      </div>
-      <div className="flex basis-0 flex-col">
-        <h2 className="mb-4 font-bold">Votar</h2>
-        <TimeSlots start="votesStart" end="votesEnd" />
-      </div>
-      <div className="flex basis-0 flex-col">
-        <h2 className="mb-4 font-bold">Mesas</h2>
-        <AddTable />
-      </div>
-      <div className="flex basis-0 flex-col">
-        <h2 className="mb-4 font-bold">Máximo inscrições</h2>
-        <RegistrationLimit />
-      </div>
-    </>
-  );
-}
+// function ControlCardInner() {
+//   return (
+//     <>
+//       <div className="flex basis-0 flex-col">
+//         <h2 className="mb-4 font-bold">Reservar Lugar</h2>
+//         <TimeSlots start="tablesStart" end="tablesEnd" />
+//       </div>
+//       <div className="flex basis-0 flex-col">
+//         <h2 className="mb-4 font-bold">Votar</h2>
+//         <TimeSlots start="votesStart" end="votesEnd" />
+//       </div>
+//       <div className="flex basis-0 flex-col">
+//         <h2 className="mb-4 font-bold">Mesas</h2>
+//         <AddTable />
+//       </div>
+//       <div className="flex basis-0 flex-col">
+//         <h2 className="mb-4 font-bold">Máximo inscrições</h2>
+//         <RegistrationLimit />
+//       </div>
+//     </>
+//   );
+// }
 
 export default function Admin() {
-  const [controlCardOpen, setControlCardOpen] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
-  const confirmPaymentModalRef = useRef<HTMLDialogElement>(null);
-  const navigate = useNavigate();
-  const selectedUser = useRef<number | null>(null);
-  const { tables } = useTables();
+  // const [controlCardOpen, setControlCardOpen] = useState(false);
+  // const [users, setUsers] = useState<User[]>([]);
+  // const confirmPaymentModalRef = useRef<HTMLDialogElement>(null);
+  // const navigate = useNavigate();
+  // const selectedUser = useRef<number | null>(null);
+  // const { tables } = useTables();
 
   useEffect(() => {
     GalaService.user.listUsers().then((data) => {
@@ -266,37 +261,37 @@ export default function Admin() {
     });
   }, []);
 
-  const persons: Person[] = tables.reduce((acc: Person[], table) => {
-    return acc.concat(table.persons);
-  }, []);
+  // const persons: Person[] = tables.reduce((acc: Person[], table) => {
+  //   return acc.concat(table.persons);
+  // }, []);
 
-  const usersExtended: UserExtended[] = users.map((u) => {
-    const match = persons.find((p) => p.id === u._id);
-    return { companions: [], ...u, ...match } as UserExtended;
-  });
+  // const usersExtended: UserExtended[] = users.map((u) => {
+  //   const match = persons.find((p) => p.id === u._id);
+  //   return { companions: [], ...u, ...match } as UserExtended;
+  // });
 
-  function modalConfirmPayment(id: number) {
-    selectedUser.current = id;
-    confirmPaymentModalRef.current!.showModal();
-  }
+  // function modalConfirmPayment(id: number) {
+  //   selectedUser.current = id;
+  //   confirmPaymentModalRef.current!.showModal();
+  // }
 
-  const sumOfAllCompanions = persons.reduce(
-    (sum, p) => sum + (p.companions.length ?? 0),
-    0,
-  );
+  // const sumOfAllCompanions = persons.reduce(
+  //   (sum, p) => sum + (p.companions.length ?? 0),
+  //   0,
+  // );
 
-  const sumOfAllVegetarians = persons.reduce(
-    (sum, p) =>
-      sum +
-      (p.dish === "VEG" ? 1 : 0) +
-      (p.companions.filter((c: Companion) => c.dish === "VEG").length ?? 0),
-    0,
-  );
+  // const sumOfAllVegetarians = persons.reduce(
+  //   (sum, p) =>
+  //     sum +
+  //     (p.dish === "VEG" ? 1 : 0) +
+  //     (p.companions.filter((c: Companion) => c.dish === "VEG").length ?? 0),
+  //   0,
+  // );
 
-  const sumOfAllPayments = users.reduce(
-    (sum, u) => sum + (u.has_payed ? 1 : 0),
-    0,
-  );
+  // const sumOfAllPayments = users.reduce(
+  //   (sum, u) => sum + (u.has_payed ? 1 : 0),
+  //   0,
+  // );
 
   return (
     <div className="mx-auto max-w-7xl">

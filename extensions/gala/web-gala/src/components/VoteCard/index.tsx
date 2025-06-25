@@ -1,6 +1,4 @@
 import { useFormContext } from "react-hook-form";
-import { faGraduationCap, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Option from "./Option";
 
 export type Props = {
@@ -8,7 +6,6 @@ export type Props = {
 };
 
 export default function VoteCard({ vote }: Props) {
-  const { setValue } = useFormContext();
 
   return (
     <div className="flex flex-col gap-4 rounded-xl p-4 border border-dark-gold bg-black/20 backdrop-blur-md">
