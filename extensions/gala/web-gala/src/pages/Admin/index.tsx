@@ -299,9 +299,9 @@ export default function Admin() {
   );
 
   return (
-    <div className="mx-auto mt-12 max-w-7xl">
+    <div className="mx-auto max-w-7xl">
       {/* Info cards for statistics */}
-      <div className="flex gap-3 max-xs:flex-col xs:gap-4 xs:[&_*]:basis-60">
+      {/* <div className="flex gap-3 max-xs:flex-col xs:gap-4 xs:[&_*]:basis-60">
         <Info
           title="Reservas / Inscritos"
           values={[
@@ -311,10 +311,10 @@ export default function Admin() {
         />
         <Info title="Vegetarianos" values={[sumOfAllVegetarians]} />
         <Info title="Pagamentos" values={[sumOfAllPayments, users.length]} />
-      </div>
+      </div> */}
 
       {/* Control card */}
-      <div
+      {/* <div
         className={classNames(
           "relative mt-6 grid grid-cols-[repeat(auto-fit,_minmax(18rem,18rem))] justify-center gap-x-20 gap-y-10 bg-base-200 shadow",
           !controlCardOpen
@@ -330,10 +330,10 @@ export default function Admin() {
         >
           <FontAwesomeIcon icon={controlCardOpen ? faXmark : faEllipsis} />
         </button>
-      </div>
+      </div> */}
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      {/* <div className="overflow-x-auto">
         <table className="mx-auto table w-full leading-[1rem] [&_*]:py-1 [&_*]:text-[0.8rem]">
           <thead>
             <tr className="border-b-2 border-primary [&_th]:bg-transparent">
@@ -445,7 +445,7 @@ export default function Admin() {
           </button>
         </div>
       </dialog>
-
+ */}
       {/* Vote Results */}
       <VoteResults />
     </div>

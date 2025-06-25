@@ -203,7 +203,7 @@ const Navbar = () => {
               reloadDocument
               className="btn-ghost btn-sm btn-circle btn
               gap-2.5 border-0
-              bg-gradient-to-r from-[#EBD5B5] to-[#B6A080]
+              bg-gradient-to-r from-[#F7BBAC] to-[#C58676]
               hover:brightness-90 md:!w-fit
               md:!px-3"
             >

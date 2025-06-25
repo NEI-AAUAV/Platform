@@ -9,9 +9,9 @@ const backgrounds = {
     backgroundPosition: "center",
   },
   notHome: {
-    backgroundImage: `url('${config.BASE_URL}/gala/not-home-background.jpg')`,
-    backgroundSize: "100vh",
-    backgroundPosition: "top left",
+    backgroundImage: `url('${config.BASE_URL}/gala/home-background.jpg')`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
   },
 };
 
@@ -27,7 +27,6 @@ export default function Layout() {
       className="min-h-screen bg-no-repeat text-base-content/70"
       style={getBackground(location)}
     >
-      <Navbar />
       <div className="mx-auto max-w-screen-2xl px-1">
         <Outlet />
       </div>

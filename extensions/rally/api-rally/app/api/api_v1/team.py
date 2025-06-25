@@ -13,7 +13,6 @@ from app.schemas.team import (
     TeamUpdate,
     DetailedTeam,
     TeamScoresUpdate,
-    TeamCardsUpdate,
 )
 
 from ._deps import get_checkpoint_id
@@ -79,20 +78,34 @@ def add_checkpoint(
     return DetailedTeam.model_validate(team_db)
 
 
-@router.put("/{id}/cards", status_code=201)
-def activate_cards(
-    *,
-    db: Session = Depends(deps.get_db),
-    id: int,
-    obj_in: TeamCardsUpdate,
-    auth: AuthData = Security(api_nei_auth, scopes=[]),
-    staff_user: DetailedUser = Depends(deps.get_admin_or_staff),
-) -> DetailedTeam:
-    checkpoint_id = get_checkpoint_id(staff_user, obj_in, auth.scopes)
-    team_db = crud.team.activate_cards(
-        db, id=id, checkpoint_id=checkpoint_id, obj_in=obj_in
-    )
-    return DetailedTeam.model_validate(team_db)
+# @router.put("/{id}/cards", status_code=201)
+# def activate_cards(
+#     *,
+#     db: Session = Depends(deps.get_db),
+#     id: int,@router.put("/{id}/cards", status_code=201)
+# def activate_cards(
+#     *,
+#     db: Session = Depends(deps.get_db),
+#     id: int,
+#     obj_in: TeamCardsUpdate,
+#     auth: AuthData = Security(api_nei_auth, scopes=[]),
+#     staff_user: DetailedUser = Depends(deps.get_admin_or_staff),
+# ) -> DetailedTeam:
+#     checkpoint_id = get_checkpoint_id(staff_user, obj_in, auth.scopes)
+#     team_db = crud.team.activate_cards(
+#         db, id=id, checkpoint_id=checkpoint_id, obj_in=obj_in
+#     )
+#     return DetailedTeam.model_validate(team_db)
+
+#     obj_in: TeamCardsUpdate,
+#     auth: AuthData = Security(api_nei_auth, scopes=[]),
+#     staff_user: DetailedUser = Depends(deps.get_admin_or_staff),
+# ) -> DetailedTeam:
+#     checkpoint_id = get_checkpoint_id(staff_user, obj_in, auth.scopes)
+#     team_db = crud.team.activate_cards(
+#         db, id=id, checkpoint_id=checkpoint_id, obj_in=obj_in
+#     )
+#     return DetailedTeam.model_validate(team_db)
 
 
 @router.post("/", status_code=201)

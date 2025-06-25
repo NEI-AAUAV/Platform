@@ -10,9 +10,12 @@ export default {
       screens: {
         xs: "576px",
       },
+      fontFamily: {
+        gala: ["Inter", "sans-serif"],
+      },
       colors: {
-        "light-gold": "#EBD5B5",
-        "dark-gold": "#B6A080",
+        "light-gold": "#F7BBAC",
+        "dark-gold": "#C58676",
       },
       backgroundImage: () => ({
         "gradient-radial":
@@ -26,9 +29,9 @@ export default {
     themes: [
       {
         light: {
-          primary: "#B6A080",
-          secondary: "#EBD5B5",
-          accent: "#B6A080",
+          primary: "#F7BBAC",
+          secondary: "#C58676",
+          accent: "#F7BBAC",
           neutral: "#3D4451",
           "base-100": "#FFFFFF",
           "base-200": "#FAFAFA",
