@@ -14,17 +14,17 @@ function ProtectedRoute({
   children: React.ReactNode;
   loggedIn?: boolean;
   redirect?: string;
-}) {
+}): JSX.Element | null {
   const { sessionLoading, token, scopes } = useUserStore((state: UserState) => state);
 
-  if (sessionLoading) return null;
-  console.log(scopes);
+  if (sessionLoading) return null; // Return null while loading
+
   if (!!token === loggedIn) {
-    // Optional: Check for specific scopes if needed
+    // Check for specific scopes if needed
     if (loggedIn && scopes && !scopes.includes("admin")) {
       return <Navigate to="/" />;
     }
-    return children;
+    return <>{children}</>; // Wrap children in a React fragment
   } else {
     return <Navigate to={redirect} />;
   }

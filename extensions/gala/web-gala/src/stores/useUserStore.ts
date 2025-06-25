@@ -74,3 +74,4 @@ const useUserStore = create<UserState>((set) => ({
 }));
 
 export { useUserStore, shallow };
+export type { UserState, TokenPayload };
