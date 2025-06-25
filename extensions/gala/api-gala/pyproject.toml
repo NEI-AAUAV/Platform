@@ -5,6 +5,7 @@ description = "API service for jantar de gala"
 authors = ["Master slave 2"]
 readme = "README.md"
 packages = [{include = "app"}]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
