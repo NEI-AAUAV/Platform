@@ -57,8 +57,8 @@ export default function Vote() {
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <h2 className="m-20 text-center text-2xl font-bold">
-          <span className="block">Vota nas categorias.</span>
+        <h2 className="pt-20 text-center text-[3rem] font-bold sm:text-[4rem]">
+          <span className="text-light-gold block font-gala">Votações</span>
         </h2>
         <div className="mx-4 mt-10 grid gap-8">
           {votes.map((vote) => (
@@ -66,7 +66,7 @@ export default function Vote() {
           ))}
         </div>
         {state === State.REGISTERED && (
-          <div className="sticky bottom-0 mt-5 bg-base-100 px-4 pb-10 pt-5">
+          <div className="font-gala sticky bottom-0 mt-5 px-4 pb-10 pt-5 max-w-md justify-center mx-auto">
             <Button className={classNames("w-full")} submit>
               <FontAwesomeIcon icon={faPaperPlane} /> Enviar votações
             </Button>

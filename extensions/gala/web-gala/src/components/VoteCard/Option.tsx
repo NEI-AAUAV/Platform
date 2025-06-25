@@ -10,6 +10,7 @@ type OptionProps = {
   catId?: number;
 };
 
+console.log(data);
 export default function Option({ name, optionIdx, disabled, catId }: OptionProps) {
   const { setValue } = useFormContext();
   const currentSelected = useWatch({
@@ -21,10 +22,10 @@ export default function Option({ name, optionIdx, disabled, catId }: OptionProps
       type="button"
       disabled={disabled}
       className={classNames(
-        "flex flex-row items-center gap-6 rounded-lg border border-[#EBD5B5] p-2 shadow-[0_2px_6px_0px_rgba(182,160,128,0.25)]",
+        "flex flex-row items-center gap-2 rounded-full border p-2 transition-colors duration-300 ease-in-out",
         {
-          "bg-gradient-to-r from-[#EBD5B5] to-[#B6A080]":
-            currentSelected === optionIdx,
+          "bg-gradient-to-r from-[#F7BBAC] to-[#C58676] border-transparent": currentSelected === optionIdx, // Selected state
+          "bg-black/20 border-dark-gold": currentSelected !== optionIdx, // Default state
         },
       )}
       onClick={() => {
@@ -35,10 +36,19 @@ export default function Option({ name, optionIdx, disabled, catId }: OptionProps
         <img
           src={`${config.BASE_URL}/gala/categories/${data[`c${catId}`][name]}`}
           alt={name}
-          className="inline-block aspect-square w-16 rounded-lg object-cover object-center"
+          className="inline-block w-8 h-8 rounded-full object-cover object-center"
         />
       )}
-      <span className="text-left font-semibold">{name}</span>
+      <span
+        className={classNames(
+          "text-left font-gala font-semibold transition-all duration-300 ease-in-out bg-clip-text ",
+          {
+            "text-black": currentSelected === optionIdx, // Gradient text when selected
+            "text-transparent bg-gradient-to-r from-[#F7BBAC] to-[#C58676]": currentSelected !== optionIdx, // Default text color
+          },
+        )}>
+        {name}
+      </span>
     </button>
   );
 }
