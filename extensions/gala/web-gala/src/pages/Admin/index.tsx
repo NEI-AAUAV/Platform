@@ -249,7 +249,7 @@ import VoteResults from "@/components/VoteCard/VoteResults";
 
 export default function Admin() {
   // const [controlCardOpen, setControlCardOpen] = useState(false);
-  // const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   // const confirmPaymentModalRef = useRef<HTMLDialogElement>(null);
   // const navigate = useNavigate();
   // const selectedUser = useRef<number | null>(null);

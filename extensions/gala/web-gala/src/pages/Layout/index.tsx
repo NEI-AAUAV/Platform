@@ -1,5 +1,4 @@
 import { Outlet, useLocation } from "react-router-dom";
-import Navbar from "@/components/Navbar";
 import config from "@/config";
 
 const backgrounds = {
