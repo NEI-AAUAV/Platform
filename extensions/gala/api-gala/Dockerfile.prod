@@ -19,7 +19,7 @@ RUN pip install --upgrade pip &&\
 
 COPY ./pyproject.toml ./poetry.lock* /tmp/
 
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --without test,dev
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main
 
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.10-slim
 
