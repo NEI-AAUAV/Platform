@@ -4,6 +4,33 @@ import { Navigate } from "react-router-dom";
 import Layout from "@/pages/Layout";
 import ErrorBoundary from "@/pages/ErrorBoundary";
 
+import { useUserStore, UserState } from "@/stores/useUserStore";
+
+function ProtectedRoute({
+  children,
+  loggedIn = true,
+  redirect = "/auth/login",
+}: {
+  children: React.ReactNode;
+  loggedIn?: boolean;
+  redirect?: string;
+}) {
+  const { sessionLoading, token, scopes } = useUserStore((state: UserState) => state);
+
+  if (sessionLoading) return null;
+  console.log(scopes);
+  if (!!token === loggedIn) {
+    // Optional: Check for specific scopes if needed
+    if (loggedIn && scopes && !scopes.includes("admin")) {
+      return <Navigate to="/" />;
+    }
+    return children;
+  } else {
+    return <Navigate to={redirect} />;
+  }
+}
+
+
 const routes = [
   {
     path: "/",
@@ -44,7 +71,13 @@ const routes = [
         path: "/admin",
         async lazy() {
           const { default: Admin } = await import("@/pages/Admin");
-          return { Component: Admin };
+          return {
+            Component: () => (
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            ),
+          };
         },
       },
       {
