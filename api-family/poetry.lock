@@ -882,16 +882,14 @@ pycryptodome = ["pyasn1", "pycryptodome (>=3.3.1,<4.0.0)"]
 
 [[package]]
 name = "python-multipart"
-version = "0.0.5"
+version = "0.0.18"
 description = "A streaming multipart parser for Python"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "python-multipart-0.0.5.tar.gz", hash = "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"},
+    {file = "python_multipart-0.0.18-py3-none-any.whl", hash = "sha256:efe91480f485f6a361427a541db4796f9e1591afc0fb8e7a4ba06bfbc6708996"},
+    {file = "python_multipart-0.0.18.tar.gz", hash = "sha256:7a68db60c8bfb82e460637fa4750727b45af1d5e2ed215593f917f64694d34fe"},
 ]
-
-[package.dependencies]
-six = ">=1.4.0"
 
 [[package]]
 name = "requests"
@@ -1041,4 +1039,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "5bbd13e4aaa71442d456f83445c2583c256a2187759ed4d3a00cb189127e1788"
+content-hash = "ce0d6d0196bc6c796753630863b0bb90010313236a921a10af61b1ad66de8bf3"
