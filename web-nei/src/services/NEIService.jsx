@@ -165,7 +165,7 @@ const NEIService = {
   },
   
   async updateArraialPoints(data) {
-    return await client.put("/arraial/points", data)
+    return await client.put("/arraial/points", data);
   }
 };
 
