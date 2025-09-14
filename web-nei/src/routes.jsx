@@ -68,6 +68,7 @@ const routes = [
       // the redirection logic wouldn't work.
       { path: "/auth/login", lazy: () => import("./pages/auth/Login") },
       { path: "/auth/register", lazy: () => import("./pages/auth/Register") },
+      { path: "/arraial", lazy: () => import("./pages/Arraial") },
       // { path: "/estagios", element: <Internship /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
       { path: "/*", lazy: () => import("./pages/Error404") },
