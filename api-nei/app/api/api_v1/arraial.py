@@ -7,6 +7,7 @@ from app import crud
 from app.api import deps
 from app.api.api_v1 import auth
 from app.schemas.user.user import ScopeEnum
+from app.api.api_v1.arraial_ws import arraial_ws_manager, ArraialConnectionType
 
 router = APIRouter()
 
@@ -42,14 +43,14 @@ def get_arraial_points(
 
 
 @router.put("/points", status_code=200, response_model=List[ArraialPoints])
-def update_arraial_points(
+async def update_arraial_points(
     *,
     points_update: ArraialPointsUpdate,
     db: Session = Depends(deps.get_db),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ) -> Any:
     """
-    Update arraial points for a specific núcleo.
+    Update arraial points for a specific team.
     """
     # Find the núcleo and update its points
     for points in _arraial_points:
@@ -59,4 +60,10 @@ def update_arraial_points(
     else:
         raise HTTPException(status_code=404, detail="Núcleo not found")
     
+    # Broadcast updated points to all connected clients
+    await arraial_ws_manager.broadcast(
+        connection_type=ArraialConnectionType.GENERAL,
+        message={"topic": "ARRAIAL_POINTS", "points": _arraial_points},
+    )
+
     return _arraial_points

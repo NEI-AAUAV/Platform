@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import service from 'services/NEIService';
-import { getSocket } from "services/SocketService";
+import { getArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
 import config from "config";
 import './wave.css';
 
 // Configuration constants
-const POLLING_INTERVAL = config.ARRAIAL.POLLING_INTERVAL;
+const POLLING_INTERVAL = Math.max(60000, config.ARRAIAL.POLLING_INTERVAL || 10000); // use longer fallback when WS is on
 const AUTH_USERS = config.ARRAIAL.AUTH_USERS;
 
 export function Component() {
-    const ws = getSocket();
+    const [ws, setWs] = useState(null);
     const [pointsList, setPointsList] = useState([
         {nucleo: 'NEEETA', value: 0}, 
         {nucleo: 'NEECT', value: 0}, 
@@ -36,12 +36,32 @@ export function Component() {
                     setError('Failed to load points. Please try again.');
                 });
         };
-        
+
         // Initial fetch
         fetchPoints();
-        
+
+        // Subscribe to WebSocket updates
+        const socket = getArraialSocket();
+        setWs(socket);
+        const onMessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                if (data?.topic === 'ARRAIAL_POINTS' && Array.isArray(data.points)) {
+                    setPointsList(data.points);
+                }
+            } catch (e) {
+                // ignore non-JSON payloads
+            }
+        };
+        socket.addEventListener('message', onMessage);
+
+        // Fallback polling
         const intervalId = setInterval(fetchPoints, POLLING_INTERVAL);
-        return () => clearInterval(intervalId);
+        return () => {
+            clearInterval(intervalId);
+            socket.removeEventListener('message', onMessage);
+            socket.close();
+        };
     }, []);
 
     const handleChange = (event) => {
@@ -66,7 +86,11 @@ export function Component() {
             })
             .catch(error => {
                 console.error('Failed to update points:', error);
-                setError('Failed to update points. Please try again.');
+                if (error?.response?.status === 403) {
+                    setError('You do not have permission to update points.');
+                } else {
+                    setError('Failed to update points. Please try again.');
+                }
             })
             .finally(() => {
                 setIsLoading(false);
@@ -171,7 +195,7 @@ export function Component() {
             
                             <button 
                                 type="submit" 
-                                disabled={number === '' || !/^-?\d+$/.test(number) || isLoading}
+                                disabled={number === '' || number === '0' || !/^-?\d+$/.test(number) || isLoading}
                                 className="btn btn-primary"
                             >
                                 {isLoading ? 'Updating...' : 'Submit'}

@@ -50,3 +50,8 @@ export const wsend = async (d) => {
         console.error("could not send ", d)
     }
 }
+
+export const getArraialSocket = () => {
+    const ws = new WebSocket(`${config.WS_URL}/arraial/ws`);
+    return ws;
+}

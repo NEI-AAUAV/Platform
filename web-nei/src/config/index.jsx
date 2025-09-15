@@ -41,7 +41,8 @@ const config = {
     AUTH_USERS: [
       "manager_arraial@nei.pt", 
       "manager_arraial@neect.pt", 
-      "manager_arraial@neeeta.pt"
+      "manager_arraial@neeeta.pt",
+      "dev@dev.dev"
     ]
   }
 };
