@@ -112,6 +112,8 @@ services:
       context: web-nei
     ports:
       - 3000:3000
+    environment:
+      - VITE_ENABLE_ARRAIAL=True
     volumes:
       - nei_modules:/web_nei/node_modules
       - ./web-nei:/web_nei

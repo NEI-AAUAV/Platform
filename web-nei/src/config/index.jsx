@@ -39,9 +39,9 @@ const config = {
   ARRAIAL: {
     POLLING_INTERVAL: 10000, // 10 seconds
     AUTH_USERS: [
-      "manager_arrail1@lmao.pt", 
-      "manager_arrail2@omega.pt", 
-      "manager_arrail3@lul.pt"
+      "manager_arraial@nei.pt", 
+      "manager_arraial@neect.pt", 
+      "manager_arraial@neeeta.pt"
     ]
   }
 };
