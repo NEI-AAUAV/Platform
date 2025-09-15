@@ -162,8 +162,8 @@ export function Component() {
     };
 
     const renderPointsBar = (pointsData, index) => (
-        <div key={index} className="flex flex-col justify-center space-y-2">
-            <div className="relative hidden w-64 lg:w-[40vh] h-[55vh] border-8 border-white border-t-0 rounded-b-[3rem] md:block">
+        <div key={index} className="flex flex-col justify-center items-center space-y-2">
+            <div className="relative block mx-auto w-40 sm:w-56 md:w-64 lg:w-[40vh] h-[40vh] sm:h-[48vh] md:h-[55vh] border-8 border-white border-t-0 rounded-b-[3rem]">
                 {/* Inner content wrapper to clip beer/foam, outer stays visible for handle */}
                 <div className="absolute inset-0 overflow-hidden rounded-b-[2.5rem]">
                     {/* Glass effects */}
@@ -226,7 +226,7 @@ export function Component() {
     );
 
     return (
-        <div className="flex flex-col justify-center space-y-16">
+        <div className="flex flex-col justify-center space-y-12 md:space-y-16">
             <h1 className="text-center">
                 Arraial do DETI
             </h1>
@@ -237,11 +237,11 @@ export function Component() {
                 </div>
             )}
             
-            <div className="flex flex-col md:flex-row justify-center space-x-16">
+            <div className="flex flex-col md:flex-row items-center md:items-start justify-center space-y-10 md:space-y-0 md:space-x-16">
                 {pointsList.map((pointsData, index) => renderPointsBar(pointsData, index))}
             </div>
             {auth ? (
-                <div className="rounded-box m-auto flex h-fit max-w-lg flex-col bg-base-200 px-3 py-8 align-middle shadow-secondary drop-shadow-md xs:px-14 sm:max-w-md">
+                <div className="rounded-box m-auto w-full max-w-lg sm:max-w-md flex h-fit flex-col bg-base-200 px-4 sm:px-6 py-6 align-middle shadow-secondary drop-shadow-md">
                     <h3>Add/Remove Points</h3>
                     <form onSubmit={handleSubmit}>
                         <div className="flex flex-col space-y-2">
@@ -250,7 +250,7 @@ export function Component() {
                             </label>
                             <select 
                                 id="nucleo-select"
-                                className="text-lg bg-neutral-700 h-8 w-full text-center rounded" 
+                                className="text-lg bg-neutral-700 h-12 sm:h-10 w-full text-center rounded"
                                 value={selectedValue} 
                                 onChange={handleChange}
                                 aria-label="Select núcleo"
@@ -269,15 +269,15 @@ export function Component() {
                                 value={number}
                                 onChange={handleNumChange}
                                 placeholder="0"
-                                className="text-lg bg-neutral-700 h-8 w-full text-center rounded"
+                                className="text-lg bg-neutral-700 h-12 sm:h-10 w-full text-center rounded"
                                 aria-label="Enter points to add or remove"
                             />
                             {/* Quick adjust buttons */}
                             <div className="mt-2 grid grid-cols-4 gap-2">
-                                <button type="button" className="btn btn-sm" onClick={() => quickAdjust(-5)}>-5</button>
-                                <button type="button" className="btn btn-sm" onClick={() => quickAdjust(-1)}>-1</button>
-                                <button type="button" className="btn btn-sm" onClick={() => quickAdjust(1)}>+1</button>
-                                <button type="button" className="btn btn-sm" onClick={() => quickAdjust(5)}>+5</button>
+                                <button type="button" className="btn btn-md sm:btn-sm" onClick={() => quickAdjust(-5)}>-5</button>
+                                <button type="button" className="btn btn-md sm:btn-sm" onClick={() => quickAdjust(-1)}>-1</button>
+                                <button type="button" className="btn btn-md sm:btn-sm" onClick={() => quickAdjust(1)}>+1</button>
+                                <button type="button" className="btn btn-md sm:btn-sm" onClick={() => quickAdjust(5)}>+5</button>
                             </div>
                             {number !== '' && !/^-?\d+$/.test(number) && (
                                 <p className="text-red-500">Please enter a valid whole number.</p>
@@ -286,7 +286,7 @@ export function Component() {
                             <button 
                                 type="submit" 
                                 disabled={number === '' || number === '0' || !/^-?\d+$/.test(number) || isLoading}
-                                className="btn btn-primary"
+                                className="btn btn-primary btn-md sm:btn-sm"
                             >
                                 {isLoading ? 'Updating...' : 'Submit'}
                             </button>
@@ -295,7 +295,7 @@ export function Component() {
                     {/* History */}
                     <div className="mt-4 flex items-center justify-between">
                         <div className="divider m-0 flex-1">History</div>
-                        <button className="btn btn-sm ml-3" onClick={() => setShowHistory(!showHistory)}>
+                        <button className="btn btn-md sm:btn-sm ml-3" onClick={() => setShowHistory(!showHistory)}>
                             {showHistory ? 'Hide' : 'Show'}
                         </button>
                     </div>
@@ -320,7 +320,7 @@ export function Component() {
                                             {e.rolled_back && <span className="ml-2 badge badge-outline">rolled back</span>}
                                         </span>
                                         <button
-                                            className="btn btn-xs"
+                                            className="btn btn-sm sm:btn-xs"
                                             disabled={!!e.rolled_back}
                                             onClick={() => handleRollback(e.id)}
                                         >

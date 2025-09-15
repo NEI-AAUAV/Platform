@@ -154,3 +154,17 @@
               radial-gradient(120% 80% at 110% 50%, rgba(0,0,0,0.08), transparent 40%);
   pointer-events: none;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .wave, .wave2, .bubbles, .foam-texture {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* tighten divider spacing on small screens */
+  .divider {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
