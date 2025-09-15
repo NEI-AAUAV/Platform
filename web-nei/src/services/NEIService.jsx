@@ -166,6 +166,14 @@ const NEIService = {
   
   async updateArraialPoints(data) {
     return await client.put("/arraial/points", data);
+  },
+
+  async getArraialLog(limit = 50) {
+    return await client.get("/arraial/log", { params: { limit } });
+  },
+
+  async rollbackArraial(logId) {
+    return await client.post(`/arraial/rollback/${logId}`);
   }
 };
 

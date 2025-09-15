@@ -1,9 +1,3 @@
-/* Wrapper helper (applied via markup) - ensure matching radii */
-.glass-clip {
-  border-bottom-left-radius: 4rem;
-  border-bottom-right-radius: 4rem;
-}
-
 /* Beer liquid gradient */
 .beer-liquid {
   background: linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%);
