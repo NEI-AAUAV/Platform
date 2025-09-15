@@ -1,3 +1,9 @@
+/* Wrapper helper (applied via markup) - ensure matching radii */
+.glass-clip {
+  border-bottom-left-radius: 4rem;
+  border-bottom-right-radius: 4rem;
+}
+
 /* Beer liquid gradient */
 .beer-liquid {
   background: linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%);
@@ -73,6 +79,9 @@
   animation: bubblesRise 18s linear infinite;
   mix-blend-mode: screen;
   opacity: 0.42; /* more visible */
+  /* fade at edges so bubbles don't clash with glass shadow */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
   pointer-events: none;
 }
 
@@ -113,5 +122,41 @@
   right: 0;
   height: 3px;
   background: linear-gradient(to bottom, rgba(240,193,47,0.55), rgba(240,193,47,0));
+  pointer-events: none;
+}
+
+
+/* Single narrow glare */
+.glass-glare-left {
+  position: absolute;
+  top: 40px;
+  bottom: 56px;
+  width: 6%;
+  left: 16px;
+  filter: blur(0.5px);
+  opacity: 0.15;
+  background: linear-gradient(to right, rgba(255,255,255,0.45), rgba(255,255,255,0));
+  pointer-events: none;
+}
+
+.glass-shadow {
+  position: absolute;
+  inset: 36px 16px 18px 16px;
+  border-top-left-radius: 2.2rem;
+  border-top-right-radius: 2.2rem;
+  border-bottom-left-radius: 4rem;  /* match glass */
+  border-bottom-right-radius: 4rem; /* match glass */
+  box-shadow: inset 0 0 14px rgba(0,0,0,0.06), inset 0 0 4px rgba(0,0,0,0.05);
+  pointer-events: none;
+}
+
+.beer-vignette {
+  position: absolute;
+  inset: 28px 0 0 0;
+  border-bottom-left-radius: 4rem;  /* match glass */
+  border-bottom-right-radius: 4rem; /* match glass */
+  overflow: hidden;
+  background: radial-gradient(120% 80% at -10% 50%, rgba(0,0,0,0.08), transparent 40%),
+              radial-gradient(120% 80% at 110% 50%, rgba(0,0,0,0.08), transparent 40%);
   pointer-events: none;
 }

@@ -4,6 +4,9 @@ import { getArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
 import config from "config";
 import { motion } from "framer-motion";
+import neiLogo from "assets/images/NEI.png";
+import neectLogo from "assets/images/NEECT.png";
+import neeetaLogo from "assets/images/NEEETA.png"; // used for NEEETA núcleo
 import './wave.css';
 
 // Configuration constants
@@ -117,10 +120,6 @@ export function Component() {
     };
 
 
-    const calculateHeight = (points) => {
-        let height = Math.min((points * 1.8), 525);
-        return height;
-    };
 
     // Headroom-aware height: leave top gap when multiple teams are active
     const FOAM_GAP_PX = 18;            // visual foam thickness already reserved in layout
@@ -139,27 +138,51 @@ export function Component() {
 
     const renderPointsBar = (pointsData, index) => (
         <div key={index} className="flex flex-col justify-center space-y-2">
-            <div className="relative hidden overflow-hidden w-64 lg:w-[40vh] h-[55vh] border-8 border-white border-t-0 rounded-b-[4rem] md:block">
-                <div 
-                    className="absolute bottom-0 left-0 w-full transition-all duration-500" 
-                    style={{ height: calcHeight(pointsData.value) }}
-                >
-                    <div className="relative w-full h-full">
-                        {/* Beer body starts below foam */}
-                        <div style={{ position:'absolute', top:28, left:0, right:0, bottom:0, 
-                            background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
-                            boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)'
-                        }} aria-hidden="true"></div>
-                        {/* Rising bubbles within beer body */}
-                        <div className="bubbles" style={{ top:18 }} aria-hidden="true"></div>
-                        {/* Foam: white cap with texture and subtle crest */}
-                        <div style={{ position:'absolute', top:0, left:0, right:0, height:28, background:'rgba(255,255,255,0.98)', borderTopLeftRadius:28, borderTopRightRadius:28, overflow:'hidden' }} aria-hidden="true">
-                            <div className="foam-texture" />
-                            <div className="foam-shadow" />
-                        </div>
-                        
+            <div className="relative hidden w-64 lg:w-[40vh] h-[55vh] border-8 border-white border-t-0 rounded-b-[3rem] md:block">
+                {/* Inner content wrapper to clip beer/foam, outer stays visible for handle */}
+                <div className="absolute inset-0 overflow-hidden rounded-b-[2.5rem]">
+                    {/* Glass effects */}
+                    <div className="glass-inner" aria-hidden="true"></div>
+                    <div className="glass-rim" aria-hidden="true"></div>
+                    {/* Per-núcleo logo centered in the glass (not the beer) */}
+                    <div style={{ position:'absolute', top:34, left:0, right:0, bottom:32, display:'flex', alignItems:'center', justifyContent:'center', pointerEvents:'none', zIndex:5 }} aria-hidden="true">
+                        <img
+                            src={
+                                pointsData.nucleo === 'NEECT' ? neectLogo :
+                                pointsData.nucleo === 'NEEETA' ? neeetaLogo :
+                                neiLogo
+                            }
+                            alt={pointsData.nucleo}
+                            style={{ maxWidth:'42%', maxHeight:'42%', opacity:0.75 }}
+                        />
                     </div>
-                </div> 
+                    <div 
+                        className="absolute bottom-0 left-0 w-full transition-all duration-500" 
+                        style={{ height: calcHeight(pointsData.value), overflow: 'hidden' }}
+                    >
+                        <div className="relative w-full h-full">
+                            {/* Beer body starts below foam */}
+                            <div style={{ position:'absolute', top:28, left:0, right:0, bottom:0, 
+                                background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
+                                boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)',
+                            }} aria-hidden="true"></div>
+
+                            {/* Rising bubbles within beer body */}
+                            <div className="bubbles" style={{ top:18 }} aria-hidden="true"></div>
+                            {/* Foam: white cap with texture and subtle crest */}
+                            <div style={{ position:'absolute', top:0, left:0, right:0, height:28, background:'rgba(255,255,255,0.98)', borderTopLeftRadius:28, borderTopRightRadius:28, overflow:'hidden' }} aria-hidden="true">
+                                <div className="foam-texture" />
+                                <div className="foam-shadow" />
+                            </div>
+
+                            {/* Glass overlays above beer */}
+                            <div className="beer-vignette" aria-hidden="true"></div>
+                            <div className="glass-shadow" aria-hidden="true"></div>
+                            <div className="glass-base-highlight" aria-hidden="true"></div>
+                            <div className="glass-glare-left" aria-hidden="true"></div>
+                        </div>
+                    </div> 
+                </div>
             </div>                        
             
             <div className="text-center">
