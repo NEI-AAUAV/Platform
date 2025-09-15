@@ -114,12 +114,27 @@ export function Component() {
         return height;
     };
 
+    // Headroom-aware height: leave top gap when multiple teams are active
+    const FOAM_GAP_PX = 16;            // visual foam thickness already reserved in layout
+    const EXTRA_HEADROOM_FRAC = 0.04;  // 4% headroom when multiple teams have points
+    const MIN_HEADROOM_FRAC = 0.02;    // small gap even for single leader
+
+    const calcHeight = (points) => {
+        const maxPoints = Math.max(...pointsList.map(p => p.value), 1);
+        const activeCount = pointsList.filter(p => p.value > 0).length;
+        const headroom = activeCount > 1 ? EXTRA_HEADROOM_FRAC : MIN_HEADROOM_FRAC;
+        const ratio = Math.max(0, Math.min(points / maxPoints, 1));
+        const heightPct = Math.max(0, (1 - headroom) * ratio) * 100;
+        // Return percentage; foam gap is already handled by offsetting beer body by 16px
+        return `${heightPct}%`;
+    };
+
     const renderPointsBar = (pointsData, index) => (
         <div key={index} className="flex flex-col justify-center space-y-2">
             <div className="relative hidden overflow-hidden w-64 lg:w-[40vh] h-[55vh] border-8 border-white border-t-0 rounded-b-[4rem] md:block">
                 <div 
                     className="absolute bottom-0 left-0 w-full transition-all duration-500" 
-                    style={{ height: calculateHeight(pointsData.value) }}
+                    style={{ height: calcHeight(pointsData.value) }}
                 >
                     <div className="relative w-full h-full">
                         {/* Beer body starts below foam */}
@@ -127,7 +142,6 @@ export function Component() {
                             background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
                             boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)'
                         }} aria-hidden="true"></div>
-
                         {/* Rising bubbles within beer body */}
                         <div className="bubbles" style={{ top:16 }} aria-hidden="true"></div>
                         {/* Foam: white cap with texture and subtle crest */}

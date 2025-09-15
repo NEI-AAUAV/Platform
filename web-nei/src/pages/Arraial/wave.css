@@ -58,21 +58,21 @@
 
 /* Rising bubbles overlay */
 @keyframes bubblesRise {
-  from { background-position: 0 100%, 10px 100%; }
-  to   { background-position: 0 0, 10px 0; }
+  from { background-position: 0 100%, 14px 100%; }
+  to   { background-position: 0 0, 14px 0; }
 }
 
 .bubbles {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(rgba(255,255,255,0.35) 1.6px, transparent 2px),
-    radial-gradient(rgba(255,255,255,0.22) 1.2px, transparent 2px);
-  background-size: 26px 36px, 20px 30px;
-  background-position: 0 100%, 10px 100%;
-  animation: bubblesRise 14s linear infinite;
+    radial-gradient(rgba(255,255,255,0.48) 1.9px, transparent 2.5px),
+    radial-gradient(rgba(255,255,255,0.36) 1.5px, transparent 2.1px);
+  background-size: 36px 50px, 28px 42px; /* wider spacing (less concentrated) */
+  background-position: 0 100%, 14px 100%;
+  animation: bubblesRise 18s linear infinite;
   mix-blend-mode: screen;
-  opacity: 0.32;
+  opacity: 0.42; /* more visible */
   pointer-events: none;
 }
 
