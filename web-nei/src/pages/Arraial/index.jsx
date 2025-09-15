@@ -108,6 +108,14 @@ export function Component() {
         }
     };
 
+    const quickAdjust = (delta) => {
+        setError(null);
+        // If empty, start from 0; else parse current number
+        const base = number === '' ? 0 : parseInt(number, 10) || 0;
+        const next = base + delta;
+        setNumber(String(next));
+    };
+
 
     const calculateHeight = (points) => {
         let height = Math.min((points * 1.8), 525);
@@ -115,7 +123,7 @@ export function Component() {
     };
 
     // Headroom-aware height: leave top gap when multiple teams are active
-    const FOAM_GAP_PX = 16;            // visual foam thickness already reserved in layout
+    const FOAM_GAP_PX = 18;            // visual foam thickness already reserved in layout
     const EXTRA_HEADROOM_FRAC = 0.04;  // 4% headroom when multiple teams have points
     const MIN_HEADROOM_FRAC = 0.02;    // small gap even for single leader
 
@@ -138,14 +146,14 @@ export function Component() {
                 >
                     <div className="relative w-full h-full">
                         {/* Beer body starts below foam */}
-                        <div style={{ position:'absolute', top:16, left:0, right:0, bottom:0, 
+                        <div style={{ position:'absolute', top:28, left:0, right:0, bottom:0, 
                             background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
                             boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)'
                         }} aria-hidden="true"></div>
                         {/* Rising bubbles within beer body */}
-                        <div className="bubbles" style={{ top:16 }} aria-hidden="true"></div>
+                        <div className="bubbles" style={{ top:18 }} aria-hidden="true"></div>
                         {/* Foam: white cap with texture and subtle crest */}
-                        <div style={{ position:'absolute', top:0, left:0, right:0, height:16, background:'rgba(255,255,255,0.98)', borderTopLeftRadius:28, borderTopRightRadius:28, overflow:'hidden' }} aria-hidden="true">
+                        <div style={{ position:'absolute', top:0, left:0, right:0, height:28, background:'rgba(255,255,255,0.98)', borderTopLeftRadius:28, borderTopRightRadius:28, overflow:'hidden' }} aria-hidden="true">
                             <div className="foam-texture" />
                             <div className="foam-shadow" />
                         </div>
@@ -216,6 +224,13 @@ export function Component() {
                                 className="text-lg bg-neutral-700 h-8 w-full text-center rounded"
                                 aria-label="Enter points to add or remove"
                             />
+                            {/* Quick adjust buttons */}
+                            <div className="mt-2 grid grid-cols-4 gap-2">
+                                <button type="button" className="btn btn-sm" onClick={() => quickAdjust(-5)}>-5</button>
+                                <button type="button" className="btn btn-sm" onClick={() => quickAdjust(-1)}>-1</button>
+                                <button type="button" className="btn btn-sm" onClick={() => quickAdjust(1)}>+1</button>
+                                <button type="button" className="btn btn-sm" onClick={() => quickAdjust(5)}>+5</button>
+                            </div>
                             {number !== '' && !/^-?\d+$/.test(number) && (
                                 <p className="text-red-500">Please enter a valid whole number.</p>
                             )}
