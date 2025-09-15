@@ -1,42 +1,117 @@
-/* Add wave animation */
-@keyframes wave {
-    0% {
-      transform: translateX(0);
-    }
-    25% {
-      transform: translateX(-30%);
-    }
-    50%{
-      transform: translateX(0%);
-    }
-    75%{
-        transform: translateX(30%);
-    }
-    100%{
-      transform: translateX(0%);
-    }
+/* Beer liquid gradient */
+.beer-liquid {
+  background: linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.25);
+}
 
-  }
-  
-  /* Styling for waves */
-  .wave {
-    position: absolute;
-    bottom: 0;
-    left: -50%;
-    width: 200%; /* Make the wave container wider than the visible area */
-    height: 30px; /* Adjust the height for wave size */
-    background: rgba(255, 255, 255, 0.4); /* Light blue for waves */
-    opacity: 0.8;
-    border-radius: 40%; /* Curved wave */
-  }
-  
-  .wave1 {
-    animation: wave 10s infinite linear;
-    z-index: 1;
-  }
-  
-  .wave2 {
-    animation: wave 10s infinite linear;
-    animation-delay: -5s; /* Delays the second wave for a more dynamic effect */
-    z-index: 0;
-  }
+/* Bubbly foam head at the very top */
+.foam-head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background:
+    radial-gradient(circle at 8px 8px, rgba(255,255,255,0.95) 6px, transparent 7px) 0 0/24px 16px repeat-x,
+    radial-gradient(circle at 20px 10px, rgba(255,255,255,0.85) 5px, transparent 6px) 0 0/28px 18px repeat-x,
+    rgba(255,255,255,0.92);
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  z-index: 3;
+}
+
+/* Smooth background wave animation */
+@keyframes waveMove {
+  from { background-position-x: 0; }
+  to   { background-position-x: -160px; }
+}
+
+/* Crest-only waves (fade to transparent at bottom) */
+.wave,
+.wave2 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22px;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 100%);
+  will-change: background-position;
+}
+
+.wave {
+  top: 0; /* sit at the liquid top */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='22' viewBox='0 0 96 22'><path d='M0 14 C 10 8, 22 8, 32 14 S 54 20, 64 14 S 86 8, 96 14 L96 22 L0 22 Z' fill='rgba(255,255,255,0.9)' /></svg>");
+  background-repeat: repeat-x;
+  background-size: 96px 22px;
+  animation: waveMove 7s linear infinite;
+  z-index: 2;
+}
+
+.wave2 {
+  top: 6px; /* slight vertical offset */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='128' height='22' viewBox='0 0 128 22'><path d='M0 12 C 16 6, 32 6, 48 12 S 80 18, 96 12 S 112 6, 128 12 L128 22 L0 22 Z' fill='rgba(255,255,255,0.7)' /></svg>");
+  background-repeat: repeat-x;
+  background-size: 128px 22px;
+  animation: waveMove 10s linear infinite reverse;
+  z-index: 1;
+}
+
+/* Rising bubbles overlay */
+@keyframes bubblesRise {
+  from { background-position: 0 100%, 10px 100%; }
+  to   { background-position: 0 0, 10px 0; }
+}
+
+.bubbles {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(rgba(255,255,255,0.35) 1.6px, transparent 2px),
+    radial-gradient(rgba(255,255,255,0.22) 1.2px, transparent 2px);
+  background-size: 26px 36px, 20px 30px;
+  background-position: 0 100%, 10px 100%;
+  animation: bubblesRise 14s linear infinite;
+  mix-blend-mode: screen;
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+/* Curved foam arc on top of beer head */
+.foam-arc {
+  position: absolute;
+  top: -6px;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: radial-gradient(120% 48% at 50% 0%, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.95) 60%, rgba(255,255,255,0.0) 61%);
+  pointer-events: none;
+}
+
+/* Foam texture: small random bubbles */
+@keyframes foamDrift {
+  from { background-position: 0 0, 20px 10px, 10px 15px; }
+  to   { background-position: -20px 0, 0 10px, -10px 15px; }
+}
+.foam-texture {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 8px 6px, rgba(255,255,255,0.95) 4px, transparent 5px),
+    radial-gradient(circle at 18px 10px, rgba(255,255,255,0.85) 3px, transparent 4px),
+    radial-gradient(circle at 28px 8px, rgba(255,255,255,0.9) 2.5px, transparent 3.5px);
+  background-size: 32px 16px, 36px 18px, 28px 16px;
+  animation: foamDrift 12s linear infinite;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* Soft separator line between foam and beer */
+.foam-shadow {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to bottom, rgba(240,193,47,0.55), rgba(240,193,47,0));
+  pointer-events: none;
+}

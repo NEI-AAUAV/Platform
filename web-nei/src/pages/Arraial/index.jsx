@@ -3,6 +3,7 @@ import service from 'services/NEIService';
 import { getArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
 import config from "config";
+import { motion } from "framer-motion";
 import './wave.css';
 
 // Configuration constants
@@ -117,12 +118,24 @@ export function Component() {
         <div key={index} className="flex flex-col justify-center space-y-2">
             <div className="relative hidden overflow-hidden w-64 lg:w-[40vh] h-[55vh] border-8 border-white border-t-0 rounded-b-[4rem] md:block">
                 <div 
-                    className="absolute bottom-0 left-0 w-full bg-yellow-300 transition-all duration-500" 
+                    className="absolute bottom-0 left-0 w-full transition-all duration-500" 
                     style={{ height: calculateHeight(pointsData.value) }}
                 >
                     <div className="relative w-full h-full">
-                        <div className="absolute top-0 wave" aria-hidden="true"></div>    
-                        <div className="absolute top-0 wave wave2" aria-hidden="true"></div>
+                        {/* Beer body starts below foam */}
+                        <div style={{ position:'absolute', top:16, left:0, right:0, bottom:0, 
+                            background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
+                            boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)'
+                        }} aria-hidden="true"></div>
+
+                        {/* Rising bubbles within beer body */}
+                        <div className="bubbles" style={{ top:16 }} aria-hidden="true"></div>
+                        {/* Foam: white cap with texture and subtle crest */}
+                        <div style={{ position:'absolute', top:0, left:0, right:0, height:16, background:'rgba(255,255,255,0.98)', borderTopLeftRadius:28, borderTopRightRadius:28, overflow:'hidden' }} aria-hidden="true">
+                            <div className="foam-texture" />
+                            <div className="foam-shadow" />
+                        </div>
+                        
                     </div>
                 </div> 
             </div>                        
