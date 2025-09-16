@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi import APIRouter, Depends, HTTPException, Security, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Tuple
 from pydantic import BaseModel
+from datetime import datetime, timezone
 
 from app import crud
 from app.api import deps
@@ -30,7 +31,14 @@ class ArraialLogEntry(BaseModel):
     prev_value: int
     new_value: int
     user_id: Optional[int] = None
+    user_email: Optional[str] = None
     rolled_back: bool = False
+    timestamp: Optional[datetime] = None
+
+
+class ArraialLogResponse(BaseModel):
+    items: List[ArraialLogEntry]
+    next_offset: Optional[int] = None
 
 
 class ArraialConfig(BaseModel):
@@ -44,7 +52,7 @@ _arraial_points = [
     {"nucleo": "NEI", "value": 0}
 ]
 
-# In-memory change log
+# In-memory change log (newest first)
 _arraial_log: List[ArraialLogEntry] = []
 _next_log_id: int = 1
 
@@ -58,13 +66,10 @@ CREATE TABLE IF NOT EXISTS app_setting (
 
 
 def _get_config_enabled(db: Session) -> bool:
-    # Ensure table exists
     db.execute(text(SETTING_TABLE_SQL))
-    # Read value; default True
     row = db.execute(text("SELECT value FROM app_setting WHERE key = 'arraial_enabled'"))\
         .first()
     if row is None:
-        # default True on first read
         db.execute(text("INSERT INTO app_setting(key, value) VALUES ('arraial_enabled', 'true') ON CONFLICT (key) DO NOTHING"))
         db.commit()
         return True
@@ -74,10 +79,12 @@ def _get_config_enabled(db: Session) -> bool:
 def _set_config_enabled(db: Session, enabled: bool) -> None:
     db.execute(text(SETTING_TABLE_SQL))
     db.execute(
-        text("""
+        text(
+            """
             INSERT INTO app_setting(key, value) VALUES ('arraial_enabled', :val)
             ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
-        """),
+            """
+        ),
         {"val": "true" if enabled else "false"},
     )
     db.commit()
@@ -116,9 +123,6 @@ def get_arraial_points(
     db: Session = Depends(deps.get_db),
     _=Depends(deps.short_cache),
 ) -> Any:
-    """
-    Get current arraial points for all núcleos.
-    """
     return _arraial_points
 
 
@@ -129,9 +133,6 @@ async def update_arraial_points(
     db: Session = Depends(deps.get_db),
     auth_data: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_ARRAIAL]),
 ) -> Any:
-    """
-    Update arraial points for a specific team and record a log entry.
-    """
     points = _find_points(points_update.nucleo)
     if points is None:
         raise HTTPException(status_code=404, detail="Núcleo not found")
@@ -140,7 +141,6 @@ async def update_arraial_points(
     prev_value = points["value"]
     points["value"] = prev_value + points_update.pointIncrement
 
-    # Record log
     entry = ArraialLogEntry(
         id=_next_log_id,
         nucleo=points_update.nucleo,
@@ -148,11 +148,13 @@ async def update_arraial_points(
         prev_value=prev_value,
         new_value=points["value"],
         user_id=int(auth_data.sub) if getattr(auth_data, "sub", None) else None,
+        user_email=getattr(auth_data, "email", None),
+        rolled_back=False,
+        timestamp=datetime.now(timezone.utc),
     )
-    _arraial_log.insert(0, entry)  # newest first
+    _arraial_log.insert(0, entry)
     _next_log_id += 1
 
-    # Broadcast updated points to all connected clients
     await arraial_ws_manager.broadcast(
         connection_type=ArraialConnectionType.GENERAL,
         message={"topic": "ARRAIAL_POINTS", "points": _arraial_points},
@@ -161,16 +163,34 @@ async def update_arraial_points(
     return _arraial_points
 
 
-@router.get("/log", status_code=200, response_model=List[ArraialLogEntry])
+@router.get("/log", status_code=200, response_model=ArraialLogResponse)
 async def get_arraial_log(
     *,
-    limit: int = 50,
+    offset: int = Query(0, ge=0),
+    limit: int = Query(25, ge=1, le=100),
+    user_id: Optional[int] = None,
+    nucleo: Optional[str] = None,
+    rolled_back: Optional[bool] = None,
+    since: Optional[datetime] = None,
+    until: Optional[datetime] = None,
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_ARRAIAL]),
 ) -> Any:
-    """
-    Get recent arraial change log entries (newest first).
-    """
-    return _arraial_log[: max(0, min(limit, 200))]
+    items = _arraial_log
+
+    if user_id is not None:
+        items = [e for e in items if e.user_id == user_id]
+    if nucleo is not None:
+        items = [e for e in items if e.nucleo == nucleo]
+    if rolled_back is not None:
+        items = [e for e in items if bool(e.rolled_back) == rolled_back]
+    if since is not None:
+        items = [e for e in items if e.timestamp and e.timestamp >= since]
+    if until is not None:
+        items = [e for e in items if e.timestamp and e.timestamp <= until]
+
+    slice_ = items[offset : offset + limit]
+    next_offset = offset + limit if offset + limit < len(items) else None
+    return {"items": slice_, "next_offset": next_offset}
 
 
 @router.post("/rollback/{log_id}", status_code=200, response_model=List[ArraialPoints])
@@ -179,11 +199,6 @@ async def rollback_log(
     log_id: int,
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_ARRAIAL]),
 ) -> Any:
-    """
-    Roll back a specific change by applying the inverse delta.
-    Idempotent: if already rolled back, no-op.
-    """
-    # Locate log entry
     target = None
     for entry in _arraial_log:
         if entry.id == log_id:
@@ -194,7 +209,6 @@ async def rollback_log(
     if target.rolled_back:
         return _arraial_points
 
-    # Apply inverse delta
     points = _find_points(target.nucleo)
     if points is None:
         raise HTTPException(status_code=404, detail="Núcleo not found")
@@ -202,7 +216,6 @@ async def rollback_log(
     points["value"] -= target.delta
     target.rolled_back = True
 
-    # Broadcast updated points
     await arraial_ws_manager.broadcast(
         connection_type=ArraialConnectionType.GENERAL,
         message={"topic": "ARRAIAL_POINTS", "points": _arraial_points},

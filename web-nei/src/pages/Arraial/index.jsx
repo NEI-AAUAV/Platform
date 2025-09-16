@@ -10,6 +10,7 @@ import './wave.css';
 
 // Configuration constants
 const POLLING_INTERVAL = Math.max(60000, (config.ARRAIAL && config.ARRAIAL.POLLING_INTERVAL) || 10000); // use longer fallback when WS is on
+const LOG_PAGE_SIZE = 100;
 
 export function Component() {
     const [ws, setWs] = useState(null);
@@ -26,6 +27,11 @@ export function Component() {
     const [log, setLog] = useState([]);
     const [logLoading, setLogLoading] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
+    const [nextOffset, setNextOffset] = useState(null);
+
+    // History filters (user id removed)
+    const [filterNucleo, setFilterNucleo] = useState('');
+    const [filterRolledBack, setFilterRolledBack] = useState(''); // '', 'true', 'false'
     
     const { email, scopes } = useUserStore((state) => state);
     const auth = Array.isArray(scopes) && (scopes.includes('admin') || scopes.includes('manager-arraial'));
@@ -52,11 +58,18 @@ export function Component() {
                 });
         };
 
-        const fetchLog = () => {
+        const fetchLog = (offset = 0, append = false) => {
             if (!auth) return;
             setLogLoading(true);
-            service.getArraialLog(25)
-                .then(data => setLog(data))
+            const filters = {};
+            if (filterNucleo) filters.nucleo = filterNucleo;
+            if (filterRolledBack === 'true') filters.rolled_back = true;
+            if (filterRolledBack === 'false') filters.rolled_back = false;
+            service.getArraialLog(LOG_PAGE_SIZE, offset, filters)
+                .then(({ items, next_offset }) => {
+                    setLog((prev) => append ? [...prev, ...(items || [])] : (items || []));
+                    setNextOffset(next_offset ?? null);
+                })
                 .catch(err => console.error('Failed to load history:', err))
                 .finally(() => setLogLoading(false));
         }
@@ -64,7 +77,7 @@ export function Component() {
         // Initial fetch
         initConfig();
         fetchPoints();
-        fetchLog();
+        fetchLog(0, false);
 
         // Subscribe to WebSocket updates
         const socket = getArraialSocket();
@@ -74,7 +87,7 @@ export function Component() {
                 const data = JSON.parse(event.data);
                 if (data?.topic === 'ARRAIAL_POINTS' && Array.isArray(data.points)) {
                     setPointsList(data.points);
-                    if (auth) service.getArraialLog(25).then(setLog).catch(() => {});
+                    if (auth) fetchLog(0, false);
                 } else if (data?.topic === 'ARRAIAL_CONFIG' && typeof data.enabled === 'boolean') {
                     setEnabled(!!data.enabled);
                 }
@@ -91,7 +104,25 @@ export function Component() {
             socket.removeEventListener('message', onMessage);
             socket.close();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth]);
+
+    // Refetch log when filters change (reset to first page)
+    useEffect(() => {
+        if (!auth) return;
+        setLogLoading(true);
+        const filters = {};
+        if (filterNucleo) filters.nucleo = filterNucleo;
+        if (filterRolledBack === 'true') filters.rolled_back = true;
+        if (filterRolledBack === 'false') filters.rolled_back = false;
+        service.getArraialLog(LOG_PAGE_SIZE, 0, filters)
+          .then(({ items, next_offset }) => {
+            setLog(items || []);
+            setNextOffset(next_offset ?? null);
+          })
+          .catch(() => {})
+          .finally(() => setLogLoading(false));
+    }, [auth, filterNucleo, filterRolledBack]);
 
     const handleChange = (event) => {
         setSelectedValue(event.target.value);
@@ -148,7 +179,13 @@ export function Component() {
         setError(null);
         setLogLoading(true);
         service.rollbackArraial(id)
-            .then(() => service.getArraialLog(25).then(setLog))
+            .then(() => {
+                const filters = {};
+                if (filterNucleo) filters.nucleo = filterNucleo;
+                if (filterRolledBack === 'true') filters.rolled_back = true;
+                if (filterRolledBack === 'false') filters.rolled_back = false;
+                return service.getArraialLog(LOG_PAGE_SIZE, 0, filters).then(({items, next_offset}) => { setLog(items||[]); setNextOffset(next_offset??null); })
+            })
             .catch(err => {
                 console.error('Failed to rollback:', err);
                 setError('Failed to rollback.');
@@ -320,12 +357,29 @@ export function Component() {
                         </button>
                     </div>
                     {showHistory && (
-                    <div className="mt-2 max-h-64 overflow-auto rounded bg-base-100 p-2">
+                    <div className="mt-2 rounded bg-base-100 p-2">
+                        {/* Filter bar */}
+                        <div className="mb-2 grid grid-cols-2 gap-2">
+                            <select className="select select-sm w-full" value={filterNucleo} onChange={(e)=>setFilterNucleo(e.target.value)}>
+                              <option value="">All núcleos</option>
+                              <option value="NEEETA">NEEETA</option>
+                              <option value="NEECT">NEECT</option>
+                              <option value="NEI">NEI</option>
+                            </select>
+                            <select className="select select-sm w-full" value={filterRolledBack} onChange={(e)=>setFilterRolledBack(e.target.value)}>
+                              <option value="">All statuses</option>
+                              <option value="false">Active</option>
+                              <option value="true">Rolled back</option>
+                            </select>
+                        </div>
+
+                        <div className="max-h-64 overflow-auto rounded">
                         {logLoading ? (
-                            <div className="text-sm opacity-70">Loading…</div>
+                            <div className="text-sm opacity-70 p-2">Loading…</div>
                         ) : log.length === 0 ? (
-                            <div className="text-sm opacity-70">No recent changes.</div>
+                            <div className="text-sm opacity-70 p-2">No changes.</div>
                         ) : (
+                            <>
                             <ul className="space-y-1 text-sm">
                                 {log.map((e) => (
                                     <li key={e.id} className="flex items-center justify-between rounded px-2 py-1 hover:bg-base-200">
@@ -337,6 +391,9 @@ export function Component() {
                                             </span>
                                             {" "}
                                             <span className="opacity-70">({e.prev_value} → {e.new_value})</span>
+                                            {e.user_email && <span className="ml-2 opacity-70">{e.user_email}</span>}
+                                            {!e.user_email && e.user_id != null && <span className="ml-2 opacity-60">user #{e.user_id}</span>}
+                                            {e.timestamp && <span className="ml-2 opacity-60">{new Date(e.timestamp).toLocaleString()}</span>}
                                             {e.rolled_back && <span className="ml-2 badge badge-outline">rolled back</span>}
                                         </span>
                                         <button
@@ -349,7 +406,21 @@ export function Component() {
                                     </li>
                                 ))}
                             </ul>
+                            {nextOffset != null && log.length >= LOG_PAGE_SIZE && (
+                              <div className="mt-2 flex justify-center">
+                                <button className="btn btn-xs" disabled={logLoading} onClick={()=>{
+                                  const filters = {};
+                                  if (filterNucleo) filters.nucleo = filterNucleo;
+                                  if (filterRolledBack === 'true') filters.rolled_back = true;
+                                  if (filterRolledBack === 'false') filters.rolled_back = false;
+                                  service.getArraialLog(LOG_PAGE_SIZE, nextOffset||0, filters)
+                                    .then(({items, next_offset})=>{ setLog((prev)=>[...prev, ...(items||[])]); setNextOffset(next_offset??null); });
+                                }}>Load more</button>
+                              </div>
+                            )}
+                            </>
                         )}
+                        </div>
                     </div>
                     )}
                 </div>
