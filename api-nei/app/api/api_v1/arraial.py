@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Security
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from typing import Any, List, Optional
 from pydantic import BaseModel
 
@@ -32,6 +33,10 @@ class ArraialLogEntry(BaseModel):
     rolled_back: bool = False
 
 
+class ArraialConfig(BaseModel):
+    enabled: bool
+
+
 # Mock data for now - you can replace this with database calls later
 _arraial_points = [
     {"nucleo": "NEEETA", "value": 0},
@@ -44,11 +49,65 @@ _arraial_log: List[ArraialLogEntry] = []
 _next_log_id: int = 1
 
 
+SETTING_TABLE_SQL = """
+CREATE TABLE IF NOT EXISTS app_setting (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
+"""
+
+
+def _get_config_enabled(db: Session) -> bool:
+    # Ensure table exists
+    db.execute(text(SETTING_TABLE_SQL))
+    # Read value; default True
+    row = db.execute(text("SELECT value FROM app_setting WHERE key = 'arraial_enabled'"))\
+        .first()
+    if row is None:
+        # default True on first read
+        db.execute(text("INSERT INTO app_setting(key, value) VALUES ('arraial_enabled', 'true') ON CONFLICT (key) DO NOTHING"))
+        db.commit()
+        return True
+    return (row[0] or "").lower() == "true"
+
+
+def _set_config_enabled(db: Session, enabled: bool) -> None:
+    db.execute(text(SETTING_TABLE_SQL))
+    db.execute(
+        text("""
+            INSERT INTO app_setting(key, value) VALUES ('arraial_enabled', :val)
+            ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
+        """),
+        {"val": "true" if enabled else "false"},
+    )
+    db.commit()
+
+
 def _find_points(nucleo: str) -> dict:
     for points in _arraial_points:
         if points["nucleo"] == nucleo:
             return points
     return None
+
+
+@router.get("/config", status_code=200, response_model=ArraialConfig)
+def get_arraial_config(*, db: Session = Depends(deps.get_db)) -> Any:
+    return {"enabled": _get_config_enabled(db)}
+
+
+@router.put("/config", status_code=200, response_model=ArraialConfig)
+async def update_arraial_config(
+    *,
+    cfg: ArraialConfig,
+    db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
+) -> Any:
+    _set_config_enabled(db, cfg.enabled)
+    await arraial_ws_manager.broadcast(
+        connection_type=ArraialConnectionType.GENERAL,
+        message={"topic": "ARRAIAL_CONFIG", "enabled": cfg.enabled},
+    )
+    return cfg
 
 
 @router.get("/points", status_code=200, response_model=List[ArraialPoints])

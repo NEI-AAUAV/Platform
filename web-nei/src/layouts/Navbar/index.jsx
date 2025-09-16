@@ -8,6 +8,7 @@ import logo from "assets/images/logo.png";
 import { GalaLogo } from "assets/icons/extensions";
 
 import service from "services/NEIService";
+import { getArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
 
 import {
@@ -41,6 +42,31 @@ const Navbar = () => {
   const { theme, token, name, surname, image, scopes } = useUserStore((state) => state);
   const [navItems, setNavItems] = useState(data);
   const navigate = useNavigate();
+
+  const [arraialEnabled, setArraialEnabled] = useState(!!config.ENABLE_ARRAIAL);
+
+  useEffect(() => {
+    // Fetch runtime Arraial config and subscribe to WS updates
+    service
+      .getArraialConfig()
+      .then((cfg) => setArraialEnabled(!!cfg?.enabled))
+      .catch(() => setArraialEnabled(!!config.ENABLE_ARRAIAL));
+
+    const socket = getArraialSocket();
+    const onMessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data?.topic === "ARRAIAL_CONFIG" && typeof data.enabled === "boolean") {
+          setArraialEnabled(!!data.enabled);
+        }
+      } catch (_) {}
+    };
+    socket.addEventListener("message", onMessage);
+    return () => {
+      socket.removeEventListener("message", onMessage);
+      socket.close();
+    };
+  }, []);
 
   useEffect(() => {
     // Close navbar mobile when location changes
@@ -194,6 +220,13 @@ const Navbar = () => {
                     </li>
                   ),
               )}
+              {arraialEnabled && (
+                <li>
+                  <LinkAdapter to={`${config.BASE_URL}/arraial`} reload>
+                    Arraial do DETI
+                  </LinkAdapter>
+                </li>
+              )}
             </ul>
           </div>
           {/* Jantar Gala Button */}
@@ -212,24 +245,6 @@ const Navbar = () => {
                 <span className="hidden md:inline-block">Gala</span>
               </span>
               <GalaLogo className="fill-black/70" />
-            </Link>
-          )}
-
-          {/* Arraial Button */}
-          {config.ENABLE_ARRAIAL && (
-            <Link 
-                to={`${config.BASE_URL}/arraial`}
-                reloadDocument
-                className="btn-ghost btn-sm btn-circle btn
-                gap-2.5 border-0
-                bg-gradient-to-r from-[#1167b1] to-[#236533]
-                hover:brightness-90 md:!w-fit
-                md:!px-3"
-              >
-                <span className="hidden text-black/70 md:block">
-                  <span className="hidden lg:me-1 lg:inline-block">Arraial</span>
-                  <span className="hidden md:inline-block">do DETI</span>
-                </span>
             </Link>
           )}
 
@@ -338,6 +353,11 @@ const Navbar = () => {
           className="navbar-mobile mx-auto max-h-0 w-full overflow-hidden transition-all ease-out md:hidden"
         >
           <ul className="menu menu-vertical p-5 pt-0">
+            {arraialEnabled && (
+              <li>
+                <LinkAdapter to={`${config.BASE_URL}/arraial`}>Arraial do DETI</LinkAdapter>
+              </li>
+            )}
             {data.map(({ name, link, disabled, dropdown }, index) =>
               !dropdown ? (
                 <li

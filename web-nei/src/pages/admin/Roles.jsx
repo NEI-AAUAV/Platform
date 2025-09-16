@@ -20,6 +20,10 @@ export function Component() {
   const [me, setMe] = useState(null);
   const [meLoading, setMeLoading] = useState(true);
 
+  const [arraialConfig, setArraialConfig] = useState(null);
+  const [cfgLoading, setCfgLoading] = useState(true);
+  const [cfgSaving, setCfgSaving] = useState(false);
+
   const loadMe = () => {
     setMeLoading(true);
     service
@@ -41,6 +45,15 @@ export function Component() {
       .finally(() => setLoading(false));
   };
 
+  const loadArraialConfig = () => {
+    setCfgLoading(true);
+    service
+      .getArraialConfig()
+      .then((data) => setArraialConfig(data))
+      .catch(() => setArraialConfig(null))
+      .finally(() => setCfgLoading(false));
+  };
+
   useEffect(() => {
     if (!token) return;
     // Always load /user/me first to see current scopes
@@ -49,9 +62,10 @@ export function Component() {
 
   useEffect(() => {
     if (!token) return;
-    // If we already have admin scope, try loading all users
+    // If we already have admin scope, try loading all users and config
     if (me && Array.isArray(me.scopes) && me.scopes.includes("admin")) {
       loadUsers();
+      loadArraialConfig();
     } else if (!meLoading && !me) {
       // If /user/me failed, still try users (server will 403 if not allowed)
       loadUsers();
@@ -84,6 +98,18 @@ export function Component() {
     }
   };
 
+  const saveArraialConfig = async (enabled) => {
+    try {
+      setCfgSaving(true);
+      await service.setArraialConfig(enabled);
+      setArraialConfig({ enabled });
+    } catch (e) {
+      setError("Failed to save Arraial config");
+    } finally {
+      setCfgSaving(false);
+    }
+  };
+
   if (!token) return <div className="p-4">Unauthorized</div>;
 
   const showUsersTable = !loading && users.length > 0;
@@ -91,6 +117,27 @@ export function Component() {
   return (
     <div className="mx-auto w-full max-w-4xl p-4">
       <h1>Admin · Roles</h1>
+
+      {/* Arraial toggle (admin-only) */}
+      {me && Array.isArray(me.scopes) && me.scopes.includes("admin") && (
+        <div className="mt-3 rounded bg-base-200 p-3">
+          <div className="mb-2 font-semibold">Arraial</div>
+          {cfgLoading || !arraialConfig ? (
+            <div className="text-sm opacity-70">Loading config…</div>
+          ) : (
+            <label className="label cursor-pointer gap-3">
+              <span className="label-text">Enable Arraial</span>
+              <input
+                type="checkbox"
+                className="toggle"
+                checked={!!arraialConfig.enabled}
+                onChange={(e) => saveArraialConfig(e.target.checked)}
+                disabled={cfgSaving}
+              />
+            </label>
+          )}
+        </div>
+      )}
 
       {/* Current user scopes (always shown) */}
       <div className="mt-2 rounded bg-base-200 p-3">

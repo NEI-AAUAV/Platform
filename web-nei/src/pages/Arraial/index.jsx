@@ -9,10 +9,11 @@ import neeetaLogo from "assets/images/NEEETA.png"; // used for NEEETA núcleo
 import './wave.css';
 
 // Configuration constants
-const POLLING_INTERVAL = Math.max(60000, config.ARRAIAL.POLLING_INTERVAL || 10000); // use longer fallback when WS is on
+const POLLING_INTERVAL = Math.max(60000, (config.ARRAIAL && config.ARRAIAL.POLLING_INTERVAL) || 10000); // use longer fallback when WS is on
 
 export function Component() {
     const [ws, setWs] = useState(null);
+    const [enabled, setEnabled] = useState(true);
     const [pointsList, setPointsList] = useState([
         {nucleo: 'NEEETA', value: 0}, 
         {nucleo: 'NEECT', value: 0}, 
@@ -30,6 +31,15 @@ export function Component() {
     const auth = Array.isArray(scopes) && (scopes.includes('admin') || scopes.includes('manager-arraial'));
 
     useEffect(() => {
+        const initConfig = async () => {
+            try {
+                const cfg = await service.getArraialConfig();
+                setEnabled(!!cfg?.enabled);
+            } catch (e) {
+                setEnabled(true); // default true if endpoint fails
+            }
+        };
+
         const fetchPoints = () => {
             service.getArraialPoints()
                 .then(data => {
@@ -52,6 +62,7 @@ export function Component() {
         }
 
         // Initial fetch
+        initConfig();
         fetchPoints();
         fetchLog();
 
@@ -63,8 +74,9 @@ export function Component() {
                 const data = JSON.parse(event.data);
                 if (data?.topic === 'ARRAIAL_POINTS' && Array.isArray(data.points)) {
                     setPointsList(data.points);
-                    // Refresh history on point changes if manager
                     if (auth) service.getArraialLog(25).then(setLog).catch(() => {});
+                } else if (data?.topic === 'ARRAIAL_CONFIG' && typeof data.enabled === 'boolean') {
+                    setEnabled(!!data.enabled);
                 }
             } catch (e) {
                 // ignore non-JSON payloads
@@ -159,6 +171,15 @@ export function Component() {
         // Return percentage; foam gap is already handled by offsetting beer body by 16px
         return `${heightPct}%`;
     };
+
+    if (!enabled) {
+        return (
+            <div className="mx-auto max-w-xl p-6 text-center">
+                <h1>Arraial do DETI</h1>
+                <p className="mt-3 opacity-80">Esta página está temporariamente desativada.</p>
+            </div>
+        );
+    }
 
     const renderPointsBar = (pointsData, index) => (
         <div key={index} className="flex flex-col justify-center items-center space-y-2">

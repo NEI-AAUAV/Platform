@@ -168,12 +168,20 @@ const NEIService = {
     return await client.put("/arraial/points", data);
   },
 
-  async getArraialLog(limit = 50) {
+  async getArraialLog(limit = 25) {
     return await client.get("/arraial/log", { params: { limit } });
   },
 
   async rollbackArraial(logId) {
     return await client.post(`/arraial/rollback/${logId}`);
+  },
+
+  async getArraialConfig() {
+    return await client.get("/arraial/config");
+  },
+
+  async setArraialConfig(enabled) {
+    return await client.put("/arraial/config", { enabled });
   },
 
   // Admin: Users
