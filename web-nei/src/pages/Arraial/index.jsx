@@ -29,6 +29,9 @@ export function Component() {
     const [logLoading, setLogLoading] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
     const [nextOffset, setNextOffset] = useState(null);
+    const [showTrends, setShowTrends] = useState(false);
+    const [pointHistory, setPointHistory] = useState([]);
+    const [hoveredPoint, setHoveredPoint] = useState(null);
 
     // History filters (user id removed)
     const [filterNucleo, setFilterNucleo] = useState('');
@@ -51,6 +54,7 @@ export function Component() {
             service.getArraialPoints()
                 .then(data => {
                     setPointsList(data);
+                    addPointHistoryEntry(data);
                     setError(null);
                 })
                 .catch(error => {
@@ -74,7 +78,7 @@ export function Component() {
                 .catch(err => console.error('Failed to load history:', err))
                 .finally(() => setLogLoading(false));
         }
-
+        
         // Initial fetch
         initConfig();
         fetchPoints();
@@ -161,8 +165,12 @@ export function Component() {
                 console.error('Failed to update points:', error);
                 if (error?.response?.status === 403) {
                     setError('You do not have permission to update points.');
+                } else if (error?.response?.status === 400) {
+                    setError(error.response.data?.detail || 'Invalid request. Please check your input.');
+                } else if (error?.response?.status === 429) {
+                    setError('Too many requests. Please wait a moment before trying again.');
                 } else {
-                    setError('Failed to update points. Please try again.');
+                setError('Failed to update points. Please try again.');
                 }
             })
             .finally(() => {
@@ -174,9 +182,12 @@ export function Component() {
     const handleNumChange = (event) => {
         const value = event.target.value;
 
-        // Check if the value is empty or a valid whole number
+        // Check if the value is empty or a valid whole number within limits
         if (value === '' || /^-?\d+$/.test(value)) {
-            setNumber(value); // Update state only if it's a non-negative whole number or empty
+            const num = parseInt(value, 10);
+            if (value === '' || (num >= -1000 && num <= 1000)) {
+                setNumber(value);
+            }
         }
     };
 
@@ -186,6 +197,15 @@ export function Component() {
         const base = number === '' ? 0 : parseInt(number, 10) || 0;
         const next = base + delta;
         setNumber(String(next));
+    };
+
+    const addPointHistoryEntry = (pointsData) => {
+        const timestamp = new Date();
+        const entry = {
+            timestamp,
+            points: pointsData.map(p => ({ nucleo: p.nucleo, value: p.value }))
+        };
+        setPointHistory(prev => [...prev.slice(-20), entry]); // Keep last 20 entries
     };
 
     const handleRollback = (id) => {
@@ -222,6 +242,153 @@ export function Component() {
         return `${heightPct}%`;
     };
 
+    const renderTrendsGraph = () => {
+        if (pointHistory.length < 2) return null;
+
+        const width = 400;
+        const height = 200; // Back to original height
+        const padding = 40;
+        const chartWidth = width - padding * 2;
+        const chartHeight = height - padding * 2;
+
+        const maxPoints = Math.max(...pointHistory.flatMap(entry => entry.points.map(p => p.value)), 1);
+        const colors = { 'NEEETA': '#3B82F6', 'NEECT': '#10B981', 'NEI': '#F59E0B' };
+
+        const getX = (index) => padding + (index / (pointHistory.length - 1)) * chartWidth;
+        const getY = (value) => padding + chartHeight - (value / maxPoints) * chartHeight;
+        
+        const formatTime = (timestamp) => {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffMinutes = Math.floor((now - date) / (1000 * 60));
+            
+            if (diffMinutes < 1) return 'Now';
+            if (diffMinutes < 60) return `${diffMinutes}m ago`;
+            
+            const hours = Math.floor(diffMinutes / 60);
+            const minutes = diffMinutes % 60;
+            return `${hours}h ${minutes}m ago`;
+        };
+
+        return (
+            <div className="mt-4 p-4 bg-base-100 rounded-lg">
+                <h4 className="text-lg font-bold mb-3">Point Trends</h4>
+                <svg width={width} height={height} className="w-full max-w-md mx-auto">
+                    {/* Grid lines and y-axis labels */}
+                    {[0, 0.25, 0.5, 0.75, 1].map(ratio => {
+                        const value = Math.round(ratio * maxPoints);
+                        const y = padding + (1 - ratio) * chartHeight; // Inverted: 0 at bottom, max at top
+                        return (
+                            <g key={ratio}>
+                                <line
+                                    x1={padding}
+                                    y1={y}
+                                    x2={padding + chartWidth}
+                                    y2={y}
+                                    stroke="currentColor"
+                                    strokeOpacity="0.1"
+                                />
+                                {/* Y-axis labels */}
+                                <text
+                                    x={padding - 10}
+                                    y={y + 4}
+                                    fontSize="10"
+                                    fill="currentColor"
+                                    textAnchor="end"
+                                    opacity="0.6"
+                                >
+                                    {value}
+                                </text>
+                            </g>
+                        );
+                    })}
+                    
+                    {/* Lines for each núcleo */}
+                    {['NEEETA', 'NEECT', 'NEI'].map(nucleo => {
+                        const points = pointHistory.map(entry => {
+                            const nucleoData = entry.points.find(p => p.nucleo === nucleo);
+                            return nucleoData ? nucleoData.value : 0;
+                        });
+                        
+                        const pathData = points.map((value, index) => {
+                            const x = getX(index);
+                            const y = getY(value);
+                            return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
+                        }).join(' ');
+
+                        return (
+                            <g key={nucleo}>
+                                <path
+                                    d={pathData}
+                                    fill="none"
+                                    stroke={colors[nucleo]}
+                                    strokeWidth="3"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                                {/* Data points */}
+                                {points.map((value, index) => {
+                                    const entry = pointHistory[index];
+                                    const time = formatTime(entry.timestamp);
+                                    const isHovered = hoveredPoint?.nucleo === nucleo && hoveredPoint?.index === index;
+                                    
+                                    return (
+                                        <g key={index}>
+                                            <circle
+                                                cx={getX(index)}
+                                                cy={getY(value)}
+                                                r={isHovered ? "6" : "4"}
+                                                fill={colors[nucleo]}
+                                                stroke={isHovered ? "white" : "none"}
+                                                strokeWidth="2"
+                                                style={{ cursor: 'pointer' }}
+                                                onMouseEnter={() => setHoveredPoint({ nucleo, index, value, time })}
+                                                onMouseLeave={() => setHoveredPoint(null)}
+                                            />
+                                            {/* Tooltip */}
+                                            {isHovered && (
+                                                <g>
+                                                    <rect
+                                                        x={getX(index) - 30}
+                                                        y={getY(value) - 35}
+                                                        width="60"
+                                                        height="25"
+                                                        fill="rgba(0,0,0,0.8)"
+                                                        rx="4"
+                                                    />
+                                                    <text
+                                                        x={getX(index)}
+                                                        y={getY(value) - 20}
+                                                        fontSize="10"
+                                                        fill="white"
+                                                        textAnchor="middle"
+                                                    >
+                                                        {time}
+                                                    </text>
+                                                </g>
+                                            )}
+                                        </g>
+                                    );
+                                })}
+                            </g>
+                        );
+                    })}
+                    
+                    
+                    {/* Legend */}
+                    <g transform={`translate(${padding}, ${height - 20})`}>
+                        {['NEEETA', 'NEECT', 'NEI'].map((nucleo, index) => (
+                            <g key={nucleo} transform={`translate(${index * 80}, 0)`}>
+                                <rect width="12" height="12" fill={colors[nucleo]} />
+                                <text x="16" y="9" fontSize="12" fill="currentColor">{nucleo}</text>
+                            </g>
+                        ))}
+                    </g>
+                </svg>
+            </div>
+        );
+    };
+
     if (!enabled) {
         return (
             <div className="mx-auto max-w-xl p-6 text-center">
@@ -254,8 +421,8 @@ export function Component() {
                     <div 
                         className="absolute bottom-0 left-0 w-full transition-all duration-500" 
                         style={{ height: calcHeight(pointsData.value), overflow: 'hidden' }}
-                    >
-                        <div className="relative w-full h-full">
+                >
+                    <div className="relative w-full h-full">
                             {/* Beer body starts below foam */}
                             <div style={{ position:'absolute', top:28, left:0, right:0, bottom:0, 
                                 background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
@@ -276,8 +443,8 @@ export function Component() {
                             <div className="glass-base-highlight" aria-hidden="true"></div>
                             <div className="glass-glare-left" aria-hidden="true"></div>
                         </div>
-                    </div> 
-                </div>
+                    </div>
+                </div> 
             </div>                        
             
             <div className="text-center">
@@ -371,12 +538,17 @@ export function Component() {
                             </button>
                         </div>
                     </form>
-                    {/* History */}
-                    <div className="mt-4 flex items-center justify-between">
-                        <div className="divider m-0 flex-1">History</div>
-                        <button className="btn btn-md sm:btn-sm ml-3" onClick={() => setShowHistory(!showHistory)}>
-                            {showHistory ? 'Hide' : 'Show'}
-                        </button>
+                    {/* History & Trends */}
+                    <div className="mt-4 flex flex-col items-center gap-4">
+                        <div className="divider w-full">History & Trends</div>
+                        <div className="flex flex-row gap-2">
+                            <button className="btn btn-sm whitespace-nowrap" onClick={() => setShowTrends(!showTrends)}>
+                                {showTrends ? 'Hide Trends' : 'Trends'}
+                            </button>
+                            <button className="btn btn-sm whitespace-nowrap" onClick={() => setShowHistory(!showHistory)}>
+                                {showHistory ? 'Hide History' : 'History'}
+                            </button>
+                        </div>
                     </div>
                     {showHistory && (
                     <div className="mt-2 rounded bg-base-100 p-2">
@@ -445,6 +617,7 @@ export function Component() {
                         </div>
                     </div>
                     )}
+                    {showTrends && renderTrendsGraph()}
                 </div>
             ) : null}
         </div>
