@@ -10,7 +10,6 @@ import './wave.css';
 
 // Configuration constants
 const POLLING_INTERVAL = Math.max(60000, config.ARRAIAL.POLLING_INTERVAL || 10000); // use longer fallback when WS is on
-const AUTH_USERS = config.ARRAIAL.AUTH_USERS;
 
 export function Component() {
     const [ws, setWs] = useState(null);
@@ -27,8 +26,8 @@ export function Component() {
     const [logLoading, setLogLoading] = useState(false);
     const [showHistory, setShowHistory] = useState(false);
     
-    const {email} = useUserStore((state) => state);
-    const auth = AUTH_USERS.includes(email);
+    const { email, scopes } = useUserStore((state) => state);
+    const auth = Array.isArray(scopes) && (scopes.includes('admin') || scopes.includes('manager-arraial'));
 
     useEffect(() => {
         const fetchPoints = () => {

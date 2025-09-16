@@ -12,13 +12,19 @@ function ProtectedRoute({
   children,
   loggedIn = true,
   redirect = "/auth/login",
+  adminOnly = false,
 }) {
-  const { sessionLoading, token } = useUserStore((state) => state);
+  const { sessionLoading, token, scopes } = useUserStore((state) => state);
 
   if (sessionLoading) return null;
 
-  if (!!token === loggedIn) return children;
-  else return <Navigate to={redirect} />;
+  if (!!token !== loggedIn) return <Navigate to={redirect} />;
+
+  if (adminOnly && (!scopes || !scopes.includes("admin"))) {
+    return <Navigate to="/forbidden" />;
+  }
+
+  return children;
 }
 
 const routes = [
@@ -68,6 +74,7 @@ const routes = [
       // the redirection logic wouldn't work.
       { path: "/auth/login", lazy: () => import("./pages/auth/Login") },
       { path: "/auth/register", lazy: () => import("./pages/auth/Register") },
+      { path: "/forbidden", lazy: () => import("./pages/Error403") },
       config.ENABLE_ARRAIAL && { path: "/arraial", lazy: () => import("./pages/Arraial") },
       // { path: "/estagios", element: <Internship /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
@@ -93,6 +100,15 @@ const routes = [
       !isProd && {
         path: "/settings/account",
         lazy: () => import("./pages/settings/Account"),
+      },
+      {
+        path: "/admin/roles",
+        element: (
+          <ProtectedRoute adminOnly>
+            <Layout />
+          </ProtectedRoute>
+        ),
+        lazy: () => import("./pages/admin/Roles"),
       },
     ],
   },

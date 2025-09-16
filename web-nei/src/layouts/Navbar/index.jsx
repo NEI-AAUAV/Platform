@@ -38,7 +38,7 @@ const Navbar = () => {
   const windowSize = useWindowSize();
   const windowScroll = useWindowScroll();
   const [openMobile, setOpenMobile] = useState(false);
-  const { theme, token, name, surname, image } = useUserStore((state) => state);
+  const { theme, token, name, surname, image, scopes } = useUserStore((state) => state);
   const [navItems, setNavItems] = useState(data);
   const navigate = useNavigate();
 
@@ -292,6 +292,13 @@ const Navbar = () => {
                         <PersonIcon /> Perfil
                       </Link>
                     </li>
+                    {!!scopes?.includes("admin") && (
+                      <li>
+                        <Link to="/admin/roles">
+                          <SettingsIcon /> Admin
+                        </Link>
+                      </li>
+                    )}
                     {!config.PRODUCTION && (
                       <>
                         <li>

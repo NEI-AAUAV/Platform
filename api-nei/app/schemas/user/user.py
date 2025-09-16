@@ -34,6 +34,7 @@ class ScopeEnum(str, Enum):
     MANAGER_TACAUA = "manager-tacaua"
     MANAGER_FAMILY = "manager-family"
     MANAGER_JANTAR_GALA = "manager-jantar-gala"
+    MANAGER_ARRAIAL = "manager-arraial"
     DEFAULT = "default"
 
 

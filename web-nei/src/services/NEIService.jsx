@@ -174,6 +174,15 @@ const NEIService = {
 
   async rollbackArraial(logId) {
     return await client.post(`/arraial/rollback/${logId}`);
+  },
+
+  // Admin: Users
+  async getUsers() {
+    return await client.get("/user/");
+  },
+
+  async updateUserScopes(userId, scopes) {
+    return await client.put(`/user/${userId}`, { scopes });
   }
 };
 

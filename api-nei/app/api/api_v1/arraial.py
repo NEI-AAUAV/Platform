@@ -68,7 +68,7 @@ async def update_arraial_points(
     *,
     points_update: ArraialPointsUpdate,
     db: Session = Depends(deps.get_db),
-    auth_data: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
+    auth_data: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_ARRAIAL]),
 ) -> Any:
     """
     Update arraial points for a specific team and record a log entry.
@@ -106,7 +106,7 @@ async def update_arraial_points(
 async def get_arraial_log(
     *,
     limit: int = 50,
-    _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
+    _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_ARRAIAL]),
 ) -> Any:
     """
     Get recent arraial change log entries (newest first).
@@ -118,7 +118,7 @@ async def get_arraial_log(
 async def rollback_log(
     *,
     log_id: int,
-    _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
+    _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_ARRAIAL]),
 ) -> Any:
     """
     Roll back a specific change by applying the inverse delta.

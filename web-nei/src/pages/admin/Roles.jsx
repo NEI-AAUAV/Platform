@@ -1,0 +1,180 @@
+import React, { useEffect, useState } from "react";
+import service from "services/NEIService";
+import { useUserStore } from "stores/useUserStore";
+
+const ALL_SCOPES = [
+  "admin",
+  "manager-nei",
+  "manager-arraial",
+  "manager-tacaua",
+  "manager-family",
+  "manager-jantar-gala",
+];
+
+export function Component() {
+  const { token } = useUserStore((s) => s);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [me, setMe] = useState(null);
+  const [meLoading, setMeLoading] = useState(true);
+
+  const loadMe = () => {
+    setMeLoading(true);
+    service
+      .getCurrUser()
+      .then((data) => setMe(data))
+      .catch(() => setMe(null))
+      .finally(() => setMeLoading(false));
+  };
+
+  const loadUsers = () => {
+    setLoading(true);
+    setError(null);
+    service
+      .getUsers()
+      .then((data) => setUsers(data))
+      .catch((err) => {
+        setError("Failed to load users");
+      })
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    if (!token) return;
+    // Always load /user/me first to see current scopes
+    loadMe();
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+    // If we already have admin scope, try loading all users
+    if (me && Array.isArray(me.scopes) && me.scopes.includes("admin")) {
+      loadUsers();
+    } else if (!meLoading && !me) {
+      // If /user/me failed, still try users (server will 403 if not allowed)
+      loadUsers();
+    }
+  }, [token, me, meLoading]);
+
+  const toggleScope = (user, scope) => {
+    const next = users.map((u) =>
+      u.id === user.id
+        ? {
+            ...u,
+            scopes: u.scopes?.includes(scope)
+              ? u.scopes.filter((s) => s !== scope)
+              : [...(u.scopes || []), scope],
+          }
+        : u
+    );
+    setUsers(next);
+  };
+
+  const saveScopes = async (user) => {
+    try {
+      setSaving(true);
+      await service.updateUserScopes(user.id, user.scopes || []);
+      loadUsers();
+    } catch (e) {
+      setError("Failed to update scopes");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!token) return <div className="p-4">Unauthorized</div>;
+
+  const showUsersTable = !loading && users.length > 0;
+
+  return (
+    <div className="mx-auto w-full max-w-4xl p-4">
+      <h1>Admin · Roles</h1>
+
+      {/* Current user scopes (always shown) */}
+      <div className="mt-2 rounded bg-base-200 p-3">
+        {meLoading ? (
+          <div className="text-sm opacity-70">Checking your permissions…</div>
+        ) : me ? (
+          <div className="text-sm">
+            <div>
+              You are logged in as <strong>{me.name} {me.surname}</strong>
+            </div>
+            <div className="mt-1">
+              Your scopes: {Array.isArray(me.scopes) && me.scopes.length > 0 ? (
+                <span className="badge badge-outline">{me.scopes.join(", ")}</span>
+              ) : (
+                <span className="opacity-70">none</span>
+              )}
+            </div>
+            {!Array.isArray(me.scopes) || me.scopes.length === 0 ? (
+              <div className="mt-2 text-xs opacity-70">
+                If you were just promoted, log out and log back in so your token includes the new scopes.
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div className="text-sm opacity-70">Could not load your profile.</div>
+        )}
+      </div>
+
+      {error && (
+        <div className="alert alert-error my-3">
+          <span>{error}</span>
+        </div>
+      )}
+
+      {showUsersTable ? (
+        <div className="overflow-x-auto rounded bg-base-200 p-2 mt-3">
+          <table className="table table-zebra">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Scopes</th>
+                <th className="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <tr key={u.id}>
+                  <td>{u.name} {u.surname}</td>
+                  <td className="font-mono text-sm">{u.email}</td>
+                  <td>
+                    <div className="flex flex-wrap gap-2">
+                      {ALL_SCOPES.map((s) => (
+                        <label key={s} className="label cursor-pointer gap-2">
+                          <input
+                            type="checkbox"
+                            className="checkbox checkbox-sm"
+                            checked={!!(u.scopes || []).includes(s)}
+                            onChange={() => toggleScope(u, s)}
+                          />
+                          <span className="label-text text-xs">{s}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="text-right">
+                    <button
+                      className="btn btn-sm"
+                      disabled={saving}
+                      onClick={() => saveScopes(u)}
+                    >
+                      Save
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="mt-3 text-sm opacity-70">
+          {loading ? "Loading…" : "Users not available. You might need admin scope or a fresh login."}
+        </div>
+      )}
+    </div>
+  );
+}
