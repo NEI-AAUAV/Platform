@@ -14,6 +14,7 @@ const LOG_PAGE_SIZE = 100;
 
 export function Component() {
     const [ws, setWs] = useState(null);
+    const [wsConnected, setWsConnected] = useState(false);
     const [enabled, setEnabled] = useState(true);
     const [pointsList, setPointsList] = useState([
         {nucleo: 'NEEETA', value: 0}, 
@@ -95,14 +96,26 @@ export function Component() {
                 // ignore non-JSON payloads
             }
         };
+        const onOpen = () => setWsConnected(true);
+        const onClose = () => setWsConnected(false);
+        const onError = () => setWsConnected(false);
+
         socket.addEventListener('message', onMessage);
+        socket.addEventListener('open', onOpen);
+        socket.addEventListener('close', onClose);
+        socket.addEventListener('error', onError);
+
+        // Set initial connection state
+        setWsConnected(socket.readyState === WebSocket.OPEN);
 
         // Fallback polling
         const intervalId = setInterval(fetchPoints, POLLING_INTERVAL);
         return () => {
             clearInterval(intervalId);
             socket.removeEventListener('message', onMessage);
-            socket.close();
+            socket.removeEventListener('open', onOpen);
+            socket.removeEventListener('close', onClose);
+            socket.removeEventListener('error', onError);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth]);
@@ -284,9 +297,18 @@ export function Component() {
 
     return (
         <div className="flex flex-col justify-center space-y-12 md:space-y-16">
-            <h1 className="text-center">
-                Arraial do DETI
-            </h1>
+            <div className="text-center">
+                <h1>Arraial do DETI</h1>
+                {/* Live connection indicator */}
+                <div className="flex items-center justify-center gap-2 mt-2">
+                    <div className={`w-2 h-2 rounded-full ${
+                        wsConnected ? 'bg-green-500' : 'bg-red-500'
+                    }`}></div>
+                    <span className="text-xs opacity-70">
+                        {wsConnected ? 'Live' : 'Offline'}
+                    </span>
+                </div>
+            </div>
             
             {error && (
                 <div className="alert alert-error max-w-md mx-auto">

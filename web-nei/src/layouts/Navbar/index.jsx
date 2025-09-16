@@ -64,7 +64,6 @@ const Navbar = () => {
     socket.addEventListener("message", onMessage);
     return () => {
       socket.removeEventListener("message", onMessage);
-      socket.close();
     };
   }, []);
 
@@ -222,7 +221,7 @@ const Navbar = () => {
               )}
               {arraialEnabled && (
                 <li>
-                  <LinkAdapter to={`${config.BASE_URL}/arraial`} reload>
+                  <LinkAdapter to="/arraial">
                     Arraial do DETI
                   </LinkAdapter>
                 </li>
@@ -355,7 +354,7 @@ const Navbar = () => {
           <ul className="menu menu-vertical p-5 pt-0">
             {arraialEnabled && (
               <li>
-                <LinkAdapter to={`${config.BASE_URL}/arraial`}>Arraial do DETI</LinkAdapter>
+                <LinkAdapter to="/arraial">Arraial do DETI</LinkAdapter>
               </li>
             )}
             {data.map(({ name, link, disabled, dropdown }, index) =>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import service from "services/NEIService";
 import { useUserStore } from "stores/useUserStore";
+import { getArraialSocket } from "services/SocketService";
 
 const ALL_SCOPES = [
   "admin",
@@ -71,6 +72,25 @@ export function Component() {
       loadUsers();
     }
   }, [token, me, meLoading]);
+
+  // Subscribe to Arraial config WebSocket updates
+  useEffect(() => {
+    if (!me || !Array.isArray(me.scopes) || !me.scopes.includes("admin")) return;
+
+    const socket = getArraialSocket();
+    const onMessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data?.topic === "ARRAIAL_CONFIG" && typeof data.enabled === "boolean") {
+          setArraialConfig({ enabled: data.enabled });
+        }
+      } catch (_) {}
+    };
+    socket.addEventListener("message", onMessage);
+    return () => {
+      socket.removeEventListener("message", onMessage);
+    };
+  }, [me]);
 
   const toggleScope = (user, scope) => {
     const next = users.map((u) =>
