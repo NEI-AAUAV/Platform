@@ -13,6 +13,7 @@ import './wave.css';
 // Configuration constants
 const POLLING_INTERVAL = Math.max(60000, (config.ARRAIAL && config.ARRAIAL.POLLING_INTERVAL) || 10000); // use longer fallback when WS is on
 const LOG_PAGE_SIZE = 100;
+const MILESTONE_INTERVAL = 50; // points per milestone for confetti/toast
 
 export function Component() {
     const [ws, setWs] = useState(null);
@@ -830,10 +831,10 @@ function maybeTriggerConfetti(prevMap, nextList) {
             const prev = Number.isFinite(prevMap?.[n]) ? prevMap[n] : 0;
             const next = nextMap[n] ?? 0;
             if (next > prev) {
-                const prevBucket = Math.floor(prev/50);
-                const nextBucket = Math.floor(next/50);
+                const prevBucket = Math.floor(prev / MILESTONE_INTERVAL);
+                const nextBucket = Math.floor(next / MILESTONE_INTERVAL);
                 if (nextBucket > prevBucket) {
-                    const milestone = nextBucket * 50;
+                    const milestone = nextBucket * MILESTONE_INTERVAL;
                     const evt = new CustomEvent('arraial:confetti', { detail: { nucleo: n, milestone } });
                     window.dispatchEvent(evt);
                     break;
