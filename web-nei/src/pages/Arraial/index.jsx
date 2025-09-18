@@ -16,6 +16,7 @@ export function Component() {
     const [ws, setWs] = useState(null);
     const [wsConnected, setWsConnected] = useState(false);
     const [enabled, setEnabled] = useState(true);
+    const [paused, setPaused] = useState(false);
     const [pointsList, setPointsList] = useState([
         {nucleo: 'NEEETA', value: 0}, 
         {nucleo: 'NEECT', value: 0}, 
@@ -45,6 +46,7 @@ export function Component() {
             try {
                 const cfg = await service.getArraialConfig();
                 setEnabled(!!cfg?.enabled);
+                setPaused(!!cfg?.paused);
             } catch (e) {
                 setEnabled(true); // default true if endpoint fails
             }
@@ -95,6 +97,7 @@ export function Component() {
                     if (auth) fetchLog(0, false);
                 } else if (data?.topic === 'ARRAIAL_CONFIG' && typeof data.enabled === 'boolean') {
                     setEnabled(!!data.enabled);
+                    setPaused(!!data.paused);
                 }
             } catch (e) {
                 // ignore non-JSON payloads
@@ -147,6 +150,10 @@ export function Component() {
     
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (paused) {
+            setError('Point updates are currently paused by an administrator.');
+            return;
+        }
         setIsLoading(true);
         setError(null);
         
@@ -167,6 +174,8 @@ export function Component() {
                     setError('You do not have permission to update points.');
                 } else if (error?.response?.status === 400) {
                     setError(error.response.data?.detail || 'Invalid request. Please check your input.');
+                } else if (error?.response?.status === 423) {
+                    setError('Point updates are currently paused by an administrator.');
                 } else if (error?.response?.status === 429) {
                     setError('Too many requests. Please wait a moment before trying again.');
                 } else {
@@ -491,6 +500,11 @@ export function Component() {
             {auth ? (
                 <div className="rounded-box m-auto w-full max-w-lg sm:max-w-md flex h-fit flex-col bg-base-200 px-4 sm:px-6 py-6 align-middle shadow-secondary drop-shadow-md">
                     <h3>Add/Remove Points</h3>
+                    {paused && (
+                        <div className="alert alert-warning my-2">
+                            <span>Point updates are paused by an administrator.</span>
+                        </div>
+                    )}
                     <form onSubmit={handleSubmit}>
                         <div className="flex flex-col space-y-2">
                             <label htmlFor="nucleo-select" className="label">
@@ -501,6 +515,7 @@ export function Component() {
                                 className="text-lg bg-neutral-700 h-12 sm:h-10 w-full text-center rounded"
                                 value={selectedValue} 
                                 onChange={handleChange}
+                                disabled={paused}
                                 aria-label="Select núcleo"
                             >
                                 <option value="NEEETA">NEEETA</option>
@@ -518,14 +533,15 @@ export function Component() {
                                 onChange={handleNumChange}
                                 placeholder="0"
                                 className="text-lg bg-neutral-700 h-12 sm:h-10 w-full text-center rounded"
+                                disabled={paused}
                                 aria-label="Enter points to add or remove"
                             />
                             {/* Quick adjust buttons - Mobile optimized */}
                             <div className="mt-2 grid grid-cols-4 gap-2">
-                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(-5)}>-5</button>
-                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(-1)}>-1</button>
-                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(1)}>+1</button>
-                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(5)}>+5</button>
+                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(-5)} disabled={paused}>-5</button>
+                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(-1)} disabled={paused}>-1</button>
+                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(1)} disabled={paused}>+1</button>
+                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(5)} disabled={paused}>+5</button>
                             </div>
                             {number !== '' && !/^-?\d+$/.test(number) && (
                                 <p className="text-red-500">Please enter a valid whole number.</p>
@@ -533,7 +549,7 @@ export function Component() {
             
                             <button 
                                 type="submit" 
-                                disabled={number === '' || number === '0' || !/^-?\d+$/.test(number) || isLoading}
+                                disabled={paused || number === '' || number === '0' || !/^-?\d+$/.test(number) || isLoading}
                                 className="btn btn-primary btn-lg sm:btn-md w-full touch-manipulation"
                             >
                                 {isLoading ? 'Updating...' : 'Submit'}

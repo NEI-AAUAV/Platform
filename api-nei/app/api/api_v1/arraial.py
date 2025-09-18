@@ -76,6 +76,7 @@ class ArraialLogResponse(BaseModel):
 
 class ArraialConfig(BaseModel):
     enabled: bool
+    paused: bool = False
 
 
 # Mock data for now - you can replace this with database calls later
@@ -123,6 +124,31 @@ def _set_config_enabled(db: Session, enabled: bool) -> None:
     db.commit()
 
 
+def _get_config_paused(db: Session) -> bool:
+    db.execute(text(SETTING_TABLE_SQL))
+    row = db.execute(text("SELECT value FROM app_setting WHERE key = 'arraial_paused'"))\
+        .first()
+    if row is None:
+        db.execute(text("INSERT INTO app_setting(key, value) VALUES ('arraial_paused', 'false') ON CONFLICT (key) DO NOTHING"))
+        db.commit()
+        return False
+    return (row[0] or "").lower() == "true"
+
+
+def _set_config_paused(db: Session, paused: bool) -> None:
+    db.execute(text(SETTING_TABLE_SQL))
+    db.execute(
+        text(
+            """
+            INSERT INTO app_setting(key, value) VALUES ('arraial_paused', :val)
+            ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
+            """
+        ),
+        {"val": "true" if paused else "false"},
+    )
+    db.commit()
+
+
 def _find_points(nucleo: str) -> dict:
     for points in _arraial_points:
         if points["nucleo"] == nucleo:
@@ -132,7 +158,7 @@ def _find_points(nucleo: str) -> dict:
 
 @router.get("/config", status_code=200, response_model=ArraialConfig)
 def get_arraial_config(*, db: Session = Depends(deps.get_db)) -> Any:
-    return {"enabled": _get_config_enabled(db)}
+    return {"enabled": _get_config_enabled(db), "paused": _get_config_paused(db)}
 
 
 @router.put("/config", status_code=200, response_model=ArraialConfig)
@@ -143,9 +169,11 @@ async def update_arraial_config(
     _=Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
 ) -> Any:
     _set_config_enabled(db, cfg.enabled)
+    _set_config_paused(db, cfg.paused)
+    payload = {"topic": "ARRAIAL_CONFIG", "enabled": cfg.enabled, "paused": cfg.paused}
     await arraial_ws_manager.broadcast(
         connection_type=ArraialConnectionType.GENERAL,
-        message={"topic": "ARRAIAL_CONFIG", "enabled": cfg.enabled},
+        message=payload,
     )
     return cfg
 
@@ -169,6 +197,9 @@ async def update_arraial_points(
 ) -> Any:
     # Check rate limit
     _check_rate_limit(request, auth_data, "update_points")
+    # Enforce paused config
+    if _get_config_paused(db):
+        raise HTTPException(status_code=423, detail="Point updates are paused by an administrator")
     
     points = _find_points(points_update.nucleo)
     if points is None:

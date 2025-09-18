@@ -82,7 +82,7 @@ export function Component() {
       try {
         const data = JSON.parse(event.data);
         if (data?.topic === "ARRAIAL_CONFIG" && typeof data.enabled === "boolean") {
-          setArraialConfig({ enabled: data.enabled });
+          setArraialConfig({ enabled: data.enabled, paused: !!data.paused });
         }
       } catch (_) {}
     };
@@ -118,11 +118,11 @@ export function Component() {
     }
   };
 
-  const saveArraialConfig = async (enabled) => {
+  const saveArraialConfig = async (enabled, paused) => {
     try {
       setCfgSaving(true);
-      await service.setArraialConfig(enabled);
-      setArraialConfig({ enabled });
+      await service.setArraialConfig(enabled, paused ?? arraialConfig?.paused ?? false);
+      setArraialConfig({ enabled, paused: paused ?? arraialConfig?.paused ?? false });
     } catch (e) {
       setError("Failed to save Arraial config");
     } finally {
@@ -145,16 +145,28 @@ export function Component() {
           {cfgLoading || !arraialConfig ? (
             <div className="text-sm opacity-70">Loading config…</div>
           ) : (
-            <label className="label cursor-pointer gap-3">
-              <span className="label-text">Enable Arraial</span>
-              <input
-                type="checkbox"
-                className="toggle"
-                checked={!!arraialConfig.enabled}
-                onChange={(e) => saveArraialConfig(e.target.checked)}
-                disabled={cfgSaving}
-              />
-            </label>
+            <div className="flex flex-col gap-2">
+              <label className="label cursor-pointer gap-3">
+                <span className="label-text">Enable Arraial</span>
+                <input
+                  type="checkbox"
+                  className="toggle"
+                  checked={!!arraialConfig.enabled}
+                  onChange={(e) => saveArraialConfig(e.target.checked, arraialConfig.paused)}
+                  disabled={cfgSaving}
+                />
+              </label>
+              <label className="label cursor-pointer gap-3">
+                <span className="label-text">Pause point updates</span>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-warning"
+                  checked={!!arraialConfig.paused}
+                  onChange={(e) => saveArraialConfig(arraialConfig.enabled, e.target.checked)}
+                  disabled={cfgSaving}
+                />
+              </label>
+            </div>
           )}
         </div>
       )}

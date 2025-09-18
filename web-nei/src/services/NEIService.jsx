@@ -181,8 +181,8 @@ const NEIService = {
     return await client.get("/arraial/config");
   },
 
-  async setArraialConfig(enabled) {
-    return await client.put("/arraial/config", { enabled });
+  async setArraialConfig(enabled, paused = false) {
+    return await client.put("/arraial/config", { enabled, paused });
   },
 
   // Admin: Users
