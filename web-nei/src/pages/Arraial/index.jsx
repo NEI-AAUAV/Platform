@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import Particles from "react-particles";
+import { loadFull } from "tsparticles";
 import service from 'services/NEIService';
 import { getArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
@@ -33,6 +35,34 @@ export function Component() {
     const [showTrends, setShowTrends] = useState(false);
     const [pointHistory, setPointHistory] = useState([]);
     const [hoveredPoint, setHoveredPoint] = useState(null);
+    const [confettiActive, setConfettiActive] = useState(false);
+    const [milestoneToasts, setMilestoneToasts] = useState([]); // [{ id, nucleo, milestone }]
+    const prevPointsRef = React.useRef({});
+    const hasBaselineRef = React.useRef(false);
+    const initParticles = React.useCallback(async (engine) => {
+        await loadFull(engine);
+    }, []);
+
+    // Listen for global confetti trigger events
+    useEffect(() => {
+        const onConfetti = (e) => {
+            setConfettiActive(true);
+            // If details provided, show toast with nucleo and milestone
+            if (e?.detail && e.detail.nucleo && e.detail.milestone) {
+                const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+                const toast = { id, nucleo: e.detail.nucleo, milestone: e.detail.milestone };
+                setMilestoneToasts((prev) => [...prev, toast]);
+                // auto close this toast instance
+                setTimeout(() => {
+                    setMilestoneToasts((prev) => prev.filter((t) => t.id !== id));
+                }, 6000);
+            }
+            // auto stop confetti after short duration
+            setTimeout(() => setConfettiActive(false), 1700);
+        };
+        window.addEventListener('arraial:confetti', onConfetti);
+        return () => window.removeEventListener('arraial:confetti', onConfetti);
+    }, []);
 
     // History filters (user id removed)
     const [filterNucleo, setFilterNucleo] = useState('');
@@ -55,7 +85,13 @@ export function Component() {
         const fetchPoints = () => {
             service.getArraialPoints()
                 .then(data => {
+                    if (hasBaselineRef.current) {
+                        maybeTriggerConfetti(prevPointsRef.current, data);
+                    } else {
+                        hasBaselineRef.current = true;
+                    }
                     setPointsList(data);
+                    prevPointsRef.current = Object.fromEntries((data||[]).map(p=>[p.nucleo, p.value]));
                     addPointHistoryEntry(data);
                     setError(null);
                 })
@@ -93,7 +129,13 @@ export function Component() {
             try {
                 const data = JSON.parse(event.data);
                 if (data?.topic === 'ARRAIAL_POINTS' && Array.isArray(data.points)) {
+                    if (hasBaselineRef.current) {
+                        maybeTriggerConfetti(prevPointsRef.current, data.points);
+                    } else {
+                        hasBaselineRef.current = true;
+                    }
                     setPointsList(data.points);
+                    prevPointsRef.current = Object.fromEntries((data.points||[]).map(p=>[p.nucleo, p.value]));
                     if (auth) fetchLog(0, false);
                 } else if (data?.topic === 'ARRAIAL_CONFIG' && typeof data.enabled === 'boolean') {
                     setEnabled(!!data.enabled);
@@ -638,7 +680,73 @@ export function Component() {
                     {showTrends && renderTrendsGraph()}
                 </div>
             ) : null}
+            {confettiActive && (
+                <Particles
+                    id="arraial-confetti"
+                    init={initParticles}
+                    options={{
+                        fullScreen: { enable: true, zIndex: 999 },
+                        detectRetina: true,
+                        fpsLimit: 60,
+                        particles: {
+                            number: { value: 140 },
+                            color: { value: ["#ef4444","#f59e0b","#10b981","#3b82f6","#8b5cf6","#ec4899"] },
+                            shape: { type: "square" },
+                            opacity: { value: 1 },
+                            size: { value: { min: 3, max: 6 } },
+                            life: { duration: { sync: true, value: 1.6 }, count: 1 },
+                            move: {
+                                enable: true,
+                                gravity: { enable: true, acceleration: 15 },
+                                speed: { min: 7, max: 16 },
+                                decay: 0.06,
+                                direction: "none",
+                                outModes: { default: "destroy", bottom: "destroy" }
+                            },
+                            rotate: {
+                                value: { min: 0, max: 360 },
+                                direction: "random",
+                                animation: { enable: true, speed: 30 }
+                            }
+                        }
+                    }}
+                />
+            )}
+            {milestoneToasts.length > 0 && (
+                <div className="fixed inset-x-0 top-1/4 z-[1000] flex justify-center pointer-events-none">
+                    <div className="flex flex-col gap-3">
+                        {milestoneToasts.map((t) => (
+                            <div key={t.id} className="pointer-events-auto animate-fade-in-down shadow-xl rounded-lg px-6 py-4 bg-base-100 border border-base-300 ring-1 ring-primary/40 backdrop-blur-sm flex items-center gap-3 text-lg">
+                                <span className="badge badge-primary">Shot Capacete</span>
+                                <span className="font-semibold">{t.nucleo}</span>
+                                <span className="opacity-70">— nº {t.milestone}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
         
     )
+}
+
+function maybeTriggerConfetti(prevMap, nextList) {
+    try {
+        const nextMap = Object.fromEntries((nextList||[]).map(p=>[p.nucleo, p.value]));
+        const nucs = Object.keys(nextMap);
+        for (const n of nucs) {
+            const prev = Number.isFinite(prevMap?.[n]) ? prevMap[n] : 0;
+            const next = nextMap[n] ?? 0;
+            if (next > prev) {
+                const prevBucket = Math.floor(prev/50);
+                const nextBucket = Math.floor(next/50);
+                if (nextBucket > prevBucket) {
+                    const milestone = nextBucket * 50;
+                    const evt = new CustomEvent('arraial:confetti', { detail: { nucleo: n, milestone } });
+                    window.dispatchEvent(evt);
+                    break;
+                }
+            }
+        }
+    } catch (_) {}
 }
