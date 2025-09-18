@@ -353,6 +353,42 @@ async def rollback_log(
     if target.rolled_back:
         return _arraial_points
 
+    # Handle rollback for different event types
+    if target.event == "BOOST_ACTIVATED":
+        # Subtract 15 minutes from the boost end for the target núcleo
+        end = _boost_ends.get(target.nucleo)
+        if end is not None:
+            new_end = end - timedelta(minutes=15)
+            # If the new end is in the past or now, clear the boost
+            if new_end <= datetime.now(timezone.utc):
+                _boost_ends[target.nucleo] = None
+            else:
+                _boost_ends[target.nucleo] = new_end
+        target.rolled_back = True
+
+        # Broadcast updated boosts
+        await arraial_ws_manager.broadcast(
+            connection_type=ArraialConnectionType.GENERAL,
+            message={"topic": "ARRAIAL_BOOST", "boosts": _get_boosts_response()},
+        )
+
+        # Return points unchanged to satisfy response_model
+        return _arraial_points
+
+    points = _find_points(target.nucleo)
+    if points is None:
+        raise HTTPException(status_code=404, detail="Núcleo not found")
+
+    # Prevent going below zero if subsequent changes occurred
+    points["value"] = max(0, points["value"] - target.delta)
+    target.rolled_back = True
+
+    await arraial_ws_manager.broadcast(
+        connection_type=ArraialConnectionType.GENERAL,
+        message={"topic": "ARRAIAL_POINTS", "points": _arraial_points},
+    )
+
+    return _arraial_points
 
 @router.post("/reset", status_code=200)
 async def reset_arraial(
@@ -382,40 +418,3 @@ async def reset_arraial(
     )
 
     return {"ok": True}
-
-    # Handle rollback for different event types
-    if target.event == "BOOST_ACTIVATED":
-        # Subtract 15 minutes from the boost end for the target núcleo
-        end = _boost_ends.get(target.nucleo)
-        if end is not None:
-            new_end = end - timedelta(minutes=15)
-            # If the new end is in the past or now, clear the boost
-            if new_end <= datetime.now(timezone.utc):
-                _boost_ends[target.nucleo] = None
-            else:
-                _boost_ends[target.nucleo] = new_end
-        target.rolled_back = True
-
-        # Broadcast updated boosts
-        await arraial_ws_manager.broadcast(
-            connection_type=ArraialConnectionType.GENERAL,
-            message={"topic": "ARRAIAL_BOOST", "boosts": _get_boosts_response()},
-        )
-
-        # Return points unchanged to satisfy response_model
-        return _arraial_points
-    else:
-        points = _find_points(target.nucleo)
-        if points is None:
-            raise HTTPException(status_code=404, detail="Núcleo not found")
-
-        # Prevent going below zero if subsequent changes occurred
-        points["value"] = max(0, points["value"] - target.delta)
-        target.rolled_back = True
-
-        await arraial_ws_manager.broadcast(
-            connection_type=ArraialConnectionType.GENERAL,
-            message={"topic": "ARRAIAL_POINTS", "points": _arraial_points},
-        )
-
-        return _arraial_points
