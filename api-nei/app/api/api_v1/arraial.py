@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from typing import Any, List, Optional, Tuple
 from pydantic import BaseModel, field_validator
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from functools import lru_cache
 
 from app import crud
@@ -67,6 +67,7 @@ class ArraialLogEntry(BaseModel):
     user_email: Optional[str] = None
     rolled_back: bool = False
     timestamp: Optional[datetime] = None
+    event: Optional[str] = None  # e.g., "BOOST_ACTIVATED"
 
 
 class ArraialLogResponse(BaseModel):
@@ -77,6 +78,7 @@ class ArraialLogResponse(BaseModel):
 class ArraialConfig(BaseModel):
     enabled: bool
     paused: bool = False
+    boosts: Optional[dict] = None  # { nucleo: iso8601 or None }
 
 
 # Mock data for now - you can replace this with database calls later
@@ -89,6 +91,7 @@ _arraial_points = [
 # In-memory change log (newest first)
 _arraial_log: List[ArraialLogEntry] = []
 _next_log_id: int = 1
+_boost_ends: dict = {"NEEETA": None, "NEECT": None, "NEI": None}
 
 
 SETTING_TABLE_SQL = """
@@ -149,6 +152,23 @@ def _set_config_paused(db: Session, paused: bool) -> None:
     db.commit()
 
 
+def _get_boosts_response() -> dict:
+    # returns { nucleo: iso8601 or None }
+    result = {}
+    now = datetime.now(timezone.utc)
+    for n, end in _boost_ends.items():
+        if end and end > now:
+            result[n] = end.isoformat()
+        else:
+            result[n] = None
+    return result
+
+
+def _is_boost_active(nucleo: str) -> bool:
+    end = _boost_ends.get(nucleo)
+    return bool(end and end > datetime.now(timezone.utc))
+
+
 def _find_points(nucleo: str) -> dict:
     for points in _arraial_points:
         if points["nucleo"] == nucleo:
@@ -158,7 +178,7 @@ def _find_points(nucleo: str) -> dict:
 
 @router.get("/config", status_code=200, response_model=ArraialConfig)
 def get_arraial_config(*, db: Session = Depends(deps.get_db)) -> Any:
-    return {"enabled": _get_config_enabled(db), "paused": _get_config_paused(db)}
+    return {"enabled": _get_config_enabled(db), "paused": _get_config_paused(db), "boosts": _get_boosts_response()}
 
 
 @router.put("/config", status_code=200, response_model=ArraialConfig)
@@ -207,7 +227,12 @@ async def update_arraial_points(
 
     global _next_log_id
     prev_value = points["value"]
-    new_value = prev_value + points_update.pointIncrement
+    increment = points_update.pointIncrement
+    # apply boost only to positive increments
+    if increment > 0 and _is_boost_active(points_update.nucleo):
+        boosted = int((increment * 1.25) // 1)  # floor
+        increment = max(increment, boosted)  # ensure not less than original
+    new_value = prev_value + increment
     
     # Prevent negative points
     if new_value < 0:
@@ -221,7 +246,7 @@ async def update_arraial_points(
     entry = ArraialLogEntry(
         id=_next_log_id,
         nucleo=points_update.nucleo,
-        delta=points_update.pointIncrement,
+        delta=increment,
         prev_value=prev_value,
         new_value=points["value"],
         user_id=int(auth_data.sub) if getattr(auth_data, "sub", None) else None,
@@ -238,6 +263,49 @@ async def update_arraial_points(
     )
 
     return _arraial_points
+
+
+@router.post("/boost/{nucleo}", status_code=200)
+async def activate_boost(
+    *,
+    nucleo: str,
+    db: Session = Depends(deps.get_db),
+    auth_data: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_ARRAIAL]),
+) -> Any:
+    if nucleo not in ["NEEETA", "NEECT", "NEI"]:
+        raise HTTPException(status_code=400, detail="Invalid núcleo")
+    now = datetime.now(timezone.utc)
+    end = _boost_ends.get(nucleo)
+    add_seconds = 15 * 60
+    if end and end > now:
+        _boost_ends[nucleo] = end + timedelta(seconds=add_seconds)
+    else:
+        _boost_ends[nucleo] = now + timedelta(seconds=add_seconds)
+
+    # Log boost activation
+    global _next_log_id
+    entry = ArraialLogEntry(
+        id=_next_log_id,
+        nucleo=nucleo,
+        delta=0,
+        prev_value=_find_points(nucleo)["value"],
+        new_value=_find_points(nucleo)["value"],
+        user_id=int(auth_data.sub) if getattr(auth_data, "sub", None) else None,
+        user_email=getattr(auth_data, "email", None),
+        rolled_back=False,
+        timestamp=datetime.now(timezone.utc),
+        event="BOOST_ACTIVATED",
+    )
+    _arraial_log.insert(0, entry)
+    _next_log_id += 1
+
+    # Broadcast
+    await arraial_ws_manager.broadcast(
+        connection_type=ArraialConnectionType.GENERAL,
+        message={"topic": "ARRAIAL_BOOST", "boosts": _get_boosts_response()},
+    )
+
+    return {"ok": True, "boosts": _get_boosts_response()}
 
 
 @router.get("/log", status_code=200, response_model=ArraialLogResponse)
@@ -286,16 +354,38 @@ async def rollback_log(
     if target.rolled_back:
         return _arraial_points
 
-    points = _find_points(target.nucleo)
-    if points is None:
-        raise HTTPException(status_code=404, detail="Núcleo not found")
+    # Handle rollback for different event types
+    if target.event == "BOOST_ACTIVATED":
+        # Subtract 15 minutes from the boost end for the target núcleo
+        end = _boost_ends.get(target.nucleo)
+        if end is not None:
+            new_end = end - timedelta(minutes=15)
+            # If the new end is in the past or now, clear the boost
+            if new_end <= datetime.now(timezone.utc):
+                _boost_ends[target.nucleo] = None
+            else:
+                _boost_ends[target.nucleo] = new_end
+        target.rolled_back = True
 
-    points["value"] -= target.delta
-    target.rolled_back = True
+        # Broadcast updated boosts
+        await arraial_ws_manager.broadcast(
+            connection_type=ArraialConnectionType.GENERAL,
+            message={"topic": "ARRAIAL_BOOST", "boosts": _get_boosts_response()},
+        )
 
-    await arraial_ws_manager.broadcast(
-        connection_type=ArraialConnectionType.GENERAL,
-        message={"topic": "ARRAIAL_POINTS", "points": _arraial_points},
-    )
+        # Return points unchanged to satisfy response_model
+        return _arraial_points
+    else:
+        points = _find_points(target.nucleo)
+        if points is None:
+            raise HTTPException(status_code=404, detail="Núcleo not found")
 
-    return _arraial_points
+        points["value"] -= target.delta
+        target.rolled_back = True
+
+        await arraial_ws_manager.broadcast(
+            connection_type=ArraialConnectionType.GENERAL,
+            message={"topic": "ARRAIAL_POINTS", "points": _arraial_points},
+        )
+
+        return _arraial_points

@@ -38,6 +38,7 @@ export function Component() {
     const [confettiActive, setConfettiActive] = useState(false);
     const [milestoneToasts, setMilestoneToasts] = useState([]); // [{ id, nucleo, milestone }]
     const prevPointsRef = React.useRef({});
+    const [boosts, setBoosts] = useState({}); // { nucleo: iso8601|null }
     const hasBaselineRef = React.useRef(false);
     const initParticles = React.useCallback(async (engine) => {
         await loadFull(engine);
@@ -77,6 +78,9 @@ export function Component() {
                 const cfg = await service.getArraialConfig();
                 setEnabled(!!cfg?.enabled);
                 setPaused(!!cfg?.paused);
+                if (cfg?.boosts) {
+                    setBoosts(cfg.boosts);
+                }
             } catch (e) {
                 setEnabled(true); // default true if endpoint fails
             }
@@ -140,6 +144,9 @@ export function Component() {
                 } else if (data?.topic === 'ARRAIAL_CONFIG' && typeof data.enabled === 'boolean') {
                     setEnabled(!!data.enabled);
                     setPaused(!!data.paused);
+                } else if (data?.topic === 'ARRAIAL_BOOST' && data.boosts && typeof data.boosts === 'object') {
+                    setBoosts(data.boosts || {});
+                    if (auth) fetchLog(0, false);
                 }
             } catch (e) {
                 // ignore non-JSON payloads
@@ -453,7 +460,7 @@ export function Component() {
 
     const renderPointsBar = (pointsData, index) => (
         <div key={index} className="flex flex-col justify-center items-center space-y-2">
-            <div className="relative block mx-auto w-40 sm:w-56 md:w-64 lg:w-[40vh] h-[40vh] sm:h-[48vh] md:h-[55vh] border-8 border-white border-t-0 rounded-b-[3rem]">
+            <div className={`relative block mx-auto w-40 sm:w-56 md:w-64 lg:w-[40vh] h-[40vh] sm:h-[48vh] md:h-[55vh] border-8 border-white border-t-0 rounded-b-[3rem]`}>
                 {/* Inner content wrapper to clip beer/foam, outer stays visible for handle */}
                 <div className="absolute inset-0 overflow-hidden rounded-b-[2.5rem]">
                     {/* Glass effects */}
@@ -503,8 +510,19 @@ export function Component() {
             <div className="text-center">
                 {pointsList.length !== 0 ? (
                     <div>
+                        <div className="flex items-center justify-center gap-2">
                         <h2>{pointsData.nucleo}</h2>
+                        </div>
                         <h3>Points: {pointsData.value}</h3>
+                        {boosts?.[pointsData.nucleo] && (
+                            <BoostCountdown
+                                untilIso={boosts[pointsData.nucleo]}
+                                nucleo={pointsData.nucleo}
+                                onExpire={(n)=>{
+                                    setBoosts((prev)=> ({ ...prev, [n]: null }));
+                                }}
+                            />
+                        )}
                     </div>
                 ) : (
                     <div>
@@ -542,6 +560,19 @@ export function Component() {
             {auth ? (
                 <div className="rounded-box m-auto w-full max-w-lg sm:max-w-md flex h-fit flex-col bg-base-200 px-4 sm:px-6 py-6 align-middle shadow-secondary drop-shadow-md">
                     <h3>Add/Remove Points</h3>
+                    <div className="mb-2 flex items-center gap-2">
+                        <span className="text-sm opacity-70">Boost 1.25x (15m):</span>
+                        {['NEEETA','NEECT','NEI'].map((n)=> (
+                            <button key={n} className="btn btn-xs" disabled={paused} onClick={async ()=>{
+                                try {
+                                    const resp = await service.activateArraialBoost(n);
+                                    if (resp && resp.boosts) {
+                                        setBoosts(resp.boosts);
+                                    }
+                                } catch(e) { /* ignore */ }
+                            }}>{n}</button>
+                        ))}
+                    </div>
                     {paused && (
                         <div className="alert alert-warning my-2">
                             <span>Point updates are paused by an administrator.</span>
@@ -637,26 +668,44 @@ export function Component() {
                             <ul className="space-y-1 text-sm">
                                 {log.map((e) => (
                                     <li key={e.id} className="flex items-center justify-between rounded px-2 py-1 hover:bg-base-200">
-                                        <span>
-                                            <strong>{e.nucleo}</strong>
-                                            {" "}
-                                            <span className={e.delta >= 0 ? 'text-success' : 'text-error'}>
-                                                {e.delta >= 0 ? `+${e.delta}` : e.delta}
-                                            </span>
-                                            {" "}
-                                            <span className="opacity-70">({e.prev_value} → {e.new_value})</span>
-                                            {e.user_email && <span className="ml-2 opacity-70">{e.user_email}</span>}
-                                            {!e.user_email && e.user_id != null && <span className="ml-2 opacity-60">user #{e.user_id}</span>}
-                                            {e.timestamp && <span className="ml-2 opacity-60">{new Date(e.timestamp).toLocaleString()}</span>}
-                                            {e.rolled_back && <span className="ml-2 badge badge-outline">rolled back</span>}
-                                        </span>
-                                        <button
-                                            className="btn btn-sm sm:btn-xs"
-                                            disabled={!!e.rolled_back}
-                                            onClick={() => handleRollback(e.id)}
-                                        >
-                                            Undo
-                                        </button>
+                                        {e.event === 'BOOST_ACTIVATED' ? (
+                                            <>
+                                                <span>
+                                                    <strong>{e.nucleo}</strong>{" "}
+                                                    <span className="badge badge-warning badge-sm align-middle">1.25x Boost</span>
+                                                    {e.timestamp && <span className="ml-2 opacity-60">{new Date(e.timestamp).toLocaleString()}</span>}
+                                                    {e.user_email && <span className="ml-2 opacity-70">{e.user_email}</span>}
+                                                </span>
+                                                <button
+                                                    className="btn btn-sm sm:btn-xs"
+                                                    disabled={!!e.rolled_back}
+                                                    onClick={() => handleRollback(e.id)}
+                                                >
+                                                    Undo
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>
+                                                    <strong>{e.nucleo}</strong>{" "}
+                                                    <span className={e.delta >= 0 ? 'text-success' : 'text-error'}>
+                                                        {e.delta >= 0 ? `+${e.delta}` : e.delta}
+                                                    </span>{" "}
+                                                    <span className="opacity-70">({e.prev_value} → {e.new_value})</span>
+                                                    {e.user_email && <span className="ml-2 opacity-70">{e.user_email}</span>}
+                                                    {!e.user_email && e.user_id != null && <span className="ml-2 opacity-60">user #{e.user_id}</span>}
+                                                    {e.timestamp && <span className="ml-2 opacity-60">{new Date(e.timestamp).toLocaleString()}</span>}
+                                                    {e.rolled_back && <span className="ml-2 badge badge-outline">rolled back</span>}
+                                                </span>
+                                                <button
+                                                    className="btn btn-sm sm:btn-xs"
+                                                    disabled={!!e.rolled_back}
+                                                    onClick={() => handleRollback(e.id)}
+                                                >
+                                                    Undo
+                                                </button>
+                                            </>
+                                        )}
                                     </li>
                                 ))}
                             </ul>
@@ -728,6 +777,49 @@ export function Component() {
         </div>
         
     )
+}
+
+function BoostCountdown({ untilIso, asBadge = false, nucleo, onExpire }) {
+    const [remaining, setRemaining] = useState('');
+    useEffect(() => {
+        const parseRemaining = () => {
+            try {
+                const end = new Date(untilIso).getTime();
+                const now = Date.now();
+                const diff = Math.floor((end - now) / 1000);
+                if (diff <= 0) {
+                    setRemaining('');
+                    if (onExpire && typeof onExpire === 'function') {
+                        onExpire(nucleo);
+                    }
+                    return;
+                }
+                const m = Math.floor(diff / 60);
+                const s = diff % 60;
+                setRemaining(`${m}:${String(s).padStart(2, '0')}`);
+            } catch (_) {
+                setRemaining('');
+            }
+        };
+        parseRemaining();
+        const id = setInterval(parseRemaining, 1000);
+        return () => clearInterval(id);
+    }, [untilIso, nucleo, onExpire]);
+
+    if (!untilIso || !remaining) return null;
+    if (asBadge) {
+        return (
+            <span className="badge badge-primary badge-sm">1.25x {remaining}</span>
+        );
+    }
+    return (
+        <div className="mt-2 flex justify-center">
+            <span className="badge badge-primary badge-lg gap-2 px-4">
+                1.25x
+                <span className="opacity-90">{remaining}</span>
+            </span>
+        </div>
+    );
 }
 
 function maybeTriggerConfetti(prevMap, nextList) {

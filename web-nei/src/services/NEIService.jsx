@@ -185,6 +185,10 @@ const NEIService = {
     return await client.put("/arraial/config", { enabled, paused });
   },
 
+  async activateArraialBoost(nucleo) {
+    return await client.post(`/arraial/boost/${nucleo}`);
+  },
+
   // Admin: Users
   async getUsers() {
     return await client.get("/user/");
