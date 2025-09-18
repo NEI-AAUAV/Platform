@@ -2,7 +2,7 @@ import os
 from io import BytesIO
 from hashlib import md5
 from datetime import datetime
-from typing import Optional, Union, Any, Dict
+from typing import Optional, Union, Any, Dict, List
 
 import magic
 from loguru import logger
@@ -109,6 +109,23 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             db.add(UserEmail(email=obj_in.email, active=active, user_id=db_obj.id))
 
         return db_obj
+
+    def get_multi_with_emails(self, db: Session) -> List[tuple[User, Optional[UserEmail]]]:
+        """Get all users with their associated emails (if any)"""
+        from sqlalchemy.orm import joinedload
+        
+        query = db.query(self.model).outerjoin(UserEmail, self.model.id == UserEmail.user_id)
+        users_with_emails = []
+        
+        for user in query.all():
+            # Get the active email for this user
+            email = db.query(UserEmail).filter(
+                UserEmail.user_id == user.id,
+                UserEmail.active == True
+            ).first()
+            users_with_emails.append((user, email))
+        
+        return users_with_emails
 
     def update(
         self,

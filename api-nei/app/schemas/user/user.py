@@ -75,11 +75,13 @@ class ManagerUserListing(UserListing):
     created_at: datetime
     updated_at: datetime
     matriculation: List[UserMatriculationInBD] = []
+    email: Optional[str] = None
 
 
 class AdminUserListing(ManagerUserListing):
     iupi: Optional[Annotated[str, StringConstraints(max_length=36)]]
     scopes: List[str] = []
+    email: Optional[str] = None
 
 
 class UserCreateBase(UserBase):
