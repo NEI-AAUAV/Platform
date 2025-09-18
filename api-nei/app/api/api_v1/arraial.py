@@ -202,7 +202,6 @@ async def update_arraial_config(
 def get_arraial_points(
     *,
     db: Session = Depends(deps.get_db),
-    _=Depends(deps.short_cache),
 ) -> Any:
     return _arraial_points
 
@@ -354,6 +353,36 @@ async def rollback_log(
     if target.rolled_back:
         return _arraial_points
 
+
+@router.post("/reset", status_code=200)
+async def reset_arraial(
+    *,
+    db: Session = Depends(deps.get_db),
+    _=Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
+) -> Any:
+    # Reset points to zero
+    for p in _arraial_points:
+        p["value"] = 0
+    # Clear boosts
+    for k in list(_boost_ends.keys()):
+        _boost_ends[k] = None
+    # Clear log
+    global _arraial_log, _next_log_id
+    _arraial_log = []
+    _next_log_id = 1
+
+    # Broadcast updates so clients refresh
+    await arraial_ws_manager.broadcast(
+        connection_type=ArraialConnectionType.GENERAL,
+        message={"topic": "ARRAIAL_POINTS", "points": _arraial_points},
+    )
+    await arraial_ws_manager.broadcast(
+        connection_type=ArraialConnectionType.GENERAL,
+        message={"topic": "ARRAIAL_BOOST", "boosts": _get_boosts_response()},
+    )
+
+    return {"ok": True}
+
     # Handle rollback for different event types
     if target.event == "BOOST_ACTIVATED":
         # Subtract 15 minutes from the boost end for the target núcleo
@@ -380,7 +409,8 @@ async def rollback_log(
         if points is None:
             raise HTTPException(status_code=404, detail="Núcleo not found")
 
-        points["value"] -= target.delta
+        # Prevent going below zero if subsequent changes occurred
+        points["value"] = max(0, points["value"] - target.delta)
         target.rolled_back = True
 
         await arraial_ws_manager.broadcast(

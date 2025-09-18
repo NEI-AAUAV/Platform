@@ -166,6 +166,23 @@ export function Component() {
                   disabled={cfgSaving}
                 />
               </label>
+              <div className="divider my-1"></div>
+              <button
+                className="btn btn-error btn-sm self-start"
+                onClick={async () => {
+                  try {
+                    const ok = window.confirm("Reset Arraial? This will clear points, boosts, and history for the event.");
+                    if (!ok) return;
+                    await service.resetArraial();
+                    // Refresh current config and let WS update points/boosts
+                    loadArraialConfig();
+                  } catch (e) {
+                    setError("Failed to reset Arraial");
+                  }
+                }}
+              >
+                Reset Arraial
+              </button>
             </div>
           )}
         </div>

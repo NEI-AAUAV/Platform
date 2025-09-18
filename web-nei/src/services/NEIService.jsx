@@ -189,6 +189,10 @@ const NEIService = {
     return await client.post(`/arraial/boost/${nucleo}`);
   },
 
+  async resetArraial() {
+    return await client.post(`/arraial/reset`);
+  },
+
   // Admin: Users
   async getUsers() {
     return await client.get("/user/");

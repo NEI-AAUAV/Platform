@@ -763,12 +763,12 @@ export function Component() {
             )}
             {milestoneToasts.length > 0 && (
                 <div className="fixed inset-x-0 top-1/4 z-[1000] flex justify-center pointer-events-none">
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-4">
                         {milestoneToasts.map((t) => (
-                            <div key={t.id} className="pointer-events-auto animate-fade-in-down shadow-xl rounded-lg px-6 py-4 bg-base-100 border border-base-300 ring-1 ring-primary/40 backdrop-blur-sm flex items-center gap-3 text-lg">
-                                <span className="badge badge-primary">Shot Capacete</span>
-                                <span className="font-semibold">{t.nucleo}</span>
-                                <span className="opacity-70">— nº {t.milestone}</span>
+                            <div key={t.id} className="pointer-events-auto animate-fade-in-down shadow-2xl rounded-2xl px-8 py-6 bg-base-100 border border-base-300 ring-2 ring-primary/50 backdrop-blur-sm flex items-center gap-4 text-xl md:text-3xl">
+                                <span className="badge badge-primary text-xl md:text-3xl px-6 py-2 md:px-8 md:py-4">Shot Capacete</span>
+                                <span className="font-extrabold tracking-wide">{t.nucleo}</span>
+                                <span className="opacity-80">— nº {t.milestone}</span>
                             </div>
                         ))}
                     </div>
