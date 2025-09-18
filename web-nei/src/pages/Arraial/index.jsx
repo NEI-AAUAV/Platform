@@ -271,9 +271,10 @@ export function Component() {
         };
 
         return (
-            <div className="mt-4 p-4 bg-base-100 rounded-lg">
+            <div className="mt-4 p-2 sm:p-4 bg-base-100 rounded-lg">
                 <h4 className="text-lg font-bold mb-3">Point Trends</h4>
-                <svg width={width} height={height} className="w-full max-w-md mx-auto">
+                <div className="overflow-x-auto">
+                    <svg width={width} height={height} className="w-full max-w-md mx-auto min-w-[400px]">
                     {/* Grid lines and y-axis labels */}
                     {[0, 0.25, 0.5, 0.75, 1].map(ratio => {
                         const value = Math.round(ratio * maxPoints);
@@ -385,6 +386,7 @@ export function Component() {
                         ))}
                     </g>
                 </svg>
+                </div>
             </div>
         );
     };
@@ -463,9 +465,9 @@ export function Component() {
     );
 
     return (
-        <div className="flex flex-col justify-center space-y-12 md:space-y-16">
+        <div className="flex flex-col justify-center space-y-8 md:space-y-12 px-4 sm:px-0">
             <div className="text-center">
-                <h1>Arraial do DETI</h1>
+                <h1 className="text-2xl sm:text-3xl">Arraial do DETI</h1>
                 {/* Live connection indicator */}
                 <div className="flex items-center justify-center gap-2 mt-2">
                     <div className={`w-2 h-2 rounded-full ${
@@ -483,7 +485,7 @@ export function Component() {
                 </div>
             )}
             
-            <div className="flex flex-col md:flex-row items-center md:items-start justify-center space-y-10 md:space-y-0 md:space-x-16">
+            <div className="flex flex-col md:flex-row items-center md:items-start justify-center space-y-6 md:space-y-0 md:space-x-16">
                 {pointsList.map((pointsData, index) => renderPointsBar(pointsData, index))}
             </div>
             {auth ? (
@@ -518,12 +520,12 @@ export function Component() {
                                 className="text-lg bg-neutral-700 h-12 sm:h-10 w-full text-center rounded"
                                 aria-label="Enter points to add or remove"
                             />
-                            {/* Quick adjust buttons */}
+                            {/* Quick adjust buttons - Mobile optimized */}
                             <div className="mt-2 grid grid-cols-4 gap-2">
-                                <button type="button" className="btn btn-md sm:btn-sm" onClick={() => quickAdjust(-5)}>-5</button>
-                                <button type="button" className="btn btn-md sm:btn-sm" onClick={() => quickAdjust(-1)}>-1</button>
-                                <button type="button" className="btn btn-md sm:btn-sm" onClick={() => quickAdjust(1)}>+1</button>
-                                <button type="button" className="btn btn-md sm:btn-sm" onClick={() => quickAdjust(5)}>+5</button>
+                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(-5)}>-5</button>
+                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(-1)}>-1</button>
+                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(1)}>+1</button>
+                                <button type="button" className="btn btn-lg sm:btn-md touch-manipulation" onClick={() => quickAdjust(5)}>+5</button>
                             </div>
                             {number !== '' && !/^-?\d+$/.test(number) && (
                                 <p className="text-red-500">Please enter a valid whole number.</p>
@@ -532,7 +534,7 @@ export function Component() {
                             <button 
                                 type="submit" 
                                 disabled={number === '' || number === '0' || !/^-?\d+$/.test(number) || isLoading}
-                                className="btn btn-primary btn-md sm:btn-sm"
+                                className="btn btn-primary btn-lg sm:btn-md w-full touch-manipulation"
                             >
                                 {isLoading ? 'Updating...' : 'Submit'}
                             </button>
@@ -541,11 +543,11 @@ export function Component() {
                     {/* History & Trends */}
                     <div className="mt-4 flex flex-col items-center gap-4">
                         <div className="divider w-full">History & Trends</div>
-                        <div className="flex flex-row gap-2">
-                            <button className="btn btn-sm whitespace-nowrap" onClick={() => setShowTrends(!showTrends)}>
+                        <div className="flex flex-row gap-2 w-full max-w-xs">
+                            <button className="btn btn-md sm:btn-sm flex-1 touch-manipulation" onClick={() => setShowTrends(!showTrends)}>
                                 {showTrends ? 'Hide Trends' : 'Trends'}
                             </button>
-                            <button className="btn btn-sm whitespace-nowrap" onClick={() => setShowHistory(!showHistory)}>
+                            <button className="btn btn-md sm:btn-sm flex-1 touch-manipulation" onClick={() => setShowHistory(!showHistory)}>
                                 {showHistory ? 'Hide History' : 'History'}
                             </button>
                         </div>
