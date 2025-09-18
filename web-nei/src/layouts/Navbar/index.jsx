@@ -43,14 +43,17 @@ const Navbar = () => {
   const [navItems, setNavItems] = useState(data);
   const navigate = useNavigate();
 
-  const [arraialEnabled, setArraialEnabled] = useState(!!config.ENABLE_ARRAIAL);
+  // Optimistic hide until known from API/WS
+  const [arraialEnabled, setArraialEnabled] = useState(null);
 
   useEffect(() => {
     // Fetch runtime Arraial config and subscribe to WS updates
     service
       .getArraialConfig()
       .then((cfg) => setArraialEnabled(!!cfg?.enabled))
-      .catch(() => setArraialEnabled(!!config.ENABLE_ARRAIAL));
+      .catch(() => {
+        // Leave as null on error; WS may still update it shortly
+      });
 
     const socket = getArraialSocket();
     const onMessage = (event) => {
