@@ -708,7 +708,7 @@ export function Component() {
                                                     </span>{" "}
                                                     <span className="opacity-70">({e.prev_value} → {e.new_value})</span>
                                                     {e.user_email && <span className="ml-2 opacity-70">{e.user_email}</span>}
-                                                    {!e.user_email && e.user_id != null && <span className="ml-2 opacity-60">user #{e.user_id}</span>}
+                                                    {!e.user_email && e.user_id !== null && <span className="ml-2 opacity-60">user #{e.user_id}</span>}
                                                     {e.timestamp && <span className="ml-2 opacity-60">{new Date(e.timestamp).toLocaleString()}</span>}
                                                     {e.rolled_back && <span className="ml-2 badge badge-outline">rolled back</span>}
                                                 </span>
