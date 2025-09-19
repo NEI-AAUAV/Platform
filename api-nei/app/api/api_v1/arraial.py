@@ -275,7 +275,7 @@ async def activate_boost(
         raise HTTPException(status_code=400, detail="Invalid núcleo")
     now = datetime.now(timezone.utc)
     end = _boost_ends.get(nucleo)
-    add_seconds = 15 * 60
+    add_seconds = 10 * 60
     if end and end > now:
         _boost_ends[nucleo] = end + timedelta(seconds=add_seconds)
     else:
@@ -355,10 +355,10 @@ async def rollback_log(
 
     # Handle rollback for different event types
     if target.event == "BOOST_ACTIVATED":
-        # Subtract 15 minutes from the boost end for the target núcleo
+        # Subtract 10 minutes from the boost end for the target núcleo
         end = _boost_ends.get(target.nucleo)
         if end is not None:
-            new_end = end - timedelta(minutes=15)
+            new_end = end - timedelta(minutes=10)
             # If the new end is in the past or now, clear the boost
             if new_end <= datetime.now(timezone.utc):
                 _boost_ends[target.nucleo] = None
