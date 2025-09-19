@@ -75,7 +75,7 @@ export function Component() {
       loadUsers();
       loadArraialConfig();
     } else if (!meLoading && !me) {
-      // If /user/me failed, still try users (server will 403 if not allowed)
+      // If /user/me failed, still try users (server will return 403 if user lacks permissions)
       loadUsers();
     }
   }, [token, me, meLoading]);

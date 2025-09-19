@@ -14,11 +14,21 @@ from app.api.api_v1.arraial_ws import arraial_ws_manager, ArraialConnectionType
 
 router = APIRouter()
 
+# Valid núcleos for the Arraial system
+VALID_NUCLEOS = ["NEEETA", "NEECT", "NEI"]
+
 # Simple in-memory rate limiting (for production, use Redis)
-@lru_cache(maxsize=1000)
+# Global in-memory rate limit store: {(user_id, endpoint, time_bucket): count}
+_rate_limit_store = {}
+
 def _rate_limit_check(user_id: str, endpoint: str, current_time: int) -> bool:
-    """Simple rate limiting: 10 requests per minute per user per endpoint"""
-    # This is a simplified implementation - in production use Redis
+    """Simple rate limiting: 100 requests per minute per user per endpoint"""
+    key = (user_id, endpoint, current_time)
+    count = _rate_limit_store.get(key, 0)
+    limit = 100  # 100 requests per minute - high enough for normal usage, catches abuse
+    if count >= limit:
+        return False
+    _rate_limit_store[key] = count + 1
     return True
 
 def _check_rate_limit(request: Request, auth_data: auth.AuthData, endpoint: str):
@@ -26,9 +36,11 @@ def _check_rate_limit(request: Request, auth_data: auth.AuthData, endpoint: str)
     user_id = str(auth_data.sub) if hasattr(auth_data, 'sub') else 'anonymous'
     current_time = int(datetime.now().timestamp() // 60)  # 1-minute buckets
     
-    # Simple check - in production, implement proper sliding window
-    # For now, we'll rely on the frontend validation and basic protection
-    pass
+    if not _rate_limit_check(user_id, endpoint, current_time):
+        raise HTTPException(
+            status_code=429,
+            detail="Rate limit exceeded. Please try again later."
+        )
 
 
 class ArraialPoints(BaseModel):
@@ -45,8 +57,8 @@ class ArraialPointsUpdate(BaseModel):
     def validate_nucleo(cls, v: str) -> str:
         if not v or len(v) > 20:
             raise ValueError('Núcleo must be between 1 and 20 characters')
-        if v not in ['NEEETA', 'NEECT', 'NEI']:
-            raise ValueError('Invalid núcleo. Must be one of: NEEETA, NEECT, NEI')
+        if v not in VALID_NUCLEOS:
+            raise ValueError(f'Invalid núcleo. Must be one of: {", ".join(VALID_NUCLEOS)}')
         return v
     
     @field_validator('pointIncrement')
@@ -91,7 +103,7 @@ _arraial_points = [
 # In-memory change log (newest first)
 _arraial_log: List[ArraialLogEntry] = []
 _next_log_id: int = 1
-_boost_ends: dict = {"NEEETA": None, "NEECT": None, "NEI": None}
+_boost_ends: dict = {nucleo: None for nucleo in VALID_NUCLEOS}
 
 
 SETTING_TABLE_SQL = """
@@ -271,7 +283,7 @@ async def activate_boost(
     db: Session = Depends(deps.get_db),
     auth_data: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_ARRAIAL]),
 ) -> Any:
-    if nucleo not in ["NEEETA", "NEECT", "NEI"]:
+    if nucleo not in VALID_NUCLEOS:
         raise HTTPException(status_code=400, detail="Invalid núcleo")
     now = datetime.now(timezone.utc)
     end = _boost_ends.get(nucleo)
