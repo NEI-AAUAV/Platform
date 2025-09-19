@@ -107,9 +107,9 @@ def _get_config_enabled(db: Session) -> bool:
     row = db.execute(text("SELECT value FROM app_setting WHERE key = 'arraial_enabled'"))\
         .first()
     if row is None:
-        db.execute(text("INSERT INTO app_setting(key, value) VALUES ('arraial_enabled', 'true') ON CONFLICT (key) DO NOTHING"))
+        db.execute(text("INSERT INTO app_setting(key, value) VALUES ('arraial_enabled', 'false') ON CONFLICT (key) DO NOTHING"))
         db.commit()
-        return True
+        return False
     return (row[0] or "").lower() == "true"
 
 

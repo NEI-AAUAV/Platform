@@ -5,6 +5,7 @@ import service from 'services/NEIService';
 import { getArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
 import config from "config";
+import { getEnableArraial } from "utils/arraialUtils";
 import neiLogo from "assets/images/NEI.png";
 import neectLogo from "assets/images/NEECT.png";
 import neeetaLogo from "assets/images/NEEETA.png"; // used for NEEETA núcleo
@@ -450,7 +451,10 @@ export function Component() {
         );
     };
 
-    if (!enabled) {
+    // Use global Arraial enable logic: prioritize config, but allow API override
+    const globalEnabled = getEnableArraial(enabled);
+    
+    if (!globalEnabled) {
         return (
             <div className="mx-auto max-w-xl p-6 text-center">
                 <h1>Arraial do DETI</h1>

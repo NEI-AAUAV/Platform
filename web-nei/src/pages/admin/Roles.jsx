@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import service from "services/NEIService";
 import { useUserStore } from "stores/useUserStore";
 import { getArraialSocket } from "services/SocketService";
+import config from "config";
 
 const ALL_SCOPES = [
   "admin",
@@ -44,38 +45,7 @@ export function Component() {
     service
       .getUsers()
       .then((data) => {
-        // Add mock users for testing
-        const mockUsers = [
-          { id: 100, name: "Alice", surname: "Johnson", email: "alice.johnson@ua.pt", scopes: ["manager-nei"] },
-          { id: 101, name: "Bob", surname: "Smith", email: "bob.smith@ua.pt", scopes: ["manager-arraial"] },
-          { id: 102, name: "Carol", surname: "Williams", email: "carol.williams@ua.pt", scopes: ["manager-tacaua"] },
-          { id: 103, name: "David", surname: "Brown", email: "david.brown@ua.pt", scopes: ["manager-family"] },
-          { id: 104, name: "Eva", surname: "Davis", email: "eva.davis@ua.pt", scopes: ["manager-jantar-gala"] },
-          { id: 105, name: "Frank", surname: "Miller", email: "frank.miller@ua.pt", scopes: ["admin"] },
-          { id: 106, name: "Grace", surname: "Wilson", email: "grace.wilson@ua.pt", scopes: ["manager-nei", "manager-arraial"] },
-          { id: 107, name: "Henry", surname: "Moore", email: "henry.moore@ua.pt", scopes: ["manager-tacaua", "manager-family"] },
-          { id: 108, name: "Iris", surname: "Taylor", email: "iris.taylor@ua.pt", scopes: ["manager-jantar-gala", "manager-nei"] },
-          { id: 109, name: "Jack", surname: "Anderson", email: "jack.anderson@ua.pt", scopes: ["admin", "manager-arraial"] },
-          { id: 110, name: "Kate", surname: "Thomas", email: "kate.thomas@ua.pt", scopes: ["manager-family"] },
-          { id: 111, name: "Liam", surname: "Jackson", email: "liam.jackson@ua.pt", scopes: ["manager-tacaua"] },
-          { id: 112, name: "Maya", surname: "White", email: "maya.white@ua.pt", scopes: ["manager-jantar-gala"] },
-          { id: 113, name: "Noah", surname: "Harris", email: "noah.harris@ua.pt", scopes: ["manager-nei"] },
-          { id: 114, name: "Olivia", surname: "Martin", email: "olivia.martin@ua.pt", scopes: ["manager-arraial", "manager-tacaua"] },
-          { id: 115, name: "Paul", surname: "Garcia", email: "paul.garcia@ua.pt", scopes: ["manager-family", "manager-jantar-gala"] },
-          { id: 116, name: "Quinn", surname: "Martinez", email: "quinn.martinez@ua.pt", scopes: ["admin", "manager-nei", "manager-arraial"] },
-          { id: 117, name: "Ruby", surname: "Robinson", email: "ruby.robinson@ua.pt", scopes: ["manager-tacaua", "manager-family"] },
-          { id: 118, name: "Sam", surname: "Clark", email: "sam.clark@ua.pt", scopes: ["manager-jantar-gala", "manager-nei"] },
-          { id: 119, name: "Tina", surname: "Rodriguez", email: "tina.rodriguez@ua.pt", scopes: ["admin"] },
-          { id: 120, name: "Uma", surname: "Lewis", email: "uma.lewis@ua.pt", scopes: ["manager-arraial"] },
-          { id: 121, name: "Victor", surname: "Lee", email: "victor.lee@ua.pt", scopes: ["manager-tacaua"] },
-          { id: 122, name: "Wendy", surname: "Walker", email: "wendy.walker@ua.pt", scopes: ["manager-family"] },
-          { id: 123, name: "Xavier", surname: "Hall", email: "xavier.hall@ua.pt", scopes: ["manager-jantar-gala"] },
-          { id: 124, name: "Yara", surname: "Allen", email: "yara.allen@ua.pt", scopes: ["manager-nei"] },
-          { id: 125, name: "Zoe", surname: "Young", email: "zoe.young@ua.pt", scopes: ["admin", "manager-arraial", "manager-tacaua", "manager-family", "manager-jantar-gala"] },
-        ];
-        
-        // Combine real users with mock users
-        setUsers([...data, ...mockUsers]);
+        setUsers(data);
       })
       .catch((err) => {
         setError("Failed to load users");
