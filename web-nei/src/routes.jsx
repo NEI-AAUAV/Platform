@@ -2,7 +2,6 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 
 import config from "config";
-import { shouldRegisterArraialRoute } from "utils/arraialUtils";
 
 import Layout, { FullLayout, CleanLayout } from "./layouts/Layout";
 import { useUserStore } from "stores/useUserStore";
@@ -76,7 +75,7 @@ const routes = [
       { path: "/auth/login", lazy: () => import("./pages/auth/Login") },
       { path: "/auth/register", lazy: () => import("./pages/auth/Register") },
       { path: "/forbidden", lazy: () => import("./pages/Error403") },
-      shouldRegisterArraialRoute() && { path: "/arraial", lazy: () => import("./pages/Arraial") },
+      { path: "/arraial", lazy: () => import("./pages/Arraial") },
       // { path: "/estagios", element: <Internship /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
       { path: "/*", lazy: () => import("./pages/Error404") },

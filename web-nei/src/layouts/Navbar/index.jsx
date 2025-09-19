@@ -10,7 +10,6 @@ import { GalaLogo } from "assets/icons/extensions";
 import service from "services/NEIService";
 import { getArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
-import { getEnableArraial } from "utils/arraialUtils";
 
 import {
   ExpandLessIcon,
@@ -47,8 +46,6 @@ const Navbar = () => {
   // Optimistic hide until known from API/WS
   const [arraialEnabled, setArraialEnabled] = useState(null);
   
-  // Global Arraial enable state: prioritize config, but allow API override
-  const enableArraial = getEnableArraial(arraialEnabled);
 
   useEffect(() => {
     // Fetch runtime Arraial config and subscribe to WS updates
@@ -226,7 +223,7 @@ const Navbar = () => {
                     </li>
                   ),
               )}
-              {enableArraial && (
+              {arraialEnabled && (
                 <li>
                   <LinkAdapter to="/arraial">
                     Arraial do DETI
@@ -359,7 +356,7 @@ const Navbar = () => {
           className="navbar-mobile mx-auto max-h-0 w-full overflow-hidden transition-all ease-out md:hidden"
         >
           <ul className="menu menu-vertical p-5 pt-0">
-            {enableArraial && (
+            {arraialEnabled && (
               <li>
                 <LinkAdapter to="/arraial">Arraial do DETI</LinkAdapter>
               </li>

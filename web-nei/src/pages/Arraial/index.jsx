@@ -5,7 +5,6 @@ import service from 'services/NEIService';
 import { getArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
 import config from "config";
-import { getEnableArraial } from "utils/arraialUtils";
 import neiLogo from "assets/images/NEI.png";
 import neectLogo from "assets/images/NEECT.png";
 import neeetaLogo from "assets/images/NEEETA.png"; // used for NEEETA núcleo
@@ -19,7 +18,7 @@ const MILESTONE_INTERVAL = 50; // points per milestone for confetti/toast
 export function Component() {
     const [ws, setWs] = useState(null);
     const [wsConnected, setWsConnected] = useState(false);
-    const [enabled, setEnabled] = useState(true);
+    const [enabled, setEnabled] = useState(null); // null = loading, true/false = loaded
     const [paused, setPaused] = useState(false);
     const [pointsList, setPointsList] = useState([
         {nucleo: 'NEEETA', value: 0}, 
@@ -451,10 +450,21 @@ export function Component() {
         );
     };
 
-    // Use global Arraial enable logic: prioritize config, but allow API override
-    const globalEnabled = getEnableArraial(enabled);
-    
-    if (!globalEnabled) {
+    // Show loading state while checking if Arraial is enabled
+    if (enabled === null) {
+        return (
+            <div className="mx-auto max-w-xl p-6 text-center">
+                <h1>Arraial do DETI</h1>
+                <div className="mt-3 flex items-center justify-center gap-2">
+                    <span className="loading loading-spinner loading-sm"></span>
+                    <span className="opacity-80">A carregar...</span>
+                </div>
+            </div>
+        );
+    }
+
+    // Show disabled message if Arraial is disabled
+    if (!enabled) {
         return (
             <div className="mx-auto max-w-xl p-6 text-center">
                 <h1>Arraial do DETI</h1>
