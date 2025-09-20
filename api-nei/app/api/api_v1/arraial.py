@@ -17,6 +17,11 @@ router = APIRouter()
 # Valid núcleos for the Arraial system
 VALID_NUCLEOS = ["NEEETA", "NEECT", "NEI"]
 
+# Arraial configuration constants
+BOOST_DURATION_MINUTES = 10
+BOOST_MULTIPLIER = 1.25
+RATE_LIMIT_PER_MINUTE = 100
+
 # Simple in-memory rate limiting (for production, use Redis)
 # Global in-memory rate limit store: {(user_id, endpoint, time_bucket): count}
 _rate_limit_store = {}
@@ -39,7 +44,7 @@ def _rate_limit_check(user_id: str, endpoint: str, current_time: int) -> bool:
     
     key = (user_id, endpoint, current_time)
     count = _rate_limit_store.get(key, 0)
-    limit = 100  # 100 requests per minute - high enough for normal usage, catches abuse
+    limit = RATE_LIMIT_PER_MINUTE  # High enough for normal usage, catches abuse
     if count >= limit:
         return False
     _rate_limit_store[key] = count + 1
@@ -255,7 +260,7 @@ async def update_arraial_points(
     increment = points_update.pointIncrement
     # apply boost only to positive increments
     if increment > 0 and _is_boost_active(points_update.nucleo):
-        boosted = int((increment * 1.25) // 1)  # floor
+        boosted = int((increment * BOOST_MULTIPLIER) // 1)  # floor
         increment = max(increment, boosted)  # ensure not less than original
     new_value = prev_value + increment
     
@@ -301,7 +306,7 @@ async def activate_boost(
         raise HTTPException(status_code=400, detail="Invalid núcleo")
     now = datetime.now(timezone.utc)
     end = _boost_ends.get(nucleo)
-    add_seconds = 10 * 60
+    add_seconds = BOOST_DURATION_MINUTES * 60
     if end and end > now:
         _boost_ends[nucleo] = end + timedelta(seconds=add_seconds)
     else:
@@ -381,10 +386,10 @@ async def rollback_log(
 
     # Handle rollback for different event types
     if target.event == "BOOST_ACTIVATED":
-        # Subtract 10 minutes from the boost end for the target núcleo
+        # Subtract boost duration from the boost end for the target núcleo
         end = _boost_ends.get(target.nucleo)
         if end is not None:
-            new_end = end - timedelta(minutes=10)
+            new_end = end - timedelta(minutes=BOOST_DURATION_MINUTES)
             # If the new end is in the past or now, clear the boost
             if new_end <= datetime.now(timezone.utc):
                 _boost_ends[target.nucleo] = None

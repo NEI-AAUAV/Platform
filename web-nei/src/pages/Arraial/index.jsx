@@ -174,8 +174,7 @@ export function Component() {
             socket.removeEventListener('close', onClose);
             socket.removeEventListener('error', onError);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [auth]);
+    }, [auth, POLLING_INTERVAL]);
 
     // Refetch log when filters change (reset to first page)
     useEffect(() => {
