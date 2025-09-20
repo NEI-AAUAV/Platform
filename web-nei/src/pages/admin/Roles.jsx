@@ -126,10 +126,11 @@ export function Component() {
   };
 
   const saveArraialConfig = async (enabled, paused) => {
+    const finalPaused = paused ?? arraialConfig?.paused ?? false;
     try {
       setCfgSaving(true);
-      await service.setArraialConfig(enabled, paused ?? arraialConfig?.paused ?? false);
-      setArraialConfig({ enabled, paused: paused ?? arraialConfig?.paused ?? false });
+      await service.setArraialConfig(enabled, finalPaused);
+      setArraialConfig({ enabled, paused: finalPaused });
     } catch (e) {
       setError("Failed to save Arraial config");
     } finally {

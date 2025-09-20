@@ -8,7 +8,7 @@ import config from "config";
 import neiLogo from "assets/images/NEI.png";
 import neectLogo from "assets/images/NEECT.png";
 import neeetaLogo from "assets/images/NEEETA.png"; // used for NEEETA núcleo
-import './wave.css';
+import './beer-animations.css';
 
 // Configuration constants
 const POLLING_INTERVAL = Math.max(60000, (config.ARRAIAL && config.ARRAIAL.POLLING_INTERVAL) || 10000); // use longer fallback when WS is on
@@ -287,8 +287,8 @@ export function Component() {
 
     // Headroom-aware height: leave top gap when multiple teams are active
     const FOAM_GAP_PX = 18;            // visual foam thickness already reserved in layout
-    const EXTRA_HEADROOM_FRAC = 0.04;  // 4% headroom when multiple teams have points
-    const MIN_HEADROOM_FRAC = 0.02;    // small gap even for single leader
+    const EXTRA_HEADROOM_FRAC = 0.01;  // 1% headroom when multiple teams have points
+    const MIN_HEADROOM_FRAC = 0.005;   // minimal gap even for single leader
 
     const calcHeight = (points) => {
         const maxPoints = Math.max(...pointsList.map(p => p.value), 1);
@@ -481,7 +481,7 @@ export function Component() {
                     <div className="glass-inner" aria-hidden="true"></div>
                     <div className="glass-rim" aria-hidden="true"></div>
                     {/* Per-núcleo logo centered in the glass (not the beer) */}
-                    <div style={{ position:'absolute', top:34, left:0, right:0, bottom:32, display:'flex', alignItems:'center', justifyContent:'center', pointerEvents:'none', zIndex:5 }} aria-hidden="true">
+                    <div className="absolute top-[34px] left-0 right-0 bottom-[32px] flex items-center justify-center pointer-events-none z-[5]" aria-hidden="true">
                         <img
                             src={
                                 pointsData.nucleo === 'NEECT' ? neectLogo :
@@ -498,15 +498,27 @@ export function Component() {
                 >
                     <div className="relative w-full h-full">
                             {/* Beer body starts below foam */}
-                            <div style={{ position:'absolute', top:28, left:0, right:0, bottom:0, 
-                                background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
-                                boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)',
-                            }} aria-hidden="true"></div>
+                            <div 
+                                className="absolute top-[40px] left-0 right-0 bottom-0"
+                                style={{ 
+                                    background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
+                                    boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)',
+                                }} 
+                                aria-hidden="true"
+                            ></div>
 
                             {/* Rising bubbles within beer body */}
-                            <div className="bubbles" style={{ top:18 }} aria-hidden="true"></div>
+                            <div className="bubbles top-[18px]" aria-hidden="true"></div>
                             {/* Foam: white cap with texture and subtle crest */}
-                            <div style={{ position:'absolute', top:0, left:0, right:0, height:28, background:'rgba(255,255,255,0.98)', borderTopLeftRadius:28, borderTopRightRadius:28, overflow:'hidden' }} aria-hidden="true">
+                            <div 
+                                className="absolute top-0 left-0 right-0 h-[40px] overflow-hidden"
+                                style={{ 
+                                    background: 'rgba(255,255,255,0.98)', 
+                                    borderTopLeftRadius: 28, 
+                                    borderTopRightRadius: 28 
+                                }} 
+                                aria-hidden="true"
+                            >
                                 <div className="foam-texture" />
                                 <div className="foam-shadow" />
                             </div>

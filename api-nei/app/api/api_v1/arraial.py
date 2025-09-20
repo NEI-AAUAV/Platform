@@ -20,7 +20,7 @@ VALID_NUCLEOS = ["NEEETA", "NEECT", "NEI"]
 # Arraial configuration constants
 BOOST_DURATION_MINUTES = 10
 BOOST_MULTIPLIER = 1.25
-RATE_LIMIT_PER_MINUTE = 100
+RATE_LIMIT_PER_MINUTE = 500  # Increased for 5 concurrent managers to mitigate race condition
 
 # Simple in-memory rate limiting (for production, use Redis)
 # Global in-memory rate limit store: {(user_id, endpoint, time_bucket): count}
@@ -260,8 +260,8 @@ async def update_arraial_points(
     increment = points_update.pointIncrement
     # apply boost only to positive increments
     if increment > 0 and _is_boost_active(points_update.nucleo):
-        boosted = int((increment * BOOST_MULTIPLIER) // 1)  # floor
-        increment = max(increment, boosted)  # ensure not less than original
+        boosted = int(increment * BOOST_MULTIPLIER)
+        increment = boosted
     new_value = prev_value + increment
     
     # Prevent negative points
