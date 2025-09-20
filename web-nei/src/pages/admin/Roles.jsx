@@ -21,6 +21,7 @@ export function Component() {
   const [saving, setSaving] = useState(false);
   const [me, setMe] = useState(null);
   const [meLoading, setMeLoading] = useState(true);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const [arraialConfig, setArraialConfig] = useState(null);
   const [cfgLoading, setCfgLoading] = useState(true);
@@ -117,9 +118,11 @@ export function Component() {
     try {
       setSaving(true);
       await service.updateUserScopes(user.id, user.scopes || []);
+      setSuccessMessage(`Scopes updated successfully for ${user.name || user.email || 'user'}`);
+      setTimeout(() => setSuccessMessage(null), 3000); // Auto-dismiss after 3 seconds
       loadUsers();
     } catch (e) {
-      setError("Failed to update scopes");
+      setError(`Failed to update scopes: ${e?.message || 'Unknown error'}`);
     } finally {
       setSaving(false);
     }
@@ -131,8 +134,10 @@ export function Component() {
       setCfgSaving(true);
       await service.setArraialConfig(enabled, finalPaused);
       setArraialConfig({ enabled, paused: finalPaused });
+      setSuccessMessage(`Arraial ${enabled ? 'enabled' : 'disabled'} successfully`);
+      setTimeout(() => setSuccessMessage(null), 3000); // Auto-dismiss after 3 seconds
     } catch (e) {
-      setError("Failed to save Arraial config");
+      setError(`Failed to save Arraial config: ${e?.message || 'Unknown error'}`);
     } finally {
       setCfgSaving(false);
     }
@@ -238,6 +243,20 @@ export function Component() {
       {error && (
         <div className="alert alert-error my-3">
           <span>{error}</span>
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="toast toast-bottom toast-end">
+          <div className="alert alert-success">
+            <span>{successMessage}</span>
+            <button 
+              className="btn btn-sm btn-circle btn-ghost" 
+              onClick={() => setSuccessMessage(null)}
+            >
+              ✕
+            </button>
+          </div>
         </div>
       )}
 

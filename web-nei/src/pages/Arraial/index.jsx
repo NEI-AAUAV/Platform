@@ -499,7 +499,7 @@ export function Component() {
                     <div className="relative w-full h-full">
                             {/* Beer body starts below foam */}
                             <div 
-                                className="absolute top-[40px] left-0 right-0 bottom-0"
+                                className={`absolute top-[${FOAM_GAP_PX + 22}px] left-0 right-0 bottom-0`}
                                 style={{ 
                                     background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
                                     boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)',
@@ -508,10 +508,10 @@ export function Component() {
                             ></div>
 
                             {/* Rising bubbles within beer body */}
-                            <div className="bubbles top-[18px]" aria-hidden="true"></div>
+                            <div className={`bubbles top-[${FOAM_GAP_PX}px]`} aria-hidden="true"></div>
                             {/* Foam: white cap with texture and subtle crest */}
                             <div 
-                                className="absolute top-0 left-0 right-0 h-[40px] overflow-hidden"
+                                className={`absolute top-0 left-0 right-0 h-[${FOAM_GAP_PX + 22}px] overflow-hidden`}
                                 style={{ 
                                     background: 'rgba(255,255,255,0.98)', 
                                     borderTopLeftRadius: 28, 
