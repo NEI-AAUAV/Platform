@@ -855,5 +855,8 @@ function maybeTriggerConfetti(prevMap, nextList) {
                 }
             }
         }
-    } catch (_) {}
+    } catch (err) {
+        // Confetti is non-critical UI enhancement, so we silently ignore errors
+        console.debug("Confetti trigger error (non-critical):", err);
+    }
 }

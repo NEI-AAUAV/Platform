@@ -21,8 +21,22 @@ VALID_NUCLEOS = ["NEEETA", "NEECT", "NEI"]
 # Global in-memory rate limit store: {(user_id, endpoint, time_bucket): count}
 _rate_limit_store = {}
 
+def _cleanup_rate_limit_store(current_time: int, retention_minutes: int = 2):
+    """Remove expired entries from the rate limit store to prevent memory leaks."""
+    expired_keys = []
+    min_time_bucket = current_time - retention_minutes
+    for key in list(_rate_limit_store.keys()):
+        # key = (user_id, endpoint, time_bucket)
+        if key[2] < min_time_bucket:
+            expired_keys.append(key)
+    for key in expired_keys:
+        del _rate_limit_store[key]
+
 def _rate_limit_check(user_id: str, endpoint: str, current_time: int) -> bool:
     """Simple rate limiting: 100 requests per minute per user per endpoint"""
+    # Clean up old entries to prevent memory leaks
+    _cleanup_rate_limit_store(current_time)
+    
     key = (user_id, endpoint, current_time)
     count = _rate_limit_store.get(key, 0)
     limit = 100  # 100 requests per minute - high enough for normal usage, catches abuse
