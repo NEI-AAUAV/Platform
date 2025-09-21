@@ -38,7 +38,7 @@ def _cleanup_rate_limit_store(current_time: int, retention_minutes: int = 2):
         del _rate_limit_store[key]
 
 def _rate_limit_check(user_id: str, endpoint: str, current_time: int) -> bool:
-    """Simple rate limiting: 100 requests per minute per user per endpoint"""
+    """Simple rate limiting: RATE_LIMIT_PER_MINUTE requests per minute per user per endpoint"""
     # Clean up old entries to prevent memory leaks
     _cleanup_rate_limit_store(current_time)
     

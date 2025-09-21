@@ -600,7 +600,7 @@ export function Component() {
                 <div className="rounded-box m-auto w-full max-w-lg sm:max-w-md flex h-fit flex-col bg-base-200 px-4 sm:px-6 py-6 align-middle shadow-secondary drop-shadow-md">
                     <h3>Add/Remove Points</h3>
                     <div className="mb-2 flex items-center gap-2">
-                        <span className="text-sm opacity-70">Boost 1.25x (15m):</span>
+                        <span className="text-sm opacity-70">Boost 1.25x (10m):</span>
                         {['NEEETA','NEECT','NEI'].map((n)=> (
                             <button key={n} className="btn btn-xs" disabled={paused} onClick={async ()=>{
                                 try {
