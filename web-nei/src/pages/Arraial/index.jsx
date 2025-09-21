@@ -301,7 +301,18 @@ export function Component() {
     };
 
     const renderTrendsGraph = () => {
-        if (pointHistory.length < 2) return null;
+        if (pointHistory.length < 2) {
+            return (
+                <div className="mt-2 rounded bg-base-100 p-4 text-center">
+                    <div className="text-sm opacity-70">
+                        {pointHistory.length === 0 
+                            ? "No data points yet. Trends will appear after point updates."
+                            : "Need at least 2 data points to show trends. Make another point update to see the graph."
+                        }
+                    </div>
+                </div>
+            );
+        }
 
         const width = 400;
         const height = 200; // Back to original height
@@ -499,8 +510,9 @@ export function Component() {
                     <div className="relative w-full h-full">
                             {/* Beer body starts below foam */}
                             <div 
-                                className={`absolute top-[${FOAM_GAP_PX + 22}px] left-0 right-0 bottom-0`}
+                                className="absolute left-0 right-0 bottom-0"
                                 style={{ 
+                                    top: `${FOAM_GAP_PX + 22}px`,
                                     background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
                                     boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)',
                                 }} 
@@ -508,11 +520,12 @@ export function Component() {
                             ></div>
 
                             {/* Rising bubbles within beer body */}
-                            <div className={`bubbles top-[${FOAM_GAP_PX}px]`} aria-hidden="true"></div>
+                            <div className="bubbles" style={{ top: `${FOAM_GAP_PX}px` }} aria-hidden="true"></div>
                             {/* Foam: white cap with texture and subtle crest */}
                             <div 
-                                className={`absolute top-0 left-0 right-0 h-[${FOAM_GAP_PX + 22}px] overflow-hidden`}
+                                className="absolute top-0 left-0 right-0 overflow-hidden"
                                 style={{ 
+                                    height: `${FOAM_GAP_PX + 22}px`,
                                     background: 'rgba(255,255,255,0.98)', 
                                     borderTopLeftRadius: 28, 
                                     borderTopRightRadius: 28 
@@ -659,10 +672,22 @@ export function Component() {
                     <div className="mt-4 flex flex-col items-center gap-4">
                         <div className="divider w-full">History & Trends</div>
                         <div className="flex flex-row gap-2 w-full max-w-xs">
-                            <button className="btn btn-md sm:btn-sm flex-1 touch-manipulation" onClick={() => setShowTrends(!showTrends)}>
+                            <button 
+                                className={`btn btn-md sm:btn-sm flex-1 touch-manipulation ${showTrends ? 'btn-primary' : 'btn-outline'}`}
+                                onClick={() => {
+                                    setShowTrends(!showTrends);
+                                    if (!showTrends) setShowHistory(false); // Hide history when showing trends
+                                }}
+                            >
                                 {showTrends ? 'Hide Trends' : 'Trends'}
                             </button>
-                            <button className="btn btn-md sm:btn-sm flex-1 touch-manipulation" onClick={() => setShowHistory(!showHistory)}>
+                            <button 
+                                className={`btn btn-md sm:btn-sm flex-1 touch-manipulation ${showHistory ? 'btn-primary' : 'btn-outline'}`}
+                                onClick={() => {
+                                    setShowHistory(!showHistory);
+                                    if (!showHistory) setShowTrends(false); // Hide trends when showing history
+                                }}
+                            >
                                 {showHistory ? 'Hide History' : 'History'}
                             </button>
                         </div>
