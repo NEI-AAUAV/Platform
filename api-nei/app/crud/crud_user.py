@@ -111,21 +111,12 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return db_obj
 
     def get_multi_with_emails(self, db: Session) -> List[tuple[User, Optional[UserEmail]]]:
-        """Get all users with their associated emails (if any)"""
-        from sqlalchemy.orm import joinedload
-        
-        query = db.query(self.model).outerjoin(UserEmail, self.model.id == UserEmail.user_id)
-        users_with_emails = []
-        
-        for user in query.all():
-            # Get the active email for this user
-            email = db.query(UserEmail).filter(
-                UserEmail.user_id == user.id,
-                UserEmail.active == True
-            ).first()
-            users_with_emails.append((user, email))
-        
-        return users_with_emails
+        """Get all users with their associated active emails (if any) in a single query"""
+        query = (
+            db.query(self.model, UserEmail)
+            .outerjoin(UserEmail, (self.model.id == UserEmail.user_id) & (UserEmail.active == True))
+        )
+        return query.all()
 
     def update(
         self,

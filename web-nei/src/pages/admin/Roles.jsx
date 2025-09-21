@@ -23,6 +23,11 @@ export function Component() {
   const [meLoading, setMeLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState(null);
 
+  // Helper function to get user display name
+  const getUserDisplayName = (user) => {
+    return user.name || user.email || 'user';
+  };
+
   const [arraialConfig, setArraialConfig] = useState(null);
   const [cfgLoading, setCfgLoading] = useState(true);
   const [cfgSaving, setCfgSaving] = useState(false);
@@ -118,7 +123,7 @@ export function Component() {
     try {
       setSaving(true);
       await service.updateUserScopes(user.id, user.scopes || []);
-      setSuccessMessage(`Scopes updated successfully for ${user.name || user.email || 'user'}`);
+      setSuccessMessage(`Scopes updated successfully for ${getUserDisplayName(user)}`);
       setTimeout(() => setSuccessMessage(null), 3000); // Auto-dismiss after 3 seconds
       loadUsers();
     } catch (e) {
