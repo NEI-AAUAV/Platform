@@ -101,13 +101,18 @@ const routes = [
         path: "/settings/account",
         lazy: () => import("./pages/settings/Account"),
       },
+    ],
+  },
+  {
+    path: "/",
+    element: (
+      <ProtectedRoute adminOnly>
+        <Layout />
+      </ProtectedRoute>
+    ),
+    children: [
       {
         path: "/admin/roles",
-        element: (
-          <ProtectedRoute adminOnly>
-            <Layout />
-          </ProtectedRoute>
-        ),
         lazy: () => import("./pages/admin/Roles"),
       },
     ],
