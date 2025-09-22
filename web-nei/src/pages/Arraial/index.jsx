@@ -180,7 +180,6 @@ export function Component() {
         setNumber(String(next));
     };
 
-// duplicate removed above
 
     const handleRollback = async (id) => {
         setError(null);
