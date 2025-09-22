@@ -4,6 +4,7 @@ from sqlalchemy import text
 from typing import Any, List, Optional, Tuple
 from pydantic import BaseModel, field_validator
 from datetime import datetime, timezone, timedelta
+import math
 from functools import lru_cache
 
 from app import crud
@@ -11,6 +12,7 @@ from app.api import deps
 from app.api.api_v1 import auth
 from app.schemas.user.user import ScopeEnum
 from app.api.api_v1.arraial_ws import arraial_ws_manager, ArraialConnectionType
+from app.core.config import settings
 
 router = APIRouter()
 
@@ -20,42 +22,48 @@ VALID_NUCLEOS = ["NEEETA", "NEECT", "NEI"]
 # Arraial configuration constants
 BOOST_DURATION_MINUTES = 10
 BOOST_MULTIPLIER = 1.25
-RATE_LIMIT_PER_MINUTE = 500  # Increased for 5 concurrent managers to mitigate race condition
 
-# Simple in-memory rate limiting (for production, use Redis)
-# Global in-memory rate limit store: {(user_id, endpoint, time_bucket): count}
-_rate_limit_store = {}
+# Token bucket rate limiting settings (per user per endpoint)
+TOKEN_BUCKET_RATE_PER_MINUTE = settings.ARRAIAL_RATE_LIMIT_PER_MINUTE
+TOKEN_BUCKET_BURST = settings.ARRAIAL_RATE_LIMIT_BURST
 
-def _cleanup_rate_limit_store(current_time: int, retention_minutes: int = 2):
-    """Remove expired entries from the rate limit store to prevent memory leaks."""
-    expired_keys = []
-    min_time_bucket = current_time - retention_minutes
-    for key in list(_rate_limit_store.keys()):
-        # key = (user_id, endpoint, time_bucket)
-        if key[2] < min_time_bucket:
-            expired_keys.append(key)
-    for key in expired_keys:
-        del _rate_limit_store[key]
+# Simple in-memory token-bucket rate limiting
+# Store structure per (user_id, endpoint): { tokens: float, last_refill: int(epoch seconds) }
+_rate_limit_buckets = {}
 
-def _rate_limit_check(user_id: str, endpoint: str, current_time: int) -> bool:
-    """Simple rate limiting: RATE_LIMIT_PER_MINUTE requests per minute per user per endpoint"""
-    # Clean up old entries to prevent memory leaks
-    _cleanup_rate_limit_store(current_time)
-    
-    key = (user_id, endpoint, current_time)
-    count = _rate_limit_store.get(key, 0)
-    limit = RATE_LIMIT_PER_MINUTE  # High enough for normal usage, catches abuse
-    if count >= limit:
-        return False
-    _rate_limit_store[key] = count + 1
-    return True
+def _refill_and_get_bucket(user_id: str, endpoint: str, now_seconds: int):
+    key = (user_id, endpoint)
+    bucket = _rate_limit_buckets.get(key)
+    if bucket is None:
+        bucket = {"tokens": float(TOKEN_BUCKET_BURST), "last_refill": now_seconds}
+        _rate_limit_buckets[key] = bucket
+        return bucket
+
+    # Refill tokens since last refill
+    elapsed = max(0, now_seconds - bucket["last_refill"])  # seconds
+    if elapsed > 0:
+        rate_per_second = TOKEN_BUCKET_RATE_PER_MINUTE / 60.0
+        bucket["tokens"] = min(
+            float(TOKEN_BUCKET_BURST),
+            float(bucket["tokens"]) + elapsed * rate_per_second,
+        )
+        bucket["last_refill"] = now_seconds
+    return bucket
+
+def _rate_limit_check(user_id: str, endpoint: str, now_seconds: int) -> bool:
+    """Token bucket: allow if at least 1 token available, then deduct 1."""
+    bucket = _refill_and_get_bucket(user_id, endpoint, now_seconds)
+    if bucket["tokens"] >= 1.0:
+        bucket["tokens"] -= 1.0
+        return True
+    return False
 
 def _check_rate_limit(request: Request, auth_data: auth.AuthData, endpoint: str):
     """Check if user has exceeded rate limit"""
     user_id = str(auth_data.sub) if hasattr(auth_data, 'sub') else 'anonymous'
-    current_time = int(datetime.now().timestamp() // 60)  # 1-minute buckets
-    
-    if not _rate_limit_check(user_id, endpoint, current_time):
+    now_seconds = int(datetime.now().timestamp())
+
+    if not _rate_limit_check(user_id, endpoint, now_seconds):
         raise HTTPException(
             status_code=429,
             detail="Rate limit exceeded. Please try again later."
@@ -123,6 +131,9 @@ _arraial_points = [
 _arraial_log: List[ArraialLogEntry] = []
 _next_log_id: int = 1
 _boost_ends: dict = {nucleo: None for nucleo in VALID_NUCLEOS}
+
+# Fractional accumulation for boost per núcleo
+_boost_fractional_remainders: dict = {nucleo: 0.0 for nucleo in VALID_NUCLEOS}
 
 
 SETTING_TABLE_SQL = """
@@ -260,8 +271,12 @@ async def update_arraial_points(
     increment = points_update.pointIncrement
     # apply boost only to positive increments
     if increment > 0 and _is_boost_active(points_update.nucleo):
-        boosted = int(increment * BOOST_MULTIPLIER)
-        increment = boosted
+        # fractional accumulation: carry remainder per núcleo
+        raw_boost = increment * BOOST_MULTIPLIER
+        raw_total = raw_boost + _boost_fractional_remainders.get(points_update.nucleo, 0.0)
+        boosted_int = math.floor(raw_total)
+        _boost_fractional_remainders[points_update.nucleo] = raw_total - boosted_int
+        increment = boosted_int
     new_value = prev_value + increment
     
     # Prevent negative points
@@ -433,6 +448,11 @@ async def reset_arraial(
     # Clear boosts
     for k in list(_boost_ends.keys()):
         _boost_ends[k] = None
+    # Clear fractional remainders
+    for k in list(_boost_fractional_remainders.keys()):
+        _boost_fractional_remainders[k] = 0.0
+    # Clear rate limiter buckets
+    _rate_limit_buckets.clear()
     # Clear log
     global _arraial_log, _next_log_id
     _arraial_log = []

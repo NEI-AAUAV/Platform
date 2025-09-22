@@ -121,5 +121,9 @@ class Settings(BaseSettings):
     ## The reCaptcha threshold for registering
     RECAPTCHA_REGISTER_THRESHOLD: float = 0.5
 
+    # Arraial rate limiting (token bucket)
+    ARRAIAL_RATE_LIMIT_PER_MINUTE: int = int(os.getenv("ARRAIAL_RATE_LIMIT_PER_MINUTE", "180"))
+    ARRAIAL_RATE_LIMIT_BURST: int = int(os.getenv("ARRAIAL_RATE_LIMIT_BURST", "60"))
+
 
 settings = Settings()

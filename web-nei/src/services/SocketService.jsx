@@ -60,9 +60,6 @@ export const getArraialSocket = () => {
         arraialSocketInstance.readyState === WebSocket.CLOSING
     ) {
         arraialSocketInstance = new WebSocket(`${config.WS_URL}/arraial/ws`);
-    } else if (arraialSocketInstance.readyState === WebSocket.CONNECTING) {
-        // If connecting, just return the existing instance
-        // No action needed
     }
     return arraialSocketInstance;
 }
