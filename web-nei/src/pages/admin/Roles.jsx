@@ -12,6 +12,8 @@ const ALL_SCOPES = [
   "manager-jantar-gala",
 ];
 
+const SUCCESS_MESSAGE_TIMEOUT = 3000;
+
 export function Component() {
   const { token } = useUserStore((s) => s);
   const [users, setUsers] = useState([]);
@@ -131,7 +133,7 @@ export function Component() {
       setSaving(true);
       await service.updateUserScopes(user.id, user.scopes || []);
       setSuccessMessage(`Scopes updated successfully for ${getUserDisplayName(user)}`);
-      const id = setTimeout(() => setSuccessMessage(null), 3000); // Auto-dismiss after 3 seconds
+      const id = setTimeout(() => setSuccessMessage(null), SUCCESS_MESSAGE_TIMEOUT);
       timeoutsRef.current.push(id);
       loadUsers();
     } catch (e) {
@@ -148,7 +150,7 @@ export function Component() {
       await service.setArraialConfig(enabled, finalPaused);
       setArraialConfig({ enabled, paused: finalPaused });
       setSuccessMessage(`Arraial ${enabled ? 'enabled' : 'disabled'} successfully`);
-      const id = setTimeout(() => setSuccessMessage(null), 3000); // Auto-dismiss after 3 seconds
+      const id = setTimeout(() => setSuccessMessage(null), SUCCESS_MESSAGE_TIMEOUT);
       timeoutsRef.current.push(id);
     } catch (e) {
       setError(`Failed to save Arraial config: ${e?.message || 'Unknown error'}`);

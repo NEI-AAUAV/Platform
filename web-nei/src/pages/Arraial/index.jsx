@@ -97,7 +97,6 @@ export function Component() {
     }, []);
 
     // filters managed by useArraialHistory
-    
     const { scopes } = useUserStore((state) => state);
     const auth = Array.isArray(scopes) && (scopes.includes('admin') || scopes.includes('manager-arraial'));
 
@@ -438,7 +437,6 @@ function maybeTriggerConfetti(prevMap, nextList) {
                 const nextBucket = Math.floor(next / MILESTONE_INTERVAL);
                 if (nextBucket > prevBucket) {
                     const milestone = nextBucket * MILESTONE_INTERVAL;
-                    // Deduplicate: avoid multiple toasts for the same milestone within 3s
                     const key = `${n}:${milestone}`;
                     const now = Date.now();
                     const last = recentConfettiByNucleo[key] || 0;
@@ -455,7 +453,6 @@ function maybeTriggerConfetti(prevMap, nextList) {
             }
         }
     } catch (err) {
-        // Confetti is non-critical UI enhancement, so we silently ignore errors
         console.debug("Confetti trigger error (non-critical):", err);
     }
 }
