@@ -13,7 +13,7 @@ export default function TrendsGraph({ pointHistory }) {
     );
   }
 
-  const width = 400;
+  const width = 1200;
   const height = 200;
   const padding = 40;
   const chartWidth = width - padding * 2;
@@ -38,6 +38,8 @@ export default function TrendsGraph({ pointHistory }) {
     return `${hours}h ${minutes}m ago`;
   };
 
+  const [hoveredPoint, setHoveredPoint] = React.useState(null);
+
   return (
     <div className="mt-4 p-2 sm:p-4 bg-base-100 rounded-lg">
       <h4 className="text-lg font-bold mb-3">Point Trends</h4>
@@ -45,7 +47,7 @@ export default function TrendsGraph({ pointHistory }) {
         <svg
           width={width}
           height={height}
-          className="w-full max-w-md mx-auto min-w-[400px]"
+          className="block mx-auto w-[1200px] max-w-none"
         >
           {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
             const value = Math.round(ratio * maxPoints);
@@ -101,10 +103,27 @@ export default function TrendsGraph({ pointHistory }) {
                   const time = formatTime(entry.timestamp);
                   const x = getX(index);
                   const y = getY(value);
+                  const isHovered = hoveredPoint?.nucleo === nucleo && hoveredPoint?.index === index;
                   return (
                     <g key={index}>
-                      <circle cx={x} cy={y} r={4} fill={colors[nucleo]} />
-                      <title>{time}</title>
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r={isHovered ? 6 : 4}
+                        fill={colors[nucleo]}
+                        stroke={isHovered ? "white" : "none"}
+                        strokeWidth="2"
+                        style={{ cursor: 'pointer' }}
+                        onMouseEnter={() => setHoveredPoint({ nucleo, index, value, time })}
+                        onMouseLeave={() => setHoveredPoint(null)}
+                        onClick={() => setHoveredPoint((prev) => prev && prev.nucleo === nucleo && prev.index === index ? null : { nucleo, index, value, time })}
+                      />
+                      {isHovered && (
+                        <g>
+                          <rect x={x - 30} y={y - 35} width="60" height="25" fill="rgba(0,0,0,0.8)" rx="4" />
+                          <text x={x} y={y - 20} fontSize="10" fill="white" textAnchor="middle">{time}</text>
+                        </g>
+                      )}
                     </g>
                   );
                 })}
