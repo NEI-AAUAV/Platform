@@ -21,6 +21,14 @@ export function Component() {
   const [me, setMe] = useState(null);
   const [meLoading, setMeLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState(null);
+  const timeoutsRef = React.useRef([]);
+
+  React.useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach((id) => clearTimeout(id));
+      timeoutsRef.current = [];
+    };
+  }, []);
 
   // Helper function to get user display name
   const getUserDisplayName = (user) => {
@@ -123,7 +131,8 @@ export function Component() {
       setSaving(true);
       await service.updateUserScopes(user.id, user.scopes || []);
       setSuccessMessage(`Scopes updated successfully for ${getUserDisplayName(user)}`);
-      setTimeout(() => setSuccessMessage(null), 3000); // Auto-dismiss after 3 seconds
+      const id = setTimeout(() => setSuccessMessage(null), 3000); // Auto-dismiss after 3 seconds
+      timeoutsRef.current.push(id);
       loadUsers();
     } catch (e) {
       setError(`Failed to update scopes: ${e?.message || 'Unknown error'}`);
@@ -139,7 +148,8 @@ export function Component() {
       await service.setArraialConfig(enabled, finalPaused);
       setArraialConfig({ enabled, paused: finalPaused });
       setSuccessMessage(`Arraial ${enabled ? 'enabled' : 'disabled'} successfully`);
-      setTimeout(() => setSuccessMessage(null), 3000); // Auto-dismiss after 3 seconds
+      const id = setTimeout(() => setSuccessMessage(null), 3000); // Auto-dismiss after 3 seconds
+      timeoutsRef.current.push(id);
     } catch (e) {
       setError(`Failed to save Arraial config: ${e?.message || 'Unknown error'}`);
     } finally {

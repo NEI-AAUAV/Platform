@@ -5,9 +5,10 @@ import service from 'services/NEIService';
 import { getArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
 import config from "config";
-import neiLogo from "assets/images/NEI.png";
-import neectLogo from "assets/images/NEECT.png";
-import neeetaLogo from "assets/images/NEEETA.png"; // used for NEEETA núcleo
+import ConnectionIndicator from "./components/ConnectionIndicator";
+import PointsGlass from "./components/PointsGlass";
+import TrendsGraph from "./components/TrendsGraph";
+import HistoryList from "./components/HistoryList";
 import './beer-animations.css';
 
 // Configuration constants
@@ -38,6 +39,7 @@ export function Component() {
     const [hoveredPoint, setHoveredPoint] = useState(null);
     const [confettiActive, setConfettiActive] = useState(false);
     const [milestoneToasts, setMilestoneToasts] = useState([]); // [{ id, nucleo, milestone }]
+    const timeoutsRef = React.useRef([]);
     const prevPointsRef = React.useRef({});
     const [boosts, setBoosts] = useState({}); // { nucleo: iso8601|null }
     const hasBaselineRef = React.useRef(false);
@@ -55,15 +57,25 @@ export function Component() {
                 const toast = { id, nucleo: e.detail.nucleo, milestone: e.detail.milestone };
                 setMilestoneToasts((prev) => [...prev, toast]);
                 // auto close this toast instance
-                setTimeout(() => {
+                const tId = setTimeout(() => {
                     setMilestoneToasts((prev) => prev.filter((t) => t.id !== id));
                 }, 6000);
+                timeoutsRef.current.push(tId);
             }
             // auto stop confetti after short duration
-            setTimeout(() => setConfettiActive(false), 1700);
+            const cId = setTimeout(() => setConfettiActive(false), 1700);
+            timeoutsRef.current.push(cId);
         };
         window.addEventListener('arraial:confetti', onConfetti);
         return () => window.removeEventListener('arraial:confetti', onConfetti);
+    }, []);
+
+    // Clear any outstanding timeouts on unmount
+    useEffect(() => {
+        return () => {
+            timeoutsRef.current.forEach((id) => clearTimeout(id));
+            timeoutsRef.current = [];
+        };
     }, []);
 
     // History filters (user id removed)
@@ -484,107 +496,21 @@ export function Component() {
     }
 
     const renderPointsBar = (pointsData, index) => (
-        <div key={index} className="flex flex-col justify-center items-center space-y-2">
-            <div className={`relative block mx-auto w-40 sm:w-56 md:w-64 lg:w-[40vh] h-[40vh] sm:h-[48vh] md:h-[55vh] border-8 border-white border-t-0 rounded-b-[3rem]`}>
-                {/* Inner content wrapper to clip beer/foam, outer stays visible for handle */}
-                <div className="absolute inset-0 overflow-hidden rounded-b-[2.5rem]">
-                    {/* Glass effects */}
-                    <div className="glass-inner" aria-hidden="true"></div>
-                    <div className="glass-rim" aria-hidden="true"></div>
-                    {/* Per-núcleo logo centered in the glass (not the beer) */}
-                    <div className="absolute top-[34px] left-0 right-0 bottom-[32px] flex items-center justify-center pointer-events-none z-[5]" aria-hidden="true">
-                        <img
-                            src={
-                                pointsData.nucleo === 'NEECT' ? neectLogo :
-                                pointsData.nucleo === 'NEEETA' ? neeetaLogo :
-                                neiLogo
-                            }
-                            alt={pointsData.nucleo}
-                            style={{ maxWidth:'42%', maxHeight:'42%', opacity:0.75 }}
-                        />
-                    </div>
-                    <div 
-                        className="absolute bottom-0 left-0 w-full transition-all duration-500" 
-                        style={{ height: calcHeight(pointsData.value), overflow: 'hidden' }}
-                >
-                    <div className="relative w-full h-full">
-                            {/* Beer body starts below foam */}
-                            <div 
-                                className="absolute left-0 right-0 bottom-0"
-                                style={{ 
-                                    top: `${FOAM_GAP_PX + 22}px`,
-                                    background: 'linear-gradient(180deg, #f9d648 0%, #f4c534 65%, #e8b82e 100%)',
-                                    boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.25)',
-                                }} 
-                                aria-hidden="true"
-                            ></div>
-
-                            {/* Rising bubbles within beer body */}
-                            <div className="bubbles" style={{ top: `${FOAM_GAP_PX}px` }} aria-hidden="true"></div>
-                            {/* Foam: white cap with texture and subtle crest */}
-                            <div 
-                                className="absolute top-0 left-0 right-0 overflow-hidden"
-                                style={{ 
-                                    height: `${FOAM_GAP_PX + 22}px`,
-                                    background: 'rgba(255,255,255,0.98)', 
-                                    borderTopLeftRadius: 28, 
-                                    borderTopRightRadius: 28 
-                                }} 
-                                aria-hidden="true"
-                            >
-                                <div className="foam-texture" />
-                                <div className="foam-shadow" />
-                            </div>
-
-                            {/* Glass overlays above beer */}
-                            <div className="beer-vignette" aria-hidden="true"></div>
-                            <div className="glass-shadow" aria-hidden="true"></div>
-                            <div className="glass-base-highlight" aria-hidden="true"></div>
-                            <div className="glass-glare-left" aria-hidden="true"></div>
-                        </div>
-                    </div>
-                </div> 
-            </div>                        
-            
-            <div className="text-center">
-                {pointsList.length !== 0 ? (
-                    <div>
-                        <div className="flex items-center justify-center gap-2">
-                        <h2>{pointsData.nucleo}</h2>
-                        </div>
-                        <h3>Points: {pointsData.value}</h3>
-                        {boosts?.[pointsData.nucleo] && (
-                            <BoostCountdown
-                                untilIso={boosts[pointsData.nucleo]}
-                                nucleo={pointsData.nucleo}
-                                onExpire={(n)=>{
-                                    setBoosts((prev)=> ({ ...prev, [n]: null }));
-                                }}
-                            />
-                        )}
-                    </div>
-                ) : (
-                    <div>
-                        <h2>Loading...</h2>
-                    </div>   
-                )}
-            </div>
-        </div>
+        <PointsGlass
+            key={index}
+            pointsData={pointsData}
+            pointsList={pointsList}
+            boosts={boosts}
+            calcHeight={calcHeight}
+            BoostCountdown={BoostCountdown}
+        />
     );
 
     return (
         <div className="flex flex-col justify-center space-y-8 md:space-y-12 px-4 sm:px-0">
             <div className="text-center">
                 <h1 className="text-2xl sm:text-3xl">Arraial do DETI</h1>
-                {/* Live connection indicator */}
-                <div className="flex items-center justify-center gap-2 mt-2">
-                    <div className={`w-2 h-2 rounded-full ${
-                        wsConnected ? 'bg-green-500' : 'bg-red-500'
-                    }`}></div>
-                    <span className="text-xs opacity-70">
-                        {wsConnected ? 'Live' : 'Offline'}
-                    </span>
-                </div>
+                <ConnectionIndicator wsConnected={wsConnected} />
             </div>
             
             {error && (
@@ -709,75 +635,28 @@ export function Component() {
                             </select>
                         </div>
 
-                        <div className="max-h-64 overflow-auto rounded">
-                        {logLoading ? (
-                            <div className="text-sm opacity-70 p-2">Loading…</div>
-                        ) : log.length === 0 ? (
-                            <div className="text-sm opacity-70 p-2">No changes.</div>
-                        ) : (
-                            <>
-                            <ul className="space-y-1 text-sm">
-                                {log.map((e) => (
-                                    <li key={e.id} className="flex items-center justify-between rounded px-2 py-1 hover:bg-base-200">
-                                        {e.event === 'BOOST_ACTIVATED' ? (
-                                            <>
-                                                <span>
-                                                    <strong>{e.nucleo}</strong>{" "}
-                                                    <span className="badge badge-warning badge-sm align-middle">1.25x Boost</span>
-                                                    {e.timestamp && <span className="ml-2 opacity-60">{new Date(e.timestamp).toLocaleString()}</span>}
-                                                    {e.user_email && <span className="ml-2 opacity-70">{e.user_email}</span>}
-                                                </span>
-                                                <button
-                                                    className="btn btn-sm sm:btn-xs"
-                                                    disabled={!!e.rolled_back}
-                                                    onClick={() => handleRollback(e.id)}
-                                                >
-                                                    Undo
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <span>
-                                                    <strong>{e.nucleo}</strong>{" "}
-                                                    <span className={e.delta >= 0 ? 'text-success' : 'text-error'}>
-                                                        {e.delta >= 0 ? `+${e.delta}` : e.delta}
-                                                    </span>{" "}
-                                                    <span className="opacity-70">({e.prev_value} → {e.new_value})</span>
-                                                    {e.user_email && <span className="ml-2 opacity-70">{e.user_email}</span>}
-                                                    {!e.user_email && e.user_id !== null && <span className="ml-2 opacity-60">user #{e.user_id}</span>}
-                                                    {e.timestamp && <span className="ml-2 opacity-60">{new Date(e.timestamp).toLocaleString()}</span>}
-                                                    {e.rolled_back && <span className="ml-2 badge badge-outline">rolled back</span>}
-                                                </span>
-                                                <button
-                                                    className="btn btn-sm sm:btn-xs"
-                                                    disabled={!!e.rolled_back}
-                                                    onClick={() => handleRollback(e.id)}
-                                                >
-                                                    Undo
-                                                </button>
-                                            </>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                            {nextOffset != null && log.length >= LOG_PAGE_SIZE && (
-                              <div className="mt-2 flex justify-center">
-                                <button className="btn btn-xs" disabled={logLoading} onClick={()=>{
-                                  const filters = {};
-                                  if (filterNucleo) filters.nucleo = filterNucleo;
-                                  if (filterRolledBack === 'true') filters.rolled_back = true;
-                                  if (filterRolledBack === 'false') filters.rolled_back = false;
-                                  service.getArraialLog(LOG_PAGE_SIZE, nextOffset||0, filters)
-                                    .then(({items, next_offset})=>{ setLog((prev)=>[...prev, ...(items||[])]); setNextOffset(next_offset??null); });
-                                }}>Load more</button>
-                              </div>
-                            )}
-                            </>
-                        )}
-                        </div>
+                        <HistoryList
+                          log={log}
+                          logLoading={logLoading}
+                          nextOffset={nextOffset}
+                          LOG_PAGE_SIZE={LOG_PAGE_SIZE}
+                          onLoadMore={() => {
+                            const filters = {};
+                            if (filterNucleo) filters.nucleo = filterNucleo;
+                            if (filterRolledBack === 'true') filters.rolled_back = true;
+                            if (filterRolledBack === 'false') filters.rolled_back = false;
+                            service
+                              .getArraialLog(LOG_PAGE_SIZE, nextOffset || 0, filters)
+                              .then(({ items, next_offset }) => {
+                                setLog((prev) => [...prev, ...(items || [])]);
+                                setNextOffset(next_offset ?? null);
+                              });
+                          }}
+                          onRollback={handleRollback}
+                        />
                     </div>
                     )}
-                    {showTrends && renderTrendsGraph()}
+                    {showTrends && <TrendsGraph pointHistory={pointHistory} />}
                 </div>
             ) : null}
             {confettiActive && (
