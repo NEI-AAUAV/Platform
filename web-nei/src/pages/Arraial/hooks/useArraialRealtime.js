@@ -104,5 +104,3 @@ export default function useArraialRealtime({ onPointsUpdate } = {}) {
     error,
   };
 }
-
-

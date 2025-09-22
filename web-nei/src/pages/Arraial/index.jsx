@@ -339,14 +339,14 @@ export function Component() {
                         </div>
 
                         <React.Suspense fallback={<div className="p-2 text-sm opacity-70 min-h-[200px]">Loading…</div>}>
-                          <HistoryList
-                            log={history.log}
-                            logLoading={history.logLoading}
-                            nextOffset={history.nextOffset}
-                            LOG_PAGE_SIZE={LOG_PAGE_SIZE}
-                            onLoadMore={() => history.load(history.nextOffset || 0, true)}
-                            onRollback={handleRollback}
-                          />
+                        <HistoryList
+                          log={history.log}
+                          logLoading={history.logLoading}
+                          nextOffset={history.nextOffset}
+                          LOG_PAGE_SIZE={LOG_PAGE_SIZE}
+                          onLoadMore={() => history.load(history.nextOffset || 0, true)}
+                          onRollback={handleRollback}
+                        />
                         </React.Suspense>
                     </div>
                     )}
@@ -472,8 +472,8 @@ function maybeTriggerConfetti(prevMap, nextList) {
                     if (milestone > lastAnnounced && now - last > 3000) {
                         recentConfettiByNucleo[key] = now;
                         lastMilestoneByNucleo[n] = milestone;
-                        const evt = new CustomEvent('arraial:confetti', { detail: { nucleo: n, milestone } });
-                        window.dispatchEvent(evt);
+                    const evt = new CustomEvent('arraial:confetti', { detail: { nucleo: n, milestone } });
+                    window.dispatchEvent(evt);
                     }
                     break;
                 }

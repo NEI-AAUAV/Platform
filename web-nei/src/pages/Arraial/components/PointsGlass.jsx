@@ -19,9 +19,6 @@ export default function PointsGlass({
       ? neeetaLogo
       : neiLogo;
 
-  const maxPoints = Math.max(...pointsList.map((p) => p.value), 1);
-  const activeCount = pointsList.filter((p) => p.value > 0).length;
-
   return (
     <div className="flex flex-col justify-center items-center space-y-2">
       <div className={`relative block mx-auto w-40 sm:w-56 md:w-64 lg:w-[40vh] h-[40vh] sm:h-[48vh] md:h-[55vh] border-8 border-white border-t-0 rounded-b-[3rem]`}>
@@ -94,5 +91,3 @@ export default function PointsGlass({
     </div>
   );
 }
-
-

@@ -14,5 +14,3 @@ export default function ConnectionIndicator({ wsConnected }) {
     </div>
   );
 }
-
-

@@ -47,5 +47,3 @@ export default function useArraialHistory(auth) {
     setNextOffset,
   };
 }
-
-
