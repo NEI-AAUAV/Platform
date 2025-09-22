@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import service from "services/NEIService";
 import { useUserStore } from "stores/useUserStore";
 import { getArraialSocket } from "services/SocketService";
-import config from "config";
 
 const ALL_SCOPES = [
   "admin",

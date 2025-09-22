@@ -60,7 +60,12 @@ def _rate_limit_check(user_id: str, endpoint: str, now_seconds: int) -> bool:
 
 def _check_rate_limit(request: Request, auth_data: auth.AuthData, endpoint: str):
     """Check if user has exceeded rate limit"""
-    user_id = str(auth_data.sub) if hasattr(auth_data, 'sub') else 'anonymous'
+    if getattr(auth_data, 'sub', None) is not None:
+        user_id = str(auth_data.sub)
+    else:
+        # Use client IP for unauthenticated requests so buckets don't collide
+        client_host = request.client.host if request.client else None
+        user_id = f"ip:{client_host}" if client_host else "ip:unknown"
     now_seconds = int(datetime.now().timestamp())
 
     if not _rate_limit_check(user_id, endpoint, now_seconds):

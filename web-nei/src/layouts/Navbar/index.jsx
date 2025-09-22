@@ -8,7 +8,7 @@ import logo from "assets/images/logo.png";
 import { GalaLogo } from "assets/icons/extensions";
 
 import service from "services/NEIService";
-import { getArraialSocket } from "services/SocketService";
+import { getArraialSocket, destroyArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
 
 import {
@@ -137,6 +137,7 @@ const Navbar = () => {
     service
       .logout()
       .then(() => {
+        destroyArraialSocket();
         useUserStore.getState().logout();
         navigate("/");
       })
