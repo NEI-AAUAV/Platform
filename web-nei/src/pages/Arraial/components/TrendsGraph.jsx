@@ -113,7 +113,7 @@ export default function TrendsGraph({ pointHistory }) {
                         fill={colors[nucleo]}
                         stroke={isHovered ? "white" : "none"}
                         strokeWidth="2"
-                        style={{ cursor: 'pointer' }}
+                        className="cursor-pointer"
                         onMouseEnter={() => setHoveredPoint({ nucleo, index, value, time })}
                         onMouseLeave={() => setHoveredPoint(null)}
                         onClick={() => setHoveredPoint((prev) => prev && prev.nucleo === nucleo && prev.index === index ? null : { nucleo, index, value, time })}

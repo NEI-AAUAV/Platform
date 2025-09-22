@@ -40,6 +40,36 @@ export function Component() {
         await loadFull(engine);
     }, []);
 
+    const addPointHistoryEntry = React.useCallback(function(pointsData) {
+        try {
+            const now = Date.now();
+            const MIN_INTERVAL_MS = 60 * 1000; // one minute granularity
+            const currentMap = Object.fromEntries((pointsData||[]).map(p=>[p.nucleo, p.value]));
+            const lastMap = lastRecordedMapRef.current || {};
+            const valuesChanged = ['NEEETA','NEECT','NEI'].some(k => (currentMap[k]||0) !== (lastMap[k]||0));
+            const enoughTimePassed = now - (lastRecordedAtRef.current || 0) >= MIN_INTERVAL_MS;
+            const hasDecrease = ['NEEETA','NEECT','NEI'].some(k => (currentMap[k]||0) < (lastMap[k]||0));
+            const isLikelyStale = hasDecrease && (now - (lastRecordedAtRef.current || 0) < 5000);
+
+            if (isLikelyStale) {
+                return;
+            }
+            if (!valuesChanged && !enoughTimePassed) {
+                return;
+            }
+
+            lastRecordedMapRef.current = currentMap;
+            lastRecordedAtRef.current = now;
+
+            const timestamp = new Date(now);
+            const entry = {
+                timestamp,
+                points: pointsData.map(p => ({ nucleo: p.nucleo, value: p.value }))
+            };
+            setPointHistory(prev => [...prev.slice(-20), entry]);
+        } catch (_) { /* ignore */ }
+    }, []);
+
     useEffect(() => {
         const onConfetti = (e) => {
             setConfettiActive(true);
@@ -150,37 +180,7 @@ export function Component() {
         setNumber(String(next));
     };
 
-function addPointHistoryEntry(pointsData) {
-		try {
-			const now = Date.now();
-			const MIN_INTERVAL_MS = 60 * 1000; // one minute granularity
-			const currentMap = Object.fromEntries((pointsData||[]).map(p=>[p.nucleo, p.value]));
-			const lastMap = lastRecordedMapRef.current || {};
-			const valuesChanged = ['NEEETA','NEECT','NEI'].some(k => (currentMap[k]||0) !== (lastMap[k]||0));
-			const enoughTimePassed = now - (lastRecordedAtRef.current || 0) >= MIN_INTERVAL_MS;
-			// Guard against out-of-order stale snapshots shortly after an update
-			const hasDecrease = ['NEEETA','NEECT','NEI'].some(k => (currentMap[k]||0) < (lastMap[k]||0));
-			const isLikelyStale = hasDecrease && (now - (lastRecordedAtRef.current || 0) < 5000);
-
-			if (isLikelyStale) {
-				return; // skip brief regressions caused by stale poll racing WS
-			}
-
-			if (!valuesChanged && !enoughTimePassed) {
-				return; // skip redundant snapshot
-			}
-
-			lastRecordedMapRef.current = currentMap;
-			lastRecordedAtRef.current = now;
-
-			const timestamp = new Date(now);
-			const entry = {
-				timestamp,
-				points: pointsData.map(p => ({ nucleo: p.nucleo, value: p.value }))
-			};
-			setPointHistory(prev => [...prev.slice(-20), entry]); // Keep last 20 entries
-		} catch (_) { /* ignore */ }
-	}
+// duplicate removed above
 
     const handleRollback = async (id) => {
         setError(null);
@@ -207,7 +207,7 @@ function addPointHistoryEntry(pointsData) {
         return `${heightPct}%`;
     };
 
-    // Removed unused inline TrendsGraph renderer; using component instead
+    
 
     // Show loading state while checking if Arraial is enabled
     if (realtime.enabled === null) {
