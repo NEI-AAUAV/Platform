@@ -9,6 +9,8 @@ export default function PointsGlass({
   boosts,
   calcHeight,
   BoostCountdown,
+  animateFill = false,
+  isLcp = false,
 }) {
   const logoSrc =
     pointsData.nucleo === "NEECT"
@@ -27,9 +29,17 @@ export default function PointsGlass({
           <div className="glass-inner" aria-hidden="true"></div>
           <div className="glass-rim" aria-hidden="true"></div>
           <div className="absolute top-[34px] left-0 right-0 bottom-[32px] flex items-center justify-center pointer-events-none z-[5]" aria-hidden="true">
-            <img src={logoSrc} alt={pointsData.nucleo} style={{ maxWidth: "42%", maxHeight: "42%", opacity: 0.75 }} />
+            <img
+              src={logoSrc}
+              alt={pointsData.nucleo}
+              width="256"
+              height="256"
+              decoding="async"
+              {...(isLcp ? { fetchpriority: 'high' } : {})}
+              className="max-w-[42%] max-h-[42%] opacity-75"
+            />
           </div>
-          <div className="absolute bottom-0 left-0 w-full transition-all duration-500" style={{ height: calcHeight(pointsData.value), overflow: "hidden" }}>
+          <div className={`absolute bottom-0 left-0 w-full ${animateFill ? 'transition-all duration-500' : ''}`} style={{ height: calcHeight(pointsData.value), overflow: "hidden" }}>
             <div className="relative w-full h-full">
               <div
                 className="absolute left-0 right-0 bottom-0"

@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Particles from "react-particles";
-import { loadFull } from "tsparticles";
 import service from 'services/NEIService';
 import { useUserStore } from "stores/useUserStore";
 import { LOG_PAGE_SIZE, MILESTONE_INTERVAL } from "./constants";
@@ -8,10 +6,11 @@ import useArraialRealtime from "./hooks/useArraialRealtime";
 import useArraialHistory from "./hooks/useArraialHistory";
 import ConnectionIndicator from "./components/ConnectionIndicator";
 import PointsGlass from "./components/PointsGlass";
-import TrendsGraph from "./components/TrendsGraph";
-import HistoryList from "./components/HistoryList";
+const TrendsGraph = React.lazy(() => import("./components/TrendsGraph"));
+const HistoryList = React.lazy(() => import("./components/HistoryList"));
 import AdminControls from "./components/AdminControls";
 import './beer-animations.css';
+const LazyParticles = React.lazy(() => import('react-particles'));
 
 const recentConfettiByNucleo = {};
 const lastMilestoneByNucleo = {};
@@ -37,7 +36,8 @@ export function Component() {
     const lastRecordedAtRef = React.useRef(0);
     const hasBaselineRef = React.useRef(false);
     const initParticles = React.useCallback(async (engine) => {
-        await loadFull(engine);
+        const mod = await import('tsparticles');
+        await mod.loadFull(engine);
     }, []);
 
     const addPointHistoryEntry = React.useCallback(function(pointsData) {
@@ -207,14 +207,31 @@ export function Component() {
 
     
 
-    // Show loading state while checking if Arraial is enabled
+    // While enabled status is unknown, render stable skeleton layout to avoid CLS
     if (realtime.enabled === null) {
+        const skeletonPoints = [
+            { nucleo: 'NEEETA', value: 0 },
+            { nucleo: 'NEECT', value: 0 },
+            { nucleo: 'NEI', value: 0 },
+        ];
         return (
-            <div className="mx-auto max-w-xl p-6 text-center">
-                <h1>Arraial do DETI</h1>
-                <div className="mt-3 flex items-center justify-center gap-2">
-                    <span className="loading loading-spinner loading-sm"></span>
-                    <span className="opacity-80">A carregar...</span>
+            <div className="flex flex-col justify-center space-y-8 md:space-y-12 px-4 sm:px-0 min-h-[80vh]">
+                <div className="text-center">
+                    <h1 className="text-2xl sm:text-3xl">Arraial do DETI</h1>
+                    <ConnectionIndicator wsConnected={false} />
+                </div>
+                <div className="flex flex-col md:flex-row items-center md:items-start justify-center space-y-6 md:space-y-0 md:space-x-16 min-h-[55vh]">
+                    {skeletonPoints.map((p, i) => (
+                        <PointsGlass
+                            key={i}
+                            pointsData={p}
+                            pointsList={skeletonPoints}
+                            boosts={{}}
+                            calcHeight={() => '0%'}
+                            BoostCountdown={BoostCountdown}
+                            animateFill={false}
+                        />
+                    ))}
                 </div>
             </div>
         );
@@ -238,11 +255,13 @@ export function Component() {
             boosts={realtime.boosts}
             calcHeight={calcHeight}
             BoostCountdown={BoostCountdown}
+            animateFill={hasBaselineRef.current}
+            isLcp={index === 1}
         />
     );
 
     return (
-        <div className="flex flex-col justify-center space-y-8 md:space-y-12 px-4 sm:px-0">
+        <div className="flex flex-col justify-center space-y-8 md:space-y-12 px-4 sm:px-0 md:min-h-[80vh]">
             <div className="text-center">
                 <h1 className="text-2xl sm:text-3xl">Arraial do DETI</h1>
                 <ConnectionIndicator wsConnected={realtime.wsConnected} />
@@ -254,7 +273,7 @@ export function Component() {
                 </div>
             )}
             
-            <div className="flex flex-col md:flex-row items-center md:items-start justify-center space-y-6 md:space-y-0 md:space-x-16">
+            <div className="flex flex-col md:flex-row items-center md:items-start justify-center space-y-6 md:space-y-0 md:space-x-16 md:min-h-[55vh]">
                 {pointsList.map((pointsData, index) => renderPointsBar(pointsData, index))}
             </div>
             {auth ? (
@@ -319,21 +338,28 @@ export function Component() {
                             </select>
                         </div>
 
-                        <HistoryList
-                          log={history.log}
-                          logLoading={history.logLoading}
-                          nextOffset={history.nextOffset}
-                          LOG_PAGE_SIZE={LOG_PAGE_SIZE}
-                          onLoadMore={() => history.load(history.nextOffset || 0, true)}
-                          onRollback={handleRollback}
-                        />
+                        <React.Suspense fallback={<div className="p-2 text-sm opacity-70 min-h-[200px]">Loading…</div>}>
+                          <HistoryList
+                            log={history.log}
+                            logLoading={history.logLoading}
+                            nextOffset={history.nextOffset}
+                            LOG_PAGE_SIZE={LOG_PAGE_SIZE}
+                            onLoadMore={() => history.load(history.nextOffset || 0, true)}
+                            onRollback={handleRollback}
+                          />
+                        </React.Suspense>
                     </div>
                     )}
-                    {showTrends && <TrendsGraph pointHistory={pointHistory} />}
+                    {showTrends && (
+                      <React.Suspense fallback={<div className="p-2 text-sm opacity-70 min-h-[240px]">Loading…</div>}>
+                        <TrendsGraph pointHistory={pointHistory} />
+                      </React.Suspense>
+                    )}
                 </>
             ) : null}
             {confettiActive && (
-                <Particles
+                <React.Suspense fallback={null}>
+                <LazyParticles
                     id="arraial-confetti"
                     init={initParticles}
                     options={{
@@ -363,6 +389,7 @@ export function Component() {
                         }
                     }}
                 />
+                </React.Suspense>
             )}
             {milestoneToasts.length > 0 && (
                 <div className="fixed inset-x-0 top-1/4 z-[1000] flex justify-center pointer-events-none">
