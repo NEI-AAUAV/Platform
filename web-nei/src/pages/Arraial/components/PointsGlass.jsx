@@ -21,7 +21,7 @@ export default function PointsGlass({
 
   return (
     <div className="flex flex-col justify-center items-center space-y-2">
-      <div className={`relative block mx-auto w-40 sm:w-56 md:w-64 lg:w-[40vh] h-[40vh] sm:h-[48vh] md:h-[55vh] border-8 border-white border-t-0 rounded-b-[3rem]`}>
+      <div className={`relative block mx-auto w-48 sm:w-56 md:w-64 lg:w-[40vh] h-[40vh] sm:h-[48vh] md:h-[55vh] border-8 border-white border-t-0 rounded-b-[3rem]`}>
         <div className="absolute inset-0 overflow-hidden rounded-b-[2.5rem]">
           <div className="glass-inner" aria-hidden="true"></div>
           <div className="glass-rim" aria-hidden="true"></div>

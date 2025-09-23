@@ -160,16 +160,18 @@ export function Component() {
   };
 
   // Filter users based on email and role filters
-  const filteredUsers = users.filter((user) => {
-    const emailMatch = !emailFilter || 
-      (user.email && user.email.toLowerCase().includes(emailFilter.toLowerCase()));
-    
-    const roleMatch = !roleFilter || 
-      (user.scopes && user.scopes.includes(roleFilter));
-    
-    return emailMatch && roleMatch;
-  });
-
+  const filteredUsers = React.useMemo(() => {
+    return users.filter((user) => {
+      // Handle null/undefined emails properly
+      const emailMatch = !emailFilter || 
+        (user.email && user.email.toLowerCase().includes(emailFilter.toLowerCase()));
+      
+      const roleMatch = !roleFilter || 
+        (user.scopes && user.scopes.includes(roleFilter));
+      
+      return emailMatch && roleMatch;
+    });
+  }, [users, emailFilter, roleFilter]);
 
   if (!token) return <div className="p-4">Unauthorized</div>;
 
