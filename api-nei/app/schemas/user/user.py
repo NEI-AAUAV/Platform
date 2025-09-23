@@ -34,6 +34,7 @@ class ScopeEnum(str, Enum):
     MANAGER_TACAUA = "manager-tacaua"
     MANAGER_FAMILY = "manager-family"
     MANAGER_JANTAR_GALA = "manager-jantar-gala"
+    MANAGER_ARRAIAL = "manager-arraial"
     DEFAULT = "default"
 
 
@@ -74,11 +75,13 @@ class ManagerUserListing(UserListing):
     created_at: datetime
     updated_at: datetime
     matriculation: List[UserMatriculationInBD] = []
+    email: Optional[str] = None
 
 
 class AdminUserListing(ManagerUserListing):
     iupi: Optional[Annotated[str, StringConstraints(max_length=36)]]
     scopes: List[str] = []
+    email: Optional[str] = None
 
 
 class UserCreateBase(UserBase):

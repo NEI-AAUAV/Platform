@@ -58,8 +58,18 @@ async def get_users(
 ) -> List[APIUserListing]:
     """Fetches all users"""
     ListingType = user_listing_type(auth_data.scopes)
-
-    return list(map(lambda x: ListingType(**x.dict()), crud.user.get_multi(db=db)))
+    
+    # Get users with their emails
+    users_with_emails = crud.user.get_multi_with_emails(db=db)
+    
+    # Convert to response format
+    result = []
+    for user, email in users_with_emails:
+        user_dict = user.dict()
+        user_dict['email'] = email.email if email else None
+        result.append(ListingType(**user_dict))
+    
+    return result
 
 
 @router.get(

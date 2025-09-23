@@ -159,6 +159,48 @@ const NEIService = {
     formData.append("password", password);
     return await client.post(`/auth/magic?token=${token}`, formData);
   },
+
+  async getArraialPoints() {
+    return await client.get("/arraial/points");
+  },
+  
+  async updateArraialPoints(data) {
+    return await client.put("/arraial/points", data);
+  },
+
+  async getArraialLog(limit = 25, offset = 0, filters = {}) {
+    const params = { limit, offset, ...filters };
+    return await client.get("/arraial/log", { params });
+  },
+
+  async rollbackArraial(logId) {
+    return await client.post(`/arraial/rollback/${logId}`);
+  },
+
+  async getArraialConfig() {
+    return await client.get("/arraial/config");
+  },
+
+  async setArraialConfig(enabled, paused = false) {
+    return await client.put("/arraial/config", { enabled, paused });
+  },
+
+  async activateArraialBoost(nucleo) {
+    return await client.post(`/arraial/boost/${nucleo}`);
+  },
+
+  async resetArraial() {
+    return await client.post(`/arraial/reset`);
+  },
+
+  // Admin: Users
+  async getUsers() {
+    return await client.get("/user/");
+  },
+
+  async updateUserScopes(userId, scopes) {
+    return await client.put(`/user/${userId}`, { scopes });
+  }
 };
 
 // Export a singleton service

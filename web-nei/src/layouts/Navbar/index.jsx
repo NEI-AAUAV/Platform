@@ -8,6 +8,7 @@ import logo from "assets/images/logo.png";
 import { GalaLogo } from "assets/icons/extensions";
 
 import service from "services/NEIService";
+import { getArraialSocket, destroyArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
 
 import {
@@ -38,9 +39,37 @@ const Navbar = () => {
   const windowSize = useWindowSize();
   const windowScroll = useWindowScroll();
   const [openMobile, setOpenMobile] = useState(false);
-  const { theme, token, name, surname, image } = useUserStore((state) => state);
+  const { theme, token, name, surname, image, scopes } = useUserStore((state) => state);
   const [navItems, setNavItems] = useState(data);
   const navigate = useNavigate();
+
+  // Optimistic hide until known from API/WS
+  const [arraialEnabled, setArraialEnabled] = useState(null);
+  
+
+  useEffect(() => {
+    // Fetch runtime Arraial config and subscribe to WS updates
+    service
+      .getArraialConfig()
+      .then((cfg) => setArraialEnabled(!!cfg?.enabled))
+      .catch(() => {
+        // Leave as null on error; WS may still update it shortly
+      });
+
+    const socket = getArraialSocket();
+    const onMessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data?.topic === "ARRAIAL_CONFIG" && typeof data.enabled === "boolean") {
+          setArraialEnabled(!!data.enabled);
+        }
+      } catch (_) {}
+    };
+    socket.addEventListener("message", onMessage);
+    return () => {
+      socket.removeEventListener("message", onMessage);
+    };
+  }, []);
 
   useEffect(() => {
     // Close navbar mobile when location changes
@@ -108,6 +137,7 @@ const Navbar = () => {
     service
       .logout()
       .then(() => {
+        destroyArraialSocket();
         useUserStore.getState().logout();
         navigate("/");
       })
@@ -194,6 +224,13 @@ const Navbar = () => {
                     </li>
                   ),
               )}
+              {arraialEnabled && (
+                <li>
+                  <LinkAdapter to="/arraial">
+                    Arraial do DETI
+                  </LinkAdapter>
+                </li>
+              )}
             </ul>
           </div>
           {/* Jantar Gala Button */}
@@ -274,6 +311,13 @@ const Navbar = () => {
                         <PersonIcon /> Perfil
                       </Link>
                     </li>
+                    {!!scopes?.includes("admin") && (
+                      <li>
+                        <Link to="/admin/roles">
+                          <SettingsIcon /> Admin
+                        </Link>
+                      </li>
+                    )}
                     {!config.PRODUCTION && (
                       <>
                         <li>
@@ -313,6 +357,11 @@ const Navbar = () => {
           className="navbar-mobile mx-auto max-h-0 w-full overflow-hidden transition-all ease-out md:hidden"
         >
           <ul className="menu menu-vertical p-5 pt-0">
+            {arraialEnabled && (
+              <li>
+                <LinkAdapter to="/arraial">Arraial do DETI</LinkAdapter>
+              </li>
+            )}
             {data.map(({ name, link, disabled, dropdown }, index) =>
               !dropdown ? (
                 <li

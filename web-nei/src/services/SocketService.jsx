@@ -50,3 +50,23 @@ export const wsend = async (d) => {
         console.error("could not send ", d)
     }
 }
+
+let arraialSocketInstance = null;
+
+export const getArraialSocket = () => {
+    if (
+        !arraialSocketInstance ||
+        arraialSocketInstance.readyState === WebSocket.CLOSED ||
+        arraialSocketInstance.readyState === WebSocket.CLOSING
+    ) {
+        arraialSocketInstance = new WebSocket(`${config.WS_URL}/arraial/ws`);
+    }
+    return arraialSocketInstance;
+}
+
+export const destroyArraialSocket = () => {
+    if (arraialSocketInstance) {
+        arraialSocketInstance.close();
+        arraialSocketInstance = null;
+    }
+}
