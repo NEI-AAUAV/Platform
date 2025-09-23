@@ -37,13 +37,7 @@ const config = {
   // Arraial configuration
   ENABLE_ARRAIAL: import.meta.env.VITE_ENABLE_ARRAIAL === "True",
   ARRAIAL: {
-    POLLING_INTERVAL: 10000, // 10 seconds
-    AUTH_USERS: [
-      "manager_arraial@nei.pt", 
-      "manager_arraial@neect.pt", 
-      "manager_arraial@neeeta.pt",
-      "dev@dev.dev"
-    ]
+    POLLING_INTERVAL: 10000 // 10 seconds
   }
 };
 
