@@ -44,6 +44,9 @@ export function Component() {
   // Filter states
   const [emailFilter, setEmailFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
+  
+  // Track users being edited to keep them visible during role changes
+  const [editingUsers, setEditingUsers] = useState(new Set());
 
   const loadMe = () => {
     setMeLoading(true);
@@ -115,6 +118,9 @@ export function Component() {
   }, [me]);
 
   const toggleScope = (user, scope) => {
+    // Mark user as being edited
+    setEditingUsers(prev => new Set([...prev, user.id]));
+    
     const next = users.map((u) =>
       u.id === user.id
         ? {
@@ -135,6 +141,14 @@ export function Component() {
       setSuccessMessage(`Scopes updated successfully for ${getUserDisplayName(user)}`);
       const id = setTimeout(() => setSuccessMessage(null), SUCCESS_MESSAGE_TIMEOUT);
       timeoutsRef.current.push(id);
+      
+      // Remove user from editing set after successful save
+      setEditingUsers(prev => {
+        const next = new Set(prev);
+        next.delete(user.id);
+        return next;
+      });
+      
       loadUsers();
     } catch (e) {
       setError(`Failed to update scopes: ${e?.message || 'Unknown error'}`);
@@ -159,9 +173,19 @@ export function Component() {
     }
   };
 
+  // Clear editing state when filters change (to avoid stuck editing states)
+  React.useEffect(() => {
+    setEditingUsers(new Set());
+  }, [emailFilter, roleFilter]);
+
   // Filter users based on email and role filters
   const filteredUsers = React.useMemo(() => {
     return users.filter((user) => {
+      // Always show users being edited (even if they don't match current filters)
+      if (editingUsers.has(user.id)) {
+        return true;
+      }
+      
       // Handle null/undefined emails properly
       const emailMatch = !emailFilter || 
         (user.email && user.email.toLowerCase().includes(emailFilter.toLowerCase()));
@@ -171,7 +195,7 @@ export function Component() {
       
       return emailMatch && roleMatch;
     });
-  }, [users, emailFilter, roleFilter]);
+  }, [users, emailFilter, roleFilter, editingUsers]);
 
   if (!token) return <div className="p-4">Unauthorized</div>;
 
@@ -265,7 +289,7 @@ export function Component() {
       )}
 
       {successMessage && (
-        <div className="toast toast-bottom toast-end">
+        <div className="toast toast-bottom toast-end z-50">
           <div className="alert alert-success">
             <span>{successMessage}</span>
             <button 
@@ -344,7 +368,7 @@ export function Component() {
             </thead>
             <tbody>
               {filteredUsers.map((u) => (
-                <tr key={u.id}>
+                <tr key={u.id} className={editingUsers.has(u.id) ? "bg-primary/10" : ""}>
                   <td>{u.name} {u.surname}</td>
                   <td className="font-mono text-sm">{u.email}</td>
                   <td>
@@ -365,7 +389,7 @@ export function Component() {
                   <td className="text-right">
                     <button
                       className="btn btn-sm"
-                      disabled={saving}
+                      disabled={saving || !editingUsers.has(u.id)}
                       onClick={() => saveScopes(u)}
                     >
                       Save
