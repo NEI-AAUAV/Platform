@@ -105,7 +105,8 @@ async def register(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    maybe_user = crud.user.get_by_email(db, email)
+    # Use for_update=True to prevent race conditions
+    maybe_user = crud.user.get_by_email(db, email, for_update=True)
     if maybe_user is not None and (
         # Check that the user is active or the account was created less than a day ago
         maybe_user[1].active

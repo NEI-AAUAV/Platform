@@ -69,6 +69,9 @@ async def get_users(
         user_dict['email'] = email.email if email else None
         result.append(ListingType(**user_dict))
     
+    # Sort by name, then surname for consistent ordering
+    result.sort(key=lambda u: (u.name.lower(), u.surname.lower()))
+    
     return result
 
 
