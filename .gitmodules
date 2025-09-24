@@ -1,0 +1,4 @@
+[submodule "extensions/rally"]
+	path = extensions/rally
+	url = https://github.com/NEI-AAUAV/Platform-rally-extension.git
+	branch = main
