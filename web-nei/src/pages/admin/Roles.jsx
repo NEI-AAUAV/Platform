@@ -3,7 +3,8 @@ import service from "services/NEIService";
 import { useUserStore } from "stores/useUserStore";
 import { getArraialSocket } from "services/SocketService";
 
-const ALL_SCOPES = [
+// Base scopes that are always available
+const BASE_SCOPES = [
   "admin",
   "manager-nei",
   "manager-arraial",
@@ -16,6 +17,10 @@ const SUCCESS_MESSAGE_TIMEOUT = 3000;
 
 export function Component() {
   const { token } = useUserStore((s) => s);
+  
+  // Dynamic scopes will be loaded from the API
+  const [dynamicScopes, setDynamicScopes] = useState([]);
+  const ALL_SCOPES = [...BASE_SCOPES, ...dynamicScopes];
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -80,10 +85,31 @@ export function Component() {
       .finally(() => setCfgLoading(false));
   };
 
+  const loadDynamicScopes = () => {
+    // Load dynamic scopes from the OAuth2 scheme
+    fetch('/api/nei/v1/auth/scopes')
+      .then(response => response.json())
+      .then(data => {
+        if (data && Array.isArray(data.scopes)) {
+          // Filter out base scopes to get only extension scopes
+          const extensionScopes = data.scopes.filter(scope => 
+            !BASE_SCOPES.includes(scope)
+          );
+          setDynamicScopes(extensionScopes);
+        }
+      })
+      .catch(() => {
+        // If the endpoint doesn't exist or fails, just use base scopes
+        setDynamicScopes([]);
+      });
+  };
+
   useEffect(() => {
     if (!token) return;
     // Always load /user/me first to see current scopes
     loadMe();
+    // Load dynamic scopes from extensions
+    loadDynamicScopes();
   }, [token]);
 
   useEffect(() => {

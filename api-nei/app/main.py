@@ -9,12 +9,18 @@ from app.api.api_v1 import router as api_v1_router
 from app.db.init_db import init_db
 from app.core.logging import init_logging
 from app.core.config import settings
+from app.core.extension_scopes import load_scopes_from_manifests
+from app.core.dynamic_oauth import dynamic_oauth2_scheme
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     init_logging()
     init_db()
+    # Register extension scopes from manifests
+    load_scopes_from_manifests()
+    # Update OAuth2 scheme with extension scopes
+    dynamic_oauth2_scheme.update_scopes()
     yield
 
 
