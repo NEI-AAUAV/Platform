@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import service from "services/NEIService";
 import { useUserStore } from "stores/useUserStore";
 import { getArraialSocket } from "services/SocketService";
@@ -20,7 +20,7 @@ export function Component() {
   
   // Dynamic scopes will be loaded from the API
   const [dynamicScopes, setDynamicScopes] = useState([]);
-  const ALL_SCOPES = [...BASE_SCOPES, ...dynamicScopes];
+  const ALL_SCOPES = useMemo(() => [...BASE_SCOPES, ...dynamicScopes], [dynamicScopes]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -86,9 +86,9 @@ export function Component() {
   };
 
   const loadDynamicScopes = () => {
-    // Load dynamic scopes from the OAuth2 scheme
-    fetch('/api/nei/v1/auth/scopes')
-      .then(response => response.json())
+    // Load dynamic scopes from the OAuth2 scheme using the service layer
+    service
+      .getDynamicScopes()
       .then(data => {
         if (data && Array.isArray(data.scopes)) {
           // Filter out base scopes to get only extension scopes

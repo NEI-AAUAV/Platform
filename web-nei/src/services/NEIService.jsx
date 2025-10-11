@@ -200,6 +200,14 @@ const NEIService = {
 
   async updateUserScopes(userId, scopes) {
     return await client.put(`/user/${userId}`, { scopes });
+  },
+
+  async getDynamicScopes() {
+    return await client.get("/auth/scopes");
+  },
+
+  async getExtensionsManifest() {
+    return await client.get("/extensions/manifest");
   }
 };
 

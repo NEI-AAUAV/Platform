@@ -14,7 +14,9 @@ function subscribeTokenRefresh(callback) {
 
 /** Resolve all pending requests with the new access token. */
 function processQueue(token = null) {
-  refreshSubscribers.forEach((callback) => callback(token));
+  for (const callback of refreshSubscribers) {
+    callback(token);
+  }
   refreshSubscribers = [];
 }
 

@@ -103,8 +103,8 @@ const Navbar = () => {
       } catch (_) {}
       return href;
     };
-    fetch("/api/nei/v1/extensions/manifest")
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("manifest fetch failed"))))
+    service
+      .getExtensionsManifest()
       .then((payload) => {
         const items = Array.isArray(payload?.nav) ? payload.nav : [];
         const myScopes = Array.isArray(scopes) ? scopes : [];
