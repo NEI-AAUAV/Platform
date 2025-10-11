@@ -124,8 +124,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_SCANNER_OPTS: -Dsonar.ssl.verify=false -Dtrust_all_cert=true
+          SONAR_HOST_URL: http://nei.web.ua.pt/sonar/
       
       # Uncomment to fail the job when Quality Gate is red
       - name: SonarQube Quality Gate
