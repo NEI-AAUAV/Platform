@@ -98,9 +98,9 @@ jobs:
         # Copy generated configs to Infrastructure nginx
         if [ -d "../Infrastructure/nginx/conf.d" ]; then
           cp nginx-configs/locations.*.conf ../Infrastructure/nginx/conf.d/ 2>/dev/null || true
-          echo "✅ Extension nginx configs copied to Infrastructure"
+          echo "Extension nginx configs copied to Infrastructure"
         else
-          echo "⚠️  Infrastructure nginx directory not found"
+          echo "Infrastructure nginx directory not found"
         fi
 
     - name: Deploy with docker-compose
