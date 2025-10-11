@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Spinner } from "react-bootstrap";
 import { motion } from "framer-motion";
+import Typist from "react-typist";
 
 import Tabs from "components/Tabs";
 
-import Typist from "react-typist";
 
 import { DownloadIcon } from "assets/icons/google";
 

@@ -158,7 +158,10 @@ function labelFamilies(node) {
 export function buildTree() {
   const assignInsignias = () => {
     const insignias = ["nei", "aettua"];
-    const i = Math.floor(Math.random() * insignias.length * 2);
+    // Use crypto.getRandomValues for cryptographically secure random number
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    const i = array[0] % (insignias.length * 2);
     return insignias.slice(i);
   };
 

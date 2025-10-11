@@ -55,8 +55,10 @@ services:
       POSTGRES_PASSWORD: postgres
       JWT_SECRET_KEY_PATH: /jwt.key
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
+      ENABLED_EXTENSIONS: ${ENABLED_EXTENSIONS:-}  # Comma-separated list of enabled extensions (empty = no extensions)
     volumes:
       - ./api-nei:/api_nei
+      - ./extensions:/extensions:ro
       - ./dev-keys/jwt.key:/jwt.key:ro
       - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:
@@ -126,7 +128,8 @@ services:
     volumes:
       - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
-      - ./proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf
+      - ./proxy/locations.rally.conf:/etc/nginx/conf.d/locations.rally.conf:ro
+      - ./proxy/locations.gala.conf:/etc/nginx/conf.d/locations.gala.conf:ro
     depends_on:
       - web_nei
       - api_nei

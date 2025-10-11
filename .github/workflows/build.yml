@@ -1,0 +1,212 @@
+name: Build
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      mongodb:
+        image: mongo:6.0.5-jammy
+        env:
+          MONGO_INITDB_ROOT_USERNAME: mongo
+          MONGO_INITDB_ROOT_PASSWORD: mongo
+          MONGO_INITDB_DATABASE: mongo_test
+        options: >-
+          --health-cmd "echo 'db.runCommand(\"ping\").ok' | mongosh --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      
+      - name: Install Python dependencies
+        run: |
+          cd api-nei && poetry install --no-root && poetry run pip install pytest-cov
+      
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v3
+        with:
+          path: web-nei/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('web-nei/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Node.js dependencies
+        run: |
+          cd web-nei && yarn install
+      
+      - name: Create test database
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres_test -c "CREATE DATABASE postgres_test_test;"
+        env:
+          POSTGRES_SERVER: localhost
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres_test
+      
+      - name: Run Python tests
+        run: |
+          cd api-nei && poetry run pytest --cov=app --cov-report=xml
+        env:
+          POSTGRES_SERVER: localhost
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres_test
+          MONGO_SERVER: localhost
+          MONGO_USER: mongo
+          MONGO_PASSWORD: mongo
+          MONGO_DB: mongo_test
+      
+      - name: Run JavaScript/TypeScript tests
+        run: |
+          cd web-nei && yarn test --run --reporter=verbose
+        env:
+          POSTGRES_SERVER: localhost
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres_test
+          MONGO_SERVER: localhost
+          MONGO_USER: mongo
+          MONGO_PASSWORD: mongo
+          MONGO_DB: mongo_test
+      
+      - name: Create Custom Trust Store with SonarQube Certificate
+        run: |
+          echo "Creating custom trust store with SonarQube certificate..."
+          
+          # Download the certificate from your SonarQube server
+          echo "Downloading certificate from nei.web.ua.pt:443..."
+          echo | openssl s_client -servername nei.web.ua.pt -connect nei.web.ua.pt:443 2>/dev/null | openssl x509 -outform PEM > sonarqube.crt
+          
+          # Check if certificate was downloaded
+          if [ -f sonarqube.crt ]; then
+            echo "Certificate downloaded successfully"
+            echo "Certificate content (first few lines):"
+            head -5 sonarqube.crt
+          else
+            echo "ERROR: Failed to download certificate"
+            exit 1
+          fi
+          
+          # Create a custom trust store with the SonarQube certificate
+          echo "Creating custom trust store..."
+          keytool -genkeypair -alias dummy -keyalg RSA -keysize 2048 -storetype JKS -keystore custom-truststore.jks -storepass changeit -keypass changeit -dname "CN=dummy" -validity 1
+          keytool -delete -alias dummy -keystore custom-truststore.jks -storepass changeit
+          
+          echo "Adding SonarQube certificate to trust store..."
+          keytool -keystore custom-truststore.jks -storepass changeit -noprompt -trustcacerts -importcert -alias sonarqube-cert -file sonarqube.crt
+          
+          # Verify the certificate was added
+          echo "Verifying certificate in trust store..."
+          keytool -keystore custom-truststore.jks -storepass changeit -list | grep sonarqube-cert
+          
+          echo "Custom trust store created successfully"
+      
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        with:
+          args: >
+            -Djavax.net.ssl.trustStore=custom-truststore.jks
+            -Djavax.net.ssl.trustStorePassword=changeit
+            -Djavax.net.ssl.trustStoreType=JKS
+            -Dsonar.ssl.verify=false
+            -Dcom.sun.net.ssl.checkRevocation=false
+            -Dtrust_all_cert=true
+            -Djavax.net.ssl.trustStoreType=JKS
+            -Djavax.net.ssl.trustStorePassword=changeit
+            -Djavax.net.ssl.trustStore=custom-truststore.jks
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_SCANNER_OPTS: -Djavax.net.ssl.trustStore=custom-truststore.jks -Djavax.net.ssl.trustStorePassword=changeit -Djavax.net.ssl.trustStoreType=JKS -Dsonar.ssl.verify=false
+      
+      # Uncomment to fail the job when Quality Gate is red
+      - name: SonarQube Quality Gate Check
+        run: |
+          echo "Checking SonarQube Quality Gate status..."
+          
+          # Extract task ID from report-task.txt
+          TASK_ID=$(grep "ceTaskId" .scannerwork/report-task.txt | cut -d'=' -f2)
+          echo "Task ID: $TASK_ID"
+          
+          # Try using the certificate file first (more secure), fallback to -k if needed
+          echo "Attempting to use custom certificate file..."
+          if curl --cacert sonarqube.crt -u "${{ secrets.SONAR_TOKEN }}:" \
+            "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?analysisId=$TASK_ID" \
+            -o quality-gate-result.json 2>/dev/null; then
+            echo "Connected using custom certificate"
+          else
+            echo "Custom certificate failed, using SSL bypass..."
+            curl -k -u "${{ secrets.SONAR_TOKEN }}:" \
+              "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?analysisId=$TASK_ID" \
+              -o quality-gate-result.json
+          fi
+          
+          # Parse the result
+          STATUS=$(cat quality-gate-result.json | jq -r '.projectStatus.status')
+          echo "Quality Gate Status: $STATUS"
+          
+          if [ "$STATUS" = "OK" ]; then
+            echo "Quality Gate PASSED"
+            exit 0
+          elif [ "$STATUS" = "ERROR" ]; then
+            echo "Quality Gate FAILED"
+            cat quality-gate-result.json | jq '.projectStatus.conditions[] | select(.status == "ERROR") | "\(.metricKey): \(.actualValue) (threshold: \(.errorThreshold))"'
+            exit 1
+          else
+            echo "Quality Gate Status: $STATUS"
+            exit 0
+          fi
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

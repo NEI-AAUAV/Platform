@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import NewsList from "./NewsList";
 import PageNav from "../../components/PageNav";
 import FilterSelect from "../../components/Filters/FilterSelect";
-import Typist from 'react-typist';
+import Typist from "react-typist";
 import { Spinner } from 'react-bootstrap';
 import service from 'services/NEIService';
 

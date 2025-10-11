@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 
 from typing import Optional, Annotated
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from pydantic import SecretStr, field_validator, StringConstraints, Field
 from email_validator import validate_email, EmailNotValidError
@@ -110,7 +110,7 @@ async def register(
     if maybe_user is not None and (
         # Check that the user is active or the account was created less than a day ago
         maybe_user[1].active
-        or (datetime.utcnow() - maybe_user[0].created_at)
+        or (datetime.now(timezone.utc) - maybe_user[0].created_at.replace(tzinfo=timezone.utc))
         < settings.CONFIRMATION_TOKEN_EXPIRE
     ):
         raise HTTPException(

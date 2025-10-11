@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef, useLayoutEffect} from 'react';
 import { useUserStore } from "stores/useUserStore";
-import Typist from "react-typist";
 import backgroundImg from "../Sports/img/unknown2.png";
 import nei from "../Sports/img/nei.png";
 import { SportsCard,CardHall,GameCard,Carousel } from "components";
@@ -48,7 +47,7 @@ export function Component() {
         return (
             <div className="grid gap-16 place-content-center place-items-center space-y-3">
                 <div>
-                    <span className="text-3xl font-bold "><Typist>Taça UA</Typist></span>
+                    <span className="text-3xl font-bold ">Taça UA</span>
                     <span className="text-2xl">2022/23</span>
                 </div>
                     <div className="relative bg-gradient-to-b rounded-[20px] from-[#7a7876] to-[#000000]">

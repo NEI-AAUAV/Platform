@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import Typist from "react-typist";
 import NEICalendar from "./NEICalendar";
 
 import CheckboxDropdown from "components/CheckboxDropdown";
@@ -50,7 +49,7 @@ export function Component() {
   return (
     <div>
       <h2 className="text-center">
-        <Typist>Calendário</Typist>
+        Calendário
       </h2>
 
       <div className="flex justify-between">

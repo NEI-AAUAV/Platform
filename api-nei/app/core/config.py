@@ -4,7 +4,7 @@ import pathlib
 from datetime import timedelta
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List, Optional, Union
+from typing import List, Optional
 
 
 # Project Directories
@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     )
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
-    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+    def assemble_cors_origins(cls, v: str | List[str]) -> List[str] | str:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
         elif isinstance(v, (list, str)):

@@ -15,6 +15,7 @@ from app.models.device_login import DeviceLogin
 from app.models.user.user_email import UserEmail
 from app.schemas.user import ScopeEnum
 from app.core.config import settings
+from app.core.dynamic_oauth import dynamic_oauth2_scheme
 
 
 ACCESS_TOKEN_TYPE: str = "access"
@@ -35,18 +36,8 @@ auth_responses: Dict[Union[int, str], Dict[str, Any]] = {
     403: {"description": "Not enough permissions"},
 }
 
-oauth2_scheme = OAuth2PasswordBearer(
-    auto_error=False,
-    tokenUrl=settings.API_V1_STR + "/auth/login",
-    scopes={
-        ScopeEnum.ADMIN: "Full access to everything.",
-        ScopeEnum.MANAGER_FAMILY: "Edit faina family.",
-        ScopeEnum.MANAGER_TACAUA: "Edit data related to tacaua.",
-        ScopeEnum.MANAGER_NEI: "Edit data related to nei.",
-        ScopeEnum.MANAGER_JANTAR_GALA: "Edit data related to jantar de gala.",
-        ScopeEnum.MANAGER_ARRAIAL: "Edit data related to arraial.",
-    },
-)
+# Use the dynamic OAuth2 scheme
+oauth2_scheme = dynamic_oauth2_scheme
 
 
 pwd_context = CryptContext(
@@ -213,7 +204,7 @@ def generate_response(
     # Measure once the current time, the same value must be passed to the
     # created device login and refreshed token otherwise the token could be
     # denied because the dates mismatch.
-    iat = datetime.utcnow()
+    iat = datetime.now(timezone.utc)
 
     if device_login is None:
         # Create a new session and add it to the database if no session exists

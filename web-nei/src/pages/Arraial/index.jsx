@@ -74,7 +74,10 @@ export function Component() {
         const onConfetti = (e) => {
             setConfettiActive(true);
             if (e?.detail && e.detail.nucleo && e.detail.milestone) {
-                const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+                // Generate cryptographically secure unique ID
+                const array = new Uint32Array(2);
+                crypto.getRandomValues(array);
+                const id = `${Date.now()}-${array[0].toString(36)}${array[1].toString(36)}`;
                 const toast = { id, nucleo: e.detail.nucleo, milestone: e.detail.milestone };
                 setMilestoneToasts((prev) => [...prev, toast]);
                 const tId = setTimeout(() => {

@@ -64,6 +64,7 @@ services:
       JWT_SECRET_KEY_PATH: /jwt.key
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
       EMAIL_SENDER_ADDRESS: ${EMAIL_SENDER_ADDRESS}
+      ENABLED_EXTENSIONS: ${ENABLED_EXTENSIONS:-}
       EMAIL_SMTP_HOST: ${EMAIL_SMTP_HOST}
       EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
       EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
@@ -73,6 +74,7 @@ services:
       - /deploy/api-nei/static:/api_nei/static
       - /deploy/keys/jwt.key:/jwt.key:ro
       - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
+      - ./extensions:/extensions:ro
     depends_on:
       db_pg:
         condition: service_healthy

@@ -2,6 +2,15 @@
 
 **[NEI Platform Documentation](https://nei-aauav.github.io/Platform-Documentation)**
 
+## Quick Start
+
+```bash
+# Start the platform
+./start-platform.sh
+```
+
+For extension management, see [EXTENSIONS.md](EXTENSIONS.md).
+
 ## Contributors
 
 **2021 Mandate**

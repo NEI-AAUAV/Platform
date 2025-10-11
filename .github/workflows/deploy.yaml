@@ -25,6 +25,7 @@ jobs:
       EMAIL_SMTP_USER: ${{ secrets.EMAIL_SMTP_USER }}
       IDP_SECRET_KEY: ${{ secrets.IDP_SECRET_KEY }}
       RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+      ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
 
     steps:
     - uses: actions/checkout@v3
@@ -42,7 +43,13 @@ jobs:
     - name: Get compose files
       id: compose-files
       run: |
-        echo "COMPOSE_FILE=$(make ${{ github.event.inputs.extension }} files)" >> "$GITHUB_OUTPUT"
+        if [ "${{ github.event.inputs.extension }}" = "rally" ]; then
+          echo "COMPOSE_FILE=compose.prod.yml,extensions/rally/compose.override.prod.yml" >> "$GITHUB_OUTPUT"
+        elif [ "${{ github.event.inputs.extension }}" = "gala" ]; then
+          echo "COMPOSE_FILE=compose.prod.yml,extensions/gala/compose.override.prod.yml" >> "$GITHUB_OUTPUT"
+        else
+          echo "COMPOSE_FILE=compose.prod.yml" >> "$GITHUB_OUTPUT"
+        fi
 
     - name: Build and push
       uses: docker/bake-action@v5
@@ -66,6 +73,7 @@ jobs:
       EMAIL_SMTP_USER: ${{ secrets.EMAIL_SMTP_USER }}
       IDP_SECRET_KEY: ${{ secrets.IDP_SECRET_KEY }}
       RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+      ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
     steps:
     - uses: actions/checkout@v3
 
@@ -84,8 +92,16 @@ jobs:
 
     - name: Deploy with docker-compose
       run: |
-        make ${{ github.event.inputs.extension }} pull
-        make ${{ github.event.inputs.extension }} up FLAGS="-d --remove-orphans"
+        if [ "${{ github.event.inputs.extension }}" = "rally" ]; then
+          docker-compose -f compose.prod.yml -f extensions/rally/compose.override.prod.yml pull
+          docker-compose -f compose.prod.yml -f extensions/rally/compose.override.prod.yml up -d --remove-orphans
+        elif [ "${{ github.event.inputs.extension }}" = "gala" ]; then
+          docker-compose -f compose.prod.yml -f extensions/gala/compose.override.prod.yml pull
+          docker-compose -f compose.prod.yml -f extensions/gala/compose.override.prod.yml up -d --remove-orphans
+        else
+          docker-compose -f compose.prod.yml pull
+          docker-compose -f compose.prod.yml up -d --remove-orphans
+        fi
         docker container prune -f
         docker image prune -af
         docker builder prune

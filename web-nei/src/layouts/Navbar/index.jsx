@@ -41,6 +41,7 @@ const Navbar = () => {
   const [openMobile, setOpenMobile] = useState(false);
   const { theme, token, name, surname, image, scopes } = useUserStore((state) => state);
   const [navItems, setNavItems] = useState(data);
+  const [extNav, setExtNav] = useState([]);
   const navigate = useNavigate();
 
   // Optimistic hide until known from API/WS
@@ -89,6 +90,48 @@ const Navbar = () => {
       setNavItems(dataCompacted(5));
     }
   }, [windowSize.width]);
+
+  // Load extension nav from manifest endpoint
+  useEffect(() => {
+    const normalizeLink = (href) => {
+      if (!href || typeof href !== "string") return href;
+      try {
+        // Convert absolute URLs to pathnames for comparison
+        if (href.startsWith("http://") || href.startsWith("https://")) {
+          return new URL(href, window.location.origin).pathname || "/";
+        }
+      } catch (_) {}
+      return href;
+    };
+    service
+      .getExtensionsManifest()
+      .then((payload) => {
+        const items = Array.isArray(payload?.nav) ? payload.nav : [];
+        const myScopes = Array.isArray(scopes) ? scopes : [];
+        const reqOk = (e) => {
+          const req = Array.isArray(e?.requiresScopes) ? e.requiresScopes : [];
+          return req.length === 0 || req.some((s) => myScopes.includes(s));
+        };
+        // Avoid duplicates with existing static nav items
+        const existingLinks = new Set(
+          (Array.isArray(navItems) ? navItems : [])
+            .flatMap((i) => (i?.dropdown ? i.dropdown : [i]))
+            .map((i) => normalizeLink(i?.link))
+            .filter(Boolean)
+        );
+        
+        const filtered = items
+          .filter(reqOk)
+          .map((e) => ({ label: e.label, href: e.href, key: normalizeLink(e.href) }))
+          .filter((e) => !existingLinks.has(e.key))
+          .map(({ label, href }) => ({ label, href }));
+        setExtNav(filtered);
+      })
+      .catch((err) => {
+        
+        setExtNav([]);
+      });
+  }, [scopes, navItems]);
 
   useEffect(() => {
     // Dropdown animation for navbar mobile
@@ -231,6 +274,14 @@ const Navbar = () => {
                   </LinkAdapter>
                 </li>
               )}
+              {extNav
+                .map((e, idx) => (
+                <li key={`ext-${idx}`}>
+                  <LinkAdapter to={e.href} reloadDocument>
+                    {e.label}
+                  </LinkAdapter>
+                </li>
+              ))}
             </ul>
           </div>
           {/* Jantar Gala Button */}

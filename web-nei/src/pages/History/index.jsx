@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Timeline from "./Timeline";
-import Typist from 'react-typist';
+import Typist from "react-typist";
 
 import service from 'services/NEIService';
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Spinner } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer-motion";
-
 import Typist from "react-typist";
 import service from "services/NEIService";
 import Tabs from "components/Tabs";
