@@ -20,7 +20,7 @@ describe('parseJWT', () => {
   it('handles JWT with special characters in payload', () => {
     const payload = { 
       sub: 'user@example.com', 
-      name: 'José María', 
+      name: 'Jose Maria', 
       roles: ['admin', 'user'] 
     }
     

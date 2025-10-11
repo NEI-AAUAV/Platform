@@ -7,16 +7,14 @@ vi.mock('axios')
 const mockedAxios = vi.mocked(axios)
 
 // Mock the user store
-const mockUserStore = {
-  getState: vi.fn(() => ({
-    token: 'mock-token',
-    login: vi.fn(),
-    logout: vi.fn()
-  }))
-}
-
 vi.mock('stores/useUserStore', () => ({
-  useUserStore: mockUserStore
+  useUserStore: {
+    getState: vi.fn(() => ({
+      token: 'mock-token',
+      login: vi.fn(),
+      logout: vi.fn()
+    }))
+  }
 }))
 
 // Mock config
@@ -45,7 +43,8 @@ describe('refreshToken', () => {
     const result = await refreshToken()
     
     expect(result).toBe('new-access-token')
-    expect(mockUserStore.getState().login).toHaveBeenCalledWith({ 
+    const { useUserStore } = await import('stores/useUserStore')
+    expect(useUserStore.getState().login).toHaveBeenCalledWith({ 
       token: 'new-access-token' 
     })
   })
@@ -58,7 +57,8 @@ describe('refreshToken', () => {
     const result = await refreshToken()
     
     expect(result).toBeUndefined()
-    expect(mockUserStore.getState().logout).toHaveBeenCalled()
+    const { useUserStore } = await import('stores/useUserStore')
+    expect(useUserStore.getState().logout).toHaveBeenCalled()
   })
 
   it('uses correct API endpoint', async () => {

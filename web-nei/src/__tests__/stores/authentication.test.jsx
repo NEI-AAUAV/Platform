@@ -27,7 +27,7 @@ Object.defineProperty(document.documentElement, 'className', {
 })
 
 // Mock parseJWT
-vi.mock('../../utils', () => ({
+vi.mock('../../utils/index', () => ({
   parseJWT: vi.fn()
 }))
 
@@ -54,7 +54,7 @@ describe('useUserStore - Authentication', () => {
       image: 'avatar.jpg'
     }
     
-    const { parseJWT } = require('../../utils')
+    const { parseJWT } = require('../../utils/index')
     parseJWT.mockReturnValue(mockPayload)
     
     const { login } = useUserStore.getState()
@@ -96,7 +96,7 @@ describe('useUserStore - Authentication', () => {
   })
 
   it('handles empty JWT payload', () => {
-    const { parseJWT } = require('../../utils')
+    const { parseJWT } = require('../../utils/index')
     parseJWT.mockReturnValue({})
     
     const { login } = useUserStore.getState()

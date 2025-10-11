@@ -7,16 +7,14 @@ vi.mock('axios')
 const mockedAxios = vi.mocked(axios)
 
 // Mock the user store
-const mockUserStore = {
-  getState: vi.fn(() => ({
-    token: 'mock-token',
-    login: vi.fn(),
-    logout: vi.fn()
-  }))
-}
-
 vi.mock('stores/useUserStore', () => ({
-  useUserStore: mockUserStore
+  useUserStore: {
+    getState: vi.fn(() => ({
+      token: 'mock-token',
+      login: vi.fn(),
+      logout: vi.fn()
+    }))
+  }
 }))
 
 describe('createClient', () => {
