@@ -177,3 +177,5 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          CURL_CA_BUNDLE: ""
+          CURL_INSECURE: "1"
