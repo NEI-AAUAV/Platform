@@ -204,7 +204,7 @@ def generate_response(
     # Measure once the current time, the same value must be passed to the
     # created device login and refreshed token otherwise the token could be
     # denied because the dates mismatch.
-    iat = datetime.utcnow()
+    iat = datetime.now(timezone.utc)
 
     if device_login is None:
         # Create a new session and add it to the database if no session exists

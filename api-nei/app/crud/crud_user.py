@@ -4,6 +4,8 @@ from hashlib import md5
 from datetime import datetime
 from typing import Optional, Union, Any, Dict, List
 
+import aiofiles
+import aiofiles.os
 import magic
 from loguru import logger
 from PIL import Image, ImageOps
@@ -234,14 +236,14 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
                 # Create path if it doesn't exist
                 os.makedirs(f"static/users/{db_obj.id}", exist_ok=True)
 
-                with open(f"static{curriculum_path}", "wb") as f:
-                    f.write(curriculum_data)
+                async with aiofiles.open(f"static{curriculum_path}", "wb") as f:
+                    await f.write(curriculum_data)
             else:
                 raise FileFormatException(detail="Curriculum format must be PDF.")
         elif db_obj.curriculum:
             # Delete curriculum
             try:
-                os.remove(f"static{db_obj._curriculum}")
+                await aiofiles.os.remove(f"static{db_obj._curriculum}")
             except:
                 pass  # ignore errors
 
