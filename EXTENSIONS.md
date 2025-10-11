@@ -1,15 +1,125 @@
 # NEI Platform Extensions Guide
 
-This guide explains how to control which extensions are loaded in the NEI Platform.
+This guide explains how to manage extensions in the NEI Platform, including starting the platform with extensions and controlling their lifecycle.
 
 ## Overview
 
-The NEI Platform supports extensions that can be enabled or disabled without modifying the main codebase. Extensions are controlled via the `ENABLED_EXTENSIONS` environment variable.
+The NEI Platform supports extensions that can be enabled or disabled without modifying the main codebase. Extensions are controlled via the `ENABLED_EXTENSIONS` environment variable and managed through automated scripts.
+
+## Quick Start
+
+### Start Platform with Extensions
+
+```bash
+# Start with no extensions
+./start-platform.sh
+
+# Start with Rally extension
+ENABLED_EXTENSIONS="rally" ./start-platform.sh
+
+# Start with multiple extensions
+ENABLED_EXTENSIONS="rally,gala" ./start-platform.sh
+```
+
+### Manual Extension Control
+
+```bash
+# Disable all extensions
+ENABLED_EXTENSIONS="" ./scripts/manage-extensions.sh
+
+# Enable Rally only
+ENABLED_EXTENSIONS="rally" ./scripts/manage-extensions.sh
+
+# Enable multiple extensions
+ENABLED_EXTENSIONS="rally,gala" ./scripts/manage-extensions.sh
+```
 
 ## Available Extensions
 
 - **rally**: Rally Tascas extension (team management, checkpoints, scoring)
 - **gala**: Gala extension (event management)
+
+## Generic Extension Management System
+
+The platform uses a generic extension management system that:
+
+- **Auto-discovers** extensions in `extensions/*/` directories
+- **Generates nginx configurations** dynamically based on extension manifests
+- **Manages container lifecycle** automatically (start/stop)
+- **Works with any extension** following the standard structure
+- **No hardcoded logic** - completely generic
+
+### How It Works
+
+1. **Discovery**: Scans `extensions/*/compose.override.yml` files
+2. **Configuration**: Reads `manifest.json` for API/web ports and metadata
+3. **Nginx Generation**: Creates enabled/disabled nginx configs automatically
+4. **Container Management**: Starts/stops extension services based on `ENABLED_EXTENSIONS`
+5. **Proxy Restart**: Applies nginx configuration changes
+
+### Extension Structure
+
+Each extension must follow this structure:
+
+```
+extensions/extension-name/
+├── manifest.json          # Extension metadata (ports, scopes, etc.)
+├── compose.override.yml   # Docker Compose override
+├── api-extension/         # API service
+└── web-extension/         # Web service
+```
+
+### Manifest Format
+
+```json
+{
+  "name": "extension-name",
+  "version": "1.0.0",
+  "api": {
+    "port": "8003"
+  },
+  "web": {
+    "port": "3003"
+  },
+  "scopes": [
+    { "name": "manager-extension", "description": "Manage extension data" }
+  ],
+  "nav": [
+    { "label": "Extension", "href": "/extension", "requiresScopes": ["manager-extension", "admin"] }
+  ]
+}
+```
+
+## External Nginx Support
+
+The generic extension management system can be adapted for external nginx servers:
+
+### How It Works with External Nginx
+
+1. **Config Generation**: Script generates nginx configs in `proxy/locations.*.conf`
+2. **Config Deployment**: Copy generated configs to external nginx server
+3. **Nginx Reload**: Reload external nginx to apply changes
+
+### Example External Nginx Integration
+
+```bash
+# Generate extension nginx configs
+ENABLED_EXTENSIONS="rally" ./scripts/manage-extensions.sh
+
+# Copy configs to external nginx server
+scp proxy/locations.*.conf user@nginx-server:/etc/nginx/conf.d/
+
+# Reload external nginx
+ssh user@nginx-server "nginx -s reload"
+```
+
+### Production Deployment
+
+The system works seamlessly with the existing GitHub Actions deploy workflow:
+
+- **Extension Selection**: Choose extensions via GitHub Actions input
+- **Automatic Deployment**: Extension containers and nginx configs deployed automatically
+- **Environment Variable Control**: `ENABLED_EXTENSIONS` controls everything
 
 ## Extension Control Methods
 
