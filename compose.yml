@@ -55,6 +55,7 @@ services:
       POSTGRES_PASSWORD: postgres
       JWT_SECRET_KEY_PATH: /jwt.key
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
+      ENABLED_EXTENSIONS: ${ENABLED_EXTENSIONS:-}  # Comma-separated list of enabled extensions (empty = no extensions)
     volumes:
       - ./api-nei:/api_nei
       - ./extensions:/extensions:ro

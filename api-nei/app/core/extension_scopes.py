@@ -107,9 +107,27 @@ def load_extension_scopes() -> Dict[str, str]:
     return ExtensionScopeRegistry.get_scope_dict()
 
 
+def _get_enabled_extensions() -> set[str] | None:
+    """Get the list of enabled extensions from environment variable.
+    
+    Returns:
+        - None: ENABLED_EXTENSIONS not set (load all extensions for backward compatibility)
+        - Empty set: ENABLED_EXTENSIONS is set but empty (load no extensions)
+        - Set with extensions: ENABLED_EXTENSIONS contains specific extensions
+    """
+    enabled_extensions = os.getenv("ENABLED_EXTENSIONS")
+    if enabled_extensions is None:
+        return None  # Not set - backward compatibility, load all
+    if not enabled_extensions.strip():
+        return set()  # Set but empty - load no extensions
+    return set(ext.strip() for ext in enabled_extensions.split(",") if ext.strip())
+
+
 def _iter_extension_manifests(base_dirs: List[str]) -> List[str]:
     """Find all extension manifest.json files under provided base directories."""
     manifests: List[str] = []
+    enabled_extensions = _get_enabled_extensions()
+    
     for base in base_dirs:
         try:
             if not base:
@@ -117,6 +135,13 @@ def _iter_extension_manifests(base_dirs: List[str]) -> List[str]:
             if not os.path.isdir(base):
                 continue
             for entry in os.listdir(base):
+                # Only include extensions that are explicitly enabled
+                # If ENABLED_EXTENSIONS is set but empty, no extensions should be loaded
+                # If ENABLED_EXTENSIONS is not set, load all extensions (backward compatibility)
+                if enabled_extensions is not None and entry not in enabled_extensions:
+                    logger.info(f"Skipping {entry} extension - not in ENABLED_EXTENSIONS")
+                    continue
+                    
                 manifest_path = os.path.join(base, entry, "manifest.json")
                 if os.path.isfile(manifest_path):
                     manifests.append(manifest_path)

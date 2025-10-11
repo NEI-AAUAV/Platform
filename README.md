@@ -2,6 +2,28 @@
 
 **[NEI Platform Documentation](https://nei-aauav.github.io/Platform-Documentation)**
 
+## Quick Start
+
+### Running the Platform
+
+```bash
+# Start all services
+docker-compose up -d
+
+# Start with specific extensions (see EXTENSIONS.md for details)
+echo "ENABLED_EXTENSIONS=rally" > .env
+docker-compose up -d --build api_nei
+```
+
+### Extension Control
+
+See [EXTENSIONS.md](./EXTENSIONS.md) for detailed information on how to control which extensions are loaded.
+
+**Quick Examples:**
+- **No extensions**: `ENABLED_EXTENSIONS=` or no `.env` file
+- **Rally only**: `ENABLED_EXTENSIONS=rally`
+- **Multiple extensions**: `ENABLED_EXTENSIONS=rally,gala`
+
 ## Contributors
 
 **2021 Mandate**
