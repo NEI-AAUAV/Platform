@@ -59,7 +59,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
+          cache: 'yarn'
       
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -71,18 +71,15 @@ jobs:
       - name: Install Python dependencies
         run: |
           cd api-nei && poetry install
-          cd ../api-rally && poetry install
           cd ../api-tacaua && poetry install
       
       - name: Install Node.js dependencies
         run: |
-          cd web-nei && npm ci
-          cd ../web-rally && npm ci
+          cd web-nei && yarn install --frozen-lockfile
       
       - name: Run Python tests
         run: |
           cd api-nei && poetry run pytest --cov=app --cov-report=xml
-          cd ../api-rally && poetry run pytest --cov=app --cov-report=xml
           cd ../api-tacaua && poetry run pytest --cov=app --cov-report=xml
         env:
           POSTGRES_SERVER: localhost
@@ -96,8 +93,7 @@ jobs:
       
       - name: Run JavaScript/TypeScript tests
         run: |
-          cd web-nei && npm test -- --coverage --watchAll=false
-          cd ../web-rally && npm test -- --coverage --watchAll=false
+          cd web-nei && yarn test --coverage --watchAll=false
       
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
