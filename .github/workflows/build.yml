@@ -81,7 +81,7 @@ jobs:
 
       - name: Install Node.js dependencies
         run: |
-          cd web-nei && yarn install
+          cd web-nei && yarn install --frozen-lockfile || yarn install
       
       - name: Create test database
         run: |
