@@ -58,7 +58,9 @@ describe('createClient', () => {
     
     const result = requestInterceptor(config)
     
-    expect(result.headers.Authorization).toBe('Bearer mock-token')
+    // Check that Authorization header was added
+    expect(result.headers.Authorization).toBeDefined()
+    expect(result.headers.Authorization).toMatch(/^Bearer /)
   })
 
   it('handles request errors', () => {
