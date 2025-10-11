@@ -31,8 +31,10 @@ const DetailsContents = ({ contents }) => {
     let contentsNode = contentsRoot;
 
     for (const path of contents) {
-      const parts = path.replace(/\/+$/, "").split("/"),
-        [fileName] = parts.splice(-1);
+      // Safe path cleaning - avoid ReDoS vulnerability
+      const cleanPath = path.endsWith('/') ? path.slice(0, -1) : path;
+      const parts = cleanPath.split("/");
+      const [fileName] = parts.splice(-1);
 
       // Navigate through tree path while creating nodes if they don't exist
       for (const part of parts) {
