@@ -5,7 +5,6 @@ import Image from "react-bootstrap/Image";
 
 import TextList from "../../components/TextList";
 import SeniorsCard from "./SeniorsCard";
-import Typist from "react-typist";
 
 import service from "services/NEIService";
 
@@ -107,7 +106,7 @@ export function Component() {
   return (
     <div className="d-flex flex-column mb-5 flex-wrap pb-5">
       <h2 className="mb-5 text-center">
-        {years && <Typist>{"Finalistas de " + course?.toUpperCase()}</Typist>}
+        {years && {"Finalistas de " + course?.toUpperCase()}}
       </h2>
 
       <Tabs tabs={years} value={selectedYear} onChange={setSelectedYear} />

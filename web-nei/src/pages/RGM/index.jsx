@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 
 import Tabs from "components/Tabs";
 
-import Typist from "react-typist";
 
 import { DownloadIcon } from "assets/icons/google";
 
@@ -97,7 +96,7 @@ export function Component() {
     <div className="d-flex flex-column flex-wrap">
       <div style={{ whiteSpace: "pre", overflowWrap: "break-word" }}>
         <h2 className="mb-5 text-center">
-          <Typist>Arquivo da Mesa da RGM</Typist>
+          Arquivo da Mesa da RGM
         </h2>
       </div>
       <Tabs

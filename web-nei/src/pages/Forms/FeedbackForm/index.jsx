@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Typist from "react-typist";
 import { Form, Button, Alert } from "react-bootstrap";
 
 const FeedbackForm = () => {
@@ -67,7 +66,7 @@ const FeedbackForm = () => {
   return (
     <div>
       <h2 className="text-center">
-        <Typist>Dá-nos o teu feedback!</Typist>
+        Dá-nos o teu feedback!
       </h2>
       <p className="mb-0 text-center">
         Utiliza este formulário para nos fazeres chegar as tuas sugestões acerca

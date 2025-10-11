@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import Typist from "react-typist";
 import { motion, AnimatePresence } from "framer-motion";
 import { Spinner } from "react-bootstrap";
 import YoutubeEmbed from "../../components/YoutubeEmbed";

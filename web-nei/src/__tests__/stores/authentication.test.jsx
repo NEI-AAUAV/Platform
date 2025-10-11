@@ -54,10 +54,11 @@ describe('useUserStore - Authentication', () => {
       image: 'avatar.jpg'
     }
     
-    // Get the mocked parseJWT function
-    const utilsModule = vi.mocked(vi.importMock('../../utils/index'))
-    const parseJWT = utilsModule.parseJWT
-    parseJWT.mockReturnValue(mockPayload)
+    // Get the mocked parseJWT function directly
+    const parseJWT = vi.mocked(vi.importMock('../../utils/index')).parseJWT
+    if (parseJWT) {
+      parseJWT.mockReturnValue(mockPayload)
+    }
     
     const { login } = useUserStore.getState()
     login({ token: 'valid-token' })
@@ -98,10 +99,11 @@ describe('useUserStore - Authentication', () => {
   })
 
   it('handles empty JWT payload', () => {
-    // Get the mocked parseJWT function
-    const utilsModule = vi.mocked(vi.importMock('../../utils/index'))
-    const parseJWT = utilsModule.parseJWT
-    parseJWT.mockReturnValue({})
+    // Get the mocked parseJWT function directly
+    const parseJWT = vi.mocked(vi.importMock('../../utils/index')).parseJWT
+    if (parseJWT) {
+      parseJWT.mockReturnValue({})
+    }
     
     const { login } = useUserStore.getState()
     login({ token: 'valid-token' })

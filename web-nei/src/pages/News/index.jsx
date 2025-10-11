@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import NewsList from "./NewsList";
 import PageNav from "../../components/PageNav";
 import FilterSelect from "../../components/Filters/FilterSelect";
-import Typist from 'react-typist';
 import { Spinner } from 'react-bootstrap';
 import service from 'services/NEIService';
 
@@ -57,7 +56,7 @@ const News = () => {
 
     return (
         <div className="d-flex flex-column flex-wrap">
-            <h2 className="text-center"><Typist>Notícias</Typist></h2>
+            <h2 className="text-center">Notícias</h2>
 
             <FilterSelect
                 accordion={true}

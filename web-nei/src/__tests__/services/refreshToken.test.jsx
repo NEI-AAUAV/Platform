@@ -20,7 +20,7 @@ vi.mock('stores/useUserStore', () => ({
 // Mock config
 vi.mock('config', () => ({
   default: {
-    API_NEI_URL: 'http://localhost:8000'
+    API_NEI_URL: 'http://localhost/api/nei/v1'
   }
 }))
 
@@ -87,7 +87,7 @@ describe('refreshToken', () => {
     await refreshToken()
     
     expect(mockedAxios.create).toHaveBeenCalledWith({
-      baseURL: 'http://localhost:8000',
+      baseURL: 'http://localhost/api/nei/v1',
       timeout: 5000,
       headers: {
         Authorization: 'Bearer mock-token'
