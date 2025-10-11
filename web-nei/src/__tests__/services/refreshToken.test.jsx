@@ -1,9 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+// Mock axios before importing the service
+vi.mock('axios', () => ({
+  default: {
+    create: vi.fn()
+  }
+}))
+
 import axios from 'axios'
 import { refreshToken } from '../../services/client'
 
-// Mock axios
-vi.mock('axios')
 const mockedAxios = vi.mocked(axios)
 
 // Mock the user store
@@ -39,6 +45,7 @@ describe('refreshToken', () => {
       post: vi.fn()
     }
     
+    // Mock axios.create to return our mock instance
     mockedAxios.create.mockReturnValue(mockAxiosInstance)
   })
 
@@ -54,8 +61,8 @@ describe('refreshToken', () => {
     const result = await refreshToken()
     
     expect(result).toBe('new-access-token')
-    // Note: The actual service might not call our mock functions
-    // so we just check the return value
+    expect(mockedAxios.create).toHaveBeenCalled()
+    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/refresh/')
   })
 
   it('handles refresh token failure', async () => {
@@ -64,8 +71,8 @@ describe('refreshToken', () => {
     const result = await refreshToken()
     
     expect(result).toBeUndefined()
-    // Note: The actual service might not call our mock functions
-    // so we just check the return value
+    expect(mockedAxios.create).toHaveBeenCalled()
+    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/refresh/')
   })
 
   it('uses correct API endpoint', async () => {
