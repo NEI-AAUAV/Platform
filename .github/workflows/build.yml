@@ -125,19 +125,26 @@ jobs:
           echo "SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}"
           echo "SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}"
       
-      - name: Add SonarQube Certificate to Java Trust Store
+      - name: Create Custom Trust Store with SonarQube Certificate
         run: |
-          echo "Adding SonarQube certificate to Java trust store..."
+          echo "Creating custom trust store with SonarQube certificate..."
           # Download the certificate from your SonarQube server
           echo | openssl s_client -servername nei.web.ua.pt -connect nei.web.ua.pt:443 2>/dev/null | openssl x509 -outform PEM > sonarqube.crt
           
-          # Add certificate to Java trust store
-          keytool -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt -trustcacerts -importcert -alias sonarqube-cert -file sonarqube.crt
+          # Create a custom trust store with the SonarQube certificate
+          keytool -genkeypair -alias dummy -keyalg RSA -keysize 2048 -storetype JKS -keystore custom-truststore.jks -storepass changeit -keypass changeit -dname "CN=dummy" -validity 1
+          keytool -delete -alias dummy -keystore custom-truststore.jks -storepass changeit
+          keytool -keystore custom-truststore.jks -storepass changeit -noprompt -trustcacerts -importcert -alias sonarqube-cert -file sonarqube.crt
           
-          echo "Certificate added successfully"
+          echo "Custom trust store created successfully"
       
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
+        with:
+          args: >
+            -Djavax.net.ssl.trustStore=custom-truststore.jks
+            -Djavax.net.ssl.trustStorePassword=changeit
+            -Djavax.net.ssl.trustStoreType=JKS
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
