@@ -21,7 +21,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
-          POSTGRES_DB: postgres_test_test
+          POSTGRES_DB: postgres_test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -83,6 +83,20 @@ jobs:
         run: |
           cd web-nei && yarn install --frozen-lockfile
       
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+      
+      - name: Create test database
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres_test -c "CREATE DATABASE postgres_test_test;"
+        env:
+          POSTGRES_SERVER: localhost
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres_test
+      
       - name: Run Python tests
         run: |
           cd api-nei && poetry run pytest --cov=app --cov-report=xml
@@ -90,7 +104,7 @@ jobs:
           POSTGRES_SERVER: localhost
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
-          POSTGRES_DB: postgres_test_test
+          POSTGRES_DB: postgres_test
           MONGO_SERVER: localhost
           MONGO_USER: mongo
           MONGO_PASSWORD: mongo
