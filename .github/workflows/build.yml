@@ -125,6 +125,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_SCANNER_OPTS: -Djavax.net.ssl.trustStoreType=JKS -Djavax.net.ssl.trustStore=/dev/null
       
       # Uncomment to fail the job when Quality Gate is red
       - name: SonarQube Quality Gate
