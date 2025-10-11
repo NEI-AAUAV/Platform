@@ -120,21 +120,35 @@ jobs:
           MONGO_PASSWORD: mongo
           MONGO_DB: mongo_test
       
-      - name: Debug SonarQube URL
-        run: |
-          echo "SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}"
-          echo "SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}"
-      
       - name: Create Custom Trust Store with SonarQube Certificate
         run: |
           echo "Creating custom trust store with SonarQube certificate..."
+          
           # Download the certificate from your SonarQube server
+          echo "Downloading certificate from nei.web.ua.pt:443..."
           echo | openssl s_client -servername nei.web.ua.pt -connect nei.web.ua.pt:443 2>/dev/null | openssl x509 -outform PEM > sonarqube.crt
           
+          # Check if certificate was downloaded
+          if [ -f sonarqube.crt ]; then
+            echo "Certificate downloaded successfully"
+            echo "Certificate content (first few lines):"
+            head -5 sonarqube.crt
+          else
+            echo "ERROR: Failed to download certificate"
+            exit 1
+          fi
+          
           # Create a custom trust store with the SonarQube certificate
+          echo "Creating custom trust store..."
           keytool -genkeypair -alias dummy -keyalg RSA -keysize 2048 -storetype JKS -keystore custom-truststore.jks -storepass changeit -keypass changeit -dname "CN=dummy" -validity 1
           keytool -delete -alias dummy -keystore custom-truststore.jks -storepass changeit
+          
+          echo "Adding SonarQube certificate to trust store..."
           keytool -keystore custom-truststore.jks -storepass changeit -noprompt -trustcacerts -importcert -alias sonarqube-cert -file sonarqube.crt
+          
+          # Verify the certificate was added
+          echo "Verifying certificate in trust store..."
+          keytool -keystore custom-truststore.jks -storepass changeit -list | grep sonarqube-cert
           
           echo "Custom trust store created successfully"
       
