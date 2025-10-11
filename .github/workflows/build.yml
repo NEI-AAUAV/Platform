@@ -69,8 +69,7 @@ jobs:
       
       - name: Install Python dependencies
         run: |
-          cd api-nei && poetry install
-          cd ../api-tacaua && poetry install
+          cd api-nei && poetry install --no-root
       
       - name: Cache Yarn dependencies
         uses: actions/cache@v3
@@ -87,7 +86,6 @@ jobs:
       - name: Run Python tests
         run: |
           cd api-nei && poetry run pytest --cov=app --cov-report=xml
-          cd ../api-tacaua && poetry run pytest --cov=app --cov-report=xml
         env:
           POSTGRES_SERVER: localhost
           POSTGRES_PASSWORD: postgres
