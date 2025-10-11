@@ -81,7 +81,7 @@ jobs:
 
       - name: Install Node.js dependencies
         run: |
-          cd web-nei && yarn install --frozen-lockfile
+          cd web-nei && yarn install
       
       - name: Create test database
         run: |
@@ -109,7 +109,7 @@ jobs:
       
       - name: Run JavaScript/TypeScript tests
         run: |
-          cd web-nei && yarn test --run
+          cd web-nei && yarn test --run --reporter=verbose
         env:
           POSTGRES_SERVER: localhost
           POSTGRES_PASSWORD: postgres
