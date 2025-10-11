@@ -83,13 +83,10 @@ jobs:
         run: |
           cd web-nei && yarn install --frozen-lockfile
       
-      - name: Install PostgreSQL client
+      - name: Create test database
         run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-client
-      
-      - name: Create test database
-        run: |
           PGPASSWORD=postgres psql -h localhost -U postgres -d postgres_test -c "CREATE DATABASE postgres_test_test;"
         env:
           POSTGRES_SERVER: localhost
@@ -112,7 +109,16 @@ jobs:
       
       - name: Run JavaScript/TypeScript tests
         run: |
-          cd web-nei && yarn test --coverage --watchAll=false
+          cd web-nei && yarn test --run
+        env:
+          POSTGRES_SERVER: localhost
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres_test
+          MONGO_SERVER: localhost
+          MONGO_USER: mongo
+          MONGO_PASSWORD: mongo
+          MONGO_DB: mongo_test
       
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6

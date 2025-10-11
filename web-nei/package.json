@@ -54,6 +54,9 @@
     "start": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "analyze": "source-map-explorer build/static/js/*.js --html ./sme-result.html && open sme-result.html"
   },
   "eslintConfig": {
@@ -74,11 +77,15 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
     "@types/node": "^20.5.7",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@types/react-typist": "^2.0.3",
     "@vitejs/plugin-react": "^4.0.3",
+    "jsdom": "^22.1.0",
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.4",
     "rollup-plugin-visualizer": "^5.9.2",
@@ -89,7 +96,8 @@
     "vite": "^4.5.5",
     "vite-plugin-image-optimizer": "^1.1.6",
     "vite-plugin-svgr": "^3.2.0",
-    "vite-tsconfig-paths": "^4.2.0"
+    "vite-tsconfig-paths": "^4.2.0",
+    "vitest": "^0.34.0"
   },
   "peerDependencies": {
     "@emotion/react": "^11.10.0"
