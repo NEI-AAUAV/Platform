@@ -28,12 +28,18 @@ describe('refreshToken', () => {
   let mockAxiosInstance
   let mockLogin
   let mockLogout
+  let mockGetState
 
   beforeEach(() => {
     vi.clearAllMocks()
     
     mockLogin = vi.fn()
     mockLogout = vi.fn()
+    mockGetState = vi.fn(() => ({
+      token: 'mock-token',
+      login: mockLogin,
+      logout: mockLogout
+    }))
     
     mockAxiosInstance = {
       post: vi.fn()
@@ -41,14 +47,10 @@ describe('refreshToken', () => {
     
     mockedAxios.create.mockReturnValue(mockAxiosInstance)
     
-    // Mock the useUserStore
+    // Mock the useUserStore module
     vi.doMock('stores/useUserStore', () => ({
       useUserStore: {
-        getState: vi.fn(() => ({
-          token: 'mock-token',
-          login: mockLogin,
-          logout: mockLogout
-        }))
+        getState: mockGetState
       }
     }))
   })
