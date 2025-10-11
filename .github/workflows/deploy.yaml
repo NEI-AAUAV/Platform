@@ -90,6 +90,19 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Generate extension nginx configs
+      run: |
+        # Generate nginx configs for external nginx
+        ENABLED_EXTENSIONS="${{ github.event.inputs.extension }}" ./scripts/generate-external-nginx-configs.sh
+        
+        # Copy generated configs to Infrastructure nginx
+        if [ -d "../Infrastructure/nginx/conf.d" ]; then
+          cp nginx-configs/locations.*.conf ../Infrastructure/nginx/conf.d/ 2>/dev/null || true
+          echo "Extension nginx configs copied to Infrastructure"
+        else
+          echo "Infrastructure nginx directory not found"
+        fi
+
     - name: Deploy with docker-compose
       run: |
         if [ "${{ github.event.inputs.extension }}" = "rally" ]; then

@@ -9,7 +9,7 @@ set -e
 COMPOSE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ENABLED_EXTENSIONS="${ENABLED_EXTENSIONS:-}"
 
-echo "🔧 Managing extensions based on ENABLED_EXTENSIONS='$ENABLED_EXTENSIONS'"
+echo "Managing extensions based on ENABLED_EXTENSIONS='$ENABLED_EXTENSIONS'"
 
 # Function to check if extension is enabled
 is_extension_enabled() {
@@ -47,7 +47,7 @@ generate_nginx_config() {
     local manifest_file="$COMPOSE_DIR/extensions/$extension/manifest.json"
     
     if [[ ! -f "$manifest_file" ]]; then
-        echo "⚠️  Manifest file not found: $manifest_file"
+        echo "Manifest file not found: $manifest_file"
         return
     fi
     
@@ -99,7 +99,7 @@ manage_extension() {
     local override_file="$COMPOSE_DIR/extensions/$extension/compose.override.yml"
     
     if [[ ! -f "$override_file" ]]; then
-        echo "⚠️  Override file not found: $override_file"
+        echo "Override file not found: $override_file"
         return
     fi
     
@@ -107,10 +107,10 @@ manage_extension() {
     generate_nginx_config "$extension"
     
     if is_extension_enabled "$extension"; then
-        echo "✅ Starting $extension extension..."
+        echo "Starting $extension extension..."
         docker-compose -f "$COMPOSE_DIR/compose.yml" -f "$override_file" up -d
     else
-        echo "❌ Stopping $extension extension..."
+        echo "Stopping $extension extension..."
         # Get extension services and stop them
         local services=$(get_extension_services "$override_file")
         if [[ -n "$services" ]]; then
@@ -121,19 +121,19 @@ manage_extension() {
 
 # Function to restart proxy to apply nginx config changes
 restart_proxy() {
-    echo "🔄 Restarting proxy to apply nginx configuration changes..."
+    echo "Restarting proxy to apply nginx configuration changes..."
     docker-compose -f "$COMPOSE_DIR/compose.yml" restart proxy || true
     sleep 3
     
     # Verify nginx configuration is applied correctly
-    echo "🔍 Verifying nginx configuration..."
+    echo "Verifying nginx configuration..."
     for extension in rally gala; do
         if [[ -f "$COMPOSE_DIR/proxy/locations.$extension.conf" ]]; then
             local expected_config=$(cat "$COMPOSE_DIR/proxy/locations.$extension.conf")
             local container_config=$(docker exec platform-proxy-1 cat "/etc/nginx/conf.d/locations.$extension.conf" 2>/dev/null || echo "")
             
             if [[ "$expected_config" != "$container_config" ]]; then
-                echo "⚠️  Nginx config mismatch for $extension, forcing container recreation..."
+                echo "Nginx config mismatch for $extension, forcing container recreation..."
                 docker-compose -f "$COMPOSE_DIR/compose.yml" stop proxy
                 docker-compose -f "$COMPOSE_DIR/compose.yml" rm -f proxy
                 docker-compose -f "$COMPOSE_DIR/compose.yml" up -d proxy
@@ -161,11 +161,11 @@ discover_extensions() {
 }
 
 # Discover and manage all extensions
-echo "🔍 Discovering extensions..."
+echo "Discovering extensions..."
 extensions=$(discover_extensions)
 
 if [[ -z "$extensions" ]]; then
-    echo "ℹ️  No extensions found"
+    echo "No extensions found"
 else
     echo "$extensions" | while read -r extension; do
         if [[ -n "$extension" ]]; then
@@ -177,4 +177,4 @@ fi
 # Restart proxy to apply nginx configuration changes
 restart_proxy
 
-echo "🎉 Extension management complete!"
+echo "Extension management complete!"
