@@ -184,3 +184,4 @@ class ExtensionPluginManager:
 # Global plugin manager instance
 plugin_manager = ExtensionPluginManager()
 
+

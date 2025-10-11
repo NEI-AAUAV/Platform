@@ -57,6 +57,7 @@ services:
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
     volumes:
       - ./api-nei:/api_nei
+      - ./extensions:/extensions:ro
       - ./dev-keys/jwt.key:/jwt.key:ro
       - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:

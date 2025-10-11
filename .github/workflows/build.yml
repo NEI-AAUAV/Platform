@@ -1,0 +1,111 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      mongodb:
+        image: mongo:6.0.5-jammy
+        env:
+          MONGO_INITDB_ROOT_USERNAME: mongo
+          MONGO_INITDB_ROOT_PASSWORD: mongo
+          MONGO_INITDB_DATABASE: mongo_test
+        options: >-
+          --health-cmd "echo 'db.runCommand(\"ping\").ok' | mongosh --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      
+      - name: Install Python dependencies
+        run: |
+          cd api-nei && poetry install
+          cd ../api-rally && poetry install
+          cd ../api-tacaua && poetry install
+      
+      - name: Install Node.js dependencies
+        run: |
+          cd web-nei && npm ci
+          cd ../web-rally && npm ci
+      
+      - name: Run Python tests
+        run: |
+          cd api-nei && poetry run pytest --cov=app --cov-report=xml
+          cd ../api-rally && poetry run pytest --cov=app --cov-report=xml
+          cd ../api-tacaua && poetry run pytest --cov=app --cov-report=xml
+        env:
+          POSTGRES_SERVER: localhost
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres_test
+          MONGO_SERVER: localhost
+          MONGO_USER: mongo
+          MONGO_PASSWORD: mongo
+          MONGO_DB: mongo_test
+      
+      - name: Run JavaScript/TypeScript tests
+        run: |
+          cd web-nei && npm test -- --coverage --watchAll=false
+          cd ../web-rally && npm test -- --coverage --watchAll=false
+      
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      
+      # Uncomment to fail the job when Quality Gate is red
+      - name: SonarQube Quality Gate
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
