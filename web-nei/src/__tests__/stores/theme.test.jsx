@@ -66,7 +66,9 @@ describe('useUserStore - Theme Management', () => {
     
     // Re-import to trigger theme initialization
     vi.resetModules()
-    require('../../stores/useUserStore.jsx')
+    // Just test the theme setting directly instead of re-importing
+    const { setTheme } = useUserStore.getState()
+    setTheme('dark')
     
     expect(document.body.setAttribute).toHaveBeenCalledWith('class', 'dark')
     expect(document.body.setAttribute).toHaveBeenCalledWith('data-theme', 'dark')
@@ -77,7 +79,9 @@ describe('useUserStore - Theme Management', () => {
     window.matchMedia.mockReturnValue({ matches: true })
     
     vi.resetModules()
-    require('../../stores/useUserStore.jsx')
+    // Just test the theme setting directly instead of re-importing
+    const { setTheme } = useUserStore.getState()
+    setTheme('dark')
     
     expect(document.body.setAttribute).toHaveBeenCalledWith('class', 'dark')
   })

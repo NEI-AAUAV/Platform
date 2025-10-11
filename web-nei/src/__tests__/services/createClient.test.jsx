@@ -18,8 +18,24 @@ vi.mock('stores/useUserStore', () => ({
 }))
 
 describe('createClient', () => {
+  let mockAxiosInstance
+
   beforeEach(() => {
     vi.clearAllMocks()
+    
+    // Create a mock axios instance with interceptors
+    mockAxiosInstance = {
+      interceptors: {
+        request: {
+          use: vi.fn()
+        },
+        response: {
+          use: vi.fn()
+        }
+      }
+    }
+    
+    mockedAxios.create.mockReturnValue(mockAxiosInstance)
   })
 
   it('creates axios client with correct baseURL', () => {
@@ -30,40 +46,41 @@ describe('createClient', () => {
       baseURL,
       timeout: 5000
     })
+    expect(client).toBe(mockAxiosInstance)
   })
 
   it('adds authorization header to requests', () => {
-    const client = createClient('http://test-api.com')
+    createClient('http://test-api.com')
     
-    // Get the request interceptor
-    const requestInterceptor = mockedAxios.create.mock.calls[0][0]
+    // Get the request interceptor function
+    const requestInterceptor = mockAxiosInstance.interceptors.request.use.mock.calls[0][0]
     const config = { headers: {} }
     
-    const result = requestInterceptor.request.use.mock.calls[0][0](config)
+    const result = requestInterceptor(config)
     
     expect(result.headers.Authorization).toBe('Bearer mock-token')
   })
 
   it('handles request errors', () => {
-    const client = createClient('http://test-api.com')
+    createClient('http://test-api.com')
     
     // Get the request interceptor error handler
-    const requestInterceptor = mockedAxios.create.mock.calls[0][0]
+    const errorHandler = mockAxiosInstance.interceptors.request.use.mock.calls[0][1]
     const error = new Error('Request failed')
     
-    const result = requestInterceptor.request.use.mock.calls[0][1](error)
+    const result = errorHandler(error)
     
     expect(result).rejects.toThrow('Request failed')
   })
 
   it('processes successful responses', () => {
-    const client = createClient('http://test-api.com')
+    createClient('http://test-api.com')
     
     // Get the response interceptor
-    const responseInterceptor = mockedAxios.create.mock.calls[0][0]
+    const responseInterceptor = mockAxiosInstance.interceptors.response.use.mock.calls[0][0]
     const response = { data: { message: 'success' } }
     
-    const result = responseInterceptor.response.use.mock.calls[0][0](response)
+    const result = responseInterceptor(response)
     
     expect(result).toEqual({ message: 'success' })
   })

@@ -25,8 +25,32 @@ vi.mock('config', () => ({
 }))
 
 describe('refreshToken', () => {
+  let mockAxiosInstance
+  let mockLogin
+  let mockLogout
+
   beforeEach(() => {
     vi.clearAllMocks()
+    
+    mockLogin = vi.fn()
+    mockLogout = vi.fn()
+    
+    mockAxiosInstance = {
+      post: vi.fn()
+    }
+    
+    mockedAxios.create.mockReturnValue(mockAxiosInstance)
+    
+    // Mock the useUserStore
+    vi.doMock('stores/useUserStore', () => ({
+      useUserStore: {
+        getState: vi.fn(() => ({
+          token: 'mock-token',
+          login: mockLogin,
+          logout: mockLogout
+        }))
+      }
+    }))
   })
 
   it('successfully refreshes token', async () => {
@@ -36,36 +60,27 @@ describe('refreshToken', () => {
       }
     }
     
-    mockedAxios.create.mockReturnValue({
-      post: vi.fn().mockResolvedValue(mockResponse)
-    })
+    mockAxiosInstance.post.mockResolvedValue(mockResponse)
 
     const result = await refreshToken()
     
     expect(result).toBe('new-access-token')
-    const { useUserStore } = await import('stores/useUserStore')
-    expect(useUserStore.getState().login).toHaveBeenCalledWith({ 
+    expect(mockLogin).toHaveBeenCalledWith({ 
       token: 'new-access-token' 
     })
   })
 
   it('handles refresh token failure', async () => {
-    mockedAxios.create.mockReturnValue({
-      post: vi.fn().mockRejectedValue(new Error('Refresh failed'))
-    })
+    mockAxiosInstance.post.mockRejectedValue(new Error('Refresh failed'))
 
     const result = await refreshToken()
     
     expect(result).toBeUndefined()
-    const { useUserStore } = await import('stores/useUserStore')
-    expect(useUserStore.getState().logout).toHaveBeenCalled()
+    expect(mockLogout).toHaveBeenCalled()
   })
 
   it('uses correct API endpoint', async () => {
-    const mockAxiosInstance = {
-      post: vi.fn().mockResolvedValue({ data: { access_token: 'token' } })
-    }
-    mockedAxios.create.mockReturnValue(mockAxiosInstance)
+    mockAxiosInstance.post.mockResolvedValue({ data: { access_token: 'token' } })
 
     await refreshToken()
     

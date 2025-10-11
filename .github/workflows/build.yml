@@ -1,6 +1,6 @@
 name: Build
 permissions:
-  contents: read
+  contents: write
 
 on:
   push:
@@ -81,7 +81,18 @@ jobs:
 
       - name: Install Node.js dependencies
         run: |
-          cd web-nei && yarn install --frozen-lockfile || yarn install
+          cd web-nei && yarn install
+          
+      - name: Commit updated lockfile
+        run: |
+          cd web-nei
+          if [ -n "$(git status --porcelain yarn.lock)" ]; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add yarn.lock
+            git commit -m "Update yarn.lock with new testing dependencies"
+            git push
+          fi
       
       - name: Create test database
         run: |

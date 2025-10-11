@@ -54,7 +54,8 @@ describe('useUserStore - Authentication', () => {
       image: 'avatar.jpg'
     }
     
-    const { parseJWT } = require('../../utils/index')
+    // Get the mocked parseJWT function
+    const parseJWT = vi.mocked(vi.importMock('../../utils/index')).parseJWT
     parseJWT.mockReturnValue(mockPayload)
     
     const { login } = useUserStore.getState()
@@ -96,7 +97,8 @@ describe('useUserStore - Authentication', () => {
   })
 
   it('handles empty JWT payload', () => {
-    const { parseJWT } = require('../../utils/index')
+    // Get the mocked parseJWT function
+    const parseJWT = vi.mocked(vi.importMock('../../utils/index')).parseJWT
     parseJWT.mockReturnValue({})
     
     const { login } = useUserStore.getState()
