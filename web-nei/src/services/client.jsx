@@ -14,7 +14,7 @@ function subscribeTokenRefresh(callback) {
 
 /** Resolve all pending requests with the new access token. */
 function processQueue(token = null) {
-  refreshSubscribers.map((callback) => callback(token));
+  refreshSubscribers.forEach((callback) => callback(token));
   refreshSubscribers = [];
 }
 
@@ -52,7 +52,7 @@ export const createClient = (baseURL) => {
     },
     (error) => {
       // Do something with request error
-      return Promise.reject(error);
+      return Promise.reject(error instanceof Error ? error : new Error(error));
     }
   );
 
@@ -91,7 +91,7 @@ export const createClient = (baseURL) => {
           });
         }
       }
-      return Promise.reject(error);
+      return Promise.reject(error instanceof Error ? error : new Error(error));
     }
   );
   return client;
