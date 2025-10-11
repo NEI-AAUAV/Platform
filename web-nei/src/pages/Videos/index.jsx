@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
+import Typist from "react-typist";
 import { motion } from "framer-motion";
 import { debounce } from "lodash";
 
@@ -111,7 +112,7 @@ export function Component() {
   return (
     <div>
       <h2 className="text-center">
-        Vídeos
+        <Typist>Vídeos</Typist>
       </h2>
 
       {/* TODO: filter videos */}

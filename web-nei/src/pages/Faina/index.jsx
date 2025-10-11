@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Spinner } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer-motion";
-
+import Typist from "react-typist";
 import service from "services/NEIService";
 import Tabs from "components/Tabs";
 import Popover, { UserPopover } from "components/Popover";
@@ -85,7 +85,7 @@ export function Component() {
     <div className="d-flex flex-column flex-wrap">
       <div style={{ whiteSpace: "pre", overflowWrap: "break-word" }}>
         <h2 className="mb-5 text-center">
-          Comissões de Faina
+          <Typist>Comissões de Faina</Typist>
         </h2>
       </div>
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Fragment } from "react";
+import Typist from "react-typist";
 import {motion} from "framer-motion";
 import service from "services/NEIService";
 import CardMerch from "components/CardMerch";
@@ -35,7 +36,7 @@ const Merchandising = () => {
   return (
     <div className="py-5">
       <h2 style={{ position: "relative" }} className="mb-5 text-center">
-        Merchandising
+        <Typist>Merchandising</Typist>
       </h2>
 
       {merchs && (

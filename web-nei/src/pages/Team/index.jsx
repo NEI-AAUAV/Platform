@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { Spinner } from "react-bootstrap";
+import Typist from "react-typist";
 import { motion } from "framer-motion";
 
 import service from "services/NEIService";
@@ -95,7 +96,7 @@ export function Component() {
   return (
     <div className="d-flex flex-column flex-wrap">
       <h2 className="text-center">
-        Equipa do NEI
+        <Typist>Equipa do NEI</Typist>
       </h2>
 
       <div className="my-10">

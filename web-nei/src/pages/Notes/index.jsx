@@ -7,6 +7,7 @@ import GridView from "./GridView";
 import PageNav from "../../components/PageNav";
 import Alert from "../../components/Alert";
 import Details from "./Details";
+import Typist from "react-typist";
 import CheckboxDropdown from "components/CheckboxDropdown";
 import data from "./data";
 
@@ -336,7 +337,7 @@ export function Component() {
     <div id="notes">
       <div className="mb-5 flex flex-col">
         <h2 className="mb-2 text-center">
-          Apontamentos
+          <Typist>Apontamentos</Typist>
         </h2>
         <Alert alert={alert} setAlert={setAlert} />
       </div>
