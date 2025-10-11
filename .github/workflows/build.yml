@@ -69,7 +69,7 @@ jobs:
       
       - name: Install Python dependencies
         run: |
-          cd api-nei && poetry install --no-root
+          cd api-nei && poetry install --no-root --with test
       
       - name: Cache Yarn dependencies
         uses: actions/cache@v3
