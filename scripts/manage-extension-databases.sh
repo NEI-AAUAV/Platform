@@ -3,6 +3,15 @@
 # Extension Database Management Script
 # Handles database schema creation/cleanup when extensions are enabled/disabled
 #
+# External dependencies and assumptions:
+#   - Requires 'psql' to be available on the host running this script.
+#   - PostgreSQL connection is controlled via the following environment variables:
+#       POSTGRES_SERVER (default: localhost)
+#       POSTGRES_USER (default: postgres)
+#       POSTGRES_PASSWORD (default: postgres)
+#       POSTGRES_DB (default: postgres)
+#   - If the database is only reachable inside Docker, ensure this script is run in the correct environment.
+#
 # Usage:
 #   ./manage-extension-databases.sh [--force-cleanup] [--only EXTENSION]
 #
@@ -33,6 +42,11 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --only)
+            if [[ $# -lt 2 ]] || [[ -z "$2" ]]; then
+                echo "Error: --only requires an extension name argument."
+                echo "Usage: $0 [--force-cleanup] [--only EXTENSION]"
+                exit 1
+            fi
             ONLY_EXTENSION="$2"
             shift 2
             ;;
@@ -50,6 +64,14 @@ if [[ "$FORCE_CLEANUP" == "true" ]]; then
 fi
 if [[ -n "$ONLY_EXTENSION" ]]; then
     echo "Only managing extension: $ONLY_EXTENSION"
+fi
+
+# Check if psql is available
+if ! command -v psql >/dev/null 2>&1; then
+    echo "Error: 'psql' command not found. Please install PostgreSQL client tools."
+    echo "On Ubuntu/Debian: sudo apt-get install postgresql-client"
+    echo "On CentOS/RHEL: sudo yum install postgresql"
+    exit 1
 fi
 
 # Function to check if extension is enabled
@@ -100,7 +122,7 @@ manage_extension_db() {
             ;;
         *)
             echo "Unknown extension: $extension"
-            return
+            return 1
             ;;
     esac
     
