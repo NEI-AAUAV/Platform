@@ -32,6 +32,12 @@ ENABLED_EXTENSIONS="rally" ./scripts/manage-extensions.sh
 
 # Enable multiple extensions
 ENABLED_EXTENSIONS="rally,gala" ./scripts/manage-extensions.sh
+
+# Force cleanup of all extension schemas (use with caution!)
+FORCE_CLEANUP=true ./scripts/manage-extension-databases.sh
+
+# Clean up only specific extension
+./scripts/manage-extension-databases.sh --only rally --force-cleanup
 ```
 
 ## Available Extensions

@@ -117,9 +117,9 @@ manage_extension() {
             docker-compose -f "$COMPOSE_DIR/compose.yml" -f "$override_file" stop $services || true
         fi
         
-        # Clean up extension database schema
-        echo "Cleaning up database schema for $extension..."
-        "$COMPOSE_DIR/scripts/manage-extension-databases.sh"
+        # Clean up extension database schemas
+        echo "Cleaning up database schemas for disabled extensions..."
+        FORCE_CLEANUP=true "$COMPOSE_DIR/scripts/manage-extension-databases.sh" --only "$extension"
     fi
 }
 
