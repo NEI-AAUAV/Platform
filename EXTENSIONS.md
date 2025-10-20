@@ -40,6 +40,28 @@ FORCE_CLEANUP=true ./scripts/manage-extension-databases.sh
 ./scripts/manage-extension-databases.sh --only rally --force-cleanup
 ```
 
+### Requirements for Database Management
+
+The `manage-extension-databases.sh` script requires:
+
+- **PostgreSQL client tools**: The `psql` command must be available on the host
+- **Environment variables** for database connection:
+  - `POSTGRES_SERVER` (default: localhost)
+  - `POSTGRES_USER` (default: postgres) 
+  - `POSTGRES_PASSWORD` (default: postgres)
+  - `POSTGRES_DB` (default: postgres)
+
+**Installation**:
+```bash
+# Ubuntu/Debian
+sudo apt-get install postgresql-client
+
+# CentOS/RHEL
+sudo yum install postgresql
+```
+
+**Note**: If your database is only reachable inside Docker, ensure the script runs in the correct environment (e.g., inside a container or with proper network access).
+
 ## Available Extensions
 
 - **rally**: Rally Tascas extension (team management, checkpoints, scoring)

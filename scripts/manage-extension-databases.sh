@@ -97,13 +97,19 @@ is_extension_enabled() {
 run_sql() {
     local sql="$1"
     local schema="$2"
-    PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_SERVER" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v schema="$schema" -c "$sql"
+    PGPASSWORD="$POSTGRES_PASSWORD" psql --no-psqlrc -v ON_ERROR_STOP=1 -h "$POSTGRES_SERVER" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v schema="$schema" -c "$sql"
 }
 
 # Function to check if schema exists
 schema_exists() {
     local schema="$1"
-    local result=$(PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_SERVER" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tA -v schema="$schema" -c "SELECT 1 FROM information_schema.schemata WHERE schema_name = :'schema' LIMIT 1;" 2>/dev/null)
+    local result
+    result=$(PGPASSWORD="$POSTGRES_PASSWORD" psql --no-psqlrc -v ON_ERROR_STOP=1 -h "$POSTGRES_SERVER" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tA -v schema="$schema" -c "SELECT 1 FROM information_schema.schemata WHERE schema_name = :'schema' LIMIT 1;" 2>/dev/null)
+    local status=$?
+    if [[ $status -ne 0 ]]; then
+        echo "Error: Failed to check if schema '$schema' exists (psql exited with status $status)" >&2
+        return $status
+    fi
     [[ "$result" == "1" ]]
 }
 
@@ -121,8 +127,8 @@ manage_extension_db() {
             schema="gala"
             ;;
         *)
-            echo "Unknown extension: $extension"
-            return 1
+            echo "Warning: Unknown extension '$extension' - skipping"
+            return 0
             ;;
     esac
     
@@ -186,7 +192,7 @@ fi
 
 for extension in $extensions; do
     if [[ -n "$extension" ]]; then
-        manage_extension_db "$extension"
+        manage_extension_db "$extension" || { echo "Skipping $extension due to error"; continue; }
     fi
 done
 
