@@ -10,7 +10,7 @@
 #   --force-cleanup    Force cleanup even when ENABLED_EXTENSIONS is empty
 #   --only EXTENSION   Only manage the specified extension
 
-set -e
+set -Eeuo pipefail
 
 COMPOSE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ENABLED_EXTENSIONS="${ENABLED_EXTENSIONS:-}"
@@ -71,16 +71,17 @@ is_extension_enabled() {
     return 1  # Disabled
 }
 
-# Function to run SQL command
+# Function to run SQL command with proper parameter binding
 run_sql() {
     local sql="$1"
-    PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_SERVER" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "$sql"
+    local schema="$2"
+    PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_SERVER" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v schema="$schema" -c "$sql"
 }
 
 # Function to check if schema exists
 schema_exists() {
     local schema="$1"
-    local result=$(PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_SERVER" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tA -c "SELECT 1 FROM information_schema.schemata WHERE schema_name = '$schema' LIMIT 1;" 2>/dev/null)
+    local result=$(PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_SERVER" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tA -v schema="$schema" -c "SELECT 1 FROM information_schema.schemata WHERE schema_name = :'schema' LIMIT 1;" 2>/dev/null)
     [[ "$result" == "1" ]]
 }
 
@@ -107,20 +108,20 @@ manage_extension_db() {
         echo "Ensuring database schema exists for $extension..."
         if ! schema_exists "$schema"; then
             echo "Creating schema $schema for $extension..."
-            run_sql "CREATE SCHEMA IF NOT EXISTS $schema;"
+            run_sql "CREATE SCHEMA IF NOT EXISTS :\"schema\";" "$schema"
         fi
     else
         # Safety check: Don't drop schemas unless explicitly forced or ENABLED_EXTENSIONS is explicitly set
         if [[ -z "$ENABLED_EXTENSIONS" && "$FORCE_CLEANUP" != "true" ]]; then
             echo "Skipping schema cleanup for $extension (ENABLED_EXTENSIONS is empty and FORCE_CLEANUP=false)"
-            echo "To force cleanup, set FORCE_CLEANUP=true"
+            echo "To force cleanup, set FORCE_CLEANUP=true or pass --force-cleanup"
             return
         fi
         
         echo "Cleaning up database schema for $extension..."
         if schema_exists "$schema"; then
             echo "Dropping schema $schema for $extension..."
-            run_sql "DROP SCHEMA IF EXISTS $schema CASCADE;"
+            run_sql "DROP SCHEMA IF EXISTS :\"schema\" CASCADE;" "$schema"
         fi
     fi
 }
@@ -152,7 +153,7 @@ fi
 
 # Filter to only specified extension if --only is used
 if [[ -n "$ONLY_EXTENSION" ]]; then
-    if echo "$extensions" | grep -q "^$ONLY_EXTENSION$"; then
+    if printf '%s\n' "$extensions" | grep -Fxq "$ONLY_EXTENSION"; then
         extensions="$ONLY_EXTENSION"
     else
         echo "Extension '$ONLY_EXTENSION' not found"
