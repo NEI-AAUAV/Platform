@@ -32,35 +32,7 @@ ENABLED_EXTENSIONS="rally" ./scripts/manage-extensions.sh
 
 # Enable multiple extensions
 ENABLED_EXTENSIONS="rally,gala" ./scripts/manage-extensions.sh
-
-# Force cleanup of all extension schemas (use with caution!)
-FORCE_CLEANUP=true ./scripts/manage-extension-databases.sh
-
-# Clean up only specific extension
-./scripts/manage-extension-databases.sh --only rally --force-cleanup
 ```
-
-### Requirements for Database Management
-
-The `manage-extension-databases.sh` script requires:
-
-- **PostgreSQL client tools**: The `psql` command must be available on the host
-- **Environment variables** for database connection:
-  - `POSTGRES_SERVER` (default: localhost)
-  - `POSTGRES_USER` (default: postgres) 
-  - `POSTGRES_PASSWORD` (default: postgres)
-  - `POSTGRES_DB` (default: postgres)
-
-**Installation**:
-```bash
-# Ubuntu/Debian
-sudo apt-get install postgresql-client
-
-# CentOS/RHEL
-sudo yum install postgresql
-```
-
-**Note**: If your database is only reachable inside Docker, ensure the script runs in the correct environment (e.g., inside a container or with proper network access).
 
 ## Available Extensions
 

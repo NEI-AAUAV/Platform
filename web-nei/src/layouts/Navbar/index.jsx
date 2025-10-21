@@ -103,9 +103,10 @@ const Navbar = () => {
       } catch (_) {}
       return href;
     };
-    service
-      .getExtensionsManifest()
-      .then((payload) => {
+    
+    const loadExtensionNav = async () => {
+      try {
+        const payload = await service.getExtensionsManifest();
         const items = Array.isArray(payload?.nav) ? payload.nav : [];
         const myScopes = Array.isArray(scopes) ? scopes : [];
         const reqOk = (e) => {
@@ -122,15 +123,56 @@ const Navbar = () => {
         
         const filtered = items
           .filter(reqOk)
-          .map((e) => ({ label: e.label, href: e.href, key: normalizeLink(e.href) }))
-          .filter((e) => !existingLinks.has(e.key))
-          .map(({ label, href }) => ({ label, href }));
-        setExtNav(filtered);
-      })
-      .catch((err) => {
+          .map((e) => ({ label: e.label, href: e.href, key: normalizeLink(e.href), dynamicVisibility: e.dynamicVisibility }))
+          .filter((e) => !existingLinks.has(e.key));
         
+        // Check dynamic visibility for items that have it
+        const checkDynamicVisibility = async (item) => {
+          if (!item.dynamicVisibility) return item;
+          
+          try {
+            const response = await fetch(item.dynamicVisibility.endpoint);
+            if (!response.ok) return null;
+            const data = await response.json();
+            const fieldValue = data[item.dynamicVisibility.field];
+            
+            // If the dynamic condition is met, show the item
+            if (fieldValue === item.dynamicVisibility.value) {
+              return { label: item.label, href: item.href };
+            }
+            
+            // If dynamic condition is not met, check fallback scopes
+            if (item.dynamicVisibility.fallbackScopes) {
+              const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope => 
+                myScopes.includes(scope)
+              );
+              if (hasFallbackScope) {
+                return { label: item.label, href: item.href };
+              }
+            }
+            
+            // Neither condition met, hide the item
+            return null;
+          } catch (error) {
+            console.warn(`Failed to check dynamic visibility for ${item.label}:`, error);
+            return null;
+          }
+        };
+        
+        // Process all items with dynamic visibility checks
+        const processedItems = await Promise.all(
+          filtered.map(checkDynamicVisibility)
+        );
+        
+        const finalItems = processedItems.filter(Boolean);
+        setExtNav(finalItems);
+      } catch (err) {
+        console.error("Failed to load extension navigation:", err);
         setExtNav([]);
-      });
+      }
+    };
+    
+    loadExtensionNav();
   }, [scopes, navItems]);
 
   useEffect(() => {
