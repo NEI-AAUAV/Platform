@@ -1,0 +1,93 @@
+name: Rally Extension Manual Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of tests to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - api
+        - frontend
+        - integration
+      coverage:
+        description: 'Generate coverage reports'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+        
+    - name: Install API dependencies
+      working-directory: extensions/rally/api-rally
+      run: |
+        poetry install --no-interaction --no-root
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: extensions/rally/web-rally/package-lock.json
+        
+    - name: Install frontend dependencies
+      working-directory: extensions/rally/web-rally
+      run: npm ci
+      
+    - name: Run API tests
+      if: ${{ inputs.test_type == 'all' || inputs.test_type == 'api' }}
+      working-directory: extensions/rally/api-rally
+      run: |
+        if [ "${{ inputs.coverage }}" = "true" ]; then
+          poetry run pytest app/tests/ -v --cov=app --cov-report=xml --cov-report=html --junitxml=test-results.xml
+        else
+          poetry run pytest app/tests/ -v
+        fi
+        
+    - name: Run frontend tests
+      if: ${{ inputs.test_type == 'all' || inputs.test_type == 'frontend' }}
+      working-directory: extensions/rally/web-rally
+      run: |
+        if [ "${{ inputs.coverage }}" = "true" ]; then
+          npm run test -- --run --coverage --reporter=verbose
+        else
+          npm run test -- --run --reporter=verbose
+        fi
+        
+    - name: Run integration tests
+      if: ${{ inputs.test_type == 'all' || inputs.test_type == 'integration' }}
+      working-directory: extensions/rally
+      run: |
+        ./run-tests.sh
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-${{ inputs.test_type }}
+        path: |
+          extensions/rally/api-rally/test-results.xml
+          extensions/rally/api-rally/coverage/
+          extensions/rally/web-rally/coverage/

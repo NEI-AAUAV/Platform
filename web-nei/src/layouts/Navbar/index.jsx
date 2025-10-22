@@ -106,7 +106,13 @@ const Navbar = () => {
     
     const loadExtensionNav = async () => {
       try {
-        const payload = await service.getExtensionsManifest();
+        // Add timeout to the main extensions manifest call
+        const payload = await Promise.race([
+          service.getExtensionsManifest(),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Extensions manifest timeout')), 5000)
+          )
+        ]);
         const items = Array.isArray(payload?.nav) ? payload.nav : [];
         const myScopes = Array.isArray(scopes) ? scopes : [];
         const reqOk = (e) => {
@@ -131,8 +137,34 @@ const Navbar = () => {
           if (!item.dynamicVisibility) return item;
           
           try {
-            const response = await fetch(item.dynamicVisibility.endpoint);
-            if (!response.ok) return null;
+            // Create AbortController for timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+            
+            const response = await fetch(item.dynamicVisibility.endpoint, {
+              signal: controller.signal,
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+              console.warn(`Dynamic visibility endpoint returned ${response.status} for ${item.label}`);
+              // Fall back to scope-based visibility
+              if (item.dynamicVisibility.fallbackScopes) {
+                const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope => 
+                  myScopes.includes(scope)
+                );
+                if (hasFallbackScope) {
+                  return { label: item.label, href: item.href };
+                }
+              }
+              return null;
+            }
+            
             const data = await response.json();
             const fieldValue = data[item.dynamicVisibility.field];
             
@@ -154,7 +186,22 @@ const Navbar = () => {
             // Neither condition met, hide the item
             return null;
           } catch (error) {
-            console.warn(`Failed to check dynamic visibility for ${item.label}:`, error);
+            if (error.name === 'AbortError') {
+              console.warn(`Dynamic visibility check timed out for ${item.label}`);
+            } else {
+              console.warn(`Failed to check dynamic visibility for ${item.label}:`, error);
+            }
+            
+            // On error, fall back to scope-based visibility if available
+            if (item.dynamicVisibility.fallbackScopes) {
+              const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope => 
+                myScopes.includes(scope)
+              );
+              if (hasFallbackScope) {
+                return { label: item.label, href: item.href };
+              }
+            }
+            
             return null;
           }
         };

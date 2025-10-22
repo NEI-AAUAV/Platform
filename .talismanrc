@@ -1,13 +1,15 @@
-threshold: medium
 fileignoreconfig:
+- filename: api-nei/app/api/api_v1/arraial.py
+  checksum: 833c7c3dbc8d1d880e3d6dbf819316565b0c3008d6de5b49c331faf622dab7d3
+- filename: api-nei/poetry.lock
+  checksum: 6b4c6d8f266ea9cf08da6828f0ba9b60a591e9ea53a2cdc2efc149872d7de03e
+- filename: extensions/rally
+  checksum: b4a09f785a6bd707bb35b12eb5b52ba1aa5b4ab602208e0e5995525e200f2183
+- filename: package-lock.json
+  checksum: 80df2e6906cd598931c88e66097b146c0502a38b4085cf7927fc874bfefba7f6
 - filename: web-nei/src/pages/Arraial/index.jsx
   checksum: b8a8b6f73994117ccd5958533dc7c168359cd1cc458335bc61fb340a9f2fbde8
 - filename: web-nei/src/pages/admin/Roles.jsx
   checksum: d5ced55ae70861c61558cc208160050b5940331c115f2b0890dd8269afed68ce
-- filename: api-nei/app/api/api_v1/arraial.py
-  checksum: 833c7c3dbc8d1d880e3d6dbf819316565b0c3008d6de5b49c331faf622dab7d3
-- filename: extensions/rally
-  checksum: b4a09f785a6bd707bb35b12eb5b52ba1aa5b4ab602208e0e5995525e200f2183
-- filename: api-nei/poetry.lock
-  checksum: 6b4c6d8f266ea9cf08da6828f0ba9b60a591e9ea53a2cdc2efc149872d7de03e
+threshold: medium
 version: "1.0"
