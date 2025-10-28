@@ -81,6 +81,7 @@ def get_extensions_manifest() -> Dict[str, Any]:
                     "label": label,
                     "href": href,
                     "requiresScopes": e.get("requiresScopes", []),
+                    "dynamicVisibility": e.get("dynamicVisibility"),
                     "extension": ext,
                 })
         except Exception as exc:

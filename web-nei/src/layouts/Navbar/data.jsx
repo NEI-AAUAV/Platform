@@ -6,7 +6,7 @@ const specialData = [
     link: config.WEB_GALA_URL,
   },
   config.ENABLE_RALLY && {
-    name: "Jantar de Gala",
+    name: "Rally Tascas",
     link: config.WEB_RALLY_URL,
   },
 ];

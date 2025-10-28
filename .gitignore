@@ -85,6 +85,11 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+# Test database files
+*.db
+test.db
+test_*.db
+
 # Translations
 *.mo
 *.pot
