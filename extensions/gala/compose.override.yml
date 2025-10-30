@@ -37,10 +37,10 @@ services:
 
   proxy:
     volumes:
-      - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
-      - ./proxy/locations.gala.conf:/etc/nginx/conf.d/locations.gala.conf:ro
-      - ./proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf
+      - ./dev/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./dev/proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
+      - ./dev/proxy/locations.gala.conf:/etc/nginx/conf.d/locations.gala.conf:ro
+      - ./dev/proxy/nei.web.ua.pt/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - api_gala
       - web_gala

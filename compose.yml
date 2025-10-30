@@ -126,10 +126,10 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
-      - ./proxy/locations.rally.conf:/etc/nginx/conf.d/locations.rally.conf:ro
-      - ./proxy/locations.gala.conf:/etc/nginx/conf.d/locations.gala.conf:ro
+      - ./dev/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./dev/proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
+      - ./dev/proxy/locations.rally.conf:/etc/nginx/conf.d/locations.rally.conf:ro
+      - ./dev/proxy/locations.gala.conf:/etc/nginx/conf.d/locations.gala.conf:ro
     depends_on:
       - web_nei
       - api_nei

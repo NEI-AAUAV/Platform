@@ -63,7 +63,7 @@ generate_nginx_config() {
     local web_port=$(jq -r '.web.port // empty' "$manifest_file" 2>/dev/null || echo "")
     
     # Generate nginx config
-    local nginx_file="$COMPOSE_DIR/proxy/locations.$extension.conf"
+    local nginx_file="$COMPOSE_DIR/dev/proxy/locations.$extension.conf"
     
     if is_extension_enabled "$extension"; then
         # Enabled config
@@ -141,8 +141,8 @@ restart_proxy() {
     local extensions_to_verify=$(discover_extensions)
     for extension in $extensions_to_verify; do
         if is_extension_enabled "$extension"; then
-            if [[ -f "$COMPOSE_DIR/proxy/locations.$extension.conf" ]]; then
-                local expected_config=$(cat "$COMPOSE_DIR/proxy/locations.$extension.conf")
+            if [[ -f "$COMPOSE_DIR/dev/proxy/locations.$extension.conf" ]]; then
+                local expected_config=$(cat "$COMPOSE_DIR/dev/proxy/locations.$extension.conf")
                 local container_config=$(docker exec platform-proxy-1 cat "/etc/nginx/conf.d/locations.$extension.conf" 2>/dev/null || echo "")
                 
                 if [[ "$expected_config" != "$container_config" ]]; then
