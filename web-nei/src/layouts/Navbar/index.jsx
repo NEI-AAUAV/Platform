@@ -538,6 +538,17 @@ const Navbar = () => {
                 </li>
               ),
             )}
+            {extNav && extNav.length > 0 && (
+              <>
+                {extNav.map((e, idx) => (
+                  <li key={`ext-mobile-${idx}`}>
+                    <LinkAdapter to={e.href} reloadDocument>
+                      {e.label}
+                    </LinkAdapter>
+                  </li>
+                ))}
+              </>
+            )}
           </ul>
         </div>
       </nav>
