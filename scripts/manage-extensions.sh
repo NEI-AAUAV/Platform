@@ -17,11 +17,17 @@ is_extension_enabled() {
     if [[ -z "$ENABLED_EXTENSIONS" ]]; then
         return 1  # Not set - disable all
     fi
-    if [[ "$ENABLED_EXTENSIONS" == *"$extension"* ]]; then
-        return 0  # Enabled
-    else
-        return 1  # Disabled
-    fi
+    
+    # Split by comma and check for exact match (prevent false positives)
+    IFS=',' read -ra EXTENSIONS <<< "$ENABLED_EXTENSIONS"
+    for ext in "${EXTENSIONS[@]}"; do
+        # Trim whitespace and check exact match
+        ext=$(echo "$ext" | xargs)
+        if [[ "$ext" == "$extension" ]]; then
+            return 0  # Enabled
+        fi
+    done
+    return 1  # Disabled
 }
 
 # Function to get extension services from compose override file
@@ -131,18 +137,22 @@ restart_proxy() {
     
     # Verify nginx configuration is applied correctly
     echo "Verifying nginx configuration..."
-    for extension in rally gala; do
-        if [[ -f "$COMPOSE_DIR/proxy/locations.$extension.conf" ]]; then
-            local expected_config=$(cat "$COMPOSE_DIR/proxy/locations.$extension.conf")
-            local container_config=$(docker exec platform-proxy-1 cat "/etc/nginx/conf.d/locations.$extension.conf" 2>/dev/null || echo "")
-            
-            if [[ "$expected_config" != "$container_config" ]]; then
-                echo "Nginx config mismatch for $extension, forcing container recreation..."
-                docker-compose -f "$COMPOSE_DIR/compose.yml" stop proxy
-                docker-compose -f "$COMPOSE_DIR/compose.yml" rm -f proxy
-                docker-compose -f "$COMPOSE_DIR/compose.yml" up -d proxy
-                sleep 5
-                break
+    # Get all discovered extensions (not hardcoded)
+    local extensions_to_verify=$(discover_extensions)
+    for extension in $extensions_to_verify; do
+        if is_extension_enabled "$extension"; then
+            if [[ -f "$COMPOSE_DIR/proxy/locations.$extension.conf" ]]; then
+                local expected_config=$(cat "$COMPOSE_DIR/proxy/locations.$extension.conf")
+                local container_config=$(docker exec platform-proxy-1 cat "/etc/nginx/conf.d/locations.$extension.conf" 2>/dev/null || echo "")
+                
+                if [[ "$expected_config" != "$container_config" ]]; then
+                    echo "Nginx config mismatch for $extension, forcing container recreation..."
+                    docker-compose -f "$COMPOSE_DIR/compose.yml" stop proxy
+                    docker-compose -f "$COMPOSE_DIR/compose.yml" rm -f proxy
+                    docker-compose -f "$COMPOSE_DIR/compose.yml" up -d proxy
+                    sleep 5
+                    break
+                fi
             fi
         fi
     done
