@@ -106,19 +106,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Generate extension nginx configs
-      run: |
-        # Generate nginx configs for external nginx
-        ENABLED_EXTENSIONS="${{ github.event.inputs.extension }}" ./scripts/generate-external-nginx-configs.sh
-        
-        # Copy generated configs to Infrastructure nginx
-        if [ -d "../Infrastructure/nginx/conf.d" ]; then
-          cp nginx-configs/locations.*.conf ../Infrastructure/nginx/conf.d/ 2>/dev/null || true
-          echo "Extension nginx configs copied to Infrastructure"
-        else
-          echo "Infrastructure nginx directory not found"
-        fi
-
     - name: Deploy with docker-compose
       run: |
         if [ "${{ github.event.inputs.extension }}" = "rally" ]; then
@@ -131,6 +118,19 @@ jobs:
           docker-compose -f compose.prod.yml pull
           docker-compose -f compose.prod.yml up -d --remove-orphans
         fi
+
+    - name: Manage extensions and sync nginx
+      run: |
+        # Extension management script handles:
+        # - Starting/stopping extension containers
+        # - Database schema management
+        # - Dev proxy config generation
+        # - External nginx sync (Infrastructure/nginx)
+        ENABLED_EXTENSIONS="${{ github.event.inputs.extension }}" ./scripts/manage-extensions.sh
+
+    - name: Cleanup Docker resources
+      run: |
         docker container prune -f
         docker image prune -af
-        docker builder prune
+        docker builder prune -af
+
