@@ -181,4 +181,36 @@ fi
 # Restart proxy to apply nginx configuration changes
 restart_proxy
 
+# Sync external nginx (standalone-nginx) configuration
+sync_external_nginx() {
+    echo "Syncing external nginx configuration..."
+    
+    # Check if standalone-nginx container exists
+    if ! docker ps -a --format "{{.Names}}" | grep -q "^standalone-nginx$"; then
+        echo "⚠ standalone-nginx container not found, skipping external nginx sync"
+        return 0
+    fi
+    
+    # Check if container is running
+    if ! docker ps --format "{{.Names}}" | grep -q "^standalone-nginx$"; then
+        echo "⚠ standalone-nginx container is not running, skipping external nginx sync"
+        return 0
+    fi
+    
+    echo "Syncing nginx configs for ENABLED_EXTENSIONS='$ENABLED_EXTENSIONS'"
+    
+    # Run sync script in nginx container
+    if docker exec standalone-nginx sh -c "export ENABLED_EXTENSIONS='$ENABLED_EXTENSIONS' && /scripts/sync-extensions.sh"; then
+        # Reload nginx to apply changes
+        docker exec standalone-nginx nginx -s reload
+        echo "✓ External nginx configuration synced and reloaded"
+    else
+        echo "✗ Failed to sync external nginx configuration"
+        echo "  You may need to manually sync: docker exec standalone-nginx /scripts/sync-extensions.sh"
+        return 1
+    fi
+}
+
+sync_external_nginx
+
 echo "Extension management complete!"
