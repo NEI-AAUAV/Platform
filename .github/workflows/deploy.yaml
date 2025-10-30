@@ -59,6 +59,12 @@ jobs:
           echo "COMPOSE_FILE=compose.prod.yml" >> "$GITHUB_OUTPUT"
         fi
 
+    - name: Clear stale Docker build cache
+      run: |
+        echo "Clearing Docker build cache to ensure fresh builds..."
+        docker builder prune -af --filter "until=1h" || true
+        echo "Cache cleared"
+
     - name: Build and push
       uses: docker/bake-action@v5
       with:
