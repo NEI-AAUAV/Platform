@@ -82,12 +82,14 @@ wait_for_extension() {
     echo "Waiting for $extension containers to be healthy..."
     
     while [[ $waited -lt $max_wait ]]; do
-        local api_container="platform_api_${extension}_1"
-        local web_container="platform_web_${extension}_1"
+        # Docker Compose v2 uses hyphens: platform-api_rally-1
+        # Use flexible pattern matching to support both v1 and v2 naming
+        local api_pattern="api.${extension}"
+        local web_pattern="web.${extension}"
         
         # Check if containers exist and are running
-        local api_running=$(docker ps --filter "name=^${api_container}$" --filter "status=running" --format "{{.Names}}" 2>/dev/null | wc -l)
-        local web_running=$(docker ps --filter "name=^${web_container}$" --filter "status=running" --format "{{.Names}}" 2>/dev/null | wc -l)
+        local api_running=$(docker ps --filter "name=${api_pattern}" --filter "status=running" --format "{{.Names}}" 2>/dev/null | wc -l)
+        local web_running=$(docker ps --filter "name=${web_pattern}" --filter "status=running" --format "{{.Names}}" 2>/dev/null | wc -l)
         
         if [[ $api_running -gt 0 && $web_running -gt 0 ]]; then
             echo "✓ $extension containers are running"
@@ -95,8 +97,8 @@ wait_for_extension() {
             sleep 2
             
             # Final check they're still running (not crashed immediately)
-            api_running=$(docker ps --filter "name=^${api_container}$" --filter "status=running" --format "{{.Names}}" 2>/dev/null | wc -l)
-            web_running=$(docker ps --filter "name=^${web_container}$" --filter "status=running" --format "{{.Names}}" 2>/dev/null | wc -l)
+            api_running=$(docker ps --filter "name=${api_pattern}" --filter "status=running" --format "{{.Names}}" 2>/dev/null | wc -l)
+            web_running=$(docker ps --filter "name=${web_pattern}" --filter "status=running" --format "{{.Names}}" 2>/dev/null | wc -l)
             
             if [[ $api_running -gt 0 && $web_running -gt 0 ]]; then
                 return 0
