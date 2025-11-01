@@ -264,16 +264,17 @@ sync_external_nginx() {
     echo "Syncing nginx configs for ENABLED_EXTENSIONS='$ENABLED_EXTENSIONS'"
     
     # Check if sync script exists in container before trying to use it
-    if ! docker exec standalone-nginx test -f /scripts/sync-extensions.sh 2>/dev/null; then
+    # Use 'sh -c' to properly check file existence
+    if ! docker exec standalone-nginx sh -c "test -f /scripts/sync-extensions.sh" 2>/dev/null; then
         echo "⚠ sync-extensions.sh not found in container, skipping external nginx sync"
         echo "  Ensure Infrastructure/nginx/sync-extensions.sh is mounted in docker-compose.yml"
         return 0
     fi
     
     # Run sync script in nginx container
-    if ! docker exec standalone-nginx sh -c "export ENABLED_EXTENSIONS='$ENABLED_EXTENSIONS' && /scripts/sync-extensions.sh"; then
+    if ! docker exec standalone-nginx sh -c "export ENABLED_EXTENSIONS='$ENABLED_EXTENSIONS' && sh /scripts/sync-extensions.sh"; then
         echo "✗ Failed to sync external nginx configuration"
-        echo "  Manual sync command: docker exec standalone-nginx /scripts/sync-extensions.sh"
+        echo "  Manual sync command: docker exec standalone-nginx sh /scripts/sync-extensions.sh"
         echo "  Check standalone-nginx logs: docker logs standalone-nginx"
         return 1
     fi
