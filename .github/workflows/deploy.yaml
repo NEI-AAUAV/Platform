@@ -48,7 +48,7 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 0
-        # Disable workspace cleaning to preserve .env files and permission fixes from previous runs
+        # Disable workspace cleaning to preserve permission fixes from previous runs
         clean: false
     
     - name: Update extension submodules to tracked branches
