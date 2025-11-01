@@ -28,10 +28,16 @@ jobs:
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
 
     steps:
+    - name: Fix permissions before checkout
+      uses: ./.github/actions/fix-permissions
+    
     - uses: actions/checkout@v4
       with:
         submodules: recursive
         fetch-depth: 0
+        # Disable workspace cleaning to preserve .env files and permission fixes from previous runs
+        clean: false
+    
     - name: Update extension submodules to tracked branches
       run: |
         git submodule sync --recursive
@@ -92,10 +98,16 @@ jobs:
       RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
     steps:
+    - name: Fix permissions before checkout
+      uses: ./.github/actions/fix-permissions
+    
     - uses: actions/checkout@v4
       with:
         submodules: recursive
         fetch-depth: 0
+        # Disable workspace cleaning to preserve .env files and permission fixes from previous runs
+        clean: false
+    
     - name: Update extension submodules to tracked branches
       run: |
         git submodule sync --recursive
