@@ -127,10 +127,12 @@ except FileNotFoundError:
 except OSError:
   sys.exit(1)" "$manifest_file" 2>/dev/null)
         local status=$?
+        # Note: File existence is already checked at line 101, but we handle FileNotFoundError
+        # here for robustness in case the file is deleted between checks (race condition)
         if [[ $status -eq 2 ]]; then
             echo "✗ Error: Manifest not found for $extension: $manifest_file"
             return 1
-        elif [[ $status -eq 1 ]] || [[ -z "$name" ]]; then
+        elif [[ $status -eq 1 ]]; then
             echo "✗ Error: Invalid JSON in manifest for $extension: $manifest_file"
             return 1
         fi
