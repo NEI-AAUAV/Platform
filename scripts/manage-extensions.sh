@@ -117,17 +117,17 @@ validate_manifest() {
         # Use specific exception handling with different exit codes for better error messages
         local name=$(python3 -c "import json, sys
 try:
-  with open(sys.argv[1]) as f:
-    data = json.load(f)
-  print(data.get('name', ''))
+    with open(sys.argv[1]) as f:
+        data = json.load(f)
+    print(data.get('name', ''))
 except json.JSONDecodeError:
-  sys.exit(1)
+    sys.exit(1)
 except FileNotFoundError:
-  sys.exit(2)
+    sys.exit(2)
 except OSError:
-  sys.exit(1)" "$manifest_file" 2>/dev/null)
+    sys.exit(1)" "$manifest_file" 2>/dev/null)
         local status=$?
-        # Note: File existence is already checked at line 101, but we handle FileNotFoundError
+        # Note: File existence is already checked at the start of this function, but we handle FileNotFoundError
         # here for robustness in case the file is deleted between checks (race condition)
         if [[ $status -eq 2 ]]; then
             echo "✗ Error: Manifest not found for $extension: $manifest_file"
