@@ -47,31 +47,10 @@ get_extension_services() {
     done
 }
 
-# Function to validate extension manifest
-validate_manifest() {
-    local manifest_file="$1"
-    local extension="$2"
-    
-    if [[ ! -f "$manifest_file" ]]; then
-        echo "✗ Error: Manifest not found for $extension: $manifest_file"
-        return 1
-    fi
-    
-    # Validate JSON structure
-    if ! jq empty "$manifest_file" 2>/dev/null; then
-        echo "✗ Error: Invalid JSON in manifest for $extension: $manifest_file"
-        return 1
-    fi
-    
-    # Check required fields
-    local name=$(jq -r '.name // empty' "$manifest_file")
-    if [[ -z "$name" ]]; then
-        echo "✗ Error: Manifest missing required 'name' field for $extension"
-        return 1
-    fi
-    
-    return 0
-}
+# Note: Nginx configuration is now managed by Infrastructure/nginx using
+# sites-available/sites-enabled pattern. Extension configs are manually
+# created in Infrastructure/nginx/sites-available/ and enabled via
+# sync-extensions.sh which is called by sync_external_nginx() below.
 
 # Function to wait for extension containers to be healthy
 wait_for_extension() {
@@ -114,56 +93,42 @@ wait_for_extension() {
     return 1
 }
 
-# Function to generate nginx config for extension
-generate_nginx_config() {
-    local extension="$1"
-    local manifest_file="$COMPOSE_DIR/extensions/$extension/manifest.json"
+# Function to validate manifest (used before container operations)
+validate_manifest() {
+    local manifest_file="$1"
+    local extension="$2"
     
-    # Validate manifest first
-    if ! validate_manifest "$manifest_file" "$extension"; then
+    if [[ ! -f "$manifest_file" ]]; then
+        echo "✗ Error: Manifest not found for $extension: $manifest_file"
         return 1
     fi
     
-    # Extract extension info from manifest
-    local extension_name=$(jq -r '.name // empty' "$manifest_file" 2>/dev/null || echo "$extension")
-    local api_port=$(jq -r '.api.port // empty' "$manifest_file" 2>/dev/null || echo "")
-    local web_port=$(jq -r '.web.port // empty' "$manifest_file" 2>/dev/null || echo "")
-    
-    # Generate nginx config
-    local nginx_file="$COMPOSE_DIR/dev/proxy/locations.$extension.conf"
-    
-    if is_extension_enabled "$extension"; then
-        # Enabled config
-        cat > "$nginx_file" << EOF
-# $extension_name Extension Routes (enabled)
-
-location ~ ^/(api|static)/$extension(/.*)?$ {
-    limit_except GET POST PUT DELETE {
-        deny all;
-    }
-    
-    proxy_pass http://api_$extension:${api_port};
-}
-
-location ~ ^/$extension(/.*)?$ {
-    proxy_pass http://web_$extension:${web_port};
-}
-EOF
+    # Validate JSON structure
+    # Try jq first, fallback to python3 if jq is not available
+    if command -v jq >/dev/null 2>&1; then
+        if ! jq empty "$manifest_file" 2>/dev/null; then
+            echo "✗ Error: Invalid JSON in manifest for $extension: $manifest_file"
+            return 1
+        fi
+        local name=$(jq -r '.name // empty' "$manifest_file")
+    elif command -v python3 >/dev/null 2>&1; then
+        # Fallback to python3 for JSON validation
+        if ! python3 -c "import json; json.load(open('$manifest_file'))" 2>/dev/null; then
+            echo "✗ Error: Invalid JSON in manifest for $extension: $manifest_file"
+            return 1
+        fi
+        local name=$(python3 -c "import json; print(json.load(open('$manifest_file')).get('name', ''))" 2>/dev/null || echo "")
     else
-        # Disabled config - proxy to main platform for consistent 404 handling
-        cat > "$nginx_file" << EOF
-# $extension_name Extension Routes (disabled)
-# Proxy to main platform for consistent 404 handling
-
-location ~ ^/(api|static)/$extension(/.*)?$ {
-    return 404;
-}
-
-location ~ ^/$extension(/.*)?$ {
-    proxy_pass http://web_nei:3000;
-}
-EOF
+        echo "✗ Error: Neither jq nor python3 available for JSON validation"
+        return 1
     fi
+    
+    if [[ -z "$name" ]]; then
+        echo "✗ Error: Manifest missing required 'name' field for $extension"
+        return 1
+    fi
+    
+    return 0
 }
 
 # Function to manage extension containers
@@ -176,9 +141,10 @@ manage_extension() {
         return 1
     fi
     
-    # Generate nginx config
-    if ! generate_nginx_config "$extension"; then
-        echo "✗ Failed to generate nginx config for $extension"
+    # Validate manifest
+    local manifest_file="$COMPOSE_DIR/extensions/$extension/manifest.json"
+    if ! validate_manifest "$manifest_file" "$extension"; then
+        echo "✗ Failed to validate manifest for $extension"
         return 1
     fi
     
@@ -217,34 +183,9 @@ manage_extension() {
     fi
 }
 
-# Function to restart proxy to apply nginx config changes
-restart_proxy() {
-    echo "Restarting proxy to apply nginx configuration changes..."
-    docker-compose -f "$COMPOSE_DIR/compose.yml" restart proxy || true
-    sleep 3
-    
-    # Verify nginx configuration is applied correctly
-    echo "Verifying nginx configuration..."
-    # Get all discovered extensions (not hardcoded)
-    local extensions_to_verify=$(discover_extensions)
-    for extension in $extensions_to_verify; do
-        if is_extension_enabled "$extension"; then
-            if [[ -f "$COMPOSE_DIR/dev/proxy/locations.$extension.conf" ]]; then
-                local expected_config=$(cat "$COMPOSE_DIR/dev/proxy/locations.$extension.conf")
-                local container_config=$(docker exec platform-proxy-1 cat "/etc/nginx/conf.d/locations.$extension.conf" 2>/dev/null || echo "")
-                
-                if [[ "$expected_config" != "$container_config" ]]; then
-                    echo "Nginx config mismatch for $extension, forcing container recreation..."
-                    docker-compose -f "$COMPOSE_DIR/compose.yml" stop proxy
-                    docker-compose -f "$COMPOSE_DIR/compose.yml" rm -f proxy
-                    docker-compose -f "$COMPOSE_DIR/compose.yml" up -d proxy
-                    sleep 5
-                    break
-                fi
-            fi
-        fi
-    done
-}
+# Note: Internal dev proxy restart removed - nginx configs are now managed
+# by Infrastructure/nginx using sites-available/sites-enabled pattern.
+# The external nginx sync is handled by sync_external_nginx() below.
 
 # Function to discover extensions
 discover_extensions() {
@@ -276,8 +217,8 @@ else
     done
 fi
 
-# Restart proxy to apply nginx configuration changes
-restart_proxy
+# Nginx configuration is now managed externally via Infrastructure/nginx
+# See sync_external_nginx() below for enabling/disabling extension configs
 
 # Sync external nginx (standalone-nginx) configuration
 sync_external_nginx() {
