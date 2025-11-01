@@ -28,10 +28,31 @@ jobs:
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
 
     steps:
+    - name: Fix permissions and backup .env files before checkout
+      run: |
+        set -euo pipefail
+        echo "Fixing permissions on root-owned files..."
+        # Remove __pycache__ directories (they'll be regenerated)
+        find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+        # Fix ownership of any remaining root-owned files
+        find . -user root -type f -exec chown $(whoami):$(whoami) {} + 2>/dev/null || true
+        find . -user root -type d -exec chown $(whoami):$(whoami) {} + 2>/dev/null || true
+        
+        echo "Backing up .env files..."
+        find . -name ".env" -type f -exec sh -c 'cp "$1" "${1}.backup"' _ {} \; 2>/dev/null || true
+    
     - uses: actions/checkout@v4
       with:
         submodules: recursive
         fetch-depth: 0
+        clean: false
+    
+    - name: Restore .env files after checkout
+      run: |
+        set -euo pipefail
+        echo "Restoring .env files..."
+        find . -name ".env.backup" -type f -exec sh -c 'mv "$1" "${1%.backup}"' _ {} \; 2>/dev/null || true
+    
     - name: Update extension submodules to tracked branches
       run: |
         git submodule sync --recursive
@@ -92,10 +113,31 @@ jobs:
       RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
     steps:
+    - name: Fix permissions and backup .env files before checkout
+      run: |
+        set -euo pipefail
+        echo "Fixing permissions on root-owned files..."
+        # Remove __pycache__ directories (they'll be regenerated)
+        find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+        # Fix ownership of any remaining root-owned files
+        find . -user root -type f -exec chown $(whoami):$(whoami) {} + 2>/dev/null || true
+        find . -user root -type d -exec chown $(whoami):$(whoami) {} + 2>/dev/null || true
+        
+        echo "Backing up .env files..."
+        find . -name ".env" -type f -exec sh -c 'cp "$1" "${1}.backup"' _ {} \; 2>/dev/null || true
+    
     - uses: actions/checkout@v4
       with:
         submodules: recursive
         fetch-depth: 0
+        clean: false
+    
+    - name: Restore .env files after checkout
+      run: |
+        set -euo pipefail
+        echo "Restoring .env files..."
+        find . -name ".env.backup" -type f -exec sh -c 'mv "$1" "${1%.backup}"' _ {} \; 2>/dev/null || true
+    
     - name: Update extension submodules to tracked branches
       run: |
         git submodule sync --recursive
