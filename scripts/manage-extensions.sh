@@ -38,10 +38,13 @@ get_extension_services() {
     fi
     
     # Extract service names from compose file (services that are not in main compose.yml)
+    # Skip volumes, networks, and other non-service sections
     # Only return services that actually exist in the compose file
-    grep -E "^  [a-zA-Z_][a-zA-Z0-9_]*:" "$override_file" | sed 's/^  //; s/:$//' | grep -v -E "^(web_nei|api_nei|proxy|db_pg|db_mongo|ofelia)$" | while read -r service; do
-        # Check if service is actually defined (not just referenced)
-        if grep -q "^  $service:" "$override_file"; then
+    awk '/^services:/{in_services=1; next} /^[a-z_]+:/{in_services=0; next} /^  [a-zA-Z_][a-zA-Z0-9_]*:/{if(in_services) print}' "$override_file" | sed 's/^  //; s/:$//' | grep -v -E "^(web_nei|api_nei|proxy|db_pg|db_mongo|ofelia|volumes|networks)$" | while read -r service; do
+        # Check if service is actually defined (not just referenced in volumes: or depends_on:)
+        # Service definitions have 'image:', 'build:', 'command:', etc. on subsequent lines
+        # Skip volume names that look like services (they don't have build/image/command)
+        if grep -A 5 "^  $service:" "$override_file" | grep -qE "^\s+(image|build|command|container_name):"; then
             echo "$service"
         fi
     done
@@ -195,9 +198,13 @@ manage_extension() {
             docker-compose -f "$COMPOSE_DIR/compose.yml" -f "$override_file" stop $services || true
         fi
         
-        # Clean up extension database schemas
-        echo "Cleaning up database schemas for disabled extensions..."
-        FORCE_CLEANUP=true "$COMPOSE_DIR/scripts/manage-extension-databases.sh" --only "$extension" || true
+        # Clean up extension database schemas (only if psql is available)
+        if command -v psql >/dev/null 2>&1; then
+            echo "Cleaning up database schemas for disabled extensions..."
+            FORCE_CLEANUP=true "$COMPOSE_DIR/scripts/manage-extension-databases.sh" --only "$extension" || true
+        else
+            echo "⚠ Skipping database cleanup - psql not available"
+        fi
     fi
 }
 
@@ -255,6 +262,13 @@ sync_external_nginx() {
     fi
     
     echo "Syncing nginx configs for ENABLED_EXTENSIONS='$ENABLED_EXTENSIONS'"
+    
+    # Check if sync script exists in container before trying to use it
+    if ! docker exec standalone-nginx test -f /scripts/sync-extensions.sh 2>/dev/null; then
+        echo "⚠ sync-extensions.sh not found in container, skipping external nginx sync"
+        echo "  Ensure Infrastructure/nginx/sync-extensions.sh is mounted in docker-compose.yml"
+        return 0
+    fi
     
     # Run sync script in nginx container
     if ! docker exec standalone-nginx sh -c "export ENABLED_EXTENSIONS='$ENABLED_EXTENSIONS' && /scripts/sync-extensions.sh"; then
