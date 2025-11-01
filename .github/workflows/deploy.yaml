@@ -28,10 +28,29 @@ jobs:
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
 
     steps:
+    - name: Fix permissions before checkout
+      run: |
+        set -euo pipefail
+        echo "Fixing permissions on root-owned files..."
+        # Only run find commands if the current directory exists and has content
+        if [ -d . ] && [ -n "$(ls -A . 2>/dev/null)" ]; then
+          # Remove __pycache__ directories (they'll be regenerated)
+          # Use -depth to process directories bottom-up to avoid errors with subdirectories
+          find . -depth -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+          # Fix ownership of any remaining root-owned files (files and directories in single pass)
+          # Use numeric IDs to ensure correct group assignment
+          find . -user root \( -type f -o -type d \) -exec chown $(id -u):$(id -g) {} + 2>/dev/null || true
+        else
+          echo "Workspace is empty, skipping permission fixes (will be handled after checkout)"
+        fi
+    
     - uses: actions/checkout@v4
       with:
         submodules: recursive
         fetch-depth: 0
+        # Disable workspace cleaning to preserve permission fixes from previous runs
+        clean: false
+    
     - name: Update extension submodules to tracked branches
       run: |
         git submodule sync --recursive
@@ -92,10 +111,29 @@ jobs:
       RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
     steps:
+    - name: Fix permissions before checkout
+      run: |
+        set -euo pipefail
+        echo "Fixing permissions on root-owned files..."
+        # Only run find commands if the current directory exists and has content
+        if [ -d . ] && [ -n "$(ls -A . 2>/dev/null)" ]; then
+          # Remove __pycache__ directories (they'll be regenerated)
+          # Use -depth to process directories bottom-up to avoid errors with subdirectories
+          find . -depth -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+          # Fix ownership of any remaining root-owned files (files and directories in single pass)
+          # Use numeric IDs to ensure correct group assignment
+          find . -user root \( -type f -o -type d \) -exec chown $(id -u):$(id -g) {} + 2>/dev/null || true
+        else
+          echo "Workspace is empty, skipping permission fixes (will be handled after checkout)"
+        fi
+    
     - uses: actions/checkout@v4
       with:
         submodules: recursive
         fetch-depth: 0
+        # Disable workspace cleaning to preserve .env files and permission fixes from previous runs
+        clean: false
+    
     - name: Update extension submodules to tracked branches
       run: |
         git submodule sync --recursive
