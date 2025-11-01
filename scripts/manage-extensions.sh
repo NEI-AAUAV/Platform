@@ -114,12 +114,13 @@ validate_manifest() {
     elif command -v python3 >/dev/null 2>&1; then
         # Fallback to python3 for JSON validation and name extraction in one call
         # Use sys.argv[1] to safely pass the file path as an argument (prevents command injection)
-        local name=$(python3 -c "import json, sys; \
-try: \
-    with open(sys.argv[1]) as f: \
-        data = json.load(f); \
-    print(data.get('name', '')); \
-except Exception: \
+        # Use specific exception types for better error handling
+        local name=$(python3 -c "import json, sys
+try:
+    with open(sys.argv[1]) as f:
+        data = json.load(f)
+    print(data.get('name', ''))
+except (json.JSONDecodeError, FileNotFoundError, OSError):
     sys.exit(1)" "$manifest_file" 2>/dev/null) || {
             echo "✗ Error: Invalid JSON in manifest for $extension: $manifest_file"
             return 1
