@@ -117,11 +117,11 @@ validate_manifest() {
         # Use specific exception types for better error handling
         local name=$(python3 -c "import json, sys
 try:
-    with open(sys.argv[1]) as f:
-        data = json.load(f)
-    print(data.get('name', ''))
+  with open(sys.argv[1]) as f:
+    data = json.load(f)
+  print(data.get('name', ''))
 except (json.JSONDecodeError, FileNotFoundError, OSError):
-    sys.exit(1)" "$manifest_file" 2>/dev/null) || {
+  sys.exit(1)" "$manifest_file" 2>/dev/null) || {
             echo "✗ Error: Invalid JSON in manifest for $extension: $manifest_file"
             return 1
         }
