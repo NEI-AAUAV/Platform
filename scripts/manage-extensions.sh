@@ -112,12 +112,18 @@ validate_manifest() {
         fi
         local name=$(jq -r '.name // empty' "$manifest_file")
     elif command -v python3 >/dev/null 2>&1; then
-        # Fallback to python3 for JSON validation
-        if ! python3 -c "import json; json.load(open('$manifest_file'))" 2>/dev/null; then
+        # Fallback to python3 for JSON validation and name extraction in one call
+        # Use sys.argv[1] to safely pass the file path as an argument (prevents command injection)
+        local name=$(python3 -c "import json, sys; \
+try: \
+    with open(sys.argv[1]) as f: \
+        data = json.load(f); \
+    print(data.get('name', '')); \
+except Exception: \
+    sys.exit(1)" "$manifest_file" 2>/dev/null) || {
             echo "✗ Error: Invalid JSON in manifest for $extension: $manifest_file"
             return 1
-        fi
-        local name=$(python3 -c "import json; print(json.load(open('$manifest_file')).get('name', ''))" 2>/dev/null || echo "")
+        }
     else
         echo "✗ Error: Neither jq nor python3 available for JSON validation"
         return 1
