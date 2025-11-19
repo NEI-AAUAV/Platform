@@ -142,3 +142,14 @@ dmypy.json
 
 # Never ignore .gitkeep files
 !**/.gitkeep
+
+# Extension build artifacts (submodules handle their own .gitignore)
+extensions/*/web-*/node_modules/
+extensions/*/web-*/.pnpm-store/
+extensions/*/web-*/.vite/
+extensions/*/web-*/dist/
+extensions/*/api-*/__pycache__/
+extensions/*/api-*/.venv/
+extensions/*/api-*/.pytest_cache/
+extensions/*/api-*/coverage/
+extensions/*/api-*/*.db
