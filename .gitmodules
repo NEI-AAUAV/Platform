@@ -2,3 +2,8 @@
 	path = extensions/rally
 	url = https://github.com/NEI-AAUAV/Platform-rally-extension.git
 	branch = main
+
+[submodule "extensions/gala"]
+	path = extensions/gala
+	url = https://github.com/NEI-AAUAV/Platform-gala-extension.git
+	branch = main
