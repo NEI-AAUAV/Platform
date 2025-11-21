@@ -50,12 +50,16 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update extension submodules to tracked branches
         run: |
-          git submodule update --init --recursive
-          # Keep extension submodules on their tracked branches (e.g., rally on main)
+          # Initialize and update Rally submodule (required)
+          git submodule update --init extensions/rally || true
           git submodule update --remote --merge extensions/rally || true
+          # Initialize and update Gala submodule (optional - may fail if repo is private or not accessible)
+          git submodule update --init extensions/gala || echo "Warning: Gala submodule not accessible, skipping"
+          git submodule update --remote --merge extensions/gala || echo "Warning: Gala submodule update failed, skipping"
       
       - name: Set up Python
         uses: actions/setup-python@v4

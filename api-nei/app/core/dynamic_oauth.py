@@ -68,7 +68,6 @@ def create_dynamic_oauth_scheme() -> DynamicOAuth2PasswordBearer:
         "manager-family": "Edit faina family.",
         "manager-tacaua": "Edit data related to tacaua.",
         "manager-nei": "Edit data related to nei.",
-        "manager-jantar-gala": "Edit data related to jantar de gala.",
         "manager-arraial": "Edit data related to arraial.",
     }
     
