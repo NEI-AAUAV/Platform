@@ -9,8 +9,7 @@ const BASE_SCOPES = [
   "manager-nei",
   "manager-arraial",
   "manager-tacaua",
-  "manager-family",
-  "manager-jantar-gala",
+  "manager-family"
 ];
 
 const SUCCESS_MESSAGE_TIMEOUT = 3000;
