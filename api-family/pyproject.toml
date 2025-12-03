@@ -8,12 +8,12 @@ authors = []
 python = "^3.10"
 pydantic = "^1.10.13"
 loguru = "^0.6.0"
-python-multipart = "^0.0.5"
+python-multipart = "^0.0.18"
 fastapi = "0.90.0"
 requests = "^2.32.2"
 Pillow = "^9.2.0"
 pymongo = "^4.3.3"
-python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+python-jose = {extras = ["cryptography"], version = "^3.4.0"}
 httpx = "^0.25.0"
 
 [tool.poetry.group.test.dependencies]
