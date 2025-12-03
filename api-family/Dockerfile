@@ -6,7 +6,7 @@ WORKDIR /api_family
 
 RUN apt-get update && apt-get -y install libpq-dev gcc
 
-RUN pip install --upgrade pip \
+RUN pip install --upgrade pip &&\
     pip install --no-cache-dir --upgrade poetry
 
 COPY poetry.lock pyproject.toml ./
@@ -15,7 +15,7 @@ RUN poetry install --no-root
 
 COPY . .
 
-RUN poetry install
+RUN poetry install --no-root
 
 EXPOSE 8002
 CMD poetry run uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
