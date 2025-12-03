@@ -2,7 +2,7 @@ fileignoreconfig:
 - filename: api-nei/app/api/api_v1/arraial.py
   checksum: 833c7c3dbc8d1d880e3d6dbf819316565b0c3008d6de5b49c331faf622dab7d3
 - filename: api-nei/poetry.lock
-  checksum: efc3f5c51b6ce5b61edb441bfd8ef99efc1dc50fc9ab08e4d40b9995792977cd
+  checksum: debf04d1acb17743747d439c6d972f21cca1e7fa131f340124cafaf2229925de
 - filename: extensions/rally
   checksum: b4a09f785a6bd707bb35b12eb5b52ba1aa5b4ab602208e0e5995525e200f2183
 - filename: package-lock.json
@@ -14,7 +14,7 @@ fileignoreconfig:
 - filename: web-nei/package.json
   checksum: 04b32a9d7e63e2447728c1d5b80fee3ec83b6d92ff8e8768695f9bbf26152cf8
 - filename: api-family/poetry.lock
-  checksum: 6c822a16ff399883a761da4afdabe6499f8d6c301b0ecf22dadb122d3fc2c4f6
+  checksum: 20f674d96feb47b22bd0bc91c784499223c1c6ef94e5794d99dd4fb84a9d1daa
 - filename: web-nei/yarn.lock
   checksum: 7b0dd9038be61c7d6aa44ad8eac86b53a6acf4f50a3844eadd6580aa46e9f34d
 threshold: medium
