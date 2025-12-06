@@ -11,7 +11,7 @@ loguru = "^0.6.0"
 python-multipart = "^0.0.18"
 fastapi = "^0.123.5"
 requests = "^2.32.4"
-urllib3 = "^2.5.0"
+urllib3 = "^2.6.0"
 Pillow = "^10.0.1"
 pymongo = "^4.3.3"
 python-jose = {extras = ["cryptography"], version = "^3.4.0"}
