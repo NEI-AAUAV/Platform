@@ -43,7 +43,7 @@ class Settings(BaseSettings):
         MongoDsn
     ] = f"mongodb://{MONGO_USER}" \
         f":{MONGO_PASSWORD}@{MONGO_SERVER}" \
-        f":27017/{MONGO_DB}?authSource={MONGO_USER}"
+        f":27017/{MONGO_DB}?authSource=admin"
     TEST_MONGO_URI: Optional[
         MongoDsn
     ] = f"mongodb://{MONGO_USER}" \

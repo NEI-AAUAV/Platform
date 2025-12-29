@@ -1,0 +1,1616 @@
+[
+  {
+    "user_id": 1,
+    "role_id": ".1.5.9.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 1,
+    "role_id": ".2.22.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 2,
+    "role_id": ".1.5.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 3,
+    "role_id": ".1.5.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 3,
+    "role_id": ".2.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 3,
+    "role_id": ".1.5.9.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 3,
+    "role_id": ".2.15.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 4,
+    "role_id": ".1.5.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 4,
+    "role_id": ".2.16.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 4,
+    "role_id": ".1.5.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 5,
+    "role_id": ".1.5.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 5,
+    "role_id": ".2.16.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 6,
+    "role_id": ".1.5.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 6,
+    "role_id": ".2.20.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 7,
+    "role_id": ".1.5.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 8,
+    "role_id": ".1.5.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 8,
+    "role_id": ".2.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 9,
+    "role_id": ".1.5.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 9,
+    "role_id": ".1.5.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 9,
+    "role_id": ".1.5.9.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 10,
+    "role_id": ".1.5.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 10,
+    "role_id": ".1.5.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 11,
+    "role_id": ".1.5.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 12,
+    "role_id": ".1.5.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 12,
+    "role_id": ".1.5.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 13,
+    "role_id": ".1.5.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 13,
+    "role_id": ".2.24.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 13,
+    "role_id": ".1.5.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 14,
+    "role_id": ".1.5.",
+    "year": 12,
+    "end_year": 12
+  },
+  {
+    "user_id": 15,
+    "role_id": ".2.20.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 15,
+    "role_id": ".1.5.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 16,
+    "role_id": ".2.24.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 16,
+    "role_id": ".1.5.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 16,
+    "role_id": ".1.5.9.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 17,
+    "role_id": ".1.5.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 17,
+    "role_id": ".2.20.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 17,
+    "role_id": ".1.5.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 17,
+    "role_id": ".1.5.9.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 18,
+    "role_id": ".1.5.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 19,
+    "role_id": ".1.5.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 20,
+    "role_id": ".1.5.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 21,
+    "role_id": ".1.5.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 21,
+    "role_id": ".1.5.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 22,
+    "role_id": ".2.23.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 22,
+    "role_id": ".1.5.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 22,
+    "role_id": ".2.14.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 22,
+    "role_id": ".1.5.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 22,
+    "role_id": ".2.16.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 22,
+    "role_id": ".2.16.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 23,
+    "role_id": ".2.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 23,
+    "role_id": ".2.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 23,
+    "role_id": ".1.5.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 23,
+    "role_id": ".2.15.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 24,
+    "role_id": ".2.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 24,
+    "role_id": ".1.5.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 25,
+    "role_id": ".1.5.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 27,
+    "role_id": ".1.5.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 29,
+    "role_id": ".2.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 29,
+    "role_id": ".2.15.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 30,
+    "role_id": ".1.5.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 30,
+    "role_id": ".1.5.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 31,
+    "role_id": ".1.5.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 32,
+    "role_id": ".2.24.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 32,
+    "role_id": ".1.5.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 33,
+    "role_id": ".1.5.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 34,
+    "role_id": ".1.5.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 34,
+    "role_id": ".1.5.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 34,
+    "role_id": ".1.5.9.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 36,
+    "role_id": ".2.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 36,
+    "role_id": ".1.5.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 37,
+    "role_id": ".1.5.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 38,
+    "role_id": ".2.22.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 38,
+    "role_id": ".2.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 38,
+    "role_id": ".1.5.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 39,
+    "role_id": ".2.",
+    "year": 13,
+    "end_year": 13
+  },
+  {
+    "user_id": 39,
+    "role_id": ".3.32.39.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 40,
+    "role_id": ".2.24.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 42,
+    "role_id": ".1.5.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 42,
+    "role_id": ".1.5.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 43,
+    "role_id": ".2.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 43,
+    "role_id": ".2.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 43,
+    "role_id": ".2.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 46,
+    "role_id": ".2.",
+    "year": 14,
+    "end_year": 14
+  },
+  {
+    "user_id": 46,
+    "role_id": ".1.5.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 48,
+    "role_id": ".2.22.",
+    "year": 15,
+    "end_year": 15
+  },
+  {
+    "user_id": 48,
+    "role_id": ".2.15.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 48,
+    "role_id": ".2.16.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 49,
+    "role_id": ".1.5.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 50,
+    "role_id": ".2.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 50,
+    "role_id": ".1.5.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 50,
+    "role_id": ".1.5.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 50,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 51,
+    "role_id": ".2.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 51,
+    "role_id": ".2.24.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 51,
+    "role_id": ".1.5.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 52,
+    "role_id": ".1.5.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 52,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 52,
+    "role_id": ".1.5.9.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 52,
+    "role_id": ".1.6.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 53,
+    "role_id": ".1.5.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 53,
+    "role_id": ".1.5.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 54,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 54,
+    "role_id": ".1.5.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 54,
+    "role_id": ".1.5.9.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 55,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 55,
+    "role_id": ".1.5.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 55,
+    "role_id": ".1.5.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 62,
+    "role_id": ".1.5.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 62,
+    "role_id": ".2.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 62,
+    "role_id": ".1.5.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 62,
+    "role_id": ".1.6.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 63,
+    "role_id": ".1.5.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 63,
+    "role_id": ".2.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 63,
+    "role_id": ".1.5.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 67,
+    "role_id": ".2.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 67,
+    "role_id": ".1.5.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 67,
+    "role_id": ".2.16.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 70,
+    "role_id": ".1.5.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 74,
+    "role_id": ".1.6.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 74,
+    "role_id": ".1.6.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 74,
+    "role_id": ".1.7.13.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 79,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 80,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 81,
+    "role_id": ".2.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 81,
+    "role_id": ".2.14.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 81,
+    "role_id": ".2.14.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 82,
+    "role_id": ".1.5.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 83,
+    "role_id": ".2.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 83,
+    "role_id": ".2.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 83,
+    "role_id": ".2.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 83,
+    "role_id": ".2.16.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 86,
+    "role_id": ".3.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 87,
+    "role_id": ".3.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 87,
+    "role_id": ".2.22.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 87,
+    "role_id": ".3.32.39.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 93,
+    "role_id": ".2.20.",
+    "year": 16,
+    "end_year": 16
+  },
+  {
+    "user_id": 96,
+    "role_id": ".2.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 96,
+    "role_id": ".3.32.35.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 96,
+    "role_id": ".3.32.35.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 97,
+    "role_id": ".2.20.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 97,
+    "role_id": ".2.20.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 97,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 100,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 100,
+    "role_id": ".2.28.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 101,
+    "role_id": ".2.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 101,
+    "role_id": ".2.20.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 101,
+    "role_id": ".2.14.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 102,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 104,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 104,
+    "role_id": ".1.5.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 104,
+    "role_id": ".1.5.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 104,
+    "role_id": ".3.32.39.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 104,
+    "role_id": ".1.5.9.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 106,
+    "role_id": ".3.34.45.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 106,
+    "role_id": ".3.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 107,
+    "role_id": ".1.5.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 107,
+    "role_id": ".1.5.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 108,
+    "role_id": ".2.28.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 109,
+    "role_id": ".1.5.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 109,
+    "role_id": ".1.5.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 109,
+    "role_id": ".1.5.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 111,
+    "role_id": ".2.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 113,
+    "role_id": ".2.",
+    "year": 17,
+    "end_year": 17
+  },
+  {
+    "user_id": 113,
+    "role_id": ".2.20.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 113,
+    "role_id": ".2.19.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 113,
+    "role_id": ".1.5.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 115,
+    "role_id": ".3.32.39.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 117,
+    "role_id": ".2.24.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 119,
+    "role_id": ".2.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 120,
+    "role_id": ".2.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 126,
+    "role_id": ".3.32.39.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 126,
+    "role_id": ".3.32.36.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 136,
+    "role_id": ".3.34.45.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 138,
+    "role_id": ".2.24.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 138,
+    "role_id": ".2.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 139,
+    "role_id": ".1.5.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 139,
+    "role_id": ".3.32.38.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 139,
+    "role_id": ".1.5.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 139,
+    "role_id": ".3.32.35.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 139,
+    "role_id": ".1.5.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 139,
+    "role_id": ".1.5.9.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 140,
+    "role_id": ".2.22.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 141,
+    "role_id": ".2.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 141,
+    "role_id": ".3.32.39.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 141,
+    "role_id": ".3.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 142,
+    "role_id": ".2.22.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 142,
+    "role_id": ".2.22.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 144,
+    "role_id": ".3.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 145,
+    "role_id": ".1.5.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 145,
+    "role_id": ".3.32.39.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 145,
+    "role_id": ".1.5.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 145,
+    "role_id": ".3.32.38.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 145,
+    "role_id": ".1.5.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 145,
+    "role_id": ".1.5.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 148,
+    "role_id": ".1.5.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 148,
+    "role_id": ".1.5.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 148,
+    "role_id": ".1.5.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 149,
+    "role_id": ".2.25.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 152,
+    "role_id": ".3.32.39.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 153,
+    "role_id": ".3.32.39.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 153,
+    "role_id": ".3.32.39.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 154,
+    "role_id": ".2.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 154,
+    "role_id": ".3.32.39.",
+    "year": 18,
+    "end_year": 18
+  },
+  {
+    "user_id": 154,
+    "role_id": ".2.15.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 154,
+    "role_id": ".2.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 162,
+    "role_id": ".3.32.39.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 165,
+    "role_id": ".1.5.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 168,
+    "role_id": ".1.5.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 168,
+    "role_id": ".1.5.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 169,
+    "role_id": ".2.25.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 171,
+    "role_id": ".3.32.39.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 172,
+    "role_id": ".1.5.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 172,
+    "role_id": ".1.5.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 172,
+    "role_id": ".1.5.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 176,
+    "role_id": ".1.5.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 177,
+    "role_id": ".3.32.39.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 178,
+    "role_id": ".3.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 180,
+    "role_id": ".2.25.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 181,
+    "role_id": ".2.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 181,
+    "role_id": ".3.32.39.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 181,
+    "role_id": ".1.5.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 183,
+    "role_id": ".2.24.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 186,
+    "role_id": ".2.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 186,
+    "role_id": ".1.5.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 186,
+    "role_id": ".2.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 186,
+    "role_id": ".1.5.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 187,
+    "role_id": ".2.19.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 187,
+    "role_id": ".2.19.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 189,
+    "role_id": ".1.5.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 189,
+    "role_id": ".1.5.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 189,
+    "role_id": ".1.5.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 191,
+    "role_id": ".3.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 191,
+    "role_id": ".3.32.39.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 194,
+    "role_id": ".2.28.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 195,
+    "role_id": ".3.32.39.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 196,
+    "role_id": ".2.24.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 198,
+    "role_id": ".3.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 199,
+    "role_id": ".2.28.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 199,
+    "role_id": ".3.32.39.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 201,
+    "role_id": ".2.",
+    "year": 19,
+    "end_year": 19
+  },
+  {
+    "user_id": 201,
+    "role_id": ".2.16.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 201,
+    "role_id": ".2.16.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 201,
+    "role_id": ".2.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 203,
+    "role_id": ".3.32.39.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 204,
+    "role_id": ".2.28.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 204,
+    "role_id": ".2.28.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 206,
+    "role_id": ".3.32.39.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 211,
+    "role_id": ".2.24.",
+    "year": 20,
+    "end_year": 20
+  },
+  {
+    "user_id": 212,
+    "role_id": ".3.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 214,
+    "role_id": ".3.32.39.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 215,
+    "role_id": ".3.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 215,
+    "role_id": ".1.5.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 216,
+    "role_id": ".1.5.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 216,
+    "role_id": ".3.32.35.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 233,
+    "role_id": ".3.32.38.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 235,
+    "role_id": ".2.25.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 235,
+    "role_id": ".2.19.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 237,
+    "role_id": ".2.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 241,
+    "role_id": ".3.32.36.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 242,
+    "role_id": ".2.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 242,
+    "role_id": ".2.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 243,
+    "role_id": ".1.5.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 244,
+    "role_id": ".1.5.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 245,
+    "role_id": ".2.24.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 245,
+    "role_id": ".2.15.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 246,
+    "role_id": ".2.19.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 254,
+    "role_id": ".2.",
+    "year": 21,
+    "end_year": 21
+  },
+  {
+    "user_id": 254,
+    "role_id": ".2.16.",
+    "year": 22,
+    "end_year": 22
+  },
+  {
+    "user_id": 300,
+    "role_id": ".1.7.11.",
+    "year": 23,
+    "end_year": 23
+  }
+]
