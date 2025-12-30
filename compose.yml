@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   db_mongo:
-    image: mongo:6.0.5-jammy
+    image: mongo:6.0.27-jammy
     ports:
       - 27017:27017
     environment:

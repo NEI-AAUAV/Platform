@@ -12,7 +12,7 @@ services:
       # Run the job at 4h37 every day to minimize db load
       ofelia.job-exec.cleanup_logins.schedule: "0 37 4 * * *"
       ofelia.job-exec.cleanup_logins.command: "psql -U postgres -d postgres -f /scripts/cleanup-logins.sql"
-    volumes: 
+    volumes:
       - ./scripts/:/scripts/:ro
       # - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
       # - ./api-rally/app/db/setup.sql:/docker-entrypoint-initdb.d/rally-0001.sql
@@ -27,7 +27,7 @@ services:
     restart: always
 
   db_mongo:
-    image: mongo:6.0.5-jammy
+    image: mongo:6.0.27-jammy
     ports:
       - 27017:27017
     environment:
@@ -70,7 +70,7 @@ services:
       EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
       IDP_SECRET_KEY: ${IDP_SECRET_KEY}
       RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
-    volumes: 
+    volumes:
       - /deploy/api-nei/static:/api_nei/static
       - /deploy/keys/jwt.key:/jwt.key:ro
       - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
@@ -140,7 +140,6 @@ services:
     networks:
       - frontend
     restart: always
-
 
   ofelia:
     image: mcuadros/ofelia:latest
