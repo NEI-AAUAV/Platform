@@ -3,6 +3,8 @@ name = "api-family"
 version = "0.1.0"
 description = "EI Family Service"
 authors = []
+package-mode = false
+
 
 [tool.poetry.dependencies]
 python = "^3.10"
