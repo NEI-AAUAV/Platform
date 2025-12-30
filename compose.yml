@@ -55,7 +55,7 @@ services:
       POSTGRES_PASSWORD: postgres
       JWT_SECRET_KEY_PATH: /jwt.key
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
-      ENABLED_EXTENSIONS: ${ENABLED_EXTENSIONS:-}  # Comma-separated list of enabled extensions (empty = no extensions)
+      ENABLED_EXTENSIONS: ${ENABLED_EXTENSIONS:-} # Comma-separated list of enabled extensions (empty = no extensions)
     volumes:
       - ./api-nei:/api_nei
       - ./extensions:/extensions:ro
@@ -96,6 +96,7 @@ services:
     environment:
       MONGO_SERVER: db_mongo
       MONGO_PASSWORD: mongo
+      MONGO_DB: family
       PUBLIC_KEY: /jwt.key.pub
     volumes:
       - ./api-family:/api_family
@@ -106,8 +107,6 @@ services:
     networks:
       - backend
     restart: unless-stopped
-    profiles:
-      - disabled
 
   web_nei:
     build:

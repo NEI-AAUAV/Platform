@@ -1,6 +1,8 @@
 # docker
 Dockerfile*
 
-# static files
-static/*
-!static/**/.gitkeep
+# python
+__pycache__
+*.pyc
+.venv
+
