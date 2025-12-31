@@ -5,7 +5,7 @@ CRUD operations for Role collection.
 from typing import Optional, List
 
 from app.db.db import Role as RoleCollection
-from app.schemas.role_simple import RoleCreate, RoleUpdate
+from app.schemas.role import RoleCreate, RoleUpdate
 
 
 class CRUDRole:

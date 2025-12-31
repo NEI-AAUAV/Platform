@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, Query, Security
 
 from app.api import auth
 from app.crud.crud_user import user as crud_user
-from app.schemas.user_simple import UserCreate, UserUpdate, UserInDB, UserList
+from app.schemas.user import UserCreate, UserUpdate, UserInDB, UserList
 
 
 router = APIRouter()

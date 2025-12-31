@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 from pydantic import BaseModel, Field, validator
 
 from app.utils import to_camel_case
-from .user import UserCreate, UserAdminUpdate, UserInDB
+from .user import UserCreate, UserUpdate, UserInDB
 
 
 class MessageBase(BaseModel):
@@ -40,7 +40,7 @@ class PatchCreate(PatchBase):
 
 
 class PatchUpdate(PatchBase):
-    users: List[UserAdminUpdate]
+    users: List[UserUpdate]
     # TODO: do not forget
     # updated_at: datetime = Field(default_factory=datetime.now)
 
