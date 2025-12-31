@@ -1,161 +1,53 @@
-from typing import Generic, TypeVar, Optional, Literal, List
+"""
+Simplified User schemas for Family Tree API.
+Matches the new flat MongoDB structure.
+"""
 
-from pydantic import BaseModel, root_validator, validator, constr, conlist
-
-from app.utils import to_camel_case
-
-
-RefType = TypeVar("RefType", bound=str)
-
-
-class RefYear(Generic[RefType], BaseModel):
-    ref_id: RefType
-    year: int                   # Matriculation year
-    end_year: Optional[int]     # Last matriculation year (inclusive)
-
-    @validator('end_year')
-    def matriculation_years(cls, v: int, values):
-        if v and v < values.get('year'):
-            raise ValueError('end_year must be greater than year')
-        return v
-
-    class Config:
-        # FIXME: dataclass?
-        alias_generator = to_camel_case
-
-
-class NameUntil(Generic[RefType], BaseModel):
-    name: RefType
-    until: Optional[int]        # Last matriculation year (inclusive)
-
-    class Config:
-        # FIXME: dataclass?
-        alias_generator = to_camel_case
-
-
-class FainaBase(BaseModel):
-    # Trajado single name or names by year
-    name: conlist(NameUntil, min_items=1)
-    baptism_name: Optional[str]
-    # NOTE: useful for predicting hierarchy
-    first_trajado_year: Optional[int]
-    # NOTE: expects Faina role references start by .1.
-    roles: List[RefYear[constr(regex=r'^\.1\.')]] = []
-
-    @root_validator
-    def has_patrao_or_is_trajado(cls, values):
-        if values.get('patrao_id') or values.get('first_trajado_year'):
-            return values
-        raise ValueError('Must have a patrão or be trajado')
-
-    @validator('name', 'roles')
-    def sort_ref_years(cls, v):
-        return sorted(v, key=lambda m: m.get('year'))
-
-    @validator('name')
-    def has_always_one_name(cls, v):
-        for i in range(len(v) - 1):
-            if not v[i].until:
-                raise ValueError('Can not have two names in one year')
-        return v
-
-
-class FainaCreate(FainaBase):
-    baptism_year: int
-    patrao_id: Optional[int]
-
-
-class FainaUpdate(FainaBase):
-    # NOTE: forbids patrao changes without approval
-    # FIXME: roles can only be added to already aproved roles, not modified
-    name: Optional[conlist(RefYear, min_items=1)]
-
-
-class FainaAdminUpdate(FainaUpdate):
-    baptism_year: int
-    patrao_id: Optional[int]
-
-
-class FainaInDB(FainaBase):
-    baptism_year: int       # NOTE: useful for ordering users
-    patrao_id: Optional[int]
-
-    class Config:
-        # FIXME: do i need this? dataclass?
-        orm = True
-        allow_population_by_field_name = True
-        alias_generator = to_camel_case
-
-
-class AcademicBase(BaseModel):
-    matriculations: List[RefYear[int]]
-    roles: List[RefYear] = []
-    # NOTE: useful for ordering users
-    last_matriculation_year: Optional[int]
-
-    @validator('matriculations', 'roles')
-    def sort_ref_years(cls, v):
-        return sorted(v, key=lambda m: m.get('year'))
-
-    @validator('last_matriculation_year', always=True)
-    def get_last_matriculation_year(cls, v, values):
-        # FIXME: careful, this disappears with exclude_unset=True
-        m = values.get('matriculations')
-        if m and len(m) > 1:
-            return m[-1].end_year
-        return None
-
-
-AcademicCreate = AcademicBase
-
-AcademicUpdate = AcademicBase
-
-
-class AcademicInDB(AcademicBase):
-    class Config:
-        # FIXME: do i need this? dataclass?
-        orm = True
-        allow_population_by_field_name = True
-        alias_generator = to_camel_case
+from typing import Optional, Literal, List
+from pydantic import BaseModel, Field
 
 
 class UserBase(BaseModel):
-    ref_id: Optional[int]      # Reference to a NEI Service user ID
-    name: constr(max_length=40)
+    """Base user model with required and optional fields."""
+    name: str = Field(..., max_length=100)
     sex: Literal['M', 'F']
+    start_year: int = Field(..., ge=0, le=99, description="Year of entry (2 digits)")
+    nmec: Optional[int] = Field(None, description="Número mecanográfico")
+    faina_name: Optional[str] = Field(None, max_length=50, description="Nome de faina")
+    course_id: Optional[int] = Field(None, description="Course ID for other courses")
+    patrao_id: Optional[int] = Field(None, description="Patrão user ID (null for roots)")
+    end_year: Optional[int] = Field(None, ge=0, le=99, description="Year of end (2 digits)")
 
 
 class UserCreate(UserBase):
-    faina: Optional[FainaCreate]
-    academic: Optional[AcademicCreate]
-
-    @root_validator
-    def not_both_none(cls, values):
-        if values.get('faina') or values.get('academic'):
-            return values
-        raise ValueError('Must have faina or academic details')
+    """Schema for creating a new user."""
+    pass
 
 
-class UserUpdate(UserBase):
-    faina: Optional[FainaUpdate]
-    academic: Optional[AcademicUpdate]
-
-
-class UserAdminUpdate(UserUpdate):
-    faina: Optional[FainaAdminUpdate]
-    academic: Optional[AcademicUpdate]
+class UserUpdate(BaseModel):
+    """Schema for updating a user. All fields optional."""
+    name: Optional[str] = Field(None, max_length=100)
+    sex: Optional[Literal['M', 'F']] = None
+    start_year: Optional[int] = Field(None, ge=0, le=99)
+    nmec: Optional[int] = None
+    faina_name: Optional[str] = Field(None, max_length=50)
+    course_id: Optional[int] = None
+    patrao_id: Optional[int] = None
+    end_year: Optional[int] = Field(None, ge=0, le=99)
 
 
 class UserInDB(UserBase):
-    id: int
-    image: Optional[str]
-    faina: Optional[FainaInDB]
-    academic: Optional[AcademicInDB]
+    """Schema for user response from database."""
+    id: int = Field(..., alias="_id")
 
     class Config:
-        extra = 'forbid'
         orm_mode = True
-        # TODO: check necessity of these features:
-        # extra = 'allow'
-        # use_enum_values = True,
-        # json_loads, json_dumps, json_enconders
+        allow_population_by_field_name = True
+
+
+class UserList(BaseModel):
+    """Schema for paginated user list response."""
+    items: List[UserInDB]
+    total: int
+    skip: int
+    limit: int

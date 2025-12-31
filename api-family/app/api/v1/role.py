@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, Query, Security
 
 from app.api import auth
 from app.crud.crud_role import role as crud_role
-from app.schemas.role_simple import RoleCreate, RoleUpdate, RoleInDB, RoleList
+from app.schemas.role import RoleCreate, RoleUpdate, RoleInDB, RoleList
 
 
 router = APIRouter()
