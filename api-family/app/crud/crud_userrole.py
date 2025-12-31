@@ -4,6 +4,7 @@ CRUD operations for UserRole collection.
 
 from typing import Optional, List
 from bson import ObjectId
+from bson.errors import InvalidId
 from pymongo.collection import ReturnDocument
 
 from app.db.db import UserRole as UserRoleCollection, User as UserCollection, Role as RoleCollection
@@ -20,7 +21,7 @@ class CRUDUserRole:
         """Get user-role by ID."""
         try:
             return self.collection.find_one({"_id": ObjectId(id)})
-        except:
+        except InvalidId:
             return None
     
     def get_by_user(self, user_id: int) -> List[dict]:
@@ -107,7 +108,7 @@ class CRUDUserRole:
                 return_document=ReturnDocument.AFTER
             )
             return result
-        except:
+        except InvalidId:
             return None
     
     def delete(self, *, id: str) -> bool:
@@ -115,7 +116,7 @@ class CRUDUserRole:
         try:
             result = self.collection.delete_one({"_id": ObjectId(id)})
             return result.deleted_count > 0
-        except:
+        except InvalidId:
             return False
     
     def delete_by_user(self, user_id: int) -> int:

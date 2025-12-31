@@ -6,7 +6,7 @@ from typing import Optional, List, Any
 from pymongo.collection import ReturnDocument
 
 from app.db.db import User as UserCollection
-from app.schemas.user import UserCreate, UserUpdate, UserInDB
+from app.schemas.user import UserCreate, UserUpdate
 
 
 class CRUDUser:

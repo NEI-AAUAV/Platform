@@ -11,7 +11,7 @@ class UserRoleBase(BaseModel):
     """Base user-role association model."""
     user_id: int = Field(..., description="User ID")
     role_id: str = Field(..., description="Role ID (path format, e.g. '.1.5.')")
-    year: int = Field(..., ge=0, le=99, description="Year of the role (2 digits)")
+    year: int = Field(..., ge=0, le=99, description="Year of the role (0-99)")
 
 
 class UserRoleCreate(UserRoleBase):

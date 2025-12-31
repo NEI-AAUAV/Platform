@@ -12,7 +12,7 @@ from app.crud.crud_userrole import user_role as crud_user_role
 from app.crud.crud_user import user as crud_user
 from app.crud.crud_role import role as crud_role
 from app.schemas.userrole import (
-    UserRoleCreate, UserRoleUpdate, UserRoleInDB, 
+    UserRoleCreate, UserRoleInDB, 
     UserRoleList, UserRoleWithDetails
 )
 
@@ -26,7 +26,7 @@ def get_user_roles(
     limit: int = Query(default=100, ge=1, le=500),
     user_id: Optional[int] = Query(default=None, description="Filter by user ID"),
     role_id: Optional[str] = Query(default=None, description="Filter by role ID"),
-    year: Optional[int] = Query(default=None, description="Filter by year"),
+    year: Optional[int] = Query(default=None, ge=0, le=99, description="Filter by year (0-99)"),
 ):
     """
     List user-role associations with optional filters.
@@ -38,7 +38,16 @@ def get_user_roles(
         role_id=role_id,
         year=year
     )
-    total = crud_user_role.count()
+    
+    # Build query for count
+    query = {}
+    if user_id is not None:
+        query["user_id"] = user_id
+    if role_id is not None:
+        query["role_id"] = role_id
+    if year is not None:
+        query["year"] = year
+    total = crud_user_role.count(query)
     
     # Convert ObjectId to string for response
     for ur in user_roles:
@@ -51,7 +60,7 @@ def get_user_roles(
 def get_user_roles_with_details(
     user_id: Optional[int] = Query(default=None),
     role_id: Optional[str] = Query(default=None),
-    year: Optional[int] = Query(default=None),
+    year: Optional[int] = Query(default=None, ge=0, le=99),
     limit: int = Query(default=100, ge=1, le=500),
 ):
     """
@@ -101,11 +110,11 @@ def create_user_role(
     """
     # Validate user exists
     if not crud_user.exists(obj_in.user_id):
-        raise HTTPException(status_code=400, detail=f"User {obj_in.user_id} not found")
+        raise HTTPException(status_code=400, detail=f"User {obj_in.user_id} does not exist")
     
     # Validate role exists
     if not crud_role.exists(obj_in.role_id):
-        raise HTTPException(status_code=400, detail=f"Role {obj_in.role_id} not found")
+        raise HTTPException(status_code=400, detail=f"Role {obj_in.role_id} does not exist")
     
     # Check for duplicate
     if crud_user_role.exists(obj_in.user_id, obj_in.role_id, obj_in.year):
