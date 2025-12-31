@@ -51,6 +51,49 @@ class CRUDUser:
         """Count users matching query."""
         return self.collection.count_documents(query or {})
     
+    def get_all(self) -> List[dict]:
+        """Get all users."""
+        return list(self.collection.find())
+    
+    def get_roots(self) -> List[dict]:
+        """Get users without patrão (root nodes of the tree)."""
+        return list(self.collection.find({"patrao_id": None}))
+    
+    def get_tree(self) -> tuple[List[dict], int]:
+        """
+        Build hierarchical family tree.
+        Returns tuple of (root_nodes_with_children, total_users).
+        """
+        # Fetch all users
+        all_users = list(self.collection.find())
+        total = len(all_users)
+        
+        # Create lookup dict by ID
+        users_by_id = {u["_id"]: {**u, "children": []} for u in all_users}
+        
+        # Build tree by assigning children to parents
+        roots = []
+        for user_id, user in users_by_id.items():
+            patrao_id = user.get("patrao_id")
+            if patrao_id is None:
+                roots.append(user)
+            elif patrao_id in users_by_id:
+                users_by_id[patrao_id]["children"].append(user)
+        
+        # Sort roots by start_year (handle None values)
+        roots.sort(key=lambda x: x.get("start_year") or 0)
+        
+        # Recursively sort children
+        def sort_children(node):
+            node["children"].sort(key=lambda x: x.get("start_year") or 0)
+            for child in node["children"]:
+                sort_children(child)
+        
+        for root in roots:
+            sort_children(root)
+        
+        return roots, total
+    
     def create(self, *, obj_in: UserCreate) -> dict:
         """Create new user."""
         # Get next ID
