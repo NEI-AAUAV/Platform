@@ -45,12 +45,9 @@ class UserRoleInDB(UserRoleBase):
         allow_population_by_field_name = True
 
 
-class UserRoleWithDetails(BaseModel):
+class UserRoleWithDetails(UserRoleBase):
     """User-role with expanded user and role info."""
     id: str = Field(..., alias="_id")
-    user_id: int
-    role_id: str
-    year: int
     user_name: Optional[str] = None
     role_name: Optional[str] = None
     role_short: Optional[str] = None
@@ -64,9 +61,13 @@ class UserRoleList(BaseModel):
     """Schema for paginated user-role list response."""
     items: List[UserRoleInDB]
     total: int
+    skip: int = Field(0, description="Number of items skipped")
+    limit: int = Field(100, description="Maximum number of items returned")
 
 
 class UserRoleDetailsList(BaseModel):
     """Schema for paginated user-role details list response."""
     items: List[UserRoleWithDetails]
     total: int
+    skip: int = Field(0, description="Number of items skipped")
+    limit: int = Field(100, description="Maximum number of items returned")

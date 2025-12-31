@@ -3,7 +3,7 @@ UserRole API endpoints for Family Tree.
 Associates users with roles for specific years.
 """
 
-from typing import List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query, Security
 
@@ -13,7 +13,7 @@ from app.crud.crud_user import user as crud_user
 from app.crud.crud_role import role as crud_role
 from app.schemas.userrole import (
     UserRoleCreate, UserRoleInDB, 
-    UserRoleList, UserRoleWithDetails, UserRoleDetailsList
+    UserRoleList, UserRoleDetailsList
 )
 
 
@@ -40,7 +40,7 @@ def get_user_roles(
     )
     total = crud_user_role.count(user_id=user_id, role_id=role_id, year=year)
     
-    return UserRoleList(items=user_roles, total=total)
+    return UserRoleList(items=user_roles, total=total, skip=skip, limit=limit)
 
 
 @router.get("/details", status_code=200, response_model=UserRoleDetailsList)
@@ -56,40 +56,55 @@ def get_user_roles_with_details(
     Includes pagination support.
     """
     items, total = crud_user_role.get_with_details(
-        user_roles=[],  # Let CRUD layer fetch with filters
         user_id=user_id,
         role_id=role_id,
         year=year,
         skip=skip,
         limit=limit
     )
-    return UserRoleDetailsList(items=items, total=total)
+    return UserRoleDetailsList(items=items, total=total, skip=skip, limit=limit)
 
 
-@router.get("/user/{user_id}", status_code=200, response_model=List[UserRoleWithDetails])
-def get_roles_for_user(user_id: int):
+@router.get("/user/{user_id}", status_code=200, response_model=UserRoleDetailsList)
+def get_roles_for_user(
+    user_id: int,
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=100, ge=1, le=500),
+):
     """
     Get all roles for a specific user with details.
+    Supports pagination.
     """
     if not crud_user.exists(user_id):
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
     
-    user_roles = crud_user_role.get_by_user(user_id)
-    items, _ = crud_user_role.get_with_details(user_roles)
-    return items
+    items, total = crud_user_role.get_with_details(
+        user_id=user_id,
+        skip=skip,
+        limit=limit
+    )
+    return UserRoleDetailsList(items=items, total=total, skip=skip, limit=limit)
 
 
-@router.get("/role/{role_id:path}", status_code=200, response_model=List[UserRoleWithDetails])
-def get_users_for_role(role_id: str):
+@router.get("/role/{role_id:path}", status_code=200, response_model=UserRoleDetailsList)
+def get_users_for_role(
+    role_id: str,
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=100, ge=1, le=500),
+):
     """
     Get all users with a specific role with details.
+    Supports pagination.
     """
     if not crud_role.exists(role_id):
         raise HTTPException(status_code=404, detail=f"Role {role_id} not found")
     
-    user_roles = crud_user_role.get_by_role(role_id)
-    items, _ = crud_user_role.get_with_details(user_roles)
-    return items
+    items, total = crud_user_role.get_with_details(
+        role_id=role_id,
+        skip=skip,
+        limit=limit
+    )
+    return UserRoleDetailsList(items=items, total=total, skip=skip, limit=limit)
 
 
 @router.post("/", status_code=201, response_model=UserRoleInDB)
