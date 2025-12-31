@@ -13,7 +13,7 @@ from app.crud.crud_user import user as crud_user
 from app.crud.crud_role import role as crud_role
 from app.schemas.userrole import (
     UserRoleCreate, UserRoleInDB, 
-    UserRoleList, UserRoleWithDetails
+    UserRoleList, UserRoleWithDetails, UserRoleDetailsList
 )
 
 
@@ -38,42 +38,32 @@ def get_user_roles(
         role_id=role_id,
         year=year
     )
-    
-    # Build query for count
-    query = {}
-    if user_id is not None:
-        query["user_id"] = user_id
-    if role_id is not None:
-        query["role_id"] = role_id
-    if year is not None:
-        query["year"] = year
-    total = crud_user_role.count(query)
-    
-    # Convert ObjectId to string for response
-    for ur in user_roles:
-        ur["_id"] = str(ur["_id"])
+    total = crud_user_role.count(user_id=user_id, role_id=role_id, year=year)
     
     return UserRoleList(items=user_roles, total=total)
 
 
-@router.get("/details", status_code=200, response_model=List[UserRoleWithDetails])
+@router.get("/details", status_code=200, response_model=UserRoleDetailsList)
 def get_user_roles_with_details(
-    user_id: Optional[int] = Query(default=None),
-    role_id: Optional[str] = Query(default=None),
-    year: Optional[int] = Query(default=None, ge=0, le=99),
+    skip: int = Query(default=0, ge=0),
     limit: int = Query(default=100, ge=1, le=500),
+    user_id: Optional[int] = Query(default=None, description="Filter by user ID"),
+    role_id: Optional[str] = Query(default=None, description="Filter by role ID"),
+    year: Optional[int] = Query(default=None, ge=0, le=99, description="Filter by year (0-99)"),
 ):
     """
     Get user-roles with expanded user and role details.
+    Includes pagination support.
     """
-    user_roles = crud_user_role.get_multi(
-        skip=0, 
-        limit=limit, 
+    items, total = crud_user_role.get_with_details(
+        user_roles=[],  # Let CRUD layer fetch with filters
         user_id=user_id,
         role_id=role_id,
-        year=year
+        year=year,
+        skip=skip,
+        limit=limit
     )
-    return crud_user_role.get_with_details(user_roles)
+    return UserRoleDetailsList(items=items, total=total)
 
 
 @router.get("/user/{user_id}", status_code=200, response_model=List[UserRoleWithDetails])
@@ -85,7 +75,8 @@ def get_roles_for_user(user_id: int):
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
     
     user_roles = crud_user_role.get_by_user(user_id)
-    return crud_user_role.get_with_details(user_roles)
+    items, _ = crud_user_role.get_with_details(user_roles)
+    return items
 
 
 @router.get("/role/{role_id:path}", status_code=200, response_model=List[UserRoleWithDetails])
@@ -97,7 +88,8 @@ def get_users_for_role(role_id: str):
         raise HTTPException(status_code=404, detail=f"Role {role_id} not found")
     
     user_roles = crud_user_role.get_by_role(role_id)
-    return crud_user_role.get_with_details(user_roles)
+    items, _ = crud_user_role.get_with_details(user_roles)
+    return items
 
 
 @router.post("/", status_code=201, response_model=UserRoleInDB)
@@ -110,21 +102,25 @@ def create_user_role(
     """
     # Validate user exists
     if not crud_user.exists(obj_in.user_id):
-        raise HTTPException(status_code=400, detail=f"User {obj_in.user_id} does not exist")
+        raise HTTPException(status_code=404, detail=f"User {obj_in.user_id} not found")
     
     # Validate role exists
     if not crud_role.exists(obj_in.role_id):
-        raise HTTPException(status_code=400, detail=f"Role {obj_in.role_id} does not exist")
+        raise HTTPException(status_code=404, detail=f"Role {obj_in.role_id} not found")
     
     # Check for duplicate
     if crud_user_role.exists(obj_in.user_id, obj_in.role_id, obj_in.year):
         raise HTTPException(
-            status_code=400, 
+            status_code=409, 
             detail=f"User {obj_in.user_id} already has role {obj_in.role_id} for year {obj_in.year}"
         )
     
     user_role = crud_user_role.create(obj_in=obj_in)
-    user_role["_id"] = str(user_role["_id"])
+    if not user_role:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to create user-role association"
+        )
     return user_role
 
 
