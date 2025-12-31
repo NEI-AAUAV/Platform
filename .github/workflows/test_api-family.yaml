@@ -5,11 +5,11 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/api-family.yaml'
+      - '.github/workflows/test_api-family.yaml'
       - 'api-family/**/*'
   pull_request:
     paths:
-      - '.github/workflows/api-family.yaml'
+      - '.github/workflows/test_api-family.yaml'
       - 'api-family/**/*'
   workflow_dispatch:
 
@@ -18,18 +18,19 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
-        image: postgres
+      mongo:
+        image: mongo:6.0.27
         env:
-          POSTGRES_DB: postgres_test
-          POSTGRES_PASSWORD: postgres
+          MONGO_INITDB_DATABASE: family_test
+          MONGO_INITDB_ROOT_USERNAME: mongo
+          MONGO_INITDB_ROOT_PASSWORD: mongo
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "mongosh --eval 'db.runCommand(\"ping\").ok' --quiet"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          - 27017:27017
 
     steps:
       - name: Checkout repository files
@@ -54,4 +55,9 @@ jobs:
 
       - name: Run tests
         working-directory: ./api-family
+        env:
+          MONGO_SERVER: localhost
+          MONGO_USER: mongo
+          MONGO_PASSWORD: mongo
+          MONGO_DB: family_test
         run: poetry run pytest
