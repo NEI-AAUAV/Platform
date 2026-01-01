@@ -8,6 +8,7 @@ from fastapi import APIRouter, HTTPException, Query, Security
 
 from app.api import auth
 from app.crud.crud_user import user as crud_user
+from app.crud.crud_course import course as crud_course
 from app.schemas.user import UserCreate, UserUpdate, UserInDB, UserList
 
 
@@ -91,6 +92,14 @@ def create_user(
                 detail=f"Patrão with id {obj_in.patrao_id} not found"
             )
     
+    # Validate course_id exists if provided
+    if obj_in.course_id is not None:
+        if not crud_course.exists(obj_in.course_id):
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Course with id {obj_in.course_id} not found"
+            )
+    
     # Validate nmec is unique if provided
     if obj_in.nmec is not None:
         existing = crud_user.get_by_nmec(obj_in.nmec)
@@ -126,6 +135,14 @@ def update_user(
             raise HTTPException(
                 status_code=400, 
                 detail=f"Patrão with id {obj_in.patrao_id} not found"
+            )
+    
+    # Validate course_id if being updated
+    if obj_in.course_id is not None:
+        if not crud_course.exists(obj_in.course_id):
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Course with id {obj_in.course_id} not found"
             )
     
     # Validate nmec uniqueness if being updated
