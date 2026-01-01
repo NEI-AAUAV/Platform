@@ -6,7 +6,7 @@ Optimized for performance with proper indexing and connection pooling.
 from typing import Generator
 import logging
 
-from pymongo import MongoClient, ASCENDING, DESCENDING
+from pymongo import MongoClient, ASCENDING
 from pymongo.errors import OperationFailure
 
 from app.core.config import settings

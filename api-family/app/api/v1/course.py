@@ -5,6 +5,7 @@ Course API endpoints.
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query, Security
+from pymongo.errors import DuplicateKeyError
 
 from app.api import auth
 from app.crud.crud_course import course as crud_course
@@ -53,8 +54,25 @@ def create_course(
     course_in: CourseCreate,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
-    """Create a new course. Requires MANAGER_FAMILY scope."""
-    return crud_course.create(obj_in=course_in)
+    """
+    Create a new course. Requires MANAGER_FAMILY scope.
+    
+    Returns 409 Conflict if short code already exists.
+    """
+    # Check for duplicate short code
+    if crud_course.short_exists(course_in.short):
+        raise HTTPException(
+            status_code=409, 
+            detail=f"Course with short code '{course_in.short}' already exists"
+        )
+    
+    try:
+        return crud_course.create(obj_in=course_in)
+    except DuplicateKeyError:
+        raise HTTPException(
+            status_code=409, 
+            detail=f"Course with short code '{course_in.short}' already exists"
+        )
 
 
 @router.put("/{course_id}", status_code=200, response_model=CourseInDB)
@@ -63,12 +81,32 @@ def update_course(
     course_in: CourseUpdate,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
-    """Update a course. Requires MANAGER_FAMILY scope."""
+    """
+    Update a course. Requires MANAGER_FAMILY scope.
+    
+    Returns 409 Conflict if new short code already exists on another course.
+    """
     if not crud_course.exists(course_id):
         raise HTTPException(status_code=404, detail=f"Course {course_id} not found")
     
-    updated = crud_course.update(id=course_id, obj_in=course_in)
-    return updated
+    # Check for duplicate short code (excluding current course)
+    if course_in.short and crud_course.short_exists(course_in.short, exclude_id=course_id):
+        raise HTTPException(
+            status_code=409, 
+            detail=f"Course with short code '{course_in.short}' already exists"
+        )
+    
+    try:
+        updated = crud_course.update(id=course_id, obj_in=course_in)
+        if not updated:
+            # Course may have been deleted between exists check and update
+            raise HTTPException(status_code=404, detail=f"Course {course_id} not found")
+        return updated
+    except DuplicateKeyError:
+        raise HTTPException(
+            status_code=409, 
+            detail=f"Course with short code '{course_in.short}' already exists"
+        )
 
 
 @router.delete("/{course_id}", status_code=204)

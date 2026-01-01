@@ -2,15 +2,23 @@
 Course schemas for Family API.
 """
 
+from enum import Enum
 from typing import Optional
 from pydantic import BaseModel, Field, constr
+
+
+class DegreeType(str, Enum):
+    """Valid degree types for courses."""
+    LICENCIATURA = "Licenciatura"
+    MESTRADO = "Mestrado"
+    PROGRAMA_DOUTORAL = "Programa Doutoral"
 
 
 class CourseBase(BaseModel):
     """Base course schema with common fields."""
     short: constr(max_length=8) = Field(..., description="Course abbreviation (e.g., LEI, MEI)")
     name: str = Field(..., description="Full course name")
-    degree: str = Field(..., description="Degree type (Licenciatura, Mestrado, Programa Doutoral)")
+    degree: DegreeType = Field(..., description="Degree type")
     show: Optional[bool] = Field(default=False, description="Whether to show in UI")
 
 
@@ -23,7 +31,7 @@ class CourseUpdate(BaseModel):
     """Schema for updating a course. All fields optional."""
     short: Optional[constr(max_length=8)] = None
     name: Optional[str] = None
-    degree: Optional[str] = None
+    degree: Optional[DegreeType] = None
     show: Optional[bool] = None
 
 
