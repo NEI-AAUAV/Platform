@@ -88,50 +88,52 @@ class CRUDUserRole:
         limit: int = 100
     ) -> tuple[List[dict], int]:
         """
-        Enrich user-roles with user and role names.
+        Enrich user-roles with user and role names using MongoDB aggregation.
         Returns tuple of (enriched_items, total_count).
         """
-        # If user_roles not provided, fetch them
-        if not user_roles:
-            query = self._build_query(user_id=user_id, role_id=role_id, year=year)
-            cursor = self.collection.find(query).skip(skip).limit(limit)
-            user_roles = list(cursor)
-            total = self.collection.count_documents(query)
-        else:
-            total = len(user_roles)
+        query = self._build_query(user_id=user_id, role_id=role_id, year=year)
         
-        if not user_roles:
+        # Get total count first
+        total = self.collection.count_documents(query)
+        
+        if total == 0:
             return [], 0
         
-        # Get all unique user_ids and role_ids
-        user_ids = list(set(ur["user_id"] for ur in user_roles))
-        role_ids = list(set(ur["role_id"] for ur in user_roles))
+        # Aggregation pipeline with $lookup for joins
+        pipeline = [
+            {"$match": query},
+            {"$skip": skip},
+            {"$limit": limit},
+            # Join with users collection
+            {"$lookup": {
+                "from": "users",
+                "localField": "user_id",
+                "foreignField": "_id",
+                "as": "user"
+            }},
+            # Join with roles collection
+            {"$lookup": {
+                "from": "roles",
+                "localField": "role_id",
+                "foreignField": "_id",
+                "as": "role"
+            }},
+            # Unwind arrays (convert from array to single doc)
+            {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
+            {"$unwind": {"path": "$role", "preserveNullAndEmptyArrays": True}},
+            # Project final shape
+            {"$project": {
+                "_id": {"$toString": "$_id"},
+                "user_id": 1,
+                "role_id": 1,
+                "year": 1,
+                "user_name": "$user.name",
+                "role_name": "$role.name",
+                "role_short": "$role.short"
+            }}
+        ]
         
-        # Fetch users and roles in batch
-        users = {u["_id"]: u for u in UserCollection.find({"_id": {"$in": user_ids}})}
-        roles = {r["_id"]: r for r in RoleCollection.find({"_id": {"$in": role_ids}})}
-        
-        # Enrich and log warnings for orphaned associations
-        result = []
-        for ur in user_roles:
-            user = users.get(ur["user_id"])
-            role = roles.get(ur["role_id"])
-            
-            if user is None:
-                logger.warning(f"Orphaned user-role: user_id={ur['user_id']} not found")
-            if role is None:
-                logger.warning(f"Orphaned user-role: role_id={ur['role_id']} not found")
-            
-            result.append({
-                "_id": str(ur["_id"]) if isinstance(ur["_id"], ObjectId) else ur["_id"],
-                "user_id": ur["user_id"],
-                "role_id": ur["role_id"],
-                "year": ur["year"],
-                "user_name": user.get("name") if user else None,
-                "role_name": role.get("name") if role else None,
-                "role_short": role.get("short") if role else None
-            })
-        
+        result = list(self.collection.aggregate(pipeline))
         return result, total
     
     def count(

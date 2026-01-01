@@ -70,12 +70,30 @@ class CRUDUser:
     
     def _build_tree(self) -> Tuple[dict, List[dict], int]:
         """
-        Build complete tree structure.
+        Build complete tree structure using MongoDB aggregation.
         Returns: (users_by_id, roots, total)
         """
-        # Fetch all users
-        all_users = list(self.collection.find())
+        # Use aggregation to get sorted users with only needed fields
+        pipeline = [
+            {"$sort": {"start_year": 1}},  # Sort in MongoDB
+            {"$project": {
+                "_id": 1,
+                "name": 1,
+                "faina_name": 1,
+                "sex": 1,
+                "start_year": 1,
+                "end_year": 1,
+                "nmec": 1,
+                "course_id": 1,
+                "patrao_id": 1
+            }}
+        ]
+        
+        all_users = list(self.collection.aggregate(pipeline))
         total = len(all_users)
+        
+        if total == 0:
+            return {}, [], 0
         
         # Create lookup dict by ID with children arrays
         users_by_id = {u["_id"]: {**u, "children": []} for u in all_users}
@@ -93,15 +111,9 @@ class CRUDUser:
                 logger.warning(f"Orphaned user {user_id}: patrao_id={patrao_id} not found")
                 roots.append(user)  # Add as root to include in tree
         
-        # Sort all children by start_year (None values sort to end)
-        def sort_children(node):
-            node["children"].sort(key=self._sort_key)
-            for child in node["children"]:
-                sort_children(child)
-        
+        # Note: Children are already sorted since we sorted all_users first
+        # Just need to sort roots (None start_year goes to end)
         roots.sort(key=self._sort_key)
-        for root in roots:
-            sort_children(root)
         
         return users_by_id, roots, total
     
