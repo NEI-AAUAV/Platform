@@ -2,7 +2,6 @@
 Tests for Tree API endpoint.
 """
 
-import pytest
 from fastapi.testclient import TestClient
 
 

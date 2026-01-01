@@ -110,9 +110,9 @@ class CRUDUser:
         result = {k: v for k, v in node.items() if k != "children"}
         
         if current_depth >= max_depth:
+            children = node.get("children", [])
             result["children"] = []
-            if len(node.get("children", [])) > 0:
-                result["has_more_children"] = True
+            result["has_more_children"] = len(children) > 0
         else:
             result["children"] = [
                 self._apply_depth_limit(child, current_depth + 1, max_depth)

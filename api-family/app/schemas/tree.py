@@ -19,7 +19,10 @@ class UserTreeNode(BaseModel):
     course_id: Optional[int] = None
     patrao_id: Optional[int] = None
     children: List["UserTreeNode"] = Field(default_factory=list)
-    has_more_children: Optional[bool] = None  # Set when depth limit reached
+    has_more_children: Optional[bool] = Field(
+        default=None, 
+        description="Indicates additional children exist but were not included due to depth limit"
+    )
     
     class Config:
         orm_mode = True
