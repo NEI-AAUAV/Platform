@@ -51,8 +51,3 @@ class TestTreeEndpoints:
         """Test too large depth should fail."""
         response = client.get("/api/family/v1/tree/?depth=100")
         assert response.status_code == 422
-    
-    def test_cache_invalidation_endpoint(self, client: TestClient):
-        """Test the cache invalidation endpoint."""
-        response = client.delete("/api/family/v1/tree/cache")
-        assert response.status_code == 204

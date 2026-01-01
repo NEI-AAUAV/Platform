@@ -2,20 +2,15 @@
 CRUD operations for User collection.
 """
 
-import time
-from typing import Optional, List, Any, Tuple
+import logging
+from typing import Optional, List, Tuple
 from pymongo.collection import ReturnDocument
 
 from app.db.db import User as UserCollection
 from app.schemas.user import UserCreate, UserUpdate
 
 
-# Simple in-memory cache for tree data
-_tree_cache: dict = {
-    "data": None,
-    "timestamp": 0,
-    "ttl": 60  # Cache TTL in seconds (1 minute)
-}
+logger = logging.getLogger(__name__)
 
 
 class CRUDUser:
@@ -68,18 +63,16 @@ class CRUDUser:
         """Get users without patrão (root nodes of the tree)."""
         return list(self.collection.find({"patrao_id": None}))
     
-    def _build_full_tree(self) -> Tuple[dict, List[dict], int]:
+    def _sort_key(self, x):
+        """Sort key for tree nodes: None values sort to end."""
+        start_year = x.get("start_year")
+        return start_year if start_year is not None else float("inf")
+    
+    def _build_tree(self) -> Tuple[dict, List[dict], int]:
         """
-        Build complete tree structure and return lookup dict.
-        Uses cache if available and not expired.
+        Build complete tree structure.
         Returns: (users_by_id, roots, total)
         """
-        global _tree_cache
-        
-        now = time.time()
-        if _tree_cache["data"] and (now - _tree_cache["timestamp"]) < _tree_cache["ttl"]:
-            return _tree_cache["data"]
-        
         # Fetch all users
         all_users = list(self.collection.find())
         total = len(all_users)
@@ -95,20 +88,20 @@ class CRUDUser:
                 roots.append(user)
             elif patrao_id in users_by_id:
                 users_by_id[patrao_id]["children"].append(user)
+            else:
+                # Orphaned user: patrao_id exists but not in DB
+                logger.warning(f"Orphaned user {user_id}: patrao_id={patrao_id} not found")
+                roots.append(user)  # Add as root to include in tree
         
-        # Sort all children by start_year
+        # Sort all children by start_year (None values sort to end)
         def sort_children(node):
-            node["children"].sort(key=lambda x: x.get("start_year") or 0)
+            node["children"].sort(key=self._sort_key)
             for child in node["children"]:
                 sort_children(child)
         
-        roots.sort(key=lambda x: x.get("start_year") or 0)
+        roots.sort(key=self._sort_key)
         for root in roots:
             sort_children(root)
-        
-        # Cache the result
-        _tree_cache["data"] = (users_by_id, roots, total)
-        _tree_cache["timestamp"] = now
         
         return users_by_id, roots, total
     
@@ -118,7 +111,8 @@ class CRUDUser:
         
         if current_depth >= max_depth:
             result["children"] = []
-            result["has_more_children"] = len(node.get("children", [])) > 0
+            if len(node.get("children", [])) > 0:
+                result["has_more_children"] = True
         else:
             result["children"] = [
                 self._apply_depth_limit(child, current_depth + 1, max_depth)
@@ -138,13 +132,13 @@ class CRUDUser:
         Args:
             root_id: Optional user ID to start tree from (subtree)
             depth: Optional maximum depth to return (None = unlimited)
+                   depth=0 returns only root(s)
+                   depth=1 returns root(s) + direct children
         
         Returns:
             Tuple of (root_nodes_with_children, total_count)
-            - If root_id specified: returns subtree starting from that user
-            - total_count: number of nodes in returned tree
         """
-        users_by_id, roots, total = self._build_full_tree()
+        users_by_id, roots, total = self._build_tree()
         
         # If root_id specified, get subtree
         if root_id is not None:
@@ -163,20 +157,16 @@ class CRUDUser:
                 count += count_nodes(node.get("children", []))
             return count
         
-        result_count = count_nodes(roots) if root_id else total
+        # When depth-limited or using subtree, count actual returned nodes
+        if depth is not None or root_id is not None:
+            result_count = count_nodes(roots)
+        else:
+            result_count = total
         
         return roots, result_count
     
-    def invalidate_tree_cache(self):
-        """Invalidate the tree cache (call after user modifications)."""
-        global _tree_cache
-        _tree_cache["data"] = None
-        _tree_cache["timestamp"] = 0
-    
     def create(self, *, obj_in: UserCreate) -> dict:
         """Create new user."""
-        self.invalidate_tree_cache()
-        
         # Get next ID
         max_doc = self.collection.find_one(sort=[("_id", -1)])
         next_id = (max_doc["_id"] + 1) if max_doc else 1
@@ -194,8 +184,6 @@ class CRUDUser:
     
     def update(self, *, id: int, obj_in: UserUpdate) -> Optional[dict]:
         """Update user by ID."""
-        self.invalidate_tree_cache()
-        
         update_data = obj_in.dict(exclude_unset=True)
         
         if not update_data:
@@ -210,8 +198,6 @@ class CRUDUser:
     
     def delete(self, *, id: int) -> bool:
         """Delete user by ID."""
-        self.invalidate_tree_cache()
-        
         result = self.collection.delete_one({"_id": id})
         return result.deleted_count > 0
     

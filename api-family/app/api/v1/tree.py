@@ -37,8 +37,6 @@ def get_family_tree(
     Response includes:
     - `roots`: Array of root nodes, each with nested `children`
     - `total_users`: Count of users in the returned tree
-    
-    Tree data is cached for 60 seconds for performance.
     """
     # Validate root_id if provided
     if root_id is not None and not crud_user.exists(root_id):
@@ -46,15 +44,3 @@ def get_family_tree(
     
     roots, total = crud_user.get_tree(root_id=root_id, depth=depth)
     return FamilyTree(roots=roots, total_users=total)
-
-
-@router.delete("/cache", status_code=204)
-def invalidate_tree_cache():
-    """
-    Invalidate the tree cache.
-    
-    Use this after bulk operations to force fresh data on next request.
-    Note: Cache is automatically invalidated on user create/update/delete.
-    """
-    crud_user.invalidate_tree_cache()
-    return None

@@ -16,7 +16,10 @@ class UserTreeNode(BaseModel):
     start_year: Optional[int] = None
     end_year: Optional[int] = None
     nmec: Optional[int] = None
-    children: List["UserTreeNode"] = []
+    course_id: Optional[int] = None
+    patrao_id: Optional[int] = None
+    children: List["UserTreeNode"] = Field(default_factory=list)
+    has_more_children: Optional[bool] = None  # Set when depth limit reached
     
     class Config:
         orm_mode = True
@@ -26,7 +29,7 @@ class UserTreeNode(BaseModel):
 class FamilyTree(BaseModel):
     """Complete family tree response."""
     roots: List[UserTreeNode] = Field(..., description="Users without patrão (root nodes)")
-    total_users: int = Field(..., description="Total number of users in tree")
+    total_users: int = Field(..., description="Total number of users in returned tree")
     
     class Config:
         orm_mode = True
