@@ -43,20 +43,41 @@ class CRUDRole:
         return list(self.collection.find({"super_roles": parent_id}))
     
     def get_tree(self) -> List[dict]:
-        """Get all roles organized as a tree structure."""
-        all_roles = list(self.collection.find())
+        """Get all roles organized as a tree structure using MongoDB aggregation."""
+        # Use aggregation to get sorted roles with projection
+        pipeline = [
+            {"$sort": {"_id": 1}},  # Sort by path order
+            {"$project": {
+                "_id": 1,
+                "name": 1,
+                "short": 1,
+                "show": 1,
+                "super_roles": 1
+            }}
+        ]
+        
+        all_roles = list(self.collection.aggregate(pipeline))
+        
+        if not all_roles:
+            return []
+        
+        # Create lookup dict
+        roles_by_id = {r["_id"]: {**r, "children": []} for r in all_roles}
         
         # Build tree
-        root_roles = [r for r in all_roles if r["super_roles"] == ""]
+        roots = []
+        for role_id, role in roles_by_id.items():
+            super_role = role.get("super_roles", "")
+            if super_role == "":
+                roots.append(role)
+            elif super_role in roles_by_id:
+                roles_by_id[super_role]["children"].append(role)
+            else:
+                # Orphaned role: super_roles points to non-existent parent
+                # Include as root for consistency with user tree handling
+                roots.append(role)
         
-        def add_children(role):
-            role_id = role["_id"]
-            children = [r for r in all_roles if r["super_roles"] == role_id]
-            if children:
-                role["children"] = [add_children(c) for c in children]
-            return role
-        
-        return [add_children(r) for r in root_roles]
+        return roots
     
     def count(self, query: dict = None) -> int:
         """Count roles matching query."""
