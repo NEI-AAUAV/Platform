@@ -72,6 +72,10 @@ class CRUDRole:
                 roots.append(role)
             elif super_role in roles_by_id:
                 roles_by_id[super_role]["children"].append(role)
+            else:
+                # Orphaned role: super_roles points to non-existent parent
+                # Include as root for consistency with user tree handling
+                roots.append(role)
         
         return roots
     

@@ -74,8 +74,12 @@ class CRUDUser:
         Returns: (users_by_id, roots, total)
         """
         # Use aggregation to get sorted users with only needed fields
+        # Use $addFields + $ifNull to ensure nulls sort to end (consistent with Python)
         pipeline = [
-            {"$sort": {"start_year": 1}},  # Sort in MongoDB
+            {"$addFields": {
+                "_sort_year": {"$ifNull": ["$start_year", 9999]}
+            }},
+            {"$sort": {"_sort_year": 1}},
             {"$project": {
                 "_id": 1,
                 "name": 1,
