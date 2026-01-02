@@ -41,6 +41,8 @@ class FamilyTree(BaseModel):
     """Complete family tree response."""
     roots: List[UserTreeNode] = Field(..., description="Users without patrão (root nodes)")
     total_users: int = Field(..., description="Total number of users in returned tree")
+    min_year: int = Field(..., description="Minimum start_year in the dataset")
+    max_year: int = Field(..., description="Maximum start_year in the dataset")
     
     class Config:
         orm_mode = True

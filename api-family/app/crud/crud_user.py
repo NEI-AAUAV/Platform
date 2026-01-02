@@ -63,6 +63,21 @@ class CRUDUser:
         """Get users without patrão (root nodes of the tree)."""
         return list(self.collection.find({"patrao_id": None}))
     
+    def get_year_range(self) -> tuple:
+        """Get min and max start_year from users collection."""
+        pipeline = [
+            {"$match": {"start_year": {"$ne": None}}},
+            {"$group": {
+                "_id": None,
+                "min_year": {"$min": "$start_year"},
+                "max_year": {"$max": "$start_year"}
+            }}
+        ]
+        result = list(self.collection.aggregate(pipeline))
+        if result:
+            return result[0]["min_year"], result[0]["max_year"]
+        return 0, 0
+    
     def _sort_key(self, x):
         """Sort key for tree nodes: None values sort to end."""
         start_year = x.get("start_year")

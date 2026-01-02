@@ -1,8 +1,6 @@
 import { Fragment, useState, useCallback, useEffect } from "react";
 
 import {
-  MAX_YEAR,
-  MIN_YEAR,
   handleSearchChange,
   organizations,
   colors,
@@ -17,7 +15,7 @@ import classNames from "classnames";
 import Autocomplete from "components/Autocomplete";
 import { ExpandMoreIcon, ExpandLessIcon } from "assets/icons/google";
 
-const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
+const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYear }) => {
   const [endYear, setEndYear] = useState(-1);
   // const [fainaNames, setFainaNames] = useState(false);
   const [selName, setSelName] = useState(null);
@@ -29,8 +27,10 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
   // };
 
   useEffect(() => {
-    setEndYear(MAX_YEAR);
-  }, []);
+    if (maxYear !== null && maxYear !== undefined) {
+      setEndYear(maxYear);
+    }
+  }, [maxYear]);
 
   const toggleInsignias = (name) => {
     const i = insignias.indexOf(name);
@@ -155,10 +155,10 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
           <div
             className={classNames(
               "btn-xs btn-circle btn mx-auto",
-              endYear === MIN_YEAR + 9 ? "btn-disabled" : "cursor-pointer"
+              minYear && endYear === minYear + 9 ? "btn-disabled" : "cursor-pointer"
             )}
             onClick={() =>
-              setEndYear((endYear) => Math.max(--endYear, MIN_YEAR + 9))
+              setEndYear((endYear) => Math.max(--endYear, (minYear || 0) + 9))
             }
           >
             <ExpandLessIcon />
@@ -182,10 +182,10 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
           <div
             className={classNames(
               "btn-xs btn-circle btn mx-auto",
-              endYear === MAX_YEAR ? "btn-disabled" : "cursor-pointer"
+              endYear === maxYear ? "btn-disabled" : "cursor-pointer"
             )}
             onClick={() =>
-              setEndYear((endYear) => Math.min(++endYear, MAX_YEAR))
+              setEndYear((endYear) => Math.min(++endYear, maxYear || 99))
             }
           >
             <ExpandMoreIcon />

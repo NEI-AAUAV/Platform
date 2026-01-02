@@ -26,6 +26,8 @@ export function useFamilyTree(options = {}) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [minYear, setMinYear] = useState(null);
+    const [maxYear, setMaxYear] = useState(null);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -33,10 +35,12 @@ export function useFamilyTree(options = {}) {
 
         try {
             // FamilyService returns data directly (client.jsx extracts response.data)
-            // API returns { roots: [...], total_users: N }
+            // API returns { roots: [...], total_users: N, min_year: N, max_year: N }
             const data = await FamilyService.getTree(options);
             const flatUsers = flattenTree(data.roots || data);
             setUsers(flatUsers);
+            setMinYear(data.min_year);
+            setMaxYear(data.max_year);
         } catch (err) {
             console.error("Failed to load family tree:", err);
             setError(err);
@@ -49,7 +53,7 @@ export function useFamilyTree(options = {}) {
         fetchData();
     }, [fetchData]);
 
-    return { users, loading, error, refetch: fetchData };
+    return { users, loading, error, refetch: fetchData, minYear, maxYear };
 }
 
 /**
