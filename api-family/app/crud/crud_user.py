@@ -68,6 +68,36 @@ class CRUDUser:
         start_year = x.get("start_year")
         return start_year if start_year is not None else float("inf")
     
+    def _build_org_short_map(self) -> dict:
+        """Build a map of role_id paths to org short names."""
+        from app.db.db import Role
+        roles = list(Role.find({"short": {"$exists": True, "$ne": None}}))
+        return {r["_id"]: r["short"] for r in roles}
+    
+    def _get_org_short(self, role_id: str, org_map: dict) -> Optional[str]:
+        """
+        Get org short name for a role_id by traversing up the hierarchy.
+        role_id format: ".1.5.9." means Faina > CF > Mestre de Curso
+        We need to find the first parent that has a short name.
+        """
+        if not role_id:
+            return None
+        
+        # Try exact match first
+        if role_id in org_map:
+            return org_map[role_id]
+        
+        # Traverse up the hierarchy
+        # ".1.5.9." -> [".1.5.", ".1."]
+        parts = role_id.rstrip('.').split('.')
+        for i in range(len(parts) - 1, 0, -1):
+            parent_path = '.'.join(parts[:i]) + '.'
+            if parent_path in org_map:
+                return org_map[parent_path]
+        
+        return None
+
+    
     def _build_tree(self) -> Tuple[dict, List[dict], int]:
         """
         Build complete tree structure using MongoDB aggregation.
@@ -80,6 +110,13 @@ class CRUDUser:
                 "_sort_year": {"$ifNull": ["$start_year", 9999]}
             }},
             {"$sort": {"_sort_year": 1}},
+            # Lookup user roles
+            {"$lookup": {
+                "from": "user_roles",
+                "localField": "_id",
+                "foreignField": "user_id",
+                "as": "user_roles"
+            }},
             {"$project": {
                 "_id": 1,
                 "name": 1,
@@ -89,7 +126,12 @@ class CRUDUser:
                 "end_year": 1,
                 "nmec": 1,
                 "course_id": 1,
-                "patrao_id": 1
+                "patrao_id": 1,
+                "user_roles": {
+                    "role_id": 1,
+                    "year": 1,
+                    "org_name": 1
+                }
             }}
         ]
         
@@ -98,6 +140,16 @@ class CRUDUser:
         
         if total == 0:
             return {}, [], 0
+        
+        # Build role short name lookup (fallback for roles without org_name)
+        org_short_map = self._build_org_short_map()
+        
+        # Add org_name if not already present from DB
+        for user in all_users:
+            for role in user.get("user_roles", []):
+                if not role.get("org_name"):
+                    role_id = role.get("role_id", "")
+                    role["org_name"] = self._get_org_short(role_id, org_short_map)
         
         # Create lookup dict by ID with children arrays
         users_by_id = {u["_id"]: {**u, "children": []} for u in all_users}

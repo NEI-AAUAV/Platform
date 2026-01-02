@@ -7,6 +7,13 @@ from typing import Optional, List
 from pydantic import BaseModel, Field
 
 
+class UserRole(BaseModel):
+    """A user's role/organization membership."""
+    role_id: Optional[str] = None
+    org_name: Optional[str] = None
+    year: Optional[int] = None
+
+
 class UserTreeNode(BaseModel):
     """A node in the user family tree."""
     id: int = Field(..., alias="_id")
@@ -18,6 +25,7 @@ class UserTreeNode(BaseModel):
     nmec: Optional[int] = None
     course_id: Optional[int] = None
     patrao_id: Optional[int] = None
+    user_roles: List[UserRole] = Field(default_factory=list)
     children: List["UserTreeNode"] = Field(default_factory=list)
     has_more_children: Optional[bool] = Field(
         default=None, 

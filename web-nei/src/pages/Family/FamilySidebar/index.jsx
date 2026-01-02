@@ -31,7 +31,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
   useEffect(() => {
     setEndYear(MAX_YEAR);
   }, []);
-  
+
   const toggleInsignias = (name) => {
     const i = insignias.indexOf(name);
 
@@ -135,7 +135,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
               />
             )}
           /> */}
-{/* 
+      {/* 
       <h5 className="px-3 pt-3 opacity-80">Nomes</h5>
       <div className="px-5 py-3">
         <div
