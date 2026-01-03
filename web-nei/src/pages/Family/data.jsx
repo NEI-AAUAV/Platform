@@ -13,7 +13,7 @@ import pa from "assets/icons/pa.svg";
 import heartBorder from "assets/icons/heart_border.svg";
 
 export const MIN_YEAR = 8;
-export const MAX_YEAR = 24  ;
+export const MAX_YEAR = 25;
 
 export const colors = [
   "#006600",
@@ -155,7 +155,14 @@ function labelFamilies(node) {
   }
 }
 
-export function buildTree() {
+/**
+ * Build the family tree visualization
+ * @param {Array} [users] - Optional user data from API. Falls back to db.json if not provided.
+ */
+export function buildTree(users = null) {
+  // Use provided users or fall back to static data
+  const userData = users || data.users;
+
   const assignInsignias = () => {
     const insignias = ["nei", "aettua"];
     // Use crypto.getRandomValues for cryptographically secure random number
@@ -165,7 +172,7 @@ export function buildTree() {
     return insignias.slice(i);
   };
 
-  for (const elem of data.users) {
+  for (const elem of userData) {
     // Create faina names
     elem.names = separateName(elem.name);
     if (elem.faina && elem.faina[0]?.name) {
@@ -194,7 +201,7 @@ export function buildTree() {
   const dataStructure = d3
     .stratify()
     .id((d) => d.id)
-    .parentId((d) => d.parent)(data.users);
+    .parentId((d) => d.parent)(userData);
 
   // label all nodes with their family id and depth
   labelFamilies(dataStructure);
@@ -216,7 +223,7 @@ export function buildTree() {
     .tree()
     // .size(view)
     .nodeSize([100, 150])
-    .separation(function(a, b) {
+    .separation(function (a, b) {
       return a.family !== b.family ? 4 : a.parent !== b.parent ? 1.25 : 1;
     });
 
@@ -255,7 +262,7 @@ export function buildTree() {
     .filter((d) => d.parent !== root)
     .append("path")
     .attr("marker-start", "url(#dot)")
-    .attr("d", function(d) {
+    .attr("d", function (d) {
       const sx = d.parent.x,
         sy = d.parent.y + 68,
         tx = d.x,
@@ -275,11 +282,11 @@ export function buildTree() {
 
       return p;
     })
-    .attr("stroke-dasharray", function() {
+    .attr("stroke-dasharray", function () {
       let length = d3.select(this).node().getTotalLength();
       return length + " " + length;
     })
-    .attr("stroke-dashoffset", function() {
+    .attr("stroke-dashoffset", function () {
       return d3.select(this).node().getTotalLength();
     })
     .transition()
@@ -361,7 +368,7 @@ export function buildTree() {
       d.data.insignias?.length > 0 ? "pointer" : "default"
     )
     .style("fill", (d) => colors[d.data.start_year % colors.length])
-    .on("click", function(event) {
+    .on("click", function (event) {
       let parent = this.parentElement;
       let active = parent.classList.contains("active");
       let x, y, o;
@@ -448,10 +455,10 @@ export function buildTree() {
     .attr("class", "label label-tooltip")
     .attr("transform", (d) => `translate(${d.x},${d.y + 18})`)
     .attr("opacity", "0")
-    .on("mouseover", function() {
+    .on("mouseover", function () {
       d3.select(this).transition().duration(200).attr("opacity", 1);
     })
-    .on("mouseout", function() {
+    .on("mouseout", function () {
       d3.select(this).transition().delay(200).duration(400).attr("opacity", 0);
     });
 
@@ -472,16 +479,16 @@ export function buildTree() {
   labelsTooltips
     .insert("rect", "text")
     .attr("fill", "white")
-    .attr("width", function() {
+    .attr("width", function () {
       return this.nextSibling.getBBox().width + 10;
     })
-    .attr("height", function() {
+    .attr("height", function () {
       return this.nextSibling.getBBox().height;
     })
-    .attr("x", function() {
+    .attr("x", function () {
       return this.nextSibling.getBBox().x - 5;
     })
-    .attr("y", function() {
+    .attr("y", function () {
       return this.nextSibling.getBBox().y;
     });
 
@@ -581,7 +588,7 @@ export function filterTree(names, end_year) {
   });
 
   fainaLabels
-    .filter(function(d) {
+    .filter(function (d) {
       const n = d3.select(this);
       if (showLabelFaina(d.data, end_year)) {
         const hierarchy = getFainaHierarchy(d.data, end_year);

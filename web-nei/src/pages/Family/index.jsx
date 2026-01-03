@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { motion } from "framer-motion";
 
@@ -13,7 +13,7 @@ import {
 
 import classNames from "classnames";
 
-import { MAX_YEAR } from "./data";
+import { useFamilyTree } from "./useFamilyTree";
 
 import FamilyContent from "./FamilyContent";
 import FamilySidebar from "./FamilySidebar";
@@ -24,7 +24,17 @@ export function Component() {
   const [sidebarOpened, setSidebarOpened] = useState(window.innerWidth >= 768);
 
   const [insignias, setInsignias] = useState([]);
-  const [year, setYear] = useState(MAX_YEAR);
+  const [year, setYear] = useState(null); // Will be set to maxYear when data loads
+
+  // Fetch data from API - includes minYear/maxYear
+  const { minYear, maxYear, loading } = useFamilyTree();
+
+  // Initialize year to maxYear when data loads
+  useEffect(() => {
+    if (maxYear !== null && year === null) {
+      setYear(maxYear);
+    }
+  }, [maxYear, year]);
 
   return (
     <motion.div
@@ -81,6 +91,8 @@ export function Component() {
                   year={year}
                   setInsignias={setInsignias}
                   setYear={setYear}
+                  minYear={minYear}
+                  maxYear={maxYear}
                 />
               </div>
             </div>

@@ -43,4 +43,5 @@ def get_family_tree(
         raise HTTPException(status_code=404, detail=f"User {root_id} not found")
     
     roots, total = crud_user.get_tree(root_id=root_id, depth=depth)
-    return FamilyTree(roots=roots, total_users=total)
+    min_year, max_year = crud_user.get_year_range()
+    return FamilyTree(roots=roots, total_users=total, min_year=min_year, max_year=max_year)
