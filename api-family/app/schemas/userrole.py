@@ -51,6 +51,7 @@ class UserRoleWithDetails(UserRoleBase):
     user_name: Optional[str] = None
     role_name: Optional[str] = None
     role_short: Optional[str] = None
+    year_display_format: Optional[str] = None
 
     class Config:
         orm_mode = True

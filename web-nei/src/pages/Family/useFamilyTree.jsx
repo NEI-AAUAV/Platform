@@ -79,9 +79,14 @@ function flattenTree(tree) {
             image: node.image || null,
             // Map user_roles to organizations format expected by D3
             organizations: node.user_roles?.map(role => ({
-                name: role.role_id?.split("/").pop() || role.role_id,
+                name: role.org_name || role.role_id, // Use org_name (Short name) for ID mapping
                 year: role.year,
-                role: role.role_name,
+                role: role.role_name || role.role_id, // Use specific role name
+                role_name: role.role_name,
+                role_name: role.role_name,
+                year_display_format: role.year_display_format,
+                hidden: role.hidden, // Pass hidden flag
+                icon: role.icon      // Pass icon
             })) || [],
             // Map faina data if available
             faina: node.faina_name ? [{

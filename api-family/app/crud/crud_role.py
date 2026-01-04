@@ -52,7 +52,11 @@ class CRUDRole:
                 "name": 1,
                 "short": 1,
                 "show": 1,
-                "super_roles": 1
+                "super_roles": 1,
+                "icon": 1,
+                "hidden": 1,
+                "female_name": 1,
+                "year_display_format": 1
             }}
         ]
         

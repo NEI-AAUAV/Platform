@@ -10,7 +10,9 @@ import sal from "assets/icons/sal.svg";
 import rol from "assets/icons/rol.svg";
 import lenco from "assets/icons/lenco.svg";
 import pa from "assets/icons/pa.svg";
+import aauav from "assets/icons/aauav.svg";
 import heartBorder from "assets/icons/heart_border.svg";
+import faina from "assets/icons/faina.svg"; // Import Faina Icon
 
 export const MIN_YEAR = 8;
 export const MAX_YEAR = 25;
@@ -44,6 +46,22 @@ export const organizations = {
   AETTUA: {
     name: "AETTUA",
     insignia: aettua,
+  },
+  AAUAv: {
+    name: "AAUAv",
+    insignia: aauav,
+  },
+  "Faina Académica": {
+    name: "Faina Académica",
+    insignia: faina
+  },
+  "Salgadíssima Trindade": {
+    name: "Salgadíssima Trindade",
+    insignia: faina
+  },
+  "Conselho de Cagaréus": {
+    name: "Conselho de Cagaréus",
+    insignia: faina
   },
   CF: {
     name: "Comissão de Faina",
@@ -109,6 +127,21 @@ function separateName(name) {
   }
 
   return { name1, name2, isTruncated, tname1, tname2 };
+}
+
+// Helper to format year (D3 Context)
+function formatYear(y, fmt) {
+  if (!y && y !== 0) return "-";
+
+  if (fmt === "academic") {
+    const yearNum = parseInt(y);
+    const yy = yearNum % 100;
+    const next = (yy + 1) % 100;
+    return `${yy.toString().padStart(2, "0")}/${next.toString().padStart(2, '0')}`;
+  }
+
+  if (y < 100) return `20${y.toString().padStart(2, "0")}`;
+  return y;
 }
 
 function getFainaHierarchy({ sex, start_year, organizations }, end_year) {
@@ -185,17 +218,55 @@ export function buildTree(users = null) {
     }
 
     // Create organizations
-    elem.insignias =
-      elem.organizations
-        ?.map((o) => {
-          if (o.name !== "ST") return o.name;
-          return {
-            "Mestre Escrivão": "escrivao",
-            "Mestre Pescador": "pescador",
-            "Mestre do Salgado": "salgado",
-          }[o.role];
-        })
-        .filter((v, i, a) => a.indexOf(v) === i) || [];
+    // Create organizations with metadata
+    const insigniasMap = new Map();
+    elem.organizations?.forEach((o) => {
+      // console.log("Processing Org:", o.name, o); // Debug Filter
+      // Skip hidden roles in Tree
+      if (o.hidden === true) return;
+
+      let id = o.name;
+      let roleTitle = o.name;
+
+      // Logic for ST sub-roles
+      if (o.name === "ST" || o.role_id === "ST") {
+        const roleMap = {
+          "Mestre Escrivão": "escrivao",
+          "Mestre Pescador": "pescador",
+          "Mestre do Salgado": "salgado",
+        };
+        if (roleMap[o.role]) {
+          id = roleMap[o.role];
+          roleTitle = o.role;
+        }
+      } else {
+        // For non-ST roles, use specific Name
+        roleTitle = o.role_name || o.role || o.name;
+      }
+
+      if (!id) return;
+
+      if (!insigniasMap.has(id)) {
+        insigniasMap.set(id, {
+          id: id,
+          roles: [],
+          format: o.year_display_format || "civil",
+          icon: o.icon // Capture icon
+        });
+      }
+
+      insigniasMap.get(id).roles.push({
+        title: roleTitle,
+        year: o.year,
+        format: o.year_display_format || "civil"
+      });
+    });
+
+    elem.insignias = Array.from(insigniasMap.values()).map(val => {
+      // Sort roles by year descending? or keep as is? 
+      // Keep order
+      return val;
+    });
   }
 
   const dataStructure = d3
@@ -348,13 +419,22 @@ export function buildTree(users = null) {
     .data((d) => d.data.insignias)
     .enter()
     .append("rect")
-    .attr("class", (d) => `insignia ${d}`)
+    .attr("class", (d) => `insignia ${d.id}`)
     .attr("x", -5)
     .attr("y", -5)
     .style("opacity", 0)
     .attr("width", 10)
     .attr("height", 10)
-    .style("fill", (d) => `url(#${d})`);
+    .style("fill", (d) => {
+      // If dynamic icon available in d (from backend), we might need a dynamic pattern?
+      // Current logic uses url(#ID). The ID is 'd.id'.
+      // If 'd.id' is "Conselho de Cagaréus", and we added it to 'organizations', it works.
+      // If it's a dynamic custom icon from 'o.icon', we haven't created a <defs> pattern for it.
+      // This is Complex V3. For now, rely on 'organizations' map being updated.
+      return `url(#${d.id})`;
+    })
+    .append("title")
+    .text(d => d.roles.map(r => `${r.title} (${formatYear(r.year, r.format)})`).join('\n'));
 
   // circle with the gradient year color
   const nodesProfileGrad = nodes
@@ -583,7 +663,7 @@ export function filterTree(names, end_year) {
   groups.attr("opacity", (d) => {
     if (d.data.start_year > end_year) return 0.2;
     if (names.length === 0) return 1;
-    if (d.data.insignias.some((n) => names.includes(n))) return 1;
+    if (d.data.insignias.some((n) => names.includes(n.id))) return 1;
     return 0.2;
   });
 
@@ -623,6 +703,7 @@ export const patterns = [
   { id: "default_female", image: femalePic },
   { id: "NEI", image: nei },
   { id: "AETTUA", image: aettua },
+  { id: "AAUAv", image: aauav },
   { id: "CF", image: anzol },
   { id: "CS", image: sal },
   { id: "escrivao", image: rol },

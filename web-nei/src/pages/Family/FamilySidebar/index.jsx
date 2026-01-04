@@ -1,4 +1,4 @@
-import { Fragment, useState, useCallback, useEffect } from "react";
+import React, { Fragment, useState, useCallback, useEffect } from "react";
 
 import {
   handleSearchChange,
@@ -15,11 +15,41 @@ import classNames from "classnames";
 import Autocomplete from "components/Autocomplete";
 import { ExpandMoreIcon, ExpandLessIcon } from "assets/icons/google";
 
-const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYear }) => {
+const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYear, users }) => {
   const [endYear, setEndYear] = useState(-1);
   // const [fainaNames, setFainaNames] = useState(false);
   const [selName, setSelName] = useState(null);
   const theme = useUserStore((state) => state.theme);
+
+  // Compute visible organizations based on actual tree data
+  // This respects the "hidden" flag from the API
+  const visibleOrgs = useState(() => new Set(), []);
+
+  useEffect(() => {
+    if (!users) return;
+    const visible = new Set();
+    users.forEach(u => {
+      u.organizations?.forEach(o => {
+        if (o.name) visible.add(o.name);
+      });
+    });
+    // Add logic to force update? No, just use memo/state.
+    // Actually best to use useMemo.
+  }, [users]);
+
+  // Better implementation with useMemo
+  const availableOrgs = React.useMemo(() => {
+    if (!users) return new Set(Object.keys(organizations)); // Default to all if loading? or empty?
+    // If loading (users null/empty), might flicker. 
+    // But index.jsx handles loading spinner.
+    const visible = new Set();
+    users.forEach(u => {
+      u.organizations?.forEach(o => {
+        if (o.name) visible.add(o.name);
+      });
+    });
+    return visible;
+  }, [users]);
 
   // const toggeFainaNames = () => {
   //   changeLabels(!fainaNames);
@@ -194,30 +224,32 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
       </div>
       <h5 className="px-3 pt-3 opacity-80">Insígnias</h5>
       <div className="px-5 py-3">
-        {Object.entries(organizations).map(([key, org]) => (
-          <div
-            key={key}
-            className={classNames(
-              "mb-1 flex cursor-pointer items-center gap-3 font-medium",
-              {
-                "!font-normal opacity-70":
-                  insignias.length !== 0 && !insignias.includes(key),
-              }
-            )}
-            onClick={() => toggleInsignias(key)}
-          >
-            <img
-              src={org.insignia}
-              className="h-4 w-4"
-              style={
-                org.changeColor && theme === "dark"
-                  ? { filter: "invert(1)" }
-                  : {}
-              }
-            />
-            <div>{org.name}</div>
-          </div>
-        ))}
+        {Object.entries(organizations)
+          .filter(([key]) => availableOrgs.has(key)) // Filter hidden/unused roles
+          .map(([key, org]) => (
+            <div
+              key={key}
+              className={classNames(
+                "mb-1 flex cursor-pointer items-center gap-3 font-medium",
+                {
+                  "!font-normal opacity-70":
+                    insignias.length !== 0 && !insignias.includes(key),
+                }
+              )}
+              onClick={() => toggleInsignias(key)}
+            >
+              <img
+                src={org.insignia}
+                className="h-4 w-4"
+                style={
+                  org.changeColor && theme === "dark"
+                    ? { filter: "invert(1)" }
+                    : {}
+                }
+              />
+              <div>{org.name}</div>
+            </div>
+          ))}
       </div>
     </>
   );

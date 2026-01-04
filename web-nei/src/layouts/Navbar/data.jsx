@@ -70,7 +70,7 @@ const data = [
       },
       {
         name: "Código de Faina",
-        link: import.meta.env.BASE_URL + "faina-assets/CodigoFaina.pdf",
+        link: import.meta.env.BASE_URL + "faina-assets/Faina.pdf",
         external: true,
       },
     ],

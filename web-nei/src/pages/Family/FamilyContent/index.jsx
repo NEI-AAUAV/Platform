@@ -3,47 +3,26 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import { buildTree, centerTree, filterTree, patterns } from "../data";
-import FamilyService from "services/FamilyService";
 
 
-const FamilyContent = ({ insignias, year, auth }) => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
+const FamilyContent = ({ insignias, year, users, loading }) => {
   const [treeReady, setTreeReady] = useState(false);
   const svgRef = useRef(null);
-  const dataRef = useRef(null);
 
-  // Fetch data on mount
+  // Build tree when users data updates
   useEffect(() => {
-    async function fetchData() {
+    if (!loading && users && users.length > 0 && svgRef.current) {
       try {
-        const data = await FamilyService.getTree();
-        // Store data for when SVG is ready
-        dataRef.current = data.roots || [];
-      } catch (err) {
-        console.error("Failed to load family tree:", err);
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
-
-  // Build tree after SVG is rendered and data is loaded
-  useEffect(() => {
-    if (!loading && !error && svgRef.current && dataRef.current) {
-      try {
-        const users = flattenTreeData(dataRef.current);
+        // users is already flattened by useFamilyTree
         buildTree(users);
         centerTree();
         setTreeReady(true);
       } catch (err) {
         console.error("Failed to build tree:", err);
-        setError(err);
       }
     }
-  }, [loading, error]);
+  }, [loading, users]);
 
   // Filter tree when filters change
   useEffect(() => {
@@ -59,19 +38,7 @@ const FamilyContent = ({ insignias, year, auth }) => {
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       )}
-      {error && (
-        <div className="absolute inset-0 flex h-full w-full items-center justify-center bg-base-100/80 z-10">
-          <div className="text-center">
-            <p className="text-error">Erro ao carregar a árvore</p>
-            <button
-              className="btn btn-primary btn-sm mt-2"
-              onClick={() => window.location.reload()}
-            >
-              Tentar novamente
-            </button>
-          </div>
-        </div>
-      )}
+
       <svg ref={svgRef} className="treeei" width="100%" height="100%" viewBox="0 0 800 600">
         <defs>
           <marker
@@ -139,54 +106,6 @@ const FamilyContent = ({ insignias, year, auth }) => {
   );
 };
 
-/**
- * Flatten nested tree from API into flat array for D3 stratify
- */
-function flattenTreeData(roots) {
-  const users = [];
 
-  // Add virtual root
-  users.push({ id: 0, parent: null, name: "Root" });
-
-  function traverse(node, parentId) {
-    const user = {
-      id: node._id,
-      parent: parentId,
-      name: node.name,
-      sex: node.sex,
-      start_year: node.start_year,
-      end_year: node.end_year,
-      nmec: node.nmec,
-      course_id: node.course_id,
-      image: node.image || null,
-      // Map organizations from user_roles
-      // API now returns org_name directly (e.g., "NEI", "CF")
-      organizations: node.user_roles?.map(r => ({
-        name: r.org_name || r.role_id,
-        year: r.year,
-        role: r.role_name,
-      })) || [],
-      // Faina data
-      faina: node.faina_name ? [{
-        name: node.faina_name,
-        year: node.start_year + 1,
-      }] : null,
-    };
-
-    users.push(user);
-
-    if (node.children) {
-      for (const child of node.children) {
-        traverse(child, node._id);
-      }
-    }
-  }
-
-  for (const root of roots) {
-    traverse(root, 0);
-  }
-
-  return users;
-}
 
 export default FamilyContent;

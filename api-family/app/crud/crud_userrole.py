@@ -129,7 +129,8 @@ class CRUDUserRole:
                 "year": 1,
                 "user_name": "$user.name",
                 "role_name": "$role.name",
-                "role_short": "$role.short"
+                "role_short": "$role.short",
+                "year_display_format": "$role.year_display_format"
             }}
         ]
         
