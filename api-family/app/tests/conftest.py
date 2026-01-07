@@ -43,16 +43,25 @@ def client(
 
 
 @pytest.fixture(scope="function")
-def auth_client(
-    app: FastAPI,
-) -> Generator[TestClient, Any, None]:
-    """Create a new TestClient with authentication (manager-family scope)."""
+def auth_client() -> Generator[TestClient, Any, None]:
+    """Create a new TestClient with authentication (manager-family scope).
     
-    # Override the auth dependency
-    app.dependency_overrides[auth.verify_scopes] = mock_verify_scopes
+    This fixture creates its own app instance with auth already mocked,
+    to avoid issues with FastAPI's Security dependency resolution.
+    """
     
-    with TestClient(app) as client:
+    # Create a new app instance for authenticated tests
+    _app = FastAPI(default_response_class=JSONResponse)
+    
+    # Override auth BEFORE including the router
+    _app.dependency_overrides[auth.verify_scopes] = mock_verify_scopes
+    
+    # Include router
+    _app.include_router(api_v1_router, prefix=settings.API_V1_STR)
+    
+    with TestClient(_app) as client:
         yield client
     
-    app.dependency_overrides.clear()
+    _app.dependency_overrides.clear()
+
 
