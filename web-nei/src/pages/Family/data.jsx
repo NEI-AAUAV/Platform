@@ -12,10 +12,11 @@ import lenco from "assets/icons/lenco.svg";
 import pa from "assets/icons/pa.svg";
 import aauav from "assets/icons/aauav.svg";
 import heartBorder from "assets/icons/heart_border.svg";
-import faina from "assets/icons/faina.svg"; // Import Faina Icon
+import faina from "assets/icons/faina.svg";
 
-export const MIN_YEAR = 8;
-export const MAX_YEAR = 25;
+// Dynamic year bounds - set via buildTree options
+let currentMinYear = 8;
+let currentMaxYear = 25;
 
 export const colors = [
   "#006600",
@@ -95,6 +96,16 @@ const zoomThreshold = 1;
 let lastTransform = d3.zoomIdentity.scale(0.5);
 let svg, zoom, groups, labels, fainaLabels;
 export let searchData = [];
+
+// Export root node for breadcrumbs and external access
+export let treeRoot = null;
+
+// Store node map for quick lookup by ID
+const nodeMap = new Map();
+
+// Callbacks for node interactions
+let onNodeSelectCallback = null;
+let onNodeHoverCallback = null;
 
 function separateName(name) {
   const maxChars = 15,
@@ -191,8 +202,21 @@ function labelFamilies(node) {
 /**
  * Build the family tree visualization
  * @param {Array} [users] - Optional user data from API. Falls back to db.json if not provided.
+ * @param {Object} [options] - Build options
+ * @param {number} [options.minYear] - Minimum year from API
+ * @param {number} [options.maxYear] - Maximum year from API
+ * @param {Function} [options.onNodeSelect] - Callback when node is clicked
+ * @param {Function} [options.onNodeHover] - Callback when node is hovered
  */
-export function buildTree(users = null) {
+export function buildTree(users = null, options = {}) {
+  // Update dynamic year bounds from API
+  if (options.minYear !== undefined) currentMinYear = options.minYear;
+  if (options.maxYear !== undefined) currentMaxYear = options.maxYear;
+
+  // Store callbacks
+  onNodeSelectCallback = options.onNodeSelect || null;
+  onNodeHoverCallback = options.onNodeHover || null;
+
   // Use provided users or fall back to static data
   const userData = users || data.users;
 
@@ -210,9 +234,9 @@ export function buildTree(users = null) {
     elem.names = separateName(elem.name);
     if (elem.faina && elem.faina[0]?.name) {
       elem.fainaNames = separateName(
-        getFainaHierarchy(elem, MAX_YEAR) +
+        getFainaHierarchy(elem, currentMaxYear) +
         " " +
-        (elem.faina.find((f) => f.year === MAX_YEAR)?.name ||
+        (elem.faina.find((f) => f.year === currentMaxYear)?.name ||
           elem.faina[0].name)
       );
     }
@@ -225,11 +249,18 @@ export function buildTree(users = null) {
       // Skip hidden roles in Tree
       if (o.hidden === true) return;
 
-      let id = o.name;
-      let roleTitle = o.name;
+      // Determine the grouping ID (for sidebar filtering) and display title
+      // Priority: org_name (short code like "NEI", "CF") > role_name (full name) > name > role_id
+      let id = o.name; // o.name comes from org_name in flattenTree
+      let roleTitle = o.role_name || o.role || o.name;
 
-      // Logic for ST sub-roles
-      if (o.name === "ST" || o.role_id === "ST") {
+      // If id looks like a role_id path (starts with "."), use role_name as fallback for ID
+      if (id && id.startsWith(".")) {
+        id = o.role_name || o.role || id;
+      }
+
+      // Logic for ST sub-roles (special handling for Salgadíssima Trindade)
+      if (o.name === "ST" || id === "ST" || o.role_id === "ST") {
         const roleMap = {
           "Mestre Escrivão": "escrivao",
           "Mestre Pescador": "pescador",
@@ -238,10 +269,10 @@ export function buildTree(users = null) {
         if (roleMap[o.role]) {
           id = roleMap[o.role];
           roleTitle = o.role;
+        } else if (roleMap[o.role_name]) {
+          id = roleMap[o.role_name];
+          roleTitle = o.role_name;
         }
-      } else {
-        // For non-ST roles, use specific Name
-        roleTitle = o.role_name || o.role || o.name;
       }
 
       if (!id) return;
@@ -251,7 +282,8 @@ export function buildTree(users = null) {
           id: id,
           roles: [],
           format: o.year_display_format || "civil",
-          icon: o.icon // Capture icon
+          icon: o.icon, // Capture icon from API for dynamic insignias
+          orgName: o.name // Store original org_name for sidebar filtering
         });
       }
 
@@ -299,6 +331,17 @@ export function buildTree(users = null) {
     });
 
   const root = treeStructure(dataStructure);
+
+  // Store root for external access
+  treeRoot = root;
+
+  // Build node map for quick lookup
+  nodeMap.clear();
+  root.descendants().forEach(node => {
+    if (node.data.id !== undefined) {
+      nodeMap.set(node.data.id, node);
+    }
+  });
 
   // clean svg
   d3.select("svg.treeei").selectAll("*:not(defs, defs *)").remove();
@@ -412,6 +455,48 @@ export function buildTree(users = null) {
     .attr("r", 10)
     .style("fill", (d) => `url(#${getNodeImageId(d)})`);
 
+  // Collect unique icon URLs from all insignias for dynamic pattern creation
+  const dynamicIconUrls = new Set();
+  root.descendants().forEach(node => {
+    if (node.data.insignias) {
+      node.data.insignias.forEach(ins => {
+        if (ins.icon) {
+          dynamicIconUrls.add(ins.icon);
+        }
+      });
+    }
+  });
+
+  // Create dynamic patterns for backend icon URLs
+  // Use a sanitized version of the URL as the pattern ID
+  const sanitizeId = (url) => url.replace(/[^a-zA-Z0-9]/g, '_');
+
+  d3.select("defs")
+    .selectAll("pattern.dynamic-icon")
+    .data(Array.from(dynamicIconUrls))
+    .enter()
+    .append("pattern")
+    .attr("class", "dynamic-icon")
+    .attr("id", d => `icon_${sanitizeId(d)}`)
+    .attr("width", 1)
+    .attr("height", 1)
+    .attr("patternContentUnits", "objectBoundingBox")
+    .append("image")
+    .attr("xlink:href", d => d)
+    .attr("height", 1)
+    .attr("width", 1)
+    .attr("preserveAspectRatio", "xMidYMid slice");
+
+  // Helper to get pattern ID for an insignia
+  const getInsigniaPatternId = (ins) => {
+    // If has dynamic icon from backend, use that pattern
+    if (ins.icon) {
+      return `icon_${sanitizeId(ins.icon)}`;
+    }
+    // Fallback to static pattern by ID (for backward compatibility)
+    return ins.id;
+  };
+
   nodes
     .insert("g", "circle.profile-pic")
     .attr("class", "insignias")
@@ -426,12 +511,8 @@ export function buildTree(users = null) {
     .attr("width", 10)
     .attr("height", 10)
     .style("fill", (d) => {
-      // If dynamic icon available in d (from backend), we might need a dynamic pattern?
-      // Current logic uses url(#ID). The ID is 'd.id'.
-      // If 'd.id' is "Conselho de Cagaréus", and we added it to 'organizations', it works.
-      // If it's a dynamic custom icon from 'o.icon', we haven't created a <defs> pattern for it.
-      // This is Complex V3. For now, rely on 'organizations' map being updated.
-      return `url(#${d.id})`;
+      // Use dynamic icon pattern if available, otherwise fallback to static
+      return `url(#${getInsigniaPatternId(d)})`;
     })
     .append("title")
     .text(d => d.roles.map(r => `${r.title} (${formatYear(r.year, r.format)})`).join('\n'));
@@ -444,11 +525,17 @@ export function buildTree(users = null) {
     .attr("cy", 0)
     .attr("r", 10)
     .attr("opacity", 1)
-    .style("cursor", (d) =>
-      d.data.insignias?.length > 0 ? "pointer" : "default"
-    )
+    .style("cursor", "pointer")
     .style("fill", (d) => colors[d.data.start_year % colors.length])
-    .on("click", function (event) {
+    .on("click", function (event, d) {
+      event.stopPropagation();
+
+      // Trigger node selection callback for highlighting/breadcrumbs
+      if (onNodeSelectCallback && d.data.id) {
+        onNodeSelectCallback(d.data.id);
+      }
+
+      // Toggle insignias display
       let parent = this.parentElement;
       let active = parent.classList.contains("active");
       let x, y, o;
@@ -472,6 +559,16 @@ export function buildTree(users = null) {
         .attr("y", (d, i) => y(i))
         .style("opacity", o)
         .ease(d3.easeBackOut.overshoot(2));
+    })
+    .on("mouseenter", function (event, d) {
+      if (onNodeHoverCallback && d.data.id) {
+        onNodeHoverCallback(d.data.id, true);
+      }
+    })
+    .on("mouseleave", function (event, d) {
+      if (onNodeHoverCallback && d.data.id) {
+        onNodeHoverCallback(d.data.id, false);
+      }
     });
 
   // border with the year color
@@ -698,9 +795,12 @@ export function changeLabels(showFainaNames) {
 }
 
 export const patterns = [
+  // Essential base patterns (profiles, special)
   { id: "heart_border", image: heartBorder },
   { id: "default_male", image: malePic },
   { id: "default_female", image: femalePic },
+  // Static fallback patterns for old data without backend icon URLs
+  // These are only used when roles don't have .icon field from backend
   { id: "NEI", image: nei },
   { id: "AETTUA", image: aettua },
   { id: "AAUAv", image: aauav },
@@ -709,6 +809,8 @@ export const patterns = [
   { id: "escrivao", image: rol },
   { id: "pescador", image: lenco },
   { id: "salgado", image: pa },
+  { id: "Faina Académica", image: faina },
+  { id: "ST", image: faina },
 ];
 
 export const handleSearchChange = (value) => {
@@ -717,3 +819,211 @@ export const handleSearchChange = (value) => {
   d3.select("svg.treeei").call(zoom.scaleTo, 2.5);
   d3.select("svg.treeei").transition().call(zoom.translateTo, value.x, value.y);
 };
+
+/**
+ * Highlight the lineage (ancestors and descendants) of a node
+ * @param {number} nodeId - ID of the node to highlight
+ */
+export function highlightLineage(nodeId) {
+  if (!groups) return;
+
+  const node = nodeMap.get(nodeId);
+  if (!node) return;
+
+  // Collect ancestor and descendant IDs
+  const ancestorIds = new Set();
+  const descendantIds = new Set();
+
+  // Walk up to get ancestors
+  let current = node.parent;
+  while (current && current.data.id !== 0) {
+    ancestorIds.add(current.data.id);
+    current = current.parent;
+  }
+
+  // Walk down to get descendants
+  function collectDescendants(n) {
+    if (n.children) {
+      for (const child of n.children) {
+        descendantIds.add(child.data.id);
+        collectDescendants(child);
+      }
+    }
+  }
+  collectDescendants(node);
+
+  // Apply highlighting classes
+  groups.each(function (d) {
+    const el = d3.select(this);
+    const id = d.data.id;
+
+    el.classed("highlighted-ancestor", ancestorIds.has(id));
+    el.classed("highlighted-descendant", descendantIds.has(id));
+    el.classed("highlighted-selected", id === nodeId);
+
+    // Dim non-related nodes
+    if (!ancestorIds.has(id) && !descendantIds.has(id) && id !== nodeId) {
+      el.classed("highlighted-dimmed", true);
+    } else {
+      el.classed("highlighted-dimmed", false);
+    }
+  });
+}
+
+/**
+ * Clear all lineage highlighting
+ */
+export function clearHighlight() {
+  if (!groups) return;
+
+  groups
+    .classed("highlighted-ancestor", false)
+    .classed("highlighted-descendant", false)
+    .classed("highlighted-selected", false)
+    .classed("highlighted-dimmed", false);
+}
+
+/**
+ * Animate a path from root to the specified node
+ * Path renders BEHIND nodes and nodes glow as the line passes through
+ * @param {number} nodeId - ID of the target node
+ */
+export function animatePathToNode(nodeId) {
+  if (!svg || !groups) return;
+
+  const node = nodeMap.get(nodeId);
+  if (!node) return;
+
+  // Get path from root to node (skip virtual root with id=0)
+  const pathNodes = [];
+  let current = node;
+  while (current && current.data.id !== 0) {
+    pathNodes.unshift(current);
+    current = current.parent;
+  }
+
+  if (pathNodes.length === 0) return;
+
+  // Remove any existing animated path and glow effects
+  svg.selectAll(".animated-lineage-path").remove();
+  groups.selectAll(".node").classed("node-glow", false);
+
+  // Build path data following tree link structure
+  let pathData = "";
+
+  for (let i = 0; i < pathNodes.length; i++) {
+    const n = pathNodes[i];
+
+    if (i === 0) {
+      pathData = `M${n.x},${n.y}`;
+    } else {
+      const prev = pathNodes[i - 1];
+      const sx = prev.x;
+      const sy = prev.y + 68;
+      const tx = n.x;
+      const ty = n.y;
+      const hy = 0.5 * (ty - sy);
+      const off = 5;
+
+      let dir = sx - tx > 0 ? -1 : sx - tx < 0 ? 1 : 0;
+
+      pathData += ` L${sx},${sy}`;
+      pathData += ` v${hy - off - 10}`;
+
+      if (dir !== 0) {
+        pathData += ` c0,${off} 0,${off} ${off * dir},${off}`;
+        pathData += ` h${tx - sx - 3 * off * dir}`;
+        pathData += ` c${2 * off * dir},0 ${2 * off * dir},0 ${2 * off * dir},${2 * off}`;
+      }
+
+      pathData += ` L${tx},${ty}`;
+    }
+  }
+
+  // INSERT path at the BEGINNING of svg group so it renders BEHIND nodes
+  const animatedPath = svg.insert("path", ":first-child")
+    .attr("class", "animated-lineage-path")
+    .attr("d", pathData)
+    .attr("fill", "none")
+    .attr("stroke", "#22c55e")  // Bright green
+    .attr("stroke-width", 5)
+    .attr("stroke-linecap", "round")
+    .attr("stroke-linejoin", "round")
+    .style("filter", "drop-shadow(0 0 8px rgba(34, 197, 94, 0.9))");
+
+  // Calculate animation timing per node
+  const pathLength = animatedPath.node().getTotalLength();
+  const animDuration = 1500;  // Total animation time in ms
+  const nodeDelay = animDuration / pathNodes.length;
+
+  // Animate the path
+  animatedPath
+    .attr("stroke-dasharray", pathLength)
+    .attr("stroke-dashoffset", pathLength)
+    .transition()
+    .duration(animDuration)
+    .ease(d3.easeLinear)
+    .attr("stroke-dashoffset", 0)
+    .on("end", function () {
+      // Fade out path after delay
+      d3.select(this)
+        .transition()
+        .delay(3000)
+        .duration(500)
+        .style("opacity", 0)
+        .remove();
+
+      // Remove glow from all nodes after fade
+      setTimeout(() => {
+        groups.selectAll(".node").classed("node-glow", false);
+      }, 3500);
+    });
+
+  // Add sequential glow effect to nodes along the path
+  pathNodes.forEach((pathNode, index) => {
+    setTimeout(() => {
+      // Find the node group and add glow class
+      groups.selectAll(".node")
+        .filter(d => d.data.id === pathNode.data.id)
+        .classed("node-glow", true);
+    }, index * nodeDelay);
+  });
+}
+
+
+
+/**
+ * Get a node from the tree by ID
+ * @param {number} nodeId - ID of the node
+ * @returns {Object|null} D3 hierarchy node or null
+ */
+export function getNodeById(nodeId) {
+  return nodeMap.get(nodeId) || null;
+}
+
+/**
+ * Navigate (zoom/pan) to a specific node
+ * @param {Object} node - D3 hierarchy node
+ */
+export function navigateToNode(node) {
+  if (!node || !zoom) return;
+
+  d3.select("svg.treeei").call(zoom.scaleTo, 2);
+  d3.select("svg.treeei")
+    .transition()
+    .duration(500)
+    .call(zoom.translateTo, node.x, node.y);
+}
+
+/**
+ * Get SVG and group elements for external components (e.g., MiniMap)
+ * @returns {Object} { svgElement, groupElement }
+ */
+export function getSvgElements() {
+  const svgElement = document.querySelector("svg.treeei");
+  const groupElement = svgElement?.querySelector("g");
+  return {
+    svgElement,
+    groupElement,
+  };
+}

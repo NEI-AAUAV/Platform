@@ -1,16 +1,21 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
+import PropTypes from "prop-types";
 
 import MaterialSymbol from "components/MaterialSymbol";
 
 import FamilyService from "services/FamilyService";
 import UserForm from "./UserForm";
 import RolePickerModal from "components/RolePickerModal";
+import BulkEditModal from "./BulkEditModal";
+import BulkDeleteModal from "./BulkDeleteModal";
+import OrphanModal from "./OrphanModal";
 
 import RoleManagerModal from "components/RoleManagerModal";
 import CourseManagerModal from "components/CourseManagerModal";
 import { organizations, colors } from "pages/Family/data";
+import { wouldCreateCycle } from "pages/Family/utils";
 
 import malePic from "assets/default_profile/male.svg";
 import femalePic from "assets/default_profile/female.svg";
@@ -52,6 +57,15 @@ export function Component() {
   const [showCourseManager, setShowCourseManager] = useState(false);
   const [initialPatrao, setInitialPatrao] = useState(null);
   const [history, setHistory] = useState([]);
+
+  // Bulk selection state
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [showBulkEdit, setShowBulkEdit] = useState(false);
+  const [showBulkDelete, setShowBulkDelete] = useState(false);
+
+  // Orphan modal state
+  const [showOrphanModal, setShowOrphanModal] = useState(false);
+  const [orphanChildren, setOrphanChildren] = useState([]);
 
   // Debounce search
   useEffect(() => {
@@ -208,12 +222,33 @@ export function Component() {
     return <MaterialSymbol icon={sortOrder === "asc" ? "expand_less" : "expand_more"} size={16} className="text-active" />;
   };
 
+  // Check if user has children before deleting
+  const handleDeleteRequest = async (user) => {
+    try {
+      const children = await FamilyService.getUserChildren(user._id);
+      if (children && children.length > 0) {
+        setOrphanChildren(children);
+        setDeleteModal(user);
+        setShowOrphanModal(true);
+      } else {
+        setDeleteModal(user);
+        setShowOrphanModal(false);
+      }
+    } catch (err) {
+      // If can't check children, proceed with simple delete modal
+      setDeleteModal(user);
+      setShowOrphanModal(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (!deleteModal) return;
     setDeleting(true);
     try {
       await FamilyService.deleteUser(deleteModal._id);
       setDeleteModal(null);
+      setShowOrphanModal(false);
+      setOrphanChildren([]);
       fetchUsers();
       // Refresh lookup
       const response = await FamilyService.getUsers({ limit: 1000 });
@@ -222,6 +257,95 @@ export function Component() {
       alert(err.response?.data?.detail || "Erro ao eliminar");
     } finally {
       setDeleting(false);
+    }
+  };
+
+  // Re-parent children then delete
+  const handleReparentAndDelete = async (newPatraoId) => {
+    if (!deleteModal || !orphanChildren.length) return;
+    setDeleting(true);
+    try {
+      // Update each child to new patron
+      await Promise.all(orphanChildren.map(child =>
+        FamilyService.updateUser(child._id, { ...child, patrao_id: newPatraoId })
+      ));
+      // Now delete the original user
+      await FamilyService.deleteUser(deleteModal._id);
+      setDeleteModal(null);
+      setShowOrphanModal(false);
+      setOrphanChildren([]);
+      fetchUsers();
+      const response = await FamilyService.getUsers({ limit: 1000 });
+      setAllUsers(response.items || []);
+    } catch (err) {
+      alert(err.response?.data?.detail || "Erro ao processar");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // Bulk selection handlers
+  const toggleSelectUser = (userId) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(userId)) {
+        next.delete(userId);
+      } else {
+        next.add(userId);
+      }
+      return next;
+    });
+  };
+
+  // Check if all users on current page are selected
+  const allCurrentPageSelected = useMemo(() => {
+    if (users.length === 0) return false;
+    return users.every(u => selectedIds.has(u._id));
+  }, [users, selectedIds]);
+
+  // Check if some (but not all) users on current page are selected
+  const someCurrentPageSelected = useMemo(() => {
+    if (users.length === 0) return false;
+    const selectedCount = users.filter(u => selectedIds.has(u._id)).length;
+    return selectedCount > 0 && selectedCount < users.length;
+  }, [users, selectedIds]);
+
+  const toggleSelectAll = () => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (allCurrentPageSelected) {
+        // Deselect all on current page
+        users.forEach(u => next.delete(u._id));
+      } else {
+        // Select all on current page
+        users.forEach(u => next.add(u._id));
+      }
+      return next;
+    });
+  };
+
+  const clearAllSelections = () => {
+    setSelectedIds(new Set());
+  };
+
+  const selectedUsers = useMemo(() =>
+    users.filter(u => selectedIds.has(u._id)),
+    [users, selectedIds]
+  );
+
+  const handleBulkDelete = () => {
+    // Open bulk delete modal instead of window.confirm
+    setShowBulkDelete(true);
+  };
+
+  const handleBulkDeleteComplete = async () => {
+    setSelectedIds(new Set());
+    await fetchUsers();
+    try {
+      const response = await FamilyService.getUsers({ limit: 1000 });
+      setAllUsers(response.items || []);
+    } catch (err) {
+      console.error("Failed to refresh users", err);
     }
   };
 
@@ -426,28 +550,77 @@ export function Component() {
           </div>
         ) : (
           <>
+            {/* Bulk Action Toolbar */}
+            {selectedIds.size > 0 && (
+              <div className="mb-4 flex items-center gap-3 rounded-lg bg-primary/10 border border-primary/20 px-4 py-3">
+                <span className="font-medium text-primary">
+                  {selectedIds.size} membro(s) selecionado(s)
+                  {selectedIds.size > users.length && (
+                    <span className="text-xs text-base-content/60 ml-1">
+                      (incluindo outras páginas)
+                    </span>
+                  )}
+                </span>
+                <div className="flex-1" />
+                <button
+                  className="btn btn-sm btn-ghost gap-1"
+                  onClick={() => setShowBulkEdit(true)}
+                >
+                  <MaterialSymbol icon="edit" size={16} />
+                  Editar
+                </button>
+                <button
+                  className="btn btn-sm btn-error btn-ghost gap-1"
+                  onClick={handleBulkDelete}
+                >
+                  <MaterialSymbol icon="delete" size={16} />
+                  Eliminar
+                </button>
+                <button
+                  className="btn btn-sm btn-ghost"
+                  onClick={clearAllSelections}
+                >
+                  Limpar seleção
+                </button>
+              </div>
+            )}
+
             {/* User Table */}
             <div className="overflow-x-auto rounded-xl border border-base-content/10 bg-base-100">
-              <table className="table min-w-[800px] w-full">
+              <table className="table min-w-[850px] w-full">
                 <thead className="bg-base-200/50">
                   <tr className="border-base-content/10">
-                    <th className="w-[30%] cursor-pointer hover:bg-base-200" onClick={() => toggleSort("name")}>
+                    <th className="w-10">
+                      <input
+                        type="checkbox"
+                        className={classNames("checkbox checkbox-sm", {
+                          "checkbox-primary": someCurrentPageSelected
+                        })}
+                        checked={allCurrentPageSelected}
+                        ref={el => {
+                          if (el) el.indeterminate = someCurrentPageSelected;
+                        }}
+                        onChange={toggleSelectAll}
+                        title={allCurrentPageSelected ? "Desselecionar página" : "Selecionar página"}
+                      />
+                    </th>
+                    <th className="w-[28%] cursor-pointer hover:bg-base-200" onClick={() => toggleSort("name")}>
                       <div className="flex items-center gap-2">Membro (ID) <SortIcon field="name" /></div>
                     </th>
-                    <th className="w-[20%] cursor-pointer hover:bg-base-200" onClick={() => toggleSort("patrao_id")}>
+                    <th className="w-[18%] cursor-pointer hover:bg-base-200" onClick={() => toggleSort("patrao_id")}>
                       <div className="flex items-center gap-2">Patrão <SortIcon field="patrao_id" /></div>
                     </th>
                     <th className="w-[10%] text-center cursor-pointer hover:bg-base-200" onClick={() => toggleSort("year")}>
                       <div className="flex items-center justify-center gap-2">Ano <SortIcon field="year" /></div>
                     </th>
-                    <th className="w-[30%]">Insígnias</th>
+                    <th className="w-[28%]">Insígnias</th>
                     <th className="w-[10%] text-right">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-base-content/50">
+                      <td colSpan={6} className="py-12 text-center text-base-content/50">
                         Nenhum membro encontrado.
                       </td>
                     </tr>
@@ -456,12 +629,25 @@ export function Component() {
                       const patrao = user.patrao_id ? (userMap[user.patrao_id] || null) : null;
                       const userColor = colors[user.start_year % colors.length] || "#ccc";
                       const userRoles = user.user_roles || [];
+                      const isSelected = selectedIds.has(user._id);
 
                       return (
                         <tr
                           key={user._id}
-                          className="border-base-content/5 transition-colors hover:bg-base-200/50"
+                          className={classNames(
+                            "border-base-content/5 transition-colors hover:bg-base-200/50",
+                            isSelected && "bg-primary/5"
+                          )}
                         >
+                          {/* Checkbox */}
+                          <td>
+                            <input
+                              type="checkbox"
+                              className="checkbox checkbox-sm"
+                              checked={isSelected}
+                              onChange={() => toggleSelectUser(user._id)}
+                            />
+                          </td>
                           {/* Member + ID */}
                           <td>
                             <div className="flex items-center gap-3">
@@ -580,7 +766,7 @@ export function Component() {
                               </button>
                               <button
                                 className="btn btn-ghost btn-xs btn-square text-error"
-                                onClick={() => setDeleteModal(user)}
+                                onClick={() => handleDeleteRequest(user)}
                                 title="Eliminar"
                               >
                                 <MaterialSymbol icon="delete" size={16} />
@@ -698,6 +884,39 @@ export function Component() {
           setRoleFilterName(node.name);
           setPage(0);
         }}
+      />
+
+      {/* Bulk Edit Modal */}
+      <BulkEditModal
+        isOpen={showBulkEdit}
+        onClose={() => setShowBulkEdit(false)}
+        selectedUsers={selectedUsers}
+        onComplete={() => {
+          setSelectedIds(new Set());
+          fetchUsers();
+        }}
+      />
+
+      {/* Bulk Delete Modal */}
+      <BulkDeleteModal
+        isOpen={showBulkDelete}
+        onClose={() => setShowBulkDelete(false)}
+        selectedUsers={selectedUsers}
+        onComplete={handleBulkDeleteComplete}
+      />
+
+      {/* Orphan Modal - shown when deleting user with children */}
+      <OrphanModal
+        isOpen={showOrphanModal && !!deleteModal}
+        onClose={() => {
+          setShowOrphanModal(false);
+          setDeleteModal(null);
+          setOrphanChildren([]);
+        }}
+        userToDelete={deleteModal}
+        children={orphanChildren}
+        onConfirmDelete={handleDelete}
+        onReparent={handleReparentAndDelete}
       />
 
     </div >

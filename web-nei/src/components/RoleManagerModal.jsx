@@ -1,10 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
 import { CloseIcon } from "assets/icons/google";
 import FamilyService from "services/FamilyService";
-import { organizations } from "pages/Family/data";
+import { organizations, colors } from "pages/Family/data";
+import { formatYear } from "pages/Family/utils";
+import IconPicker from "components/IconPicker";
+
+import malePic from "assets/default_profile/male.svg";
+import femalePic from "assets/default_profile/female.svg";
 
 /**
  * Role Manager Modal
@@ -27,6 +32,13 @@ export default function RoleManagerModal({ isOpen, onClose }) {
     const [isNew, setIsNew] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
+    // Tab and Members State
+    const [activeTab, setActiveTab] = useState("edit"); // "edit" or "members"
+    const [roleMembers, setRoleMembers] = useState([]);
+    const [membersLoading, setMembersLoading] = useState(false);
+    const [memberYearFilter, setMemberYearFilter] = useState(null);
+    const [availableYears, setAvailableYears] = useState([]);
+
     // Load Tree
     const loadTree = async () => {
         setLoading(true);
@@ -43,16 +55,57 @@ export default function RoleManagerModal({ isOpen, onClose }) {
     useEffect(() => {
         if (isOpen) {
             loadTree();
+            loadAvailableYears();
             setSelectedNode(null);
             setFormData({ name: "", short: "", female_name: "", show: false, super_roles: "", icon: "", hidden: false });
             setIsNew(false);
+            setActiveTab("edit");
+            setRoleMembers([]);
         }
     }, [isOpen]);
+
+    // Load available years for filter
+    const loadAvailableYears = async () => {
+        try {
+            const years = await FamilyService.getYears();
+            setAvailableYears(years || []);
+        } catch (err) {
+            console.error("Failed to load years:", err);
+        }
+    };
+
+    // Fetch members who have a specific role
+    const fetchRoleMembers = async (roleId, year = null) => {
+        if (!roleId) return;
+        setMembersLoading(true);
+        try {
+            const params = { role_id: roleId };
+            if (year !== null) params.year = year;
+            const response = await FamilyService.getUserRolesWithDetails(params);
+            // Handle both array and paginated {items: []} response formats
+            const members = Array.isArray(response) ? response : (response?.items || []);
+            setRoleMembers(members);
+        } catch (err) {
+            console.error("Failed to load role members:", err);
+            setRoleMembers([]);
+        } finally {
+            setMembersLoading(false);
+        }
+    };
+
+    // Reload members when year filter changes
+    useEffect(() => {
+        if (selectedNode && !isNew && activeTab === "members") {
+            fetchRoleMembers(selectedNode._id, memberYearFilter);
+        }
+    }, [memberYearFilter, activeTab]);
 
     // Select a node to edit
     const handleSelectNode = (node) => {
         setSelectedNode(node);
         setIsNew(false);
+        setActiveTab("edit");
+        setMemberYearFilter(null);
         setFormData({
             name: node.name,
             short: node.short || "",
@@ -63,6 +116,20 @@ export default function RoleManagerModal({ isOpen, onClose }) {
             icon: node.icon || "",
             hidden: node.hidden || false
         });
+        // Pre-fetch members
+        fetchRoleMembers(node._id, null);
+    };
+
+    // Handle removing a role from a member
+    const handleRemoveRoleFromMember = async (userRoleId) => {
+        if (!window.confirm("Remover esta insígnia do membro?")) return;
+        try {
+            await FamilyService.removeRole(userRoleId);
+            // Refresh members list
+            fetchRoleMembers(selectedNode._id, memberYearFilter);
+        } catch (err) {
+            alert("Erro ao remover: " + (err.response?.data?.detail || err.message));
+        }
     };
 
     const handleCreateRoot = () => {
@@ -272,13 +339,13 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                 </div>
                             </div>
 
-                            {/* Main Content: Form */}
+                            {/* Main Content: Form or Members */}
                             <div className="flex flex-1 flex-col">
                                 <div className="flex items-center justify-between border-b border-base-content/10 p-4">
                                     <h3 className="text-lg font-bold">
                                         {isNew
                                             ? (formData.super_roles ? "Nova Sub-Insígnia" : "Nova Insígnia Raiz")
-                                            : (selectedNode ? "Editar Insígnia" : "Selecione uma Insígnia")
+                                            : (selectedNode ? selectedNode.name : "Selecione uma Insígnia")
                                         }
                                     </h3>
                                     <button className="btn btn-ghost btn-sm btn-circle" onClick={onClose}>
@@ -286,11 +353,117 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                     </button>
                                 </div>
 
+                                {/* Tab Toggle - only show when editing existing role */}
+                                {selectedNode && !isNew && (
+                                    <div className="flex border-b border-base-content/10 px-4">
+                                        <button
+                                            type="button"
+                                            className={classNames(
+                                                "px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+                                                activeTab === "edit"
+                                                    ? "border-primary text-primary"
+                                                    : "border-transparent text-base-content/50 hover:text-base-content"
+                                            )}
+                                            onClick={() => setActiveTab("edit")}
+                                        >
+                                            <MaterialSymbol icon="edit" size={16} className="mr-1" />
+                                            Editar
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={classNames(
+                                                "px-4 py-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-1",
+                                                activeTab === "members"
+                                                    ? "border-primary text-primary"
+                                                    : "border-transparent text-base-content/50 hover:text-base-content"
+                                            )}
+                                            onClick={() => setActiveTab("members")}
+                                        >
+                                            <MaterialSymbol icon="group" size={16} />
+                                            Membros
+                                            {roleMembers.length > 0 && (
+                                                <span className="badge badge-sm badge-primary">{roleMembers.length}</span>
+                                            )}
+                                        </button>
+                                    </div>
+                                )}
+
                                 <div className="flex-1 overflow-y-auto p-6">
                                     {!selectedNode && !isNew ? (
                                         <div className="flex h-full flex-col items-center justify-center text-base-content/30 text-center">
                                             <MaterialSymbol icon="badge" size={48} className="mb-2 opacity-50" />
                                             <p>Selecione um item da lista à esquerda<br />ou crie uma nova raiz</p>
+                                        </div>
+                                    ) : activeTab === "members" && selectedNode && !isNew ? (
+                                        /* Members List View */
+                                        <div className="space-y-4">
+                                            {/* Year Filter */}
+                                            <div className="flex items-center justify-between">
+                                                <h4 className="font-medium">Membros com esta insígnia</h4>
+                                                <select
+                                                    className="select select-bordered select-sm w-32"
+                                                    value={memberYearFilter || ""}
+                                                    onChange={(e) => setMemberYearFilter(e.target.value ? parseInt(e.target.value) : null)}
+                                                >
+                                                    <option value="">Todos os anos</option>
+                                                    {availableYears.map(y => (
+                                                        <option key={y} value={y}>Ano {formatYear(y)}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Members List */}
+                                            {membersLoading ? (
+                                                <div className="flex justify-center py-8">
+                                                    <span className="loading loading-spinner"></span>
+                                                </div>
+                                            ) : roleMembers.length === 0 ? (
+                                                <div className="text-center py-8 text-base-content/40">
+                                                    <MaterialSymbol icon="person_off" size={32} className="mb-2" />
+                                                    <p>Nenhum membro encontrado</p>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-2">
+                                                    {roleMembers.map((member, idx) => (
+                                                        <div
+                                                            key={member._id || idx}
+                                                            className="flex items-center gap-3 p-3 bg-base-200/50 rounded-lg hover:bg-base-200"
+                                                        >
+                                                            <div
+                                                                className="avatar placeholder h-10 w-10 rounded-full ring-2 ring-offset-1"
+                                                                style={{
+                                                                    ringColor: colors[(member.user?.start_year || 0) % colors.length]
+                                                                }}
+                                                            >
+                                                                <img
+                                                                    src={member.user?.image || (member.user?.sex === 'F' ? femalePic : malePic)}
+                                                                    alt=""
+                                                                    className="rounded-full object-cover"
+                                                                />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="font-medium truncate">
+                                                                    {member.user?.name || `User ${member.user_id}`}
+                                                                </div>
+                                                                <div className="text-xs text-base-content/50">
+                                                                    Ano {formatYear(member.year, selectedNode.year_display_format || "civil")}
+                                                                    {member.user?.start_year && (
+                                                                        <span> · Entrada {formatYear(member.user.start_year)}</span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-ghost btn-xs btn-error"
+                                                                onClick={() => handleRemoveRoleFromMember(member._id)}
+                                                                title="Remover insígnia"
+                                                            >
+                                                                <MaterialSymbol icon="close" size={16} />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     ) : (
                                         <form onSubmit={handleSave} className="flex flex-col gap-4 max-w-lg mx-auto">
@@ -337,21 +510,12 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                             </div>
 
                                             <div className="form-control">
-                                                <label className="label"><span className="label-text">Ícone (URL / Caminho)</span></label>
-                                                <div className="flex gap-2">
-                                                    <input
-                                                        type="text"
-                                                        className="input input-bordered flex-1"
-                                                        value={formData.icon || ""}
-                                                        onChange={e => setFormData({ ...formData, icon: e.target.value })}
-                                                        placeholder="Ex: /assets/icons/my-icon.svg"
-                                                    />
-                                                    {formData.icon && (
-                                                        <div className="h-12 w-12 flex-shrink-0 rounded-lg border border-base-content/10 bg-base-200 p-2">
-                                                            <img src={formData.icon} alt="" className="h-full w-full object-contain" onError={(e) => e.target.style.display = 'none'} />
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                <label className="label"><span className="label-text">Ícone</span></label>
+                                                <IconPicker
+                                                    value={formData.icon || ""}
+                                                    onChange={(newIcon) => setFormData({ ...formData, icon: newIcon })}
+                                                    inheritedIcon={selectedNode?.icon || null}
+                                                />
                                             </div>
 
                                             <div className="grid grid-cols-2 gap-4">

@@ -7,6 +7,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import FamilyService from "services/FamilyService";
+import { flattenTree } from "./utils";
 
 /**
  * @typedef {Object} FamilyTreeState
@@ -54,69 +55,6 @@ export function useFamilyTree(options = {}) {
     }, [fetchData]);
 
     return { users, loading, error, refetch: fetchData, minYear, maxYear };
-}
-
-/**
- * Flatten nested tree structure into array for D3 stratify
- * @param {Object} tree - Nested tree from API
- * @returns {Array} Flat array of users with parent references
- */
-function flattenTree(tree) {
-    const users = [];
-
-    function traverse(node, parentId = null) {
-        // Create user object matching expected format
-        const user = {
-            id: node._id,
-            parent: parentId,
-            name: node.name,
-            faina_name: node.faina_name,
-            sex: node.sex,
-            start_year: node.start_year,
-            end_year: node.end_year,
-            nmec: node.nmec,
-            course_id: node.course_id,
-            image: node.image || null,
-            // Map user_roles to organizations format expected by D3
-            organizations: node.user_roles?.map(role => ({
-                name: role.org_name || role.role_id, // Use org_name (Short name) for ID mapping
-                year: role.year,
-                role: role.role_name || role.role_id, // Use specific role name
-                role_name: role.role_name,
-                role_name: role.role_name,
-                year_display_format: role.year_display_format,
-                hidden: role.hidden, // Pass hidden flag
-                icon: role.icon      // Pass icon
-            })) || [],
-            // Map faina data if available
-            faina: node.faina_name ? [{
-                name: node.faina_name,
-                year: node.start_year + 1,
-            }] : null,
-        };
-
-        users.push(user);
-
-        // Process children
-        if (node.children && node.children.length > 0) {
-            for (const child of node.children) {
-                traverse(child, node._id);
-            }
-        }
-    }
-
-    // Handle array of roots or single tree
-    if (Array.isArray(tree)) {
-        // Add virtual root node
-        users.push({ id: 0, parent: null, name: "Root" });
-        for (const root of tree) {
-            traverse(root, 0);
-        }
-    } else if (tree) {
-        traverse(tree, null);
-    }
-
-    return users;
 }
 
 export default useFamilyTree;

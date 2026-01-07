@@ -45,10 +45,19 @@ class UserRoleInDB(UserRoleBase):
         allow_population_by_field_name = True
 
 
+class UserDetailsNested(BaseModel):
+    """Nested user details for UserRoleWithDetails."""
+    name: Optional[str] = None
+    image: Optional[str] = None
+    sex: Optional[str] = None
+    start_year: Optional[int] = None
+
+
 class UserRoleWithDetails(UserRoleBase):
     """User-role with expanded user and role info."""
     id: str = Field(..., alias="_id")
-    user_name: Optional[str] = None
+    user_name: Optional[str] = None  # Keep for backward compatibility
+    user: Optional[UserDetailsNested] = None  # Full user details for frontend
     role_name: Optional[str] = None
     role_short: Optional[str] = None
     year_display_format: Optional[str] = None

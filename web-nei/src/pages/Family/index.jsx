@@ -75,7 +75,14 @@ export function Component() {
             onChange={(e) => setSidebarOpened(e.target.checked)}
           />
           <div className="drawer-content !overflow-hidden">
-            <FamilyContent insignias={insignias} year={year} users={users} loading={loading} />
+            <FamilyContent
+              insignias={insignias}
+              year={year}
+              users={users}
+              loading={loading}
+              minYear={minYear}
+              maxYear={maxYear}
+            />
           </div>
           <div
             className={classNames(

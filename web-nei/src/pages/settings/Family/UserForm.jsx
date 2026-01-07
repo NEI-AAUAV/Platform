@@ -649,9 +649,9 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                                                                     key={role._id || role.tempId}
                                                                     className="flex items-center gap-2 rounded-lg bg-base-100 p-2 shadow-sm ring-1 ring-base-content/10"
                                                                 >
-                                                                    {/* Try to show icon if available */}
-                                                                    {role.org_name && organizations[role.org_name] && (
-                                                                        <img src={organizations[role.org_name].insignia} alt="" className="h-6 w-6" />
+                                                                    {/* Try to show icon if available - check API icon first, then static map */}
+                                                                    {(role.icon || (role.org_name && organizations[role.org_name])) && (
+                                                                        <img src={role.icon || organizations[role.org_name]?.insignia} alt="" className="h-6 w-6 object-contain" />
                                                                     )}
                                                                     <div className="flex flex-col">
                                                                         <span className="text-xs font-bold leading-tight">

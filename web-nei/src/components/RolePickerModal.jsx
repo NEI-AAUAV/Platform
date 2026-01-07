@@ -64,10 +64,20 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
     };
 
     // Helper to find icon for a node
+    // Priority: node.icon (from API) > organizations[short] > organizations[name] > special roles
     const getIconForNode = (node) => {
+        // First check for dynamic icon from API (set in RoleManager)
+        if (node.icon) {
+            return node.icon;
+        }
+        // Then check static organizations map
         if (node.short && organizations[node.short]) {
             return organizations[node.short].insignia;
         }
+        if (node.name && organizations[node.name]) {
+            return organizations[node.name].insignia;
+        }
+        // Special roles handling
         const specialRoles = {
             "escrivão": "escrivao",
             "pescador": "pescador",
