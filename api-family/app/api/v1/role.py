@@ -20,6 +20,7 @@ def get_roles(
     limit: int = Query(default=100, ge=1, le=500),
     show_only: bool = Query(default=False, description="Only return roles with show=true"),
     parent: Optional[str] = Query(default=None, description="Filter by parent role ID"),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
     """
     List roles with optional filters.
@@ -39,7 +40,9 @@ def get_roles(
 
 
 @router.get("/tree", status_code=200)
-def get_roles_tree() -> Any:
+def get_roles_tree(
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+) -> Any:
     """
     Get all roles organized as a hierarchical tree.
     
@@ -49,7 +52,10 @@ def get_roles_tree() -> Any:
 
 
 @router.get("/{id}", status_code=200, response_model=RoleInDB)
-def get_role(id: str):
+def get_role(
+    id: str,
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
     """
     Get a single role by ID.
     
@@ -62,7 +68,10 @@ def get_role(id: str):
 
 
 @router.get("/{id}/children", status_code=200, response_model=List[RoleInDB])
-def get_role_children(id: str):
+def get_role_children(
+    id: str,
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
     """
     Get all child roles of a given role.
     """

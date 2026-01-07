@@ -21,6 +21,7 @@ def list_courses(
     limit: int = Query(default=100, ge=1, le=1000),
     degree: Optional[str] = Query(default=None, description="Filter by degree (Licenciatura, Mestrado, Programa Doutoral)"),
     show_only: bool = Query(default=False, description="Only return courses with show=true"),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
     """
     List all courses with optional filtering.
@@ -41,7 +42,10 @@ def list_courses(
 
 
 @router.get("/{course_id}", status_code=200, response_model=CourseInDB)
-def get_course(course_id: int):
+def get_course(
+    course_id: int,
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
     """Get a specific course by ID."""
     course = crud_course.get(course_id)
     if not course:

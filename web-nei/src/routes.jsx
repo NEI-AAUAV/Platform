@@ -13,6 +13,8 @@ function ProtectedRoute({
   loggedIn = true,
   redirect = "/auth/login",
   adminOnly = false,
+  requiredScopes = [],
+  notFoundRedirect = false,
 }) {
   const { sessionLoading, token, scopes } = useUserStore((state) => state);
 
@@ -22,6 +24,15 @@ function ProtectedRoute({
 
   if (adminOnly && (!scopes || !scopes.includes("admin"))) {
     return <Navigate to="/forbidden" />;
+  }
+
+  // Check required scopes (user must have at least one of the required scopes)
+  if (requiredScopes.length > 0) {
+    const hasScope = requiredScopes.some(s => scopes?.includes(s));
+    if (!hasScope) {
+      // Redirect to 404 to hide existence of page, or /forbidden to show access denied
+      return <Navigate to={notFoundRedirect ? "/page-not-found" : "/forbidden"} replace />;
+    }
   }
 
   return children;
@@ -94,12 +105,23 @@ const routes = [
         lazy: () => import("./pages/settings/Profile"),
       },
       !isProd && {
-        path: "/settings/family",
-        lazy: () => import("./pages/settings/Family"),
-      },
-      !isProd && {
         path: "/settings/account",
         lazy: () => import("./pages/settings/Account"),
+      },
+    ],
+  },
+  // Family Manager - requires manager-family or admin scope
+  !isProd && {
+    path: "/",
+    element: (
+      <ProtectedRoute requiredScopes={["manager-family", "admin"]}>
+        <Layout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "/settings/family",
+        lazy: () => import("./pages/settings/Family"),
       },
     ],
   },

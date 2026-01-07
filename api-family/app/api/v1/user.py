@@ -26,6 +26,7 @@ def get_users(
     role_id: Optional[str] = Query(default=None, description="Filter by role ID"),
     sort_by: Optional[str] = Query(default="name", description="Sort field: name, id, year, nmec, patrao_id"),
     order: Optional[str] = Query(default="asc", description="Sort order: asc, desc"),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
     """
     List users with optional filters.
@@ -65,7 +66,9 @@ def get_users(
 
 
 @router.get("/years", status_code=200, response_model=List[int])
-def get_years_list():
+def get_years_list(
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
     """
     Get list of all distinct start years present in the database.
     Useful for populating filter dropdowns.
@@ -75,7 +78,10 @@ def get_years_list():
 
 
 @router.get("/{id}", status_code=200, response_model=UserInDB)
-def get_user(id: int):
+def get_user(
+    id: int,
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
     """
     Get a single user by ID.
     """
@@ -86,7 +92,10 @@ def get_user(id: int):
 
 
 @router.get("/{id}/children", status_code=200, response_model=List[UserInDB])
-def get_user_children(id: int):
+def get_user_children(
+    id: int,
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
     """
     Get all children (pedaços) of a user.
     """

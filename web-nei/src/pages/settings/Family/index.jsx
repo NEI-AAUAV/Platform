@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
 
@@ -14,6 +15,7 @@ import OrphanModal from "./OrphanModal";
 import RoleManagerModal from "components/RoleManagerModal";
 import CourseManagerModal from "components/CourseManagerModal";
 import { organizations, colors } from "pages/Family/data";
+import { useUserStore } from "stores/useUserStore";
 
 import malePic from "assets/default_profile/male.svg";
 import femalePic from "assets/default_profile/female.svg";
@@ -21,8 +23,13 @@ import femalePic from "assets/default_profile/female.svg";
 /**
  * Family Admin Interface - /settings/family
  * CRUD operations for family tree members
+ * Requires manager-family or admin scope
  */
 export function Component() {
+  // Check authorization - useUserStore must be called unconditionally
+  const { scopes, sessionLoading } = useUserStore((state) => state);
+
+  // All hooks must be declared unconditionally (React rules of hooks)
   const [users, setUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]); // For patrão name lookup
   const [loading, setLoading] = useState(true);
@@ -65,17 +72,22 @@ export function Component() {
   const [showOrphanModal, setShowOrphanModal] = useState(false);
   const [orphanChildren, setOrphanChildren] = useState([]);
 
+  // Compute access first (no early return yet - hooks must come first)
+  const hasAccess = !sessionLoading && (scopes?.includes("manager-family") || scopes?.includes("admin"));
+
   // Debounce search
   useEffect(() => {
+    if (!hasAccess) return; // Don't run if no access
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
       setPage(0);
     }, 300);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, hasAccess]);
 
   // Load initial data (users lookup for patrões cache)
   useEffect(() => {
+    if (!hasAccess) return; // Don't run if no access
     async function loadInitialData() {
       try {
         // Fetch a large number of users to populate the Patrão map
@@ -86,7 +98,7 @@ export function Component() {
       }
     }
     loadInitialData();
-  }, []);
+  }, [hasAccess]);
 
   // Create patrão lookup map
   // Robustly handle both _id and id fields
@@ -101,6 +113,7 @@ export function Component() {
 
   // Load users with filters
   const fetchUsers = useCallback(async () => {
+    if (!hasAccess) return; // Don't run if no access
     setLoading(true);
     setError(null);
     try {
@@ -122,14 +135,16 @@ export function Component() {
     } finally {
       setLoading(false);
     }
-  }, [page, debouncedSearch, yearFilter, roleFilterId, sortBy, sortOrder]);
+  }, [page, debouncedSearch, yearFilter, roleFilterId, sortBy, sortOrder, hasAccess]);
 
   useEffect(() => {
+    if (!hasAccess) return;
     fetchUsers();
-  }, [fetchUsers]);
+  }, [fetchUsers, hasAccess]);
 
   // Fetch missing Patrões
   useEffect(() => {
+    if (!hasAccess) return;
     if (!users.length) return;
 
     const missingIds = new Set();
@@ -159,7 +174,18 @@ export function Component() {
       };
       fetchMissing();
     }
-  }, [users, userMap]);
+  }, [users, userMap, hasAccess]);
+
+  // Authorization check - AFTER all hooks
+  // Wait for session to load before checking
+  if (sessionLoading) {
+    return null;
+  }
+
+  // Redirect if user doesn't have required scope
+  if (!hasAccess) {
+    return <Navigate to="/forbidden" replace />;
+  }
 
 
   const handleAdd = () => {

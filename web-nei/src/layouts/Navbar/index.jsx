@@ -46,7 +46,7 @@ const Navbar = () => {
 
   // Optimistic hide until known from API/WS
   const [arraialEnabled, setArraialEnabled] = useState(null);
-  
+
 
   useEffect(() => {
     // Fetch runtime Arraial config and subscribe to WS updates
@@ -64,7 +64,7 @@ const Navbar = () => {
         if (data?.topic === "ARRAIAL_CONFIG" && typeof data.enabled === "boolean") {
           setArraialEnabled(!!data.enabled);
         }
-      } catch (_) {}
+      } catch (_) { }
     };
     socket.addEventListener("message", onMessage);
     return () => {
@@ -100,16 +100,16 @@ const Navbar = () => {
         if (href.startsWith("http://") || href.startsWith("https://")) {
           return new URL(href, window.location.origin).pathname || "/";
         }
-      } catch (_) {}
+      } catch (_) { }
       return href;
     };
-    
+
     const loadExtensionNav = async () => {
       try {
         // Add timeout to the main extensions manifest call
         const payload = await Promise.race([
           service.getExtensionsManifest(),
-          new Promise((_, reject) => 
+          new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Extensions manifest timeout')), 5000)
           )
         ]);
@@ -126,21 +126,21 @@ const Navbar = () => {
             .map((i) => normalizeLink(i?.link))
             .filter(Boolean)
         );
-        
+
         const filtered = items
           .filter(reqOk)
           .map((e) => ({ label: e.label, href: e.href, key: normalizeLink(e.href), dynamicVisibility: e.dynamicVisibility }))
           .filter((e) => !existingLinks.has(e.key));
-        
+
         // Check dynamic visibility for items that have it
         const checkDynamicVisibility = async (item) => {
           if (!item.dynamicVisibility) return item;
-          
+
           try {
             // Create AbortController for timeout
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
-            
+
             const response = await fetch(item.dynamicVisibility.endpoint, {
               signal: controller.signal,
               headers: {
@@ -148,14 +148,14 @@ const Navbar = () => {
                 'Content-Type': 'application/json'
               }
             });
-            
+
             clearTimeout(timeoutId);
-            
+
             if (!response.ok) {
               console.warn(`Dynamic visibility endpoint returned ${response.status} for ${item.label}`);
               // Fall back to scope-based visibility
               if (item.dynamicVisibility.fallbackScopes) {
-                const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope => 
+                const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope =>
                   myScopes.includes(scope)
                 );
                 if (hasFallbackScope) {
@@ -164,25 +164,25 @@ const Navbar = () => {
               }
               return null;
             }
-            
+
             const data = await response.json();
             const fieldValue = data[item.dynamicVisibility.field];
-            
+
             // If the dynamic condition is met, show the item
             if (fieldValue === item.dynamicVisibility.value) {
               return { label: item.label, href: item.href };
             }
-            
+
             // If dynamic condition is not met, check fallback scopes
             if (item.dynamicVisibility.fallbackScopes) {
-              const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope => 
+              const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope =>
                 myScopes.includes(scope)
               );
               if (hasFallbackScope) {
                 return { label: item.label, href: item.href };
               }
             }
-            
+
             // Neither condition met, hide the item
             return null;
           } catch (error) {
@@ -191,26 +191,26 @@ const Navbar = () => {
             } else {
               console.warn(`Failed to check dynamic visibility for ${item.label}:`, error);
             }
-            
+
             // On error, fall back to scope-based visibility if available
             if (item.dynamicVisibility.fallbackScopes) {
-              const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope => 
+              const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope =>
                 myScopes.includes(scope)
               );
               if (hasFallbackScope) {
                 return { label: item.label, href: item.href };
               }
             }
-            
+
             return null;
           }
         };
-        
+
         // Process all items with dynamic visibility checks
         const processedItems = await Promise.all(
           filtered.map(checkDynamicVisibility)
         );
-        
+
         const finalItems = processedItems.filter(Boolean);
         setExtNav(finalItems);
       } catch (err) {
@@ -218,7 +218,7 @@ const Navbar = () => {
         setExtNav([]);
       }
     };
-    
+
     loadExtensionNav();
   }, [scopes, navItems]);
 
@@ -365,12 +365,12 @@ const Navbar = () => {
               )}
               {extNav
                 .map((e, idx) => (
-                <li key={`ext-${idx}`}>
-                  <LinkAdapter to={e.href} reloadDocument>
-                    {e.label}
-                  </LinkAdapter>
-                </li>
-              ))}
+                  <li key={`ext-${idx}`}>
+                    <LinkAdapter to={e.href} reloadDocument>
+                      {e.label}
+                    </LinkAdapter>
+                  </li>
+                ))}
             </ul>
           </div>
           {/* Jantar Gala Button */}
@@ -458,19 +458,19 @@ const Navbar = () => {
                         </Link>
                       </li>
                     )}
+                    {!config.PRODUCTION && (scopes?.includes("manager-family") || scopes?.includes("admin")) && (
+                      <li>
+                        <Link to="/settings/family">
+                          <FamilyPersonIcon /> Família
+                        </Link>
+                      </li>
+                    )}
                     {!config.PRODUCTION && (
-                      <>
-                        <li>
-                          <Link to="/settings/family">
-                            <FamilyPersonIcon /> Família
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to="/settings/account">
-                            <SettingsIcon /> Conta
-                          </Link>
-                        </li>
-                      </>
+                      <li>
+                        <Link to="/settings/account">
+                          <SettingsIcon /> Conta
+                        </Link>
+                      </li>
                     )}
                     <li onClick={logout}>
                       <a>
