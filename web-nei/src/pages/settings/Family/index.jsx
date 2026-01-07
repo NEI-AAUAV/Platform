@@ -875,7 +875,7 @@ export function Component() {
                 <br />
                 <span className="text-sm text-warning mt-2 block bg-warning/10 p-2 rounded">
                   <MaterialSymbol icon="warning" className="align-bottom mr-1" size={16} />
-                  Atenção: Os afilhados ficarão órfãos!
+                  Atenção: Os seus pedaços ficarão órfãos!
                 </span>
               </p>
               <div className="flex justify-end gap-3">
