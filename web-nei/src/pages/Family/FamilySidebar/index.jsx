@@ -64,6 +64,9 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
         if (!key) return;
 
         // Only add if not already present (first occurrence wins for display name)
+        // But always keep the shortest (base) role_id for proper sorting
+        const currentRoleId = o.role_id || '';
+
         if (!orgsMap.has(key)) {
           // Check if we have a hardcoded entry for this org
           const hardcodedOrg = organizations[key];
@@ -75,8 +78,14 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
             icon: o.icon, // Icon URL from API (if available)
             changeColor: hardcodedOrg?.changeColor || false,
             isHardcoded: !!hardcodedOrg,
-            role_id: o.role_id || '' // Store role_id for sorting
+            role_id: currentRoleId // Store role_id for sorting
           });
+        } else {
+          // Update with shorter role_id if found (base/parent org takes priority)
+          const existing = orgsMap.get(key);
+          if (currentRoleId && (!existing.role_id || currentRoleId.length < existing.role_id.length)) {
+            existing.role_id = currentRoleId;
+          }
         }
       });
     });
