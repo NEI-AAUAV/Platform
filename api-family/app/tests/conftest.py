@@ -6,7 +6,20 @@ from fastapi.testclient import TestClient
 from fastapi.responses import JSONResponse
 
 from app.api.v1 import api_v1_router
+from app.api import auth
 from app.core.config import settings
+
+
+# Mock payload for authenticated requests
+MOCK_AUTH_PAYLOAD = {
+    "sub": "test-user-id",
+    "scopes": ["manager-family", "default"],
+}
+
+
+async def mock_verify_scopes(*args, **kwargs):
+    """Mock verify_scopes that always returns a valid payload with manager-family scope."""
+    return MOCK_AUTH_PAYLOAD
 
 
 @pytest.fixture(scope="session")
@@ -22,8 +35,24 @@ def app() -> Generator[FastAPI, Any, None]:
 def client(
     app: FastAPI,
 ) -> Generator[TestClient, Any, None]:
-    """Create a new TestClient that uses the `app` fixture."""
+    """Create a new TestClient that uses the `app` fixture (no auth)."""
 
     with TestClient(app) as client:
         yield client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(scope="function")
+def auth_client(
+    app: FastAPI,
+) -> Generator[TestClient, Any, None]:
+    """Create a new TestClient with authentication (manager-family scope)."""
+    
+    # Override the auth dependency
+    app.dependency_overrides[auth.verify_scopes] = mock_verify_scopes
+    
+    with TestClient(app) as client:
+        yield client
+    
+    app.dependency_overrides.clear()
+

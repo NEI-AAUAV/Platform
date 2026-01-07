@@ -6,11 +6,11 @@ from fastapi.testclient import TestClient
 
 
 class TestUserRoleEndpoints:
-    """Tests for /userrole/ endpoints."""
+    """Tests for /userrole/ endpoints (require auth)."""
     
-    def test_list_user_roles_structure(self, client: TestClient):
+    def test_list_user_roles_structure(self, auth_client: TestClient):
         """Test listing user-roles returns correct structure."""
-        response = client.get("/api/family/v1/userrole/?limit=5")
+        response = auth_client.get("/api/family/v1/userrole/?limit=5")
         assert response.status_code == 200
         data = response.json()
         assert "items" in data
@@ -19,28 +19,28 @@ class TestUserRoleEndpoints:
         assert "limit" in data
         assert isinstance(data["items"], list)
     
-    def test_list_user_roles_year_validation(self, client: TestClient):
+    def test_list_user_roles_year_validation(self, auth_client: TestClient):
         """Test year filter validation."""
         # Invalid year (out of range)
-        response = client.get("/api/family/v1/userrole/?year=100")
+        response = auth_client.get("/api/family/v1/userrole/?year=100")
         assert response.status_code == 422
     
-    def test_get_user_roles_details_structure(self, client: TestClient):
+    def test_get_user_roles_details_structure(self, auth_client: TestClient):
         """Test details endpoint returns correct structure."""
-        response = client.get("/api/family/v1/userrole/details?limit=5")
+        response = auth_client.get("/api/family/v1/userrole/details?limit=5")
         assert response.status_code == 200
         data = response.json()
         assert "items" in data
         assert "total" in data
     
-    def test_get_roles_for_nonexistent_user(self, client: TestClient):
+    def test_get_roles_for_nonexistent_user(self, auth_client: TestClient):
         """Test 404 for non-existent user."""
-        response = client.get("/api/family/v1/userrole/user/999999")
+        response = auth_client.get("/api/family/v1/userrole/user/999999")
         assert response.status_code == 404
     
-    def test_get_users_for_nonexistent_role(self, client: TestClient):
+    def test_get_users_for_nonexistent_role(self, auth_client: TestClient):
         """Test 404 for non-existent role."""
-        response = client.get("/api/family/v1/userrole/role/.999.999.")
+        response = auth_client.get("/api/family/v1/userrole/role/.999.999.")
         assert response.status_code == 404
 
 
