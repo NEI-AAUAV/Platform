@@ -106,20 +106,6 @@ const FamilyContent = ({ insignias, year, users, minYear, maxYear, loading: exte
     }
   }, [selectedNode]);
 
-  // Handle breadcrumb navigation
-  const handleBreadcrumbNavigate = useCallback((node) => {
-    if (!node) {
-      // Navigate to root/center
-      centerTree();
-      clearHighlight();
-      setSelectedNode(null);
-    } else {
-      setSelectedNode(node);
-      navigateToNode(node);
-      highlightLineage(node.data.id);
-    }
-  }, []);
-
   // Clear selection when clicking on empty SVG area
   const handleSvgClick = useCallback((e) => {
     if (e.target.tagName === 'svg') {

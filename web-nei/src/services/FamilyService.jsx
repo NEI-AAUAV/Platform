@@ -33,8 +33,7 @@ const FamilyService = {
      * Get list of users with pagination and filters
      * @param {Object} params - Query parameters
      * @param {number} [params.skip=0] - Records to skip
-     * @param {number} [param
-     * s.limit=100] - Max records to return
+     * @param {number} [params.limit=100] - Max records to return
      * @param {number} [params.from_year] - Filter by start_year >= value
      * @param {number} [params.patrao_id] - Filter by patron ID
      * @returns {Promise} Paginated user list

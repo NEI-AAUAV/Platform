@@ -4,7 +4,7 @@
  * Shows list of members to be deleted with proper confirmation.
  */
 
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";

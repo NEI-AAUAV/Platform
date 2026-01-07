@@ -164,7 +164,6 @@ export default function RoleManagerModal({ isOpen, onClose }) {
             short: "",
             female_name: "",
             show: true,
-            show: true,
             super_roles: parentId,
             year_display_format: selectedNode.year_display_format || "civil",
             icon: "",

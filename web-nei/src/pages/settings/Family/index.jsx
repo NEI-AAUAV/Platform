@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
-import PropTypes from "prop-types";
 
 import MaterialSymbol from "components/MaterialSymbol";
 
@@ -15,7 +14,6 @@ import OrphanModal from "./OrphanModal";
 import RoleManagerModal from "components/RoleManagerModal";
 import CourseManagerModal from "components/CourseManagerModal";
 import { organizations, colors } from "pages/Family/data";
-import { wouldCreateCycle } from "pages/Family/utils";
 
 import malePic from "assets/default_profile/male.svg";
 import femalePic from "assets/default_profile/female.svg";

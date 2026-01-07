@@ -66,7 +66,6 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
             sex: "M",
             start_year: new Date().getFullYear() - 2000,
             faina_name: "",
-            faina_name: "",
             nmec: null,
             course_id: null,
         },
@@ -180,9 +179,6 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
         if (isOpen && isEdit) {
             loadUserRoles();
         }
-        if (isOpen && isEdit) {
-            loadUserRoles();
-        }
     }, [isOpen, isEdit, user?._id, user?.id]);
 
     // Load children (Pedaços)
@@ -267,7 +263,6 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                 ...data,
                 patrao_id: selectedPatrao?._id || null,
                 faina_name: data.faina_name || null,
-                faina_name: data.faina_name || null, // Keeping double field issue from original for minimal diff
                 nmec: data.nmec || null,
                 course_id: data.course_id ? parseInt(data.course_id) : null,
             };

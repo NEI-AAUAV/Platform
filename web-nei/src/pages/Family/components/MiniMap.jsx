@@ -5,7 +5,7 @@
  * Click to navigate the main tree view.
  */
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 import * as d3 from "d3";
 import classNames from "classnames";
@@ -18,7 +18,6 @@ const MiniMap = ({
     className
 }) => {
     const miniMapRef = useRef(null);
-    const [isReady, setIsReady] = useState(false);
 
     // Draw mini-map after initial render
     useEffect(() => {
@@ -90,7 +89,6 @@ const MiniMap = ({
                     }
                 });
 
-                setIsReady(true);
             } catch (e) {
                 console.error("MiniMap error:", e);
             }
