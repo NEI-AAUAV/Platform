@@ -27,7 +27,7 @@ export function Component() {
   const [year, setYear] = useState(null); // Will be set to maxYear when data loads
 
   // Fetch data from API - includes minYear/maxYear
-  const { minYear, maxYear, loading } = useFamilyTree();
+  const { minYear, maxYear, loading, users } = useFamilyTree();
 
   // Initialize year to maxYear when data loads
   useEffect(() => {
@@ -59,78 +59,95 @@ export function Component() {
         },
       }}
     >
-      <div className="drawer h-full">
-        <input
-          type="checkbox"
-          className="drawer-toggle"
-          checked={sidebarOpened}
-          onChange={(e) => setSidebarOpened(e.target.checked)}
-        />
-        <div className="drawer-content !overflow-hidden">
-          <FamilyContent insignias={insignias} year={year} />
+      {loading ? (
+        <div className="flex h-full w-full items-center justify-center bg-base-100">
+          <div className="flex flex-col items-center gap-4">
+            <span className="loading loading-spinner loading-lg text-primary"></span>
+            <p className="text-lg font-medium text-base-content/70 animate-pulse">A carregar árvore genealógica...</p>
+          </div>
         </div>
-        <div
-          className={classNames(
-            "drawer-side pointer-events-none relative !flex h-full !overflow-hidden py-5",
-            { "px-1": sidebarOpened }
-          )}
-        >
-          <div className="drawer-overlay hidden" />
+      ) : (
+        <div className="drawer h-full">
+          <input
+            type="checkbox"
+            className="drawer-toggle"
+            checked={sidebarOpened}
+            onChange={(e) => setSidebarOpened(e.target.checked)}
+          />
+          <div className="drawer-content !overflow-hidden">
+            <FamilyContent
+              insignias={insignias}
+              year={year}
+              users={users}
+              loading={loading}
+              minYear={minYear}
+              maxYear={maxYear}
+            />
+          </div>
           <div
             className={classNames(
-              "rounded-l-box relative mr-12 !flex h-full w-80 text-base-content !transition-transform",
-              sidebarOpened
-                ? "pointer-events-auto border border-r-0 border-base-content/10 bg-base-200 shadow-[0_1px_3px_-1px_rgba(0,0,0,0.1)]"
-                : "bg-transparent"
+              "drawer-side pointer-events-none relative !flex h-full !overflow-hidden py-5",
+              { "px-1": sidebarOpened }
             )}
           >
-            <div className="rounded-box my-2 ml-2 w-full overflow-hidden border-base-content/10 bg-base-300">
-              <div className="h-full overflow-y-auto">
-                <FamilySidebar
-                  insignias={insignias}
-                  year={year}
-                  setInsignias={setInsignias}
-                  setYear={setYear}
-                  minYear={minYear}
-                  maxYear={maxYear}
-                />
-              </div>
-            </div>
+            <div className="drawer-overlay hidden" />
             <div
               className={classNames(
-                "rounded-r-box absolute left-full -top-px -bottom-px flex w-12 flex-col items-center gap-3 overflow-hidden py-3",
+                "rounded-l-box relative mr-12 !flex h-full w-80 text-base-content !transition-transform",
                 sidebarOpened
-                  ? "border  border-l-0 border-base-content/10 bg-base-200 shadow-[1px_1px_3px_-1px_rgba(0,0,0,0.1)]"
+                  ? "pointer-events-auto border border-r-0 border-base-content/10 bg-base-200 shadow-[0_1px_3px_-1px_rgba(0,0,0,0.1)]"
                   : "bg-transparent"
               )}
             >
-              <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
-                <input
-                  type="checkbox"
-                  checked={sidebarOpened}
-                  onChange={(e) => setSidebarOpened(e.target.checked)}
-                />
-                <CloseIcon className="swap-on" />
-                <TuneIcon className="swap-off" />
-              </label>
-              <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
-                <input
-                  type="checkbox"
-                  checked={expanded}
-                  onChange={(e) => setExpanded(e.target.checked)}
-                />
-                <FullScreenExitIcon className="swap-on" />
-                <FullScreenIcon className="swap-off" />
-              </label>
-              <label className="pointer-events-auto swap-rotate swap btn-disabled btn-sm btn-circle btn">
-                <input type="checkbox" />
-                <FamilyIcon className="swap-on" />
-                <FainaFamilyIcon className="swap-off" />
-              </label>
+              <div className="rounded-box my-2 ml-2 w-full overflow-hidden border-base-content/10 bg-base-300">
+                <div className="h-full overflow-y-auto">
+                  <FamilySidebar
+                    insignias={insignias}
+                    year={year}
+                    setInsignias={setInsignias}
+                    setYear={setYear}
+                    minYear={minYear}
+                    maxYear={maxYear}
+                    users={users}
+                  />
+                </div>
+              </div>
+              <div
+                className={classNames(
+                  "rounded-r-box absolute left-full -top-px -bottom-px flex w-12 flex-col items-center gap-3 overflow-hidden py-3",
+                  sidebarOpened
+                    ? "border  border-l-0 border-base-content/10 bg-base-200 shadow-[1px_1px_3px_-1px_rgba(0,0,0,0.1)]"
+                    : "bg-transparent"
+                )}
+              >
+                <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
+                  <input
+                    type="checkbox"
+                    checked={sidebarOpened}
+                    onChange={(e) => setSidebarOpened(e.target.checked)}
+                  />
+                  <CloseIcon className="swap-on" />
+                  <TuneIcon className="swap-off" />
+                </label>
+                <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
+                  <input
+                    type="checkbox"
+                    checked={expanded}
+                    onChange={(e) => setExpanded(e.target.checked)}
+                  />
+                  <FullScreenExitIcon className="swap-on" />
+                  <FullScreenIcon className="swap-off" />
+                </label>
+                <label className="pointer-events-auto swap-rotate swap btn-disabled btn-sm btn-circle btn">
+                  <input type="checkbox" />
+                  <FamilyIcon className="swap-on" />
+                  <FainaFamilyIcon className="swap-off" />
+                </label>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </motion.div>
   );
 }

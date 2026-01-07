@@ -14,6 +14,9 @@ class RoleBase(BaseModel):
     female_name: Optional[str] = Field(None, max_length=100, description="Female variant of the name")
     super_roles: str = Field("", description="Parent role path (e.g., '.1.' for Faina)")
     show: bool = Field(False, description="Show in main role list")
+    year_display_format: str = Field("civil", description="Year display format: 'civil' (2023) or 'academic' (23/24)")
+    icon: Optional[str] = Field(None, description="Icon URL or path")
+    hidden: bool = Field(False, description="Hide from public visualizations (Tree/Table)")
 
 
 class RoleCreate(RoleBase):
@@ -28,6 +31,9 @@ class RoleUpdate(BaseModel):
     female_name: Optional[str] = Field(None, max_length=100)
     super_roles: Optional[str] = None
     show: Optional[bool] = None
+    year_display_format: Optional[str] = None
+    icon: Optional[str] = None
+    hidden: Optional[bool] = None
 
 
 class RoleInDB(RoleBase):

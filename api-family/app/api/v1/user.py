@@ -21,6 +21,12 @@ def get_users(
     limit: int = Query(default=100, ge=1, le=500, description="Max records to return"),
     start_year_gte: Optional[int] = Query(default=None, alias="from_year", description="Filter by start_year >= value"),
     patrao_id: Optional[int] = Query(default=None, description="Filter by patrao_id"),
+    search: Optional[str] = Query(default=None, description="Search by name (case-insensitive)"),
+    year: Optional[int] = Query(default=None, description="Filter by exact start_year"),
+    role_id: Optional[str] = Query(default=None, description="Filter by role ID"),
+    sort_by: Optional[str] = Query(default="name", description="Sort field: name, id, year, nmec, patrao_id"),
+    order: Optional[str] = Query(default="asc", description="Sort order: asc, desc"),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
     """
     List users with optional filters.
@@ -29,15 +35,27 @@ def get_users(
     - **limit**: Maximum number of records to return
     - **from_year**: Filter users with start_year >= this value
     - **patrao_id**: Filter users by their patrão
+    - **search**: Search users by name (case-insensitive partial match)
+    - **year**: Filter by exact start year
+    - **role_id**: Filter by role
     """
     users = crud_user.get_multi(
         skip=skip, 
         limit=limit, 
         start_year_gte=start_year_gte,
-        patrao_id=patrao_id
+        patrao_id=patrao_id,
+        search=search,
+        year=year,
+        role_id=role_id,
+        sort_by=sort_by,
+        order=order
     )
     
-    total = crud_user.count()
+    total = crud_user.count(
+        search=search,
+        year=year,
+        role_id=role_id
+    )
     
     return UserList(
         items=users,
@@ -47,8 +65,23 @@ def get_users(
     )
 
 
+@router.get("/years", status_code=200, response_model=List[int])
+def get_years_list(
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
+    """
+    Get list of all distinct start years present in the database.
+    Useful for populating filter dropdowns.
+    """
+    return crud_user.get_years()
+
+
+
 @router.get("/{id}", status_code=200, response_model=UserInDB)
-def get_user(id: int):
+def get_user(
+    id: int,
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
     """
     Get a single user by ID.
     """
@@ -59,7 +92,10 @@ def get_user(id: int):
 
 
 @router.get("/{id}/children", status_code=200, response_model=List[UserInDB])
-def get_user_children(id: int):
+def get_user_children(
+    id: int,
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
     """
     Get all children (pedaços) of a user.
     """

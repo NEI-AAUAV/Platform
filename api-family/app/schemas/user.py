@@ -11,7 +11,7 @@ class UserBase(BaseModel):
     """Base user model with required and optional fields."""
     name: str = Field(..., max_length=100)
     sex: Literal['M', 'F']
-    start_year: int = Field(..., ge=0, le=99, description="Year of entry (0-99)")
+    start_year: Optional[int] = Field(None, ge=0, le=99, description="Year of entry (0-99)")
     nmec: Optional[int] = Field(None, description="Número mecanográfico")
     faina_name: Optional[str] = Field(None, max_length=50, description="Nome de faina")
     course_id: Optional[int] = Field(None, description="Course ID for other courses")
@@ -39,6 +39,7 @@ class UserUpdate(BaseModel):
 class UserInDB(UserBase):
     """Schema for user response from database."""
     id: int = Field(..., alias="_id")
+    user_roles: Optional[List[dict]] = []
 
     class Config:
         orm_mode = True

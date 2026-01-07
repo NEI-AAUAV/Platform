@@ -121,15 +121,22 @@ class CRUDUserRole:
             # Unwind arrays (convert from array to single doc)
             {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
             {"$unwind": {"path": "$role", "preserveNullAndEmptyArrays": True}},
-            # Project final shape
+            # Project final shape with nested user object
             {"$project": {
                 "_id": {"$toString": "$_id"},
                 "user_id": 1,
                 "role_id": 1,
                 "year": 1,
-                "user_name": "$user.name",
+                "user_name": "$user.name",  # Keep for backward compatibility
+                "user": {  # Nested user object for frontend
+                    "name": "$user.name",
+                    "image": "$user.image",
+                    "sex": "$user.sex",
+                    "start_year": "$user.start_year"
+                },
                 "role_name": "$role.name",
-                "role_short": "$role.short"
+                "role_short": "$role.short",
+                "year_display_format": "$role.year_display_format"
             }}
         ]
         

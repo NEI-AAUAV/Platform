@@ -43,6 +43,14 @@ const FamilyService = {
     },
 
     /**
+     * Get list of all distinct years
+     * @returns {Promise<number[]>} List of years
+     */
+    async getYears() {
+        return await client.get("/user/years");
+    },
+
+    /**
      * Get a single user by ID
      * @param {number} id - User ID
      * @returns {Promise} User data
@@ -112,6 +120,34 @@ const FamilyService = {
         return await client.get(`/course/${id}`);
     },
 
+    /**
+     * Create a new course (requires MANAGER_FAMILY scope)
+     * @param {Object} data - Course data
+     * @returns {Promise} Created course
+     */
+    async createCourse(data) {
+        return await client.post("/course/", data);
+    },
+
+    /**
+     * Update a course (requires MANAGER_FAMILY scope)
+     * @param {number} id - Course ID
+     * @param {Object} data - Update data
+     * @returns {Promise} Updated course
+     */
+    async updateCourse(id, data) {
+        return await client.put(`/course/${id}`, data);
+    },
+
+    /**
+     * Delete a course (requires MANAGER_FAMILY scope)
+     * @param {number} id - Course ID
+     * @returns {Promise} No content
+     */
+    async deleteCourse(id) {
+        return await client.delete(`/course/${id}`);
+    },
+
     // ============================================================
     // Role Endpoints
     // ============================================================
@@ -130,6 +166,34 @@ const FamilyService = {
      */
     async getRoleTree() {
         return await client.get("/role/tree");
+    },
+
+    /**
+     * Create a new role (requires MANAGER_FAMILY scope)
+     * @param {Object} data - Role data
+     * @returns {Promise} Created role
+     */
+    async createRole(data) {
+        return await client.post("/role/", data);
+    },
+
+    /**
+     * Update a role (requires MANAGER_FAMILY scope)
+     * @param {string} id - Role ID
+     * @param {Object} data - Update data
+     * @returns {Promise} Updated role
+     */
+    async updateRole(id, data) {
+        return await client.put(`/role/${id}`, data);
+    },
+
+    /**
+     * Delete a role (requires MANAGER_FAMILY scope)
+     * @param {string} id - Role ID
+     * @returns {Promise} No content
+     */
+    async deleteRole(id) {
+        return await client.delete(`/role/${id}`);
     },
 
     // ============================================================

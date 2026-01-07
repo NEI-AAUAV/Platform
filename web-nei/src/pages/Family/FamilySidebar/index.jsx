@@ -1,4 +1,4 @@
-import { Fragment, useState, useCallback, useEffect } from "react";
+import React, { Fragment, useState, useCallback, useEffect } from "react";
 
 import {
   handleSearchChange,
@@ -15,11 +15,95 @@ import classNames from "classnames";
 import Autocomplete from "components/Autocomplete";
 import { ExpandMoreIcon, ExpandLessIcon } from "assets/icons/google";
 
-const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYear }) => {
+const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYear, users }) => {
   const [endYear, setEndYear] = useState(-1);
   // const [fainaNames, setFainaNames] = useState(false);
   const [selName, setSelName] = useState(null);
   const theme = useUserStore((state) => state.theme);
+
+  // Build dynamic organization list from users data
+  // This allows showing any organization from the API, not just hardcoded ones
+  const dynamicOrgs = React.useMemo(() => {
+    if (!users || users.length === 0) {
+      console.log("[FamilySidebar] No users, returning empty map");
+      return new Map();
+    }
+
+    const orgsMap = new Map();
+    let hiddenCount = 0;
+
+    users.forEach(u => {
+      u.organizations?.forEach(o => {
+        // Skip hidden roles
+        if (o.hidden === true) {
+          hiddenCount++;
+          return;
+        }
+
+        // Determine the key (same logic as data.jsx)
+        let key = o.name; // org_name from API
+
+        // If key looks like a role_id path (starts with "."), use role_name as fallback
+        if (key && key.startsWith(".")) {
+          key = o.role_name || o.role || key;
+        }
+
+        // Special handling for ST sub-roles
+        if (o.name === "ST" || key === "ST") {
+          const roleMap = {
+            "Mestre Escrivão": "escrivao",
+            "Mestre Pescador": "pescador",
+            "Mestre do Salgado": "salgado",
+          };
+          const mappedKey = roleMap[o.role] || roleMap[o.role_name];
+          if (mappedKey) {
+            key = mappedKey;
+          }
+        }
+
+        if (!key) return;
+
+        // Only add if not already present (first occurrence wins for display name)
+        // But always keep the shortest (base) role_id for proper sorting
+        const currentRoleId = o.role_id || '';
+
+        if (!orgsMap.has(key)) {
+          // Check if we have a hardcoded entry for this org
+          const hardcodedOrg = organizations[key];
+
+          orgsMap.set(key, {
+            key: key,
+            name: hardcodedOrg?.name || o.role_name || o.role || o.name || key,
+            insignia: hardcodedOrg?.insignia || null, // Will be null for dynamic orgs without icons
+            icon: o.icon, // Icon URL from API (if available)
+            changeColor: hardcodedOrg?.changeColor || false,
+            isHardcoded: !!hardcodedOrg,
+            role_id: currentRoleId // Store role_id for sorting
+          });
+        } else {
+          // Update with shorter role_id if found (base/parent org takes priority)
+          const existing = orgsMap.get(key);
+          if (currentRoleId && (!existing.role_id || currentRoleId.length < existing.role_id.length)) {
+            existing.role_id = currentRoleId;
+          }
+        }
+      });
+    });
+
+    // Debug: Log all entries with their role_ids before sorting
+    console.log("[FamilySidebar] Orgs before sorting:", [...orgsMap.entries()].map(([k, v]) => ({ key: k, role_id: v.role_id, name: v.name })));
+
+    // Sort by role_id to maintain hierarchical order from database
+    const sortedEntries = [...orgsMap.entries()].sort((a, b) => {
+      const roleIdA = a[1].role_id || '';
+      const roleIdB = b[1].role_id || '';
+      return roleIdA.localeCompare(roleIdB);
+    });
+
+    console.log("[FamilySidebar] Orgs after sorting:", sortedEntries.map(([k, v]) => ({ key: k, role_id: v.role_id })));
+
+    return new Map(sortedEntries);
+  }, [users]);
 
   // const toggeFainaNames = () => {
   //   changeLabels(!fainaNames);
@@ -194,7 +278,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
       </div>
       <h5 className="px-3 pt-3 opacity-80">Insígnias</h5>
       <div className="px-5 py-3">
-        {Object.entries(organizations).map(([key, org]) => (
+        {[...dynamicOrgs.entries()].map(([key, org]) => (
           <div
             key={key}
             className={classNames(
@@ -206,15 +290,26 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
             )}
             onClick={() => toggleInsignias(key)}
           >
-            <img
-              src={org.insignia}
-              className="h-4 w-4"
-              style={
-                org.changeColor && theme === "dark"
-                  ? { filter: "invert(1)" }
-                  : {}
-              }
-            />
+            {/* Render icon: API icon takes priority over hardcoded insignia */}
+            {org.icon ? (
+              <img src={org.icon} alt="" className="h-4 w-4" />
+            ) : org.insignia ? (
+              <img
+                src={org.insignia}
+                alt=""
+                className="h-4 w-4"
+                style={
+                  org.changeColor && theme === "dark"
+                    ? { filter: "invert(1)" }
+                    : {}
+                }
+              />
+            ) : (
+              <div
+                className="h-4 w-4 rounded-full bg-base-content/30"
+                title={`Sem ícone para ${org.name}`}
+              />
+            )}
             <div>{org.name}</div>
           </div>
         ))}

@@ -6,11 +6,11 @@ from fastapi.testclient import TestClient
 
 
 class TestCourseEndpoints:
-    """Tests for /course/ endpoints."""
+    """Tests for /course/ endpoints (require auth)."""
     
-    def test_list_courses_structure(self, client: TestClient):
+    def test_list_courses_structure(self, auth_client: TestClient):
         """Test listing courses returns correct structure."""
-        response = client.get("/api/family/v1/course/?limit=5")
+        response = auth_client.get("/api/family/v1/course/?limit=5")
         assert response.status_code == 200
         data = response.json()
         assert "items" in data
@@ -19,33 +19,33 @@ class TestCourseEndpoints:
         assert "limit" in data
         assert isinstance(data["items"], list)
     
-    def test_list_courses_with_degree_filter(self, client: TestClient):
+    def test_list_courses_with_degree_filter(self, auth_client: TestClient):
         """Test filtering by degree."""
-        response = client.get("/api/family/v1/course/?degree=Mestrado")
+        response = auth_client.get("/api/family/v1/course/?degree=Mestrado")
         assert response.status_code == 200
         data = response.json()
         for item in data.get("items", []):
             assert item["degree"] == "Mestrado"
     
-    def test_list_courses_show_only(self, client: TestClient):
+    def test_list_courses_show_only(self, auth_client: TestClient):
         """Test show_only filter."""
-        response = client.get("/api/family/v1/course/?show_only=true")
+        response = auth_client.get("/api/family/v1/course/?show_only=true")
         assert response.status_code == 200
         data = response.json()
         for item in data.get("items", []):
             assert item.get("show") == True
     
-    def test_list_courses_empty_filter(self, client: TestClient):
+    def test_list_courses_empty_filter(self, auth_client: TestClient):
         """Test that invalid degree filter returns empty list."""
-        response = client.get("/api/family/v1/course/?degree=InvalidDegree")
+        response = auth_client.get("/api/family/v1/course/?degree=InvalidDegree")
         assert response.status_code == 200
         data = response.json()
         assert data["items"] == []
         assert data["total"] == 0
     
-    def test_get_course_not_found(self, client: TestClient):
+    def test_get_course_not_found(self, auth_client: TestClient):
         """Test 404 for non-existent course."""
-        response = client.get("/api/family/v1/course/999999")
+        response = auth_client.get("/api/family/v1/course/999999")
         assert response.status_code == 404
 
 

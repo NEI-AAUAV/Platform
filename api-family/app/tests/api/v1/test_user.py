@@ -6,11 +6,11 @@ from fastapi.testclient import TestClient
 
 
 class TestUserEndpoints:
-    """Tests for /user/ endpoints."""
+    """Tests for /user/ endpoints (require auth)."""
     
-    def test_list_users_structure(self, client: TestClient):
+    def test_list_users_structure(self, auth_client: TestClient):
         """Test listing users returns correct structure."""
-        response = client.get("/api/family/v1/user/?limit=5")
+        response = auth_client.get("/api/family/v1/user/?limit=5")
         assert response.status_code == 200
         data = response.json()
         assert "items" in data
@@ -20,22 +20,22 @@ class TestUserEndpoints:
         assert isinstance(data["items"], list)
         assert isinstance(data["total"], int)
     
-    def test_list_users_pagination(self, client: TestClient):
+    def test_list_users_pagination(self, auth_client: TestClient):
         """Test pagination parameters."""
-        response = client.get("/api/family/v1/user/?limit=2&skip=2")
+        response = auth_client.get("/api/family/v1/user/?limit=2&skip=2")
         assert response.status_code == 200
         data = response.json()
         assert data["skip"] == 2
         assert data["limit"] == 2
     
-    def test_get_user_not_found(self, client: TestClient):
+    def test_get_user_not_found(self, auth_client: TestClient):
         """Test 404 for non-existent user."""
-        response = client.get("/api/family/v1/user/999999")
+        response = auth_client.get("/api/family/v1/user/999999")
         assert response.status_code == 404
     
-    def test_get_user_children_not_found(self, client: TestClient):
+    def test_get_user_children_not_found(self, auth_client: TestClient):
         """Test 404 for children of non-existent user."""
-        response = client.get("/api/family/v1/user/999999/children")
+        response = auth_client.get("/api/family/v1/user/999999/children")
         assert response.status_code == 404
 
 

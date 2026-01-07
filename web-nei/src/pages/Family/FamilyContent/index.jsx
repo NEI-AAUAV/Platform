@@ -1,64 +1,182 @@
-// example from https://bl.ocks.org/mbostock/3885705
+/**
+ * FamilyContent - Main tree visualization container
+ * 
+ * Integrates the D3 tree with MiniMap, Breadcrumbs, and lineage highlighting.
+ */
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import PropTypes from "prop-types";
 
-import { buildTree, centerTree, filterTree, patterns } from "../data";
-import FamilyService from "services/FamilyService";
+import {
+  buildTree,
+  centerTree,
+  filterTree,
+  patterns,
+  highlightLineage,
+  clearHighlight,
+  animatePathToNode,
+  getNodeById,
+  navigateToNode,
+  getSvgElements,
+  treeRoot
+} from "../data";
+import { flattenTree } from "../utils";
+
+import MiniMap from "../components/MiniMap";
 
 
-const FamilyContent = ({ insignias, year, auth }) => {
+const FamilyContent = ({ insignias, year, users, minYear, maxYear, loading: externalLoading }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [treeReady, setTreeReady] = useState(false);
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [svgElements, setSvgElements] = useState({ svgElement: null, groupElement: null });
+
   const svgRef = useRef(null);
-  const dataRef = useRef(null);
 
-  // Fetch data on mount
+  // Build tree after users data is available
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await FamilyService.getTree();
-        // Store data for when SVG is ready
-        dataRef.current = data.roots || [];
-      } catch (err) {
-        console.error("Failed to load family tree:", err);
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
+    if (!users || users.length === 0 || externalLoading) {
+      setLoading(true);
+      return;
     }
-    fetchData();
-  }, []);
 
-  // Build tree after SVG is rendered and data is loaded
-  useEffect(() => {
-    if (!loading && !error && svgRef.current && dataRef.current) {
-      try {
-        const users = flattenTreeData(dataRef.current);
-        buildTree(users);
-        centerTree();
-        setTreeReady(true);
-      } catch (err) {
-        console.error("Failed to build tree:", err);
-        setError(err);
-      }
+    if (!svgRef.current) {
+      setLoading(false);
+      return;
     }
-  }, [loading, error]);
+
+    try {
+      // Flatten tree if needed (API returns nested structure)
+      const flatUsers = users[0]?.children !== undefined
+        ? flattenTree(users)
+        : users;
+
+      buildTree(flatUsers, {
+        minYear,
+        maxYear,
+        onNodeSelect: handleNodeSelect,
+        onNodeHover: handleNodeHover,
+      });
+
+      centerTree();
+      setTreeReady(true);
+      setLoading(false);
+
+      // Get SVG elements for MiniMap after a small delay
+      setTimeout(() => {
+        setSvgElements(getSvgElements());
+      }, 100);
+
+    } catch (err) {
+      console.error("Failed to build tree:", err);
+      setError(err);
+      setLoading(false);
+    }
+  }, [users, externalLoading, minYear, maxYear]);
 
   // Filter tree when filters change
   useEffect(() => {
-    if (treeReady) {
+    if (treeReady && year !== null) {
       filterTree(insignias, year);
     }
   }, [insignias, year, treeReady]);
 
+  // Handle node selection
+  const handleNodeSelect = useCallback((nodeId) => {
+    const node = getNodeById(nodeId);
+    if (node) {
+      setSelectedNode(node);
+      highlightLineage(nodeId);
+      animatePathToNode(nodeId);
+    }
+  }, []);
+
+  // Handle node hover - show lineage on hover, restore selection on leave
+  const handleNodeHover = useCallback((nodeId, isHovering) => {
+    if (isHovering) {
+      highlightLineage(nodeId);
+    } else {
+      // If there's a selected node, restore its highlighting; otherwise clear
+      if (selectedNode) {
+        highlightLineage(selectedNode.data.id);
+      } else {
+        clearHighlight();
+      }
+    }
+  }, [selectedNode]);
+
+  // Clear selection when clicking on empty SVG area
+  const handleSvgClick = useCallback((e) => {
+    if (e.target.tagName === 'svg') {
+      clearHighlight();
+      setSelectedNode(null);
+    }
+  }, []);
+
+  // Keyboard navigation
+  const handleKeyDown = useCallback((e) => {
+    if (!selectedNode) return;
+
+    switch (e.key) {
+      case 'Escape':
+        clearHighlight();
+        setSelectedNode(null);
+        break;
+      case 'ArrowUp':
+        if (selectedNode.parent && selectedNode.parent.data.id !== 0) {
+          const parent = selectedNode.parent;
+          setSelectedNode(parent);
+          navigateToNode(parent);
+          highlightLineage(parent.data.id);
+        }
+        e.preventDefault();
+        break;
+      case 'ArrowDown':
+        if (selectedNode.children && selectedNode.children.length > 0) {
+          const firstChild = selectedNode.children[0];
+          setSelectedNode(firstChild);
+          navigateToNode(firstChild);
+          highlightLineage(firstChild.data.id);
+        }
+        e.preventDefault();
+        break;
+      case 'ArrowLeft':
+      case 'ArrowRight':
+        if (selectedNode.parent && selectedNode.parent.children) {
+          const siblings = selectedNode.parent.children;
+          const currentIdx = siblings.findIndex(s => s.data.id === selectedNode.data.id);
+          const nextIdx = e.key === 'ArrowLeft'
+            ? Math.max(0, currentIdx - 1)
+            : Math.min(siblings.length - 1, currentIdx + 1);
+          const sibling = siblings[nextIdx];
+          if (sibling && sibling.data.id !== selectedNode.data.id) {
+            setSelectedNode(sibling);
+            navigateToNode(sibling);
+            highlightLineage(sibling.data.id);
+          }
+        }
+        e.preventDefault();
+        break;
+      default:
+        break;
+    }
+  }, [selectedNode]);
+
+  const isLoading = loading || externalLoading;
+
   return (
-    <>
-      {loading && (
+    <div
+      className="relative h-full w-full"
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+    >
+      {isLoading && (
         <div className="absolute inset-0 flex h-full w-full items-center justify-center bg-base-100/80 z-10">
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       )}
+
       {error && (
         <div className="absolute inset-0 flex h-full w-full items-center justify-center bg-base-100/80 z-10">
           <div className="text-center">
@@ -72,7 +190,19 @@ const FamilyContent = ({ insignias, year, auth }) => {
           </div>
         </div>
       )}
-      <svg ref={svgRef} className="treeei" width="100%" height="100%" viewBox="0 0 800 600">
+
+
+      {/* Main SVG Tree */}
+      <svg
+        ref={svgRef}
+        className="treeei"
+        width="100%"
+        height="100%"
+        viewBox="0 0 800 600"
+        onClick={handleSvgClick}
+        role="tree"
+        aria-label="Árvore genealógica da família"
+      >
         <defs>
           <marker
             id="dot"
@@ -107,7 +237,6 @@ const FamilyContent = ({ insignias, year, auth }) => {
               stdDeviation="2"
               result="blur-out"
             ></feGaussianBlur>
-            {/* <feColorMatrix in="blur-out" type="hueRotate" values="180" result="color-out"></feColorMatrix> */}
             <feOffset in="color-out" dx="1" dy="1" result="the-shadow"></feOffset>
             <feOffset
               in="color-out"
@@ -135,58 +264,24 @@ const FamilyContent = ({ insignias, year, auth }) => {
           ))}
         </defs>
       </svg>
-    </>
+
+    </div>
   );
 };
 
-/**
- * Flatten nested tree from API into flat array for D3 stratify
- */
-function flattenTreeData(roots) {
-  const users = [];
+FamilyContent.propTypes = {
+  insignias: PropTypes.arrayOf(PropTypes.string),
+  year: PropTypes.number,
+  users: PropTypes.array,
+  minYear: PropTypes.number,
+  maxYear: PropTypes.number,
+  loading: PropTypes.bool,
+};
 
-  // Add virtual root
-  users.push({ id: 0, parent: null, name: "Root" });
-
-  function traverse(node, parentId) {
-    const user = {
-      id: node._id,
-      parent: parentId,
-      name: node.name,
-      sex: node.sex,
-      start_year: node.start_year,
-      end_year: node.end_year,
-      nmec: node.nmec,
-      course_id: node.course_id,
-      image: node.image || null,
-      // Map organizations from user_roles
-      // API now returns org_name directly (e.g., "NEI", "CF")
-      organizations: node.user_roles?.map(r => ({
-        name: r.org_name || r.role_id,
-        year: r.year,
-        role: r.role_name,
-      })) || [],
-      // Faina data
-      faina: node.faina_name ? [{
-        name: node.faina_name,
-        year: node.start_year + 1,
-      }] : null,
-    };
-
-    users.push(user);
-
-    if (node.children) {
-      for (const child of node.children) {
-        traverse(child, node._id);
-      }
-    }
-  }
-
-  for (const root of roots) {
-    traverse(root, 0);
-  }
-
-  return users;
-}
+FamilyContent.defaultProps = {
+  insignias: [],
+  users: [],
+  loading: false,
+};
 
 export default FamilyContent;

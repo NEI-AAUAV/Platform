@@ -6,25 +6,25 @@ from fastapi.testclient import TestClient
 
 
 class TestRoleEndpoints:
-    """Tests for /role/ endpoints."""
+    """Tests for /role/ endpoints (require auth)."""
     
-    def test_list_roles_structure(self, client: TestClient):
+    def test_list_roles_structure(self, auth_client: TestClient):
         """Test listing roles returns correct structure."""
-        response = client.get("/api/family/v1/role/?limit=5")
+        response = auth_client.get("/api/family/v1/role/?limit=5")
         assert response.status_code == 200
         data = response.json()
         assert "items" in data
         assert "total" in data
         assert isinstance(data["items"], list)
     
-    def test_get_role_not_found(self, client: TestClient):
+    def test_get_role_not_found(self, auth_client: TestClient):
         """Test 404 for non-existent role."""
-        response = client.get("/api/family/v1/role/.999.999.")
+        response = auth_client.get("/api/family/v1/role/.999.999.")
         assert response.status_code == 404
     
-    def test_get_role_tree_structure(self, client: TestClient):
+    def test_get_role_tree_structure(self, auth_client: TestClient):
         """Test getting the role tree returns a list."""
-        response = client.get("/api/family/v1/role/tree")
+        response = auth_client.get("/api/family/v1/role/tree")
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)

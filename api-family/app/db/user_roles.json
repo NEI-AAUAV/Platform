@@ -1,0 +1,2960 @@
+[{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a33"
+	},
+	"user_id": 1,
+	"role_id": ".1.5.9.",
+	"role_name": "Mestre de Curso",
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a34"
+	},
+	"user_id": 1,
+	"role_id": ".2.22.",
+	"role_name": "Vogal da Secção Administrativa",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a35"
+	},
+	"user_id": 2,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a36"
+	},
+	"user_id": 3,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a37"
+	},
+	"user_id": 3,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica",
+	"org_name": "NEI",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a38"
+	},
+	"user_id": 3,
+	"role_id": ".1.5.9.",
+	"role_name": "Mestre de Curso",
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a39"
+	},
+	"user_id": 3,
+	"role_id": ".2.15.",
+	"role_name": "Responsável Financeiro",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a3a"
+	},
+	"user_id": 4,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a3b"
+	},
+	"user_id": 4,
+	"role_id": ".2.16.",
+	"role_name": "Presidente da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a3c"
+	},
+	"user_id": 4,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a3d"
+	},
+	"user_id": 5,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a3e"
+	},
+	"user_id": 5,
+	"role_id": ".2.16.",
+	"role_name": "Presidente da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a3f"
+	},
+	"user_id": 6,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a40"
+	},
+	"user_id": 6,
+	"role_id": ".2.20.",
+	"role_name": "Vogal da Secção Académica e Desportiva",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a41"
+	},
+	"user_id": 7,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a42"
+	},
+	"user_id": 8,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a43"
+	},
+	"user_id": 8,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a44"
+	},
+	"user_id": 9,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a45"
+	},
+	"user_id": 9,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a46"
+	},
+	"user_id": 9,
+	"role_id": ".1.5.9.",
+	"role_name": "Mestre de Curso",
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a47"
+	},
+	"user_id": 10,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a48"
+	},
+	"user_id": 10,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a49"
+	},
+	"user_id": 11,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a4a"
+	},
+	"user_id": 12,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a4b"
+	},
+	"user_id": 12,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a4c"
+	},
+	"user_id": 13,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a4d"
+	},
+	"user_id": 13,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a4e"
+	},
+	"user_id": 13,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a4f"
+	},
+	"user_id": 14,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 12,
+	"end_year": 12
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a50"
+	},
+	"user_id": 15,
+	"role_id": ".2.20.",
+	"role_name": "Vogal da Secção Académica e Desportiva",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a51"
+	},
+	"user_id": 15,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a52"
+	},
+	"user_id": 16,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a53"
+	},
+	"user_id": 16,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a54"
+	},
+	"user_id": 16,
+	"role_id": ".1.5.9.",
+	"role_name": "Mestre de Curso",
+	"org_name": "CF",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a55"
+	},
+	"user_id": 17,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a56"
+	},
+	"user_id": 17,
+	"role_id": ".2.20.",
+	"role_name": "Vogal da Secção Académica e Desportiva",
+	"org_name": "NEI",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a57"
+	},
+	"user_id": 17,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a58"
+	},
+	"user_id": 17,
+	"role_id": ".1.5.9.",
+	"role_name": "Mestre de Curso",
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a59"
+	},
+	"user_id": 18,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a5a"
+	},
+	"user_id": 19,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a5b"
+	},
+	"user_id": 20,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a5c"
+	},
+	"user_id": 21,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a5d"
+	},
+	"user_id": 21,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a5e"
+	},
+	"user_id": 22,
+	"role_id": ".2.23.",
+	"role_name": "Vogal da Secção Administrativa, Relações Externas e Merchandising",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a5f"
+	},
+	"user_id": 22,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a60"
+	},
+	"user_id": 22,
+	"role_id": ".2.14.",
+	"role_name": "Coordenador",
+	"org_name": "NEI",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a61"
+	},
+	"user_id": 22,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a62"
+	},
+	"user_id": 22,
+	"role_id": ".2.16.",
+	"role_name": "Presidente da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a63"
+	},
+	"user_id": 22,
+	"role_id": ".2.16.",
+	"role_name": "Presidente da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a64"
+	},
+	"user_id": 23,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a65"
+	},
+	"user_id": 23,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica",
+	"org_name": "NEI",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a66"
+	},
+	"user_id": 23,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a67"
+	},
+	"user_id": 23,
+	"role_id": ".2.15.",
+	"role_name": "Responsável Financeiro",
+	"org_name": "NEI",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a68"
+	},
+	"user_id": 24,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica e Social",
+	"org_name": "NEI",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a69"
+	},
+	"user_id": 24,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a6a"
+	},
+	"user_id": 25,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a6b"
+	},
+	"user_id": 27,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a6c"
+	},
+	"user_id": 29,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a6d"
+	},
+	"user_id": 29,
+	"role_id": ".2.15.",
+	"role_name": "Responsável Financeiro",
+	"org_name": "NEI",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a6e"
+	},
+	"user_id": 30,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a6f"
+	},
+	"user_id": 30,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a70"
+	},
+	"user_id": 31,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a71"
+	},
+	"user_id": 32,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a72"
+	},
+	"user_id": 32,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a73"
+	},
+	"user_id": 33,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a74"
+	},
+	"user_id": 34,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a75"
+	},
+	"user_id": 34,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a76"
+	},
+	"user_id": 34,
+	"role_id": ".1.5.9.",
+	"role_name": "Mestre de Curso",
+	"org_name": "CF",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a77"
+	},
+	"user_id": 36,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a78"
+	},
+	"user_id": 36,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a79"
+	},
+	"user_id": 37,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a7a"
+	},
+	"user_id": 38,
+	"role_id": ".2.22.",
+	"role_name": "Vogal da Secção Administrativa",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a7b"
+	},
+	"user_id": 38,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Administração Interna e Merchandising",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a7c"
+	},
+	"user_id": 38,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a7d"
+	},
+	"user_id": 39,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica",
+	"org_name": "NEI",
+	"year": 13,
+	"end_year": 13
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a7e"
+	},
+	"user_id": 39,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a7f"
+	},
+	"user_id": 40,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a80"
+	},
+	"user_id": 42,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a81"
+	},
+	"user_id": 42,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a82"
+	},
+	"user_id": 43,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica",
+	"org_name": "NEI",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a83"
+	},
+	"user_id": 43,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica e Social",
+	"org_name": "NEI",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a84"
+	},
+	"user_id": 43,
+	"role_id": ".2.",
+	"role_name": "Coordenadora",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a85"
+	},
+	"user_id": 46,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 14,
+	"end_year": 14
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a86"
+	},
+	"user_id": 46,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a87"
+	},
+	"user_id": 48,
+	"role_id": ".2.22.",
+	"role_name": "Vogal da Secção Administrativa",
+	"org_name": "NEI",
+	"year": 15,
+	"end_year": 15
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a88"
+	},
+	"user_id": 48,
+	"role_id": ".2.15.",
+	"role_name": "Responsável Financeiro",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73d7a356e1534683a89"
+	},
+	"user_id": 48,
+	"role_id": ".2.16.",
+	"role_name": "Presidente da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a8a"
+	},
+	"user_id": 49,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a8b"
+	},
+	"user_id": 50,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a8c"
+	},
+	"user_id": 50,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a8d"
+	},
+	"user_id": 50,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a8e"
+	},
+	"user_id": 50,
+	"role_id": ".1.5.",
+	"role_name": "Varina",
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a8f"
+	},
+	"user_id": 51,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica e Social",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a90"
+	},
+	"user_id": 51,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a91"
+	},
+	"user_id": 51,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a92"
+	},
+	"user_id": 52,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a93"
+	},
+	"user_id": 52,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a94"
+	},
+	"user_id": 52,
+	"role_id": ".1.5.9.",
+	"role_name": "Mestre de Curso",
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a95"
+	},
+	"user_id": 52,
+	"role_id": ".1.6.",
+	"role_name": null,
+	"org_name": "CS",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a96"
+	},
+	"user_id": 53,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a97"
+	},
+	"user_id": 53,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a98"
+	},
+	"user_id": 54,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a99"
+	},
+	"user_id": 54,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a9a"
+	},
+	"user_id": 54,
+	"role_id": ".1.5.9.",
+	"role_name": "Mestre de Curso",
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a9b"
+	},
+	"user_id": 55,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a9c"
+	},
+	"user_id": 55,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a9d"
+	},
+	"user_id": 55,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a9e"
+	},
+	"user_id": 62,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683a9f"
+	},
+	"user_id": 62,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Comunicação e Imagem ",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aa0"
+	},
+	"user_id": 62,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aa1"
+	},
+	"user_id": 62,
+	"role_id": ".1.6.",
+	"role_name": null,
+	"org_name": "CS",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aa2"
+	},
+	"user_id": 63,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aa3"
+	},
+	"user_id": 63,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Administração Interna e Merchandising",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aa4"
+	},
+	"user_id": 63,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aa5"
+	},
+	"user_id": 67,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Administração Interna e Merchandising",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aa6"
+	},
+	"user_id": 67,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aa7"
+	},
+	"user_id": 67,
+	"role_id": ".2.16.",
+	"role_name": "Presidente da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aa8"
+	},
+	"user_id": 70,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aa9"
+	},
+	"user_id": 74,
+	"role_id": ".1.6.",
+	"role_name": null,
+	"org_name": "CS",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aaa"
+	},
+	"user_id": 74,
+	"role_id": ".1.6.",
+	"role_name": null,
+	"org_name": "CS",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aab"
+	},
+	"user_id": 74,
+	"role_id": ".1.7.13.",
+	"role_name": "Mestre Escrivão",
+	"org_name": "ST",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aac"
+	},
+	"user_id": 79,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aad"
+	},
+	"user_id": 80,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aae"
+	},
+	"user_id": 81,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aaf"
+	},
+	"user_id": 81,
+	"role_id": ".2.14.",
+	"role_name": "Coordenador",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ab0"
+	},
+	"user_id": 81,
+	"role_id": ".2.14.",
+	"role_name": "Coordenador",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ab1"
+	},
+	"user_id": 82,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ab2"
+	},
+	"user_id": 83,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica e Social",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ab3"
+	},
+	"user_id": 83,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ab4"
+	},
+	"user_id": 83,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ab5"
+	},
+	"user_id": 83,
+	"role_id": ".2.16.",
+	"role_name": "Presidente da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ab6"
+	},
+	"user_id": 86,
+	"role_id": ".3.",
+	"role_name": "Presidente da Mesa da AGM",
+	"org_name": "AETTUA",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ab7"
+	},
+	"user_id": 87,
+	"role_id": ".3.",
+	"role_name": "Suplente do CF",
+	"org_name": "AETTUA",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ab8"
+	},
+	"user_id": 87,
+	"role_id": ".2.22.",
+	"role_name": "Vogal da Secção Administrativa",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ab9"
+	},
+	"user_id": 87,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aba"
+	},
+	"user_id": 93,
+	"role_id": ".2.20.",
+	"role_name": "Vogal da Secção Académica e Desportiva",
+	"org_name": "NEI",
+	"year": 16,
+	"end_year": 16
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683abb"
+	},
+	"user_id": 96,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica e Social",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683abc"
+	},
+	"user_id": 96,
+	"role_id": ".3.32.35.",
+	"role_name": "Presidente",
+	"org_name": "AETTUA",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683abd"
+	},
+	"user_id": 96,
+	"role_id": ".3.32.35.",
+	"role_name": "Presidente",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683abe"
+	},
+	"user_id": 97,
+	"role_id": ".2.20.",
+	"role_name": "Vogal da Secção Académica e Desportiva",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683abf"
+	},
+	"user_id": 97,
+	"role_id": ".2.20.",
+	"role_name": "Vogal da Secção Académica e Desportiva",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ac0"
+	},
+	"user_id": 97,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ac1"
+	},
+	"user_id": 100,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ac2"
+	},
+	"user_id": 100,
+	"role_id": ".2.28.",
+	"role_name": "Vogal da Secção Pedagógica e Social",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ac3"
+	},
+	"user_id": 101,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Administração Interna e Merchandising",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ac4"
+	},
+	"user_id": 101,
+	"role_id": ".2.20.",
+	"role_name": "Vogal da Secção Académica e Desportiva",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ac5"
+	},
+	"user_id": 101,
+	"role_id": ".2.14.",
+	"role_name": "Coordenador",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ac6"
+	},
+	"user_id": 102,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ac7"
+	},
+	"user_id": 104,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ac8"
+	},
+	"user_id": 104,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ac9"
+	},
+	"user_id": 104,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aca"
+	},
+	"user_id": 104,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683acb"
+	},
+	"user_id": 104,
+	"role_id": ".1.5.9.",
+	"role_name": "Mestre de Curso",
+	"org_name": "CF",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683acc"
+	},
+	"user_id": 106,
+	"role_id": ".3.34.45.",
+	"role_name": "Relator",
+	"org_name": "AETTUA",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683acd"
+	},
+	"user_id": 106,
+	"role_id": ".3.",
+	"role_name": "Presidente do CF",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ace"
+	},
+	"user_id": 107,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683acf"
+	},
+	"user_id": 107,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ad0"
+	},
+	"user_id": 108,
+	"role_id": ".2.28.",
+	"role_name": "Vogal da Secção Pedagógica e Social",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ad1"
+	},
+	"user_id": 109,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ad2"
+	},
+	"user_id": 109,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ad3"
+	},
+	"user_id": 109,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ad4"
+	},
+	"user_id": 111,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica e Social",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ad5"
+	},
+	"user_id": 113,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 17,
+	"end_year": 17
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ad6"
+	},
+	"user_id": 113,
+	"role_id": ".2.20.",
+	"role_name": "Vogal da Secção Académica e Desportiva",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ad7"
+	},
+	"user_id": 113,
+	"role_id": ".2.19.",
+	"role_name": "Vogal da Secção Académica",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ad8"
+	},
+	"user_id": 113,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ad9"
+	},
+	"user_id": 115,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ada"
+	},
+	"user_id": 117,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683adb"
+	},
+	"user_id": 119,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Administração Interna e Merchandising",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683adc"
+	},
+	"user_id": 120,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica e Social",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683add"
+	},
+	"user_id": 126,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ade"
+	},
+	"user_id": 126,
+	"role_id": ".3.32.36.",
+	"role_name": "Vice-Presidente",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683adf"
+	},
+	"user_id": 136,
+	"role_id": ".3.34.45.",
+	"role_name": "Relator",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ae0"
+	},
+	"user_id": 138,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ae1"
+	},
+	"user_id": 138,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica e Social",
+	"org_name": "NEI",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ae2"
+	},
+	"user_id": 139,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ae3"
+	},
+	"user_id": 139,
+	"role_id": ".3.32.38.",
+	"role_name": "Secretário",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ae4"
+	},
+	"user_id": 139,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ae5"
+	},
+	"user_id": 139,
+	"role_id": ".3.32.35.",
+	"role_name": "Presidente",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ae6"
+	},
+	"user_id": 139,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ae7"
+	},
+	"user_id": 139,
+	"role_id": ".1.5.9.",
+	"role_name": "Mestre de Curso",
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ae8"
+	},
+	"user_id": 140,
+	"role_id": ".2.22.",
+	"role_name": "Vogal da Secção Administrativa",
+	"org_name": "NEI",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683ae9"
+	},
+	"user_id": 141,
+	"role_id": ".2.",
+	"role_name": "Vogal da Secção Pedagócica e Social",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aea"
+	},
+	"user_id": 141,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aeb"
+	},
+	"user_id": 141,
+	"role_id": ".3.",
+	"role_name": "Presidente da Mesa da AGM",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aec"
+	},
+	"user_id": 142,
+	"role_id": ".2.22.",
+	"role_name": "Vogal da Secção Administrativa",
+	"org_name": "NEI",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aed"
+	},
+	"user_id": 142,
+	"role_id": ".2.22.",
+	"role_name": "Vogal da Secção Administrativa",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aee"
+	},
+	"user_id": 144,
+	"role_id": ".3.",
+	"role_name": "Secretário do CF",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aef"
+	},
+	"user_id": 145,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683af0"
+	},
+	"user_id": 145,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683af1"
+	},
+	"user_id": 145,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683af2"
+	},
+	"user_id": 145,
+	"role_id": ".3.32.38.",
+	"role_name": "Secretário",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683af3"
+	},
+	"user_id": 145,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683af4"
+	},
+	"user_id": 145,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683af5"
+	},
+	"user_id": 148,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683af6"
+	},
+	"user_id": 148,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683af7"
+	},
+	"user_id": 148,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683af8"
+	},
+	"user_id": 149,
+	"role_id": ".2.25.",
+	"role_name": "Vogal da Secção Desportiva",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683af9"
+	},
+	"user_id": 152,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683afa"
+	},
+	"user_id": 153,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683afb"
+	},
+	"user_id": 153,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683afc"
+	},
+	"user_id": 154,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683afd"
+	},
+	"user_id": 154,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 18,
+	"end_year": 18
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683afe"
+	},
+	"user_id": 154,
+	"role_id": ".2.15.",
+	"role_name": "Responsável Financeiro",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683aff"
+	},
+	"user_id": 154,
+	"role_id": ".2.",
+	"role_name": "Coordenadora",
+	"org_name": "NEI",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b00"
+	},
+	"user_id": 162,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b01"
+	},
+	"user_id": 165,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b02"
+	},
+	"user_id": 168,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b03"
+	},
+	"user_id": 168,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b04"
+	},
+	"user_id": 169,
+	"role_id": ".2.25.",
+	"role_name": "Vogal da Secção Desportiva",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b05"
+	},
+	"user_id": 171,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b06"
+	},
+	"user_id": 172,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b07"
+	},
+	"user_id": 172,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b08"
+	},
+	"user_id": 172,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b09"
+	},
+	"user_id": 176,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b0a"
+	},
+	"user_id": 177,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b0b"
+	},
+	"user_id": 178,
+	"role_id": ".3.",
+	"role_name": "Presidente da Mesa da AGM",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b0c"
+	},
+	"user_id": 180,
+	"role_id": ".2.25.",
+	"role_name": "Vogal da Secção Desportiva",
+	"org_name": "NEI",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b0d"
+	},
+	"user_id": 181,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b0e"
+	},
+	"user_id": 181,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b0f"
+	},
+	"user_id": 181,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b10"
+	},
+	"user_id": 183,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b11"
+	},
+	"user_id": 186,
+	"role_id": ".2.",
+	"role_name": "Vogal da Seccção Desportiva",
+	"org_name": "NEI",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b12"
+	},
+	"user_id": 186,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b13"
+	},
+	"user_id": 186,
+	"role_id": ".2.",
+	"role_name": "Vogal da Seccção Desportiva",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b14"
+	},
+	"user_id": 186,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b15"
+	},
+	"user_id": 187,
+	"role_id": ".2.19.",
+	"role_name": "Vogal da Secção Académica",
+	"org_name": "NEI",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b16"
+	},
+	"user_id": 187,
+	"role_id": ".2.19.",
+	"role_name": "Vogal da Secção Académica",
+	"org_name": "NEI",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b17"
+	},
+	"user_id": 189,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b18"
+	},
+	"user_id": 189,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b19"
+	},
+	"user_id": 189,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b1a"
+	},
+	"user_id": 191,
+	"role_id": ".3.",
+	"role_name": "Secretário do CF",
+	"org_name": "AETTUA",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b1b"
+	},
+	"user_id": 191,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b1c"
+	},
+	"user_id": 194,
+	"role_id": ".2.28.",
+	"role_name": "Vogal da Secção Pedagógica e Social",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b1d"
+	},
+	"user_id": 195,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b1e"
+	},
+	"user_id": 196,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b1f"
+	},
+	"user_id": 198,
+	"role_id": ".3.",
+	"role_name": "Suplente do CF",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b20"
+	},
+	"user_id": 199,
+	"role_id": ".2.28.",
+	"role_name": "Vogal da Secção Pedagógica e Social",
+	"org_name": "NEI",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b21"
+	},
+	"user_id": 199,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b22"
+	},
+	"user_id": 201,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 19,
+	"end_year": 19
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b23"
+	},
+	"user_id": 201,
+	"role_id": ".2.16.",
+	"role_name": "Presidente da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b24"
+	},
+	"user_id": 201,
+	"role_id": ".2.16.",
+	"role_name": "Presidente da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b25"
+	},
+	"user_id": 201,
+	"role_id": ".2.",
+	"role_name": "Vogal da Seccção Desportiva",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b26"
+	},
+	"user_id": 203,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b27"
+	},
+	"user_id": 204,
+	"role_id": ".2.28.",
+	"role_name": "Vogal da Secção Pedagógica e Social",
+	"org_name": "NEI",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b28"
+	},
+	"user_id": 204,
+	"role_id": ".2.28.",
+	"role_name": "Vogal da Secção Pedagógica e Social",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b29"
+	},
+	"user_id": 206,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b2a"
+	},
+	"user_id": 211,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 20,
+	"end_year": 20
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b2b"
+	},
+	"user_id": 212,
+	"role_id": ".3.",
+	"role_name": "Secretári@ da Mesa da AGM",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b2c"
+	},
+	"user_id": 214,
+	"role_id": ".3.32.39.",
+	"role_name": "Vogal",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b2d"
+	},
+	"user_id": 215,
+	"role_id": ".3.",
+	"role_name": "Secretári@ da Mesa da AGM",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b2e"
+	},
+	"user_id": 215,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b2f"
+	},
+	"user_id": 216,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b30"
+	},
+	"user_id": 216,
+	"role_id": ".3.32.35.",
+	"role_name": "Presidente",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b31"
+	},
+	"user_id": 233,
+	"role_id": ".3.32.38.",
+	"role_name": "Secretário",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b32"
+	},
+	"user_id": 235,
+	"role_id": ".2.25.",
+	"role_name": "Vogal da Secção Desportiva",
+	"org_name": "NEI",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b33"
+	},
+	"user_id": 235,
+	"role_id": ".2.19.",
+	"role_name": "Vogal da Secção Académica",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b34"
+	},
+	"user_id": 237,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b35"
+	},
+	"user_id": 241,
+	"role_id": ".3.32.36.",
+	"role_name": "Vice-Presidente",
+	"org_name": "AETTUA",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b36"
+	},
+	"user_id": 242,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b37"
+	},
+	"user_id": 242,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b38"
+	},
+	"user_id": 243,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b39"
+	},
+	"user_id": 244,
+	"role_id": ".1.5.",
+	"role_name": null,
+	"org_name": "CF",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b3a"
+	},
+	"user_id": 245,
+	"role_id": ".2.24.",
+	"role_name": "Vogal da Secção Comunicação e Imagem",
+	"org_name": "NEI",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b3b"
+	},
+	"user_id": 245,
+	"role_id": ".2.15.",
+	"role_name": "Responsável Financeiro",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b3c"
+	},
+	"user_id": 246,
+	"role_id": ".2.19.",
+	"role_name": "Vogal da Secção Académica",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b3d"
+	},
+	"user_id": 254,
+	"role_id": ".2.",
+	"role_name": "Secretári@ da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 21,
+	"end_year": 21
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b3e"
+	},
+	"user_id": 254,
+	"role_id": ".2.16.",
+	"role_name": "Presidente da Mesa da RGM",
+	"org_name": "NEI",
+	"year": 22,
+	"end_year": 22
+},
+{
+	"_id": {
+		"$oid": "6952b73e7a356e1534683b3f"
+	},
+	"user_id": 300,
+	"role_id": ".1.7.11.",
+	"role_name": "Mestre do Salgado",
+	"org_name": "ST",
+	"year": 23,
+	"end_year": 23
+}]
+

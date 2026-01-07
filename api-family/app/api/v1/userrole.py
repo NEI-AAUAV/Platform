@@ -27,6 +27,7 @@ def get_user_roles(
     user_id: Optional[int] = Query(default=None, description="Filter by user ID"),
     role_id: Optional[str] = Query(default=None, description="Filter by role ID"),
     year: Optional[int] = Query(default=None, ge=0, le=99, description="Filter by year (0-99)"),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
     """
     List user-role associations with optional filters.
@@ -50,6 +51,7 @@ def get_user_roles_with_details(
     user_id: Optional[int] = Query(default=None, description="Filter by user ID"),
     role_id: Optional[str] = Query(default=None, description="Filter by role ID"),
     year: Optional[int] = Query(default=None, ge=0, le=99, description="Filter by year (0-99)"),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
     """
     Get user-roles with expanded user and role details.
@@ -70,6 +72,7 @@ def get_roles_for_user(
     user_id: int,
     skip: int = Query(default=0, ge=0),
     limit: int = Query(default=100, ge=1, le=500),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
     """
     Get all roles for a specific user with details.
@@ -91,6 +94,7 @@ def get_users_for_role(
     role_id: str,
     skip: int = Query(default=0, ge=0),
     limit: int = Query(default=100, ge=1, le=500),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
     """
     Get all users with a specific role with details.

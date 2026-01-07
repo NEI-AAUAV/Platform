@@ -3,6 +3,7 @@ CRUD operations for User collection.
 """
 
 import logging
+import re
 from typing import Optional, List, Tuple
 from pymongo.collection import ReturnDocument
 
@@ -33,27 +34,200 @@ class CRUDUser:
         skip: int = 0, 
         limit: int = 100,
         start_year_gte: Optional[int] = None,
-        patrao_id: Optional[int] = None
+        patrao_id: Optional[int] = None,
+        search: Optional[str] = None,
+        year: Optional[int] = None,
+        role_id: Optional[str] = None,
+        sort_by: Optional[str] = "name",
+        order: Optional[str] = "asc"
     ) -> List[dict]:
-        """Get multiple users with optional filters."""
+        """Get multiple users with optional filters and sorting."""
         query = {}
         
         if start_year_gte is not None:
             query["start_year"] = {"$gte": start_year_gte}
+            
+        if year is not None:
+             query["start_year"] = year
         
         if patrao_id is not None:
             query["patrao_id"] = patrao_id
+            
+        if role_id:
+            # First find users with this role in user_roles
+            from app.db.db import UserRole
+            # Use regex to allow filtering by parent organization (prefix match)
+            # role_id ".1." should match ".1.2." etc.
+            query_filter = {"role_id": {"$regex": f"^{re.escape(role_id)}"}}
+            user_ids = [
+                ur["user_id"] 
+                for ur in UserRole.find(query_filter)
+            ]
+            query["_id"] = {"$in": user_ids}
         
-        cursor = self.collection.find(query).skip(skip).limit(limit)
-        return list(cursor)
+        if search:
+            search = search.strip()
+            # Build $or query for multi-field search
+            or_conditions = [
+                # Name: case-insensitive partial match
+                {"name": {"$regex": search, "$options": "i"}}
+            ]
+            # If search is numeric, also search by _id and nmec
+            if search.isdigit():
+                search_int = int(search)
+                or_conditions.append({"_id": search_int})
+                or_conditions.append({"nmec": search_int})
+            
+            # Use $and if we already have query constraints (like role_id filter)
+            if query:
+                # If query already has keys, we need to respect them by putting relevant logic properly
+                pass # Handled below
+            
+            # If we have an existing _id constraint (from role_id), we must merge or use $and
+            if "_id" in query:
+                query["$and"] = [
+                    {"$or": or_conditions}
+                ]
+            else:
+                 query["$or"] = or_conditions
+        
+        # Determine sort direction
+        sort_dir = 1 if order == "asc" else -1
+        
+        # Map frontend sort keys to DB keys
+        sort_field = sort_by
+        if sort_by == "id":
+            sort_field = "_id"
+        elif sort_by == "year":
+            sort_field = "start_year"
+        elif sort_by not in ["name", "nmec", "_id", "start_year", "patrao_id"]:
+            sort_field = "name" # Default fallback
+            
+        
+        # Use aggregation to fetch users + roles
+        pipeline = [
+            {"$match": query},
+            {"$sort": {sort_field: sort_dir}},
+            {"$skip": skip},
+            {"$limit": limit},
+            {"$lookup": {
+                "from": "user_roles",
+                "localField": "_id",
+                "foreignField": "user_id",
+                "as": "user_roles"
+            }}
+        ]
+        
+        results = list(self.collection.aggregate(pipeline))
+        
+        # Enrich roles with org_name for frontend display
+        if results:
+            org_short_map = self._build_org_short_map()
+            for user in results:
+                updated_roles = []
+                for role in user.get("user_roles", []):
+                    try:
+                        if "_id" in role:
+                            role["_id"] = str(role["_id"])
+                        if not role.get("org_name"):
+                            role["org_name"] = self._get_org_short(role.get("role_id"), org_short_map)
+                        
+                        # Add format info
+                        role_id_key = role.get("role_id")
+                        # Robust lookup for role_name (handle trailing dots mismatch)
+                        lookup_key = role_id_key
+                        if lookup_key not in org_short_map:
+                            if lookup_key.endswith("."):
+                                diff_key = lookup_key.rstrip(".")
+                                if diff_key in org_short_map:
+                                    lookup_key = diff_key
+                            else:
+                                diff_key = lookup_key + "."
+                                if diff_key in org_short_map:
+                                    lookup_key = diff_key
+
+                        if lookup_key in org_short_map:
+                             # Use specific role name
+                             role["role_name"] = org_short_map[lookup_key].get("name")
+                             role["year_display_format"] = org_short_map[lookup_key].get("format", "civil")
+                             # Use inherited icon (traverse up hierarchy if not defined)
+                             role["icon"] = self._get_inherited_icon(lookup_key, org_short_map)
+                             # Check hidden status (normalize None to False)
+                             hidden = org_short_map[lookup_key].get("hidden")
+                             role["hidden"] = hidden if hidden is not None else False
+                        else:
+                             # Fallback to org_name if specific role is truly not found
+                             role["role_name"] = role.get("org_name")
+                             role["year_display_format"] = "civil"
+                             # Try inherited icon from role_id path
+                             role["icon"] = self._get_inherited_icon(role_id_key, org_short_map) if role_id_key else None
+                             role["hidden"] = False
+
+                        updated_roles.append(role)
+                    except Exception as e:
+                        print(f"Error processing role for user {user.get('_id')}: {e}")
+                        continue
+                user["user_roles"] = updated_roles
+                        
+        return results
     
     def get_children(self, patrao_id: int) -> List[dict]:
         """Get all users with given patrao_id (pedaços)."""
         return list(self.collection.find({"patrao_id": patrao_id}))
     
-    def count(self, query: dict = None) -> int:
+    def count(
+        self, 
+        query: dict = None,
+        search: Optional[str] = None,
+        year: Optional[int] = None,
+        role_id: Optional[str] = None
+    ) -> int:
         """Count users matching query."""
-        return self.collection.count_documents(query or {})
+        q = query.copy() if query else {}
+        
+        if year is not None:
+             q["start_year"] = year
+             
+        if role_id:
+            # First find users with this role in user_roles
+            from app.db.db import UserRole
+            query_filter = {"role_id": {"$regex": f"^{re.escape(role_id)}"}}
+            user_ids = [
+                ur["user_id"] 
+                for ur in UserRole.find(query_filter)
+            ]
+            # Handle potential conflict if _id is already filtered (unlikely for count but safe to handle)
+            if "_id" in q:
+                # Intersect existing IDs with role IDs
+                # BUT $in takes a list. Complex.
+                # Simplified: assumes q doesn't have _id constraint yet or we overwrite it cautiously.
+                # For safety, let's use $and if needed.
+                q["$and"] = [
+                    {"_id": {"$in": user_ids}},
+                    {"_id": q["_id"]}
+                ]
+                del q["_id"]
+            else:
+                q["_id"] = {"$in": user_ids}
+
+        if search:
+            search = search.strip()
+            or_conditions = [
+                {"name": {"$regex": search, "$options": "i"}}
+            ]
+            if search.isdigit():
+                search_int = int(search)
+                or_conditions.append({"_id": search_int})
+                or_conditions.append({"nmec": search_int})
+            
+            if "_id" in q:
+                 q["$and"] = [
+                    {"$or": or_conditions}
+                ]
+            else:
+                q["$or"] = or_conditions
+                
+        return self.collection.count_documents(q)
     
     def get_all(self) -> List[dict]:
         """Get all users."""
@@ -77,6 +251,13 @@ class CRUDUser:
         if result:
             return result[0]["min_year"], result[0]["max_year"]
         return 0, 0
+
+    def get_years(self) -> List[int]:
+        """Get distinct start_years present in DB, sorted descending."""
+        years = self.collection.distinct("start_year")
+        # Filter None and sort descending
+        return sorted([y for y in years if y is not None], reverse=True)
+
     
     def _sort_key(self, x):
         """Sort key for tree nodes: None values sort to end."""
@@ -84,31 +265,114 @@ class CRUDUser:
         return start_year if start_year is not None else float("inf")
     
     def _build_org_short_map(self) -> dict:
-        """Build a map of role_id paths to org short names."""
+        """Build a map of role_id paths to org info (short name, format).
+        
+        Keys are path strings like '.1.7.13.' constructed from super_roles + _id.
+        This matches the role_id format stored in user_roles collection.
+        """
         from app.db.db import Role
-        roles = list(Role.find({"short": {"$exists": True, "$ne": None}}))
-        return {r["_id"]: r["short"] for r in roles}
+        # Fetch all roles to have complete lookup
+        roles = list(Role.find({}))
+        
+        result = {}
+        for r in roles:
+            # Construct path key: super_roles + _id + "."
+            # e.g., super_roles=".1.7.", _id=13 -> path=".1.7.13."
+            super_roles = r.get("super_roles", "")
+            role_id = r["_id"]
+            
+            # Handle both string and integer _id
+            if isinstance(role_id, int):
+                path = f"{super_roles}{role_id}."
+            else:
+                # If _id is already a path string, use as-is
+                path = str(role_id)
+            
+            result[path] = {
+                "short": r.get("short"), 
+                "format": r.get("year_display_format", "civil"),
+                "name": r.get("name"),
+                "icon": r.get("icon"),
+                "hidden": r.get("hidden", False)
+            }
+        
+        return result
     
     def _get_org_short(self, role_id: str, org_map: dict) -> Optional[str]:
         """
         Get org short name for a role_id by traversing up the hierarchy.
         role_id format: ".1.5.9." means Faina > CF > Mestre de Curso
         We need to find the first parent that has a short name.
+        Falls back to role name if no short code is found.
         """
         if not role_id:
             return None
         
-        # Try exact match first
-        if role_id in org_map:
-            return org_map[role_id]
+        # Try exact match first - ONLY if it has a short name
+        if role_id in org_map and org_map[role_id]["short"]:
+            return org_map[role_id]["short"]
         
         # Traverse up the hierarchy
         # ".1.5.9." -> [".1.5.", ".1."]
         parts = role_id.rstrip('.').split('.')
         for i in range(len(parts) - 1, 0, -1):
             parent_path = '.'.join(parts[:i]) + '.'
+            if parent_path in org_map and org_map[parent_path]["short"]:
+                return org_map[parent_path]["short"]
+        
+        # Fallback: if no short found, return the role name as identifier
+        # This ensures we always have a human-readable org_name
+        if role_id in org_map and org_map[role_id].get("name"):
+            return org_map[role_id]["name"]
+        
+        return None
+
+    def _get_inherited_hidden(self, role_id: str, org_map: dict) -> bool:
+        """
+        Check if a specific role is hidden.
+        Visibility is INDEPENDENT - does NOT inherit from parent roles.
+        """
+        if not role_id:
+            return False
+        
+        # Check exact match only
+        if role_id in org_map:
+            # Normalize None to False
+            hidden = org_map[role_id].get("hidden")
+            return hidden if hidden is not None else False
+        
+        # Try with/without trailing dot for consistency
+        alt_key = role_id.rstrip('.') if role_id.endswith('.') else role_id + '.'
+        if alt_key in org_map:
+            hidden = org_map[alt_key].get("hidden")
+            return hidden if hidden is not None else False
+        
+        return False
+
+    def _get_inherited_icon(self, role_id: str, org_map: dict) -> Optional[str]:
+        """
+        Get icon for a role_id by traversing up the hierarchy.
+        If a role doesn't have an icon, inherit from parent.
+        role_id format: ".1.5.9." -> checks .1.5.9., .1.5., .1. in order
+        """
+        if not role_id:
+            return None
+        
+        # Try exact match first
+        if role_id in org_map:
+            icon = org_map[role_id].get("icon")
+            if icon:  # Has own icon
+                return icon
+        
+        # Traverse up the hierarchy looking for an icon
+        # ".1.5.9." -> [".1.5.", ".1."]
+        parts = role_id.rstrip('.').split('.')
+        for i in range(len(parts) - 1, 0, -1):
+            parent_path = '.'.join(parts[:i]) + '.'
             if parent_path in org_map:
-                return org_map[parent_path]
+                icon = org_map[parent_path].get("icon")
+                if icon:
+                    return icon
         
         return None
 
@@ -125,12 +389,38 @@ class CRUDUser:
                 "_sort_year": {"$ifNull": ["$start_year", 9999]}
             }},
             {"$sort": {"_sort_year": 1}},
-            # Lookup user roles
+            # Lookup user roles with nested lookup to get role details including hidden
             {"$lookup": {
                 "from": "user_roles",
                 "localField": "_id",
                 "foreignField": "user_id",
-                "as": "user_roles"
+                "as": "user_roles",
+                "pipeline": [
+                    # For each user_role, lookup the role details
+                    {"$lookup": {
+                        "from": "roles",
+                        "localField": "role_id",
+                        "foreignField": "_id",
+                        "as": "role_details"
+                    }},
+                    {"$unwind": {"path": "$role_details", "preserveNullAndEmptyArrays": True}},
+                    {"$addFields": {
+                        "hidden": {"$ifNull": ["$role_details.hidden", False]},
+                        "role_name": "$role_details.name",
+                        "icon": "$role_details.icon",
+                        "year_display_format": {"$ifNull": ["$role_details.year_display_format", "civil"]},
+                        "org_name": {"$ifNull": ["$org_name", "$role_details.short"]}
+                    }},
+                    {"$project": {
+                        "role_id": 1,
+                        "year": 1,
+                        "org_name": 1,
+                        "hidden": 1,
+                        "role_name": 1,
+                        "icon": 1,
+                        "year_display_format": 1
+                    }}
+                ]
             }},
             {"$project": {
                 "_id": 1,
@@ -142,11 +432,7 @@ class CRUDUser:
                 "nmec": 1,
                 "course_id": 1,
                 "patrao_id": 1,
-                "user_roles": {
-                    "role_id": 1,
-                    "year": 1,
-                    "org_name": 1
-                }
+                "user_roles": 1  # Already enriched with hidden, role_name, etc.
             }}
         ]
         
@@ -159,12 +445,42 @@ class CRUDUser:
         # Build role short name lookup (fallback for roles without org_name)
         org_short_map = self._build_org_short_map()
         
-        # Add org_name if not already present from DB
+        # Add org_name if not already present or if it looks like a role_id path
         for user in all_users:
             for role in user.get("user_roles", []):
-                if not role.get("org_name"):
+                org_name = role.get("org_name")
+                # Ensure org_name is a human-readable value, not a role_id path
+                if not org_name or (isinstance(org_name, str) and org_name.startswith(".")):
                     role_id = role.get("role_id", "")
                     role["org_name"] = self._get_org_short(role_id, org_short_map)
+                
+                # Add role_name and format logic here too (duplicate of get_multi but necessary for Tree)
+                role_id_key = role.get("role_id")
+                # Robust lookup for role_name
+                lookup_key = role_id_key
+                if lookup_key not in org_short_map:
+                    if lookup_key.endswith("."):
+                        diff_key = lookup_key.rstrip(".")
+                        if diff_key in org_short_map:
+                            lookup_key = diff_key
+                    else:
+                        diff_key = lookup_key + "."
+                        if diff_key in org_short_map:
+                            lookup_key = diff_key
+
+                if lookup_key in org_short_map:
+                        role["role_name"] = org_short_map[lookup_key].get("name")
+                        role["year_display_format"] = org_short_map[lookup_key].get("format", "civil")
+                        # Use inherited icon (traverse up hierarchy if not defined)
+                        role["icon"] = self._get_inherited_icon(lookup_key, org_short_map)
+                        # Check hidden status (independent, not inherited)
+                        role["hidden"] = self._get_inherited_hidden(lookup_key, org_short_map)
+                else:
+                        role["role_name"] = role.get("org_name")
+                        role["year_display_format"] = "civil"
+                        # For unknown roles, try to get inherited icon and check hidden status
+                        role["icon"] = self._get_inherited_icon(role_id_key, org_short_map) if role_id_key else None
+                        role["hidden"] = self._get_inherited_hidden(role_id_key, org_short_map) if role_id_key else False
         
         # Create lookup dict by ID with children arrays
         users_by_id = {u["_id"]: {**u, "children": []} for u in all_users}
