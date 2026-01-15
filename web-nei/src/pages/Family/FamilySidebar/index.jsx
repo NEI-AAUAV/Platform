@@ -89,7 +89,6 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
       });
     });
 
-    // Sort by role_id to maintain hierarchical order from database
 
     // Sort by role_id to maintain hierarchical order from database
     const sortedEntries = [...orgsMap.entries()].sort((a, b) => {

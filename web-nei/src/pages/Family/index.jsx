@@ -74,6 +74,16 @@ export function Component() {
 
   const handleDelete = async (user) => {
     try {
+      // Check for orphaned children first
+      const children = await FamilyService.getUserChildren(user._id);
+      if (children && children.length > 0) {
+        const childNames = children.map(c => c.name).join(", ");
+        const confirmed = window.confirm(
+          `Atenção: ${user.name} tem ${children.length} pedaço(s): ${childNames}.\n\nAo eliminar, estes ficarão órfãos. Deseja continuar?`
+        );
+        if (!confirmed) return;
+      }
+
       await FamilyService.deleteUser(user._id);
       setIsFormOpen(false);
       refetch(); // Reload tree data
@@ -260,6 +270,7 @@ export function Component() {
           onClose={() => setIsFormOpen(false)}
           onSave={handleSave}
           onDelete={handleDelete}
+          initialPatrao={null}
           canGoBack={false}
           onBack={() => { }}
         />

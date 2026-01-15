@@ -644,11 +644,20 @@ export function Component() {
                   </thead>
                   <tbody>
                     {users.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="py-12 text-center text-base-content/50">
-                          Nenhum membro encontrado.
-                        </td>
-                      </tr>
+                      <>
+                        {/* Mobile: 5 visible columns (Patrão column hidden) */}
+                        <tr className="md:hidden">
+                          <td colSpan={5} className="py-12 text-center text-base-content/50">
+                            Nenhum membro encontrado.
+                          </td>
+                        </tr>
+                        {/* Desktop and up: 6 visible columns */}
+                        <tr className="hidden md:table-row">
+                          <td colSpan={6} className="py-12 text-center text-base-content/50">
+                            Nenhum membro encontrado.
+                          </td>
+                        </tr>
+                      </>
                     ) : (
                       users.map((user) => {
                         const patrao = user.patrao_id ? (userMap[user.patrao_id] || null) : null;
