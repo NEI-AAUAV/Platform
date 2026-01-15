@@ -181,7 +181,7 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
         <AnimatePresence>
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6"
+                    className="fixed inset-0 z-[120] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6"
                     onClick={onClose}
                 >
                     <motion.div

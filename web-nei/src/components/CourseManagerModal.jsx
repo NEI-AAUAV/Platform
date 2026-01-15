@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
@@ -45,6 +46,26 @@ export default function CourseManagerModal({ isOpen, onClose }) {
             setFormData({ name: "", short: "", degree: "Licenciatura", show: true });
             setIsNew(false);
             setSearch("");
+        }
+    }, [isOpen]);
+
+    // Lock body scroll when modal is open (robust mobile fix)
+    useEffect(() => {
+        if (isOpen) {
+            const scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.left = '';
+                document.body.style.right = '';
+                document.body.style.overflow = '';
+                window.scrollTo(0, scrollY);
+            };
         }
     }, [isOpen]);
 
@@ -125,20 +146,28 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
-                        className="flex h-[600px] w-full max-w-4xl overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
+                        className="flex max-h-[90vh] w-full max-w-4xl flex-col lg:flex-row overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Sidebar: List */}
-                        <div className="flex w-2/5 flex-col border-r border-base-content/10 bg-base-200/30">
+                        {/* Sidebar: List - Hidden on mobile when editing */}
+                        <div className={classNames(
+                            "flex w-full min-h-0 flex-col border-b lg:border-b-0 lg:border-r border-base-content/10 bg-base-200/30 lg:w-2/5",
+                            (selectedCourse || isNew) ? "hidden lg:flex" : "h-full flex"
+                        )}>
                             <div className="flex flex-col gap-2 border-b border-base-content/10 p-4">
                                 <div className="flex items-center justify-between">
                                     <h3 className="font-bold">Cursos</h3>
-                                    <button
-                                        className="btn btn-xs btn-primary gap-1"
-                                        onClick={handleCreateNew}
-                                    >
-                                        <MaterialSymbol icon="add" size={16} /> Novo
-                                    </button>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            className="btn btn-xs btn-primary gap-1"
+                                            onClick={handleCreateNew}
+                                        >
+                                            <MaterialSymbol icon="add" size={16} /> Novo
+                                        </button>
+                                        <button className="btn btn-ghost btn-sm btn-circle lg:hidden" onClick={onClose}>
+                                            <CloseIcon />
+                                        </button>
+                                    </div>
                                 </div>
                                 <input
                                     type="text"
@@ -148,7 +177,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                                     onChange={e => setSearch(e.target.value)}
                                 />
                             </div>
-                            <div className="flex-1 overflow-y-auto p-2">
+                            <div className="min-h-0 flex-1 overflow-y-auto p-2" style={{ WebkitOverflowScrolling: 'touch' }}>
                                 {loading ? (
                                     <div className="flex justify-center p-4">
                                         <span className="loading loading-spinner"></span>
@@ -190,10 +219,20 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                             </div>
                         </div>
 
-                        {/* Main Content: Form */}
-                        <div className="flex flex-1 flex-col">
+                        {/* Main Content: Form - Full screen on mobile when editing */}
+                        <div className={classNames(
+                            "flex flex-1 flex-col min-h-0 overflow-hidden",
+                            (selectedCourse || isNew) ? "flex" : "hidden lg:flex"
+                        )}>
                             <div className="flex items-center justify-between border-b border-base-content/10 p-4">
-                                <h3 className="text-lg font-bold">
+                                <h3 className="text-lg font-bold flex items-center gap-2">
+                                    {/* Back button for mobile */}
+                                    <button
+                                        className="btn btn-ghost btn-sm btn-circle lg:hidden"
+                                        onClick={() => { setSelectedCourse(null); setIsNew(false); }}
+                                    >
+                                        <MaterialSymbol icon="arrow_back" size={20} />
+                                    </button>
                                     {isNew ? "Novo Curso" : "Editar Curso"}
                                 </h3>
                                 <button className="btn btn-ghost btn-sm btn-circle" onClick={onClose}>
@@ -201,7 +240,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                                 </button>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto p-6">
+                            <div className="min-h-0 flex-1 overflow-y-auto p-6" style={{ WebkitOverflowScrolling: 'touch' }}>
                                 <form onSubmit={handleSave} className="flex flex-col gap-4 max-w-lg mx-auto">
                                     <div className="form-control">
                                         <label className="label"><span className="label-text">Nome</span></label>
@@ -215,7 +254,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="form-control">
                                             <label className="label"><span className="label-text">Abreviatura</span></label>
                                             <input

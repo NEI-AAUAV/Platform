@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from "react";
+
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
@@ -65,6 +66,26 @@ const BulkEditModal = ({
             setSelectedCourse("");
             setError(null);
             setSuccess(null);
+        }
+    }, [isOpen]);
+
+    // Lock body scroll when modal is open (robust mobile fix)
+    useEffect(() => {
+        if (isOpen) {
+            const scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.left = '';
+                document.body.style.right = '';
+                document.body.style.overflow = '';
+                window.scrollTo(0, scrollY);
+            };
         }
     }, [isOpen]);
 
@@ -454,7 +475,7 @@ const BulkEditModal = ({
                             </div>
 
                             {/* Content */}
-                            <div className="p-6 max-h-[60vh] overflow-y-auto">
+                            <div className="p-6 max-h-[60vh] overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
                                 {viewMode === "bulk" ? renderBulkView() : renderIndividualView()}
                             </div>
 

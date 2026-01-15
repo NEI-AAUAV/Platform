@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useForm, Controller } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
@@ -22,7 +23,7 @@ const sexOptions = [
 /**
  * Split-layout modal for creating/editing family tree members
  */
-const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, onSwitchUser, canGoBack, onBack }) => {
+const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAddChild, onSwitchUser, canGoBack, onBack }) => {
     // Patrão search state
     const [patraoSearch, setPatraoSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -51,7 +52,28 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
 
     // Form state
     const [loading, setLoading] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const [error, setError] = useState(null);
+
+    // Lock body scroll when modal is open (robust mobile fix)
+    useEffect(() => {
+        if (isOpen) {
+            const scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.left = '';
+                document.body.style.right = '';
+                document.body.style.overflow = '';
+                window.scrollTo(0, scrollY);
+            };
+        }
+    }, [isOpen]);
     const isEdit = !!user;
 
     const {
@@ -358,7 +380,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
     // Combine roles for display
     const displayRoles = isEdit ? userRoles : pendingRoles;
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -367,12 +389,12 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
                         onClick={onClose}
                     />
 
                     {/* Modal Wrapper - Flexbox Centering */}
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -402,7 +424,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                                     </div>
 
                                     {/* Patrão List */}
-                                    <div className="flex-1 overflow-y-auto" ref={patraoListRef}>
+                                    <div className="flex-1 overflow-y-auto overscroll-contain" ref={patraoListRef} style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
                                         <button
                                             type="button"
                                             className={classNames(
@@ -493,7 +515,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                                 </div>
 
                                 {/* Right Panel - Form */}
-                                <div className="flex min-w-0 flex-1 flex-col bg-base-100">
+                                <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-base-100">
                                     {/* Header */}
                                     <div className="flex items-center justify-between border-b border-base-content/10 p-4">
                                         <h3 className="text-lg font-bold flex items-center gap-2">
@@ -520,9 +542,9 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                                     {/* Form Content */}
                                     <form
                                         onSubmit={handleSubmit(onSubmit)}
-                                        className="flex min-h-0 flex-1 flex-col"
+                                        className="flex min-h-0 flex-1 flex-col overflow-hidden"
                                     >
-                                        <div className="flex-1 space-y-6 overflow-y-auto p-6">
+                                        <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-6" style={{ WebkitOverflowScrolling: 'touch' }}>
                                             {/* Name */}
                                             <Input
                                                 label="Nome Completo"
@@ -534,7 +556,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                                             />
 
                                             {/* Sex + Year Row */}
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div>
                                                     <label className="label">
                                                         <span className="label-text">Sexo</span>
@@ -584,7 +606,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                                             </div>
 
                                             {/* Faina Name + Nmec Row */}
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <Input
                                                     label="Nome de Faina"
                                                     placeholder="Auto se vazio"
@@ -726,7 +748,33 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                                         </div>
 
                                         {/* Footer */}
-                                        <div className="flex flex-shrink-0 justify-end gap-3 border-t border-base-content/10 bg-base-200/50 px-6 py-4">
+                                        <div className="flex flex-shrink-0 items-center gap-3 border-t border-base-content/10 bg-base-200/50 px-6 py-4">
+                                            {/* Delete button - left side */}
+                                            {isEdit && onDelete && (
+                                                <button
+                                                    type="button"
+                                                    className={classNames("btn btn-error btn-outline gap-1", {
+                                                        loading: deleting,
+                                                    })}
+                                                    disabled={deleting || isSubmitting || loading}
+                                                    onClick={async () => {
+                                                        if (window.confirm(`Tens a certeza que queres eliminar "${user?.name || 'este membro'}"?`)) {
+                                                            setDeleting(true);
+                                                            try {
+                                                                await onDelete(user);
+                                                            } finally {
+                                                                setDeleting(false);
+                                                            }
+                                                        }
+                                                    }}
+                                                >
+                                                    <MaterialSymbol icon="delete" size={18} />
+                                                    Eliminar
+                                                </button>
+                                            )}
+
+                                            <div className="flex-1" />
+
                                             <button
                                                 type="button"
                                                 className="btn btn-ghost"
@@ -773,7 +821,8 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                     </div >
                 </>
             )}
-        </AnimatePresence >
+        </AnimatePresence >,
+        document.body
     );
 };
 

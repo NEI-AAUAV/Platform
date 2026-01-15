@@ -25,7 +25,16 @@ import { flattenTree } from "../utils";
 import MiniMap from "../components/MiniMap";
 
 
-const FamilyContent = ({ insignias, year, users, minYear, maxYear, loading: externalLoading }) => {
+const FamilyContent = ({
+  insignias = [],
+  year,
+  users = [],
+  minYear,
+  maxYear,
+  loading: externalLoading = false,
+  editMode = false,
+  onNodeEdit = () => { }
+}) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [treeReady, setTreeReady] = useState(false);
@@ -57,6 +66,8 @@ const FamilyContent = ({ insignias, year, users, minYear, maxYear, loading: exte
         maxYear,
         onNodeSelect: handleNodeSelect,
         onNodeHover: handleNodeHover,
+        editMode,
+        onNodeEdit
       });
 
       centerTree();
@@ -73,7 +84,7 @@ const FamilyContent = ({ insignias, year, users, minYear, maxYear, loading: exte
       setError(err);
       setLoading(false);
     }
-  }, [users, externalLoading, minYear, maxYear]);
+  }, [users, externalLoading, minYear, maxYear, editMode]);
 
   // Filter tree when filters change
   useEffect(() => {
@@ -276,12 +287,9 @@ FamilyContent.propTypes = {
   minYear: PropTypes.number,
   maxYear: PropTypes.number,
   loading: PropTypes.bool,
-};
-
-FamilyContent.defaultProps = {
-  insignias: [],
-  users: [],
-  loading: false,
+  editMode: PropTypes.bool,
+  onNodeEdit: PropTypes.func,
 };
 
 export default FamilyContent;
+
