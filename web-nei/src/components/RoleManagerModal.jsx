@@ -64,6 +64,26 @@ export default function RoleManagerModal({ isOpen, onClose }) {
         }
     }, [isOpen]);
 
+    // Lock body scroll when modal is open (robust mobile fix)
+    useEffect(() => {
+        if (isOpen) {
+            const scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.left = '';
+                document.body.style.right = '';
+                document.body.style.overflow = '';
+                window.scrollTo(0, scrollY);
+            };
+        }
+    }, [isOpen]);
+
     // Load available years for filter
     const loadAvailableYears = async () => {
         try {
@@ -315,19 +335,27 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
-                        className="flex h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
+                        className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-                            {/* Sidebar: Tree */}
-                            <div className="flex h-1/3 w-full flex-col border-b border-base-content/10 bg-base-200/30 lg:h-auto lg:w-1/3 lg:border-b-0 lg:border-r">
+                            {/* Sidebar: Tree - Hidden on mobile when editing */}
+                            <div className={classNames(
+                                "flex w-full min-h-0 flex-col border-b border-base-content/10 bg-base-200/30 lg:h-auto lg:w-1/3 lg:border-b-0 lg:border-r",
+                                (selectedNode || isNew) ? "hidden lg:flex" : "h-full flex"
+                            )}>
                                 <div className="flex items-center justify-between border-b border-base-content/10 p-4">
-                                    <h3 className="font-bold">Hierarquia</h3>
-                                    <button className="btn btn-ghost btn-xs" onClick={handleCreateRoot}>
-                                        <MaterialSymbol icon="add_circle" /> Raiz
-                                    </button>
+                                    <h3 className="font-bold">Insígnias</h3>
+                                    <div className="flex items-center gap-2">
+                                        <button className="btn btn-ghost btn-xs" onClick={handleCreateRoot}>
+                                            <MaterialSymbol icon="add_circle" /> Raiz
+                                        </button>
+                                        <button className="btn btn-ghost btn-sm btn-circle lg:hidden" onClick={onClose}>
+                                            <CloseIcon />
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="flex-1 overflow-y-auto p-2">
+                                <div className="min-h-0 flex-1 overflow-y-auto p-2" style={{ WebkitOverflowScrolling: 'touch' }}>
                                     {loading ? (
                                         <div className="flex justify-center p-4">
                                             <span className="loading loading-spinner"></span>
@@ -338,10 +366,20 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                 </div>
                             </div>
 
-                            {/* Main Content: Form or Members */}
-                            <div className="flex flex-1 flex-col">
+                            {/* Main Content: Form or Members - Full height on mobile when editing */}
+                            <div className={classNames(
+                                "flex flex-1 flex-col min-h-0 overflow-hidden",
+                                (selectedNode || isNew) ? "flex" : "hidden lg:flex"
+                            )}>
                                 <div className="flex items-center justify-between border-b border-base-content/10 p-4">
-                                    <h3 className="text-lg font-bold">
+                                    <h3 className="text-lg font-bold flex items-center gap-2">
+                                        {/* Back button for mobile */}
+                                        <button
+                                            className="btn btn-ghost btn-sm btn-circle lg:hidden"
+                                            onClick={() => { setSelectedNode(null); setIsNew(false); }}
+                                        >
+                                            <MaterialSymbol icon="arrow_back" size={20} />
+                                        </button>
                                         {isNew
                                             ? (formData.super_roles ? "Nova Sub-Insígnia" : "Nova Insígnia Raiz")
                                             : (selectedNode ? selectedNode.name : "Selecione uma Insígnia")
@@ -387,7 +425,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                     </div>
                                 )}
 
-                                <div className="flex-1 overflow-y-auto p-6">
+                                <div className="flex-1 overflow-y-auto overscroll-contain p-6" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
                                     {!selectedNode && !isNew ? (
                                         <div className="flex h-full flex-col items-center justify-center text-base-content/30 text-center">
                                             <MaterialSymbol icon="badge" size={48} className="mb-2 opacity-50" />
@@ -478,7 +516,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                                 />
                                             </div>
 
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="form-control">
                                                     <label className="label"><span className="label-text">Abreviatura (Curto)</span></label>
                                                     <input
@@ -517,7 +555,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                                 />
                                             </div>
 
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="form-control">
                                                     <label className="label">
                                                         <span className="label-text">Ocultar em Visualizações</span>
@@ -579,7 +617,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
 
                                             <div className="divider"></div>
 
-                                            <div className="flex items-center gap-3">
+                                            <div className="flex flex-wrap items-center gap-3">
                                                 <button
                                                     type="submit"
                                                     className={classNames("btn btn-primary flex-1", { loading: submitting })}

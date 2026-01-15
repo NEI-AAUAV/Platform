@@ -25,7 +25,16 @@ import { flattenTree } from "../utils";
 import MiniMap from "../components/MiniMap";
 
 
-const FamilyContent = ({ insignias, year, users, minYear, maxYear, loading: externalLoading, editMode, onNodeEdit }) => {
+const FamilyContent = ({
+  insignias = [],
+  year,
+  users = [],
+  minYear,
+  maxYear,
+  loading: externalLoading = false,
+  editMode = false,
+  onNodeEdit = () => { }
+}) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [treeReady, setTreeReady] = useState(false);
@@ -282,12 +291,5 @@ FamilyContent.propTypes = {
   onNodeEdit: PropTypes.func,
 };
 
-FamilyContent.defaultProps = {
-  insignias: [],
-  users: [],
-  loading: false,
-  editMode: false,
-  onNodeEdit: () => { },
-};
-
 export default FamilyContent;
+

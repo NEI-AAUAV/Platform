@@ -25,7 +25,6 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
   // This allows showing any organization from the API, not just hardcoded ones
   const dynamicOrgs = React.useMemo(() => {
     if (!users || users.length === 0) {
-      console.log("[FamilySidebar] No users, returning empty map");
       return new Map();
     }
 
@@ -90,8 +89,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
       });
     });
 
-    // Debug: Log all entries with their role_ids before sorting
-    console.log("[FamilySidebar] Orgs before sorting:", [...orgsMap.entries()].map(([k, v]) => ({ key: k, role_id: v.role_id, name: v.name })));
+    // Sort by role_id to maintain hierarchical order from database
 
     // Sort by role_id to maintain hierarchical order from database
     const sortedEntries = [...orgsMap.entries()].sort((a, b) => {
@@ -99,8 +97,6 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
       const roleIdB = b[1].role_id || '';
       return roleIdA.localeCompare(roleIdB);
     });
-
-    console.log("[FamilySidebar] Orgs after sorting:", sortedEntries.map(([k, v]) => ({ key: k, role_id: v.role_id })));
 
     return new Map(sortedEntries);
   }, [users]);
@@ -117,12 +113,14 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
   }, [maxYear]);
 
   const toggleInsignias = (name) => {
-    const i = insignias.indexOf(name);
-
-    if (i !== -1) insignias.splice(i, 1);
-    else insignias.push(name);
-
-    setInsignias([...insignias]);
+    setInsignias(prev => {
+      const index = prev.indexOf(name);
+      if (index !== -1) {
+        return prev.filter((_, i) => i !== index);
+      } else {
+        return [...prev, name];
+      }
+    });
   };
 
   const customRenderOption = (item) => (
@@ -161,7 +159,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
 
   return (
     <>
-      <h5 className="px-3 pt-3 opacity-80">Procurar</h5>
+      <h5 className="px-3 pt-3 opacity-80">Procurar Membro</h5>
       <div className="px-3 py-3">
         <div className="w-56">
           <Autocomplete
@@ -172,7 +170,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
             }))}
             value={selName}
             onChange={handleChange}
-            placeholder="Nome"
+            placeholder="Pesquisar por nome..."
             renderOption={customRenderOption}
           />
         </div>

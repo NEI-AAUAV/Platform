@@ -108,10 +108,10 @@ export function Component() {
     >
       {/* Edit Mode Floating Indicator */}
       {editMode && canEdit && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 rounded-full bg-warning px-4 py-2 text-warning-content shadow-lg">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 sm:gap-3 rounded-full bg-warning px-3 sm:px-4 py-2 text-warning-content shadow-lg">
           <MaterialSymbol icon="edit" size={18} />
-          <span className="font-medium text-sm">Clique num nó para editar</span>
-          <div className="h-4 w-px bg-warning-content/30" />
+          <span className="font-medium text-sm hidden sm:inline">Clique num nó para editar</span>
+          <div className="h-4 w-px bg-warning-content/30 hidden sm:block" />
           <button
             className="btn btn-xs btn-ghost hover:bg-warning-content/20 gap-1"
             onClick={() => {
@@ -176,8 +176,8 @@ export function Component() {
                   : "bg-transparent"
               )}
             >
-              <div className="rounded-box my-2 ml-2 w-full overflow-hidden border-base-content/10 bg-base-300">
-                <div className="h-full overflow-y-auto">
+              <div className="rounded-box my-2 ml-2 flex w-full min-h-0 flex-col border-base-content/10 bg-base-300">
+                <div className="min-h-0 flex-1 overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
                   <FamilySidebar
                     insignias={insignias}
                     year={year}
@@ -197,24 +197,28 @@ export function Component() {
                     : "bg-transparent"
                 )}
               >
-                <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
-                  <input
-                    type="checkbox"
-                    checked={sidebarOpened}
-                    onChange={(e) => setSidebarOpened(e.target.checked)}
-                  />
-                  <CloseIcon className="swap-on" />
-                  <TuneIcon className="swap-off" />
-                </label>
-                <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
-                  <input
-                    type="checkbox"
-                    checked={expanded}
-                    onChange={(e) => setExpanded(e.target.checked)}
-                  />
-                  <FullScreenExitIcon className="swap-on" />
-                  <FullScreenIcon className="swap-off" />
-                </label>
+                <div className="tooltip tooltip-right" data-tip={sidebarOpened ? "Fechar filtros" : "Abrir filtros"}>
+                  <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
+                    <input
+                      type="checkbox"
+                      checked={sidebarOpened}
+                      onChange={(e) => setSidebarOpened(e.target.checked)}
+                    />
+                    <CloseIcon className="swap-on" />
+                    <TuneIcon className="swap-off" />
+                  </label>
+                </div>
+                <div className="tooltip tooltip-right" data-tip={expanded ? "Sair de ecrã inteiro" : "Ecrã inteiro"}>
+                  <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
+                    <input
+                      type="checkbox"
+                      checked={expanded}
+                      onChange={(e) => setExpanded(e.target.checked)}
+                    />
+                    <FullScreenExitIcon className="swap-on" />
+                    <FullScreenIcon className="swap-off" />
+                  </label>
+                </div>
 
                 {/* Edit Mode Toggle */}
                 {canEdit && (
@@ -228,6 +232,18 @@ export function Component() {
                     >
                       <MaterialSymbol icon={editMode ? "edit_off" : "edit_square"} size={18} />
                     </button>
+                  </div>
+                )}
+
+                {/* Link to Management Page */}
+                {canEdit && (
+                  <div className="tooltip tooltip-right" data-tip="Gestão de Família">
+                    <a
+                      href="/settings/family"
+                      className="pointer-events-auto btn btn-sm btn-circle btn-ghost"
+                    >
+                      <MaterialSymbol icon="settings" size={18} />
+                    </a>
                   </div>
                 )}
               </div>

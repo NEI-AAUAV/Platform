@@ -52,7 +52,28 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
     // Form state
     const [loading, setLoading] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const [error, setError] = useState(null);
+
+    // Lock body scroll when modal is open (robust mobile fix)
+    useEffect(() => {
+        if (isOpen) {
+            const scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.position = '';
+                document.body.style.top = '';
+                document.body.style.left = '';
+                document.body.style.right = '';
+                document.body.style.overflow = '';
+                window.scrollTo(0, scrollY);
+            };
+        }
+    }, [isOpen]);
     const isEdit = !!user;
 
     const {
@@ -403,7 +424,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                     </div>
 
                                     {/* Patrão List */}
-                                    <div className="flex-1 overflow-y-auto" ref={patraoListRef}>
+                                    <div className="flex-1 overflow-y-auto overscroll-contain" ref={patraoListRef} style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
                                         <button
                                             type="button"
                                             className={classNames(
@@ -494,7 +515,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                 </div>
 
                                 {/* Right Panel - Form */}
-                                <div className="flex min-w-0 flex-1 flex-col bg-base-100">
+                                <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-base-100">
                                     {/* Header */}
                                     <div className="flex items-center justify-between border-b border-base-content/10 p-4">
                                         <h3 className="text-lg font-bold flex items-center gap-2">
@@ -521,9 +542,9 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                     {/* Form Content */}
                                     <form
                                         onSubmit={handleSubmit(onSubmit)}
-                                        className="flex min-h-0 flex-1 flex-col"
+                                        className="flex min-h-0 flex-1 flex-col overflow-hidden"
                                     >
-                                        <div className="flex-1 space-y-6 overflow-y-auto p-6">
+                                        <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-6" style={{ WebkitOverflowScrolling: 'touch' }}>
                                             {/* Name */}
                                             <Input
                                                 label="Nome Completo"
@@ -535,7 +556,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                             />
 
                                             {/* Sex + Year Row */}
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div>
                                                     <label className="label">
                                                         <span className="label-text">Sexo</span>
@@ -585,7 +606,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                             </div>
 
                                             {/* Faina Name + Nmec Row */}
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <Input
                                                     label="Nome de Faina"
                                                     placeholder="Auto se vazio"
@@ -732,10 +753,18 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                             {isEdit && onDelete && (
                                                 <button
                                                     type="button"
-                                                    className="btn btn-error btn-outline gap-1"
-                                                    onClick={() => {
+                                                    className={classNames("btn btn-error btn-outline gap-1", {
+                                                        loading: deleting,
+                                                    })}
+                                                    disabled={deleting || isSubmitting || loading}
+                                                    onClick={async () => {
                                                         if (window.confirm(`Tens a certeza que queres eliminar "${user?.name || 'este membro'}"?`)) {
-                                                            onDelete(user);
+                                                            setDeleting(true);
+                                                            try {
+                                                                await onDelete(user);
+                                                            } finally {
+                                                                setDeleting(false);
+                                                            }
                                                         }
                                                     }}
                                                 >

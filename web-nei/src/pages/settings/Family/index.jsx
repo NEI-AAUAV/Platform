@@ -91,7 +91,7 @@ export function Component() {
     async function loadInitialData() {
       try {
         // Fetch a large number of users to populate the Patrão map
-        const usersRes = await FamilyService.getUsers({ limit: 1000 });
+        const usersRes = await FamilyService.getUsers({ limit: 500 });
         setAllUsers(usersRes.items || []);
       } catch (err) {
         console.error("Failed to load initial data:", err);
@@ -275,7 +275,7 @@ export function Component() {
       setOrphanChildren([]);
       fetchUsers();
       // Refresh lookup
-      const response = await FamilyService.getUsers({ limit: 1000 });
+      const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
     } catch (err) {
       alert(err.response?.data?.detail || "Erro ao eliminar");
@@ -299,7 +299,7 @@ export function Component() {
       setShowOrphanModal(false);
       setOrphanChildren([]);
       fetchUsers();
-      const response = await FamilyService.getUsers({ limit: 1000 });
+      const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
     } catch (err) {
       alert(err.response?.data?.detail || "Erro ao processar");
@@ -366,7 +366,7 @@ export function Component() {
     setSelectedIds(new Set());
     await fetchUsers();
     try {
-      const response = await FamilyService.getUsers({ limit: 1000 });
+      const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
     } catch (err) {
       console.error("Failed to refresh users", err);
@@ -377,7 +377,7 @@ export function Component() {
     await fetchUsers();
     // Refresh cache partly
     try {
-      const response = await FamilyService.getUsers({ limit: 1000 });
+      const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
     } catch { }
   };
@@ -610,199 +610,201 @@ export function Component() {
             )}
 
             {/* User Table */}
-            <div className="overflow-x-auto rounded-xl border border-base-content/10 bg-base-100">
-              <table className="table min-w-[850px] w-full">
-                <thead className="bg-base-200/50">
-                  <tr className="border-base-content/10">
-                    <th className="w-10">
-                      <input
-                        type="checkbox"
-                        className={classNames("checkbox checkbox-sm", {
-                          "checkbox-primary": someCurrentPageSelected
-                        })}
-                        checked={allCurrentPageSelected}
-                        ref={el => {
-                          if (el) el.indeterminate = someCurrentPageSelected;
-                        }}
-                        onChange={toggleSelectAll}
-                        title={allCurrentPageSelected ? "Desselecionar página" : "Selecionar página"}
-                      />
-                    </th>
-                    <th className="w-[28%] cursor-pointer hover:bg-base-200" onClick={() => toggleSort("name")}>
-                      <div className="flex items-center gap-2">Membro (ID) <SortIcon field="name" /></div>
-                    </th>
-                    <th className="w-[18%] cursor-pointer hover:bg-base-200" onClick={() => toggleSort("patrao_id")}>
-                      <div className="flex items-center gap-2">Patrão <SortIcon field="patrao_id" /></div>
-                    </th>
-                    <th className="w-[10%] text-center cursor-pointer hover:bg-base-200" onClick={() => toggleSort("year")}>
-                      <div className="flex items-center justify-center gap-2">Ano <SortIcon field="year" /></div>
-                    </th>
-                    <th className="w-[28%]">Insígnias</th>
-                    <th className="w-[10%] text-right">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="py-12 text-center text-base-content/50">
-                        Nenhum membro encontrado.
-                      </td>
+            <div className="rounded-xl border border-base-content/10 bg-base-100 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="table w-full">
+                  <thead className="bg-base-200/50">
+                    <tr className="border-base-content/10">
+                      <th className="w-10">
+                        <input
+                          type="checkbox"
+                          className={classNames("checkbox checkbox-sm", {
+                            "checkbox-primary": someCurrentPageSelected
+                          })}
+                          checked={allCurrentPageSelected}
+                          ref={el => {
+                            if (el) el.indeterminate = someCurrentPageSelected;
+                          }}
+                          onChange={toggleSelectAll}
+                          title={allCurrentPageSelected ? "Desselecionar página" : "Selecionar página"}
+                        />
+                      </th>
+                      <th className="cursor-pointer hover:bg-base-200" onClick={() => toggleSort("name")}>
+                        <div className="flex items-center gap-2">Membro <SortIcon field="name" /></div>
+                      </th>
+                      <th className="hidden md:table-cell cursor-pointer hover:bg-base-200" onClick={() => toggleSort("patrao_id")}>
+                        <div className="flex items-center gap-2">Patrão <SortIcon field="patrao_id" /></div>
+                      </th>
+                      <th className="w-[10%] text-center cursor-pointer hover:bg-base-200" onClick={() => toggleSort("year")}>
+                        <div className="flex items-center justify-center gap-2">Ano <SortIcon field="year" /></div>
+                      </th>
+                      <th>Insígnias</th>
+                      <th className="text-right">Ações</th>
                     </tr>
-                  ) : (
-                    users.map((user) => {
-                      const patrao = user.patrao_id ? (userMap[user.patrao_id] || null) : null;
-                      const userColor = colors[user.start_year % colors.length] || "#ccc";
-                      const userRoles = user.user_roles || [];
-                      const isSelected = selectedIds.has(user._id);
+                  </thead>
+                  <tbody>
+                    {users.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="py-12 text-center text-base-content/50">
+                          Nenhum membro encontrado.
+                        </td>
+                      </tr>
+                    ) : (
+                      users.map((user) => {
+                        const patrao = user.patrao_id ? (userMap[user.patrao_id] || null) : null;
+                        const userColor = colors[user.start_year % colors.length] || "#ccc";
+                        const userRoles = user.user_roles || [];
+                        const isSelected = selectedIds.has(user._id);
 
-                      return (
-                        <tr
-                          key={user._id}
-                          className={classNames(
-                            "border-base-content/5 transition-colors hover:bg-base-200/50",
-                            isSelected && "bg-primary/5"
-                          )}
-                        >
-                          {/* Checkbox */}
-                          <td>
-                            <input
-                              type="checkbox"
-                              className="checkbox checkbox-sm"
-                              checked={isSelected}
-                              onChange={() => toggleSelectUser(user._id)}
-                            />
-                          </td>
-                          {/* Member + ID */}
-                          <td>
-                            <div className="flex items-center gap-3">
-                              <div className="avatar placeholder">
-                                <div
-                                  className="h-10 w-10 rounded-full bg-base-300 ring-2 ring-offset-2 ring-offset-base-100"
-                                  style={{
-                                    backgroundColor: userColor,
-                                    "--tw-ring-color": userColor
-                                  }}
-                                >
-                                  <img
-                                    src={user.image || (user.sex === "F" ? femalePic : malePic)}
-                                    alt=""
-                                    className="object-cover"
-                                  />
-                                </div>
-                              </div>
-                              <div className="min-w-0">
-                                <div className="flex items-baseline gap-2">
-                                  <div className="truncate font-bold">{user.name}</div>
-                                  <span className="text-xs text-base-content/40 font-mono">#{user._id}</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-sm text-base-content/60">
-                                  {user.faina_name && <span>{user.faina_name}</span>}
-                                  {user.nmec && (
-                                    <span className="badge badge-ghost badge-xs">
-                                      {user.nmec}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-
-                          {/* Patrão */}
-                          <td>
-                            {patrao ? (
-                              <div className="flex items-center gap-2">
-                                <div className="avatar placeholder h-6 w-6 rounded-full bg-base-300">
-                                  <img
-                                    src={patrao.image || (patrao.sex === 'F' ? femalePic : malePic)}
-                                    alt=""
-                                    className="rounded-full"
-                                  />
-                                </div>
-                                <span className="truncate font-medium">{patrao.name}</span>
-                              </div>
-                            ) : user.patrao_id ? (
-                              <span className="text-error text-xs" title={`ID: ${user.patrao_id}`}>
-                                {`ID: ${user.patrao_id}`} <span className="opacity-50">(Fetching...)</span>
-                              </span>
-                            ) : (
-                              <span className="text-base-content/30 italic">Raiz</span>
+                        return (
+                          <tr
+                            key={user._id}
+                            className={classNames(
+                              "border-base-content/5 transition-colors hover:bg-base-200/50",
+                              isSelected && "bg-primary/5"
                             )}
-                          </td>
-
-                          {/* Year */}
-                          <td className="text-center font-mono text-sm">
-                            {formatYear(user.start_year)}
-                          </td>
-
-                          {/* Insignias */}
-                          <td>
-                            <div className="flex flex-wrap gap-1">
-                              {(userRoles.length === 0 || userRoles.every(r => r.hidden)) && <span className="text-xs text-base-content/30">-</span>}
-                              {userRoles.filter(role => !role.hidden).map((role, idx) => {
-                                // Try to find matching logo
-                                let logo = null;
-                                if (role.icon) {
-                                  logo = role.icon;
-                                } else if (role.org_name && organizations[role.org_name]) {
-                                  logo = organizations[role.org_name].insignia;
-                                }
-
-                                const roleTitle = role.role_name || role.name || role.org_name || "Cargo";
-                                const tooltip = `${roleTitle} (${formatYear(role.year, role.year_display_format)})`;
-
-                                return (
+                          >
+                            {/* Checkbox */}
+                            <td>
+                              <input
+                                type="checkbox"
+                                className="checkbox checkbox-sm"
+                                checked={isSelected}
+                                onChange={() => toggleSelectUser(user._id)}
+                              />
+                            </td>
+                            {/* Member + ID */}
+                            <td>
+                              <div className="flex items-center gap-3">
+                                <div className="avatar placeholder">
                                   <div
-                                    key={`${role.role_id}_${idx}`}
-                                    className="tooltip tooltip-primary"
-                                    data-tip={tooltip}
+                                    className="h-10 w-10 rounded-full bg-base-300 ring-2 ring-offset-2 ring-offset-base-100"
+                                    style={{
+                                      backgroundColor: userColor,
+                                      "--tw-ring-color": userColor
+                                    }}
                                   >
-                                    {logo ? (
-                                      <img
-                                        src={logo}
-                                        alt={roleTitle}
-                                        className="h-6 w-6 object-contain hover:scale-110 transition-transform"
-                                        onError={(e) => {
-                                          // Fallback if image fails
-                                          e.target.style.display = 'none';
-                                          e.target.parentElement.innerHTML = `<span class="badge badge-sm badge-outline text-[10px] whitespace-nowrap">${role.org_name || role.role_id || "?"}</span>`;
-                                        }}
-                                      />
-                                    ) : (
-                                      <span className="badge badge-sm badge-outline text-[10px] whitespace-nowrap">
-                                        {role.org_name || role.role_id || "?"}
+                                    <img
+                                      src={user.image || (user.sex === "F" ? femalePic : malePic)}
+                                      alt=""
+                                      className="object-cover"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="flex items-baseline gap-2">
+                                    <div className="truncate font-bold">{user.name}</div>
+                                    <span className="text-xs text-base-content/40 font-mono">#{user._id}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2 text-sm text-base-content/60">
+                                    {user.faina_name && <span>{user.faina_name}</span>}
+                                    {user.nmec && (
+                                      <span className="badge badge-ghost badge-xs">
+                                        {user.nmec}
                                       </span>
                                     )}
                                   </div>
-                                );
-                              })}
-                            </div>
-                          </td>
+                                </div>
+                              </div>
+                            </td>
 
-                          {/* Actions */}
-                          <td className="text-right">
-                            <div className="flex justify-end gap-2">
-                              <button
-                                className="btn btn-ghost btn-xs btn-square"
-                                onClick={() => handleEdit(user)}
-                                title="Editar"
-                              >
-                                <MaterialSymbol icon="edit" size={16} />
-                              </button>
-                              <button
-                                className="btn btn-ghost btn-xs btn-square text-error"
-                                onClick={() => handleDeleteRequest(user)}
-                                title="Eliminar"
-                              >
-                                <MaterialSymbol icon="delete" size={16} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+                            {/* Patrão - Hidden on mobile */}
+                            <td className="hidden md:table-cell">
+                              {patrao ? (
+                                <div className="flex items-center gap-2">
+                                  <div className="avatar placeholder h-6 w-6 rounded-full bg-base-300">
+                                    <img
+                                      src={patrao.image || (patrao.sex === 'F' ? femalePic : malePic)}
+                                      alt=""
+                                      className="rounded-full"
+                                    />
+                                  </div>
+                                  <span className="truncate font-medium">{patrao.name}</span>
+                                </div>
+                              ) : user.patrao_id ? (
+                                <span className="text-error text-xs" title={`ID: ${user.patrao_id}`}>
+                                  {`ID: ${user.patrao_id}`} <span className="opacity-50">(Fetching...)</span>
+                                </span>
+                              ) : (
+                                <span className="text-base-content/30 italic">Raiz</span>
+                              )}
+                            </td>
+
+                            {/* Year */}
+                            <td className="text-center font-mono text-sm">
+                              {formatYear(user.start_year)}
+                            </td>
+
+                            {/* Insignias */}
+                            <td>
+                              <div className="flex flex-wrap gap-1">
+                                {(userRoles.length === 0 || userRoles.every(r => r.hidden)) && <span className="text-xs text-base-content/30">-</span>}
+                                {userRoles.filter(role => !role.hidden).map((role, idx) => {
+                                  // Try to find matching logo
+                                  let logo = null;
+                                  if (role.icon) {
+                                    logo = role.icon;
+                                  } else if (role.org_name && organizations[role.org_name]) {
+                                    logo = organizations[role.org_name].insignia;
+                                  }
+
+                                  const roleTitle = role.role_name || role.name || role.org_name || "Cargo";
+                                  const tooltip = `${roleTitle} (${formatYear(role.year, role.year_display_format)})`;
+
+                                  return (
+                                    <div
+                                      key={`${role.role_id}_${idx}`}
+                                      className="tooltip tooltip-primary"
+                                      data-tip={tooltip}
+                                    >
+                                      {logo ? (
+                                        <img
+                                          src={logo}
+                                          alt={roleTitle}
+                                          className="h-6 w-6 object-contain hover:scale-110 transition-transform"
+                                          onError={(e) => {
+                                            // Fallback if image fails
+                                            e.target.style.display = 'none';
+                                            e.target.parentElement.innerHTML = `<span class="badge badge-sm badge-outline text-[10px] whitespace-nowrap">${role.org_name || role.role_id || "?"}</span>`;
+                                          }}
+                                        />
+                                      ) : (
+                                        <span className="badge badge-sm badge-outline text-[10px] whitespace-nowrap">
+                                          {role.org_name || role.role_id || "?"}
+                                        </span>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </td>
+
+                            {/* Actions */}
+                            <td className="text-right">
+                              <div className="flex justify-end gap-2">
+                                <button
+                                  className="btn btn-ghost btn-xs btn-square"
+                                  onClick={() => handleEdit(user)}
+                                  title="Editar"
+                                >
+                                  <MaterialSymbol icon="edit" size={16} />
+                                </button>
+                                <button
+                                  className="btn btn-ghost btn-xs btn-square text-error"
+                                  onClick={() => handleDeleteRequest(user)}
+                                  title="Eliminar"
+                                >
+                                  <MaterialSymbol icon="delete" size={16} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             {/* Pagination */}
@@ -840,6 +842,10 @@ export function Component() {
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
         onSave={handleSave}
+        onDelete={async (user) => {
+          await handleDeleteRequest(user);
+          setIsFormOpen(false);
+        }}
         initialPatrao={initialPatrao}
         onAddChild={handleCreateChild}
         onSwitchUser={handleNavigateUser}
@@ -859,9 +865,9 @@ export function Component() {
         onClose={() => setShowCourseManager(false)}
       />
 
-      {/* Delete Confirmation */}
+      {/* Delete Confirmation - Only show when no orphan modal needed */}
       <AnimatePresence>
-        {deleteModal && (
+        {deleteModal && !showOrphanModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
