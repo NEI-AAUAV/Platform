@@ -106,6 +106,8 @@ const nodeMap = new Map();
 // Callbacks for node interactions
 let onNodeSelectCallback = null;
 let onNodeHoverCallback = null;
+let onNodeEditCallback = null;
+let isEditMode = false;
 
 function separateName(name) {
   const maxChars = 15,
@@ -207,6 +209,8 @@ function labelFamilies(node) {
  * @param {number} [options.maxYear] - Maximum year from API
  * @param {Function} [options.onNodeSelect] - Callback when node is clicked
  * @param {Function} [options.onNodeHover] - Callback when node is hovered
+ * @param {boolean} [options.editMode] - Whether tree is in edit mode
+ * @param {Function} [options.onNodeEdit] - Callback when node is clicked in edit mode
  */
 export function buildTree(users = null, options = {}) {
   // Update dynamic year bounds from API
@@ -216,6 +220,8 @@ export function buildTree(users = null, options = {}) {
   // Store callbacks
   onNodeSelectCallback = options.onNodeSelect || null;
   onNodeHoverCallback = options.onNodeHover || null;
+  onNodeEditCallback = options.onNodeEdit || null;
+  isEditMode = options.editMode || false;
 
   // Use provided users or fall back to static data
   const userData = users || data.users;
@@ -529,6 +535,14 @@ export function buildTree(users = null, options = {}) {
     .style("fill", (d) => colors[d.data.start_year % colors.length])
     .on("click", function (event, d) {
       event.stopPropagation();
+
+      // Edit Mode Action
+      if (isEditMode) {
+        if (onNodeEditCallback) {
+          onNodeEditCallback(d.data);
+        }
+        return;
+      }
 
       // Trigger node selection callback for highlighting/breadcrumbs
       if (onNodeSelectCallback && d.data.id) {

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useForm, Controller } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
@@ -22,7 +23,7 @@ const sexOptions = [
 /**
  * Split-layout modal for creating/editing family tree members
  */
-const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, onSwitchUser, canGoBack, onBack }) => {
+const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAddChild, onSwitchUser, canGoBack, onBack }) => {
     // Patrão search state
     const [patraoSearch, setPatraoSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -358,7 +359,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
     // Combine roles for display
     const displayRoles = isEdit ? userRoles : pendingRoles;
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -367,12 +368,12 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
                         onClick={onClose}
                     />
 
                     {/* Modal Wrapper - Flexbox Centering */}
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -726,7 +727,25 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                                         </div>
 
                                         {/* Footer */}
-                                        <div className="flex flex-shrink-0 justify-end gap-3 border-t border-base-content/10 bg-base-200/50 px-6 py-4">
+                                        <div className="flex flex-shrink-0 items-center gap-3 border-t border-base-content/10 bg-base-200/50 px-6 py-4">
+                                            {/* Delete button - left side */}
+                                            {isEdit && onDelete && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-error btn-outline gap-1"
+                                                    onClick={() => {
+                                                        if (window.confirm(`Tens a certeza que queres eliminar "${user?.name || 'este membro'}"?`)) {
+                                                            onDelete(user);
+                                                        }
+                                                    }}
+                                                >
+                                                    <MaterialSymbol icon="delete" size={18} />
+                                                    Eliminar
+                                                </button>
+                                            )}
+
+                                            <div className="flex-1" />
+
                                             <button
                                                 type="button"
                                                 className="btn btn-ghost"
@@ -773,7 +792,8 @@ const UserForm = ({ user, isOpen, onClose, onSave, initialPatrao, onAddChild, on
                     </div >
                 </>
             )}
-        </AnimatePresence >
+        </AnimatePresence >,
+        document.body
     );
 };
 
