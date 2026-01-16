@@ -120,54 +120,15 @@ class CRUDUser:
         
         results = list(self.collection.aggregate(pipeline))
         
-        # Enrich roles with org_name for frontend display
+        # Enrich roles with org_name, role_name, icon, etc. for frontend display
         if results:
             org_short_map = self._build_org_short_map()
             for user in results:
-                updated_roles = []
                 for role in user.get("user_roles", []):
                     try:
-                        if "_id" in role:
-                            role["_id"] = str(role["_id"])
-                        if not role.get("org_name"):
-                            role["org_name"] = self._get_org_short(role.get("role_id"), org_short_map)
-                        
-                        # Add format info
-                        role_id_key = role.get("role_id")
-                        # Robust lookup for role_name (handle trailing dots mismatch)
-                        lookup_key = role_id_key
-                        if lookup_key not in org_short_map:
-                            if lookup_key.endswith("."):
-                                diff_key = lookup_key.rstrip(".")
-                                if diff_key in org_short_map:
-                                    lookup_key = diff_key
-                            else:
-                                diff_key = lookup_key + "."
-                                if diff_key in org_short_map:
-                                    lookup_key = diff_key
-
-                        if lookup_key in org_short_map:
-                             # Use specific role name
-                             role["role_name"] = org_short_map[lookup_key].get("name")
-                             role["year_display_format"] = org_short_map[lookup_key].get("format", "civil")
-                             # Use inherited icon (traverse up hierarchy if not defined)
-                             role["icon"] = self._get_inherited_icon(lookup_key, org_short_map)
-                             # Check hidden status (normalize None to False)
-                             hidden = org_short_map[lookup_key].get("hidden")
-                             role["hidden"] = hidden if hidden is not None else False
-                        else:
-                             # Fallback to org_name if specific role is truly not found
-                             role["role_name"] = role.get("org_name")
-                             role["year_display_format"] = "civil"
-                             # Try inherited icon from role_id path
-                             role["icon"] = self._get_inherited_icon(role_id_key, org_short_map) if role_id_key else None
-                             role["hidden"] = False
-
-                        updated_roles.append(role)
-                    except Exception as e:
-                        print(f"Error processing role for user {user.get('_id')}: {e}")
-                        continue
-                user["user_roles"] = updated_roles
+                        self._enrich_role(role, org_short_map)
+                    except (KeyError, TypeError) as e:
+                        logger.warning(f"Error processing role for user {user.get('_id')}: {e}")
                         
         return results
     
@@ -376,6 +337,45 @@ class CRUDUser:
         
         return None
 
+    def _normalize_role_key(self, role_id: str, org_map: dict) -> str:
+        """Normalize role_id to match org_map keys (handles trailing dot mismatch)."""
+        if not role_id or role_id in org_map:
+            return role_id
+        
+        # Try with/without trailing dot
+        alt_key = role_id.rstrip('.') if role_id.endswith('.') else role_id + '.'
+        return alt_key if alt_key in org_map else role_id
+
+    def _enrich_role(self, role: dict, org_map: dict) -> None:
+        """Enrich a single role dict with org_name, role_name, icon, hidden, format."""
+        # Serialize ObjectId if present
+        if "_id" in role:
+            role["_id"] = str(role["_id"])
+        
+        role_id = role.get("role_id", "")
+        
+        # Ensure org_name is human-readable
+        org_name = role.get("org_name")
+        if not org_name or (isinstance(org_name, str) and org_name.startswith(".")):
+            role["org_name"] = self._get_org_short(role_id, org_map)
+        
+        # Normalize role_id for lookup
+        lookup_key = self._normalize_role_key(role_id, org_map)
+        
+        if lookup_key in org_map:
+            role_info = org_map[lookup_key]
+            role["role_name"] = role_info.get("name")
+            role["year_display_format"] = role_info.get("format", "civil")
+            role["icon"] = self._get_inherited_icon(lookup_key, org_map)
+            hidden = role_info.get("hidden")
+            role["hidden"] = hidden if hidden is not None else False
+        else:
+            # Fallback for unknown roles
+            role["role_name"] = role.get("org_name")
+            role["year_display_format"] = "civil"
+            role["icon"] = self._get_inherited_icon(role_id, org_map) if role_id else None
+            role["hidden"] = self._get_inherited_hidden(role_id, org_map) if role_id else False
+
     
     def _build_tree(self) -> Tuple[dict, List[dict], int]:
         """
@@ -445,42 +445,10 @@ class CRUDUser:
         # Build role short name lookup (fallback for roles without org_name)
         org_short_map = self._build_org_short_map()
         
-        # Add org_name if not already present or if it looks like a role_id path
+        # Enrich roles with org_name, role_name, icon, etc.
         for user in all_users:
             for role in user.get("user_roles", []):
-                org_name = role.get("org_name")
-                # Ensure org_name is a human-readable value, not a role_id path
-                if not org_name or (isinstance(org_name, str) and org_name.startswith(".")):
-                    role_id = role.get("role_id", "")
-                    role["org_name"] = self._get_org_short(role_id, org_short_map)
-                
-                # Add role_name and format logic here too (duplicate of get_multi but necessary for Tree)
-                role_id_key = role.get("role_id")
-                # Robust lookup for role_name
-                lookup_key = role_id_key
-                if lookup_key not in org_short_map:
-                    if lookup_key.endswith("."):
-                        diff_key = lookup_key.rstrip(".")
-                        if diff_key in org_short_map:
-                            lookup_key = diff_key
-                    else:
-                        diff_key = lookup_key + "."
-                        if diff_key in org_short_map:
-                            lookup_key = diff_key
-
-                if lookup_key in org_short_map:
-                        role["role_name"] = org_short_map[lookup_key].get("name")
-                        role["year_display_format"] = org_short_map[lookup_key].get("format", "civil")
-                        # Use inherited icon (traverse up hierarchy if not defined)
-                        role["icon"] = self._get_inherited_icon(lookup_key, org_short_map)
-                        # Check hidden status (independent, not inherited)
-                        role["hidden"] = self._get_inherited_hidden(lookup_key, org_short_map)
-                else:
-                        role["role_name"] = role.get("org_name")
-                        role["year_display_format"] = "civil"
-                        # For unknown roles, try to get inherited icon and check hidden status
-                        role["icon"] = self._get_inherited_icon(role_id_key, org_short_map) if role_id_key else None
-                        role["hidden"] = self._get_inherited_hidden(role_id_key, org_short_map) if role_id_key else False
+                self._enrich_role(role, org_short_map)
         
         # Create lookup dict by ID with children arrays
         users_by_id = {u["_id"]: {**u, "children": []} for u in all_users}

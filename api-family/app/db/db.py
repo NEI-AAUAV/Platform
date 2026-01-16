@@ -32,7 +32,7 @@ client = MongoClient(
     compressors=["zstd", "snappy", "zlib"],  # Compress network traffic
 )
 
-print('Connected to MongoDB...')
+logger.info("Connected to MongoDB...")
 
 db = client[settings.MONGO_DB]
 

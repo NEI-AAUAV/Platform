@@ -10,6 +10,7 @@ import UserForm from "./UserForm";
 import RolePickerModal from "components/RolePickerModal";
 import BulkEditModal from "./BulkEditModal";
 import BulkDeleteModal from "./BulkDeleteModal";
+import BulkImportModal from "./BulkImportModal";
 import OrphanModal from "./OrphanModal";
 
 import RoleManagerModal from "components/RoleManagerModal";
@@ -67,6 +68,7 @@ export function Component() {
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [showBulkEdit, setShowBulkEdit] = useState(false);
   const [showBulkDelete, setShowBulkDelete] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
 
   // Orphan modal state
   const [showOrphanModal, setShowOrphanModal] = useState(false);
@@ -441,6 +443,10 @@ export function Component() {
           </button>
           <button className="btn btn-ghost btn-square" onClick={() => setShowCourseManager(true)} title="Gerir Cursos">
             <MaterialSymbol icon="school" size={20} />
+          </button>
+          <button className="btn btn-outline gap-2" onClick={() => setShowBulkImport(true)} title="Importar CSV">
+            <MaterialSymbol icon="upload_file" size={20} />
+            Importar CSV
           </button>
           <button className="btn btn-primary gap-2" onClick={handleAdd}>
             <MaterialSymbol icon="person_add" size={20} />
@@ -942,6 +948,17 @@ export function Component() {
         onClose={() => setShowBulkDelete(false)}
         selectedUsers={selectedUsers}
         onComplete={handleBulkDeleteComplete}
+      />
+
+      {/* Bulk Import Modal */}
+      <BulkImportModal
+        isOpen={showBulkImport}
+        onClose={() => setShowBulkImport(false)}
+        allUsers={allUsers}
+        onComplete={() => {
+          fetchUsers();
+          FamilyService.getUsers({ limit: 500 }).then(res => setAllUsers(res.items || []));
+        }}
       />
 
       {/* Orphan Modal - shown when deleting user with children */}

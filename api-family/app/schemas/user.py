@@ -52,3 +52,30 @@ class UserList(BaseModel):
     total: int
     skip: int
     limit: int
+
+
+class UserBulkCreate(BaseModel):
+    """Schema for creating a user in bulk. start_year is required here."""
+    name: str = Field(..., max_length=100)
+    sex: Literal['M', 'F']
+    start_year: int = Field(..., ge=0, le=99, description="Year of entry (0-99) - REQUIRED for bulk")
+    nmec: Optional[int] = Field(None, description="Número mecanográfico")
+    faina_name: Optional[str] = Field(None, max_length=50, description="Nome de faina")
+    course_id: Optional[int] = Field(None, description="Course ID for other courses")
+    patrao_id: Optional[int] = Field(None, description="Patrão user ID (null for roots)")
+
+
+class BulkCreateError(BaseModel):
+    """Error for a single row in bulk create."""
+    row: int  # 0-indexed row number
+    data: dict  # The original row data
+    message: str  # Error description
+
+
+class BulkCreateResponse(BaseModel):
+    """Response for bulk create operation."""
+    created: List[UserInDB]  # Successfully created users
+    errors: List[BulkCreateError]  # Failed rows with details
+    total_submitted: int
+    total_created: int
+    total_errors: int

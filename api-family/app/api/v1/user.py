@@ -9,7 +9,11 @@ from fastapi import APIRouter, HTTPException, Query, Security
 from app.api import auth
 from app.crud.crud_user import user as crud_user
 from app.crud.crud_course import course as crud_course
-from app.schemas.user import UserCreate, UserUpdate, UserInDB, UserList
+from app.schemas.user import (
+    UserCreate, UserUpdate, UserInDB, UserList,
+    UserBulkCreate, BulkCreateError, BulkCreateResponse
+)
+
 
 
 router = APIRouter()
@@ -147,6 +151,78 @@ def create_user(
     
     user = crud_user.create(obj_in=obj_in)
     return user
+
+
+@router.post("/bulk", status_code=201, response_model=BulkCreateResponse)
+def create_users_bulk(
+    users_in: List[UserBulkCreate],
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
+    """
+    Create multiple users in bulk. Requires MANAGER_FAMILY scope.
+    
+    Partial success is allowed: valid entries are created, invalid ones return errors.
+    
+    - **users_in**: List of user objects to create
+    - Returns: { created: [...], errors: [...], total_submitted, total_created, total_errors }
+    """
+    created_users = []
+    errors = []
+    
+    # Track nmecs seen in this batch to detect duplicates within the request
+    seen_nmecs = set()
+    
+    for idx, user_data in enumerate(users_in):
+        error_msg = None
+        data_dict = user_data.dict()
+        
+        # Validate patrao_id exists if provided
+        if user_data.patrao_id is not None:
+            if not crud_user.exists(user_data.patrao_id):
+                error_msg = f"Patrão com id {user_data.patrao_id} não encontrado"
+        
+        # Validate course_id exists if provided
+        if error_msg is None and user_data.course_id is not None:
+            if not crud_course.exists(user_data.course_id):
+                error_msg = f"Curso com id {user_data.course_id} não encontrado"
+        
+        # Validate nmec is unique (in DB and in this batch)
+        if error_msg is None and user_data.nmec is not None:
+            if user_data.nmec in seen_nmecs:
+                error_msg = f"Nmec {user_data.nmec} duplicado neste ficheiro"
+            else:
+                existing = crud_user.get_by_nmec(user_data.nmec)
+                if existing:
+                    error_msg = f"Utilizador com nmec {user_data.nmec} já existe"
+                else:
+                    seen_nmecs.add(user_data.nmec)
+        
+        if error_msg:
+            errors.append(BulkCreateError(
+                row=idx,
+                data=data_dict,
+                message=error_msg
+            ))
+        else:
+            try:
+                # Convert to UserCreate for the existing create method
+                user_create = UserCreate(**data_dict)
+                user = crud_user.create(obj_in=user_create)
+                created_users.append(user)
+            except Exception as e:
+                errors.append(BulkCreateError(
+                    row=idx,
+                    data=data_dict,
+                    message=str(e)
+                ))
+    
+    return BulkCreateResponse(
+        created=created_users,
+        errors=errors,
+        total_submitted=len(users_in),
+        total_created=len(created_users),
+        total_errors=len(errors)
+    )
 
 
 @router.put("/{id}", status_code=200, response_model=UserInDB)
