@@ -172,7 +172,6 @@ def create_users_bulk(
     - **atomic**: If true, either all succeed or none (rollback on any error)
     - Partial success is allowed (unless atomic=True)
     - Duplicate name detection (warning, not error)
-    - Cycle detection (prevents A→B→C→A relationships)
     - Future year validation
     
     Limits:

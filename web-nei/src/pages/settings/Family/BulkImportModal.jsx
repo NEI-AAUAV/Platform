@@ -138,6 +138,7 @@ const BulkImportModal = ({
             setEditingCell(null);
             setUserRoles({});
             setTemplateColumns({ nmec: true, faina_name: false, patrao: true });
+            setWarnings([]);
         }
     }, [isOpen]);
 
@@ -1207,7 +1208,6 @@ const BulkImportModal = ({
         );
     };
 
-    const rolesSelected = Object.values(userRoles).filter(r => r?.role).length;
 
     return (
         <AnimatePresence>
