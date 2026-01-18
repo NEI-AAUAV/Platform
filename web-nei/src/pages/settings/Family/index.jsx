@@ -44,6 +44,7 @@ export function Component() {
   // Role Filter State
   const [roleFilterId, setRoleFilterId] = useState(null);
   const [roleFilterName, setRoleFilterName] = useState(null);
+  const [roleFilterYear, setRoleFilterYear] = useState(null);
   const [showRoleFilterModal, setShowRoleFilterModal] = useState(false);
 
   // Sort State
@@ -66,6 +67,7 @@ export function Component() {
 
   // Bulk selection state
   const [selectedIds, setSelectedIds] = useState(new Set());
+  const [lastSelectedIndex, setLastSelectedIndex] = useState(null);
   const [showBulkEdit, setShowBulkEdit] = useState(false);
   const [showBulkDelete, setShowBulkDelete] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
@@ -123,6 +125,7 @@ export function Component() {
       if (debouncedSearch) params.search = debouncedSearch;
       if (yearFilter !== "") params.year = parseInt(yearFilter);
       if (roleFilterId) params.role_id = roleFilterId;
+      if (roleFilterYear) params.role_year = roleFilterYear;
       if (sortBy) {
         params.sort_by = sortBy;
         params.order = sortOrder;
@@ -137,7 +140,7 @@ export function Component() {
     } finally {
       setLoading(false);
     }
-  }, [page, debouncedSearch, yearFilter, roleFilterId, sortBy, sortOrder, hasAccess]);
+  }, [page, debouncedSearch, yearFilter, roleFilterId, roleFilterYear, sortBy, sortOrder, hasAccess]);
 
   useEffect(() => {
     if (!hasAccess) return;
@@ -310,7 +313,38 @@ export function Component() {
     }
   };
 
-  // Bulk selection handlers
+  // Enhanced row selection with shift+click support
+  const handleRowSelect = (userId, rowIndex, event) => {
+    const isShiftHeld = event?.shiftKey;
+
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+
+      if (isShiftHeld && lastSelectedIndex !== null && lastSelectedIndex !== rowIndex) {
+        // Shift+click: select range from lastSelectedIndex to current rowIndex
+        const start = Math.min(lastSelectedIndex, rowIndex);
+        const end = Math.max(lastSelectedIndex, rowIndex);
+        for (let i = start; i <= end; i++) {
+          if (users[i]) {
+            next.add(users[i]._id);
+          }
+        }
+      } else {
+        // Normal click: toggle selection
+        if (next.has(userId)) {
+          next.delete(userId);
+        } else {
+          next.add(userId);
+        }
+      }
+
+      return next;
+    });
+
+    setLastSelectedIndex(rowIndex);
+  };
+
+  // Simple toggle for checkbox (no shift support needed)
   const toggleSelectUser = (userId) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
@@ -354,10 +388,35 @@ export function Component() {
     setSelectedIds(new Set());
   };
 
-  const selectedUsers = useMemo(() =>
-    users.filter(u => selectedIds.has(u._id)),
-    [users, selectedIds]
-  );
+  // Select all users matching current filters (uses allUsers cache)
+  // This allows selecting across all pages at once
+  const selectAllFiltered = () => {
+    // Use allUsers since it has all cached users
+    // Filter by current search/year if applicable
+    const matchingUsers = allUsers.filter(u => {
+      if (yearFilter && u.start_year !== parseInt(yearFilter)) return false;
+      if (debouncedSearch) {
+        const q = debouncedSearch.toLowerCase();
+        const matchesName = u.name?.toLowerCase().includes(q);
+        const matchesNmec = u.nmec?.toString().includes(q);
+        const matchesId = u._id?.toString() === q;
+        if (!matchesName && !matchesNmec && !matchesId) return false;
+      }
+      return true;
+    });
+    setSelectedIds(new Set(matchingUsers.map(u => u._id)));
+  };
+
+  // Get selected users from allUsers (persists across pagination)
+  // Falls back to current page if user not in allUsers cache
+  const selectedUsers = useMemo(() => {
+    const result = [];
+    for (const id of selectedIds) {
+      const user = allUsers.find(u => u._id === id) || users.find(u => u._id === id);
+      if (user) result.push(user);
+    }
+    return result;
+  }, [allUsers, users, selectedIds]);
 
   const handleBulkDelete = () => {
     // Open bulk delete modal instead of window.confirm
@@ -582,36 +641,54 @@ export function Component() {
           <>
             {/* Bulk Action Toolbar */}
             {selectedIds.size > 0 && (
-              <div className="mb-4 flex items-center gap-3 rounded-lg bg-primary/10 border border-primary/20 px-4 py-3">
-                <span className="font-medium text-primary">
-                  {selectedIds.size} membro(s) selecionado(s)
-                  {selectedIds.size > users.length && (
-                    <span className="text-xs text-base-content/60 ml-1">
-                      (incluindo outras páginas)
+              <div className="mb-4 rounded-xl bg-primary/10 border border-primary/20 overflow-hidden">
+                <div className="flex flex-wrap items-center gap-3 px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <MaterialSymbol icon="check_box" size={20} className="text-primary" />
+                    <span className="font-semibold text-primary">
+                      {selectedIds.size} selecionado{selectedIds.size !== 1 ? 's' : ''}
                     </span>
+                  </div>
+
+                  {total > 0 && selectedIds.size < total && (
+                    <button
+                      className="btn btn-xs btn-primary btn-outline"
+                      onClick={selectAllFiltered}
+                      title={`Selecionar todos os ${total} resultados`}
+                    >
+                      Selecionar todos ({total})
+                    </button>
                   )}
-                </span>
-                <div className="flex-1" />
-                <button
-                  className="btn btn-sm btn-ghost gap-1"
-                  onClick={() => setShowBulkEdit(true)}
-                >
-                  <MaterialSymbol icon="edit" size={16} />
-                  Editar
-                </button>
-                <button
-                  className="btn btn-sm btn-error btn-ghost gap-1"
-                  onClick={handleBulkDelete}
-                >
-                  <MaterialSymbol icon="delete" size={16} />
-                  Eliminar
-                </button>
-                <button
-                  className="btn btn-sm btn-ghost"
-                  onClick={clearAllSelections}
-                >
-                  Limpar seleção
-                </button>
+
+                  <div className="flex-1" />
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      className="btn btn-sm btn-primary gap-1"
+                      onClick={() => setShowBulkEdit(true)}
+                    >
+                      <MaterialSymbol icon="edit" size={16} />
+                      Editar
+                    </button>
+                    <button
+                      className="btn btn-sm btn-error gap-1"
+                      onClick={handleBulkDelete}
+                    >
+                      <MaterialSymbol icon="delete" size={16} />
+                      Eliminar
+                    </button>
+                    <button
+                      className="btn btn-sm btn-ghost"
+                      onClick={clearAllSelections}
+                    >
+                      <MaterialSymbol icon="close" size={16} />
+                    </button>
+                  </div>
+                </div>
+                <div className="px-4 py-1.5 bg-primary/5 border-t border-primary/10 text-xs text-primary/70">
+                  <MaterialSymbol icon="keyboard" size={14} className="inline mr-1" />
+                  Dica: Clica numa linha para selecionar. Usa <kbd className="kbd kbd-xs">Shift</kbd> + clique para selecionar um intervalo.
+                </div>
               </div>
             )}
 
@@ -665,7 +742,7 @@ export function Component() {
                         </tr>
                       </>
                     ) : (
-                      users.map((user) => {
+                      users.map((user, rowIndex) => {
                         const patrao = user.patrao_id ? (userMap[user.patrao_id] || null) : null;
                         const userColor = colors[user.start_year % colors.length] || "#ccc";
                         const userRoles = user.user_roles || [];
@@ -675,17 +752,24 @@ export function Component() {
                           <tr
                             key={user._id}
                             className={classNames(
-                              "border-base-content/5 transition-colors hover:bg-base-200/50",
-                              isSelected && "bg-primary/5"
+                              "border-base-content/5 transition-colors cursor-pointer select-none",
+                              isSelected
+                                ? "bg-primary/10 hover:bg-primary/15"
+                                : "hover:bg-base-200/50"
                             )}
+                            onClick={(e) => {
+                              // Don't trigger if clicking on buttons or inputs
+                              if (e.target.closest('button, a, input')) return;
+                              handleRowSelect(user._id, rowIndex, e);
+                            }}
                           >
                             {/* Checkbox */}
-                            <td>
+                            <td onClick={(e) => e.stopPropagation()}>
                               <input
                                 type="checkbox"
-                                className="checkbox checkbox-sm"
+                                className={classNames("checkbox checkbox-sm", isSelected && "checkbox-primary")}
                                 checked={isSelected}
-                                onChange={() => toggleSelectUser(user._id)}
+                                onChange={(e) => handleRowSelect(user._id, rowIndex, e)}
                               />
                             </td>
                             {/* Member + ID */}
@@ -924,9 +1008,10 @@ export function Component() {
         isOpen={showRoleFilterModal}
         onClose={() => setShowRoleFilterModal(false)}
         hideYear={false}
-        onSelect={(node) => {
+        onSelect={(node, year) => {
           setRoleFilterId(node._id);
-          setRoleFilterName(node.name);
+          setRoleFilterName(node.name + (year ? ` (${year})` : ''));
+          setRoleFilterYear(year);
           setPage(0);
         }}
       />

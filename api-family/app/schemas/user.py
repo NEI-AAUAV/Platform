@@ -76,6 +76,9 @@ class BulkCreateResponse(BaseModel):
     """Response for bulk create operation."""
     created: List[UserInDB]  # Successfully created users
     errors: List[BulkCreateError]  # Failed rows with details
+    warnings: List[str] = []  # Non-blocking warnings (e.g., duplicate names)
     total_submitted: int
     total_created: int
     total_errors: int
+    dry_run: bool = False  # True if this was a dry-run (no actual changes)
+

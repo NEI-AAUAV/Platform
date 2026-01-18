@@ -101,8 +101,11 @@ const FamilyService = {
      * @param {Array} users - Array of user objects to create
      * @returns {Promise} Bulk create response with created users and errors
      */
-    async bulkCreateUsers(users) {
-        return await client.post("/user/bulk", users);
+    async bulkCreateUsers(users, options = {}) {
+        const { dry_run = false, atomic = false } = options;
+        return await client.post("/user/bulk", users, {
+            params: { dry_run, atomic }
+        });
     },
 
     // ============================================================

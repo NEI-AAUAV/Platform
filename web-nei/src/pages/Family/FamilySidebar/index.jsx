@@ -72,7 +72,9 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
 
           orgsMap.set(key, {
             key: key,
-            name: hardcodedOrg?.name || o.role_name || o.role || o.name || key,
+            // For display name: use hardcoded name, then org_name (key), then role_name as last resort
+            // This ensures NEI roles show "NEI" not "Responsável Financeiro"
+            name: hardcodedOrg?.name || key,
             insignia: hardcodedOrg?.insignia || null, // Will be null for dynamic orgs without icons
             icon: o.icon, // Icon URL from API (if available)
             changeColor: hardcodedOrg?.changeColor || false,

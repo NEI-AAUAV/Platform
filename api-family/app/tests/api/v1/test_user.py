@@ -135,3 +135,94 @@ class TestBulkCreateUsers:
         data = response.json()
         # Second user should have an error due to non-existent patrao_id
         assert data["total_errors"] >= 1 or data["total_created"] >= 0  # At least one processed
+    
+    def test_bulk_create_response_includes_new_fields(self, auth_client: TestClient):
+        """Test that bulk create response includes warnings and dry_run fields."""
+        response = auth_client.post("/api/family/v1/user/bulk", json=[])
+        assert response.status_code == 201
+        data = response.json()
+        assert "warnings" in data
+        assert "dry_run" in data
+        assert isinstance(data["warnings"], list)
+        assert isinstance(data["dry_run"], bool)
+    
+    def test_bulk_create_batch_size_limit(self, auth_client: TestClient):
+        """Test that bulk create rejects batches larger than 100."""
+        large_batch = [
+            {"name": f"User {i}", "sex": "M", "start_year": 24} 
+            for i in range(150)
+        ]
+        response = auth_client.post("/api/family/v1/user/bulk", json=large_batch)
+        assert response.status_code == 400
+        assert "100" in response.json()["detail"]
+    
+    def test_bulk_create_dry_run_mode(self, auth_client: TestClient):
+        """Test that dry-run mode returns preview without creating."""
+        response = auth_client.post(
+            "/api/family/v1/user/bulk?dry_run=true",
+            json=[{"name": "Dry Run Test", "sex": "M", "start_year": 24}]
+        )
+        assert response.status_code == 201
+        data = response.json()
+        assert data["dry_run"] is True
+        assert data["total_created"] == 1  # Would be created
+        # The mock user has _id = -1
+        if data["created"]:
+            assert data["created"][0]["_id"] == -1
+    
+    def test_bulk_create_atomic_mode_aborts_on_error(self, auth_client: TestClient):
+        """Test that atomic mode aborts entire operation if any validation fails."""
+        response = auth_client.post(
+            "/api/family/v1/user/bulk?atomic=true",
+            json=[
+                {"name": "Good User", "sex": "M", "start_year": 24},
+                {"name": "Bad User", "sex": "M", "start_year": 24, "patrao_id": 999999}
+            ]
+        )
+        assert response.status_code == 201
+        data = response.json()
+        # In atomic mode with errors, nothing should be created
+        assert data["total_created"] == 0
+        assert data["total_errors"] >= 1
+    
+    def test_bulk_create_duplicate_nmec_in_batch(self, auth_client: TestClient):
+        """Test that duplicate nmecs within same batch are detected."""
+        response = auth_client.post("/api/family/v1/user/bulk", json=[
+            {"name": "User 1", "sex": "M", "start_year": 24, "nmec": 99999},
+            {"name": "User 2", "sex": "F", "start_year": 24, "nmec": 99999}  # Duplicate!
+        ])
+        assert response.status_code == 201
+        data = response.json()
+        # Second user should fail due to duplicate nmec
+        assert data["total_errors"] >= 1
+        # Check error message mentions duplicate
+        error_messages = [e["message"] for e in data["errors"]]
+        assert any("duplicado" in msg.lower() for msg in error_messages)
+    
+    def test_bulk_create_future_year_rejected(self, auth_client: TestClient):
+        """Test that future years are rejected."""
+        future_year = 99  # Year 2099 is definitely in the future
+        response = auth_client.post("/api/family/v1/user/bulk", json=[
+            {"name": "Future User", "sex": "M", "start_year": future_year}
+        ])
+        assert response.status_code == 201
+        data = response.json()
+        # Should have error about future year
+        assert data["total_errors"] >= 1
+        error_messages = [e["message"] for e in data["errors"]]
+        assert any("futuro" in msg.lower() for msg in error_messages)
+    
+    def test_bulk_create_duplicate_names_warning(self, auth_client: TestClient):
+        """Test that duplicate names generate warnings (not errors)."""
+        response = auth_client.post("/api/family/v1/user/bulk?dry_run=true", json=[
+            {"name": "Same Name", "sex": "M", "start_year": 24},
+            {"name": "Same Name", "sex": "F", "start_year": 24}  # Same name
+        ])
+        assert response.status_code == 201
+        data = response.json()
+        # Should have warning about duplicate names
+        assert len(data["warnings"]) >= 1
+        assert any("duplicado" in w.lower() for w in data["warnings"])
+        # But both should still be "created" (in dry-run) - not errors
+        assert data["total_errors"] == 0
+

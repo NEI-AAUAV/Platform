@@ -20,6 +20,8 @@ import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
 import RolePickerModal from "components/RolePickerModal";
+import Papa from "papaparse";
+import * as XLSX from "xlsx";
 import { colors } from "pages/Family/data";
 
 import malePic from "assets/default_profile/male.svg";
@@ -60,8 +62,10 @@ const BulkImportModal = ({
     const [file, setFile] = useState(null);
     const [parsedData, setParsedData] = useState([]);
     const [errors, setErrors] = useState([]);
+    const [warnings, setWarnings] = useState([]);
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
+    // Removed dry run and atomic mode - import always executes directly
     const [dragActive, setDragActive] = useState(false);
 
     // Patrao search
@@ -223,39 +227,52 @@ const BulkImportModal = ({
         URL.revokeObjectURL(link.href);
     };
 
-    // Parse CSV file
-    const parseCSV = useCallback((text) => {
-        const lines = text.trim().split(/\r?\n/).filter(l => !l.trim().startsWith("#"));
-        if (lines.length < 2) {
-            return { data: [], errors: [{ row: 0, message: "Ficheiro vazio ou so com cabecalho" }] };
+    // Process parsed rows (common for CSV and Excel)
+    const processParsedData = useCallback((rawRows) => {
+        if (!rawRows || rawRows.length === 0) {
+            return { data: [], errors: [{ row: 0, message: "Ficheiro vazio" }] };
         }
 
-        const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
-
+        // Normalize headers (keys) to handle case sensitivity
+        // Check missing headers
+        const firstRow = rawRows[0];
+        const headers = Object.keys(firstRow).map(h => h.trim().toLowerCase());
         const requiredHeaders = ["name", "sex", "start_year"];
         const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
+
         if (missingHeaders.length > 0) {
             return { data: [], errors: [{ row: 0, message: `Colunas obrigatorias em falta: ${missingHeaders.join(", ")}` }] };
         }
 
         const data = [];
         const parseErrors = [];
+        const seenNames = new Set();
+        const localWarnings = [];
 
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i].trim();
-            if (!line) continue;
-
-            const values = line.split(",").map(v => v.trim());
+        rawRows.forEach((raw, i) => {
+            // Normalize row keys
             const row = {};
-
-            headers.forEach((header, idx) => {
-                row[header] = values[idx] || "";
+            Object.keys(raw).forEach(k => {
+                row[k.trim().toLowerCase()] = (raw[k] || "").toString().trim();
             });
 
+            // Skip empty rows
+            if (!row.name && !row.sex && !row.start_year) return;
+
+            // Existing validation
             const rowErrors = [];
             if (!row.name) rowErrors.push("nome em falta");
             if (!row.sex || !["M", "F"].includes(row.sex.toUpperCase())) rowErrors.push("sexo invalido (M/F)");
             if (!row.start_year || isNaN(parseInt(row.start_year))) rowErrors.push("ano invalido");
+
+            // Check duplicate names (frontend side)
+            const nameLower = (row.name || "").toLowerCase();
+            if (nameLower) {
+                if (seenNames.has(nameLower)) {
+                    localWarnings.push(`Linha ${i + 1}: Nome duplicado "${row.name}"`);
+                }
+                seenNames.add(nameLower);
+            }
 
             const patraoValue = row.patrao || row.patrao_id || row.patrao_name || "";
             const patraoResult = resolvePatrao(patraoValue);
@@ -272,8 +289,9 @@ const BulkImportModal = ({
                 patrao_user: patraoResult.user,
                 patrao_ambiguous: patraoResult.ambiguous,
                 patrao_matches: patraoResult.matches,
+                course_id: row.course_id ? parseInt(row.course_id) : null,
                 _rowIndex: i,
-                _key: `csv-${i}`,
+                _key: `row-${i}-${Date.now()}`,
             };
 
             if (rowErrors.length > 0) {
@@ -281,10 +299,55 @@ const BulkImportModal = ({
             }
 
             data.push(parsed);
+        });
+
+        // Update warnings state
+        if (localWarnings.length > 0) {
+            setWarnings(prev => [...prev, ...localWarnings]);
         }
 
         return { data, errors: parseErrors };
+
     }, [resolvePatrao]);
+
+    // Handle file processing (CSV or Excel)
+    const processFile = (selectedFile) => {
+        setFile(selectedFile);
+        setWarnings([]); // Clear warnings
+
+        const isExcel = selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
+
+        if (isExcel) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: "array" });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: "" });
+
+                const { data: parsed, errors: parseErrors } = processParsedData(jsonData);
+                setParsedData(parsed);
+                setErrors(parseErrors);
+                if (parsed.length > 0) setStep("preview");
+            };
+            reader.readAsArrayBuffer(selectedFile);
+        } else {
+            // Assume CSV
+            Papa.parse(selectedFile, {
+                header: true,
+                skipEmptyLines: true,
+                complete: (results) => {
+                    const { data: parsed, errors: parseErrors } = processParsedData(results.data);
+                    setParsedData(parsed);
+                    setErrors(parseErrors);
+                    if (parsed.length > 0) setStep("preview");
+                },
+                error: (err) => {
+                    setErrors([{ row: 0, message: "Erro ao ler CSV: " + err.message }]);
+                }
+            });
+        }
+    };
 
     // Handle file selection
     const handleFileChange = (e) => {
@@ -292,24 +355,6 @@ const BulkImportModal = ({
         if (selectedFile) {
             processFile(selectedFile);
         }
-    };
-
-    // Process uploaded file
-    const processFile = (selectedFile) => {
-        setFile(selectedFile);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const text = e.target?.result;
-            if (typeof text === "string") {
-                const { data, errors: parseErrors } = parseCSV(text);
-                setParsedData(data);
-                setErrors(parseErrors);
-                if (data.length > 0) {
-                    setStep("preview");
-                }
-            }
-        };
-        reader.readAsText(selectedFile, "UTF-8");
     };
 
     // Drag and drop
@@ -324,7 +369,7 @@ const BulkImportModal = ({
         e.stopPropagation();
         setDragActive(false);
         const droppedFile = e.dataTransfer.files?.[0];
-        if (droppedFile?.name.endsWith(".csv")) {
+        if (droppedFile && (droppedFile.name.endsWith(".csv") || droppedFile.name.endsWith(".xls") || droppedFile.name.endsWith(".xlsx"))) {
             processFile(droppedFile);
         }
     };
@@ -441,10 +486,16 @@ const BulkImportModal = ({
                 nmec: r.nmec,
                 faina_name: r.faina_name || null,
                 patrao_id: r.patrao_id,
+                course_id: r.course_id,
             }));
 
             const response = await FamilyService.bulkCreateUsers(usersToCreate);
             setResults(response);
+
+            // Add backend warnings to state
+            if (response.warnings && response.warnings.length > 0) {
+                setWarnings(prev => [...prev, ...response.warnings]);
+            }
 
             if (response.total_created > 0) {
                 setStep("assign");
@@ -685,7 +736,7 @@ const BulkImportModal = ({
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
                 >
-                    <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleFileChange} />
+                    <input ref={fileInputRef} type="file" accept=".csv, .xlsx, .xls" className="hidden" onChange={handleFileChange} />
 
                     <div className="flex flex-col items-center text-center">
                         <div className={classNames(
@@ -694,10 +745,11 @@ const BulkImportModal = ({
                         )}>
                             <MaterialSymbol icon="upload_file" size={32} />
                         </div>
-                        <h5 className="font-semibold text-lg mb-1">Carregar Ficheiro CSV</h5>
+                        <h5 className="font-semibold text-lg mb-1">Carregar Ficheiro</h5>
                         <p className="text-sm text-base-content/60">
                             {dragActive ? "Larga o ficheiro aqui!" : "Tem o ficheiro pronto? Clique para carregar ou arraste-o."}
                         </p>
+                        <p className="text-xs text-base-content/40 mt-1">Suporta .csv, .xlsx</p>
                     </div>
                 </div>
 
@@ -715,6 +767,8 @@ const BulkImportModal = ({
                     </div>
                 </div>
             </div>
+
+
 
             {/* Parse errors */}
             {errors.length > 0 && parsedData.length === 0 && (
@@ -922,23 +976,97 @@ const BulkImportModal = ({
         </div>
     );
 
+    // Export errors to CSV
+    const handleExportErrors = () => {
+        if (!results?.errors?.length) return;
+
+        const BOM = "\uFEFF";
+        const headers = ["row", "name", "error"];
+        const rows = results.errors.map(e => {
+            const rowIdx = e.row + 1;
+            const name = e.data?.name || `Linha ${rowIdx}`;
+            const msg = e.message.replace(/"/g, '""');
+            return `${rowIdx},"${name}","${msg}"`;
+        });
+
+        const csvContent = BOM + headers.join(",") + "\n" + rows.join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "erros_importacao.csv";
+        link.click();
+        URL.revokeObjectURL(link.href);
+    };
+
     // Render results step with preview
     const renderResultsStep = () => (
         <div className="space-y-6">
             {/* Summary */}
-            <div className={classNames("rounded-xl p-6 text-center", results?.total_errors === 0 ? "bg-success/10" : "bg-warning/10")}>
-                <MaterialSymbol icon={results?.total_errors === 0 ? "check_circle" : "warning"} size={48} className={results?.total_errors === 0 ? "text-success" : "text-warning"} />
-                <h3 className="text-xl font-bold mt-3">{results?.total_created || 0} membro(s) criado(s)</h3>
+            <div className={classNames("rounded-xl p-6 text-center border-2",
+                results?.total_errors === 0 && warnings.length === 0 ? "bg-success/5 border-success/10" :
+                    results?.total_errors === 0 ? "bg-warning/5 border-warning/10" : "bg-error/5 border-error/10"
+            )}>
+                <div className="flex justify-center mb-3">
+                    {results?.total_errors > 0 ? (
+                        <MaterialSymbol icon="error" size={48} className="text-error" />
+                    ) : warnings.length > 0 ? (
+                        <MaterialSymbol icon="warning" size={48} className="text-warning" />
+                    ) : (
+                        <MaterialSymbol icon="check_circle" size={48} className="text-success" />
+                    )}
+                </div>
+
+                <h3 className="text-xl font-bold">
+                    {results?.total_created > 0 ? "Importação Concluída" : "Importação Falhou"}
+                </h3>
+
+                <div className="flex flex-wrap justify-center gap-4 mt-2 text-sm">
+                    {results?.total_created > 0 && (
+                        <span className="text-success font-medium">
+                            Criou {results.total_created} membro(s)
+                        </span>
+                    )}
+                    {warnings.length > 0 && (
+                        <span className="text-warning font-medium">
+                            {warnings.length} aviso(s)
+                        </span>
+                    )}
+                    {results?.total_errors > 0 && (
+                        <span className="text-error font-medium">
+                            {results.total_errors} erro(s)
+                        </span>
+                    )}
+                </div>
+
                 {results?.rolesAssigned > 0 && <p className="text-success text-sm mt-1">{results.rolesAssigned} insignia(s) atribuida(s)</p>}
-                {results?.total_errors > 0 && <p className="text-base-content/60 mt-1">{results.total_errors} erro(s)</p>}
             </div>
+
+            {/* Warnings */}
+            {warnings.length > 0 && (
+                <div className="collapse collapse-arrow border border-warning/20 bg-warning/5 rounded-xl">
+                    <input type="checkbox" />
+                    <div className="collapse-title font-medium flex items-center gap-2 text-warning">
+                        <MaterialSymbol icon="warning" size={20} />
+                        Avisos ({warnings.length})
+                    </div>
+                    <div className="collapse-content">
+                        <div className="max-h-32 overflow-y-auto space-y-1 pr-2">
+                            {warnings.map((w, i) => (
+                                <div key={i} className="text-sm p-2 rounded bg-warning/10 border border-warning/10">
+                                    {w}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Preview - Table view */}
             {results?.created?.length > 0 && (
                 <div>
                     <h4 className="font-medium mb-3 flex items-center gap-2">
                         <MaterialSymbol icon="table_rows" size={20} className="text-primary" />
-                        Preview - Como ficam na tabela
+                        Membros Criados
                     </h4>
                     <div className="overflow-x-auto border border-base-content/10 rounded-lg">
                         <table className="table table-sm w-full">
@@ -957,7 +1085,7 @@ const BulkImportModal = ({
                                     const patrao = user.patrao_id ? allUsers.find(u => u._id === user.patrao_id) : null;
                                     const roles = userRoles[idx] || [];
                                     return (
-                                        <tr key={user._id}>
+                                        <tr key={user._id || idx}>
                                             <td className="font-medium">{user.name}</td>
                                             <td>{user.sex}</td>
                                             <td>{user.start_year}</td>
@@ -984,47 +1112,29 @@ const BulkImportModal = ({
                 </div>
             )}
 
-            {/* Preview - Tree view simulation */}
-            {results?.created?.length > 0 && (
-                <div>
-                    <h4 className="font-medium mb-3 flex items-center gap-2">
-                        <MaterialSymbol icon="account_tree" size={20} className="text-secondary" />
-                        Preview - Como ficam na arvore
-                    </h4>
-                    <div className="bg-base-200/30 rounded-xl p-4">
-                        <div className="flex flex-wrap gap-3">
-                            {results.created.slice(0, 8).map((user, idx) => (
-                                <div key={user._id} className="flex flex-col items-center gap-1">
-                                    <div
-                                        className="w-12 h-12 rounded-full border-3 overflow-hidden"
-                                        style={{ borderColor: colors[user.start_year % colors.length] }}
-                                    >
-                                        <img src={user.image || (user.sex === 'F' ? femalePic : malePic)} alt="" className="w-full h-full object-cover" />
-                                    </div>
-                                    <span className="text-xs font-medium truncate max-w-[70px]" title={user.name}>
-                                        {user.name.split(" ")[0]}
-                                    </span>
-                                    <span className="text-[10px] text-base-content/50">{user.start_year}</span>
-                                </div>
-                            ))}
-                            {results.created.length > 8 && (
-                                <div className="flex flex-col items-center justify-center text-base-content/40">
-                                    <span className="text-sm">+{results.created.length - 8}</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
+
 
             {/* Errors */}
             {results?.errors?.length > 0 && (
                 <div>
-                    <h4 className="font-medium mb-2 text-error">Erros</h4>
-                    <div className="max-h-32 overflow-y-auto space-y-1">
+                    <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-error flex items-center gap-2">
+                            <MaterialSymbol icon="error" size={20} />
+                            Erros ({results.errors.length})
+                        </h4>
+                        <button
+                            onClick={handleExportErrors}
+                            className="btn btn-xs btn-outline btn-error gap-1"
+                        >
+                            <MaterialSymbol icon="download" size={14} />
+                            Exportar CSV
+                        </button>
+                    </div>
+                    <div className="max-h-32 overflow-y-auto space-y-1 border border-error/20 rounded-lg p-2 bg-error/5">
                         {results.errors.map((err, i) => (
-                            <div key={i} className="text-sm bg-error/10 rounded-lg p-2">
-                                <span className="font-mono text-xs">Linha {err.row + 1}:</span> {err.message}
+                            <div key={i} className="text-sm p-2 rounded hover:bg-white/50 flex gap-2">
+                                <span className="font-mono text-xs font-bold opacity-50 shrink-0">L{err.row + 1}</span>
+                                <span>{err.message}</span>
                             </div>
                         ))}
                     </div>
