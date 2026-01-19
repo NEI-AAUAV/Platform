@@ -38,6 +38,7 @@ class CRUDUser:
         search: Optional[str] = None,
         year: Optional[int] = None,
         role_id: Optional[str] = None,
+        role_year: Optional[int] = None,
         sort_by: Optional[str] = "name",
         order: Optional[str] = "asc"
     ) -> List[dict]:
@@ -58,10 +59,13 @@ class CRUDUser:
             from app.db.db import UserRole
             # Use regex to allow filtering by parent organization (prefix match)
             # role_id ".1." should match ".1.2." etc.
-            query_filter = {"role_id": {"$regex": f"^{re.escape(role_id)}"}}
+            role_query = {"role_id": {"$regex": f"^{re.escape(role_id)}"}}
+            # Also filter by year if provided
+            if role_year is not None:
+                role_query["year"] = role_year
             user_ids = [
                 ur["user_id"] 
-                for ur in UserRole.find(query_filter)
+                for ur in UserRole.find(role_query)
             ]
             query["_id"] = {"$in": user_ids}
         
@@ -120,54 +124,16 @@ class CRUDUser:
         
         results = list(self.collection.aggregate(pipeline))
         
-        # Enrich roles with org_name for frontend display
+        # Enrich roles with org_name, role_name, icon, etc. for frontend display
         if results:
             org_short_map = self._build_org_short_map()
             for user in results:
-                updated_roles = []
+                user_sex = user.get("sex")
                 for role in user.get("user_roles", []):
                     try:
-                        if "_id" in role:
-                            role["_id"] = str(role["_id"])
-                        if not role.get("org_name"):
-                            role["org_name"] = self._get_org_short(role.get("role_id"), org_short_map)
-                        
-                        # Add format info
-                        role_id_key = role.get("role_id")
-                        # Robust lookup for role_name (handle trailing dots mismatch)
-                        lookup_key = role_id_key
-                        if lookup_key not in org_short_map:
-                            if lookup_key.endswith("."):
-                                diff_key = lookup_key.rstrip(".")
-                                if diff_key in org_short_map:
-                                    lookup_key = diff_key
-                            else:
-                                diff_key = lookup_key + "."
-                                if diff_key in org_short_map:
-                                    lookup_key = diff_key
-
-                        if lookup_key in org_short_map:
-                             # Use specific role name
-                             role["role_name"] = org_short_map[lookup_key].get("name")
-                             role["year_display_format"] = org_short_map[lookup_key].get("format", "civil")
-                             # Use inherited icon (traverse up hierarchy if not defined)
-                             role["icon"] = self._get_inherited_icon(lookup_key, org_short_map)
-                             # Check hidden status (normalize None to False)
-                             hidden = org_short_map[lookup_key].get("hidden")
-                             role["hidden"] = hidden if hidden is not None else False
-                        else:
-                             # Fallback to org_name if specific role is truly not found
-                             role["role_name"] = role.get("org_name")
-                             role["year_display_format"] = "civil"
-                             # Try inherited icon from role_id path
-                             role["icon"] = self._get_inherited_icon(role_id_key, org_short_map) if role_id_key else None
-                             role["hidden"] = False
-
-                        updated_roles.append(role)
-                    except Exception as e:
-                        print(f"Error processing role for user {user.get('_id')}: {e}")
-                        continue
-                user["user_roles"] = updated_roles
+                        self._enrich_role(role, org_short_map, user_sex)
+                    except (KeyError, TypeError) as e:
+                        logger.warning(f"Error processing role for user {user.get('_id')}: {e}")
                         
         return results
     
@@ -180,7 +146,8 @@ class CRUDUser:
         query: dict = None,
         search: Optional[str] = None,
         year: Optional[int] = None,
-        role_id: Optional[str] = None
+        role_id: Optional[str] = None,
+        role_year: Optional[int] = None
     ) -> int:
         """Count users matching query."""
         q = query.copy() if query else {}
@@ -191,10 +158,13 @@ class CRUDUser:
         if role_id:
             # First find users with this role in user_roles
             from app.db.db import UserRole
-            query_filter = {"role_id": {"$regex": f"^{re.escape(role_id)}"}}
+            role_query = {"role_id": {"$regex": f"^{re.escape(role_id)}"}}
+            # Also filter by year if provided
+            if role_year is not None:
+                role_query["year"] = role_year
             user_ids = [
                 ur["user_id"] 
-                for ur in UserRole.find(query_filter)
+                for ur in UserRole.find(role_query)
             ]
             # Handle potential conflict if _id is already filtered (unlikely for count but safe to handle)
             if "_id" in q:
@@ -292,6 +262,7 @@ class CRUDUser:
                 "short": r.get("short"), 
                 "format": r.get("year_display_format", "civil"),
                 "name": r.get("name"),
+                "female_name": r.get("female_name"),
                 "icon": r.get("icon"),
                 "hidden": r.get("hidden", False)
             }
@@ -303,25 +274,22 @@ class CRUDUser:
         Get org short name for a role_id by traversing up the hierarchy.
         role_id format: ".1.5.9." means Faina > CF > Mestre de Curso
         We need to find the first parent that has a short name.
-        Falls back to role name if no short code is found.
+        Falls back to role name if no short code is found anywhere in hierarchy.
         """
         if not role_id:
             return None
         
-        # Try exact match first - ONLY if it has a short name
-        if role_id in org_map and org_map[role_id]["short"]:
-            return org_map[role_id]["short"]
-        
-        # Traverse up the hierarchy
-        # ".1.5.9." -> [".1.5.", ".1."]
+        # ALWAYS traverse up to find the best short code first
+        # This ensures all NEI roles get "NEI", not their individual role names
         parts = role_id.rstrip('.').split('.')
-        for i in range(len(parts) - 1, 0, -1):
-            parent_path = '.'.join(parts[:i]) + '.'
-            if parent_path in org_map and org_map[parent_path]["short"]:
-                return org_map[parent_path]["short"]
         
-        # Fallback: if no short found, return the role name as identifier
-        # This ensures we always have a human-readable org_name
+        # Check from current level up to root for a short code
+        for i in range(len(parts), 0, -1):
+            path = '.'.join(parts[:i]) + '.'
+            if path in org_map and org_map[path].get("short"):
+                return org_map[path]["short"]
+        
+        # Fallback: if no short found anywhere, return the current role's name
         if role_id in org_map and org_map[role_id].get("name"):
             return org_map[role_id]["name"]
         
@@ -375,6 +343,84 @@ class CRUDUser:
                     return icon
         
         return None
+
+    def _get_inherited_format(self, role_id: str, org_map: dict) -> str:
+        """
+        Get year_display_format for a role_id by traversing up the hierarchy.
+        If a role doesn't define format, inherit from parent.
+        role_id format: ".2.14." -> checks .2.14., .2. in order
+        Returns: 'civil' or 'academic'
+        """
+        if not role_id:
+            return "civil"
+        
+        # Try exact match first
+        if role_id in org_map:
+            fmt = org_map[role_id].get("format")
+            if fmt:  # Has own format defined
+                return fmt
+        
+        # Traverse up the hierarchy looking for format
+        # ".2.14." -> [".2."]
+        parts = role_id.rstrip('.').split('.')
+        for i in range(len(parts) - 1, 0, -1):
+            parent_path = '.'.join(parts[:i]) + '.'
+            if parent_path in org_map:
+                fmt = org_map[parent_path].get("format")
+                if fmt:
+                    return fmt
+        
+        return "civil"
+
+    def _normalize_role_key(self, role_id: str, org_map: dict) -> str:
+        """Normalize role_id to match org_map keys (handles trailing dot mismatch)."""
+        if not role_id or role_id in org_map:
+            return role_id
+        
+        # Try with/without trailing dot
+        alt_key = role_id.rstrip('.') if role_id.endswith('.') else role_id + '.'
+        return alt_key if alt_key in org_map else role_id
+
+    def _enrich_role(self, role: dict, org_map: dict, user_sex: str = None) -> None:
+        """Enrich a single role dict with org_name, role_name, icon, hidden, format.
+        
+        Args:
+            role: The role dict to enrich
+            org_map: Map of role_id paths to role info
+            user_sex: Sex of the user ('M' or 'F') for feminine role names
+        """
+        # Serialize ObjectId if present
+        if "_id" in role:
+            role["_id"] = str(role["_id"])
+        
+        role_id = role.get("role_id", "")
+        
+        # Ensure org_name is human-readable
+        org_name = role.get("org_name")
+        if not org_name or (isinstance(org_name, str) and org_name.startswith(".")):
+            role["org_name"] = self._get_org_short(role_id, org_map)
+        
+        # Normalize role_id for lookup
+        lookup_key = self._normalize_role_key(role_id, org_map)
+        
+        if lookup_key in org_map:
+            role_info = org_map[lookup_key]
+            # Use female_name if user is female and role has feminine variant
+            if user_sex == "F" and role_info.get("female_name"):
+                role["role_name"] = role_info.get("female_name")
+            else:
+                role["role_name"] = role_info.get("name")
+            # Use inherited format (traverses up hierarchy if not defined on this role)
+            role["year_display_format"] = self._get_inherited_format(lookup_key, org_map)
+            role["icon"] = self._get_inherited_icon(lookup_key, org_map)
+            hidden = role_info.get("hidden")
+            role["hidden"] = hidden if hidden is not None else False
+        else:
+            # Fallback for unknown roles - still try to inherit format
+            role["role_name"] = role.get("org_name")
+            role["year_display_format"] = self._get_inherited_format(role_id, org_map) if role_id else "civil"
+            role["icon"] = self._get_inherited_icon(role_id, org_map) if role_id else None
+            role["hidden"] = self._get_inherited_hidden(role_id, org_map) if role_id else False
 
     
     def _build_tree(self) -> Tuple[dict, List[dict], int]:
@@ -445,42 +491,11 @@ class CRUDUser:
         # Build role short name lookup (fallback for roles without org_name)
         org_short_map = self._build_org_short_map()
         
-        # Add org_name if not already present or if it looks like a role_id path
+        # Enrich roles with org_name, role_name, icon, etc.
         for user in all_users:
+            user_sex = user.get("sex")
             for role in user.get("user_roles", []):
-                org_name = role.get("org_name")
-                # Ensure org_name is a human-readable value, not a role_id path
-                if not org_name or (isinstance(org_name, str) and org_name.startswith(".")):
-                    role_id = role.get("role_id", "")
-                    role["org_name"] = self._get_org_short(role_id, org_short_map)
-                
-                # Add role_name and format logic here too (duplicate of get_multi but necessary for Tree)
-                role_id_key = role.get("role_id")
-                # Robust lookup for role_name
-                lookup_key = role_id_key
-                if lookup_key not in org_short_map:
-                    if lookup_key.endswith("."):
-                        diff_key = lookup_key.rstrip(".")
-                        if diff_key in org_short_map:
-                            lookup_key = diff_key
-                    else:
-                        diff_key = lookup_key + "."
-                        if diff_key in org_short_map:
-                            lookup_key = diff_key
-
-                if lookup_key in org_short_map:
-                        role["role_name"] = org_short_map[lookup_key].get("name")
-                        role["year_display_format"] = org_short_map[lookup_key].get("format", "civil")
-                        # Use inherited icon (traverse up hierarchy if not defined)
-                        role["icon"] = self._get_inherited_icon(lookup_key, org_short_map)
-                        # Check hidden status (independent, not inherited)
-                        role["hidden"] = self._get_inherited_hidden(lookup_key, org_short_map)
-                else:
-                        role["role_name"] = role.get("org_name")
-                        role["year_display_format"] = "civil"
-                        # For unknown roles, try to get inherited icon and check hidden status
-                        role["icon"] = self._get_inherited_icon(role_id_key, org_short_map) if role_id_key else None
-                        role["hidden"] = self._get_inherited_hidden(role_id_key, org_short_map) if role_id_key else False
+                self._enrich_role(role, org_short_map, user_sex)
         
         # Create lookup dict by ID with children arrays
         users_by_id = {u["_id"]: {**u, "children": []} for u in all_users}
@@ -563,6 +578,51 @@ class CRUDUser:
             result_count = total
         
         return roots, result_count
+    
+    def get_existing_ids(self, ids: List[int]) -> List[int]:
+        """
+        Batch lookup: return list of IDs that exist in the database.
+        Much more efficient than calling exists() N times.
+        """
+        if not ids:
+            return []
+        result = self.collection.find(
+            {"_id": {"$in": ids}},
+            {"_id": 1}
+        )
+        return [doc["_id"] for doc in result]
+    
+    def check_cycle(self, target_user_id: int, new_patrao_id: int) -> bool:
+        """
+        Check if setting new_patrao_id as parent of target_user_id would create a cycle.
+        Returns True if a cycle would be created (invalid), False otherwise.
+        
+        Example: If A -> B -> C, setting C as patrao of A would create cycle.
+        """
+        if new_patrao_id is None:
+            return False  # No cycle if becoming root
+        
+        if target_user_id == new_patrao_id:
+            return True  # Direct self-reference
+        
+        # Traverse up from new_patrao_id to check if we reach target_user_id
+        visited = set()
+        current_id = new_patrao_id
+        
+        while current_id is not None:
+            if current_id in visited:
+                # Already a cycle in existing data (shouldn't happen but safe)
+                return True
+            if current_id == target_user_id:
+                return True  # Would create cycle
+            
+            visited.add(current_id)
+            user = self.get(current_id)
+            if not user:
+                break  # User not found, no cycle possible
+            current_id = user.get("patrao_id")
+        
+        return False
     
     def create(self, *, obj_in: UserCreate) -> dict:
         """Create new user."""

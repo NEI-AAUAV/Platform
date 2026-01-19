@@ -330,7 +330,9 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 // (Optional: add toast here if system had one)
             }
         } catch (err) {
-            setError(err.response?.data?.detail || err.message || "Erro ao guardar");
+            const errorMessage = err.response?.data?.detail || err.message || "Erro ao guardar";
+            console.error("[UserForm] Save error:", err.response?.data || err);
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -738,14 +740,15 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                 </div>
                                             )}
 
-                                            {/* Error message */}
-                                            {error && (
-                                                <div className="alert alert-error text-sm">
-                                                    <MaterialSymbol icon="error" size={20} />
-                                                    <span>{error}</span>
-                                                </div>
-                                            )}
                                         </div>
+
+                                        {/* Error message - OUTSIDE scroll area for visibility */}
+                                        {error && (
+                                            <div className="mx-6 mb-2 alert alert-error text-sm shadow-lg">
+                                                <MaterialSymbol icon="error" size={20} />
+                                                <span>{error}</span>
+                                            </div>
+                                        )}
 
                                         {/* Footer */}
                                         <div className="flex flex-shrink-0 items-center gap-3 border-t border-base-content/10 bg-base-200/50 px-6 py-4">

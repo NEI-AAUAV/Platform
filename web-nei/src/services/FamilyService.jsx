@@ -96,6 +96,18 @@ const FamilyService = {
         return await client.delete(`/user/${id}`);
     },
 
+    /**
+     * Create multiple users in bulk (requires MANAGER_FAMILY scope)
+     * @param {Array} users - Array of user objects to create
+     * @returns {Promise} Bulk create response with created users and errors
+     */
+    async bulkCreateUsers(users, options = {}) {
+        const { dry_run = false, atomic = false } = options;
+        return await client.post("/user/bulk", users, {
+            params: { dry_run, atomic }
+        });
+    },
+
     // ============================================================
     // Course Endpoints
     // ============================================================
