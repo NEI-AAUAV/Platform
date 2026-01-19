@@ -13,6 +13,7 @@ from app.schemas.user import (
     UserCreate, UserUpdate, UserInDB, UserList,
     UserBulkCreate, BulkCreateError, BulkCreateResponse
 )
+from app.constants import DEFAULT_SKIP, DEFAULT_LIMIT, MAX_LIMIT
 
 
 
@@ -21,8 +22,8 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=UserList)
 def get_users(
-    skip: int = Query(default=0, ge=0, description="Number of records to skip"),
-    limit: int = Query(default=100, ge=1, le=500, description="Max records to return"),
+    skip: int = Query(default=DEFAULT_SKIP, ge=0, description="Number of records to skip"),
+    limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT, description="Max records to return"),
     start_year_gte: Optional[int] = Query(default=None, alias="from_year", description="Filter by start_year >= value"),
     patrao_id: Optional[int] = Query(default=None, description="Filter by patrao_id"),
     search: Optional[str] = Query(default=None, description="Search by name (case-insensitive)"),
@@ -316,11 +317,27 @@ def create_users_bulk(
             
             # Add newly created user to existing_patrao_ids for subsequent rows
             existing_patrao_ids.add(user["_id"])
-        except Exception as e:
+        except ValueError as e:
+            # Validation errors (e.g., invalid data format)
             errors.append(BulkCreateError(
                 row=idx,
                 data=data_dict,
-                message=str(e)
+                message=f"Erro de validação: {str(e)}"
+            ))
+        except HTTPException as e:
+            # Business logic errors from CRUD layer
+            errors.append(BulkCreateError(
+                row=idx,
+                data=data_dict,
+                message=e.detail if hasattr(e, 'detail') else str(e)
+            ))
+        except Exception as e:
+            # Unexpected errors - log full traceback for debugging
+            logger.exception(f"Unexpected error creating user at row {idx}: {e}")
+            errors.append(BulkCreateError(
+                row=idx,
+                data=data_dict,
+                message=f"Erro inesperado: {str(e)}"
             ))
     
     # Log the operation

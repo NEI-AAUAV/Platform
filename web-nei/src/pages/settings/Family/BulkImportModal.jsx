@@ -169,13 +169,20 @@ const BulkImportModal = ({
         const trimmed = value.toString().trim();
         if (!trimmed) return { id: null, resolved: true, user: null };
 
+        // DEBUG: Log resolution attempt
+        console.log(`[resolvePatrao] Trying to resolve: "${trimmed}"`);
+        console.log(`[resolvePatrao] allUsers count: ${allUsers.length}`);
+        console.log(`[resolvePatrao] userMap.byName keys sample:`, Object.keys(userMap.byName).slice(0, 10));
+
         // Try as nmec or ID first
         const asNum = parseInt(trimmed);
         if (!isNaN(asNum)) {
             if (userMap.byNmec[asNum]) {
+                console.log(`[resolvePatrao] Found by nmec: ${asNum}`);
                 return { id: userMap.byNmec[asNum]._id, resolved: true, user: userMap.byNmec[asNum] };
             }
             if (userMap.byId[asNum]) {
+                console.log(`[resolvePatrao] Found by ID: ${asNum}`);
                 return { id: asNum, resolved: true, user: userMap.byId[asNum] };
             }
         }
@@ -183,20 +190,27 @@ const BulkImportModal = ({
         // Try exact name match
         const nameLower = trimmed.toLowerCase();
         const matches = userMap.byName[nameLower];
+        console.log(`[resolvePatrao] Exact name match for "${nameLower}":`, matches);
         if (matches?.length === 1) {
+            console.log(`[resolvePatrao] Found exact name match: ${matches[0].name}`);
             return { id: matches[0]._id, resolved: true, user: matches[0] };
         } else if (matches?.length > 1) {
+            console.log(`[resolvePatrao] Ambiguous: ${matches.length} matches`);
             return { id: null, resolved: false, ambiguous: true, matches };
         }
 
         // Partial match
         const partial = allUsers.filter(u => u.name?.toLowerCase().includes(nameLower));
+        console.log(`[resolvePatrao] Partial matches for "${nameLower}":`, partial.length);
         if (partial.length === 1) {
+            console.log(`[resolvePatrao] Found partial match: ${partial[0].name}`);
             return { id: partial[0]._id, resolved: true, user: partial[0] };
         } else if (partial.length > 1) {
+            console.log(`[resolvePatrao] Ambiguous partial: ${partial.length} matches`);
             return { id: null, resolved: false, ambiguous: true, matches: partial.slice(0, 5) };
         }
 
+        console.log(`[resolvePatrao] NOT FOUND: "${trimmed}"`);
         return { id: null, resolved: false, notFound: true };
     }, [userMap, allUsers]);
 
@@ -604,7 +618,7 @@ const BulkImportModal = ({
                             <div className="bg-base-200/50 rounded-lg p-3 mb-4 space-y-2 text-sm">
                                 <p><strong className="text-primary">Colunas Obrigatórias:</strong><br />name, sex (M/F), start_year (ex: 24)</p>
                                 <p><strong className="text-primary">Patrão:</strong><br />Pode usar o Nome, NMEC ou ID interno.</p>
-                                <p className="text-xs text-base-content/50 mt-2">Nota: Ao guardar, escolhe formato CSV UFT-8.</p>
+                                <p className="text-xs text-base-content/50 mt-2">Nota: Ao guardar, escolhe formato CSV UTF-8.</p>
                             </div>
 
                             {/* Column checkboxes */}
@@ -931,7 +945,7 @@ const BulkImportModal = ({
             <div className="bg-success/10 rounded-xl p-4 text-center">
                 <MaterialSymbol icon="check_circle" size={40} className="text-success" />
                 <h3 className="font-bold text-lg mt-2">{results?.total_created} membro(s) criado(s)!</h3>
-                <p className="text-sm text-base-content/60 mt-1">Atribui insignias individualmente (opcional)</p>
+                <p className="text-sm text-base-content/60 mt-1">Atribui insígnias individualmente (opcional)</p>
             </div>
 
             <div className="max-h-60 overflow-y-auto space-y-2">
@@ -1161,7 +1175,7 @@ const BulkImportModal = ({
                     className="relative bg-base-100 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
                 >
                     <div className="p-4 border-b border-base-content/10">
-                        <h4 className="font-bold">Escolher Patrao para "{row.name}"</h4>
+                        <h4 className="font-bold">Escolher Patrão para "{row.name}"</h4>
                         <p className="text-xs text-base-content/60">Pesquisa por nome, nmec ou ID</p>
                     </div>
 
@@ -1196,7 +1210,7 @@ const BulkImportModal = ({
                             <div className="w-10 h-10 rounded-full bg-base-200 flex items-center justify-center">
                                 <MaterialSymbol icon="person_off" size={20} className="text-base-content/40" />
                             </div>
-                            <span className="text-base-content/60">Sem patrao (raiz)</span>
+                            <span className="text-base-content/60">Sem patrão (raiz)</span>
                         </button>
                     </div>
 
