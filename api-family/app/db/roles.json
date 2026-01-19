@@ -1,483 +1,587 @@
-[{
-	"_id": ".1.",
-	"name": "Faina Académica",
-	"super_roles": "",
-	"show": true,
-	"hidden": false,
-	"icon": "/icons/faina.svg",
-	"female_name": "",
-	"short": "",
-	"year_display_format": "civil"
-},
-{
-	"_id": ".2.",
-	"name": "Núcleo de Estudantes de Informática",
-	"short": "NEI",
-	"super_roles": "",
-	"show": true,
-	"female_name": "",
-	"year_display_format": "academic",
-	"icon": "/icons/nei.svg"
-},
-{
-	"_id": ".3.",
-	"name": "Associação de Electrónica, Telecomunicações e Telemática da Universidade de Aveiro",
-	"short": "AETTUA",
-	"super_roles": "",
-	"show": true,
-	"icon": "/icons/aettua.svg"
-},
-{
-	"_id": ".4.",
-	"name": "Associação Académica da Universidade de Aveiro",
-	"short": "AAUAv",
-	"super_roles": "",
-	"show": true,
-	"female_name": "",
-	"hidden": false,
-	"icon": "/icons/aauav.svg",
-	"year_display_format": "civil"
-},
-{
-	"_id": ".1.5.",
-	"name": "Comissão de Faina",
-	"short": "CF",
-	"super_roles": ".1.",
-	"show": false,
-	"female_name": "",
-	"hidden": false,
-	"icon": "/icons/anzol.svg",
-	"year_display_format": "civil"
-},
-{
-	"_id": ".1.6.",
-	"name": "Conselho do Salgado",
-	"short": "CS",
-	"super_roles": ".1.",
-	"show": false,
-	"icon": "/icons/sal.svg"
-},
-{
-	"_id": ".1.7.",
-	"name": "Salgadíssima Trindade",
-	"short": "ST",
-	"super_roles": ".1.",
-	"show": true,
-	"hidden": false,
-	"icon": "/icons/faina.svg",
-	"female_name": "",
-	"year_display_format": "civil"
-},
-{
-	"_id": ".1.8.",
-	"name": "Conselho de Cagaréus",
-	"short": "CC",
-	"super_roles": ".1.",
-	"show": true,
-	"hidden": false,
-	"icon": "/icons/faina.svg",
-	"female_name": "",
-	"year_display_format": "civil"
-},
-{
-	"_id": ".1.5.9.",
-	"name": "Mestre de Curso",
-	"super_roles": ".1.5.",
-	"show": true,
-	"female_name": "",
-	"hidden": false,
-	"icon": "",
-	"short": "",
-	"year_display_format": "civil"
-},
-{
-	"_id": ".1.5.10.",
-	"name": "Arrais",
-	"female_name": "Varina",
-	"super_roles": ".1.5.",
-	"show": false
-},
-{
-	"_id": ".1.7.11.",
-	"name": "Mestre do Salgado",
-	"super_roles": ".1.7.",
-	"show": false,
-	"icon": "/icons/pa.svg"
-},
-{
-	"_id": ".1.7.12.",
-	"name": "Mestre Pescador",
-	"super_roles": ".1.7.",
-	"show": false,
-	"icon": "/icons/lenco.svg"
-},
-{
-	"_id": ".1.7.13.",
-	"name": "Mestre Escrivão",
-	"super_roles": ".1.7.",
-	"show": false,
-	"icon": "/icons/rol.svg",
-	"female_name": "",
-	"hidden": false,
-	"short": "",
-	"year_display_format": "civil"
-},
-{
-	"_id": ".2.14.",
-	"name": "Coordenador",
-	"female_name": "Coordenadora",
-	"super_roles": ".2.",
-	"show": false,
-	"short": ""
-},
-{
-	"_id": ".2.15.",
-	"name": "Responsável Financeiro",
-	"short": "RF",
-	"female_name": "Responsável Financeira",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.16.",
-	"name": "Presidente da Mesa da RGM",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.17.",
-	"name": "Primeiro Secretário da Mesa da RGM",
-	"female_name": "Primeira Secretária da Mesa da RGM",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.18.",
-	"name": "Segundo Secretário da Mesa da RGM",
-	"female_name": "Segunda Secretária da Mesa da RGM",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.19.",
-	"name": "Vogal da Secção Académica",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.20.",
-	"name": "Vogal da Secção Académica e Desportiva",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.21.",
-	"name": "Vogal da Secção Académica-Desportiva",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.22.",
-	"name": "Vogal da Secção Administrativa",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.23.",
-	"name": "Vogal da Secção Administrativa, Relações Externas e Merchandising",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.24.",
-	"name": "Vogal da Secção Comunicação e Imagem",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.25.",
-	"name": "Vogal da Secção Desportiva",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.26.",
-	"name": "Vogal da Secção Informativa",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.27.",
-	"name": "Vogal da Secção Pedagógica",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.28.",
-	"name": "Vogal da Secção Pedagógica e Social",
-	"super_roles": ".2.",
-	"show": false,
-	"female_name": "",
-	"short": "",
-	"year_display_format": "academic"
-},
-{
-	"_id": ".2.29.",
-	"name": "Vogal da Secção da Administração Interna",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.30.",
-	"name": "Vogal da Secção da Administração Interna e Merchandising",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".2.31.",
-	"name": "Vogal da Secção da Comunicação e Imagem",
-	"super_roles": ".2.",
-	"show": false
-},
-{
-	"_id": ".3.32.",
-	"name": "Direção",
-	"super_roles": ".3.",
-	"show": false
-},
-{
-	"_id": ".3.33.",
-	"name": "Mesa da Assembleia",
-	"super_roles": ".3.",
-	"show": false
-},
-{
-	"_id": ".3.34.",
-	"name": "Conselho Fiscal",
-	"super_roles": ".3.",
-	"show": false
-},
-{
-	"_id": ".3.32.35.",
-	"name": "Presidente",
-	"super_roles": ".3.32.",
-	"show": false
-},
-{
-	"_id": ".3.32.36.",
-	"name": "Vice-Presidente",
-	"super_roles": ".3.32.",
-	"show": false
-},
-{
-	"_id": ".3.32.37.",
-	"name": "Tesoureiro",
-	"female_name": "Tesoureira",
-	"super_roles": ".3.32.",
-	"show": false
-},
-{
-	"_id": ".3.32.38.",
-	"name": "Secretário",
-	"female_name": "Secretária",
-	"super_roles": ".3.32.",
-	"show": false
-},
-{
-	"_id": ".3.32.39.",
-	"name": "Vogal",
-	"super_roles": ".3.32.",
-	"show": false
-},
-{
-	"_id": ".3.33.40.",
-	"name": "Presidente",
-	"super_roles": ".3.33.",
-	"show": false
-},
-{
-	"_id": ".3.33.41.",
-	"name": "Primeiro Secretário",
-	"female_name": "Primeira Secretária",
-	"super_roles": ".3.33.",
-	"show": false
-},
-{
-	"_id": ".3.33.42.",
-	"name": "Segundo Secretário",
-	"female_name": "Segunda Secretária",
-	"super_roles": ".3.33.",
-	"show": false
-},
-{
-	"_id": ".3.33.43.",
-	"name": "Suplente",
-	"super_roles": ".3.33.",
-	"show": false
-},
-{
-	"_id": ".3.34.44.",
-	"name": "Presidente",
-	"super_roles": ".3.34.",
-	"show": false
-},
-{
-	"_id": ".3.34.45.",
-	"name": "Relator",
-	"female_name": "Relatora",
-	"super_roles": ".3.34.",
-	"show": false
-},
-{
-	"_id": ".3.34.46.",
-	"name": "Secretário",
-	"female_name": "Secretária",
-	"super_roles": ".3.34.",
-	"show": false
-},
-{
-	"_id": ".3.34.47.",
-	"name": "Suplente",
-	"super_roles": ".3.34.",
-	"show": false
-},
-{
-	"_id": ".4.48.",
-	"name": "Direção",
-	"super_roles": ".4.",
-	"show": false
-},
-{
-	"_id": ".4.49.",
-	"name": "Mesa da Assembeia Geral",
-	"super_roles": ".4.",
-	"show": false
-},
-{
-	"_id": ".4.50.",
-	"name": "Conselho Fiscal e Jurisdição",
-	"super_roles": ".4.",
-	"show": false
-},
-{
-	"_id": ".4.48.51.",
-	"name": "Presidente",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.48.52.",
-	"name": "Tesoureiro",
-	"female_name": "Tesoureira",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.48.53.",
-	"name": "Vice-Presidente Adjunta",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.48.54.",
-	"name": "Vice-Presidente de Comunicação e Imagem",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.48.55.",
-	"name": "Vice-Presidente de Desporto e Bem-Estar",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.48.56.",
-	"name": "Vice-Presidente de Administração Interna",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.48.57.",
-	"name": "Vice-Presidente do Apoio aos Núcleos",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.48.58.",
-	"name": "Vice-Presidente de Cultura",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.48.59.",
-	"name": "Vice-Presidente de Política Educativa",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.48.60.",
-	"name": "Vice-Presidente do Aveiro é Nosso",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.48.61.",
-	"name": "Vogal",
-	"super_roles": ".4.48.",
-	"show": false
-},
-{
-	"_id": ".4.49.62.",
-	"name": "Presidente",
-	"super_roles": ".4.49.",
-	"show": false
-},
-{
-	"_id": ".4.49.63.",
-	"name": "Vice-Presidente",
-	"super_roles": ".4.49.",
-	"show": false
-},
-{
-	"_id": ".4.49.64.",
-	"name": "Secretário",
-	"female_name": "Secretária",
-	"super_roles": ".4.49.",
-	"show": false
-},
-{
-	"_id": ".4.50.65.",
-	"name": "Presidente do CFJ",
-	"super_roles": ".4.50.",
-	"show": false
-},
-{
-	"_id": ".4.50.66.",
-	"name": "Vice-Presidente",
-	"super_roles": ".4.50.",
-	"show": false
-},
-{
-	"_id": ".4.50.67.",
-	"name": "Primeiro Secretário",
-	"female_name": "Primeira Secretária",
-	"super_roles": ".4.50.",
-	"show": false
-},
-{
-	"_id": ".4.50.68.",
-	"name": "Relator",
-	"female_name": "Relatora",
-	"super_roles": ".4.50.",
-	"show": false
-},
-{
-	"_id": ".2.32.",
-	"name": "Consoante da Secção Desportiva",
-	"short": "",
-	"female_name": "",
-	"super_roles": ".2.",
-	"show": false,
-	"year_display_format": "academic"
-}]
-
+[
+	{
+		"_id": ".1.",
+		"name": "Faina Académica",
+		"super_roles": "",
+		"show": false,
+		"hidden": false,
+		"icon": "/icons/faina.svg",
+		"female_name": "",
+		"short": "",
+		"year_display_format": "civil"
+	},
+	{
+		"_id": ".2.",
+		"name": "Núcleo de Estudantes de Informática",
+		"short": "NEI",
+		"super_roles": "",
+		"show": true,
+		"female_name": "",
+		"year_display_format": "academic",
+		"icon": "/icons/nei.svg"
+	},
+	{
+		"_id": ".3.",
+		"name": "Associação de Electrónica, Telecomunicações e Telemática da Universidade de Aveiro",
+		"short": "AETTUA",
+		"super_roles": "",
+		"show": true,
+		"icon": "/icons/aettua.svg"
+	},
+	{
+		"_id": ".4.",
+		"name": "Associação Académica da Universidade de Aveiro",
+		"short": "AAUAv",
+		"super_roles": "",
+		"show": true,
+		"female_name": "",
+		"hidden": false,
+		"icon": "/icons/aauav.svg",
+		"year_display_format": "civil"
+	},
+	{
+		"_id": ".1.5.",
+		"name": "Comissão de Faina",
+		"short": "CF",
+		"super_roles": ".1.",
+		"show": false,
+		"female_name": "",
+		"hidden": false,
+		"icon": "/icons/anzol.svg",
+		"year_display_format": "civil"
+	},
+	{
+		"_id": ".1.6.",
+		"name": "Conselho do Salgado",
+		"short": "CS",
+		"super_roles": ".1.",
+		"show": false,
+		"icon": "/icons/sal.svg"
+	},
+	{
+		"_id": ".1.7.",
+		"name": "Salgadíssima Trindade",
+		"short": "ST",
+		"super_roles": ".1.",
+		"show": true,
+		"hidden": false,
+		"icon": "/icons/faina.svg",
+		"female_name": "",
+		"year_display_format": "civil"
+	},
+	{
+		"_id": ".1.8.",
+		"name": "Conselho de Cagaréus",
+		"short": "CC",
+		"super_roles": ".1.",
+		"show": true,
+		"hidden": false,
+		"icon": "/icons/faina.svg",
+		"female_name": "",
+		"year_display_format": "civil"
+	},
+	{
+		"_id": ".1.5.9.",
+		"name": "Mestre de Curso",
+		"super_roles": ".1.5.",
+		"show": true,
+		"female_name": "",
+		"hidden": false,
+		"icon": "",
+		"short": "",
+		"year_display_format": "civil"
+	},
+	{
+		"_id": ".1.5.10.",
+		"name": "Arrais",
+		"female_name": "Varina",
+		"super_roles": ".1.5.",
+		"show": false
+	},
+	{
+		"_id": ".1.7.11.",
+		"name": "Mestre do Salgado",
+		"super_roles": ".1.7.",
+		"show": false,
+		"icon": "/icons/pa.svg"
+	},
+	{
+		"_id": ".1.7.12.",
+		"name": "Mestre Pescador",
+		"super_roles": ".1.7.",
+		"show": false,
+		"icon": "/icons/lenco.svg"
+	},
+	{
+		"_id": ".1.7.13.",
+		"name": "Mestre Escrivão",
+		"super_roles": ".1.7.",
+		"show": false,
+		"icon": "/icons/rol.svg",
+		"female_name": "",
+		"hidden": false,
+		"short": "",
+		"year_display_format": "civil"
+	},
+	{
+		"_id": ".2.14.",
+		"name": "Coordenador",
+		"female_name": "Coordenadora",
+		"super_roles": ".2.",
+		"show": false,
+		"short": "",
+		"hidden": false,
+		"icon": "",
+		"year_display_format": "academic"
+	},
+	{
+		"_id": ".2.15.",
+		"name": "Responsável Financeiro",
+		"short": "RF",
+		"female_name": "Responsável Financeira",
+		"super_roles": ".2.",
+		"show": false,
+		"hidden": false,
+		"icon": "",
+		"year_display_format": "academic"
+	},
+	{
+		"_id": ".2.16.",
+		"name": "Presidente da Mesa da RGM",
+		"super_roles": ".2.",
+		"show": false,
+		"female_name": "",
+		"hidden": false,
+		"icon": "",
+		"short": "",
+		"year_display_format": "academic"
+	},
+	{
+		"_id": ".2.17.",
+		"name": "Primeiro Secretário da Mesa da RGM",
+		"female_name": "Primeira Secretária da Mesa da RGM",
+		"super_roles": ".2.",
+		"show": false,
+		"hidden": false,
+		"icon": "",
+		"short": "",
+		"year_display_format": "academic"
+	},
+	{
+		"_id": ".2.18.",
+		"name": "Segundo Secretário da Mesa da RGM",
+		"female_name": "Segunda Secretária da Mesa da RGM",
+		"super_roles": ".2.",
+		"show": false,
+		"hidden": false,
+		"icon": "",
+		"short": "",
+		"year_display_format": "academic"
+	},
+	{
+		"_id": ".2.19.",
+		"name": "Vogal da Secção Académica",
+		"super_roles": ".2.",
+		"show": false,
+		"female_name": "",
+		"hidden": false,
+		"icon": "",
+		"short": "",
+		"year_display_format": "academic"
+	},
+	{
+		"_id": ".2.20.",
+		"name": "Vogal da Secção Académica e Desportiva",
+		"super_roles": ".2.",
+		"show": false
+	},
+	{
+		"_id": ".2.21.",
+		"name": "Vogal da Secção Académica-Desportiva",
+		"super_roles": ".2.",
+		"show": false
+	},
+	{
+		"_id": ".2.22.",
+		"name": "Vogal da Secção Administrativa",
+		"super_roles": ".2.",
+		"show": false,
+		"female_name": "",
+		"hidden": false,
+		"icon": "",
+		"short": "",
+		"year_display_format": "academic"
+	},
+	{
+		"_id": ".2.23.",
+		"name": "Vogal da Secção Administrativa, Relações Externas e Merchandising",
+		"super_roles": ".2.",
+		"show": false
+	},
+	{
+		"_id": ".2.24.",
+		"name": "Vogal da Secção Comunicação e Imagem",
+		"super_roles": ".2.",
+		"show": false
+	},
+	{
+		"_id": ".2.25.",
+		"name": "Vogal da Secção Desportiva",
+		"super_roles": ".2.",
+		"show": false,
+		"female_name": "",
+		"hidden": false,
+		"icon": "",
+		"short": "",
+		"year_display_format": "academic"
+	},
+	{
+		"_id": ".2.26.",
+		"name": "Vogal da Secção Informativa",
+		"super_roles": ".2.",
+		"show": false
+	},
+	{
+		"_id": ".2.27.",
+		"name": "Vogal da Secção Pedagógica",
+		"super_roles": ".2.",
+		"show": false
+	},
+	{
+		"_id": ".2.28.",
+		"name": "Vogal da Secção Pedagógica e Social",
+		"super_roles": ".2.",
+		"show": false,
+		"female_name": "",
+		"short": "",
+		"year_display_format": "academic",
+		"hidden": false,
+		"icon": ""
+	},
+	{
+		"_id": ".2.29.",
+		"name": "Vogal da Secção da Administração Interna",
+		"super_roles": ".2.",
+		"show": false,
+		"female_name": "",
+		"hidden": false,
+		"icon": "",
+		"short": "",
+		"year_display_format": "academic"
+	},
+	{
+		"_id": ".2.30.",
+		"name": "Vogal da Secção da Administração Interna e Merchandising",
+		"super_roles": ".2.",
+		"show": false
+	},
+	{
+		"_id": ".2.31.",
+		"name": "Vogal da Secção da Comunicação e Imagem",
+		"super_roles": ".2.",
+		"show": false,
+		"female_name": "",
+		"hidden": false,
+		"icon": "",
+		"short": "",
+		"year_display_format": "academic"
+	},
+	{
+		"_id": ".3.32.",
+		"name": "Direção",
+		"super_roles": ".3.",
+		"show": false
+	},
+	{
+		"_id": ".3.33.",
+		"name": "Mesa da Assembleia",
+		"super_roles": ".3.",
+		"show": false
+	},
+	{
+		"_id": ".3.34.",
+		"name": "Conselho Fiscal",
+		"super_roles": ".3.",
+		"show": false
+	},
+	{
+		"_id": ".3.32.35.",
+		"name": "Presidente",
+		"super_roles": ".3.32.",
+		"show": false
+	},
+	{
+		"_id": ".3.32.36.",
+		"name": "Vice-Presidente",
+		"super_roles": ".3.32.",
+		"show": false
+	},
+	{
+		"_id": ".3.32.37.",
+		"name": "Tesoureiro",
+		"female_name": "Tesoureira",
+		"super_roles": ".3.32.",
+		"show": false
+	},
+	{
+		"_id": ".3.32.38.",
+		"name": "Secretário",
+		"female_name": "Secretária",
+		"super_roles": ".3.32.",
+		"show": false
+	},
+	{
+		"_id": ".3.32.39.",
+		"name": "Vogal",
+		"super_roles": ".3.32.",
+		"show": false
+	},
+	{
+		"_id": ".3.33.40.",
+		"name": "Presidente",
+		"super_roles": ".3.33.",
+		"show": false
+	},
+	{
+		"_id": ".3.33.41.",
+		"name": "Primeiro Secretário",
+		"female_name": "Primeira Secretária",
+		"super_roles": ".3.33.",
+		"show": false
+	},
+	{
+		"_id": ".3.33.42.",
+		"name": "Segundo Secretário",
+		"female_name": "Segunda Secretária",
+		"super_roles": ".3.33.",
+		"show": false
+	},
+	{
+		"_id": ".3.33.43.",
+		"name": "Suplente",
+		"super_roles": ".3.33.",
+		"show": false
+	},
+	{
+		"_id": ".3.34.44.",
+		"name": "Presidente",
+		"super_roles": ".3.34.",
+		"show": false
+	},
+	{
+		"_id": ".3.34.45.",
+		"name": "Relator",
+		"female_name": "Relatora",
+		"super_roles": ".3.34.",
+		"show": false
+	},
+	{
+		"_id": ".3.34.46.",
+		"name": "Secretário",
+		"female_name": "Secretária",
+		"super_roles": ".3.34.",
+		"show": false
+	},
+	{
+		"_id": ".3.34.47.",
+		"name": "Suplente",
+		"super_roles": ".3.34.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.",
+		"name": "Direção",
+		"super_roles": ".4.",
+		"show": false
+	},
+	{
+		"_id": ".4.49.",
+		"name": "Mesa da Assembeia Geral",
+		"super_roles": ".4.",
+		"show": false
+	},
+	{
+		"_id": ".4.50.",
+		"name": "Conselho Fiscal e Jurisdição",
+		"super_roles": ".4.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.51.",
+		"name": "Presidente",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.52.",
+		"name": "Tesoureiro",
+		"female_name": "Tesoureira",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.53.",
+		"name": "Vice-Presidente Adjunta",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.54.",
+		"name": "Vice-Presidente de Comunicação e Imagem",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.55.",
+		"name": "Vice-Presidente de Desporto e Bem-Estar",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.56.",
+		"name": "Vice-Presidente de Administração Interna",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.57.",
+		"name": "Vice-Presidente do Apoio aos Núcleos",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.58.",
+		"name": "Vice-Presidente de Cultura",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.59.",
+		"name": "Vice-Presidente de Política Educativa",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.60.",
+		"name": "Vice-Presidente do Aveiro é Nosso",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.48.61.",
+		"name": "Vogal",
+		"super_roles": ".4.48.",
+		"show": false
+	},
+	{
+		"_id": ".4.49.62.",
+		"name": "Presidente",
+		"super_roles": ".4.49.",
+		"show": false
+	},
+	{
+		"_id": ".4.49.63.",
+		"name": "Vice-Presidente",
+		"super_roles": ".4.49.",
+		"show": false
+	},
+	{
+		"_id": ".4.49.64.",
+		"name": "Secretário",
+		"female_name": "Secretária",
+		"super_roles": ".4.49.",
+		"show": false
+	},
+	{
+		"_id": ".4.50.65.",
+		"name": "Presidente do CFJ",
+		"super_roles": ".4.50.",
+		"show": false
+	},
+	{
+		"_id": ".4.50.66.",
+		"name": "Vice-Presidente",
+		"super_roles": ".4.50.",
+		"show": false
+	},
+	{
+		"_id": ".4.50.67.",
+		"name": "Primeiro Secretário",
+		"female_name": "Primeira Secretária",
+		"super_roles": ".4.50.",
+		"show": false
+	},
+	{
+		"_id": ".4.50.68.",
+		"name": "Relator",
+		"female_name": "Relatora",
+		"super_roles": ".4.50.",
+		"show": false
+	},
+	{
+		"_id": ".3.32.40.",
+		"name": "Suplente",
+		"short": "",
+		"female_name": "",
+		"super_roles": ".3.32.",
+		"show": true,
+		"year_display_format": "civil",
+		"icon": "",
+		"hidden": false
+	},
+	{
+		"_id": ".2.33.",
+		"name": "Vice-Coordenador",
+		"short": "",
+		"female_name": "Vice-Coordenadora",
+		"super_roles": ".2.",
+		"show": true,
+		"year_display_format": "academic",
+		"icon": "",
+		"hidden": false
+	},
+	{
+		"_id": ".2.34.",
+		"name": "Consoante da Secção Académica",
+		"short": "",
+		"female_name": "",
+		"super_roles": ".2.",
+		"show": true,
+		"year_display_format": "academic",
+		"icon": "",
+		"hidden": false
+	},
+	{
+		"_id": ".2.35.",
+		"name": "Consoante da Secção da Administração Interna",
+		"short": "",
+		"female_name": "",
+		"super_roles": ".2.",
+		"show": true,
+		"year_display_format": "academic",
+		"icon": "",
+		"hidden": false
+	},
+	{
+		"_id": ".2.36.",
+		"name": "Consoante da Secção Pedagógica e Social",
+		"short": "",
+		"female_name": "",
+		"super_roles": ".2.",
+		"show": true,
+		"year_display_format": "academic",
+		"icon": "",
+		"hidden": false
+	},
+	{
+		"_id": ".2.37.",
+		"name": "Consoante da Secção Desportiva",
+		"short": "",
+		"female_name": "",
+		"super_roles": ".2.",
+		"show": true,
+		"year_display_format": "academic",
+		"icon": "",
+		"hidden": false
+	}
+]

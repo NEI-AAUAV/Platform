@@ -1,7 +1,7 @@
 /**
  * FamilyContent - Main tree visualization container
  * 
- * Integrates the D3 tree with MiniMap, Breadcrumbs, and lineage highlighting.
+ * Integrates the D3 tree with lineage highlighting.
  */
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
@@ -22,7 +22,6 @@ import {
 } from "../data";
 import { flattenTree } from "../utils";
 
-import MiniMap from "../components/MiniMap";
 
 
 const FamilyContent = ({

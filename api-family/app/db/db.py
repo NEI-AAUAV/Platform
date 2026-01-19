@@ -39,7 +39,6 @@ db = client[settings.MONGO_DB]
 # Collections
 Counter = db.counters
 User = db.users
-Patch = db.patches
 Course = db.courses
 Organization = db.organizations
 
@@ -92,10 +91,7 @@ def create_indexes():
         Course.create_index("short", unique=True)  # Unique short codes
         Course.create_index([("degree", ASCENDING), ("short", ASCENDING)])  # Compound for sorting
         
-        # ========== Patch Indexes ==========
-        Patch.create_index("patcherId")
-        Patch.create_index("user_id", sparse=True)
-        
+
         logger.info("All indexes created successfully")
         
     except OperationFailure as e:
