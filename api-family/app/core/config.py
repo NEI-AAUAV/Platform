@@ -56,6 +56,14 @@ class Settings(BaseSettings):
     ## Algorithm to use when signing JWT tokens
     JWT_ALGORITHM: str = "ES512"
 
+    # Cloudflare R2 (S3 compatible) for images
+    R2_ENDPOINT_URL: Optional[str] = os.getenv("R2_ENDPOINT_URL")
+    R2_ACCESS_KEY_ID: Optional[str] = os.getenv("R2_ACCESS_KEY_ID")
+    R2_SECRET_ACCESS_KEY: Optional[str] = os.getenv("R2_SECRET_ACCESS_KEY")
+    R2_BUCKET: Optional[str] = os.getenv("R2_BUCKET")
+    # Public base URL to serve images (e.g., https://cdn.example.com)
+    R2_PUBLIC_BASE_URL: Optional[str] = os.getenv("R2_PUBLIC_BASE_URL")
+
     class Config:
         case_sensitive = True
 
