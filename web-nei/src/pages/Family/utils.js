@@ -182,7 +182,7 @@ export function formatYear(y, fmt = 'civil') {
     }
 
     if (y < 100) return `20${y.toString().padStart(2, "0")}`;
-    return y;
+    return y.toString();
 }
 
 // PropTypes definitions for documentation
@@ -206,3 +206,85 @@ export const NodeShape = PropTypes.shape({
     parent: PropTypes.object,
     children: PropTypes.array,
 });
+
+/**
+ * Split name into two lines for tree display
+ * @param {string} name - Full name
+ * @returns {Object} { name1, name2, isTruncated, tname1, tname2 }
+ */
+export function separateName(name) {
+    const maxChars = 15,
+        middleIndex = Math.ceil(name.length / 2);
+
+    let name1 = name.slice(0, middleIndex).split(" "),
+        name2 = name.slice(middleIndex).split(" "),
+        nameMid = name1.slice(-1)[0] + name2.slice(0, 1)[0];
+
+    name1 = name1.slice(0, -1).join(" ");
+    name2 = name2.slice(1).join(" ");
+
+    if (name1.length >= name2.length) {
+        name2 = (nameMid + " " + name2).trim();
+    } else {
+        name1 = (name1 + " " + nameMid).trim();
+    }
+
+    let isTruncated = false,
+        tname1 = name1,
+        tname2 = name2;
+
+    if (name1.length > maxChars) {
+        isTruncated = true;
+        tname1 = name1.slice(0, maxChars - 3) + "...";
+    }
+    if (name2.length > maxChars) {
+        isTruncated = true;
+        tname2 = name2.slice(0, maxChars - 3) + "...";
+    }
+
+    return { name1, name2, isTruncated, tname1, tname2 };
+}
+
+export function getFainaHierarchy({ sex, start_year, organizations }, end_year) {
+    if (organizations)
+        for (const o of organizations) {
+            if (o.name === "CF" && o.year === end_year && o.role) return o.role;
+            if (o.name === "ST" && o.year === end_year) return o.role;
+        }
+
+    const maleHierarchies = ["Junco", "Moço", "Marnoto", "Mestre"];
+    const femaleHierarchies = ["Caniça", "Moça", "Salineira", "Mestre"];
+
+    const index = Math.min(end_year - start_year - 1, 3);
+    return sex === "M" ? maleHierarchies[index] : femaleHierarchies[index];
+}
+
+export function showLabelFaina({ fainaNames, start_year }, end_year) {
+    if (fainaNames && start_year + 1 <= end_year) {
+        return true;
+    }
+    return false;
+}
+
+export function labelFamilies(node) {
+    if (node.parent) {
+        if (node.parent.id === 0) {
+            node.family = node.id; // head of the family
+        } else {
+            node.family = node.parent.family;
+        }
+    }
+
+    if (node.children) {
+        node.family_depth = 0;
+        node.family_count = 0;
+        for (const n of node.children) {
+            labelFamilies(n);
+            node.family_depth = Math.max(node.family_depth, n.family_depth);
+            node.family_count += n.family_count;
+        }
+    } else {
+        node.family_depth = node.depth;
+        node.family_count = 1;
+    }
+}

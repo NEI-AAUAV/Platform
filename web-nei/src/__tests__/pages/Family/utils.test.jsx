@@ -3,7 +3,11 @@ import {
     flattenTree,
     wouldCreateCycle,
     getSuggestedPatroes,
-    formatYear
+    formatYear,
+    separateName,
+    getFainaHierarchy,
+    showLabelFaina,
+    labelFamilies
 } from '../../../pages/Family/utils';
 
 describe('Family/utils.js', () => {
@@ -87,6 +91,74 @@ describe('Family/utils.js', () => {
             const suggestions = getSuggestedPatroes(2024, users);
             // Expect Senior (2020) before Oldest (2019)
             expect(suggestions[0].name).toBe('Senior');
+        });
+    });
+
+    describe('separateName', () => {
+        it('splits name into two balanced lines', () => {
+            const result = separateName("Nome Muito Comprido Para Testar");
+            // "Nome Muito" (10) "Comprido Para Testar" (20) -> unbalanced?
+            // Logic splits roughly in half by words
+            expect(result.name1).toBeDefined();
+            expect(result.name2).toBeDefined();
+            expect(result.isTruncated).toBe(false);
+        });
+
+        it('truncates very long names', () => {
+            const longName = "Um Nome Extremamente Longo Que Certamente Será Cortado Pelo Algoritmo";
+            const result = separateName(longName);
+            expect(result.isTruncated).toBe(true);
+            expect(result.tname1).toMatch(/\.\.\.$/);
+        });
+    });
+
+    describe('getFainaHierarchy', () => {
+        it('returns special roles (CF/ST) if present at end year', () => {
+            const user = {
+                organizations: [
+                    { name: "CF", year: 2024, role: "Anzol" }
+                ]
+            };
+            expect(getFainaHierarchy(user, 2024)).toBe("Anzol");
+        });
+
+        it('calculates male hierarchy correctly', () => {
+            const user = { sex: 'M', start_year: 2020 }; // 4 years in 2024
+            // 2024 - 2020 - 1 = 3 -> Index 3 -> Mestre
+            expect(getFainaHierarchy(user, 2024)).toBe("Mestre");
+
+            // 2021 - 2020 - 1 = 0 -> Index 0 -> Junco
+            expect(getFainaHierarchy(user, 2021)).toBe("Junco");
+        });
+
+        it('calculates female hierarchy correctly', () => {
+            const user = { sex: 'F', start_year: 2022 };
+            // 2024 - 2022 - 1 = 1 -> Index 1 -> Moça
+            expect(getFainaHierarchy(user, 2024)).toBe("Moça");
+        });
+    });
+
+    describe('labelFamilies', () => {
+        it('labels family heads and calculates depth', () => {
+            const root = { id: 0, depth: 0, children: [] };
+            const familyHead1 = { id: 1, depth: 1, parent: root, children: [] };
+            const familyHead2 = { id: 2, depth: 1, parent: root, children: [] };
+            const child1 = { id: 3, depth: 2, parent: familyHead1, children: [] };
+
+            root.children = [familyHead1, familyHead2];
+            familyHead1.children = [child1];
+
+            labelFamilies(root);
+
+            // Head of family gets its own ID as family
+            expect(familyHead1.family).toBe(1);
+            expect(familyHead2.family).toBe(2);
+
+            // Descendant gets ancestor's family ID
+            expect(child1.family).toBe(1);
+
+            // Check recursive depth (max depth of subtree)
+            expect(familyHead1.family_depth).toBe(1); // child1 has depth 1 relative to it? Logic says Max(n.family_depth)
         });
     });
 
