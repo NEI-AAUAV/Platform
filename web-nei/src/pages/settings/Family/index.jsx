@@ -77,6 +77,54 @@ const renderPatraoCell = (user, patrao) => {
   return <span className="text-base-content/30 italic">Raiz</span>;
 };
 
+// Helper component to render role icon safely with fallback
+// Avoids S2486/S5148 (XSS via innerHTML)
+const RoleIcon = ({ role, organizations, formatYear }) => {
+  const [error, setError] = useState(false);
+  const [logo, setLogo] = useState(null);
+
+  useEffect(() => {
+    let currentLogo = null;
+    if (role.icon) {
+      currentLogo = role.icon;
+    } else if (role.org_name && organizations[role.org_name]) {
+      currentLogo = organizations[role.org_name].insignia;
+    }
+    setLogo(currentLogo);
+    setError(false);
+  }, [role, organizations]);
+
+  const roleTitle = role.role_name || role.name || role.org_name || "Cargo";
+  const tooltip = `${roleTitle} (${formatYear(role.year, role.year_display_format)})`;
+
+  if (error || !logo) {
+    return (
+      <div className="tooltip tooltip-primary" data-tip={tooltip}>
+        <span className="badge badge-sm badge-outline text-[10px] whitespace-nowrap">
+          {role.org_name || role.role_id || "?"}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="tooltip tooltip-primary" data-tip={tooltip}>
+      <img
+        src={logo}
+        alt={roleTitle}
+        className="h-6 w-6 object-contain hover:scale-110 transition-transform"
+        onError={() => setError(true)}
+      />
+    </div>
+  );
+};
+
+RoleIcon.propTypes = {
+  role: PropTypes.object.isRequired,
+  organizations: PropTypes.object.isRequired,
+  formatYear: PropTypes.func.isRequired,
+};
+
 /**
  * Family Admin Interface - /settings/family
  * CRUD operations for family tree members
@@ -870,43 +918,14 @@ export function Component() {
                             <td>
                               <div className="flex flex-wrap gap-1">
                                 {(userRoles.length === 0 || userRoles.every(r => r.hidden)) && <span className="text-xs text-base-content/30">-</span>}
-                                {userRoles.filter(role => !role.hidden).map((role, idx) => {
-                                  // Try to find matching logo
-                                  let logo = null;
-                                  if (role.icon) {
-                                    logo = role.icon;
-                                  } else if (role.org_name && organizations[role.org_name]) {
-                                    logo = organizations[role.org_name].insignia;
-                                  }
-
-                                  const roleTitle = role.role_name || role.name || role.org_name || "Cargo";
-                                  const tooltip = `${roleTitle} (${formatYear(role.year, role.year_display_format)})`;
-
-                                  return (
-                                    <div
-                                      key={`${role.role_id}_${idx}`}
-                                      className="tooltip tooltip-primary"
-                                      data-tip={tooltip}
-                                    >
-                                      {logo ? (
-                                        <img
-                                          src={logo}
-                                          alt={roleTitle}
-                                          className="h-6 w-6 object-contain hover:scale-110 transition-transform"
-                                          onError={(e) => {
-                                            // Fallback if image fails
-                                            e.target.style.display = 'none';
-                                            e.target.parentElement.innerHTML = `<span class="badge badge-sm badge-outline text-[10px] whitespace-nowrap">${role.org_name || role.role_id || "?"}</span>`;
-                                          }}
-                                        />
-                                      ) : (
-                                        <span className="badge badge-sm badge-outline text-[10px] whitespace-nowrap">
-                                          {role.org_name || role.role_id || "?"}
-                                        </span>
-                                      )}
-                                    </div>
-                                  );
-                                })}
+                                {userRoles.filter(role => !role.hidden).map((role, idx) => (
+                                  <RoleIcon
+                                    key={`${role.role_id}_${idx}`}
+                                    role={role}
+                                    organizations={organizations}
+                                    formatYear={formatYear}
+                                  />
+                                ))}
                               </div>
                             </td>
 
