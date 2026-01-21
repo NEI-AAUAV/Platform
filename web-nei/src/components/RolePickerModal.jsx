@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
@@ -182,7 +183,11 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
             {isOpen && (
                 <div
                     className="fixed inset-0 z-[120] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6"
+                    role="button"
+                    tabIndex={0}
                     onClick={onClose}
+                    onKeyDown={(e) => e.key === 'Escape' && onClose()}
+                    aria-label="Fechar modal"
                 >
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
@@ -265,3 +270,10 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
         </AnimatePresence>
     );
 }
+
+RolePickerModal.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    hideYear: PropTypes.bool,
+};

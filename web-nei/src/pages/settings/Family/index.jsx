@@ -344,19 +344,6 @@ export function Component() {
     setLastSelectedIndex(rowIndex);
   };
 
-  // Simple toggle for checkbox (no shift support needed)
-  const toggleSelectUser = (userId) => {
-    setSelectedIds(prev => {
-      const next = new Set(prev);
-      if (next.has(userId)) {
-        next.delete(userId);
-      } else {
-        next.add(userId);
-      }
-      return next;
-    });
-  };
-
   // Check if all users on current page are selected
   const allCurrentPageSelected = useMemo(() => {
     if (users.length === 0) return false;

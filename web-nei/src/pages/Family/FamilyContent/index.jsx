@@ -16,9 +16,7 @@ import {
   clearHighlight,
   animatePathToNode,
   getNodeById,
-  navigateToNode,
-  getSvgElements,
-  treeRoot
+  navigateToNode
 } from "../data";
 import { flattenTree } from "../utils";
 
@@ -38,7 +36,6 @@ const FamilyContent = ({
   const [error, setError] = useState(null);
   const [treeReady, setTreeReady] = useState(false);
   const [selectedNode, setSelectedNode] = useState(null);
-  const [svgElements, setSvgElements] = useState({ svgElement: null, groupElement: null });
 
   const svgRef = useRef(null);
 
@@ -73,11 +70,6 @@ const FamilyContent = ({
       setTreeReady(true);
       setLoading(false);
 
-      // Get SVG elements for MiniMap after a small delay
-      setTimeout(() => {
-        setSvgElements(getSvgElements());
-      }, 100);
-
     } catch (err) {
       console.error("Failed to build tree:", err);
       setError(err);
@@ -106,13 +98,10 @@ const FamilyContent = ({
   const handleNodeHover = useCallback((nodeId, isHovering) => {
     if (isHovering) {
       highlightLineage(nodeId);
+    } else if (selectedNode) {
+      highlightLineage(selectedNode.data.id);
     } else {
-      // If there's a selected node, restore its highlighting; otherwise clear
-      if (selectedNode) {
-        highlightLineage(selectedNode.data.id);
-      } else {
-        clearHighlight();
-      }
+      clearHighlight();
     }
   }, [selectedNode]);
 
@@ -124,6 +113,46 @@ const FamilyContent = ({
     }
   }, []);
 
+  // Keyboard navigation helpers
+  const navigateToParent = useCallback(() => {
+    if (selectedNode?.parent && selectedNode.parent.data.id !== 0) {
+      const parent = selectedNode.parent;
+      setSelectedNode(parent);
+      navigateToNode(parent);
+      highlightLineage(parent.data.id);
+      return true;
+    }
+    return false;
+  }, [selectedNode]);
+
+  const navigateToChild = useCallback(() => {
+    if (selectedNode?.children?.length > 0) {
+      const firstChild = selectedNode.children[0];
+      setSelectedNode(firstChild);
+      navigateToNode(firstChild);
+      highlightLineage(firstChild.data.id);
+      return true;
+    }
+    return false;
+  }, [selectedNode]);
+
+  const navigateToSibling = useCallback((direction) => {
+    if (!selectedNode?.parent?.children) return false;
+    const siblings = selectedNode.parent.children;
+    const currentIdx = siblings.findIndex(s => s.data.id === selectedNode.data.id);
+    const nextIdx = direction === 'left'
+      ? Math.max(0, currentIdx - 1)
+      : Math.min(siblings.length - 1, currentIdx + 1);
+    const sibling = siblings[nextIdx];
+    if (sibling && sibling.data.id !== selectedNode.data.id) {
+      setSelectedNode(sibling);
+      navigateToNode(sibling);
+      highlightLineage(sibling.data.id);
+      return true;
+    }
+    return false;
+  }, [selectedNode]);
+
   // Keyboard navigation
   const handleKeyDown = useCallback((e) => {
     if (!selectedNode) return;
@@ -134,44 +163,25 @@ const FamilyContent = ({
         setSelectedNode(null);
         break;
       case 'ArrowUp':
-        if (selectedNode.parent && selectedNode.parent.data.id !== 0) {
-          const parent = selectedNode.parent;
-          setSelectedNode(parent);
-          navigateToNode(parent);
-          highlightLineage(parent.data.id);
-        }
+        navigateToParent();
         e.preventDefault();
         break;
       case 'ArrowDown':
-        if (selectedNode.children && selectedNode.children.length > 0) {
-          const firstChild = selectedNode.children[0];
-          setSelectedNode(firstChild);
-          navigateToNode(firstChild);
-          highlightLineage(firstChild.data.id);
-        }
+        navigateToChild();
         e.preventDefault();
         break;
       case 'ArrowLeft':
+        navigateToSibling('left');
+        e.preventDefault();
+        break;
       case 'ArrowRight':
-        if (selectedNode.parent && selectedNode.parent.children) {
-          const siblings = selectedNode.parent.children;
-          const currentIdx = siblings.findIndex(s => s.data.id === selectedNode.data.id);
-          const nextIdx = e.key === 'ArrowLeft'
-            ? Math.max(0, currentIdx - 1)
-            : Math.min(siblings.length - 1, currentIdx + 1);
-          const sibling = siblings[nextIdx];
-          if (sibling && sibling.data.id !== selectedNode.data.id) {
-            setSelectedNode(sibling);
-            navigateToNode(sibling);
-            highlightLineage(sibling.data.id);
-          }
-        }
+        navigateToSibling('right');
         e.preventDefault();
         break;
       default:
         break;
     }
-  }, [selectedNode]);
+  }, [selectedNode, navigateToParent, navigateToChild, navigateToSibling]);
 
   const isLoading = loading || externalLoading;
 
@@ -180,6 +190,8 @@ const FamilyContent = ({
       className="relative h-full w-full"
       onKeyDown={handleKeyDown}
       tabIndex={0}
+      role="region"
+      aria-label="Visualização da árvore genealógica"
     >
       {isLoading && (
         <div className="absolute inset-0 flex h-full w-full items-center justify-center bg-base-100/80 z-10">

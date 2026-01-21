@@ -97,8 +97,9 @@ let lastTransform = d3.zoomIdentity.scale(0.5);
 let svg, zoom, groups, labels, fainaLabels;
 export let searchData = [];
 
-// Export root node for breadcrumbs and external access
-export let treeRoot = null;
+// Export root node for breadcrumbs and external access (use getTreeRoot() to access)
+let _treeRoot = null;
+export const getTreeRoot = () => _treeRoot;
 
 // Store node map for quick lookup by ID
 const nodeMap = new Map();
@@ -261,7 +262,7 @@ export function buildTree(users = null, options = {}) {
       let roleTitle = o.role_name || o.role || o.name;
 
       // If id looks like a role_id path (starts with "."), use role_name as fallback for ID
-      if (id && id.startsWith(".")) {
+      if (id?.startsWith(".")) {
         id = o.role_name || o.role || id;
       }
 
@@ -339,7 +340,7 @@ export function buildTree(users = null, options = {}) {
   const root = treeStructure(dataStructure);
 
   // Store root for external access
-  treeRoot = root;
+  _treeRoot = root;
 
   // Build node map for quick lookup
   nodeMap.clear();
@@ -898,6 +899,35 @@ export function clearHighlight() {
 }
 
 /**
+ * Build SVG path segment between two nodes (helper for animatePathToNode)
+ */
+function buildPathSegment(prev, current) {
+  const sx = prev.x;
+  const sy = prev.y + 68;
+  const tx = current.x;
+  const ty = current.y;
+  const hy = 0.5 * (ty - sy);
+  const off = 5;
+  let dir = 0;
+  if (sx > tx) {
+    dir = -1;
+  } else if (sx < tx) {
+    dir = 1;
+  }
+
+  let segment = ` L${sx},${sy} v${hy - off - 10}`;
+
+  if (dir !== 0) {
+    segment += ` c0,${off} 0,${off} ${off * dir},${off}`;
+    segment += ` h${tx - sx - 3 * off * dir}`;
+    segment += ` c${2 * off * dir},0 ${2 * off * dir},0 ${2 * off * dir},${2 * off}`;
+  }
+
+  segment += ` L${tx},${ty}`;
+  return segment;
+}
+
+/**
  * Animate a path from root to the specified node
  * Path renders BEHIND nodes and nodes glow as the line passes through
  * @param {number} nodeId - ID of the target node
@@ -923,35 +953,9 @@ export function animatePathToNode(nodeId) {
   groups.selectAll(".node").classed("node-glow", false);
 
   // Build path data following tree link structure
-  let pathData = "";
-
-  for (let i = 0; i < pathNodes.length; i++) {
-    const n = pathNodes[i];
-
-    if (i === 0) {
-      pathData = `M${n.x},${n.y}`;
-    } else {
-      const prev = pathNodes[i - 1];
-      const sx = prev.x;
-      const sy = prev.y + 68;
-      const tx = n.x;
-      const ty = n.y;
-      const hy = 0.5 * (ty - sy);
-      const off = 5;
-
-      let dir = sx - tx > 0 ? -1 : sx - tx < 0 ? 1 : 0;
-
-      pathData += ` L${sx},${sy}`;
-      pathData += ` v${hy - off - 10}`;
-
-      if (dir !== 0) {
-        pathData += ` c0,${off} 0,${off} ${off * dir},${off}`;
-        pathData += ` h${tx - sx - 3 * off * dir}`;
-        pathData += ` c${2 * off * dir},0 ${2 * off * dir},0 ${2 * off * dir},${2 * off}`;
-      }
-
-      pathData += ` L${tx},${ty}`;
-    }
+  let pathData = `M${pathNodes[0].x},${pathNodes[0].y}`;
+  for (let i = 1; i < pathNodes.length; i++) {
+    pathData += buildPathSegment(pathNodes[i - 1], pathNodes[i]);
   }
 
   // INSERT path at the BEGINNING of svg group so it renders BEHIND nodes

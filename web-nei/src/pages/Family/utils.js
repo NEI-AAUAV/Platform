@@ -135,7 +135,7 @@ export function wouldCreateCycle(userId, patraoId, allUsers) {
     let current = userMap[patraoId];
     const visited = new Set();
 
-    while (current && current.patrao_id) {
+    while (current?.patrao_id) {
         if (visited.has(current._id || current.id)) break; // Already a cycle exists
         visited.add(current._id || current.id);
 

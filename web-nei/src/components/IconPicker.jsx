@@ -3,6 +3,7 @@
  * Shows available icons as clickable tiles, allows text input for custom paths
  */
 import { useState } from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
 
@@ -25,9 +26,35 @@ export default function IconPicker({ value, onChange, inheritedIcon }) {
     const [showCustom, setShowCustom] = useState(false);
     const [customPath, setCustomPath] = useState(value || "");
 
+    // Sanitizer to prevent XSS via dangerous URL schemes
+    // Allows: relative paths under /icons/ or absolute HTTPS URLs
+    const sanitizeIconPath = (rawPath) => {
+        if (!rawPath) return "";
+        const trimmed = rawPath.trim();
+
+        // Disallow dangerous URL schemes
+        const lower = trimmed.toLowerCase();
+        if (
+            lower.startsWith("javascript:") ||
+            lower.startsWith("data:") ||
+            lower.startsWith("vbscript:")
+        ) {
+            return "";
+        }
+
+        // Allow only /icons/... or https://...
+        if (trimmed.startsWith("/icons/") || trimmed.startsWith("https://")) {
+            return trimmed;
+        }
+
+        return "";
+    };
+
     const handleSelectIcon = (path) => {
-        onChange(path);
-        setCustomPath(path);
+        const safePath = sanitizeIconPath(path);
+        if (!safePath) return;
+        onChange(safePath);
+        setCustomPath(safePath);
         setShowCustom(false);
     };
 
@@ -37,8 +64,10 @@ export default function IconPicker({ value, onChange, inheritedIcon }) {
     };
 
     const handleCustomSubmit = () => {
-        if (customPath.trim()) {
-            onChange(customPath.trim());
+        const safePath = sanitizeIconPath(customPath);
+        if (safePath) {
+            onChange(safePath);
+            setCustomPath(safePath);
         }
         setShowCustom(false);
     };
@@ -47,17 +76,45 @@ export default function IconPicker({ value, onChange, inheritedIcon }) {
     const displayIcon = value || inheritedIcon;
     const isInherited = !value && inheritedIcon;
 
+    // Helper function to get preview box border/bg classes (avoids nested ternary)
+    const getPreviewBoxClasses = () => {
+        if (isInherited) return "border-dashed border-base-content/20 bg-base-200/50";
+        if (value) return "border-primary/30 bg-primary/5";
+        return "border-base-content/10 bg-base-200";
+    };
+
+    // Helper function to render icon status text (avoids nested ternary)
+    const renderIconStatus = () => {
+        if (isInherited) {
+            return (
+                <div className="text-sm text-base-content/50">
+                    <span className="italic">Herdado do parent</span>
+                    <div className="text-xs font-mono opacity-60 truncate">{inheritedIcon}</div>
+                </div>
+            );
+        }
+        if (value) {
+            return (
+                <div className="text-sm">
+                    <span className="font-medium">Ícone definido</span>
+                    <div className="text-xs font-mono opacity-60 truncate">{value}</div>
+                </div>
+            );
+        }
+        return (
+            <div className="text-sm text-base-content/40 italic">
+                Sem ícone (herdará do parent)
+            </div>
+        );
+    };
+
     return (
         <div className="space-y-3">
             {/* Current Icon Preview */}
             <div className="flex items-center gap-3">
                 <div className={classNames(
                     "flex h-14 w-14 items-center justify-center rounded-xl border-2",
-                    isInherited
-                        ? "border-dashed border-base-content/20 bg-base-200/50"
-                        : value
-                            ? "border-primary/30 bg-primary/5"
-                            : "border-base-content/10 bg-base-200"
+                    getPreviewBoxClasses()
                 )}>
                     {displayIcon ? (
                         <img
@@ -71,21 +128,7 @@ export default function IconPicker({ value, onChange, inheritedIcon }) {
                     )}
                 </div>
                 <div className="flex-1">
-                    {isInherited ? (
-                        <div className="text-sm text-base-content/50">
-                            <span className="italic">Herdado do parent</span>
-                            <div className="text-xs font-mono opacity-60 truncate">{inheritedIcon}</div>
-                        </div>
-                    ) : value ? (
-                        <div className="text-sm">
-                            <span className="font-medium">Ícone definido</span>
-                            <div className="text-xs font-mono opacity-60 truncate">{value}</div>
-                        </div>
-                    ) : (
-                        <div className="text-sm text-base-content/40 italic">
-                            Sem ícone (herdará do parent)
-                        </div>
-                    )}
+                    {renderIconStatus()}
                 </div>
                 {value && (
                     <button
@@ -163,5 +206,11 @@ export default function IconPicker({ value, onChange, inheritedIcon }) {
         </div>
     );
 }
+
+IconPicker.propTypes = {
+    value: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+    inheritedIcon: PropTypes.string,
+};
 
 export { AVAILABLE_ICONS };

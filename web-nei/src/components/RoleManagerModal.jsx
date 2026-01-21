@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
@@ -140,9 +141,9 @@ export default function RoleManagerModal({ isOpen, onClose }) {
         fetchRoleMembers(node._id, null);
     };
 
-    // Handle removing a role from a member
     const handleRemoveRoleFromMember = async (userRoleId) => {
         if (!window.confirm("Remover esta insígnia do membro?")) return;
+        if (!selectedNode) return; // Guard against null
         try {
             await FamilyService.removeRole(userRoleId);
             // Refresh members list
@@ -197,11 +198,9 @@ export default function RoleManagerModal({ isOpen, onClose }) {
         try {
             if (isNew) {
                 await FamilyService.createRole(formData);
-                // toast.success("Role created");
             } else {
                 if (!selectedNode) return;
                 await FamilyService.updateRole(selectedNode._id, formData);
-                // toast.success("Role updated");
             }
             await loadTree();
             // Reset form if new, or keep editing if update? 
@@ -327,10 +326,116 @@ export default function RoleManagerModal({ isOpen, onClose }) {
         );
     };
 
+    // Helper: Get modal title based on state (avoids nested ternary)
+    const getModalTitle = () => {
+        if (isNew) {
+            return formData.super_roles ? "Nova Sub-Insígnia" : "Nova Insígnia Raiz";
+        }
+        return selectedNode?.name || "Selecione uma Insígnia";
+    };
+
+    // Helper: Render members list loading/empty/content states (avoids nested ternary)
+    const renderMembersList = () => {
+        if (membersLoading) {
+            return (
+                <div className="flex justify-center py-8">
+                    <span className="loading loading-spinner"></span>
+                </div>
+            );
+        }
+        if (roleMembers.length === 0) {
+            return (
+                <div className="text-center py-8 text-base-content/40">
+                    <MaterialSymbol icon="person_off" size={32} className="mb-2" />
+                    <p>Nenhum membro encontrado</p>
+                </div>
+            );
+        }
+        return (
+            <div className="space-y-2">
+                {roleMembers.map((member, idx) => (
+                    <div
+                        key={member._id || idx}
+                        className="flex items-center gap-3 p-3 bg-base-200/50 rounded-lg hover:bg-base-200"
+                    >
+                        <div
+                            className="avatar placeholder h-10 w-10 rounded-full ring-2 ring-offset-1"
+                            style={{
+                                ringColor: colors[(member.user?.start_year || 0) % colors.length]
+                            }}
+                        >
+                            <img
+                                src={member.user?.image || (member.user?.sex === 'F' ? femalePic : malePic)}
+                                alt=""
+                                className="rounded-full object-cover"
+                            />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <div className="font-medium truncate">
+                                {member.user?.name || `User ${member.user_id}`}
+                            </div>
+                            <div className="text-xs text-base-content/50">
+                                Ano {formatYear(member.year, selectedNode?.year_display_format || "civil")}
+                                {member.user?.start_year && (
+                                    <span> · Entrada {formatYear(member.user.start_year)}</span>
+                                )}
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            className="btn btn-ghost btn-xs btn-error"
+                            onClick={() => handleRemoveRoleFromMember(member._id)}
+                            title="Remover insígnia"
+                        >
+                            <MaterialSymbol icon="close" size={16} />
+                        </button>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
+    // Helper: Render the full members view with year filter (for the content area)
+    const renderMembersView = () => (
+        <div className="space-y-4">
+            {/* Year Filter */}
+            <div className="flex items-center justify-between">
+                <h4 className="font-medium">Membros com esta insígnia</h4>
+                <select
+                    className="select select-bordered select-sm w-32"
+                    value={memberYearFilter || ""}
+                    onChange={(e) => setMemberYearFilter(e.target.value ? parseInt(e.target.value) : null)}
+                >
+                    <option value="">Todos os anos</option>
+                    {availableYears.map(y => (
+                        <option key={y} value={y}>Ano {formatYear(y)}</option>
+                    ))}
+                </select>
+            </div>
+            {/* Members List */}
+            {renderMembersList()}
+        </div>
+    );
+
+    // Helper: Render empty state placeholder
+    const renderEmptyState = () => (
+        <div className="flex h-full flex-col items-center justify-center text-base-content/30 text-center">
+            <MaterialSymbol icon="badge" size={48} className="mb-2 opacity-50" />
+            <p>Selecione um item da lista à esquerda<br />ou crie uma nova raiz</p>
+        </div>
+    );
+
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6" onClick={onClose}>
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6"
+                    role="button"
+                    tabIndex={0}
+                    onClick={onClose}
+                    onKeyDown={(e) => e.key === 'Escape' && onClose()}
+                    aria-label="Fechar modal"
+                >
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -380,10 +485,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                         >
                                             <MaterialSymbol icon="arrow_back" size={20} />
                                         </button>
-                                        {isNew
-                                            ? (formData.super_roles ? "Nova Sub-Insígnia" : "Nova Insígnia Raiz")
-                                            : (selectedNode ? selectedNode.name : "Selecione uma Insígnia")
-                                        }
+                                        {getModalTitle()}
                                     </h3>
                                     <button className="btn btn-ghost btn-sm btn-circle" onClick={onClose}>
                                         <CloseIcon />
@@ -427,86 +529,15 @@ export default function RoleManagerModal({ isOpen, onClose }) {
 
                                 <div className="flex-1 overflow-y-auto overscroll-contain p-6" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
                                     {!selectedNode && !isNew ? (
-                                        <div className="flex h-full flex-col items-center justify-center text-base-content/30 text-center">
-                                            <MaterialSymbol icon="badge" size={48} className="mb-2 opacity-50" />
-                                            <p>Selecione um item da lista à esquerda<br />ou crie uma nova raiz</p>
-                                        </div>
+                                        renderEmptyState()
                                     ) : activeTab === "members" && selectedNode && !isNew ? (
-                                        /* Members List View */
-                                        <div className="space-y-4">
-                                            {/* Year Filter */}
-                                            <div className="flex items-center justify-between">
-                                                <h4 className="font-medium">Membros com esta insígnia</h4>
-                                                <select
-                                                    className="select select-bordered select-sm w-32"
-                                                    value={memberYearFilter || ""}
-                                                    onChange={(e) => setMemberYearFilter(e.target.value ? parseInt(e.target.value) : null)}
-                                                >
-                                                    <option value="">Todos os anos</option>
-                                                    {availableYears.map(y => (
-                                                        <option key={y} value={y}>Ano {formatYear(y)}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-
-                                            {/* Members List */}
-                                            {membersLoading ? (
-                                                <div className="flex justify-center py-8">
-                                                    <span className="loading loading-spinner"></span>
-                                                </div>
-                                            ) : roleMembers.length === 0 ? (
-                                                <div className="text-center py-8 text-base-content/40">
-                                                    <MaterialSymbol icon="person_off" size={32} className="mb-2" />
-                                                    <p>Nenhum membro encontrado</p>
-                                                </div>
-                                            ) : (
-                                                <div className="space-y-2">
-                                                    {roleMembers.map((member, idx) => (
-                                                        <div
-                                                            key={member._id || idx}
-                                                            className="flex items-center gap-3 p-3 bg-base-200/50 rounded-lg hover:bg-base-200"
-                                                        >
-                                                            <div
-                                                                className="avatar placeholder h-10 w-10 rounded-full ring-2 ring-offset-1"
-                                                                style={{
-                                                                    ringColor: colors[(member.user?.start_year || 0) % colors.length]
-                                                                }}
-                                                            >
-                                                                <img
-                                                                    src={member.user?.image || (member.user?.sex === 'F' ? femalePic : malePic)}
-                                                                    alt=""
-                                                                    className="rounded-full object-cover"
-                                                                />
-                                                            </div>
-                                                            <div className="flex-1 min-w-0">
-                                                                <div className="font-medium truncate">
-                                                                    {member.user?.name || `User ${member.user_id}`}
-                                                                </div>
-                                                                <div className="text-xs text-base-content/50">
-                                                                    Ano {formatYear(member.year, selectedNode.year_display_format || "civil")}
-                                                                    {member.user?.start_year && (
-                                                                        <span> · Entrada {formatYear(member.user.start_year)}</span>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-ghost btn-xs btn-error"
-                                                                onClick={() => handleRemoveRoleFromMember(member._id)}
-                                                                title="Remover insígnia"
-                                                            >
-                                                                <MaterialSymbol icon="close" size={16} />
-                                                            </button>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
+                                        renderMembersView()
                                     ) : (
                                         <form onSubmit={handleSave} className="flex flex-col gap-4 max-w-lg mx-auto">
                                             <div className="form-control">
-                                                <label className="label"><span className="label-text">Nome</span></label>
+                                                <label className="label" htmlFor="role-name"><span className="label-text">Nome</span></label>
                                                 <input
+                                                    id="role-name"
                                                     type="text"
                                                     className="input input-bordered"
                                                     required
@@ -518,8 +549,9 @@ export default function RoleManagerModal({ isOpen, onClose }) {
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="form-control">
-                                                    <label className="label"><span className="label-text">Abreviatura (Curto)</span></label>
+                                                    <label className="label" htmlFor="role-short"><span className="label-text">Abreviatura (Curto)</span></label>
                                                     <input
+                                                        id="role-short"
                                                         type="text"
                                                         className="input input-bordered"
                                                         value={formData.short}
@@ -528,7 +560,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                                     />
                                                 </div>
                                                 <div className="form-control">
-                                                    <label className="label">
+                                                    <label className="label" htmlFor="role-show">
                                                         <span className="label-text">Mostrar na Lista Principal</span>
                                                         <div className="tooltip tooltip-left" data-tip="Se ativo, aparece como filtro principal na lista de membros">
                                                             <MaterialSymbol icon="info" size={16} className="text-base-content/40 cursor-help" />
@@ -536,6 +568,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                                     </label>
                                                     <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-content/20 p-3">
                                                         <input
+                                                            id="role-show"
                                                             type="checkbox"
                                                             className="toggle toggle-primary"
                                                             checked={formData.show}
@@ -547,7 +580,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                             </div>
 
                                             <div className="form-control">
-                                                <label className="label"><span className="label-text">Ícone</span></label>
+                                                <label className="label" id="role-icon-label"><span className="label-text">Ícone</span></label>
                                                 <IconPicker
                                                     value={formData.icon || ""}
                                                     onChange={(newIcon) => setFormData({ ...formData, icon: newIcon })}
@@ -557,7 +590,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="form-control">
-                                                    <label className="label">
+                                                    <label className="label" htmlFor="role-hidden">
                                                         <span className="label-text">Ocultar em Visualizações</span>
                                                         <div className="tooltip tooltip-left" data-tip="Oculta esta insígnia na Árvore e Tabela (mas mantém o registo)">
                                                             <MaterialSymbol icon="visibility_off" size={16} className="text-base-content/40 cursor-help" />
@@ -565,6 +598,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                                     </label>
                                                     <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-content/20 p-3">
                                                         <input
+                                                            id="role-hidden"
                                                             type="checkbox"
                                                             className="toggle toggle-error"
                                                             checked={formData.hidden || false}
@@ -575,8 +609,9 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                                 </div>
 
                                                 <div className="form-control">
-                                                    <label className="label"><span className="label-text">Formato de Ano</span></label>
+                                                    <label className="label" htmlFor="role-year-format"><span className="label-text">Formato de Ano</span></label>
                                                     <select
+                                                        id="role-year-format"
                                                         className="select select-bordered w-full"
                                                         value={formData.year_display_format}
                                                         onChange={e => setFormData({ ...formData, year_display_format: e.target.value })}
@@ -588,8 +623,9 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                             </div>
 
                                             <div className="form-control">
-                                                <label className="label"><span className="label-text">Variante Feminina (Opcional)</span></label>
+                                                <label className="label" htmlFor="role-female-name"><span className="label-text">Variante Feminina (Opcional)</span></label>
                                                 <input
+                                                    id="role-female-name"
                                                     type="text"
                                                     className="input input-bordered"
                                                     value={formData.female_name}
@@ -599,7 +635,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                             </div>
 
                                             <div className="form-control">
-                                                <label className="label"><span className="label-text text-base-content/50">Pertence a (Auto)</span></label>
+                                                <span className="label"><span className="label-text text-base-content/50">Pertence a (Auto)</span></span>
                                                 <div className="flex items-center gap-2 rounded-lg border border-dashed border-base-content/20 bg-base-200/50 px-4 py-3 text-sm">
                                                     {formData.super_roles ? (
                                                         <>
@@ -669,3 +705,8 @@ export default function RoleManagerModal({ isOpen, onClose }) {
         </AnimatePresence>
     );
 }
+
+RoleManagerModal.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+};

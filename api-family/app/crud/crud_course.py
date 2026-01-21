@@ -5,7 +5,7 @@ Uses atomic counter for ID generation to avoid race conditions.
 
 from typing import Optional, List
 from pymongo.collection import ReturnDocument
-from pymongo.errors import DuplicateKeyError
+
 
 from app.db.db import Course as CourseCollection, Counter
 from app.schemas.course import CourseCreate, CourseUpdate

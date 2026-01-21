@@ -59,7 +59,6 @@ const BulkImportModal = ({
 }) => {
     // Steps: "upload" | "preview" | "assign" | "results"
     const [step, setStep] = useState("upload");
-    const [file, setFile] = useState(null);
     const [parsedData, setParsedData] = useState([]);
     const [errors, setErrors] = useState([]);
     const [warnings, setWarnings] = useState([]);
@@ -129,7 +128,6 @@ const BulkImportModal = ({
     useEffect(() => {
         if (isOpen) {
             setStep("upload");
-            setFile(null);
             setParsedData([]);
             setErrors([]);
             setLoading(false);
@@ -327,7 +325,6 @@ const BulkImportModal = ({
 
     // Handle file processing (CSV or Excel)
     const processFile = (selectedFile) => {
-        setFile(selectedFile);
         setWarnings([]); // Clear warnings
 
         const isExcel = selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
@@ -431,6 +428,130 @@ const BulkImportModal = ({
             updated[idx] = row;
             return updated;
         });
+    };
+
+    const handleTemplateColumnChange = (key, checked) => {
+        setTemplateColumns(prev => ({
+            ...prev,
+            [key]: checked
+        }));
+    };
+
+    const renderEditableCell = (idx, field, value, type = "text", options = {}) => {
+        const isEditing = editingCell?.rowIdx === idx && editingCell?.field === field;
+
+        if (isEditing) {
+            if (field === "sex") {
+                return (
+                    <select
+                        className="select select-xs select-bordered"
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onBlur={saveEdit}
+                        autoFocus
+                    >
+                        <option value="M">M</option>
+                        <option value="F">F</option>
+                    </select>
+                );
+            }
+            return (
+                <input
+                    type={type}
+                    className={`input input-xs input-bordered ${options.className || 'w-full'}`}
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onBlur={saveEdit}
+                    onKeyDown={(e) => e.key === "Enter" && saveEdit()}
+                    {...options.inputProps}
+                    autoFocus
+                />
+            );
+        }
+
+        return (
+            <span className={options.spanClass}>
+                {value || <span className="text-base-content/30">{options.placeholder || '-'}</span>}
+            </span>
+        );
+    };
+
+    const renderPatraoCell = (row, idx) => {
+        if (row.patrao_resolved && row.patrao_user) {
+            return (
+                <button type="button" className="flex items-center gap-1 px-2 py-0.5 bg-base-200 rounded-lg text-xs hover:bg-base-300" onClick={() => setPatraoPickerRow(idx)}>
+                    <div className="w-5 h-5 rounded-full overflow-hidden" style={{ borderColor: colors[row.patrao_user.start_year % colors.length] }}>
+                        <img src={row.patrao_user.image || (row.patrao_user.sex === 'F' ? femalePic : malePic)} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <span className="truncate max-w-[80px]">{row.patrao_user.name}</span>
+                </button>
+            );
+        }
+
+        if (row.patrao_input) {
+            return (
+                <button type="button" className="btn btn-xs btn-error btn-outline" onClick={() => setPatraoPickerRow(idx)}>
+                    Escolher
+                </button>
+            );
+        }
+
+        return (
+            <button type="button" className="btn btn-xs btn-ghost" onClick={() => setPatraoPickerRow(idx)}>
+                <MaterialSymbol icon="person_search" size={14} />
+            </button>
+        );
+    };
+
+    const renderPreviewTableRow = (row, idx) => {
+        const rowError = getRowError(idx);
+        const isPatraoError = row.patrao_input && !row.patrao_resolved;
+
+        return (
+            <tr key={row._key} className={classNames("hover", rowError && "bg-error/10")}>
+                <td>
+                    {rowError ? (
+                        <div className="tooltip tooltip-right" data-tip={rowError.message}>
+                            <MaterialSymbol icon="error" size={16} className="text-error" />
+                        </div>
+                    ) : (
+                        <MaterialSymbol icon="check_circle" size={16} className="text-success" />
+                    )}
+                </td>
+
+                <td className="cursor-pointer hover:bg-base-200" onClick={() => startEdit(idx, "name", row.name)}>
+                    {renderEditableCell(idx, "name", row.name, "text", { placeholder: "Nome", spanClass: "truncate max-w-[150px] block" })}
+                </td>
+
+                <td className="cursor-pointer hover:bg-base-200" onClick={() => startEdit(idx, "sex", row.sex)}>
+                    {renderEditableCell(idx, "sex", row.sex)}
+                </td>
+
+                <td className="cursor-pointer hover:bg-base-200" onClick={() => startEdit(idx, "start_year", row.start_year?.toString())}>
+                    {renderEditableCell(idx, "start_year", row.start_year, "number", { className: "w-14", inputProps: { min: 0, max: 99 } })}
+                </td>
+
+                <td className="cursor-pointer hover:bg-base-200 font-mono text-xs" onClick={() => startEdit(idx, "nmec", row.nmec?.toString() || "")}>
+                    {renderEditableCell(idx, "nmec", row.nmec, "number", { className: "w-20" })}
+                </td>
+
+                <td className="cursor-pointer hover:bg-base-200" onClick={() => startEdit(idx, "faina_name", row.faina_name || "")}>
+                    {renderEditableCell(idx, "faina_name", row.faina_name, "text")}
+                </td>
+
+                <td className={classNames(isPatraoError && "text-error")}>
+                    <div className="flex items-center gap-1">
+                        {renderPatraoCell(row, idx)}
+                    </div>
+                </td>
+
+                <td>
+                    <button type="button" className="btn btn-ghost btn-xs btn-circle" onClick={() => handleRemoveRow(idx)} title="Remover">
+                        <MaterialSymbol icon="close" size={14} />
+                    </button>
+                </td>
+            </tr>
+        );
     };
 
     // Start editing a cell
@@ -631,10 +752,7 @@ const BulkImportModal = ({
                                                 type="checkbox"
                                                 className="checkbox checkbox-sm checkbox-primary"
                                                 checked={templateColumns[h.key]}
-                                                onChange={(e) => setTemplateColumns(prev => ({
-                                                    ...prev,
-                                                    [h.key]: e.target.checked
-                                                }))}
+                                                onChange={(e) => handleTemplateColumnChange(h.key, e.target.checked)}
                                             />
                                             <span className="text-sm" title={h.description}>{h.label}</span>
                                         </label>
@@ -842,87 +960,7 @@ const BulkImportModal = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {parsedData.map((row, idx) => {
-                            const rowError = getRowError(idx);
-                            const isPatraoError = row.patrao_input && !row.patrao_resolved;
-
-                            return (
-                                <tr key={row._key} className={classNames("hover", rowError && "bg-error/10")}>
-                                    <td>
-                                        {rowError ? (
-                                            <div className="tooltip tooltip-right" data-tip={rowError.message}>
-                                                <MaterialSymbol icon="error" size={16} className="text-error" />
-                                            </div>
-                                        ) : (
-                                            <MaterialSymbol icon="check_circle" size={16} className="text-success" />
-                                        )}
-                                    </td>
-
-                                    {/* Editable cells */}
-                                    <td className="cursor-pointer hover:bg-base-200" onClick={() => startEdit(idx, "name", row.name)}>
-                                        {editingCell?.rowIdx === idx && editingCell?.field === "name" ? (
-                                            <input type="text" className="input input-xs input-bordered w-full" value={editValue} onChange={(e) => setEditValue(e.target.value)} onBlur={saveEdit} onKeyDown={(e) => e.key === "Enter" && saveEdit()} autoFocus />
-                                        ) : (
-                                            <span className="truncate max-w-[150px] block">{row.name || <span className="text-base-content/30">Nome</span>}</span>
-                                        )}
-                                    </td>
-
-                                    <td className="cursor-pointer hover:bg-base-200" onClick={() => startEdit(idx, "sex", row.sex)}>
-                                        {editingCell?.rowIdx === idx && editingCell?.field === "sex" ? (
-                                            <select className="select select-xs select-bordered" value={editValue} onChange={(e) => setEditValue(e.target.value)} onBlur={saveEdit} autoFocus>
-                                                <option value="M">M</option>
-                                                <option value="F">F</option>
-                                            </select>
-                                        ) : row.sex}
-                                    </td>
-
-                                    <td className="cursor-pointer hover:bg-base-200" onClick={() => startEdit(idx, "start_year", row.start_year?.toString())}>
-                                        {editingCell?.rowIdx === idx && editingCell?.field === "start_year" ? (
-                                            <input type="number" className="input input-xs input-bordered w-14" value={editValue} onChange={(e) => setEditValue(e.target.value)} onBlur={saveEdit} onKeyDown={(e) => e.key === "Enter" && saveEdit()} min={0} max={99} autoFocus />
-                                        ) : row.start_year}
-                                    </td>
-
-                                    <td className="cursor-pointer hover:bg-base-200 font-mono text-xs" onClick={() => startEdit(idx, "nmec", row.nmec?.toString() || "")}>
-                                        {editingCell?.rowIdx === idx && editingCell?.field === "nmec" ? (
-                                            <input type="number" className="input input-xs input-bordered w-20" value={editValue} onChange={(e) => setEditValue(e.target.value)} onBlur={saveEdit} onKeyDown={(e) => e.key === "Enter" && saveEdit()} autoFocus />
-                                        ) : (row.nmec || <span className="text-base-content/30">-</span>)}
-                                    </td>
-
-                                    <td className="cursor-pointer hover:bg-base-200" onClick={() => startEdit(idx, "faina_name", row.faina_name || "")}>
-                                        {editingCell?.rowIdx === idx && editingCell?.field === "faina_name" ? (
-                                            <input type="text" className="input input-xs input-bordered w-full" value={editValue} onChange={(e) => setEditValue(e.target.value)} onBlur={saveEdit} onKeyDown={(e) => e.key === "Enter" && saveEdit()} autoFocus />
-                                        ) : (row.faina_name || <span className="text-base-content/30">-</span>)}
-                                    </td>
-
-                                    <td className={classNames(isPatraoError && "text-error")}>
-                                        <div className="flex items-center gap-1">
-                                            {row.patrao_resolved && row.patrao_user ? (
-                                                <button type="button" className="flex items-center gap-1 px-2 py-0.5 bg-base-200 rounded-lg text-xs hover:bg-base-300" onClick={() => setPatraoPickerRow(idx)}>
-                                                    <div className="w-5 h-5 rounded-full overflow-hidden" style={{ borderColor: colors[row.patrao_user.start_year % colors.length] }}>
-                                                        <img src={row.patrao_user.image || (row.patrao_user.sex === 'F' ? femalePic : malePic)} alt="" className="w-full h-full object-cover" />
-                                                    </div>
-                                                    <span className="truncate max-w-[80px]">{row.patrao_user.name}</span>
-                                                </button>
-                                            ) : row.patrao_input ? (
-                                                <button type="button" className="btn btn-xs btn-error btn-outline" onClick={() => setPatraoPickerRow(idx)}>
-                                                    Escolher
-                                                </button>
-                                            ) : (
-                                                <button type="button" className="btn btn-xs btn-ghost" onClick={() => setPatraoPickerRow(idx)}>
-                                                    <MaterialSymbol icon="person_search" size={14} />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </td>
-
-                                    <td>
-                                        <button type="button" className="btn btn-ghost btn-xs btn-circle" onClick={() => handleRemoveRow(idx)} title="Remover">
-                                            <MaterialSymbol icon="close" size={14} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
+                        {parsedData.map((row, idx) => renderPreviewTableRow(row, idx))}
                     </tbody>
                 </table>
             </div>
