@@ -142,9 +142,12 @@ describe('IconPicker', () => {
             await user.click(screen.getByText('OK'));
             expect(mockOnChange).not.toHaveBeenCalled();
 
+            // Re-open custom input (it closes after clicking OK)
+            await user.click(screen.getByTitle('Caminho personalizado'));
+            const newInput = screen.getByPlaceholderText('/icons/meu-icone.svg');
+
             // No protocol
-            await user.clear(input);
-            await user.type(input, 'www.google.com/logo.png');
+            await user.type(newInput, 'www.google.com/logo.png');
             await user.click(screen.getByText('OK'));
             expect(mockOnChange).not.toHaveBeenCalled();
         });
@@ -182,28 +185,31 @@ describe('IconPicker', () => {
         it('switches to fallback when image errors', () => {
             render(<IconPicker {...defaultProps} value="/icons/broken.svg" />);
 
-            const img = screen.getByRole('img');
+            // Get only the preview image (first one with alt="")
+            const previewImg = screen.getByRole('img', { name: '' });
 
             // Simulate error
-            fireEvent.error(img);
+            fireEvent.error(previewImg);
 
-            // Should now show placeholder icon instead of img
+            // Should now show placeholder icon instead of preview img
             expect(screen.getByTestId('icon-image')).toBeInTheDocument();
-            expect(screen.queryByRole('img')).not.toBeInTheDocument();
+            // Preview img should be gone, but grid icons remain
+            expect(screen.queryByRole('img', { name: '' })).not.toBeInTheDocument();
         });
 
         it('resets error state when value changes', () => {
             const { rerender } = render(<IconPicker {...defaultProps} value="/icons/broken.svg" />);
 
-            // Trigger error
-            fireEvent.error(screen.getByRole('img'));
+            // Get preview image and trigger error
+            const previewImg = screen.getByRole('img', { name: '' });
+            fireEvent.error(previewImg);
             expect(screen.getByTestId('icon-image')).toBeInTheDocument();
 
             // Change value to working one
             rerender(<IconPicker {...defaultProps} value="/icons/working.svg" />);
 
-            // Should show img again
-            expect(screen.getByRole('img')).toBeInTheDocument();
+            // Should show preview img again (with alt="")
+            expect(screen.getByRole('img', { name: '' })).toBeInTheDocument();
         });
     });
 });

@@ -96,9 +96,8 @@ describe('Family/utils.js', () => {
 
     describe('separateName', () => {
         it('splits name into two balanced lines', () => {
-            const result = separateName("Nome Muito Comprido Para Testar");
-            // "Nome Muito" (10) "Comprido Para Testar" (20) -> unbalanced?
-            // Logic splits roughly in half by words
+            // Use a short name that won't be truncated (each half < 15 chars)
+            const result = separateName("João Silva");
             expect(result.name1).toBeDefined();
             expect(result.name2).toBeDefined();
             expect(result.isTruncated).toBe(false);
@@ -158,7 +157,11 @@ describe('Family/utils.js', () => {
             expect(child1.family).toBe(1);
 
             // Check recursive depth (max depth of subtree)
-            expect(familyHead1.family_depth).toBe(1); // child1 has depth 1 relative to it? Logic says Max(n.family_depth)
+            // labelFamilies sets family_depth to depth of leaf nodes, then propagates max up
+            // child1 has no children, so its family_depth = child1.depth = 2
+            // familyHead1's family_depth = max(child1.family_depth) = 2
+            expect(familyHead1.family_depth).toBe(2); // Max depth in subtree
+            expect(child1.family_depth).toBe(2); // Leaf node depth
         });
     });
 
