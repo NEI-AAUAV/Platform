@@ -33,10 +33,11 @@ const getSafeIconPath = (rawPath) => {
     // 0. Explicit check removed to avoid S1523.
     // The strict whitelist below inherently blocks javascript: and other schemes.
 
-    // 1. Safe local icons
+    // 1. Safe local icons - URI-encoded for additional safety layer
     if (trimmed.startsWith("/icons/")) {
         const match = trimmed.match(SAFE_ICON_PATTERN);
-        return match ? match[0] : ""; // Return the match, not the input
+        // encodeURI ensures any special chars are escaped for HTML attribute context
+        return match ? encodeURI(match[0]) : "";
     }
 
     // 2. Strict absolute HTTPS URLs

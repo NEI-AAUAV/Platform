@@ -275,7 +275,7 @@ export function labelFamilies(node) {
         }
     }
 
-    if (node.children) {
+    if (node.children && node.children.length > 0) {
         node.family_depth = 0;
         node.family_count = 0;
         for (const n of node.children) {
