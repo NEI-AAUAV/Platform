@@ -256,7 +256,7 @@ export function Component() {
               </div>
               <div
                 className={classNames(
-                  "rounded-r-box absolute left-full -top-px -bottom-px flex w-12 flex-col items-center gap-3 overflow-hidden py-3",
+                  "rounded-r-box absolute left-full -top-px -bottom-px flex w-12 flex-col items-center gap-3 py-3",
                   sidebarOpened
                     ? "border  border-l-0 border-base-content/10 bg-base-200 shadow-[1px_1px_3px_-1px_rgba(0,0,0,0.1)]"
                     : "bg-transparent"

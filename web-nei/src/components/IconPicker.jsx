@@ -32,19 +32,22 @@ export default function IconPicker({ value, onChange, inheritedIcon }) {
         if (!rawPath) return "";
         const trimmed = rawPath.trim();
 
-        // Disallow dangerous URL schemes
-        const lower = trimmed.toLowerCase();
-        if (
-            lower.startsWith("javascript:") ||
-            lower.startsWith("data:") ||
-            lower.startsWith("vbscript:")
-        ) {
-            return "";
+        // 1. Safe local icons: /icons/filename.svg (letters, numbers, underscores, hyphens)
+        // Strictly validates structure to prevent any path traversal or injection chars
+        if (trimmed.startsWith("/icons/")) {
+            const iconPattern = /^\/icons\/[\w-]+\.svg$/i;
+            return iconPattern.test(trimmed) ? trimmed : "";
         }
 
-        // Allow only /icons/... or https://...
-        if (trimmed.startsWith("/icons/") || trimmed.startsWith("https://")) {
-            return trimmed;
+        // 2. Strict absolute HTTPS URLs
+        // Uses URL constructor to parse and validate protocol
+        if (trimmed.startsWith("https://")) {
+            try {
+                const url = new URL(trimmed);
+                return url.protocol === "https:" ? trimmed : "";
+            } catch (e) {
+                return "";
+            }
         }
 
         return "";
