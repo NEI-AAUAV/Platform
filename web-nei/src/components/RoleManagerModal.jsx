@@ -87,6 +87,22 @@ const MembersList = ({ members, membersLoading, yearFormat, onRemove }) => {
     );
 };
 
+MembersList.propTypes = {
+    members: PropTypes.arrayOf(PropTypes.shape({
+        _id: PropTypes.string,
+        user: PropTypes.shape({
+            name: PropTypes.string,
+            start_year: PropTypes.number,
+            image: PropTypes.string,
+            sex: PropTypes.string,
+        }),
+        year: PropTypes.number,
+    })),
+    membersLoading: PropTypes.bool,
+    yearFormat: PropTypes.string,
+    onRemove: PropTypes.func.isRequired,
+};
+
 const MembersView = ({
     members,
     membersLoading,
@@ -118,6 +134,16 @@ const MembersView = ({
         />
     </div>
 );
+
+MembersView.propTypes = {
+    members: PropTypes.array,
+    membersLoading: PropTypes.bool,
+    availableYears: PropTypes.arrayOf(PropTypes.number).isRequired,
+    memberYearFilter: PropTypes.number,
+    onYearChange: PropTypes.func.isRequired,
+    yearFormat: PropTypes.string,
+    onRemove: PropTypes.func.isRequired,
+};
 
 const findRoleName = (nodes, id) => {
     for (const node of nodes) {
@@ -211,6 +237,40 @@ const RoleTree = ({ nodes, depth = 0, selectedNode, isNew, formData, onSelect })
             })}
         </div>
     );
+};
+
+RoleTree.propTypes = {
+    nodes: PropTypes.arrayOf(PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        short: PropTypes.string,
+        icon: PropTypes.string,
+        female_name: PropTypes.string,
+        show: PropTypes.bool,
+        super_roles: PropTypes.string,
+        year_display_format: PropTypes.string,
+        hidden: PropTypes.bool,
+        children: PropTypes.array,
+    })),
+    depth: PropTypes.number,
+    selectedNode: PropTypes.shape({
+        _id: PropTypes.string,
+        year_display_format: PropTypes.string,
+        icon: PropTypes.string,
+        children: PropTypes.array,
+    }),
+    isNew: PropTypes.bool.isRequired,
+    formData: PropTypes.shape({
+        name: PropTypes.string,
+        short: PropTypes.string,
+        female_name: PropTypes.string,
+        show: PropTypes.bool,
+        super_roles: PropTypes.string,
+        year_display_format: PropTypes.string,
+        icon: PropTypes.string,
+        hidden: PropTypes.bool,
+    }).isRequired,
+    onSelect: PropTypes.func.isRequired,
 };
 
 /**
@@ -441,19 +501,21 @@ export default function RoleManagerModal({ isOpen, onClose }) {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div
-                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6"
-                    role="dialog"
-                    aria-modal="true"
-                    onClick={onClose}
-                    onKeyDown={(e) => e.key === 'Escape' && onClose()}
-                    aria-label="Fechar modal"
-                >
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-6">
+                    <button
+                        type="button"
+                        className="absolute inset-0 h-full w-full bg-black/40 backdrop-blur-[2px] cursor-default border-none"
+                        onClick={onClose}
+                        aria-label="Fechar modal"
+                    />
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
-                        className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
+                        className="relative flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Gestor de Insígnias"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
@@ -566,168 +628,168 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                         }
                                         return (
                                             <form onSubmit={handleSave} className="flex flex-col gap-4 max-w-lg mx-auto">
-                                            <div className="form-control">
-                                                <label className="label" htmlFor="role-name"><span className="label-text">Nome</span></label>
-                                                <input
-                                                    id="role-name"
-                                                    type="text"
-                                                    className="input input-bordered"
-                                                    required
-                                                    value={formData.name}
-                                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                                    placeholder="Ex: Direção, Presidente, Vogal..."
-                                                />
-                                            </div>
-
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="form-control">
-                                                    <label className="label" htmlFor="role-short"><span className="label-text">Abreviatura (Curto)</span></label>
+                                                    <label className="label" htmlFor="role-name"><span className="label-text">Nome</span></label>
                                                     <input
-                                                        id="role-short"
+                                                        id="role-name"
                                                         type="text"
                                                         className="input input-bordered"
-                                                        value={formData.short}
-                                                        onChange={e => setFormData({ ...formData, short: e.target.value })}
-                                                        placeholder="Ex: PRES, NEI..."
+                                                        required
+                                                        value={formData.name}
+                                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                                        placeholder="Ex: Direção, Presidente, Vogal..."
                                                     />
                                                 </div>
-                                                <div className="form-control">
-                                                    <label className="label" htmlFor="role-show">
-                                                        <span className="label-text">Mostrar na Lista Principal</span>
-                                                        <div className="tooltip tooltip-left" data-tip="Se ativo, aparece como filtro principal na lista de membros">
-                                                            <MaterialSymbol icon="info" size={16} className="text-base-content/40 cursor-help" />
-                                                        </div>
-                                                    </label>
-                                                    <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-content/20 p-3">
-                                                        <input
-                                                            id="role-show"
-                                                            type="checkbox"
-                                                            className="toggle toggle-primary"
-                                                            checked={formData.show}
-                                                            onChange={e => setFormData({ ...formData, show: e.target.checked })}
-                                                        />
-                                                        <span className="label-text">{formData.show ? "Sim" : "Não"}</span>
-                                                    </label>
-                                                </div>
-                                            </div>
 
-                                            <div className="form-control">
-                                                <label className="label" htmlFor="role-icon"><span className="label-text">Ícone</span></label>
-                                                <IconPicker
-                                                    inputId="role-icon"
-                                                    value={formData.icon || ""}
-                                                    onChange={(newIcon) => setFormData({ ...formData, icon: newIcon })}
-                                                    inheritedIcon={selectedNode?.icon || null}
-                                                />
-                                            </div>
-
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                <div className="form-control">
-                                                    <label className="label" htmlFor="role-hidden">
-                                                        <span className="label-text">Ocultar em Visualizações</span>
-                                                        <div className="tooltip tooltip-left" data-tip="Oculta esta insígnia na Árvore e Tabela (mas mantém o registo)">
-                                                            <MaterialSymbol icon="visibility_off" size={16} className="text-base-content/40 cursor-help" />
-                                                        </div>
-                                                    </label>
-                                                    <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-content/20 p-3">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div className="form-control">
+                                                        <label className="label" htmlFor="role-short"><span className="label-text">Abreviatura (Curto)</span></label>
                                                         <input
-                                                            id="role-hidden"
-                                                            type="checkbox"
-                                                            className="toggle toggle-error"
-                                                            checked={formData.hidden || false}
-                                                            onChange={e => setFormData({ ...formData, hidden: e.target.checked })}
+                                                            id="role-short"
+                                                            type="text"
+                                                            className="input input-bordered"
+                                                            value={formData.short}
+                                                            onChange={e => setFormData({ ...formData, short: e.target.value })}
+                                                            placeholder="Ex: PRES, NEI..."
                                                         />
-                                                        <span className="label-text">{formData.hidden ? "Oculto" : "Visível"}</span>
-                                                    </label>
+                                                    </div>
+                                                    <div className="form-control">
+                                                        <label className="label" htmlFor="role-show">
+                                                            <span className="label-text">Mostrar na Lista Principal</span>
+                                                            <div className="tooltip tooltip-left" data-tip="Se ativo, aparece como filtro principal na lista de membros">
+                                                                <MaterialSymbol icon="info" size={16} className="text-base-content/40 cursor-help" />
+                                                            </div>
+                                                        </label>
+                                                        <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-content/20 p-3">
+                                                            <input
+                                                                id="role-show"
+                                                                type="checkbox"
+                                                                className="toggle toggle-primary"
+                                                                checked={formData.show}
+                                                                onChange={e => setFormData({ ...formData, show: e.target.checked })}
+                                                            />
+                                                            <span className="label-text">{formData.show ? "Sim" : "Não"}</span>
+                                                        </label>
+                                                    </div>
                                                 </div>
 
                                                 <div className="form-control">
-                                                    <label className="label" htmlFor="role-year-format"><span className="label-text">Formato de Ano</span></label>
-                                                    <select
-                                                        id="role-year-format"
-                                                        className="select select-bordered w-full"
-                                                        value={formData.year_display_format}
-                                                        onChange={e => setFormData({ ...formData, year_display_format: e.target.value })}
+                                                    <label className="label" htmlFor="role-icon"><span className="label-text">Ícone</span></label>
+                                                    <IconPicker
+                                                        inputId="role-icon"
+                                                        value={formData.icon || ""}
+                                                        onChange={(newIcon) => setFormData({ ...formData, icon: newIcon })}
+                                                        inheritedIcon={selectedNode?.icon || null}
+                                                    />
+                                                </div>
+
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    <div className="form-control">
+                                                        <label className="label" htmlFor="role-hidden">
+                                                            <span className="label-text">Ocultar em Visualizações</span>
+                                                            <div className="tooltip tooltip-left" data-tip="Oculta esta insígnia na Árvore e Tabela (mas mantém o registo)">
+                                                                <MaterialSymbol icon="visibility_off" size={16} className="text-base-content/40 cursor-help" />
+                                                            </div>
+                                                        </label>
+                                                        <label className="label cursor-pointer justify-start gap-3 rounded-lg border border-base-content/20 p-3">
+                                                            <input
+                                                                id="role-hidden"
+                                                                type="checkbox"
+                                                                className="toggle toggle-error"
+                                                                checked={formData.hidden || false}
+                                                                onChange={e => setFormData({ ...formData, hidden: e.target.checked })}
+                                                            />
+                                                            <span className="label-text">{formData.hidden ? "Oculto" : "Visível"}</span>
+                                                        </label>
+                                                    </div>
+
+                                                    <div className="form-control">
+                                                        <label className="label" htmlFor="role-year-format"><span className="label-text">Formato de Ano</span></label>
+                                                        <select
+                                                            id="role-year-format"
+                                                            className="select select-bordered w-full"
+                                                            value={formData.year_display_format}
+                                                            onChange={e => setFormData({ ...formData, year_display_format: e.target.value })}
+                                                        >
+                                                            <option value="civil">Ano Civil (ex: 2023)</option>
+                                                            <option value="academic">Ano Letivo (ex: 23/24)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div className="form-control">
+                                                    <label className="label" htmlFor="role-female-name"><span className="label-text">Variante Feminina (Opcional)</span></label>
+                                                    <input
+                                                        id="role-female-name"
+                                                        type="text"
+                                                        className="input input-bordered"
+                                                        value={formData.female_name}
+                                                        onChange={e => setFormData({ ...formData, female_name: e.target.value })}
+                                                        placeholder="Ex: Presidenta..."
+                                                    />
+                                                </div>
+
+                                                <div className="form-control">
+                                                    <span className="label"><span className="label-text text-base-content/50">Pertence a (Auto)</span></span>
+                                                    <div className="flex items-center gap-2 rounded-lg border border-dashed border-base-content/20 bg-base-200/50 px-4 py-3 text-sm">
+                                                        {formData.super_roles ? (
+                                                            <>
+                                                                <MaterialSymbol icon="subdirectory_arrow_right" className="text-base-content/40" />
+                                                                <span className="font-bold">
+                                                                    {findRoleName(roleTree, formData.super_roles) || "Desconhecido"}
+                                                                </span>
+                                                                <span className="text-xs opacity-50 font-mono ml-2">({formData.super_roles})</span>
+                                                            </>
+                                                        ) : (
+                                                            <span className="italic opacity-50">Raiz (Principal)</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="divider"></div>
+
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <button
+                                                        type="submit"
+                                                        className={classNames("btn btn-primary flex-1", { loading: submitting })}
                                                     >
-                                                        <option value="civil">Ano Civil (ex: 2023)</option>
-                                                        <option value="academic">Ano Letivo (ex: 23/24)</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                                        {isNew ? "Criar" : "Guardar Alterações"}
+                                                    </button>
 
-                                            <div className="form-control">
-                                                <label className="label" htmlFor="role-female-name"><span className="label-text">Variante Feminina (Opcional)</span></label>
-                                                <input
-                                                    id="role-female-name"
-                                                    type="text"
-                                                    className="input input-bordered"
-                                                    value={formData.female_name}
-                                                    onChange={e => setFormData({ ...formData, female_name: e.target.value })}
-                                                    placeholder="Ex: Presidenta..."
-                                                />
-                                            </div>
-
-                                            <div className="form-control">
-                                                <span className="label"><span className="label-text text-base-content/50">Pertence a (Auto)</span></span>
-                                                <div className="flex items-center gap-2 rounded-lg border border-dashed border-base-content/20 bg-base-200/50 px-4 py-3 text-sm">
-                                                    {formData.super_roles ? (
+                                                    {!isNew && (
                                                         <>
-                                                            <MaterialSymbol icon="subdirectory_arrow_right" className="text-base-content/40" />
-                                                            <span className="font-bold">
-                                                                {findRoleName(roleTree, formData.super_roles) || "Desconhecido"}
-                                                            </span>
-                                                            <span className="text-xs opacity-50 font-mono ml-2">({formData.super_roles})</span>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-neutral"
+                                                                onClick={handleAddChild}
+                                                            >
+                                                                <MaterialSymbol icon="subdirectory_arrow_right" />
+                                                                Adicionar Sub-Insígnia
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-error btn-outline"
+                                                                onClick={handleDelete}
+                                                                disabled={submitting}
+                                                            >
+                                                                <MaterialSymbol icon="delete" />
+                                                            </button>
                                                         </>
-                                                    ) : (
-                                                        <span className="italic opacity-50">Raiz (Principal)</span>
+                                                    )}
+                                                    {isNew && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-ghost"
+                                                            onClick={() => {
+                                                                setIsNew(false);
+                                                                setSelectedNode(null); // Or go back to previous selection?
+                                                            }}
+                                                        >
+                                                            Cancelar
+                                                        </button>
                                                     )}
                                                 </div>
-                                            </div>
-
-                                            <div className="divider"></div>
-
-                                            <div className="flex flex-wrap items-center gap-3">
-                                                <button
-                                                    type="submit"
-                                                    className={classNames("btn btn-primary flex-1", { loading: submitting })}
-                                                >
-                                                    {isNew ? "Criar" : "Guardar Alterações"}
-                                                </button>
-
-                                                {!isNew && (
-                                                    <>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-neutral"
-                                                            onClick={handleAddChild}
-                                                        >
-                                                            <MaterialSymbol icon="subdirectory_arrow_right" />
-                                                            Adicionar Sub-Insígnia
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-error btn-outline"
-                                                            onClick={handleDelete}
-                                                            disabled={submitting}
-                                                        >
-                                                            <MaterialSymbol icon="delete" />
-                                                        </button>
-                                                    </>
-                                                )}
-                                                {isNew && (
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-ghost"
-                                                        onClick={() => {
-                                                            setIsNew(false);
-                                                            setSelectedNode(null); // Or go back to previous selection?
-                                                        }}
-                                                    >
-                                                        Cancelar
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </form>
+                                            </form>
                                         );
                                     })()}
                                 </div>

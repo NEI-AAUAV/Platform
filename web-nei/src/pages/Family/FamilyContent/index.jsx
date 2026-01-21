@@ -189,8 +189,6 @@ const FamilyContent = ({
   return (
     <section
       className="relative h-full w-full"
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
       aria-label="Visualização da árvore genealógica"
     >
       {isLoading && (
@@ -217,11 +215,13 @@ const FamilyContent = ({
       {/* Main SVG Tree */}
       <svg
         ref={svgRef}
-        className="treeei"
+        className="treeei focus:outline-none"
         width="100%"
         height="100%"
         viewBox="0 0 800 600"
         onClick={handleSvgClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
         role="tree"
         aria-label="Árvore genealógica da família"
       >

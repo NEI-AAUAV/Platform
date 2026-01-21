@@ -67,11 +67,17 @@ const RoleChip = ({ roleName, year, onRemove }) => (
     </span>
 );
 
-const CreatedUserRow = ({ user, userIdx, roles, onRemoveRole, onAddRole }) => (
+RoleChip.propTypes = {
+    roleName: PropTypes.string,
+    year: PropTypes.number,
+    onRemove: PropTypes.func.isRequired,
+};
+
+const CreatedUserRow = ({ user, userIdx, roles = [], onRemoveRole, onAddRole }) => (
     <div className="flex items-center gap-3 p-3 bg-base-200/50 rounded-xl">
         <div
             className="w-10 h-10 rounded-full overflow-hidden border-2"
-            style={{ borderColor: colors[user.start_year % colors.length] }}
+            style={{ borderColor: colors[(user.start_year || 0) % colors.length] }}
         >
             <img
                 src={user.image || (user.sex === "F" ? femalePic : malePic)}
@@ -104,6 +110,25 @@ const CreatedUserRow = ({ user, userIdx, roles, onRemoveRole, onAddRole }) => (
         </button>
     </div>
 );
+
+CreatedUserRow.propTypes = {
+    user: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        start_year: PropTypes.number.isRequired,
+        image: PropTypes.string,
+        sex: PropTypes.string.isRequired,
+    }).isRequired,
+    userIdx: PropTypes.number.isRequired,
+    roles: PropTypes.arrayOf(PropTypes.shape({
+        role: PropTypes.shape({
+            _id: PropTypes.string,
+            name: PropTypes.string,
+        }),
+        year: PropTypes.number,
+    })).isRequired,
+    onRemoveRole: PropTypes.func.isRequired,
+    onAddRole: PropTypes.func.isRequired,
+};
 
 const BulkImportModal = ({
     isOpen,
@@ -915,16 +940,14 @@ const BulkImportModal = ({
             {/* Two main options */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Upload CSV option */}
-                <div
-                    role="button"
-                    tabIndex={0}
+                <button
+                    type="button"
                     className={classNames(
-                        "relative rounded-2xl p-6 transition-all cursor-pointer group",
+                        "relative rounded-2xl p-6 transition-all cursor-pointer group text-left w-full h-full",
                         "border-2 hover:border-primary hover:shadow-lg",
                         dragActive ? "border-primary bg-primary/10 shadow-lg" : "border-base-content/10 bg-base-200/30"
                     )}
                     onClick={() => fileInputRef.current?.click()}
-                    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && fileInputRef.current?.click()}
                     onDragEnter={handleDrag}
                     onDragLeave={handleDrag}
                     onDragOver={handleDrag}
@@ -945,496 +968,498 @@ const BulkImportModal = ({
                         </p>
                         <p className="text-xs text-base-content/40 mt-1">Suporta .csv, .xlsx</p>
                     </div>
-                </div>
+            </div>
 
-                {/* Manual entry option */}
-                <button
-                    type="button"
-                    className="relative rounded-2xl p-6 border-2 border-base-content/10 bg-base-200/30 hover:border-primary hover:shadow-lg transition-all cursor-pointer group text-left w-full h-full"
-                    onClick={handleStartManualEntry}
-                >
-                    <div className="flex flex-col items-center text-center">
-                        <div className="w-16 h-16 rounded-2xl bg-base-200 text-base-content/50 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-content transition-colors">
-                            <MaterialSymbol icon="edit_note" size={32} />
-                        </div>
-                        <h5 className="font-semibold text-lg mb-1">Preencher Manualmente</h5>
-                        <p className="text-sm text-base-content/60">Não tem ficheiro? Adicione os membros um a um agora.</p>
+            {/* Manual entry option */}
+            <button
+                type="button"
+                className="relative rounded-2xl p-6 border-2 border-base-content/10 bg-base-200/30 hover:border-primary hover:shadow-lg transition-all cursor-pointer group text-left w-full h-full"
+                onClick={handleStartManualEntry}
+            >
+                <div className="flex flex-col items-center text-center">
+                    <div className="w-16 h-16 rounded-2xl bg-base-200 text-base-content/50 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-content transition-colors">
+                        <MaterialSymbol icon="edit_note" size={32} />
                     </div>
-                </button>
-            </div>
-
-
-
-            {/* Parse errors */}
-            {errors.length > 0 && parsedData.length === 0 && (
-                <div className="alert alert-error">
-                    <MaterialSymbol icon="error" size={24} />
-                    <span className="font-medium">{errors[0]?.message}</span>
+                    <h5 className="font-semibold text-lg mb-1">Preencher Manualmente</h5>
+                    <p className="text-sm text-base-content/60">Não tem ficheiro? Adicione os membros um a um agora.</p>
                 </div>
-            )}
-        </div>
-    );
-
-
-    // Render preview step (with inline editing)
-    const renderPreviewStep = () => (
-        <div className="space-y-4">
-            {/* Summary */}
-            <div className="flex items-center justify-between bg-base-200/50 rounded-lg p-3">
-                <div className="flex items-center gap-4">
-                    <span className="text-sm">
-                        <span className="font-bold text-success">{validRows.length}</span> validos
-                    </span>
-                    {invalidRows.length > 0 && (
-                        <span className="text-sm">
-                            <span className="font-bold text-error">{invalidRows.length}</span> a corrigir
-                        </span>
-                    )}
-                </div>
-                <button
-                    type="button"
-                    className="btn btn-ghost btn-xs"
-                    onClick={() => {
-                        setStep("upload");
-                        setFile(null);
-                        setParsedData([]);
-                        setErrors([]);
-                    }}
-                >
-                    <MaterialSymbol icon="arrow_back" size={16} />
-                    Voltar
-                </button>
-            </div>
-
-            {/* Editable data table */}
-            <div className="overflow-x-auto max-h-[40vh] overflow-y-auto border border-base-content/10 rounded-lg">
-                <table className="table table-xs w-full">
-                    <thead className="bg-base-200 sticky top-0">
-                        <tr>
-                            <th className="w-8"></th>
-                            <th>Nome</th>
-                            <th className="w-14">Sexo</th>
-                            <th className="w-16">Ano</th>
-                            <th className="w-24">Nmec</th>
-                            <th className="w-32">Faina</th>
-                            <th>Patrao</th>
-                            <th className="w-8"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {parsedData.map((row, idx) => renderPreviewTableRow(row, idx))}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Add row button */}
-            <button type="button" className="btn btn-ghost btn-sm gap-2" onClick={handleAddRow}>
-                <MaterialSymbol icon="add" size={18} />
-                Adicionar linha
             </button>
-
-            <p className="text-xs text-base-content/50 text-center">
-                Clica numa celula para editar. Corrige patroes nao resolvidos antes de importar.
-            </p>
         </div>
+
+
+
+            {/* Parse errors */ }
+    {
+        errors.length > 0 && parsedData.length === 0 && (
+            <div className="alert alert-error">
+                <MaterialSymbol icon="error" size={24} />
+                <span className="font-medium">{errors[0]?.message}</span>
+            </div>
+        )
+    }
+        </div >
     );
 
-    // Render assign step (individual roles)
-    const renderAssignStep = () => (
-        <div className="space-y-4">
-            <div className="bg-success/10 rounded-xl p-4 text-center">
-                <MaterialSymbol icon="check_circle" size={40} className="text-success" />
-                <h3 className="font-bold text-lg mt-2">{results?.total_created} membro(s) criado(s)!</h3>
-                <p className="text-sm text-base-content/60 mt-1">Atribui insígnias individualmente (opcional)</p>
-            </div>
 
-            <div className="max-h-60 overflow-y-auto space-y-2">
-                {results?.created?.map((user, userIdx) => (
-                    <CreatedUserRow
-                        key={user._id || userIdx}
-                        user={user}
-                        userIdx={userIdx}
-                        roles={userRoles[userIdx] || []}
-                        onRemoveRole={removeRoleFromUser}
-                        onAddRole={openRolePickerForUser}
-                    />
-                ))}
+// Render preview step (with inline editing)
+const renderPreviewStep = () => (
+    <div className="space-y-4">
+        {/* Summary */}
+        <div className="flex items-center justify-between bg-base-200/50 rounded-lg p-3">
+            <div className="flex items-center gap-4">
+                <span className="text-sm">
+                    <span className="font-bold text-success">{validRows.length}</span> validos
+                </span>
+                {invalidRows.length > 0 && (
+                    <span className="text-sm">
+                        <span className="font-bold text-error">{invalidRows.length}</span> a corrigir
+                    </span>
+                )}
             </div>
+            <button
+                type="button"
+                className="btn btn-ghost btn-xs"
+                onClick={() => {
+                    setStep("upload");
+                    setFile(null);
+                    setParsedData([]);
+                    setErrors([]);
+                }}
+            >
+                <MaterialSymbol icon="arrow_back" size={16} />
+                Voltar
+            </button>
         </div>
-    );
 
-    // Export errors to CSV
-    const handleExportErrors = () => {
-        if (!results?.errors?.length) return;
-
-        const BOM = "\uFEFF";
-        const headers = ["row", "name", "error"];
-        const rows = results.errors.map(e => {
-            const rowIdx = e.row + 1;
-            const name = e.data?.name || `Linha ${rowIdx}`;
-            const msg = e.message.replace(/"/g, '""');
-            return `${rowIdx},"${name}","${msg}"`;
-        });
-
-        const csvContent = BOM + headers.join(",") + "\n" + rows.join("\n");
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "erros_importacao.csv";
-        link.click();
-        URL.revokeObjectURL(link.href);
-    };
-
-    // Determine result status for styling
-    const getResultStatus = () => {
-        if (results?.total_errors > 0) return "error";
-        if (warnings.length > 0) return "warning";
-        return "success";
-    };
-
-    const statusStyle = {
-        error: "bg-error/5 border-error/10",
-        warning: "bg-warning/5 border-warning/10",
-        success: "bg-success/5 border-success/10"
-    };
-
-    const statusIcon = {
-        error: <MaterialSymbol icon="error" size={48} className="text-error" />,
-        warning: <MaterialSymbol icon="warning" size={48} className="text-warning" />,
-        success: <MaterialSymbol icon="check_circle" size={48} className="text-success" />
-    };
-
-    const currentStatus = getResultStatus();
-
-    // Render results step with preview
-    const renderResultsStep = () => (
-        <div className="space-y-6">
-            {/* Summary */}
-            <div className={classNames("rounded-xl p-6 text-center border-2", statusStyle[currentStatus])}>
-                <div className="flex justify-center mb-3">
-                    {statusIcon[currentStatus]}
-                </div>
-
-                <h3 className="text-xl font-bold">
-                    {results?.total_created > 0 ? "Importação Concluída" : "Importação Falhou"}
-                </h3>
-
-                <div className="flex flex-wrap justify-center gap-4 mt-2 text-sm">
-                    {results?.total_created > 0 && (
-                        <span className="text-success font-medium">
-                            Criou {results?.total_created} membro(s)
-                        </span>
-                    )}
-                    {warnings.length > 0 && (
-                        <span className="text-warning font-medium">
-                            {warnings.length} aviso(s)
-                        </span>
-                    )}
-                    {results?.total_errors > 0 && (
-                        <span className="text-error font-medium">
-                            {results?.total_errors} erro(s)
-                        </span>
-                    )}
-                </div>
-
-                {results?.rolesAssigned > 0 && <p className="text-success text-sm mt-1">{results.rolesAssigned} insignia(s) atribuida(s)</p>}
-            </div>
-
-            {/* Warnings */}
-            {warnings.length > 0 && (
-                <div className="collapse collapse-arrow border border-warning/20 bg-warning/5 rounded-xl">
-                    <input type="checkbox" />
-                    <div className="collapse-title font-medium flex items-center gap-2 text-warning">
-                        <MaterialSymbol icon="warning" size={20} />
-                        Avisos ({warnings.length})
-                    </div>
-                    <div className="collapse-content">
-                        <div className="max-h-32 overflow-y-auto space-y-1 pr-2">
-                            {warnings.map((w, i) => (
-                                <div key={`warning-${i}`} className="text-sm p-2 rounded bg-warning/10 border border-warning/10">
-                                    {w}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Preview - Table view */}
-            {results?.created?.length > 0 && (
-                <div>
-                    <h4 className="font-medium mb-3 flex items-center gap-2">
-                        <MaterialSymbol icon="table_rows" size={20} className="text-primary" />
-                        Membros Criados
-                    </h4>
-                    <div className="overflow-x-auto border border-base-content/10 rounded-lg">
-                        <table className="table table-sm w-full">
-                            <thead className="bg-base-200">
-                                <tr>
-                                    <th>Nome</th>
-                                    <th>Sexo</th>
-                                    <th>Ano</th>
-                                    <th>Nmec</th>
-                                    <th>Patrao</th>
-                                    <th>Insignias</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {results.created.slice(0, 5).map((user, idx) => {
-                                    const patrao = user.patrao_id ? allUsers.find(u => u._id === user.patrao_id) : null;
-                                    const roles = userRoles[idx] || [];
-                                    return (
-                                        <tr key={user._id || idx}>
-                                            <td className="font-medium">{user.name}</td>
-                                            <td>{user.sex}</td>
-                                            <td>{user.start_year}</td>
-                                            <td className="font-mono text-xs">{user.nmec || "-"}</td>
-                                            <td>{patrao?.name || "-"}</td>
-                                            <td>
-                                                {roles.length > 0 ? (
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {roles.map((r) => (
-                                                            <span key={r.role._id} className="badge badge-primary badge-sm">{r.role.name}</span>
-                                                        ))}
-                                                    </div>
-                                                ) : "-"}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                        {results.created.length > 5 && (
-                            <p className="text-xs text-center text-base-content/50 py-2">+ {results.created.length - 5} mais...</p>
-                        )}
-                    </div>
-                </div>
-            )}
-
-
-
-            {/* Errors */}
-            {results?.errors?.length > 0 && (
-                <div>
-                    <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-error flex items-center gap-2">
-                            <MaterialSymbol icon="error" size={20} />
-                            Erros ({results.errors.length})
-                        </h4>
-                        <button
-                            onClick={handleExportErrors}
-                            className="btn btn-xs btn-outline btn-error gap-1"
-                        >
-                            <MaterialSymbol icon="download" size={14} />
-                            Exportar CSV
-                        </button>
-                    </div>
-                    <div className="max-h-32 overflow-y-auto space-y-1 border border-error/20 rounded-lg p-2 bg-error/5">
-                        {results.errors.map((err, i) => (
-                            <div key={`${err.row}-${i}`} className="text-sm p-2 rounded hover:bg-white/50 flex gap-2">
-                                <span className="font-mono text-xs font-bold opacity-50 shrink-0">L{err.row + 1}</span>
-                                <span>{err.message}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
+        {/* Editable data table */}
+        <div className="overflow-x-auto max-h-[40vh] overflow-y-auto border border-base-content/10 rounded-lg">
+            <table className="table table-xs w-full">
+                <thead className="bg-base-200 sticky top-0">
+                    <tr>
+                        <th className="w-8"></th>
+                        <th>Nome</th>
+                        <th className="w-14">Sexo</th>
+                        <th className="w-16">Ano</th>
+                        <th className="w-24">Nmec</th>
+                        <th className="w-32">Faina</th>
+                        <th>Patrao</th>
+                        <th className="w-8"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {parsedData.map((row, idx) => renderPreviewTableRow(row, idx))}
+                </tbody>
+            </table>
         </div>
-    );
 
-    // Patrao picker modal
-    const renderPatraoPicker = () => {
-        if (patraoPickerRow === null) return null;
-        const row = parsedData[patraoPickerRow];
-        if (!row) return null;
+        {/* Add row button */}
+        <button type="button" className="btn btn-ghost btn-sm gap-2" onClick={handleAddRow}>
+            <MaterialSymbol icon="add" size={18} />
+            Adicionar linha
+        </button>
 
-        const searchResults = patraoSearch ? patraoSearchResults : (row.patrao_matches || allUsers.slice(0, 10));
+        <p className="text-xs text-base-content/50 text-center">
+            Clica numa celula para editar. Corrige patroes nao resolvidos antes de importar.
+        </p>
+    </div>
+);
 
-        return (
-            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                <button
-                    type="button"
-                    className="absolute inset-0 bg-black/50 cursor-default w-full h-full border-none"
-                    onClick={() => setPatraoPickerRow(null)}
-                    aria-label="Fechar seletor"
+// Render assign step (individual roles)
+const renderAssignStep = () => (
+    <div className="space-y-4">
+        <div className="bg-success/10 rounded-xl p-4 text-center">
+            <MaterialSymbol icon="check_circle" size={40} className="text-success" />
+            <h3 className="font-bold text-lg mt-2">{results?.total_created} membro(s) criado(s)!</h3>
+            <p className="text-sm text-base-content/60 mt-1">Atribui insígnias individualmente (opcional)</p>
+        </div>
+
+        <div className="max-h-60 overflow-y-auto space-y-2">
+            {results?.created?.map((user, userIdx) => (
+                <CreatedUserRow
+                    key={user._id || userIdx}
+                    user={user}
+                    userIdx={userIdx}
+                    roles={userRoles[userIdx] || []}
+                    onRemoveRole={removeRoleFromUser}
+                    onAddRole={openRolePickerForUser}
                 />
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="relative bg-base-100 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
-                >
-                    <div className="p-4 border-b border-base-content/10">
-                        <h4 className="font-bold">Escolher Patrão para "{row.name}"</h4>
-                        <p className="text-xs text-base-content/60">Pesquisa por nome, nmec ou ID</p>
-                    </div>
+            ))}
+        </div>
+    </div>
+);
 
-                    <div className="p-4">
-                        <div className="relative">
-                            <MaterialSymbol icon="search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
-                            <input
-                                type="text"
-                                placeholder="Pesquisar..."
-                                className="input input-bordered w-full pl-10"
-                                value={patraoSearch}
-                                onChange={(e) => setPatraoSearch(e.target.value)}
-                                autoFocus
-                            />
-                        </div>
-                    </div>
+// Export errors to CSV
+const handleExportErrors = () => {
+    if (!results?.errors?.length) return;
 
-                    <div className="max-h-64 overflow-y-auto px-4 pb-4 space-y-1">
-                        {searchResults.map(u => (
-                            <button key={u._id} type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 text-left" onClick={() => setPatrao(patraoPickerRow, u)}>
-                                <div className="w-10 h-10 rounded-full overflow-hidden border-2" style={{ borderColor: colors[u.start_year % colors.length] }}>
-                                    <img src={u.image || (u.sex === 'F' ? femalePic : malePic)} alt="" className="w-full h-full object-cover" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-medium truncate">{u.name}</p>
-                                    <p className="text-xs text-base-content/50">{u.nmec && `#${u.nmec} · `}Ano {u.start_year}</p>
-                                </div>
-                                <span className="text-xs font-mono bg-base-200 px-2 py-1 rounded">ID {u._id}</span>
-                            </button>
-                        ))}
-                        <button type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 border border-dashed border-base-content/20" onClick={() => setPatrao(patraoPickerRow, null)}>
-                            <div className="w-10 h-10 rounded-full bg-base-200 flex items-center justify-center">
-                                <MaterialSymbol icon="person_off" size={20} className="text-base-content/40" />
-                            </div>
-                            <span className="text-base-content/60">Sem patrão (raiz)</span>
-                        </button>
-                    </div>
+    const BOM = "\uFEFF";
+    const headers = ["row", "name", "error"];
+    const rows = results.errors.map(e => {
+        const rowIdx = e.row + 1;
+        const name = e.data?.name || `Linha ${rowIdx}`;
+        const msg = e.message.replace(/"/g, '""');
+        return `${rowIdx},"${name}","${msg}"`;
+    });
 
-                    <div className="p-4 border-t border-base-content/10">
-                        <button type="button" className="btn btn-ghost w-full" onClick={() => setPatraoPickerRow(null)}>Cancelar</button>
-                    </div>
-                </motion.div>
+    const csvContent = BOM + headers.join(",") + "\n" + rows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "erros_importacao.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+};
+
+// Determine result status for styling
+const getResultStatus = () => {
+    if (results?.total_errors > 0) return "error";
+    if (warnings.length > 0) return "warning";
+    return "success";
+};
+
+const statusStyle = {
+    error: "bg-error/5 border-error/10",
+    warning: "bg-warning/5 border-warning/10",
+    success: "bg-success/5 border-success/10"
+};
+
+const statusIcon = {
+    error: <MaterialSymbol icon="error" size={48} className="text-error" />,
+    warning: <MaterialSymbol icon="warning" size={48} className="text-warning" />,
+    success: <MaterialSymbol icon="check_circle" size={48} className="text-success" />
+};
+
+const currentStatus = getResultStatus();
+
+// Render results step with preview
+const renderResultsStep = () => (
+    <div className="space-y-6">
+        {/* Summary */}
+        <div className={classNames("rounded-xl p-6 text-center border-2", statusStyle[currentStatus])}>
+            <div className="flex justify-center mb-3">
+                {statusIcon[currentStatus]}
             </div>
-        );
-    };
 
+            <h3 className="text-xl font-bold">
+                {results?.total_created > 0 ? "Importação Concluída" : "Importação Falhou"}
+            </h3>
+
+            <div className="flex flex-wrap justify-center gap-4 mt-2 text-sm">
+                {results?.total_created > 0 && (
+                    <span className="text-success font-medium">
+                        Criou {results?.total_created} membro(s)
+                    </span>
+                )}
+                {warnings.length > 0 && (
+                    <span className="text-warning font-medium">
+                        {warnings.length} aviso(s)
+                    </span>
+                )}
+                {results?.total_errors > 0 && (
+                    <span className="text-error font-medium">
+                        {results?.total_errors} erro(s)
+                    </span>
+                )}
+            </div>
+
+            {results?.rolesAssigned > 0 && <p className="text-success text-sm mt-1">{results?.rolesAssigned} insignia(s) atribuida(s)</p>}
+        </div>
+
+        {/* Warnings */}
+        {warnings.length > 0 && (
+            <div className="collapse collapse-arrow border border-warning/20 bg-warning/5 rounded-xl">
+                <input type="checkbox" />
+                <div className="collapse-title font-medium flex items-center gap-2 text-warning">
+                    <MaterialSymbol icon="warning" size={20} />
+                    Avisos ({warnings.length})
+                </div>
+                <div className="collapse-content">
+                    <div className="max-h-32 overflow-y-auto space-y-1 pr-2">
+                        {warnings.map((w, i) => (
+                            <div key={`${i}-${w.substring(0, 10)}`} className="text-sm p-2 rounded bg-warning/10 border border-warning/10">
+                                {w}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* Preview - Table view */}
+        {results?.created?.length > 0 && (
+            <div>
+                <h4 className="font-medium mb-3 flex items-center gap-2">
+                    <MaterialSymbol icon="table_rows" size={20} className="text-primary" />
+                    Membros Criados
+                </h4>
+                <div className="overflow-x-auto border border-base-content/10 rounded-lg">
+                    <table className="table table-sm w-full">
+                        <thead className="bg-base-200">
+                            <tr>
+                                <th>Nome</th>
+                                <th>Sexo</th>
+                                <th>Ano</th>
+                                <th>Nmec</th>
+                                <th>Patrao</th>
+                                <th>Insignias</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {results.created.slice(0, 5).map((user, idx) => {
+                                const patrao = user.patrao_id ? allUsers.find(u => u._id === user.patrao_id) : null;
+                                const roles = userRoles[idx] || [];
+                                return (
+                                    <tr key={user._id || idx}>
+                                        <td className="font-medium">{user.name}</td>
+                                        <td>{user.sex}</td>
+                                        <td>{user.start_year}</td>
+                                        <td className="font-mono text-xs">{user.nmec || "-"}</td>
+                                        <td>{patrao?.name || "-"}</td>
+                                        <td>
+                                            {roles.length > 0 ? (
+                                                <div className="flex flex-wrap gap-1">
+                                                    {roles.map((r) => (
+                                                        <span key={r.role._id} className="badge badge-primary badge-sm">{r.role.name}</span>
+                                                    ))}
+                                                </div>
+                                            ) : "-"}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                    {results.created.length > 5 && (
+                        <p className="text-xs text-center text-base-content/50 py-2">+ {results.created.length - 5} mais...</p>
+                    )}
+                </div>
+            </div>
+        )}
+
+
+
+        {/* Errors */}
+        {results?.errors?.length > 0 && (
+            <div>
+                <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-error flex items-center gap-2">
+                        <MaterialSymbol icon="error" size={20} />
+                        Erros ({results.errors.length})
+                    </h4>
+                    <button
+                        onClick={handleExportErrors}
+                        className="btn btn-xs btn-outline btn-error gap-1"
+                    >
+                        <MaterialSymbol icon="download" size={14} />
+                        Exportar CSV
+                    </button>
+                </div>
+                <div className="max-h-32 overflow-y-auto space-y-1 border border-error/20 rounded-lg p-2 bg-error/5">
+                    {results.errors.map((err, i) => (
+                        <div key={`${err.row}-${i}`} className="text-sm p-2 rounded hover:bg-white/50 flex gap-2">
+                            <span className="font-mono text-xs font-bold opacity-50 shrink-0">L{err.row + 1}</span>
+                            <span>{err.message}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )}
+    </div>
+);
+
+// Patrao picker modal
+const renderPatraoPicker = () => {
+    if (patraoPickerRow === null) return null;
+    const row = parsedData[patraoPickerRow];
+    if (!row) return null;
+
+    const searchResults = patraoSearch ? patraoSearchResults : (row.patrao_matches || allUsers.slice(0, 10));
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <button
+                type="button"
+                className="absolute inset-0 bg-black/50 cursor-default w-full h-full border-none"
+                onClick={() => setPatraoPickerRow(null)}
+                aria-label="Fechar seletor"
+            />
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="relative bg-base-100 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
+            >
+                <div className="p-4 border-b border-base-content/10">
+                    <h4 className="font-bold">Escolher Patrão para "{row.name}"</h4>
+                    <p className="text-xs text-base-content/60">Pesquisa por nome, nmec ou ID</p>
+                </div>
 
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="w-full max-w-3xl rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl max-h-[90vh] flex flex-col"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {/* Header */}
-                            <div className="flex items-center justify-between border-b border-base-content/10 p-4 shrink-0">
-                                <h3 className="text-lg font-bold flex items-center gap-2">
-                                    <MaterialSymbol icon="upload_file" size={24} className="text-primary" />
-                                    Importar Membros
-                                </h3>
-                                <button type="button" className="btn btn-ghost btn-sm btn-circle" onClick={onClose}>
-                                    <MaterialSymbol icon="close" size={20} />
-                                </button>
-                            </div>
-
-                            {/* Progress */}
-                            <div className="px-6 pt-4 shrink-0">
-                                <ul className="steps steps-horizontal w-full text-xs">
-                                    <li className={classNames("step", step !== "upload" && "step-primary")}>Upload</li>
-                                    <li className={classNames("step", (step === "preview" || step === "assign" || step === "results") && "step-primary")}>Preview</li>
-                                    <li className={classNames("step", (step === "assign" || step === "results") && "step-primary")}>Insignias</li>
-                                    <li className={classNames("step", step === "results" && "step-primary")}>Resultado</li>
-                                </ul>
-                            </div>
-
-                            {/* Content */}
-                            <div className="p-6 overflow-y-auto flex-1">
-                                {step === "upload" && renderUploadStep()}
-                                {step === "preview" && renderPreviewStep()}
-                                {step === "assign" && renderAssignStep()}
-                                {step === "results" && renderResultsStep()}
-                            </div>
-
-                            {/* Footer */}
-                            <div className="flex justify-between border-t border-base-content/10 px-6 py-4 shrink-0">
-                                {/* Back button */}
-                                <div>
-                                    {step === "preview" && (
-                                        <button type="button" className="btn btn-ghost gap-2" onClick={() => { setStep("upload"); setFile(null); setParsedData([]); setErrors([]); }}>
-                                            <MaterialSymbol icon="arrow_back" size={18} />
-                                            Voltar
-                                        </button>
-                                    )}
-                                    {step === "assign" && (
-                                        <button type="button" className="btn btn-ghost gap-2" onClick={() => setStep("preview")}>
-                                            <MaterialSymbol icon="arrow_back" size={18} />
-                                            Voltar
-                                        </button>
-                                    )}
-                                </div>
-
-                                {/* Action buttons */}
-                                <div className="flex gap-3">
-                                    {(() => {
-                                        if (step === "results") {
-                                            return <button type="button" className="btn btn-primary" onClick={onClose}>Fechar</button>;
-                                        }
-                                        if (step === "assign") {
-                                            return (
-                                                <>
-                                                    <button type="button" className="btn btn-ghost" onClick={() => setStep("results")}>Saltar</button>
-                                                    <button
-                                                        type="button"
-                                                        className={classNames("btn btn-primary gap-2", { loading: assigningRoles })}
-                                                        onClick={handleAssignRoles}
-                                                        disabled={totalRolesSelected === 0 || assigningRoles}
-                                                    >
-                                                        <MaterialSymbol icon="badge" size={18} />
-                                                        Atribuir {totalRolesSelected} Insignia(s)
-                                                    </button>
-                                                </>
-                                            );
-                                        }
-                                        if (step === "preview") {
-                                            return (
-                                                <>
-                                                    <button type="button" className="btn btn-ghost" onClick={onClose} disabled={loading}>Cancelar</button>
-                                                    <button
-                                                        type="button"
-                                                        className={classNames("btn btn-primary gap-2", { loading })}
-                                                        onClick={handleSubmit}
-                                                        disabled={loading || validRows.length === 0}
-                                                    >
-                                                        <MaterialSymbol icon="cloud_upload" size={18} />
-                                                        Importar {validRows.length} membro(s)
-                                                    </button>
-                                                </>
-                                            );
-                                        }
-                                        return <button type="button" className="btn btn-ghost" onClick={onClose}>Cancelar</button>;
-                                    })()}
-                                </div>
-                            </div>
-                        </motion.div>
+                <div className="p-4">
+                    <div className="relative">
+                        <MaterialSymbol icon="search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
+                        <input
+                            type="text"
+                            placeholder="Pesquisar..."
+                            className="input input-bordered w-full pl-10"
+                            value={patraoSearch}
+                            onChange={(e) => setPatraoSearch(e.target.value)}
+                            autoFocus
+                        />
                     </div>
+                </div>
 
-                    {renderPatraoPicker()}
+                <div className="max-h-64 overflow-y-auto px-4 pb-4 space-y-1">
+                    {searchResults.map(u => (
+                        <button key={u._id} type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 text-left" onClick={() => setPatrao(patraoPickerRow, u)}>
+                            <div className="w-10 h-10 rounded-full overflow-hidden border-2" style={{ borderColor: colors[u.start_year % colors.length] }}>
+                                <img src={u.image || (u.sex === 'F' ? femalePic : malePic)} alt="" className="w-full h-full object-cover" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="font-medium truncate">{u.name}</p>
+                                <p className="text-xs text-base-content/50">{u.nmec && `#${u.nmec} · `}Ano {u.start_year}</p>
+                            </div>
+                            <span className="text-xs font-mono bg-base-200 px-2 py-1 rounded">ID {u._id}</span>
+                        </button>
+                    ))}
+                    <button type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 border border-dashed border-base-content/20" onClick={() => setPatrao(patraoPickerRow, null)}>
+                        <div className="w-10 h-10 rounded-full bg-base-200 flex items-center justify-center">
+                            <MaterialSymbol icon="person_off" size={20} className="text-base-content/40" />
+                        </div>
+                        <span className="text-base-content/60">Sem patrão (raiz)</span>
+                    </button>
+                </div>
 
-                    <RolePickerModal
-                        isOpen={showRolePicker}
-                        onClose={() => setShowRolePicker(false)}
-                        hideYear={false}
-                        onSelect={(node, year) => {
-                            if (rolePickerUserIdx !== null && node) {
-                                addRoleToUser(rolePickerUserIdx, node, year || new Date().getFullYear() - 2000);
-                            }
-                            setShowRolePicker(false);
-                        }}
-                    />
-                </>
-            )}
-        </AnimatePresence>
+                <div className="p-4 border-t border-base-content/10">
+                    <button type="button" className="btn btn-ghost w-full" onClick={() => setPatraoPickerRow(null)}>Cancelar</button>
+                </div>
+            </motion.div>
+        </div>
     );
+};
+
+
+return (
+    <AnimatePresence>
+        {isOpen && (
+            <>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        className="w-full max-w-3xl rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl max-h-[90vh] flex flex-col"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="flex items-center justify-between border-b border-base-content/10 p-4 shrink-0">
+                            <h3 className="text-lg font-bold flex items-center gap-2">
+                                <MaterialSymbol icon="upload_file" size={24} className="text-primary" />
+                                Importar Membros
+                            </h3>
+                            <button type="button" className="btn btn-ghost btn-sm btn-circle" onClick={onClose}>
+                                <MaterialSymbol icon="close" size={20} />
+                            </button>
+                        </div>
+
+                        {/* Progress */}
+                        <div className="px-6 pt-4 shrink-0">
+                            <ul className="steps steps-horizontal w-full text-xs">
+                                <li className={classNames("step", step !== "upload" && "step-primary")}>Upload</li>
+                                <li className={classNames("step", (step === "preview" || step === "assign" || step === "results") && "step-primary")}>Preview</li>
+                                <li className={classNames("step", (step === "assign" || step === "results") && "step-primary")}>Insignias</li>
+                                <li className={classNames("step", step === "results" && "step-primary")}>Resultado</li>
+                            </ul>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6 overflow-y-auto flex-1">
+                            {step === "upload" && renderUploadStep()}
+                            {step === "preview" && renderPreviewStep()}
+                            {step === "assign" && renderAssignStep()}
+                            {step === "results" && renderResultsStep()}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="flex justify-between border-t border-base-content/10 px-6 py-4 shrink-0">
+                            {/* Back button */}
+                            <div>
+                                {step === "preview" && (
+                                    <button type="button" className="btn btn-ghost gap-2" onClick={() => { setStep("upload"); setFile(null); setParsedData([]); setErrors([]); }}>
+                                        <MaterialSymbol icon="arrow_back" size={18} />
+                                        Voltar
+                                    </button>
+                                )}
+                                {step === "assign" && (
+                                    <button type="button" className="btn btn-ghost gap-2" onClick={() => setStep("preview")}>
+                                        <MaterialSymbol icon="arrow_back" size={18} />
+                                        Voltar
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Action buttons */}
+                            <div className="flex gap-3">
+                                {(() => {
+                                    if (step === "results") {
+                                        return <button type="button" className="btn btn-primary" onClick={onClose}>Fechar</button>;
+                                    }
+                                    if (step === "assign") {
+                                        return (
+                                            <>
+                                                <button type="button" className="btn btn-ghost" onClick={() => setStep("results")}>Saltar</button>
+                                                <button
+                                                    type="button"
+                                                    className={classNames("btn btn-primary gap-2", { loading: assigningRoles })}
+                                                    onClick={handleAssignRoles}
+                                                    disabled={totalRolesSelected === 0 || assigningRoles}
+                                                >
+                                                    <MaterialSymbol icon="badge" size={18} />
+                                                    Atribuir {totalRolesSelected} Insignia(s)
+                                                </button>
+                                            </>
+                                        );
+                                    }
+                                    if (step === "preview") {
+                                        return (
+                                            <>
+                                                <button type="button" className="btn btn-ghost" onClick={onClose} disabled={loading}>Cancelar</button>
+                                                <button
+                                                    type="button"
+                                                    className={classNames("btn btn-primary gap-2", { loading })}
+                                                    onClick={handleSubmit}
+                                                    disabled={loading || validRows.length === 0}
+                                                >
+                                                    <MaterialSymbol icon="cloud_upload" size={18} />
+                                                    Importar {validRows.length} membro(s)
+                                                </button>
+                                            </>
+                                        );
+                                    }
+                                    return <button type="button" className="btn btn-ghost" onClick={onClose}>Cancelar</button>;
+                                })()}
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {renderPatraoPicker()}
+
+                <RolePickerModal
+                    isOpen={showRolePicker}
+                    onClose={() => setShowRolePicker(false)}
+                    hideYear={false}
+                    onSelect={(node, year) => {
+                        if (rolePickerUserIdx !== null && node) {
+                            addRoleToUser(rolePickerUserIdx, node, year || new Date().getFullYear() - 2000);
+                        }
+                        setShowRolePicker(false);
+                    }}
+                />
+            </>
+        )}
+    </AnimatePresence>
+);
 };
 
 BulkImportModal.propTypes = {

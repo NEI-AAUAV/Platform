@@ -196,6 +196,7 @@ const OrphanModal = ({
                                             className="radio radio-error"
                                             checked={action === "delete"}
                                             onChange={() => setAction("delete")}
+                                            aria-label="Eliminar de qualquer forma"
                                         />
                                         <div>
                                             <div className="font-medium">Eliminar de qualquer forma</div>
@@ -217,6 +218,7 @@ const OrphanModal = ({
                                             className="radio radio-success"
                                             checked={action === "reparent"}
                                             onChange={() => setAction("reparent")}
+                                            aria-label="Transferir para outro patrão"
                                         />
                                         <div>
                                             <div className="font-medium">Transferir para outro patrão</div>
@@ -261,32 +263,37 @@ const OrphanModal = ({
                                                         </div>
                                                     );
                                                 }
-                                                return patraoList.map(p => (
-                                                    <button
-                                                        key={p._id}
-                                                        type="button"
-                                                        className={classNames(
-                                                            "flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-base-200",
-                                                            selectedPatrao?._id === p._id && "bg-success/10"
-                                                        )}
-                                                        onClick={() => setSelectedPatrao(p)}
-                                                    >
-                                                        <div
-                                                            className="w-6 h-6 rounded-full"
-                                                            style={{ backgroundColor: colors[(p.start_year || 0) % colors.length] }}
-                                                        >
-                                                            <img
-                                                                src={p.image || (p.sex === "F" ? femalePic : malePic)}
-                                                                alt=""
-                                                                className="w-full h-full rounded-full object-cover"
-                                                            />
-                                                        </div>
-                                                        <span className="truncate font-medium">{p.name}</span>
-                                                        {selectedPatrao?._id === p._id && (
-                                                            <MaterialSymbol icon="check_circle" size={16} className="ml-auto text-success" />
-                                                        )}
-                                                    </button>
-                                                ));
+                                                return (
+                                                    <>
+                                                        {patraoList.map(p => (
+                                                            <button
+                                                                key={p._id}
+                                                                type="button"
+                                                                className={classNames(
+                                                                    "flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-base-200",
+                                                                    selectedPatrao?._id === p._id && "bg-success/10"
+                                                                )}
+                                                                onClick={() => setSelectedPatrao(p)}
+                                                                aria-label={`Selecionar ${p.name}`}
+                                                            >
+                                                                <div
+                                                                    className="w-6 h-6 rounded-full"
+                                                                    style={{ backgroundColor: colors[(p.start_year || 0) % colors.length] }}
+                                                                >
+                                                                    <img
+                                                                        src={p.image || (p.sex === "F" ? femalePic : malePic)}
+                                                                        alt=""
+                                                                        className="w-full h-full rounded-full object-cover"
+                                                                    />
+                                                                </div>
+                                                                <span className="truncate font-medium">{p.name}</span>
+                                                                {selectedPatrao?._id === p._id && (
+                                                                    <MaterialSymbol icon="check_circle" size={16} className="ml-auto text-success" />
+                                                                )}
+                                                            </button>
+                                                        ))}
+                                                    </>
+                                                );
                                             })()}
                                         </div>
                                     </div>

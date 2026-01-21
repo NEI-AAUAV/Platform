@@ -60,6 +60,7 @@ const BulkDeleteModal = ({
                 }
             } catch (err) {
                 // Ignore errors in check (orphan detection is best-effort)
+                console.debug("Failed to check orphans for user " + user._id, err);
             }
         }
         setOrphanWarnings(warnings);

@@ -47,6 +47,34 @@ SortIcon.propTypes = {
   field: PropTypes.string.isRequired,
   currentSort: PropTypes.string.isRequired,
   sortDir: PropTypes.string.isRequired,
+  sortDir: PropTypes.string.isRequired,
+};
+
+const renderPatraoCell = (user, patrao) => {
+  if (patrao) {
+    return (
+      <div className="flex items-center gap-2">
+        <div className="avatar placeholder h-6 w-6 rounded-full bg-base-300">
+          <img
+            src={patrao.image || (patrao.sex === 'F' ? femalePic : malePic)}
+            alt=""
+            className="rounded-full"
+          />
+        </div>
+        <span className="truncate font-medium">{patrao.name}</span>
+      </div>
+    );
+  }
+
+  if (user.patrao_id) {
+    return (
+      <span className="text-error text-xs" title={`ID: ${user.patrao_id}`}>
+        {`ID: ${user.patrao_id}`} <span className="opacity-50">(Fetching...)</span>
+      </span>
+    );
+  }
+
+  return <span className="text-base-content/30 italic">Raiz</span>;
 };
 
 /**
@@ -329,6 +357,7 @@ export function Component() {
         setShowOrphanModal(false);
       }
     } catch (err) {
+      console.debug("Ignored exception in check children:", err);
       // If can't check children, proceed with simple delete modal
       setDeleteModal(user);
       setShowOrphanModal(false);
@@ -614,7 +643,8 @@ export function Component() {
               {roleFilterName || "Filtrar por Insígnia"}
             </span>
             {roleFilterId ? (
-              <div
+              <button
+                type="button"
                 className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-base-content/10 hover:bg-base-content/20"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -622,11 +652,10 @@ export function Component() {
                   setRoleFilterName(null);
                   setPage(0);
                 }}
+                aria-label="Limpar filtro de insígnia"
               >
-                <div role="button" tabIndex={0} className="flex h-5 w-5 items-center justify-center rounded-full bg-base-content/10 hover:bg-base-content/20">
-                  <MaterialSymbol icon="close" size={14} />
-                </div>
-              </div>
+                <MaterialSymbol icon="close" size={14} />
+              </button>
             ) : (
               <MaterialSymbol icon="arrow_drop_down" size={24} className="text-base-content/50" />
             )}
@@ -828,26 +857,8 @@ export function Component() {
                               </div>
                             </td>
 
-                            {/* Patrão - Hidden on mobile */}
                             <td className="hidden md:table-cell">
-                              {patrao ? (
-                                <div className="flex items-center gap-2">
-                                  <div className="avatar placeholder h-6 w-6 rounded-full bg-base-300">
-                                    <img
-                                      src={patrao.image || (patrao.sex === 'F' ? femalePic : malePic)}
-                                      alt=""
-                                      className="rounded-full"
-                                    />
-                                  </div>
-                                  <span className="truncate font-medium">{patrao.name}</span>
-                                </div>
-                              ) : user.patrao_id ? (
-                                <span className="text-error text-xs" title={`ID: ${user.patrao_id}`}>
-                                  {`ID: ${user.patrao_id}`} <span className="opacity-50">(Fetching...)</span>
-                                </span>
-                              ) : (
-                                <span className="text-base-content/30 italic">Raiz</span>
-                              )}
+                              {renderPatraoCell(user, patrao)}
                             </td>
 
                             {/* Year */}
