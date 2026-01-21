@@ -419,6 +419,14 @@ export function buildTree(users = null, options = {}) {
     .attr("class", "node")
     .attr("transform", (d) => `translate(${d.x},${d.y})`);
 
+  const resolveNodeImage = (img) => {
+    if (!img) return null;
+    // If API returns full URL (R2), use as-is
+    if (img.startsWith("http://") || img.startsWith("https://")) return img;
+    // Fallback to legacy static path
+    return import.meta.env.BASE_URL + "treeei/optimized/" + img + ".jpeg";
+  };
+
   // node images
   d3.select("defs")
     .selectAll("pattern.image")
@@ -435,11 +443,7 @@ export function buildTree(users = null, options = {}) {
     .attr("height", 1)
     .attr("patternContentUnits", "objectBoundingBox")
     .append("image")
-    .attr(
-      "xlink:xlink:href",
-      (d) =>
-        import.meta.env.BASE_URL + "treeei/optimized/" + d.data.image + ".jpeg"
-    )
+    .attr("xlink:xlink:href", (d) => resolveNodeImage(d.data.image))
     .attr("height", 1)
     .attr("width", 1)
     .attr("preserveAspectRatio", "xMidYMid slice");

@@ -1060,6 +1060,9 @@ export function Component() {
         onReparent={handleReparentAndDelete}
       />
 
+      {/* Toasts */}
+      <Toaster />
+
     </div >
   );
 }
