@@ -142,19 +142,21 @@ export default function CourseManagerModal({ isOpen, onClose }) {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div
-                    className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6"
-                    role="button"
-                    tabIndex={0}
-                    onClick={onClose}
-                    onKeyDown={(e) => e.key === 'Escape' && onClose()}
-                    aria-label="Fechar modal"
-                >
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-6">
+                    {/* Backdrop Button - Accessible way to close strictly using a button */}
+                    <button
+                        type="button"
+                        className="fixed inset-0 h-full w-full cursor-default bg-black/40 backdrop-blur-[2px]"
+                        onClick={onClose}
+                        aria-label="Fechar modal"
+                    />
+
+                    {/* Modal Content - Sibling to backdrop, not child */}
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
-                        className="flex max-h-[90vh] w-full max-w-4xl flex-col lg:flex-row overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
+                        className="relative z-10 flex max-h-[90vh] w-full max-w-4xl flex-col lg:flex-row overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Sidebar: List - Hidden on mobile when editing */}

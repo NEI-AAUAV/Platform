@@ -126,8 +126,9 @@ const FamilyContent = ({
   }, [selectedNode]);
 
   const navigateToChild = useCallback(() => {
-    if (selectedNode?.children?.length > 0) {
-      const firstChild = selectedNode.children[0];
+    const children = selectedNode?.children;
+    if (children && children.length > 0) {
+      const firstChild = children[0];
       setSelectedNode(firstChild);
       navigateToNode(firstChild);
       highlightLineage(firstChild.data.id);
@@ -186,11 +187,10 @@ const FamilyContent = ({
   const isLoading = loading || externalLoading;
 
   return (
-    <div
+    <section
       className="relative h-full w-full"
       onKeyDown={handleKeyDown}
       tabIndex={0}
-      role="region"
       aria-label="Visualização da árvore genealógica"
     >
       {isLoading && (
@@ -287,7 +287,7 @@ const FamilyContent = ({
         </defs>
       </svg>
 
-    </div>
+    </section>
   );
 };
 

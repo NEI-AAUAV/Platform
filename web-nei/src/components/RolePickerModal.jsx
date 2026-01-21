@@ -181,19 +181,20 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
     return (
         <AnimatePresence>
             {isOpen && (
-                <div
-                    className="fixed inset-0 z-[120] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6"
-                    role="button"
-                    tabIndex={0}
-                    onClick={onClose}
-                    onKeyDown={(e) => e.key === 'Escape' && onClose()}
-                    aria-label="Fechar modal"
-                >
+                <div className="fixed inset-0 z-[120] flex items-center justify-center p-6">
+                    {/* Backdrop Button - Accessible way to close */}
+                    <button
+                        type="button"
+                        className="fixed inset-0 h-full w-full cursor-default bg-black/40 backdrop-blur-[2px]"
+                        onClick={onClose}
+                        aria-label="Fechar modal"
+                    />
+
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
-                        className="flex h-[550px] w-full max-w-lg flex-col rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
+                        className="relative z-10 flex h-[550px] w-full max-w-lg flex-col rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Header */}

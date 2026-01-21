@@ -12,6 +12,207 @@ import IconPicker from "components/IconPicker";
 import malePic from "assets/default_profile/male.svg";
 import femalePic from "assets/default_profile/female.svg";
 
+const getModalTitle = (isNew, formData, selectedNode) => {
+    if (isNew) {
+        return formData.super_roles ? "Nova Sub-Insígnia" : "Nova Insígnia Raiz";
+    }
+    return selectedNode?.name || "Selecione uma Insígnia";
+};
+
+const EmptyState = () => (
+    <div className="flex h-full flex-col items-center justify-center text-base-content/30 text-center">
+        <MaterialSymbol icon="badge" size={48} className="mb-2 opacity-50" />
+        <p>Selecione um item da lista à esquerda<br />ou crie uma nova raiz</p>
+    </div>
+);
+
+const MembersList = ({ members, membersLoading, yearFormat, onRemove }) => {
+    if (membersLoading) {
+        return (
+            <div className="flex justify-center py-8">
+                <span className="loading loading-spinner"></span>
+            </div>
+        );
+    }
+    if (!members || members.length === 0) {
+        return (
+            <div className="text-center py-8 text-base-content/40">
+                <MaterialSymbol icon="person_off" size={32} className="mb-2" />
+                <p>Nenhum membro encontrado</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-2">
+            {members.map((member, idx) => (
+                <div
+                    key={member._id || idx}
+                    className="flex items-center gap-3 p-3 bg-base-200/50 rounded-lg hover:bg-base-200"
+                >
+                    <div
+                        className="avatar placeholder h-10 w-10 rounded-full ring-2 ring-offset-1"
+                        style={{
+                            ringColor: colors[(member.user?.start_year || 0) % colors.length]
+                        }}
+                    >
+                        <img
+                            src={member.user?.image || (member.user?.sex === 'F' ? femalePic : malePic)}
+                            alt=""
+                            className="rounded-full object-cover"
+                        />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">
+                            {member.user?.name || `User ${member.user_id}`}
+                        </div>
+                        <div className="text-xs text-base-content/50">
+                            Ano {formatYear(member.year, yearFormat || "civil")}
+                            {member.user?.start_year && (
+                                <span> · Entrada {formatYear(member.user.start_year)}</span>
+                            )}
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        className="btn btn-ghost btn-xs btn-error"
+                        onClick={() => onRemove(member._id)}
+                        title="Remover insígnia"
+                    >
+                        <MaterialSymbol icon="close" size={16} />
+                    </button>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const MembersView = ({
+    members,
+    membersLoading,
+    availableYears,
+    memberYearFilter,
+    onYearChange,
+    yearFormat,
+    onRemove
+}) => (
+    <div className="space-y-4">
+        <div className="flex items-center justify-between">
+            <h4 className="font-medium">Membros com esta insígnia</h4>
+            <select
+                className="select select-bordered select-sm w-32"
+                value={memberYearFilter || ""}
+                onChange={onYearChange}
+            >
+                <option value="">Todos os anos</option>
+                {availableYears.map(y => (
+                    <option key={y} value={y}>Ano {formatYear(y)}</option>
+                ))}
+            </select>
+        </div>
+        <MembersList
+            members={members}
+            membersLoading={membersLoading}
+            yearFormat={yearFormat}
+            onRemove={onRemove}
+        />
+    </div>
+);
+
+const findRoleName = (nodes, id) => {
+    for (const node of nodes) {
+        if (node._id === id) return node.name;
+        if (node.children) {
+            const found = findRoleName(node.children, id);
+            if (found) return found;
+        }
+    }
+    return null;
+};
+
+const RoleTree = ({ nodes, depth = 0, selectedNode, isNew, formData, onSelect }) => {
+    if (!nodes || nodes.length === 0) return null;
+
+    return (
+        <div className="flex flex-col gap-0.5 relative">
+            {depth > 0 && (
+                <div
+                    className="absolute left-[0.25rem] top-0 bottom-0 w-px bg-base-content/10"
+                    style={{ left: "-0.75rem" }}
+                />
+            )}
+
+            {nodes.map(node => {
+                const isSelected = selectedNode?._id === node._id && !isNew;
+                const isParentOfNew = isNew && formData.super_roles === node._id;
+                const hasChildren = node.children && node.children.length > 0;
+
+                let IconComponent = null;
+                let imgSrc = null;
+
+                if (node.icon) {
+                    imgSrc = node.icon;
+                } else if (organizations[node.name]) {
+                    imgSrc = organizations[node.name].insignia;
+                } else if (organizations[node.short]) {
+                    imgSrc = organizations[node.short].insignia;
+                } else {
+                    IconComponent = hasChildren ? "folder" : "badge";
+                }
+
+                return (
+                    <div key={node._id} className="relative">
+                        <button
+                            className={classNames(
+                                "flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm transition-all duration-200",
+                                isSelected
+                                    ? "bg-primary text-primary-content shadow-md font-medium"
+                                    : "hover:bg-base-200 text-base-content/80",
+                                isParentOfNew ? "bg-base-200 outline outline-2 outline-base-300" : ""
+                            )}
+                            onClick={() => onSelect(node)}
+                        >
+                            <div className={classNames(
+                                "flex h-6 w-6 items-center justify-center rounded-full",
+                                isSelected ? "bg-white/20" : "bg-base-content/5"
+                            )}>
+                                {imgSrc ? (
+                                    <img src={imgSrc} alt="" className="h-4 w-4 object-contain" />
+                                ) : (
+                                    <MaterialSymbol
+                                        icon={IconComponent}
+                                        size={16}
+                                        className={isSelected ? "text-primary-content" : "text-base-content/50"}
+                                    />
+                                )}
+                            </div>
+                            <span className="truncate">{node.name}</span>
+                            {hasChildren && (
+                                <span className="ml-auto text-[10px] opacity-60">
+                                    {node.children.length}
+                                </span>
+                            )}
+                        </button>
+
+                        {hasChildren && (
+                            <div className="ml-4 pl-2 border-l border-base-content/10 mt-1">
+                                <RoleTree
+                                    nodes={node.children}
+                                    depth={depth + 1}
+                                    selectedNode={selectedNode}
+                                    isNew={isNew}
+                                    formData={formData}
+                                    onSelect={onSelect}
+                                />
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
 /**
  * Role Manager Modal
  * Allows creating, editing, and deleting roles in the hierarchy.
@@ -237,201 +438,13 @@ export default function RoleManagerModal({ isOpen, onClose }) {
         }
     };
 
-    // Helper to find role name by ID
-    const findRoleName = (nodes, id) => {
-        for (const node of nodes) {
-            if (node._id === id) return node.name;
-            if (node.children) {
-                const found = findRoleName(node.children, id);
-                if (found) return found;
-            }
-        }
-        return null;
-    };
-
-    // Recursive Tree Renderer
-    const renderTree = (nodes, depth = 0) => {
-        return (
-            <div className="flex flex-col gap-0.5 relative">
-                {/* Vertical Line for Depth > 0 */}
-                {depth > 0 && (
-                    <div
-                        className="absolute left-[0.25rem] top-0 bottom-0 w-px bg-base-content/10"
-                        style={{ left: "-0.75rem" }}
-                    />
-                )}
-
-                {nodes.map(node => {
-                    const isSelected = selectedNode?._id === node._id && !isNew;
-                    const isParentOfNew = isNew && formData.super_roles === node._id;
-                    const hasChildren = node.children && node.children.length > 0;
-
-                    // Determine Icon
-                    let IconComponent = null;
-                    let imgSrc = null;
-
-                    if (node.icon) {
-                        imgSrc = node.icon;
-                    } else if (organizations[node.name]) {
-                        imgSrc = organizations[node.name].insignia;
-                    } else if (organizations[node.short]) {
-                        imgSrc = organizations[node.short].insignia;
-                    } else {
-                        IconComponent = hasChildren ? "folder" : "badge";
-                    }
-
-                    return (
-                        <div key={node._id} className="relative">
-                            <button
-                                className={classNames(
-                                    "flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm transition-all duration-200",
-                                    isSelected
-                                        ? "bg-primary text-primary-content shadow-md font-medium"
-                                        : "hover:bg-base-200 text-base-content/80",
-                                    isParentOfNew ? "bg-base-200 outline outline-2 outline-base-300" : ""
-                                )}
-                                onClick={() => handleSelectNode(node)}
-                            >
-                                <div className={classNames(
-                                    "flex h-6 w-6 items-center justify-center rounded-full",
-                                    isSelected ? "bg-white/20" : "bg-base-content/5"
-                                )}>
-                                    {imgSrc ? (
-                                        <img src={imgSrc} alt="" className="h-4 w-4 object-contain" />
-                                    ) : (
-                                        <MaterialSymbol
-                                            icon={IconComponent}
-                                            size={16}
-                                            className={isSelected ? "text-primary-content" : "text-base-content/50"}
-                                        />
-                                    )}
-                                </div>
-                                <span className="truncate">{node.name}</span>
-                                {hasChildren && (
-                                    <span className="ml-auto text-[10px] opacity-60">
-                                        {node.children.length}
-                                    </span>
-                                )}
-                            </button>
-
-                            {hasChildren && (
-                                <div className="ml-4 pl-2 border-l border-base-content/10 mt-1">
-                                    {renderTree(node.children, depth + 1)}
-                                </div>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
-        );
-    };
-
-    // Helper: Get modal title based on state (avoids nested ternary)
-    const getModalTitle = () => {
-        if (isNew) {
-            return formData.super_roles ? "Nova Sub-Insígnia" : "Nova Insígnia Raiz";
-        }
-        return selectedNode?.name || "Selecione uma Insígnia";
-    };
-
-    // Helper: Render members list loading/empty/content states (avoids nested ternary)
-    const renderMembersList = () => {
-        if (membersLoading) {
-            return (
-                <div className="flex justify-center py-8">
-                    <span className="loading loading-spinner"></span>
-                </div>
-            );
-        }
-        if (roleMembers.length === 0) {
-            return (
-                <div className="text-center py-8 text-base-content/40">
-                    <MaterialSymbol icon="person_off" size={32} className="mb-2" />
-                    <p>Nenhum membro encontrado</p>
-                </div>
-            );
-        }
-        return (
-            <div className="space-y-2">
-                {roleMembers.map((member, idx) => (
-                    <div
-                        key={member._id || idx}
-                        className="flex items-center gap-3 p-3 bg-base-200/50 rounded-lg hover:bg-base-200"
-                    >
-                        <div
-                            className="avatar placeholder h-10 w-10 rounded-full ring-2 ring-offset-1"
-                            style={{
-                                ringColor: colors[(member.user?.start_year || 0) % colors.length]
-                            }}
-                        >
-                            <img
-                                src={member.user?.image || (member.user?.sex === 'F' ? femalePic : malePic)}
-                                alt=""
-                                className="rounded-full object-cover"
-                            />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="font-medium truncate">
-                                {member.user?.name || `User ${member.user_id}`}
-                            </div>
-                            <div className="text-xs text-base-content/50">
-                                Ano {formatYear(member.year, selectedNode?.year_display_format || "civil")}
-                                {member.user?.start_year && (
-                                    <span> · Entrada {formatYear(member.user.start_year)}</span>
-                                )}
-                            </div>
-                        </div>
-                        <button
-                            type="button"
-                            className="btn btn-ghost btn-xs btn-error"
-                            onClick={() => handleRemoveRoleFromMember(member._id)}
-                            title="Remover insígnia"
-                        >
-                            <MaterialSymbol icon="close" size={16} />
-                        </button>
-                    </div>
-                ))}
-            </div>
-        );
-    };
-
-    // Helper: Render the full members view with year filter (for the content area)
-    const renderMembersView = () => (
-        <div className="space-y-4">
-            {/* Year Filter */}
-            <div className="flex items-center justify-between">
-                <h4 className="font-medium">Membros com esta insígnia</h4>
-                <select
-                    className="select select-bordered select-sm w-32"
-                    value={memberYearFilter || ""}
-                    onChange={(e) => setMemberYearFilter(e.target.value ? parseInt(e.target.value) : null)}
-                >
-                    <option value="">Todos os anos</option>
-                    {availableYears.map(y => (
-                        <option key={y} value={y}>Ano {formatYear(y)}</option>
-                    ))}
-                </select>
-            </div>
-            {/* Members List */}
-            {renderMembersList()}
-        </div>
-    );
-
-    // Helper: Render empty state placeholder
-    const renderEmptyState = () => (
-        <div className="flex h-full flex-col items-center justify-center text-base-content/30 text-center">
-            <MaterialSymbol icon="badge" size={48} className="mb-2 opacity-50" />
-            <p>Selecione um item da lista à esquerda<br />ou crie uma nova raiz</p>
-        </div>
-    );
-
     return (
         <AnimatePresence>
             {isOpen && (
                 <div
                     className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6"
-                    role="button"
-                    tabIndex={0}
+                    role="dialog"
+                    aria-modal="true"
                     onClick={onClose}
                     onKeyDown={(e) => e.key === 'Escape' && onClose()}
                     aria-label="Fechar modal"
@@ -466,7 +479,13 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                             <span className="loading loading-spinner"></span>
                                         </div>
                                     ) : (
-                                        renderTree(roleTree)
+                                        <RoleTree
+                                            nodes={roleTree}
+                                            selectedNode={selectedNode}
+                                            isNew={isNew}
+                                            formData={formData}
+                                            onSelect={handleSelectNode}
+                                        />
                                     )}
                                 </div>
                             </div>
@@ -485,7 +504,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                         >
                                             <MaterialSymbol icon="arrow_back" size={20} />
                                         </button>
-                                        {getModalTitle()}
+                                        {getModalTitle(isNew, formData, selectedNode)}
                                     </h3>
                                     <button className="btn btn-ghost btn-sm btn-circle" onClick={onClose}>
                                         <CloseIcon />
@@ -528,12 +547,25 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                 )}
 
                                 <div className="flex-1 overflow-y-auto overscroll-contain p-6" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
-                                    {!selectedNode && !isNew ? (
-                                        renderEmptyState()
-                                    ) : activeTab === "members" && selectedNode && !isNew ? (
-                                        renderMembersView()
-                                    ) : (
-                                        <form onSubmit={handleSave} className="flex flex-col gap-4 max-w-lg mx-auto">
+                                    {(() => {
+                                        if (!selectedNode && !isNew) {
+                                            return <EmptyState />;
+                                        }
+                                        if (activeTab === "members" && selectedNode && !isNew) {
+                                            return (
+                                                <MembersView
+                                                    members={roleMembers}
+                                                    membersLoading={membersLoading}
+                                                    availableYears={availableYears}
+                                                    memberYearFilter={memberYearFilter}
+                                                    onYearChange={(e) => setMemberYearFilter(e.target.value ? parseInt(e.target.value) : null)}
+                                                    yearFormat={selectedNode?.year_display_format}
+                                                    onRemove={handleRemoveRoleFromMember}
+                                                />
+                                            );
+                                        }
+                                        return (
+                                            <form onSubmit={handleSave} className="flex flex-col gap-4 max-w-lg mx-auto">
                                             <div className="form-control">
                                                 <label className="label" htmlFor="role-name"><span className="label-text">Nome</span></label>
                                                 <input
@@ -580,8 +612,9 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                             </div>
 
                                             <div className="form-control">
-                                                <label className="label" id="role-icon-label"><span className="label-text">Ícone</span></label>
+                                                <label className="label" htmlFor="role-icon"><span className="label-text">Ícone</span></label>
                                                 <IconPicker
+                                                    inputId="role-icon"
                                                     value={formData.icon || ""}
                                                     onChange={(newIcon) => setFormData({ ...formData, icon: newIcon })}
                                                     inheritedIcon={selectedNode?.icon || null}
@@ -695,7 +728,8 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                                 )}
                                             </div>
                                         </form>
-                                    )}
+                                        );
+                                    })()}
                                 </div>
                             </div>
                         </div>

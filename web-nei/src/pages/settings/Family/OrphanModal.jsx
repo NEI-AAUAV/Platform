@@ -23,7 +23,7 @@ const OrphanModal = ({
     isOpen,
     onClose,
     userToDelete,
-    children: orphanChildren = [],
+    orphanChildren = [],
     onConfirmDelete,
     onReparent
 }) => {
@@ -159,9 +159,9 @@ const OrphanModal = ({
 
                                 {/* Orphan children preview */}
                                 <div>
-                                    <label className="label">
+                                    <div className="label">
                                         <span className="label-text font-bold">Pedaços afetados:</span>
-                                    </label>
+                                    </div>
                                     <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-base-200 rounded-lg">
                                         {orphanChildren.map(child => (
                                             <div
@@ -180,9 +180,9 @@ const OrphanModal = ({
 
                                 {/* Action selector */}
                                 <div className="space-y-2">
-                                    <label className="label">
+                                    <div className="label">
                                         <span className="label-text font-bold">O que fazer com os pedaços?</span>
-                                    </label>
+                                    </div>
 
                                     <label className={classNames(
                                         "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors",
@@ -246,16 +246,22 @@ const OrphanModal = ({
                                         </div>
 
                                         <div className="max-h-40 overflow-y-auto rounded-lg border border-base-content/10">
-                                            {patraoLoading ? (
-                                                <div className="flex justify-center py-4">
-                                                    <span className="loading loading-spinner loading-sm"></span>
-                                                </div>
-                                            ) : patraoList.length === 0 ? (
-                                                <div className="py-4 text-center text-sm text-base-content/50">
-                                                    Nenhum resultado
-                                                </div>
-                                            ) : (
-                                                patraoList.map(p => (
+                                            {(() => {
+                                                if (patraoLoading) {
+                                                    return (
+                                                        <div className="flex justify-center py-4">
+                                                            <span className="loading loading-spinner loading-sm"></span>
+                                                        </div>
+                                                    );
+                                                }
+                                                if (patraoList.length === 0) {
+                                                    return (
+                                                        <div className="py-4 text-center text-sm text-base-content/50">
+                                                            Nenhum resultado
+                                                        </div>
+                                                    );
+                                                }
+                                                return patraoList.map(p => (
                                                     <button
                                                         key={p._id}
                                                         type="button"
@@ -280,8 +286,8 @@ const OrphanModal = ({
                                                             <MaterialSymbol icon="check_circle" size={16} className="ml-auto text-success" />
                                                         )}
                                                     </button>
-                                                ))
-                                            )}
+                                                ));
+                                            })()}
                                         </div>
                                     </div>
                                 )}
@@ -330,7 +336,7 @@ OrphanModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     userToDelete: PropTypes.object,
-    children: PropTypes.array,
+    orphanChildren: PropTypes.array,
     onConfirmDelete: PropTypes.func,
     onReparent: PropTypes.func,
 };

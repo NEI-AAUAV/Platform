@@ -59,7 +59,7 @@ const BulkDeleteModal = ({
                     });
                 }
             } catch (err) {
-                // Ignore errors in check
+                // Ignore errors in check (orphan detection is best-effort)
             }
         }
         setOrphanWarnings(warnings);

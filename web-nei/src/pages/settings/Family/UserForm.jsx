@@ -560,9 +560,9 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                             {/* Sex + Year Row */}
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="label">
+                                                    <div className="label">
                                                         <span className="label-text">Sexo</span>
-                                                    </label>
+                                                    </div>
                                                     <Controller
                                                         name="sex"
                                                         control={control}
@@ -624,8 +624,9 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
                                             {/* Course Selector */}
                                             <div className="form-control">
-                                                <label className="label"><span className="label-text">Curso</span></label>
+                                                <label className="label" htmlFor="course-select"><span className="label-text">Curso</span></label>
                                                 <select
+                                                    id="course-select"
                                                     className="select select-bordered w-full"
                                                     {...register("course_id")}
                                                 >
@@ -653,42 +654,50 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                 </div>
 
                                                 <div className="min-h-[60px] rounded-xl border border-dashed border-base-content/20 bg-base-200/50 p-4">
-                                                    {rolesLoading ? (
-                                                        <div className="flex justify-center py-2">
-                                                            <span className="loading loading-spinner loading-sm"></span>
-                                                        </div>
-                                                    ) : displayRoles.length === 0 ? (
-                                                        <p className="text-center text-sm text-base-content/50">
-                                                            Nenhuma insígnia atribuída
-                                                        </p>
-                                                    ) : (
-                                                        <div className="flex flex-wrap gap-3">
-                                                            {displayRoles.map((role) => (
-                                                                <div
-                                                                    key={role._id || role.tempId}
-                                                                    className="flex items-center gap-2 rounded-lg bg-base-100 p-2 shadow-sm ring-1 ring-base-content/10"
-                                                                >
-                                                                    {/* Try to show icon if available - check API icon first, then static map */}
-                                                                    {(role.icon || (role.org_name && organizations[role.org_name])) && (
-                                                                        <img src={role.icon || organizations[role.org_name]?.insignia} alt="" className="h-6 w-6 object-contain" />
-                                                                    )}
-                                                                    <div className="flex flex-col">
-                                                                        <span className="text-xs font-bold leading-tight">
-                                                                            {role.role_name || role.name || role.org_name || role.role_id}
-                                                                        </span>
-                                                                        <span className="text-[10px] text-base-content/60">Ano {role.year}</span>
-                                                                    </div>
-                                                                    <button
-                                                                        type="button"
-                                                                        className="ml-1 rounded-full p-1 text-base-content/40 hover:bg-error/10 hover:text-error"
-                                                                        onClick={() => handleRemoveRole(role._id || role.tempId)}
-                                                                    >
-                                                                        <MaterialSymbol icon="close" size={14} />
-                                                                    </button>
+                                                    {(() => {
+                                                        if (rolesLoading) {
+                                                            return (
+                                                                <div className="flex justify-center py-2">
+                                                                    <span className="loading loading-spinner loading-sm"></span>
                                                                 </div>
-                                                            ))}
-                                                        </div>
-                                                    )}
+                                                            );
+                                                        }
+                                                        if (displayRoles.length === 0) {
+                                                            return (
+                                                                <p className="text-center text-sm text-base-content/50">
+                                                                    Nenhuma insígnia atribuída
+                                                                </p>
+                                                            );
+                                                        }
+                                                        return (
+                                                            <div className="flex flex-wrap gap-3">
+                                                                {displayRoles.map((role) => (
+                                                                    <div
+                                                                        key={role._id || role.tempId}
+                                                                        className="flex items-center gap-2 rounded-lg bg-base-100 p-2 shadow-sm ring-1 ring-base-content/10"
+                                                                    >
+                                                                        {/* Try to show icon if available - check API icon first, then static map */}
+                                                                        {(role.icon || (role.org_name && organizations[role.org_name])) && (
+                                                                            <img src={role.icon || organizations[role.org_name]?.insignia} alt="" className="h-6 w-6 object-contain" />
+                                                                        )}
+                                                                        <div className="flex flex-col">
+                                                                            <span className="text-xs font-bold leading-tight">
+                                                                                {role.role_name || role.name || role.org_name || role.role_id}
+                                                                            </span>
+                                                                            <span className="text-[10px] text-base-content/60">Ano {role.year}</span>
+                                                                        </div>
+                                                                        <button
+                                                                            type="button"
+                                                                            className="ml-1 rounded-full p-1 text-base-content/40 hover:bg-error/10 hover:text-error"
+                                                                            onClick={() => handleRemoveRole(role._id || role.tempId)}
+                                                                        >
+                                                                            <MaterialSymbol icon="close" size={14} />
+                                                                        </button>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        );
+                                                    })()}
                                                 </div>
                                             </div>
 
@@ -714,9 +723,10 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                     {childrenList.length > 0 ? (
                                                         <div className="grid grid-cols-1 gap-2">
                                                             {childrenList.map(child => (
-                                                                <div
+                                                                <button
+                                                                    type="button"
                                                                     key={child._id || child.id}
-                                                                    className="flex items-center gap-3 rounded-lg border border-base-content/10 bg-base-100 p-2 hover:bg-base-200 cursor-pointer transition-colors"
+                                                                    className="flex w-full items-center gap-3 rounded-lg border border-base-content/10 bg-base-100 p-2 hover:bg-base-200 cursor-pointer transition-colors text-left"
                                                                     onClick={() => onSwitchUser(child)}
                                                                 >
                                                                     <div className="avatar h-8 w-8 rounded-full bg-base-300">
@@ -729,7 +739,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                                         </div>
                                                                     </div>
                                                                     <MaterialSymbol icon="chevron_right" className="text-base-content/30" />
-                                                                </div>
+                                                                </button>
                                                             ))}
                                                         </div>
                                                     ) : (

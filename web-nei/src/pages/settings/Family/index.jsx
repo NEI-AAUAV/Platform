@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
@@ -20,6 +21,33 @@ import { useUserStore } from "stores/useUserStore";
 
 import malePic from "assets/default_profile/male.svg";
 import femalePic from "assets/default_profile/female.svg";
+
+const collectMissingPatraoIds = (users, userMap) => {
+  const missing = new Set();
+  for (const u of users) {
+    const id = u?.patrao_id;
+    if (id && !userMap?.[id]) missing.add(id);
+  }
+  return missing;
+};
+
+const fetchUsersByIds = async (ids) => {
+  const requests = ids.map((id) => FamilyService.getUserById(id).catch(() => null));
+  const results = await Promise.all(requests);
+  return results.filter(Boolean);
+};
+
+// Sort Icon Helper - Extracted (Fix S6774/S6478)
+const SortIcon = ({ field, currentSort, sortDir }) => {
+  if (currentSort !== field) return <MaterialSymbol icon="unfold_more" size={16} className="text-base-content/20" />;
+  return <MaterialSymbol icon={sortDir === "asc" ? "expand_less" : "expand_more"} size={16} className="text-active" />;
+};
+
+SortIcon.propTypes = {
+  field: PropTypes.string.isRequired,
+  currentSort: PropTypes.string.isRequired,
+  sortDir: PropTypes.string.isRequired,
+};
 
 /**
  * Family Admin Interface - /settings/family
@@ -152,34 +180,75 @@ export function Component() {
     if (!hasAccess) return;
     if (!users.length) return;
 
-    const missingIds = new Set();
-    users.forEach(u => {
-      if (u.patrao_id && !userMap[u.patrao_id]) {
-        missingIds.add(u.patrao_id);
-      }
-    });
+    const missingIds = collectMissingPatraoIds(users, userMap);
+    if (missingIds.size === 0) return;
 
-    if (missingIds.size > 0) {
-      const fetchMissing = async () => {
-        try {
-          // Fetch each missing ID individually (not optimal but ensures correctness)
-          // In production, backend should support keys list.
-          const promises = Array.from(missingIds).map(id =>
-            FamilyService.getUserById(id).catch(() => null)
-          );
-          const results = await Promise.all(promises);
-          const found = results.filter(u => u);
-
-          if (found.length > 0) {
-            setAllUsers(prev => [...prev, ...found]);
-          }
-        } catch (err) {
-          console.error("Failed to fetch missing patrões", err);
+    let cancelled = false;
+    (async () => {
+      try {
+        // Fetch each missing ID individually (not optimal but ensures correctness)
+        // In production, backend should support keys list.
+        const found = await fetchUsersByIds(Array.from(missingIds));
+        if (!cancelled && found.length > 0) {
+          setAllUsers(prev => [...prev, ...found]);
         }
-      };
-      fetchMissing();
-    }
+      } catch (err) {
+        if (!cancelled) console.error("Failed to fetch missing patrões", err);
+      }
+    })();
+
+    return () => { cancelled = true; };
   }, [users, userMap, hasAccess]);
+
+  // --- MOVED HOOKS (Fix S6440) ---
+
+  // Check if all users on current page are selected
+  const allCurrentPageSelected = useMemo(() => {
+    if (users.length === 0) return false;
+    return users.every(u => selectedIds.has(u._id));
+  }, [users, selectedIds]);
+
+  // Check if some (but not all) users on current page are selected
+  const someCurrentPageSelected = useMemo(() => {
+    if (users.length === 0) return false;
+    const selectedCount = users.filter(u => selectedIds.has(u._id)).length;
+    return selectedCount > 0 && selectedCount < users.length;
+  }, [users, selectedIds]);
+
+  // Get selected users from allUsers (persists across pagination)
+  const selectedUsers = useMemo(() => {
+    const result = [];
+    for (const id of selectedIds) {
+      const user = allUsers.find(u => u._id === id) || users.find(u => u._id === id);
+      if (user) result.push(user);
+    }
+    return result;
+  }, [allUsers, users, selectedIds]);
+
+  // Dynamic years from DB
+  const [years, setYears] = useState([]);
+
+  useEffect(() => {
+    FamilyService.getYears()
+      .then(data => setYears(data || []))
+      .catch(err => console.error("Failed to load years", err));
+  }, []);
+
+  // Custom Year Dropdown logic
+  const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
+  const yearDropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (yearDropdownRef.current && !yearDropdownRef.current.contains(event.target)) {
+        setYearDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // --- END MOVED HOOKS ---
 
   // Authorization check - AFTER all hooks
   // Wait for session to load before checking
@@ -245,11 +314,7 @@ export function Component() {
     setPage(0);
   };
 
-  // Sort Icon Helper
-  const SortIcon = ({ field }) => {
-    if (sortBy !== field) return <MaterialSymbol icon="unfold_more" size={16} className="text-base-content/20" />;
-    return <MaterialSymbol icon={sortOrder === "asc" ? "expand_less" : "expand_more"} size={16} className="text-active" />;
-  };
+
 
   // Check if user has children before deleting
   const handleDeleteRequest = async (user) => {
@@ -329,13 +394,11 @@ export function Component() {
             next.add(users[i]._id);
           }
         }
-      } else {
+      } else if (next.has(userId)) {
         // Normal click: toggle selection
-        if (next.has(userId)) {
-          next.delete(userId);
-        } else {
-          next.add(userId);
-        }
+        next.delete(userId);
+      } else {
+        next.add(userId);
       }
 
       return next;
@@ -344,18 +407,9 @@ export function Component() {
     setLastSelectedIndex(rowIndex);
   };
 
-  // Check if all users on current page are selected
-  const allCurrentPageSelected = useMemo(() => {
-    if (users.length === 0) return false;
-    return users.every(u => selectedIds.has(u._id));
-  }, [users, selectedIds]);
 
-  // Check if some (but not all) users on current page are selected
-  const someCurrentPageSelected = useMemo(() => {
-    if (users.length === 0) return false;
-    const selectedCount = users.filter(u => selectedIds.has(u._id)).length;
-    return selectedCount > 0 && selectedCount < users.length;
-  }, [users, selectedIds]);
+
+
 
   const toggleSelectAll = () => {
     setSelectedIds(prev => {
@@ -394,16 +448,7 @@ export function Component() {
     setSelectedIds(new Set(matchingUsers.map(u => u._id)));
   };
 
-  // Get selected users from allUsers (persists across pagination)
-  // Falls back to current page if user not in allUsers cache
-  const selectedUsers = useMemo(() => {
-    const result = [];
-    for (const id of selectedIds) {
-      const user = allUsers.find(u => u._id === id) || users.find(u => u._id === id);
-      if (user) result.push(user);
-    }
-    return result;
-  }, [allUsers, users, selectedIds]);
+
 
   const handleBulkDelete = () => {
     // Open bulk delete modal instead of window.confirm
@@ -432,14 +477,7 @@ export function Component() {
 
   const totalPages = Math.ceil(total / limit);
 
-  // Dynamic years from DB
-  const [years, setYears] = useState([]);
 
-  useEffect(() => {
-    FamilyService.getYears()
-      .then(data => setYears(data || []))
-      .catch(err => console.error("Failed to load years", err));
-  }, []);
 
   // Helper to format year
   const formatYear = (y, fmt) => {
@@ -458,19 +496,7 @@ export function Component() {
     return y;
   };
 
-  // Custom Year Dropdown logic
-  const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
-  const yearDropdownRef = useRef(null);
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (yearDropdownRef.current && !yearDropdownRef.current.contains(event.target)) {
-        setYearDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
 
   return (
@@ -597,7 +623,9 @@ export function Component() {
                   setPage(0);
                 }}
               >
-                <MaterialSymbol icon="close" size={14} />
+                <div role="button" tabIndex={0} className="flex h-5 w-5 items-center justify-center rounded-full bg-base-content/10 hover:bg-base-content/20">
+                  <MaterialSymbol icon="close" size={14} />
+                </div>
               </div>
             ) : (
               <MaterialSymbol icon="arrow_drop_down" size={24} className="text-base-content/50" />
@@ -699,14 +727,20 @@ export function Component() {
                           title={allCurrentPageSelected ? "Desselecionar página" : "Selecionar página"}
                         />
                       </th>
-                      <th className="cursor-pointer hover:bg-base-200" onClick={() => toggleSort("name")}>
-                        <div className="flex items-center gap-2">Membro <SortIcon field="name" /></div>
+                      <th className="p-0">
+                        <button className="flex w-full items-center gap-2 p-3 font-bold hover:bg-base-200" onClick={() => toggleSort("name")}>
+                          Membro <SortIcon field="name" currentSort={sortBy} sortDir={sortOrder} />
+                        </button>
                       </th>
-                      <th className="hidden md:table-cell cursor-pointer hover:bg-base-200" onClick={() => toggleSort("patrao_id")}>
-                        <div className="flex items-center gap-2">Patrão <SortIcon field="patrao_id" /></div>
+                      <th className="hidden p-0 md:table-cell">
+                        <button className="flex w-full items-center gap-2 p-3 font-bold hover:bg-base-200" onClick={() => toggleSort("patrao_id")}>
+                          Patrão <SortIcon field="patrao_id" currentSort={sortBy} sortDir={sortOrder} />
+                        </button>
                       </th>
-                      <th className="w-[10%] text-center cursor-pointer hover:bg-base-200" onClick={() => toggleSort("year")}>
-                        <div className="flex items-center justify-center gap-2">Ano <SortIcon field="year" /></div>
+                      <th className="w-[10%] p-0 text-center">
+                        <button className="flex w-full items-center justify-center gap-2 p-3 font-bold hover:bg-base-200" onClick={() => toggleSort("year")}>
+                          Ano <SortIcon field="year" currentSort={sortBy} sortDir={sortOrder} />
+                        </button>
                       </th>
                       <th>Insígnias</th>
                       <th className="text-right">Ações</th>
@@ -1042,7 +1076,7 @@ export function Component() {
           setOrphanChildren([]);
         }}
         userToDelete={deleteModal}
-        children={orphanChildren}
+        orphanChildren={orphanChildren}
         onConfirmDelete={handleDelete}
         onReparent={handleReparentAndDelete}
       />

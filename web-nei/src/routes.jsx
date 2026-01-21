@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
 
 import config from "config";
@@ -37,6 +38,15 @@ function ProtectedRoute({
 
   return children;
 }
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node,
+  loggedIn: PropTypes.bool,
+  redirect: PropTypes.string,
+  adminOnly: PropTypes.bool,
+  requiredScopes: PropTypes.arrayOf(PropTypes.string),
+  notFoundRedirect: PropTypes.bool,
+};
 
 const routes = [
   {
