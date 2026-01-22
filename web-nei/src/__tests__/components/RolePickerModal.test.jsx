@@ -82,9 +82,9 @@ describe('RolePickerModal', () => {
         const rootBtn = screen.getByText('Root').closest('button');
         fireEvent.click(rootBtn);
 
-        // Should show children of Root
+        // Should show children of Root (NEI appears twice: as name and short)
         await waitFor(() => {
-            expect(screen.getByText('NEI')).toBeInTheDocument();
+            expect(screen.getAllByText('NEI').length).toBeGreaterThan(0);
         });
     });
 

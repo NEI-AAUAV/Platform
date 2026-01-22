@@ -92,8 +92,10 @@ describe('RoleManagerModal', () => {
         await waitFor(() => {
             expect(screen.getByText('Insígnias')).toBeInTheDocument();
         });
-
-        fireEvent.click(screen.getByText(/Raiz/i));
+        // Find and click the "Raiz" button
+        const raizButtons = screen.getAllByText(/Raiz/i);
+        const raizButton = raizButtons.find(el => el.closest('button'));
+        fireEvent.click(raizButton.closest('button'));
         expect(screen.getByLabelText('Nome')).toHaveValue('');
 
         await user.type(screen.getByLabelText('Nome'), 'New Role');
