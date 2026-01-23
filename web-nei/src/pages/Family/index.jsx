@@ -20,7 +20,7 @@ import ProfileViewModal from "components/ProfileViewModal";
 import { useUserStore } from "stores/useUserStore";
 import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
-import { handleSearchChange, getNodeById, navigateToNode, highlightLineage } from "./data";
+import { getNodeById, navigateToNode, highlightLineage } from "./data";
 import "./index.css";
 
 export function Component() {

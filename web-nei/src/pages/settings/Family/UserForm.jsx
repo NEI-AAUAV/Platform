@@ -227,8 +227,8 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             reset({
                 name: user.name || "",
                 sex: user.sex || "M",
-                start_year: user.start_year || new Date().getFullYear() - 2000,
-                end_year: user.end_year || null,
+                start_year: user.start_year ?? (new Date().getFullYear() - 2000),
+                end_year: user.end_year ?? null,
                 faina_name: user.faina_name || "",
 
                 nmec: user.nmec || null,
@@ -621,6 +621,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                     min: { value: 0, message: "Inválido" },
                                                     max: { value: 99, message: "2 dígitos" },
                                                     valueAsNumber: true,
+                                                    setValueAs: (v) => (v === "" || Number.isNaN(v) ? null : v),
                                                 })}
                                             />
 

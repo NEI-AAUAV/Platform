@@ -95,7 +95,7 @@ const RoleIcon = ({ role, organizations, formatYear }) => {
   }, [role, organizations]);
 
   const roleTitle = role.role_name || role.name || role.org_name || "Cargo";
-  const parentContext = role.parent_org_name ? ` (${role.parent_org_name})` : "";
+  const parentContext = role.parent_org_name && role.parent_org_name !== roleTitle ? ` (${role.parent_org_name})` : "";
   const tooltip = `${roleTitle}${parentContext} (${formatYear(role.year, role.year_display_format)})`;
 
   if (error || !logo) {

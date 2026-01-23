@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
 import { CloseIcon } from "assets/icons/google";
 import FamilyService from "services/FamilyService";
@@ -208,7 +207,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                 </div>
 
                                 {/* Exit year badge - if user has left */}
-                                {user.end_year && (
+                                {user.end_year != null && (
                                     <div
                                         className="mt-1 px-3 py-1 rounded-full text-sm font-medium"
                                         style={{
