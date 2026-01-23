@@ -169,21 +169,16 @@
 }
 
 
-/* Profile View Button */
+/* Profile View Button - Minimalist Icon Only */
 #treeei svg.treeei g.profile-btn {
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 #treeei svg.treeei g.node:hover g.profile-btn {
   opacity: 1;
 }
 
-#treeei svg.treeei g.profile-btn:hover circle {
-  fill: hsl(var(--p));
-  stroke: hsl(var(--p));
-}
-
-#treeei svg.treeei g.profile-btn:hover text {
-  fill: hsl(var(--pc));
+#treeei svg.treeei g.profile-btn path {
+  transition: transform 0.15s ease;
 }

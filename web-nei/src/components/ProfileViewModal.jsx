@@ -15,6 +15,7 @@ import { CloseIcon } from "assets/icons/google";
 import FamilyService from "services/FamilyService";
 import { formatYear } from "pages/Family/utils";
 import { colors } from "pages/Family/data";
+import heartBorder from "assets/icons/heart_border.svg";
 
 import malePic from "assets/default_profile/male.svg";
 import femalePic from "assets/default_profile/female.svg";
@@ -144,7 +145,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                             <div
                                 className="relative flex flex-col items-center px-6 pt-8 pb-6"
                                 style={{
-                                    background: `linear-gradient(135deg, ${yearColor}20 0%, transparent 60%)`
+                                    background: `linear-gradient(135deg, ${yearColor}25 0%, ${yearColor}08 50%, transparent 100%)`
                                 }}
                             >
                                 {/* Close button */}
@@ -156,16 +157,40 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                     <CloseIcon />
                                 </button>
 
-                                {/* Profile photo */}
-                                <div
-                                    className="mb-4 h-24 w-24 rounded-full ring-4 ring-offset-2 ring-offset-base-100 overflow-hidden"
-                                    style={{ ringColor: yearColor }}
-                                >
-                                    <img
-                                        src={user.sex === "F" ? femalePic : malePic}
-                                        alt=""
-                                        className="h-full w-full object-cover"
-                                    />
+                                {/* Profile Photo Container with Special Overlay */}
+                                <div className="relative mb-4 flex justify-center items-center">
+
+                                    {/* Special Heart Border Overlay */}
+                                    {user.nmec === 76368 && (
+                                        <div
+                                            className="absolute pointer-events-none"
+                                            style={{
+                                                width: '130%',  // Larger than the photo
+                                                height: '130%',
+                                                backgroundImage: `url(${heartBorder})`,
+                                                backgroundSize: 'contain',
+                                                backgroundPosition: 'center',
+                                                backgroundRepeat: 'no-repeat',
+                                                filter: 'brightness(1.3) drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+                                                zIndex: 10,  // On top of photo border
+                                            }}
+                                        />
+                                    )}
+
+                                    {/* Standard Photo with Year Color Ring */}
+                                    <div
+                                        className="h-24 w-24 rounded-full overflow-hidden"
+                                        style={{
+                                            border: `4px solid ${yearColor}`,
+                                            boxShadow: `0 0 0 2px hsl(var(--b1))`
+                                        }}
+                                    >
+                                        <img
+                                            src={user.sex === "F" ? femalePic : malePic}
+                                            alt=""
+                                            className="h-full w-full object-cover"
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Name */}
@@ -181,6 +206,19 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                 >
                                     Ano de Batismo {getEntryYear()}
                                 </div>
+
+                                {/* Exit year badge - if user has left */}
+                                {user.end_year && (
+                                    <div
+                                        className="mt-1 px-3 py-1 rounded-full text-sm font-medium"
+                                        style={{
+                                            backgroundColor: `${yearColor}20`,
+                                            color: yearColor
+                                        }}
+                                    >
+                                        Ano de Saída {formatYear(user.end_year, "civil")}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Scrollable content */}
@@ -228,9 +266,12 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <div className="font-medium truncate">
-                                                            {/* Show full role context: role_name + parent org if available */}
+                                                            {/* Show full role context: role_name + parent org if different from main org */}
                                                             {ins.role_name || ins.role || ins.name}
-                                                            {ins.parent_org_name && (
+                                                            {/* Only show parent_org_name if it's different from the main org name
+                                                                This avoids redundancy like "Consoante (NEI)" when org is already NEI
+                                                                But keeps useful context like "Vogal (Direção)" for AETTUA sub-sections */}
+                                                            {ins.parent_org_name && ins.parent_org_name !== ins.name && (
                                                                 <span className="text-base-content/50 font-normal"> ({ins.parent_org_name})</span>
                                                             )}
                                                         </div>
@@ -330,6 +371,7 @@ ProfileViewModal.propTypes = {
         name: PropTypes.string,
         sex: PropTypes.oneOf(["M", "F"]),
         start_year: PropTypes.number,
+        end_year: PropTypes.number,
         course_id: PropTypes.number,
         parent: PropTypes.number,
         organizations: PropTypes.arrayOf(PropTypes.shape({

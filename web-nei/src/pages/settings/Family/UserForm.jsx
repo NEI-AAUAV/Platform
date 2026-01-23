@@ -87,6 +87,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             name: "",
             sex: "M",
             start_year: new Date().getFullYear() - 2000,
+            end_year: null,
             faina_name: "",
             nmec: null,
             course_id: null,
@@ -227,6 +228,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 name: user.name || "",
                 sex: user.sex || "M",
                 start_year: user.start_year || new Date().getFullYear() - 2000,
+                end_year: user.end_year || null,
                 faina_name: user.faina_name || "",
 
                 nmec: user.nmec || null,
@@ -253,6 +255,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 name: "",
                 sex: "M",
                 start_year: new Date().getFullYear() - 2000,
+                end_year: null,
                 faina_name: "",
 
                 nmec: null,
@@ -316,6 +319,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                     name: "",
                     sex: "M",
                     start_year: data.start_year, // Keep same year often useful
+                    end_year: null,
                     faina_name: "",
                     nmec: null,
                     course_id: data.course_id, // Keep course often useful
@@ -607,6 +611,19 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                 />
                                             </div>
 
+                                            {/* End Year */}
+                                            <Input
+                                                label="Ano de Saída (Opcional)"
+                                                type="number"
+                                                placeholder="Deixar vazio se ainda ativo"
+                                                error={errors.end_year}
+                                                {...register("end_year", {
+                                                    min: { value: 0, message: "Inválido" },
+                                                    max: { value: 99, message: "2 dígitos" },
+                                                    valueAsNumber: true,
+                                                })}
+                                            />
+
                                             {/* Faina Name + Nmec Row */}
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <Input
@@ -683,7 +700,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                                         <div className="flex flex-col">
                                                                             <span className="text-xs font-bold leading-tight">
                                                                                 {role.role_name || role.name || role.org_name || role.role_id}
-                                                                                {role.parent_org_name && (
+                                                                                {role.parent_org_name && role.parent_org_name !== role.org_name && (
                                                                                     <span className="font-normal text-base-content/50"> ({role.parent_org_name})</span>
                                                                                 )}
                                                                             </span>
