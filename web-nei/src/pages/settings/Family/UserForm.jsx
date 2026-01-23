@@ -649,7 +649,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                         <div className="avatar">
                                                             <div className="h-16 w-16 rounded-full ring-2 ring-offset-2 ring-offset-base-100 ring-base-content/10 bg-base-300 overflow-hidden">
                                                                 <Avatar
-                                                                    src={preview ?? user?.image}
+                                                                    image={preview ?? user?.image}
                                                                     sex={user?.sex}
                                                                     alt={user?.name || 'preview'}
                                                                     className="object-cover"
