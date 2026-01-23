@@ -12,6 +12,7 @@ class UserRole(BaseModel):
     role_id: Optional[str] = None
     org_name: Optional[str] = None
     role_name: Optional[str] = None  # Full name of the role (e.g., "Mestre de Curso")
+    parent_org_name: Optional[str] = None  # Name of parent org for context (e.g., "Direção")
     year: Optional[int] = None
     year_display_format: Optional[str] = "civil"  # "civil" or "academic"
     hidden: Optional[bool] = False

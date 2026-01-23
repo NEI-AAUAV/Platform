@@ -41,6 +41,7 @@ export function flattenTree(tree) {
                     year: role.year,
                     role: role.role_name || role.role_id,
                     role_name: role.role_name,
+                    parent_org_name: role.parent_org_name,
                     role_id: role.role_id, // Keep for debugging
                     year_display_format: role.year_display_format,
                     hidden: role.hidden,

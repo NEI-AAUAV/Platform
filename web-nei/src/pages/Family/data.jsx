@@ -115,6 +115,7 @@ const nodeMap = new Map();
 let onNodeSelectCallback = null;
 let onNodeHoverCallback = null;
 let onNodeEditCallback = null;
+let onNodeViewProfileCallback = null;
 let isEditMode = false;
 
 
@@ -139,6 +140,7 @@ export function buildTree(users = null, options = {}) {
   onNodeSelectCallback = options.onNodeSelect || null;
   onNodeHoverCallback = options.onNodeHover || null;
   onNodeEditCallback = options.onNodeEdit || null;
+  onNodeViewProfileCallback = options.onNodeViewProfile || null;
   isEditMode = options.editMode || false;
 
   // Use provided users or fall back to static data
@@ -213,6 +215,7 @@ export function buildTree(users = null, options = {}) {
 
       insigniasMap.get(id).roles.push({
         title: roleTitle,
+        parentOrg: o.parent_org_name,
         year: o.year,
         format: o.year_display_format || "civil"
       });
@@ -439,7 +442,10 @@ export function buildTree(users = null, options = {}) {
       return `url(#${getInsigniaPatternId(d)})`;
     })
     .append("title")
-    .text(d => d.roles.map(r => `${r.title} (${formatYear(r.year, r.format)})`).join('\n'));
+    .text(d => d.roles.map(r => {
+      const parentContext = r.parentOrg ? ` (${r.parentOrg})` : "";
+      return `${r.title}${parentContext} (${formatYear(r.year, r.format)})`;
+    }).join('\n'));
 
   // circle with the gradient year color
   const nodesProfileGrad = nodes
@@ -491,16 +497,6 @@ export function buildTree(users = null, options = {}) {
         .attr("y", (d, i) => y(i))
         .style("opacity", o)
         .ease(d3.easeBackOut.overshoot(2));
-    })
-    .on("mouseenter", function (event, d) {
-      if (onNodeHoverCallback && d.data.id) {
-        onNodeHoverCallback(d.data.id, true);
-      }
-    })
-    .on("mouseleave", function (event, d) {
-      if (onNodeHoverCallback && d.data.id) {
-        onNodeHoverCallback(d.data.id, false);
-      }
     });
 
   // border with the year color
@@ -517,6 +513,61 @@ export function buildTree(users = null, options = {}) {
     .attr("r", 24)
     .style("filter", `brightness(1.3)`)
     .style("fill", `url(#heart_border)`);
+
+  // Profile view button - appears on hover/zoom
+  const profileButtons = nodes
+    .append("g")
+    .attr("class", "profile-btn")
+    .attr("transform", "translate(22, -8)")
+    .style("cursor", "pointer")
+    .style("opacity", 0)
+    .on("click", function (event, d) {
+      event.stopPropagation();
+      if (onNodeViewProfileCallback && d.data.id) {
+        onNodeViewProfileCallback(d.data);
+      }
+    });
+
+  // Button background circle with better styling
+  profileButtons
+    .append("circle")
+    .attr("r", 11)
+    .attr("fill", "hsl(var(--b1))")
+    .attr("stroke", "hsl(var(--p))")
+    .attr("stroke-width", 2)
+    .style("filter", "drop-shadow(0 2px 4px rgba(0,0,0,0.15))");
+
+  // Button icon - using SVG path for eye/visibility icon (Material Symbols compatible)
+  profileButtons
+    .append("path")
+    .attr("d", "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z")
+    .attr("transform", "translate(-12, -12) scale(1)")
+    .attr("fill", "hsl(var(--p))");
+
+  // Add hover handlers to nodes to show/hide profile button
+  nodes
+    .on("mouseenter", function (event, d) {
+      // Show profile button
+      d3.select(this).select(".profile-btn")
+        .transition()
+        .duration(150)
+        .style("opacity", 1);
+      // Also trigger existing hover callback
+      if (onNodeHoverCallback && d.data.id) {
+        onNodeHoverCallback(d.data.id, true);
+      }
+    })
+    .on("mouseleave", function (event, d) {
+      // Hide profile button
+      d3.select(this).select(".profile-btn")
+        .transition()
+        .duration(150)
+        .style("opacity", 0);
+      // Also trigger existing hover callback
+      if (onNodeHoverCallback && d.data.id) {
+        onNodeHoverCallback(d.data.id, false);
+      }
+    });
 
   labels = groups
     .append("g")
@@ -653,6 +704,12 @@ export function buildTree(users = null, options = {}) {
       .transition()
       .duration(300)
       .attr("transform", (d) => `translate(${d.x},${d.y + (close ? 26 : 18)})`);
+
+    // Profile buttons - position relative to node size when zoomed
+    profileButtons
+      .transition()
+      .duration(300)
+      .attr("transform", close ? "translate(28, -12)" : "translate(22, -8)");
   }
 
   updateNodes(false);

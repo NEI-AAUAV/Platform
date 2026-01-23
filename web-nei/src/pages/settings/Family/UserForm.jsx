@@ -683,6 +683,9 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                                         <div className="flex flex-col">
                                                                             <span className="text-xs font-bold leading-tight">
                                                                                 {role.role_name || role.name || role.org_name || role.role_id}
+                                                                                {role.parent_org_name && (
+                                                                                    <span className="font-normal text-base-content/50"> ({role.parent_org_name})</span>
+                                                                                )}
                                                                             </span>
                                                                             <span className="text-[10px] text-base-content/60">Ano {role.year}</span>
                                                                         </div>
