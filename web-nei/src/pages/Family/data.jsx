@@ -115,6 +115,7 @@ const nodeMap = new Map();
 let onNodeSelectCallback = null;
 let onNodeHoverCallback = null;
 let onNodeEditCallback = null;
+let onNodeViewProfileCallback = null;
 let isEditMode = false;
 
 
@@ -139,6 +140,7 @@ export function buildTree(users = null, options = {}) {
   onNodeSelectCallback = options.onNodeSelect || null;
   onNodeHoverCallback = options.onNodeHover || null;
   onNodeEditCallback = options.onNodeEdit || null;
+  onNodeViewProfileCallback = options.onNodeViewProfile || null;
   isEditMode = options.editMode || false;
 
   // Use provided users or fall back to static data
@@ -199,6 +201,13 @@ export function buildTree(users = null, options = {}) {
         }
       }
 
+      // Consolidate NEI sub-role short codes (like "RF") under "NEI"
+      // These are role shorts that should not appear as separate insignia entries
+      // Check by looking at role_id prefix for NEI roles (.2.*)
+      if (o.role_id?.startsWith(".2.") && id !== "NEI") {
+        id = "NEI";
+      }
+
       if (!id) return;
 
       if (!insigniasMap.has(id)) {
@@ -213,6 +222,7 @@ export function buildTree(users = null, options = {}) {
 
       insigniasMap.get(id).roles.push({
         title: roleTitle,
+        parentOrg: o.parent_org_name,
         year: o.year,
         format: o.year_display_format || "civil"
       });
@@ -439,7 +449,19 @@ export function buildTree(users = null, options = {}) {
       return `url(#${getInsigniaPatternId(d)})`;
     })
     .append("title")
-    .text(d => d.roles.map(r => `${r.title} (${formatYear(r.year, r.format)})`).join('\n'));
+    .text(function (d) {
+      // Get the insignia id to check for redundancy
+      const insigniaId = d.id;
+
+      return d.roles.map(r => {
+        // Only show parentOrg if it's different from the main org (insignia id)
+        // This avoids redundancy like "Consoante (NEI)" when the insignia is already NEI
+        // But keeps useful context like "Vogal (Direção)" for AETTUA sub-sections
+        const shouldShowParent = r.parentOrg && r.parentOrg !== insigniaId;
+        const parentContext = shouldShowParent ? ` (${r.parentOrg})` : "";
+        return `${r.title}${parentContext} (${formatYear(r.year, r.format)})`;
+      }).join('\n');
+    });
 
   // circle with the gradient year color
   const nodesProfileGrad = nodes
@@ -491,16 +513,6 @@ export function buildTree(users = null, options = {}) {
         .attr("y", (d, i) => y(i))
         .style("opacity", o)
         .ease(d3.easeBackOut.overshoot(2));
-    })
-    .on("mouseenter", function (event, d) {
-      if (onNodeHoverCallback && d.data.id) {
-        onNodeHoverCallback(d.data.id, true);
-      }
-    })
-    .on("mouseleave", function (event, d) {
-      if (onNodeHoverCallback && d.data.id) {
-        onNodeHoverCallback(d.data.id, false);
-      }
     });
 
   // border with the year color
@@ -517,6 +529,117 @@ export function buildTree(users = null, options = {}) {
     .attr("r", 24)
     .style("filter", `brightness(1.3)`)
     .style("fill", `url(#heart_border)`);
+
+  // Profile view button - positioned to the left of node
+  const profileButtons = nodes
+    .append("g")
+    .attr("class", "profile-btn")
+    .attr("transform", "translate(-26, 0)")
+    .style("cursor", "pointer")
+    .style("opacity", 0)
+    .on("click", function (event, d) {
+      event.stopPropagation();
+      if (onNodeViewProfileCallback && d.data.id) {
+        onNodeViewProfileCallback(d.data);
+      }
+    })
+    .on("mouseenter", function () {
+      // Keep button visible when hovering over it
+      d3.select(this).style("opacity", 1);
+      // Simple scale up on hover
+      d3.select(this).select("path")
+        .transition()
+        .duration(150)
+        .attr("transform", "translate(-6, -6) scale(0.55)");
+    })
+    .on("mouseleave", function () {
+      // Reset scale
+      d3.select(this).select("path")
+        .transition()
+        .duration(150)
+        .attr("transform", "translate(-6, -6) scale(0.5)");
+    });
+
+  // Invisible hover bridge - creates a hover area between node and button
+  profileButtons
+    .append("rect")
+    .attr("class", "hover-bridge")
+    .attr("x", -12)
+    .attr("y", -12)
+    .attr("width", 38)
+    .attr("height", 24)
+    .attr("fill", "transparent")
+    .style("pointer-events", "all");
+
+  // Button icon - just the eye icon in black with white outline
+  profileButtons
+    .append("path")
+    .attr("d", "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z")
+    .attr("transform", "translate(-6, -6) scale(0.5)")
+    .attr("fill", "#000")
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 2)
+    .style("filter", "drop-shadow(0 2px 4px rgba(255,255,255,0.9))")
+    .style("pointer-events", "none");
+
+  // Add hover handlers to nodes to show/hide profile button AND insignias
+  nodes
+    .on("mouseenter", function (event, d) {
+      const parent = this;
+
+      // Show profile button
+      d3.select(this).select(".profile-btn")
+        .transition()
+        .duration(200)
+        .style("opacity", 1);
+
+      // Show insignias automatically on hover
+      if (!parent.classList.contains("active")) {
+        const x = (i) => Math.cos(((-i + 1) / 5) * Math.PI) * 30 - 5;
+        const y = (i) => Math.sin(((-i + 1) / 5) * Math.PI) * 30 - 5;
+
+        d3.select(parent)
+          .select("g.insignias")
+          .selectAll("rect.insignia")
+          .transition()
+          .duration(300)
+          .attr("x", (d, i) => x(i))
+          .attr("y", (d, i) => y(i))
+          .style("opacity", 1)
+          .ease(d3.easeBackOut.overshoot(2));
+      }
+
+      // Also trigger existing hover callback
+      if (onNodeHoverCallback && d.data.id) {
+        onNodeHoverCallback(d.data.id, true);
+      }
+    })
+    .on("mouseleave", function (event, d) {
+      const parent = this;
+
+      // Hide profile button
+      d3.select(this).select(".profile-btn")
+        .transition()
+        .duration(200)
+        .style("opacity", 0);
+
+      // Hide insignias if not clicked/active
+      if (!parent.classList.contains("active")) {
+        d3.select(parent)
+          .select("g.insignias")
+          .selectAll("rect.insignia")
+          .transition()
+          .duration(200)
+          .attr("x", -5)
+          .attr("y", -5)
+          .style("opacity", 0);
+      }
+
+      // Also trigger existing hover callback
+      if (onNodeHoverCallback && d.data.id) {
+        onNodeHoverCallback(d.data.id, false);
+      }
+    });
 
   labels = groups
     .append("g")
@@ -653,6 +776,12 @@ export function buildTree(users = null, options = {}) {
       .transition()
       .duration(300)
       .attr("transform", (d) => `translate(${d.x},${d.y + (close ? 26 : 18)})`);
+
+    // Profile buttons - position relative to node size when zoomed
+    profileButtons
+      .transition()
+      .duration(300)
+      .attr("transform", close ? "translate(-32, 0)" : "translate(-26, 0)");
   }
 
   updateNodes(false);

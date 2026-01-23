@@ -30,7 +30,8 @@ const FamilyContent = ({
   maxYear,
   loading: externalLoading = false,
   editMode = false,
-  onNodeEdit = () => { }
+  onNodeEdit = () => { },
+  onNodeViewProfile = () => { }
 }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -63,7 +64,8 @@ const FamilyContent = ({
         onNodeSelect: handleNodeSelect,
         onNodeHover: handleNodeHover,
         editMode,
-        onNodeEdit
+        onNodeEdit,
+        onNodeViewProfile
       });
 
       centerTree();
@@ -300,6 +302,7 @@ FamilyContent.propTypes = {
   loading: PropTypes.bool,
   editMode: PropTypes.bool,
   onNodeEdit: PropTypes.func,
+  onNodeViewProfile: PropTypes.func,
 };
 
 export default FamilyContent;

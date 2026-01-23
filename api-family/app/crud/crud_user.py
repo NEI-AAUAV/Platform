@@ -295,6 +295,34 @@ class CRUDUser:
         
         return None
 
+    def _get_immediate_parent_name(self, role_id: str, org_map: dict) -> Optional[str]:
+        """
+        Get the name of the immediate parent role (one level up).
+        Used to show context like "Presidente (Direção)" vs "Presidente (RGM)".
+        
+        role_id format: ".1.5.9." -> parent is ".1.5."
+        Returns the name of the parent role, or None if no parent or at root.
+        """
+        if not role_id:
+            return None
+        
+        parts = role_id.rstrip('.').split('.')
+        
+        # Need at least 3 levels: ".1.5." -> parts = ["", "1", "5"]
+        # Parent would be ".1." -> parts[:2] = ["", "1"]
+        if len(parts) <= 2:
+            return None  # At root or too shallow
+        
+        # Get parent path (one level up)
+        parent_path = '.'.join(parts[:-1]) + '.'
+        
+        if parent_path in org_map:
+            parent_info = org_map[parent_path]
+            # Return short if exists, otherwise name
+            return parent_info.get("short") or parent_info.get("name")
+        
+        return None
+
     def _get_inherited_hidden(self, role_id: str, org_map: dict) -> bool:
         """
         Check if a specific role is hidden.
@@ -415,12 +443,15 @@ class CRUDUser:
             role["icon"] = self._get_inherited_icon(lookup_key, org_map)
             hidden = role_info.get("hidden")
             role["hidden"] = hidden if hidden is not None else False
+            # Add parent org name for display context (e.g., "Direção" for "Presidente da Direção")
+            role["parent_org_name"] = self._get_immediate_parent_name(lookup_key, org_map)
         else:
             # Fallback for unknown roles - still try to inherit format
             role["role_name"] = role.get("org_name")
             role["year_display_format"] = self._get_inherited_format(role_id, org_map) if role_id else "civil"
             role["icon"] = self._get_inherited_icon(role_id, org_map) if role_id else None
             role["hidden"] = self._get_inherited_hidden(role_id, org_map) if role_id else False
+            role["parent_org_name"] = self._get_immediate_parent_name(role_id, org_map) if role_id else None
 
     
     def _build_tree(self) -> Tuple[dict, List[dict], int]:

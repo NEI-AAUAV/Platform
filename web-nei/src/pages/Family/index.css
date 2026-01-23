@@ -167,3 +167,18 @@
     filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.9));
   }
 }
+
+
+/* Profile View Button - Minimalist Icon Only */
+#treeei svg.treeei g.profile-btn {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+#treeei svg.treeei g.node:hover g.profile-btn {
+  opacity: 1;
+}
+
+#treeei svg.treeei g.profile-btn path {
+  transition: transform 0.15s ease;
+}

@@ -61,6 +61,14 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
           }
         }
 
+        // Consolidate NEI sub-role short codes (like "RF") under "NEI"
+        // These are role shorts that should not appear as separate legend entries
+        // Check by looking at role_id prefix for NEI roles (.2.*)
+        if (o.role_id?.startsWith(".2.") && key !== "NEI") {
+          // This is a NEI sub-role, consolidate under NEI
+          key = "NEI";
+        }
+
         if (!key) return;
 
         // Only add if not already present (first occurrence wins for display name)
@@ -71,11 +79,25 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
           // Check if we have a hardcoded entry for this org
           const hardcodedOrg = organizations[key];
 
+          // For display name priority:
+          // 1. Hardcoded display name (if exists)
+          // 2. org_name (o.name) - the main organization short code like "NEI", "AETTUA"
+          // 3. key as fallback (which may be role_name for ST sub-roles)
+          // This ensures "NEI" shows as "NEI" in legend, not "Responsável Financeiro"
+          let displayName = hardcodedOrg?.name;
+          if (!displayName) {
+            // Prefer org_name (o.name) if it looks like an org code, not a full role name
+            // Org codes are typically short (<=20 chars) and don't start with "."
+            if (o.name && !o.name.startsWith('.') && o.name.length <= 20) {
+              displayName = o.name;
+            } else {
+              displayName = key;
+            }
+          }
+
           orgsMap.set(key, {
             key: key,
-            // For display name: use hardcoded name, then org_name (key), then role_name as last resort
-            // This ensures NEI roles show "NEI" not "Responsável Financeiro"
-            name: hardcodedOrg?.name || key,
+            name: displayName,
             insignia: hardcodedOrg?.insignia || null, // Will be null for dynamic orgs without icons
             icon: o.icon, // Icon URL from API (if available)
             changeColor: hardcodedOrg?.changeColor || false,

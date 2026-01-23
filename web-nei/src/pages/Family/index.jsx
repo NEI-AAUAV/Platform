@@ -16,9 +16,11 @@ import { useFamilyTree } from "./useFamilyTree";
 import FamilyContent from "./FamilyContent";
 import FamilySidebar from "./FamilySidebar";
 import UserForm from "../settings/Family/UserForm";
+import ProfileViewModal from "components/ProfileViewModal";
 import { useUserStore } from "stores/useUserStore";
 import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
+import { getNodeById, navigateToNode, highlightLineage } from "./data";
 import "./index.css";
 
 export function Component() {
@@ -32,6 +34,11 @@ export function Component() {
   const [editMode, setEditMode] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+
+  // Profile View State
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [profileUser, setProfileUser] = useState(null);
+
   const { scopes, sessionLoading } = useUserStore((state) => state);
 
   // Check authorization
@@ -90,6 +97,21 @@ export function Component() {
     } catch (err) {
       console.error("Failed to delete user:", err);
       alert("Erro ao eliminar utilizador: " + (err.message || "Erro desconhecido"));
+    }
+  };
+
+  // Handle profile view request from Tree
+  const handleNodeViewProfile = (nodeData) => {
+    setProfileUser(nodeData);
+    setIsProfileOpen(true);
+  };
+
+  // Navigate to a node in the tree (for profile modal navigation)
+  const handleNavigateToNode = (userId) => {
+    const node = getNodeById(userId);
+    if (node) {
+      navigateToNode(node);
+      highlightLineage(userId);
     }
   };
 
@@ -224,6 +246,7 @@ export function Component() {
               // Edit Props
               editMode={editMode && canEdit}
               onNodeEdit={handleNodeEdit}
+              onNodeViewProfile={handleNodeViewProfile}
             />
           </div>
           <div
@@ -282,6 +305,14 @@ export function Component() {
           onBack={() => { }}
         />
       )}
+
+      {/* Profile View Modal - Available to all users */}
+      <ProfileViewModal
+        isOpen={isProfileOpen}
+        user={profileUser}
+        onClose={() => setIsProfileOpen(false)}
+        onNavigateToNode={handleNavigateToNode}
+      />
     </motion.div>
   );
 }
