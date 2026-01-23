@@ -24,8 +24,7 @@ import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { colors } from "pages/Family/data";
 
-import malePic from "assets/default_profile/male.svg";
-import femalePic from "assets/default_profile/female.svg";
+import Avatar from "components/Avatar";
 
 // CSV Headers
 const REQUIRED_HEADERS = ["name", "sex", "start_year"];
@@ -682,7 +681,13 @@ const BulkImportModal = ({
                                                 className="w-8 h-8 rounded-full overflow-hidden border-2 shrink-0"
                                                 style={{ borderColor: colors[u.start_year % colors.length] }}
                                             >
-                                                <img src={u.image || (u.sex === 'F' ? femalePic : malePic)} alt="" className="w-full h-full object-cover" />
+                                                <Avatar
+                                                    src={u.image}
+                                                    sex={u.sex}
+                                                    alt={u.name || ''}
+                                                    className="w-full h-full object-cover"
+                                                    size={32}
+                                                />
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium truncate">{u.name}</p>
@@ -899,7 +904,13 @@ const BulkImportModal = ({
                                             {row.patrao_resolved && row.patrao_user ? (
                                                 <button type="button" className="flex items-center gap-1 px-2 py-0.5 bg-base-200 rounded-lg text-xs hover:bg-base-300" onClick={() => setPatraoPickerRow(idx)}>
                                                     <div className="w-5 h-5 rounded-full overflow-hidden" style={{ borderColor: colors[row.patrao_user.start_year % colors.length] }}>
-                                                        <img src={row.patrao_user.image || (row.patrao_user.sex === 'F' ? femalePic : malePic)} alt="" className="w-full h-full object-cover" />
+                                                        <Avatar
+                                                            src={row.patrao_user?.image}
+                                                            sex={row.patrao_user?.sex}
+                                                            alt={row.patrao_user?.name || ''}
+                                                            className="w-full h-full object-cover"
+                                                            size={32}
+                                                        />
                                                     </div>
                                                     <span className="truncate max-w-[80px]">{row.patrao_user.name}</span>
                                                 </button>
@@ -955,7 +966,13 @@ const BulkImportModal = ({
                             className="w-10 h-10 rounded-full overflow-hidden border-2"
                             style={{ borderColor: colors[user.start_year % colors.length] }}
                         >
-                            <img src={user.image || (user.sex === 'F' ? femalePic : malePic)} alt="" className="w-full h-full object-cover" />
+                            <Avatar
+                                src={user.image}
+                                sex={user.sex}
+                                alt={user.name || ''}
+                                className="w-full h-full object-cover"
+                                size={40}
+                            />
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="font-medium truncate">{user.name}</p>
@@ -1197,7 +1214,13 @@ const BulkImportModal = ({
                         {searchResults.map(u => (
                             <button key={u._id} type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 text-left" onClick={() => setPatrao(patraoPickerRow, u)}>
                                 <div className="w-10 h-10 rounded-full overflow-hidden border-2" style={{ borderColor: colors[u.start_year % colors.length] }}>
-                                    <img src={u.image || (u.sex === 'F' ? femalePic : malePic)} alt="" className="w-full h-full object-cover" />
+                                    <Avatar
+                                        src={u.image}
+                                        sex={u.sex}
+                                        alt={u.name || ''}
+                                        className="w-full h-full object-cover"
+                                        size={32}
+                                    />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="font-medium truncate">{u.name}</p>

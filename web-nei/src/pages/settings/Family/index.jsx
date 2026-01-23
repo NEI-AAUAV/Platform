@@ -18,9 +18,7 @@ import RoleManagerModal from "components/RoleManagerModal";
 import CourseManagerModal from "components/CourseManagerModal";
 import { organizations, colors } from "pages/Family/data";
 import { useUserStore } from "stores/useUserStore";
-
-import malePic from "assets/default_profile/male.svg";
-import femalePic from "assets/default_profile/female.svg";
+import Avatar from "components/Avatar";
 
 /**
  * Family Admin Interface - /settings/family
@@ -784,9 +782,10 @@ export function Component() {
                                       "--tw-ring-color": userColor
                                     }}
                                   >
-                                    <img
-                                      src={user.image || (user.sex === "F" ? femalePic : malePic)}
-                                      alt=""
+                                    <Avatar
+                                      image={user.image}
+                                      sex={user.sex}
+                                      alt={user.name || "avatar"}
                                       className="object-cover"
                                     />
                                   </div>
@@ -813,9 +812,10 @@ export function Component() {
                               {patrao ? (
                                 <div className="flex items-center gap-2">
                                   <div className="avatar placeholder h-6 w-6 rounded-full bg-base-300">
-                                    <img
-                                      src={patrao.image || (patrao.sex === 'F' ? femalePic : malePic)}
-                                      alt=""
+                                    <Avatar
+                                      image={patrao.image}
+                                      sex={patrao.sex}
+                                      alt={patrao.name || "avatar"}
                                       className="rounded-full"
                                     />
                                   </div>

@@ -13,8 +13,7 @@ import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
 import { colors } from "pages/Family/data";
 
-import malePic from "assets/default_profile/male.svg";
-import femalePic from "assets/default_profile/female.svg";
+import Avatar from "components/Avatar";
 
 const BulkDeleteModal = ({
     isOpen,
@@ -167,10 +166,12 @@ const BulkDeleteModal = ({
                                                     key={user._id}
                                                     className="flex items-center gap-2 px-2 py-1 bg-base-100 rounded-lg text-sm border border-base-content/10"
                                                 >
-                                                    <img
-                                                        src={user.image || (user.sex === 'F' ? femalePic : malePic)}
-                                                        alt=""
+                                                    <Avatar
+                                                        src={user.image}
+                                                        sex={user.sex}
+                                                        alt={user.name || ''}
                                                         className="w-5 h-5 rounded-full object-cover"
+                                                        size={20}
                                                     />
                                                     <span className="truncate max-w-[120px]">{user.name}</span>
                                                     <div

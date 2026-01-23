@@ -16,9 +16,6 @@ import FamilyService from "services/FamilyService";
 import { colors, organizations } from "pages/Family/data";
 import { formatYear } from "pages/Family/utils";
 
-import malePic from "assets/default_profile/male.svg";
-import femalePic from "assets/default_profile/female.svg";
-
 const BulkEditModal = ({
     isOpen,
     onClose,

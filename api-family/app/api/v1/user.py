@@ -126,6 +126,10 @@ async def update_user_image(
     Upload or remove a user's photo.
     Send multipart/form-data with `image` file; pass `remove=true` to delete.
     """
+    from app.services.storage import storage_client
+    if not storage_client.enabled:
+        raise HTTPException(status_code=503, detail="Image upload is disabled: R2 storage is not configured.")
+
     if remove and image is not None:
         raise HTTPException(status_code=400, detail="Choose image or remove, not both")
 

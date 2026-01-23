@@ -14,8 +14,7 @@ import FamilyService from "services/FamilyService";
 import { organizations } from "pages/Family/data";
 import RolePickerModal from "components/RolePickerModal";
 
-import malePic from "assets/default_profile/male.svg";
-import femalePic from "assets/default_profile/female.svg";
+import Avatar from "components/Avatar";
 
 const sexOptions = [
     { value: "M", label: "Masculino" },
@@ -27,6 +26,25 @@ const sexOptions = [
  */
 const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAddChild, onSwitchUser, canGoBack, onBack }) => {
     const { toast } = useToast();
+    // Check if image upload is available (R2 configured) by probing backend on mount
+    const [imageUploadAvailable, setImageUploadAvailable] = useState(true);
+    useEffect(() => {
+        if (!isOpen) return;
+        // Try a HEAD request to the upload endpoint to check if enabled
+        const check = async () => {
+            try {
+                // Use a dummy user id (1) and expect 405 or 401 if enabled, 503 if not
+                await FamilyService.updateUserImage(1, undefined, { remove: false });
+            } catch (err) {
+                if (err.response?.status === 503) {
+                    setImageUploadAvailable(false);
+                } else {
+                    setImageUploadAvailable(true);
+                }
+            }
+        };
+        check();
+    }, [isOpen]);
     // Patrão search state
     const [patraoSearch, setPatraoSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -381,22 +399,26 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             setPreview(null);
             setImageFile(null);
             setRemoveImage(false);
-            
+
             // Update the local user object
             if (user && updated?.image !== undefined) {
                 user.image = updated.image;
             }
-            
+
             // Notify parent so lists refresh
             await onSave?.();
-            
+
             toast({
                 title: removeImage ? "Foto removida" : "Foto atualizada",
                 description: removeImage ? "A foto do membro foi removida." : "Upload concluído com sucesso.",
             });
         } catch (err) {
-            const errorMessage = err.response?.data?.detail || err.message || "Erro ao atualizar foto";
+            let errorMessage = err.response?.data?.detail || err.message || "Erro ao atualizar foto";
             setError(errorMessage);
+            // Special handling for 503 (uploads disabled)
+            if (err.response?.status === 503) {
+                errorMessage = "O upload de fotos está desativado: o armazenamento R2 não está configurado.";
+            }
             toast({
                 title: "Erro ao atualizar foto",
                 description: errorMessage,
@@ -541,12 +563,11 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                     >
                                                         <div className="avatar">
                                                             <div className="h-10 w-10 rounded-full bg-base-300">
-                                                                <img
-                                                                    src={
-                                                                        p.image ||
-                                                                        (p.sex === "F" ? femalePic : malePic)
-                                                                    }
-                                                                    alt=""
+                                                                <Avatar
+                                                                    image={p.photoUrl}
+                                                                    sex={p.sex}
+                                                                    alt={p.name || "avatar"}
+                                                                    className="h-10 w-10 rounded-full object-cover"
                                                                 />
                                                             </div>
                                                         </div>
@@ -627,13 +648,12 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                     <div className="flex items-center gap-4">
                                                         <div className="avatar">
                                                             <div className="h-16 w-16 rounded-full ring-2 ring-offset-2 ring-offset-base-100 ring-base-content/10 bg-base-300 overflow-hidden">
-                                                                <img
-                                                                    src={
-                                                                        (preview ?? user?.image) ||
-                                                                        (user?.sex === 'F' ? femalePic : malePic)
-                                                                    }
-                                                                    alt="preview"
+                                                                <Avatar
+                                                                    src={preview ?? user?.image}
+                                                                    sex={user?.sex}
+                                                                    alt={user?.name || 'preview'}
                                                                     className="object-cover"
+                                                                    size={64}
                                                                 />
                                                             </div>
                                                         </div>
@@ -847,7 +867,13 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                                     onClick={() => onSwitchUser(child)}
                                                                 >
                                                                     <div className="avatar h-8 w-8 rounded-full bg-base-300">
-                                                                        <img src={child.image || (child.sex === 'F' ? femalePic : malePic)} alt="" className="rounded-full object-cover" />
+                                                                        <Avatar
+                                                                            src={child.image}
+                                                                            sex={child.sex}
+                                                                            alt={child.name || ''}
+                                                                            className="rounded-full object-cover"
+                                                                            size={32}
+                                                                        />
                                                                     </div>
                                                                     <div className="flex-1 min-w-0">
                                                                         <div className="font-bold text-sm truncate">{child.name}</div>
