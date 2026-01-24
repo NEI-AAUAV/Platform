@@ -37,7 +37,7 @@ class CourseUpdate(BaseModel):
 
 class CourseInDB(CourseBase):
     """Course as stored in database."""
-    id: int = Field(..., alias="_id")
+    _id: int = Field(..., description="Course ID (MongoDB _id)")
     
     class Config:
         orm_mode = True

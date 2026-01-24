@@ -5,6 +5,7 @@ Matches the new flat MongoDB structure.
 
 from typing import Optional, Literal, List
 from pydantic import BaseModel, Field
+from app.schemas.tree import UserRole
 
 
 class UserBase(BaseModel):
@@ -39,8 +40,8 @@ class UserUpdate(BaseModel):
 
 class UserInDB(UserBase):
     """Schema for user response from database."""
-    id: int = Field(..., alias="_id")
-    user_roles: Optional[List[dict]] = []
+    _id: int = Field(..., description="User ID (MongoDB _id)")
+    user_roles: List[UserRole] = Field(default_factory=list, description="User's roles/organizations")
 
     class Config:
         orm_mode = True

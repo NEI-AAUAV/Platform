@@ -129,6 +129,7 @@ class CRUDUserRole:
                 "year": 1,
                 "user_name": "$user.name",  # Keep for backward compatibility
                 "user": {  # Nested user object for frontend
+                    "_id": "$user._id",
                     "name": "$user.name",
                     "image": "$user.image",
                     "sex": "$user.sex",

@@ -38,7 +38,7 @@ class RoleUpdate(BaseModel):
 
 class RoleInDB(RoleBase):
     """Schema for role response from database."""
-    id: str = Field(..., alias="_id", description="Role ID in path format (e.g., '.1.5.')")
+    _id: str = Field(..., description="Role ID in path format (e.g., '.1.5.') - MongoDB _id")
 
     class Config:
         orm_mode = True

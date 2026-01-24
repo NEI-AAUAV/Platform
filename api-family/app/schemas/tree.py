@@ -21,7 +21,7 @@ class UserRole(BaseModel):
 
 class UserTreeNode(BaseModel):
     """A node in the user family tree."""
-    id: int = Field(..., alias="_id")
+    _id: int = Field(..., description="User ID (MongoDB _id)")
     name: Optional[str] = None
     faina_name: Optional[str] = None
     image: Optional[str] = None
