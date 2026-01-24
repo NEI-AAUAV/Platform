@@ -15,6 +15,7 @@ import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
 import { colors } from "pages/Family/data";
+import { getErrorMessage } from "utils/error";
 
 import Avatar from "components/Avatar";
 
@@ -58,7 +59,7 @@ const OrphanModal = ({
             // Filter out the user being deleted and all orphan children
             const excludeIds = new Set([
                 userToDelete?._id,
-                ...orphanChildren.map(c => c._id || c.id)
+                ...orphanChildren.map(c => c._id)
             ]);
 
             const filtered = (response.items || []).filter(u => !excludeIds.has(u._id));
@@ -89,7 +90,7 @@ const OrphanModal = ({
             }
             onClose();
         } catch (err) {
-            setError(err.message || "Erro ao processar");
+            setError(getErrorMessage(err, "Erro ao processar"));
         } finally {
             setLoading(false);
         }
@@ -165,7 +166,7 @@ const OrphanModal = ({
                                     <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-base-200 rounded-lg">
                                         {orphanChildren.map(child => (
                                             <div
-                                                key={child._id || child.id}
+                                                key={child._id}
                                                 className="flex items-center gap-1 px-2 py-1 bg-base-100 rounded-lg text-xs"
                                             >
                                                 <div

@@ -24,6 +24,7 @@ import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { colors } from "pages/Family/data";
 import Avatar from "components/Avatar";
+import { getErrorMessage } from "utils/error";
 
 // CSV Headers
 const REQUIRED_HEADERS = ["name", "sex", "start_year"];
@@ -437,7 +438,7 @@ const BulkImportModal = ({
                     if (parsed.length > 0) setStep("preview");
                 },
                 error: (err) => {
-                    setErrors([{ row: 0, message: "Erro ao ler CSV: " + err.message }]);
+                    setErrors([{ row: 0, message: "Erro ao ler CSV: " + getErrorMessage(err, "Erro desconhecido") }]);
                 }
             });
         }
@@ -731,7 +732,7 @@ const BulkImportModal = ({
             console.error("Bulk import failed:", err);
             setResults({
                 created: [],
-                errors: [{ row: 0, message: err.response?.data?.detail || "Erro ao importar" }],
+                errors: [{ row: 0, message: getErrorMessage(err, "Erro ao importar") }],
                 total_submitted: validRows.length,
                 total_created: 0,
                 total_errors: validRows.length,
@@ -1218,7 +1219,7 @@ const BulkImportModal = ({
                                     const patrao = user.patrao_id ? allUsers.find(u => u._id === user.patrao_id) : null;
                                     const roles = userRoles[idx] || [];
                                     return (
-                                        <tr key={user._id || idx}>
+                                        <tr key={user._id ?? idx}>
                                             <td className="font-medium">{user.name}</td>
                                             <td>{user.sex}</td>
                                             <td>{user.start_year}</td>
@@ -1267,7 +1268,7 @@ const BulkImportModal = ({
                         {results.errors.map((err, i) => (
                             <div key={`${err.row}-${i}`} className="text-sm p-2 rounded hover:bg-white/50 flex gap-2">
                                 <span className="font-mono text-xs font-bold opacity-50 shrink-0">L{err.row + 1}</span>
-                                <span>{err.message}</span>
+                                <span>{getErrorMessage(err, "Erro desconhecido")}</span>
                             </div>
                         ))}
                     </div>

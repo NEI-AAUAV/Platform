@@ -15,6 +15,7 @@ import RolePickerModal from "components/RolePickerModal";
 import FamilyService from "services/FamilyService";
 import { colors } from "pages/Family/data";
 import { formatYear } from "pages/Family/utils";
+import { getErrorMessage } from "utils/error";
 
 const BulkEditModal = ({
     isOpen,
@@ -152,7 +153,7 @@ const BulkEditModal = ({
                 } catch (err) {
                     console.error(`Failed action for ${user.name}:`, err);
                     errorCount++;
-                    const msg = err.response?.data?.detail || err.message;
+                    const msg = getErrorMessage(err, "Erro desconhecido");
                     if (!errorMessages.includes(msg)) {
                         errorMessages.push(msg);
                     }
@@ -161,7 +162,7 @@ const BulkEditModal = ({
 
             processResults(successCount, errorCount, errorMessages);
         } catch (err) {
-            setError(err.message || "Erro ao aplicar alterações");
+            setError(getErrorMessage(err, "Erro ao aplicar alterações"));
         } finally {
             setLoading(false);
             setProgress(null);

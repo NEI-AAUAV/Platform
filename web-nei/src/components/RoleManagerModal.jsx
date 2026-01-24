@@ -9,6 +9,7 @@ import { organizations, colors } from "pages/Family/data";
 import { formatYear } from "pages/Family/utils";
 import IconPicker from "components/IconPicker";
 import Avatar from "components/Avatar";
+import { getErrorMessage } from "utils/error";
 
 const getModalTitle = (isNew, formData, selectedNode) => {
     if (isNew) {
@@ -409,7 +410,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
             // Refresh members list
             fetchRoleMembers(selectedNode._id, memberYearFilter);
         } catch (err) {
-            alert("Erro ao remover: " + (err.response?.data?.detail || err.message));
+            alert("Erro ao remover: " + getErrorMessage(err, "Erro desconhecido"));
         }
     };
 
@@ -473,7 +474,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
             }
         } catch (err) {
             console.error(err);
-            alert("Erro ao guardar role: " + (err.response?.data?.detail || err.message));
+            alert("Erro ao guardar role: " + getErrorMessage(err, "Erro desconhecido"));
         } finally {
             setSubmitting(false);
         }
@@ -491,7 +492,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
             setIsNew(false);
         } catch (err) {
             console.error(err);
-            alert("Erro ao eliminar: " + (err.response?.data?.detail || err.message));
+            alert("Erro ao eliminar: " + getErrorMessage(err, "Erro desconhecido"));
         } finally {
             setSubmitting(false);
         }

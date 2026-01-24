@@ -18,6 +18,7 @@ import OrphanModal from "./OrphanModal";
 import RoleManagerModal from "components/RoleManagerModal";
 import CourseManagerModal from "components/CourseManagerModal";
 import { organizations, colors } from "pages/Family/data";
+import { getErrorMessage } from "utils/error";
 import { useUserStore } from "stores/useUserStore";
 import Avatar from "components/Avatar";
 
@@ -426,7 +427,7 @@ export function Component() {
       const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
     } catch (err) {
-      alert(err.response?.data?.detail || "Erro ao eliminar");
+      alert(getErrorMessage(err, "Erro ao eliminar"));
     } finally {
       setDeleting(false);
     }
@@ -450,7 +451,7 @@ export function Component() {
       const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
     } catch (err) {
-      alert(err.response?.data?.detail || "Erro ao processar");
+      alert(getErrorMessage(err, "Erro ao processar"));
     } finally {
       setDeleting(false);
     }

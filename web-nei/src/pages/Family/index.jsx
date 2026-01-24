@@ -18,6 +18,7 @@ import FamilySidebar from "./FamilySidebar";
 import UserForm from "../settings/Family/UserForm";
 import ProfileViewModal from "components/ProfileViewModal";
 import { useUserStore } from "stores/useUserStore";
+import { getErrorMessage } from "utils/error";
 import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
 import { getNodeById, navigateToNode, highlightLineage } from "./data";
@@ -96,7 +97,7 @@ export function Component() {
       refetch(); // Reload tree data
     } catch (err) {
       console.error("Failed to delete user:", err);
-      alert("Erro ao eliminar utilizador: " + (err.message || "Erro desconhecido"));
+      alert("Erro ao eliminar utilizador: " + getErrorMessage(err, "Erro desconhecido"));
     }
   };
 

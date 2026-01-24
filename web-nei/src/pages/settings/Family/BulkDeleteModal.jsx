@@ -12,6 +12,7 @@ import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
 import { colors } from "pages/Family/data";
+import { getErrorMessage } from "utils/error";
 
 import Avatar from "components/Avatar";
 
@@ -86,7 +87,7 @@ const BulkDeleteModal = ({
             } catch (err) {
                 newErrors.push({
                     user,
-                    error: err.response?.data?.detail || err.message
+                    error: getErrorMessage(err, "Erro desconhecido")
                 });
             }
         }

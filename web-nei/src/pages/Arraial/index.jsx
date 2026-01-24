@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import service from 'services/NEIService';
 import { useUserStore } from "stores/useUserStore";
+import { getErrorMessage, isErrorStatus } from "utils/error";
 import { LOG_PAGE_SIZE, MILESTONE_INTERVAL } from "./constants";
 import useArraialRealtime from "./hooks/useArraialRealtime";
 import useArraialHistory from "./hooks/useArraialHistory";
@@ -144,13 +145,13 @@ export function Component() {
             })
             .catch(error => {
                 console.error('Failed to update points:', error);
-                if (error?.response?.status === 403) {
+                if (isErrorStatus(error, 403)) {
                     setError('You do not have permission to update points.');
-                } else if (error?.response?.status === 400) {
-                    setError(error.response.data?.detail || 'Invalid request. Please check your input.');
-                } else if (error?.response?.status === 423) {
+                } else if (isErrorStatus(error, 400)) {
+                    setError(getErrorMessage(error, 'Invalid request. Please check your input.'));
+                } else if (isErrorStatus(error, 423)) {
                     setError('Point updates are currently paused by an administrator.');
-                } else if (error?.response?.status === 429) {
+                } else if (isErrorStatus(error, 429)) {
                     setError('Too many requests. Please wait a moment before trying again.');
                 } else {
                 setError('Failed to update points. Please try again.');

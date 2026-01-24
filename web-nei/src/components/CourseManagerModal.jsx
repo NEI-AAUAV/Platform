@@ -6,6 +6,7 @@ import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
 import { CloseIcon } from "assets/icons/google";
 import FamilyService from "services/FamilyService";
+import { getErrorMessage } from "utils/error";
 
 /**
  * Course Manager Modal
@@ -109,7 +110,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
             handleCreateNew();
         } catch (err) {
             console.error(err);
-            alert("Erro ao guardar curso: " + (err.response?.data?.detail || err.message));
+            alert("Erro ao guardar curso: " + getErrorMessage(err, "Erro desconhecido"));
         } finally {
             setSubmitting(false);
         }
@@ -127,7 +128,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
             handleCreateNew();
         } catch (err) {
             console.error(err);
-            alert("Erro ao eliminar: " + (err.response?.data?.detail || err.message));
+            alert("Erro ao eliminar: " + getErrorMessage(err, "Erro desconhecido"));
         } finally {
             setSubmitting(false);
         }

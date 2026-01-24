@@ -13,6 +13,7 @@ import { Toaster } from "components/ui/toaster";
 import FamilyService from "services/FamilyService";
 import { organizations } from "pages/Family/data";
 import RolePickerModal from "components/RolePickerModal";
+import { getErrorMessage, isErrorStatus } from "utils/error";
 
 import Avatar from "components/Avatar";
 
@@ -36,7 +37,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 // Use a dummy user id (1) and expect 405 or 401 if enabled, 503 if not
                 await FamilyService.updateUserImage(1, undefined, { remove: false });
             } catch (err) {
-                if (err.response?.status === 503) {
+                if (isErrorStatus(err, 503)) {
                     setImageUploadAvailable(false);
                 } else {
                     setImageUploadAvailable(true);
@@ -361,7 +362,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 // (Optional: add toast here if system had one)
             }
         } catch (err) {
-            const errorMessage = err.response?.data?.detail || err.message || "Erro ao guardar";
+            const errorMessage = getErrorMessage(err, "Erro ao guardar");
             console.error("[UserForm] Save error:", err.response?.data || err);
             setError(errorMessage);
         } finally {
@@ -417,7 +418,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 description: removeImage ? "A foto do membro foi removida." : "Upload concluído com sucesso.",
             });
         } catch (err) {
-            let errorMessage = err.response?.data?.detail || err.message || "Erro ao atualizar foto";
+            const errorMessage = getErrorMessage(err, "Erro ao atualizar foto");
             toast({
                 title: "Erro ao atualizar foto",
                 description: errorMessage,
@@ -437,7 +438,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             await FamilyService.removeRole(roleId);
             setUserRoles((prev) => prev.filter((r) => r._id !== roleId));
         } catch (err) {
-            alert(err.response?.data?.detail || "Erro ao remover insígnia");
+            alert(getErrorMessage(err, "Erro ao remover insígnia"));
         }
     };
 
@@ -463,7 +464,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             const response = await FamilyService.getRolesForUser(user._id);
             setUserRoles(response.items || []);
         } catch (err) {
-            alert(err.response?.data?.detail || "Erro ao adicionar insígnia");
+            alert(getErrorMessage(err, "Erro ao adicionar insígnia"));
         }
     };
 
