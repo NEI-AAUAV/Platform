@@ -7,15 +7,15 @@
 
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
 
 import MaterialSymbol from "components/MaterialSymbol";
-import RolePickerModal from "components/RolePickerModal";
+import { RolePickerModal } from "components/Family";
 import FamilyService from "services/FamilyService";
-import { colors } from "pages/Family/data";
 import { formatYear } from "pages/Family/utils";
 import { getErrorMessage } from "utils/error";
+import { BaseModal, useBodyScrollLock, ProgressBar } from "components/Modal";
+import { UserListDisplay } from "components/Family";
 
 const BulkEditModal = ({
     isOpen,
@@ -65,24 +65,7 @@ const BulkEditModal = ({
     }, [isOpen]);
 
     // Lock body scroll when modal is open
-    useEffect(() => {
-        if (isOpen) {
-            const scrollY = window.scrollY;
-            document.body.style.position = 'fixed';
-            document.body.style.top = `-${scrollY}px`;
-            document.body.style.left = '0';
-            document.body.style.right = '0';
-            document.body.style.overflow = 'hidden';
-            return () => {
-                document.body.style.position = '';
-                document.body.style.top = '';
-                document.body.style.left = '';
-                document.body.style.right = '';
-                document.body.style.overflow = '';
-                window.scrollTo(0, scrollY);
-            };
-        }
-    }, [isOpen]);
+    useBodyScrollLock(isOpen);
 
 
     // Helper: Execute the selected action for a single user
@@ -184,74 +167,55 @@ const BulkEditModal = ({
     };
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    {/* Backdrop */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-                        onClick={onClose}
+        <>
+            <BaseModal
+                isOpen={isOpen}
+                onClose={onClose}
+                title="Edição em Massa"
+                subtitle={`${selectedUsers.length} membro(s) selecionado(s)`}
+                icon="edit_note"
+                maxWidth="xl"
+                zIndex={50}
+                loading={loading}
+                footer={
+                    <div className="flex justify-end gap-3 w-full">
+                        <button
+                            type="button"
+                            className="btn btn-ghost"
+                            onClick={onClose}
+                            disabled={loading}
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="button"
+                            className={classNames("btn btn-primary gap-2", { loading })}
+                            onClick={handleApply}
+                            disabled={!canApply() || loading}
+                        >
+                            {loading ? (
+                                <>A aplicar...</>
+                            ) : (
+                                <>
+                                    <MaterialSymbol icon="check" size={18} />
+                                    Aplicar a {selectedUsers.length} membro(s)
+                                </>
+                            )}
+                        </button>
+                    </div>
+                }
+            >
+                <div className="space-y-6">
+                    {/* Selected users preview */}
+                    <UserListDisplay
+                        users={selectedUsers}
+                        maxDisplay={20}
+                        variant="default"
+                        emptyMessage="Nenhum membro selecionado"
                     />
 
-                    {/* Modal */}
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="w-full max-w-xl rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {/* Header */}
-                            <div className="flex items-center justify-between border-b border-base-content/10 p-4">
-                                <div>
-                                    <h3 className="text-lg font-bold flex items-center gap-2">
-                                        <MaterialSymbol icon="edit_note" size={24} className="text-primary" />
-                                        Edição em Massa
-                                    </h3>
-                                    <p className="text-sm text-base-content/60 mt-1">
-                                        {selectedUsers.length} membro(s) selecionado(s)
-                                    </p>
-                                </div>
-                                <button
-                                    type="button"
-                                    className="btn btn-ghost btn-sm btn-circle"
-                                    onClick={onClose}
-                                >
-                                    <MaterialSymbol icon="close" size={20} />
-                                </button>
-                            </div>
-
-                            {/* Content */}
-                            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
-                                {/* Selected users preview */}
-                                <div className="bg-base-200/50 rounded-xl p-4">
-                                    <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                                        {selectedUsers.slice(0, 20).map(user => (
-                                            <div
-                                                key={user.id}
-                                                className="flex items-center gap-2 px-3 py-1.5 bg-base-100 rounded-lg text-sm border border-base-content/5"
-                                            >
-                                                <div
-                                                    className="w-3 h-3 rounded-full shrink-0"
-                                                    style={{ backgroundColor: colors[user.start_year % colors.length] }}
-                                                />
-                                                <span className="truncate max-w-[120px]">{user.name}</span>
-                                            </div>
-                                        ))}
-                                        {selectedUsers.length > 20 && (
-                                            <div className="px-3 py-1.5 text-sm text-base-content/50">
-                                                +{selectedUsers.length - 20} mais...
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Action selector */}
-                                <div>
+                    {/* Action selector */}
+                    <div>
                                     <div className="label">
                                         <span className="label-text font-semibold">Ação a executar</span>
                                     </div>
@@ -280,8 +244,8 @@ const BulkEditModal = ({
                                     </p>
                                 </div>
 
-                                {/* Action-specific fields */}
-                                {action === "add_role" && (
+                    {/* Action-specific fields */}
+                    {action === "add_role" && (
                                     <div className="space-y-4 bg-base-200/30 rounded-xl p-4">
                                         <div>
                                             <label className="label" htmlFor="insignia-select">
@@ -331,7 +295,7 @@ const BulkEditModal = ({
                                     </div>
                                 )}
 
-                                {action === "set_course" && (
+                    {action === "set_course" && (
                                     <div className="bg-base-200/30 rounded-xl p-4">
                                         <label className="label" htmlFor="course-select">
                                             <span className="label-text">Curso</span>
@@ -352,7 +316,7 @@ const BulkEditModal = ({
                                     </div>
                                 )}
 
-                                {action === "set_year" && (
+                    {action === "set_year" && (
                                     <div className="bg-base-200/30 rounded-xl p-4">
                                         <label className="label" htmlFor="new-year-input">
                                             <span className="label-text">Novo ano de entrada</span>
@@ -378,78 +342,43 @@ const BulkEditModal = ({
                                     </div>
                                 )}
 
-                                {/* Progress bar */}
-                                {progress && (
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between text-sm">
-                                            <span>A processar...</span>
-                                            <span>{progress.current} / {progress.total}</span>
-                                        </div>
-                                        <progress
-                                            className="progress progress-primary w-full"
-                                            value={progress.current}
-                                            max={progress.total}
-                                        />
-                                    </div>
-                                )}
+                    {/* Progress bar */}
+                    {progress && (
+                        <ProgressBar
+                            current={progress.current}
+                            total={progress.total}
+                            label="A processar..."
+                            variant="primary"
+                        />
+                    )}
 
-                                {/* Feedback */}
-                                {error && (
-                                    <div className="alert alert-error text-sm">
-                                        <MaterialSymbol icon="error" size={20} />
-                                        <span>{error}</span>
-                                    </div>
-                                )}
-                                {success && (
-                                    <div className="alert alert-success text-sm">
-                                        <MaterialSymbol icon="check_circle" size={20} />
-                                        <span>{success}</span>
-                                    </div>
-                                )}
-                            </div>
+                    {/* Feedback */}
+                    {error && (
+                        <div className="alert alert-error text-sm">
+                            <MaterialSymbol icon="error" size={20} />
+                            <span>{error}</span>
+                        </div>
+                    )}
+                    {success && (
+                        <div className="alert alert-success text-sm">
+                            <MaterialSymbol icon="check_circle" size={20} />
+                            <span>{success}</span>
+                        </div>
+                    )}
+                </div>
+            </BaseModal>
 
-                            {/* Footer */}
-                            <div className="flex justify-end gap-3 border-t border-base-content/10 px-6 py-4">
-                                <button
-                                    type="button"
-                                    className="btn btn-ghost"
-                                    onClick={onClose}
-                                    disabled={loading}
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="button"
-                                    className={classNames("btn btn-primary gap-2", { loading })}
-                                    onClick={handleApply}
-                                    disabled={!canApply() || loading}
-                                >
-                                    {loading ? (
-                                        <>A aplicar...</>
-                                    ) : (
-                                        <>
-                                            <MaterialSymbol icon="check" size={18} />
-                                            Aplicar a {selectedUsers.length} membro(s)
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        </motion.div>
-                    </div>
-
-                    {/* Role Picker */}
-                    <RolePickerModal
-                        isOpen={showRolePicker}
-                        onClose={() => setShowRolePicker(false)}
-                        hideYear={true}
-                        onSelect={(node) => {
-                            setSelectedRole(node);
-                            setShowRolePicker(false);
-                        }}
-                    />
-                </>
-            )}
-        </AnimatePresence>
+            {/* Role Picker */}
+            <RolePickerModal
+                isOpen={showRolePicker}
+                onClose={() => setShowRolePicker(false)}
+                hideYear={true}
+                onSelect={(node) => {
+                    setSelectedRole(node);
+                    setShowRolePicker(false);
+                }}
+            />
+        </>
     );
 };
 

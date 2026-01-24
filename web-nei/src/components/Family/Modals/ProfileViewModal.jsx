@@ -16,6 +16,8 @@ import { formatYear } from "pages/Family/utils";
 import { colors } from "pages/Family/data";
 import heartBorder from "assets/icons/heart_border.svg";
 import Avatar from "components/Avatar";
+import { ChildrenList } from "../index";
+import { useBodyScrollLock } from "components/Modal";
 
 /**
  * @param {Object} props
@@ -65,24 +67,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
     }, [isOpen, user?.id]);
 
     // Lock body scroll when modal is open
-    useEffect(() => {
-        if (isOpen) {
-            const scrollY = window.scrollY;
-            document.body.style.position = 'fixed';
-            document.body.style.top = `-${scrollY}px`;
-            document.body.style.left = '0';
-            document.body.style.right = '0';
-            document.body.style.overflow = 'hidden';
-            return () => {
-                document.body.style.position = '';
-                document.body.style.top = '';
-                document.body.style.left = '';
-                document.body.style.right = '';
-                document.body.style.overflow = '';
-                window.scrollTo(0, scrollY);
-            };
-        }
-    }, [isOpen]);
+    useBodyScrollLock(isOpen);
 
     // Get course name from ID
     const getCourseName = (courseId) => {
@@ -318,38 +303,13 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
 
                                 {/* Pedaços (Children) */}
                                 {!loading && childrenList.length > 0 && (
-                                    <div>
-                                        <h3 className="text-sm font-bold text-base-content/60 uppercase tracking-wide mb-3">
-                                            Pedaços
-                                            <span className="ml-2 badge badge-sm badge-ghost">{childrenList.length}</span>
-                                        </h3>
-                                        <div className="space-y-2">
-                                            {childrenList.map(child => (
-                                                <button
-                                                    type="button"
-                                                    key={child.id}
-                                                    className="flex w-full items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors text-left"
-                                                    onClick={() => handleNavigate(child.id)}
-                                                >
-                                                    <div className="avatar h-10 w-10">
-                                                        <Avatar
-                                                            image={child.image}
-                                                            sex={child.sex}
-                                                            alt={child.name || "avatar"}
-                                                            className="h-10 w-10 rounded-full object-cover"
-                                                        />
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="font-medium truncate">{child.name}</div>
-                                                        <div className="text-sm text-base-content/50">
-                                                            Ano de Batismo {formatYear(child.start_year, "civil")}
-                                                        </div>
-                                                    </div>
-                                                    <MaterialSymbol icon="arrow_forward" size={20} className="text-base-content/30" />
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
+                                    <ChildrenList
+                                        children={childrenList}
+                                        onAddChild={null}
+                                        onSelectChild={(child) => handleNavigate(child.id)}
+                                        addButtonLabel=""
+                                        emptyMessage=""
+                                    />
                                 )}
 
                                 {loading && (
@@ -395,3 +355,4 @@ ProfileViewModal.propTypes = {
 };
 
 export default ProfileViewModal;
+

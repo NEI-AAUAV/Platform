@@ -7,17 +7,17 @@
  * - Cancel
  */
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
 
 import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
-import { colors } from "pages/Family/data";
 import { getErrorMessage } from "utils/error";
-
+import { PatraoPicker } from "components/Family";
 import Avatar from "components/Avatar";
+import { colors } from "pages/Family/data";
 
 const OrphanModal = ({
     isOpen,
@@ -32,9 +32,6 @@ const OrphanModal = ({
     const [error, setError] = useState(null);
 
     // Patrão picker state
-    const [patraoSearch, setPatraoSearch] = useState("");
-    const [patraoList, setPatraoList] = useState([]);
-    const [patraoLoading, setPatraoLoading] = useState(false);
     const [selectedPatrao, setSelectedPatrao] = useState(null);
 
     // Reset state when opening
@@ -42,41 +39,9 @@ const OrphanModal = ({
         if (isOpen) {
             setAction("delete");
             setSelectedPatrao(null);
-            setPatraoSearch("");
             setError(null);
         }
     }, [isOpen]);
-
-    // Load patrão candidates
-    const loadPatroes = useCallback(async () => {
-        setPatraoLoading(true);
-        try {
-            const params = { limit: 50 };
-            if (patraoSearch) params.search = patraoSearch;
-
-            const response = await FamilyService.getUsers(params);
-
-            // Filter out the user being deleted and all orphan children
-            const excludeIds = new Set([
-                userToDelete?.id,
-                ...orphanChildren.map(c => c.id)
-            ]);
-
-            const filtered = (response.items || []).filter(u => !excludeIds.has(u.id));
-            setPatraoList(filtered);
-
-        } catch (err) {
-            console.error("Failed to load patrões:", err);
-        } finally {
-            setPatraoLoading(false);
-        }
-    }, [patraoSearch, userToDelete?.id, orphanChildren]);
-
-    useEffect(() => {
-        if (isOpen && action === "reparent") {
-            loadPatroes();
-        }
-    }, [isOpen, action, loadPatroes]);
 
     const handleConfirm = async () => {
         setLoading(true);
@@ -233,70 +198,18 @@ const OrphanModal = ({
                                 {/* Patrão selector (if reparent) */}
                                 {action === "reparent" && (
                                     <div className="space-y-2">
-                                        <div className="relative">
-                                            <MaterialSymbol
-                                                icon="search"
-                                                size={18}
-                                                className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50"
-                                            />
-                                            <input
-                                                type="text"
+                                        <div className="h-64 rounded-lg border border-base-content/10 overflow-hidden">
+                                            <PatraoPicker
+                                                selectedPatrao={selectedPatrao}
+                                                onSelect={setSelectedPatrao}
+                                                excludeIds={[
+                                                    userToDelete?.id,
+                                                    ...orphanChildren.map(c => c.id)
+                                                ]}
+                                                title="Escolher Novo Patrão"
                                                 placeholder="Procurar novo patrão..."
-                                                className="input input-bordered input-sm w-full pl-9"
-                                                value={patraoSearch}
-                                                onChange={(e) => setPatraoSearch(e.target.value)}
+                                                showNoPatraoOption={false}
                                             />
-                                        </div>
-
-                                        <div className="max-h-40 overflow-y-auto rounded-lg border border-base-content/10">
-                                            {(() => {
-                                                if (patraoLoading) {
-                                                    return (
-                                                        <div className="flex justify-center py-4">
-                                                            <span className="loading loading-spinner loading-sm"></span>
-                                                        </div>
-                                                    );
-                                                }
-                                                if (patraoList.length === 0) {
-                                                    return (
-                                                        <div className="py-4 text-center text-sm text-base-content/50">
-                                                            Nenhum resultado
-                                                        </div>
-                                                    );
-                                                }
-                                                return (
-                                                    <>
-                                                        {patraoList.map(p => (
-                                                            <button
-                                                                key={p.id}
-                                                                type="button"
-                                                                className={classNames(
-                                                                    "flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-base-200",
-                                                                    selectedPatrao?.id === p.id && "bg-success/10"
-                                                                )}
-                                                                onClick={() => setSelectedPatrao(p)}
-                                                                aria-label={`Selecionar ${p.name}`}
-                                                            >
-                                                                <div
-                                                                    className="w-6 h-6 rounded-full"
-                                                                    style={{ backgroundColor: colors[(p.start_year || 0) % colors.length] }}
-                                                                >
-                                                                    <Avatar
-                                                                        image={p.image}
-                                                                        sex={p.sex}
-                                                                        alt={p.name || ''}
-                                                                        className="w-6 h-6 rounded-full object-cover"
-                                                                    />
-                                                                </div>
-                                                                <span className="truncate font-medium">{p.name}</span>
-                                                                {selectedPatrao?.id === p.id && (
-                                                                    <MaterialSymbol icon="check_circle" size={16} className="ml-auto text-success" />
-                                                                )}
-                                                            </button>
-                                                        ))}
-                                                    </>
-                                                );
-                                            })()}
                                         </div>
                                     </div>
                                 )}

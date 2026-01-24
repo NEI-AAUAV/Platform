@@ -257,3 +257,4 @@ IconPicker.propTypes = {
 };
 
 export { AVAILABLE_ICONS };
+

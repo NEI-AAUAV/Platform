@@ -177,8 +177,12 @@ describe('Family/utils.js', () => {
             };
 
             const flat = flattenTree(tree);
-            expect(flat).toHaveLength(3);
+            // flattenTree always adds a virtual root (id: 0) + the tree nodes
+            expect(flat).toHaveLength(4);
+            expect(flat.find(u => u.id === 0)).toBeDefined(); // Virtual root
+            expect(flat.find(u => u.id === 0).name).toBe('Root');
             expect(flat.find(u => u.id === 1)).toBeDefined();
+            expect(flat.find(u => u.id === 1).parent).toBe(0); // Root is child of virtual root
             expect(flat.find(u => u.id === 2).parent).toBe(1);
             expect(flat.find(u => u.id === 3).parent).toBe(1);
         });

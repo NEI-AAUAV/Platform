@@ -9,14 +9,13 @@ import { Toaster } from "components/ui/toaster";
 
 import FamilyService from "services/FamilyService";
 import UserForm from "./UserForm";
-import RolePickerModal from "components/RolePickerModal";
+import { RolePickerModal } from "components/Family";
 import BulkEditModal from "./BulkEditModal";
 import BulkDeleteModal from "./BulkDeleteModal";
 import BulkImportModal from "./BulkImportModal";
 import OrphanModal from "./OrphanModal";
 
-import RoleManagerModal from "components/RoleManagerModal";
-import CourseManagerModal from "components/CourseManagerModal";
+import { RoleManagerModal, CourseManagerModal } from "components/Family";
 import { organizations, colors } from "pages/Family/data";
 import { getErrorMessage } from "utils/error";
 import { useUserStore } from "stores/useUserStore";

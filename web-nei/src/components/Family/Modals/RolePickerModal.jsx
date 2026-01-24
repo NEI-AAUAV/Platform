@@ -278,3 +278,4 @@ RolePickerModal.propTypes = {
     onSelect: PropTypes.func.isRequired,
     hideYear: PropTypes.bool,
 };
+

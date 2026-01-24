@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useForm, Controller } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,10 +9,10 @@ import MaterialSymbol from "components/MaterialSymbol";
 import { CloseIcon } from "assets/icons/google";
 import { useToast } from "components/ui/use-toast";
 import { Toaster } from "components/ui/toaster";
+import { useBodyScrollLock } from "components/Modal";
 
 import FamilyService from "services/FamilyService";
-import { organizations } from "pages/Family/data";
-import RolePickerModal from "components/RolePickerModal";
+import { PatraoPicker, ChildrenList, RoleDisplay, RolePickerModal } from "components/Family";
 import { getErrorMessage, isErrorStatus } from "utils/error";
 
 import Avatar from "components/Avatar";
@@ -46,15 +46,9 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         };
         check();
     }, [isOpen]);
-    // Patrão search state
-    const [patraoSearch, setPatraoSearch] = useState("");
-    const [debouncedSearch, setDebouncedSearch] = useState("");
-    const [patraoList, setPatraoList] = useState([]);
-    const [patraoLoading, setPatraoLoading] = useState(false);
-    const [patraoPage, setPatraoPage] = useState(0);
-    const [hasMorePatroes, setHasMorePatroes] = useState(true);
+
+    // Patrão state
     const [selectedPatrao, setSelectedPatrao] = useState(null);
-    const patraoListRef = useRef(null);
 
     // Pending roles for new users
     const [pendingRoles, setPendingRoles] = useState([]);
@@ -83,25 +77,8 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
     const [deleting, setDeleting] = useState(false);
     const [error, setError] = useState(null);
 
-    // Lock body scroll when modal is open (robust mobile fix)
-    useEffect(() => {
-        if (isOpen) {
-            const scrollY = window.scrollY;
-            document.body.style.position = 'fixed';
-            document.body.style.top = `-${scrollY}px`;
-            document.body.style.left = '0';
-            document.body.style.right = '0';
-            document.body.style.overflow = 'hidden';
-            return () => {
-                document.body.style.position = '';
-                document.body.style.top = '';
-                document.body.style.left = '';
-                document.body.style.right = '';
-                document.body.style.overflow = '';
-                window.scrollTo(0, scrollY);
-            };
-        }
-    }, [isOpen]);
+    // Lock body scroll when modal is open
+    useBodyScrollLock(isOpen);
     const isEdit = !!user;
 
     const {
@@ -130,83 +107,6 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 .catch(console.error);
         }
     }, [isOpen]);
-
-    // Debounce patrão search
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedSearch(patraoSearch);
-            setPatraoPage(0); // Reset page on search change
-        }, 300);
-        return () => clearTimeout(timer);
-    }, [patraoSearch]);
-
-    // Load patrão list based on search and page
-    const loadPatraoList = useCallback(async (resetList = false) => {
-        setPatraoLoading(true);
-        try {
-            const limit = 50;
-            const params = { limit, skip: patraoPage * limit };
-            if (debouncedSearch) {
-                params.search = debouncedSearch;
-            }
-            const response = await FamilyService.getUsers(params);
-
-            // Filter out self if editing
-            let newItems = (response.items || []).filter(
-                (u) => !isEdit || u.id !== user?.id
-            );
-
-            if (resetList || patraoPage === 0) {
-                setPatraoList(newItems);
-            } else {
-                setPatraoList(prev => {
-                    // Avoid duplicates
-                    const existingIds = new Set(prev.map(p => p.id));
-                    const uniqueNew = newItems.filter(p => !existingIds.has(p.id));
-                    return [...prev, ...uniqueNew];
-                });
-            }
-
-            setHasMorePatroes(newItems.length === limit);
-
-        } catch (err) {
-            console.error("Failed to load patrões:", err);
-        } finally {
-            setPatraoLoading(false);
-        }
-    }, [debouncedSearch, isEdit, user?.id, patraoPage]);
-
-    useEffect(() => {
-        if (isOpen) {
-            loadPatraoList();
-        }
-    }, [isOpen, loadPatraoList]);
-
-    // Ensure selected patrão is in the list
-    useEffect(() => {
-        if (selectedPatrao && patraoList.length > 0) {
-            const exists = patraoList.find(p => p.id === selectedPatrao.id);
-            if (!exists) {
-                setPatraoList(prev => [selectedPatrao, ...prev]);
-            }
-        }
-    }, [selectedPatrao, patraoList]);
-
-
-    // Scroll to selected Patrão
-    useEffect(() => {
-        if (selectedPatrao && patraoListRef.current) {
-            // Need a small timeout to allow DOM to update if list changed
-            setTimeout(() => {
-                const selectedEl = patraoListRef.current?.querySelector(
-                    `[data-id="${selectedPatrao.id}"]`
-                );
-                if (selectedEl) {
-                    selectedEl.scrollIntoView({ block: "center", behavior: "smooth" });
-                }
-            }, 100);
-        }
-    }, [selectedPatrao?.name]); // Trigger when name/id changes (loading complete) or explicit selection
 
     // Load user roles when editing
     useEffect(() => {
@@ -296,8 +196,6 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             setPendingRoles([]);
         }
 
-        setPatraoSearch("");
-        setPatraoPage(0);
         setError(null);
         setShowRolePicker(false);
     }, [user, reset, isOpen]);
@@ -490,112 +388,11 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                             <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
                                 {/* Left Panel - Patrão Picker */}
                                 <div className="flex h-1/3 w-full flex-shrink-0 flex-col border-b border-base-content/10 bg-base-300/50 lg:h-auto lg:w-80 lg:border-b-0 lg:border-r">
-                                    <div className="border-b border-base-content/10 p-4">
-                                        <h3 className="mb-3 text-lg font-semibold">Selecionar Patrão</h3>
-                                        <div className="relative">
-                                            <MaterialSymbol
-                                                icon="search"
-                                                size={18}
-                                                className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50"
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="Nome, ID ou nmec..."
-                                                className="input input-bordered input-sm w-full pl-9"
-                                                value={patraoSearch}
-                                                onChange={(e) => setPatraoSearch(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Patrão List */}
-                                    <div className="flex-1 overflow-y-auto overscroll-contain" ref={patraoListRef} style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
-                                        <button
-                                            type="button"
-                                            className={classNames(
-                                                "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-base-300",
-                                                {
-                                                    "bg-primary/10 text-primary": selectedPatrao === null,
-                                                }
-                                            )}
-                                            onClick={() => setSelectedPatrao(null)}
-                                        >
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-base-300">
-                                                <MaterialSymbol icon="block" size={20} />
-                                            </div>
-                                            <div>
-                                                <div className="font-medium">Sem Patrão</div>
-                                                <div className="text-sm text-base-content/60">
-                                                    Membro raiz
-                                                </div>
-                                            </div>
-                                            {selectedPatrao === null && (
-                                                <MaterialSymbol
-                                                    icon="check_circle"
-                                                    size={20}
-                                                    className="ml-auto text-primary"
-                                                />
-                                            )}
-                                        </button>
-
-                                        {patraoPage === 0 && patraoLoading ? (
-                                            <div className="flex justify-center py-8">
-                                                <span className="loading loading-spinner loading-sm"></span>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                {patraoList.map((p) => (
-                                                    <button
-                                                        key={p.id}
-                                                        data-id={p.id}
-                                                        type="button"
-                                                        className={classNames(
-                                                            "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-base-300",
-                                                            { "bg-primary/10": selectedPatrao?.id === p.id }
-                                                        )}
-                                                        onClick={() => setSelectedPatrao(p)}
-                                                    >
-                                                        <div className="avatar">
-                                                            <div className="h-10 w-10 rounded-full bg-base-300">
-                                                                <Avatar
-                                                                    image={p.photoUrl}
-                                                                    sex={p.sex}
-                                                                    alt={p.name || "avatar"}
-                                                                    className="h-10 w-10 rounded-full object-cover"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="min-w-0 flex-1">
-                                                            <div className="truncate font-medium">{p.name}</div>
-                                                            <div className="text-sm text-base-content/60">
-                                                                {p.start_year ? 2000 + p.start_year : "-"}
-                                                                {p.nmec && ` • ${p.nmec}`}
-                                                            </div>
-                                                        </div>
-                                                        {selectedPatrao?.id === p.id && (
-                                                            <MaterialSymbol
-                                                                icon="check_circle"
-                                                                size={20}
-                                                                className="text-primary"
-                                                            />
-                                                        )}
-                                                    </button>
-                                                ))}
-
-                                                {/* Load More / Pagination */}
-                                                {hasMorePatroes && (
-                                                    <div className="p-2">
-                                                        <button
-                                                            className={classNames("btn btn-ghost btn-sm w-full", { loading: patraoLoading })}
-                                                            onClick={() => setPatraoPage(p => p + 1)}
-                                                        >
-                                                            Carregar mais...
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </>
-                                        )}
-                                    </div>
+                                    <PatraoPicker
+                                        selectedPatrao={selectedPatrao}
+                                        onSelect={setSelectedPatrao}
+                                        excludeIds={isEdit && user?.id ? [user.id] : []}
+                                    />
                                 </div>
 
                                 {/* Right Panel - Form */}
@@ -805,122 +602,20 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                             </div>
 
                                             {/* Insignias Section - Show for both Edit and Create */}
-                                            <div>
-                                                <div className="mb-3 flex items-center justify-between border-t border-base-content/10 pt-4">
-                                                    <h4 className="font-bold">Insígnias</h4>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-primary btn-xs gap-1"
-                                                        onClick={() => setShowRolePicker(true)}
-                                                    >
-                                                        <MaterialSymbol icon="add" size={16} />
-                                                        Adicionar
-                                                    </button>
-                                                </div>
-
-                                                <div className="min-h-[60px] rounded-xl border border-dashed border-base-content/20 bg-base-200/50 p-4">
-                                                    {(() => {
-                                                        if (rolesLoading) {
-                                                            return (
-                                                                <div className="flex justify-center py-2">
-                                                                    <span className="loading loading-spinner loading-sm"></span>
-                                                                </div>
-                                                            );
-                                                        }
-                                                        if (displayRoles.length === 0) {
-                                                            return (
-                                                                <p className="text-center text-sm text-base-content/50">
-                                                                    Nenhuma insígnia atribuída
-                                                                </p>
-                                                            );
-                                                        }
-                                                        return (
-                                                            <div className="flex flex-wrap gap-3">
-                                                                {displayRoles.map((role) => (
-                                                                    <div
-                                                                        key={role.id || role.tempId}
-                                                                        className="flex items-center gap-2 rounded-lg bg-base-100 p-2 shadow-sm ring-1 ring-base-content/10"
-                                                                    >
-                                                                        {/* Try to show icon if available - check API icon first, then static map */}
-                                                                        {(role.icon || (role.org_name && organizations[role.org_name])) && (
-                                                                            <img src={role.icon || organizations[role.org_name]?.insignia} alt="" className="h-6 w-6 object-contain" />
-                                                                        )}
-                                                                        <div className="flex flex-col">
-                                                                            <span className="text-xs font-bold leading-tight">
-                                                                                {role.role_name || role.name || role.org_name || role.role_id}
-                                                                                {role.parent_org_name && role.parent_org_name !== role.org_name && (
-                                                                                    <span className="font-normal text-base-content/50"> ({role.parent_org_name})</span>
-                                                                                )}
-                                                                            </span>
-                                                                            <span className="text-[10px] text-base-content/60">Ano {role.year}</span>
-                                                                        </div>
-                                                                        <button
-                                                                            type="button"
-                                                                            className="ml-1 rounded-full p-1 text-base-content/40 hover:bg-error/10 hover:text-error"
-                                                                            onClick={() => handleRemoveRole(role.id || role.tempId)}
-                                                                        >
-                                                                            <MaterialSymbol icon="close" size={14} />
-                                                                        </button>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        );
-                                                    })()}
-                                                </div>
-                                            </div>
+                                            <RoleDisplay
+                                                roles={displayRoles}
+                                                loading={rolesLoading}
+                                                onAdd={() => setShowRolePicker(true)}
+                                                onRemove={handleRemoveRole}
+                                            />
 
                                             {/* Pedaços (Children) Section */}
                                             {isEdit && (
-                                                <div className="mt-4 border-t border-base-content/10 pt-4">
-                                                    <div className="mb-3 flex items-center justify-between">
-                                                        <h4 className="font-bold flex items-center gap-2">
-                                                            <MaterialSymbol icon="face" size={20} className="text-primary" />
-                                                            Pedaços
-                                                            <span className="badge badge-sm badge-ghost">{childrenList.length}</span>
-                                                        </h4>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-outline btn-primary btn-xs gap-1"
-                                                            onClick={() => onAddChild(user)}
-                                                        >
-                                                            <MaterialSymbol icon="person_add" size={16} />
-                                                            Adicionar
-                                                        </button>
-                                                    </div>
-
-                                                    {childrenList.length > 0 ? (
-                                                        <div className="grid grid-cols-1 gap-2">
-                                                            {childrenList.map(child => (
-                                                                <button
-                                                                    type="button"
-                                                                    key={child.id}
-                                                                    className="flex w-full items-center gap-3 rounded-lg border border-base-content/10 bg-base-100 p-2 hover:bg-base-200 cursor-pointer transition-colors text-left"
-                                                                    onClick={() => onSwitchUser(child)}
-                                                                >
-                                                                    <div className="avatar h-8 w-8 rounded-full bg-base-300">
-                                                                        <Avatar
-                                                                            image={child.image}
-                                                                            sex={child.sex}
-                                                                            alt={child.name || ''}
-                                                                            className="h-8 w-8 rounded-full object-cover"
-                                                                        />
-                                                                    </div>
-                                                                    <div className="flex-1 min-w-0">
-                                                                        <div className="font-bold text-sm truncate">{child.name}</div>
-                                                                        <div className="text-xs text-base-content/60 font-mono">
-                                                                            Ano {child.start_year > 100 ? child.start_year % 100 : child.start_year}
-                                                                        </div>
-                                                                    </div>
-                                                                    <MaterialSymbol icon="chevron_right" className="text-base-content/30" />
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                    ) : (
-                                                        <div className="text-center py-4 bg-base-200/30 rounded-lg border border-dashed border-base-content/10 text-sm text-base-content/50">
-                                                            Não tem pedaços registados
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                <ChildrenList
+                                                    children={childrenList}
+                                                    onAddChild={() => onAddChild(user)}
+                                                    onSelectChild={onSwitchUser}
+                                                />
                                             )}
 
                                         </div>

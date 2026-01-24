@@ -19,7 +19,7 @@ import classNames from "classnames";
 
 import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
-import RolePickerModal from "components/RolePickerModal";
+import { RolePickerModal } from "components/Family";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { colors } from "pages/Family/data";

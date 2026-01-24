@@ -7,9 +7,10 @@ import { CloseIcon } from "assets/icons/google";
 import FamilyService from "services/FamilyService";
 import { organizations, colors } from "pages/Family/data";
 import { formatYear } from "pages/Family/utils";
-import IconPicker from "components/IconPicker";
+import IconPicker from "./IconPicker";
 import Avatar from "components/Avatar";
 import { getErrorMessage } from "utils/error";
+import { useBodyScrollLock } from "components/Modal";
 
 const getModalTitle = (isNew, formData, selectedNode) => {
     if (isNew) {
@@ -326,25 +327,8 @@ export default function RoleManagerModal({ isOpen, onClose }) {
         }
     }, [isOpen]);
 
-    // Lock body scroll when modal is open (robust mobile fix)
-    useEffect(() => {
-        if (isOpen) {
-            const scrollY = window.scrollY;
-            document.body.style.position = 'fixed';
-            document.body.style.top = `-${scrollY}px`;
-            document.body.style.left = '0';
-            document.body.style.right = '0';
-            document.body.style.overflow = 'hidden';
-            return () => {
-                document.body.style.position = '';
-                document.body.style.top = '';
-                document.body.style.left = '';
-                document.body.style.right = '';
-                document.body.style.overflow = '';
-                window.scrollTo(0, scrollY);
-            };
-        }
-    }, [isOpen]);
+    // Lock body scroll when modal is open
+    useBodyScrollLock(isOpen);
 
     // Load available years for filter
     const loadAvailableYears = async () => {
@@ -799,3 +783,4 @@ RoleManagerModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
 };
+

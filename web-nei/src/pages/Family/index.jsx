@@ -16,7 +16,7 @@ import { useFamilyTree } from "./useFamilyTree";
 import FamilyContent from "./FamilyContent";
 import FamilySidebar from "./FamilySidebar";
 import UserForm from "../settings/Family/UserForm";
-import ProfileViewModal from "components/ProfileViewModal";
+import { ProfileViewModal } from "components/Family";
 import { useUserStore } from "stores/useUserStore";
 import { getErrorMessage } from "utils/error";
 import MaterialSymbol from "components/MaterialSymbol";

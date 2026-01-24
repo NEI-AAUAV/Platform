@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import IconPicker, { AVAILABLE_ICONS } from '../../components/IconPicker';
+import { IconPicker, AVAILABLE_ICONS } from '../../components/Family';
 
 // Mock dependencies
 vi.mock('../../components/MaterialSymbol', () => ({

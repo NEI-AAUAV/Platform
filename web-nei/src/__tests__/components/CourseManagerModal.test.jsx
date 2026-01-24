@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import CourseManagerModal from '../../components/CourseManagerModal';
+import { CourseManagerModal } from '../../components/Family';
 
 // Mock dependencies
 vi.mock('../../services/FamilyService', () => ({
