@@ -46,7 +46,7 @@ export default function Avatar({ image, sex, alt = "avatar", className = "", ...
   } else if (sex === "M") {
     fallback = malePic;
   }
-  
+
   const initialSrc = getSafeImage(image, fallback);
   const [src, setSrc] = React.useState(initialSrc);
 

@@ -9,7 +9,7 @@
  * - Filters out excluded users (e.g., self when editing)
  */
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
@@ -25,6 +25,7 @@ const PatraoPicker = ({
     showNoPatraoOption = true,
     className = ""
 }) => {
+    const stableExcludeIds = useMemo(() => excludeIds, [JSON.stringify(excludeIds)]);
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [patraoList, setPatraoList] = useState([]);
@@ -54,7 +55,7 @@ const PatraoPicker = ({
             const response = await FamilyService.getUsers(params);
 
             // Filter out excluded users
-            const excludeSet = new Set(excludeIds);
+            const excludeSet = new Set(stableExcludeIds);
             let newItems = (response.items || []).filter(
                 (u) => !excludeSet.has(u.id)
             );
@@ -76,7 +77,7 @@ const PatraoPicker = ({
         } finally {
             setLoading(false);
         }
-    }, [debouncedSearch, excludeIds, page]);
+    }, [debouncedSearch, stableExcludeIds, page]);
 
     useEffect(() => {
         loadPatraoList();
@@ -186,7 +187,7 @@ const PatraoPicker = ({
                                 <div className="avatar">
                                     <div className="h-10 w-10 rounded-full bg-base-300">
                                         <Avatar
-                                            image={p.photoUrl || p.image}
+                                            image={p.image || p.photoUrl}
                                             sex={p.sex}
                                             alt={p.name || "avatar"}
                                             className="h-10 w-10 rounded-full object-cover"

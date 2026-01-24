@@ -13,6 +13,7 @@
  */
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { createPortal } from "react-dom";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
@@ -162,6 +163,12 @@ const BulkImportModal = ({
     const [rolePickerUserIdx, setRolePickerUserIdx] = useState(null);
     const [userRoles, setUserRoles] = useState({}); // { userIdx: [{ role, year }, ...] }
     const [assigningRoles, setAssigningRoles] = useState(false);
+
+    // Photo upload state
+    const [userPhotos, setUserPhotos] = useState({}); // { userIdx: File }
+    const [photoPreviews, setPhotoPreviews] = useState({}); // { userIdx: url }
+    const [photoUploading, setPhotoUploading] = useState(false);
+
     const openRolePickerForUser = useCallback((idx) => {
         setRolePickerUserIdx(idx);
         setShowRolePicker(true);
@@ -235,19 +242,17 @@ const BulkImportModal = ({
         if (!trimmed) return { id: null, resolved: true, user: null };
 
         // DEBUG: Log resolution attempt
-        console.log(`[resolvePatrao] Trying to resolve: "${trimmed}"`);
-        console.log(`[resolvePatrao] allUsers count: ${allUsers.length}`);
-        console.log(`[resolvePatrao] userMap.byName keys sample:`, Object.keys(userMap.byName).slice(0, 10));
+
 
         // Try as nmec or ID first
         const asNum = parseInt(trimmed);
         if (!isNaN(asNum)) {
             if (userMap.byNmec[asNum]) {
-                console.log(`[resolvePatrao] Found by nmec: ${asNum}`);
+
                 return { id: userMap.byNmec[asNum].id, resolved: true, user: userMap.byNmec[asNum] };
             }
             if (userMap.byId[asNum]) {
-                console.log(`[resolvePatrao] Found by ID: ${asNum}`);
+
                 return { id: asNum, resolved: true, user: userMap.byId[asNum] };
             }
         }
@@ -255,27 +260,27 @@ const BulkImportModal = ({
         // Try exact name match
         const nameLower = trimmed.toLowerCase();
         const matches = userMap.byName[nameLower];
-        console.log(`[resolvePatrao] Exact name match for "${nameLower}":`, matches);
+
         if (matches?.length === 1) {
-            console.log(`[resolvePatrao] Found exact name match: ${matches[0].name}`);
+
             return { id: matches[0].id, resolved: true, user: matches[0] };
         } else if (matches?.length > 1) {
-            console.log(`[resolvePatrao] Ambiguous: ${matches.length} matches`);
+
             return { id: null, resolved: false, ambiguous: true, matches };
         }
 
         // Partial match
         const partial = allUsers.filter(u => u.name?.toLowerCase().includes(nameLower));
-        console.log(`[resolvePatrao] Partial matches for "${nameLower}":`, partial.length);
+
         if (partial.length === 1) {
-            console.log(`[resolvePatrao] Found partial match: ${partial[0].name}`);
+
             return { id: partial[0].id, resolved: true, user: partial[0] };
         } else if (partial.length > 1) {
-            console.log(`[resolvePatrao] Ambiguous partial: ${partial.length} matches`);
+
             return { id: null, resolved: false, ambiguous: true, matches: partial.slice(0, 5) };
         }
 
-        console.log(`[resolvePatrao] NOT FOUND: "${trimmed}"`);
+
         return { id: null, resolved: false, notFound: true };
     }, [userMap, allUsers]);
 
@@ -546,7 +551,7 @@ const BulkImportModal = ({
     const renderPatraoCell = (row, idx) => {
         if (row.patrao_resolved && row.patrao_user) {
             return (
-                <button type="button" className="flex items-center gap-1 px-2 py-0.5 bg-base-200 rounded-lg text-xs hover:bg-base-300" onClick={() => setPatraoPickerRow(idx)}>
+                <button type="button" className="flex items-center gap-1 px-2 py-0.5 bg-base-200 rounded-lg text-xs hover:bg-base-300" onClick={(e) => { e.stopPropagation(); setPatraoPickerRow(idx); }}>
                     <div className="w-5 h-5 rounded-full overflow-hidden" style={{ borderColor: colors[row.patrao_user.start_year % colors.length] }}>
                         <Avatar
                             image={row.patrao_user.image}
@@ -562,14 +567,14 @@ const BulkImportModal = ({
 
         if (row.patrao_input) {
             return (
-                <button type="button" className="btn btn-xs btn-error btn-outline" onClick={() => setPatraoPickerRow(idx)}>
+                <button type="button" className="btn btn-xs btn-error btn-outline" onClick={(e) => { e.stopPropagation(); setPatraoPickerRow(idx); }}>
                     Escolher
                 </button>
             );
         }
 
         return (
-            <button type="button" className="btn btn-xs btn-ghost" onClick={() => setPatraoPickerRow(idx)}>
+            <button type="button" className="btn btn-xs btn-ghost" onClick={(e) => { e.stopPropagation(); setPatraoPickerRow(idx); }}>
                 <MaterialSymbol icon="person_search" size={14} />
             </button>
         );
@@ -706,7 +711,7 @@ const BulkImportModal = ({
             }
 
             if (response.total_created > 0) {
-                setStep("assign");
+                setStep("photos");
             } else {
                 setStep("results");
             }
@@ -1057,6 +1062,175 @@ const BulkImportModal = ({
         </div>
     );
 
+
+
+    // Handle photo selection
+    const handlePhotoSelect = (idx, file) => {
+        if (!file) return;
+
+        // Update file state
+        setUserPhotos(prev => ({ ...prev, [idx]: file }));
+
+        // Create preview URL using blob (supported by Avatar component)
+        const objectUrl = URL.createObjectURL(file);
+        setPhotoPreviews(prev => {
+            // Revoke old URL if it exists to avoid memory leaks
+            if (prev[idx] && prev[idx].startsWith('blob:')) {
+                URL.revokeObjectURL(prev[idx]);
+            }
+            return { ...prev, [idx]: objectUrl };
+        });
+    };
+
+    // Upload all selected photos
+    const handleUploadPhotos = async () => {
+        if (Object.keys(userPhotos).length === 0) {
+            setStep("assign");
+            return;
+        }
+
+        setPhotoUploading(true);
+        let successCount = 0;
+        let failCount = 0;
+
+        // Clone results to update logic info (like image urls)
+        const updatedUsers = [...(results?.created || [])];
+
+        try {
+            // Process uploads sequentially or parallel? Parallel is faster.
+            // But we need to update updatedUsers by index.
+
+            const promises = Object.entries(userPhotos).map(async ([idxStr, file]) => {
+                const idx = parseInt(idxStr);
+                const user = results.created[idx];
+                if (!user) return; // Should not happen
+
+                try {
+                    const updatedUser = await FamilyService.updateUserImage(user.id, file);
+                    // Update the local user object with the new image URL (important for next steps)
+                    if (updatedUser?.image) {
+                        updatedUsers[idx] = { ...updatedUsers[idx], image: updatedUser.image };
+                    }
+                    successCount++;
+                } catch (err) {
+                    console.error(`Failed to upload photo for ${user.name}:`, err);
+                    failCount++;
+                }
+            });
+
+            await Promise.all(promises);
+
+            setResults(prev => ({
+                ...prev,
+                created: updatedUsers,
+                photosUploaded: successCount,
+                photosFailed: failCount
+            }));
+
+        } catch (err) {
+            console.error("Batch upload handling error:", err);
+        } finally {
+            setPhotoUploading(false);
+            setStep("assign");
+        }
+    };
+
+    const renderPhotoStep = () => {
+        const photosWithUploads = Object.keys(userPhotos).length;
+
+        return (
+            <div className="space-y-4">
+                <div className="bg-base-200/50 rounded-xl p-4 text-center">
+                    <MaterialSymbol icon="photo_camera" size={32} className="text-primary mb-2" />
+                    <h3 className="font-bold text-lg">Carregar Fotos</h3>
+                    <p className="text-sm text-base-content/60">
+                        Adiciona fotos aos membros criados. Podes carregar individualmente abaixo.
+                    </p>
+                    {photosWithUploads > 0 && (
+                        <div className="mt-2 text-sm font-medium text-success">
+                            {photosWithUploads} de {results?.total_created} fotos selecionadas
+                        </div>
+                    )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto p-1">
+                    {results?.created?.map((user, idx) => {
+                        const isSelected = !!userPhotos[idx];
+
+                        return (
+                            <div key={user.id || idx} className={classNames(
+                                "flex items-center gap-3 p-3 rounded-xl border transition-all",
+                                isSelected ? "bg-primary/5 border-primary/30" : "bg-base-100 border-base-content/10"
+                            )}>
+                                {/* Avatar Preview */}
+                                <div className="relative shrink-0">
+                                    <div className="w-12 h-12 rounded-full overflow-hidden bg-base-200 ring-2 ring-base-100">
+                                        <Avatar
+                                            image={photoPreviews[idx] || user.image}
+                                            sex={user.sex}
+                                            alt={user.name}
+                                            className="w-12 h-12 object-cover"
+                                        />
+                                    </div>
+                                    {isSelected && (
+                                        <div className="absolute -bottom-1 -right-1 bg-success text-white rounded-full p-0.5 shadow-sm">
+                                            <MaterialSymbol icon="check" size={12} />
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex justify-between items-start">
+                                        <div className="min-w-0">
+                                            <p className="font-medium truncate text-sm">{user.name}</p>
+                                            <p className="text-xs text-base-content/50">Ano {user.start_year}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <label className={classNames(
+                                            "btn btn-xs gap-1 font-normal",
+                                            isSelected ? "btn-outline btn-primary" : "btn-outline"
+                                        )}>
+                                            <MaterialSymbol icon="upload" size={14} />
+                                            {isSelected ? "Alterar" : "Foto"}
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(e) => handlePhotoSelect(idx, e.target.files[0])}
+                                            />
+                                        </label>
+
+                                        {isSelected && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-ghost btn-xs text-error gap-1 px-1"
+                                                onClick={() => {
+                                                    const newPhotos = { ...userPhotos };
+                                                    delete newPhotos[idx];
+                                                    setUserPhotos(newPhotos);
+
+                                                    const newPreviews = { ...photoPreviews };
+                                                    delete newPreviews[idx];
+                                                    setPhotoPreviews(newPreviews);
+                                                }}
+                                                title="Remover seleção"
+                                            >
+                                                <MaterialSymbol icon="close" size={14} />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    };
+
     // Render assign step (individual roles)
     const renderAssignStep = () => (
         <div className="space-y-4">
@@ -1153,6 +1327,17 @@ const BulkImportModal = ({
                             {results?.total_errors} erro(s)
                         </span>
                     )}
+                    {results?.photosUploaded > 0 && (
+                        <span className="text-secondary font-medium">
+                            {results?.photosUploaded} foto(s) enviada(s)
+                        </span>
+                    )}
+                    {results?.photosFailed > 0 && (
+                        <span className="text-error font-medium">
+                            {results?.photosFailed} falha(s) foto
+                        </span>
+                    )}
+
                 </div>
 
                 {results?.rolesAssigned > 0 && <p className="text-success text-sm mt-1">{results?.rolesAssigned} insignia(s) atribuida(s)</p>}
@@ -1190,6 +1375,7 @@ const BulkImportModal = ({
                             <thead className="bg-base-200">
                                 <tr>
                                     <th>Nome</th>
+                                    <th className="w-10">Foto</th>
                                     <th>Sexo</th>
                                     <th>Ano</th>
                                     <th>Nmec</th>
@@ -1204,6 +1390,11 @@ const BulkImportModal = ({
                                     return (
                                         <tr key={user.id ?? idx}>
                                             <td className="font-medium">{user.name}</td>
+                                            <td>
+                                                <div className="w-6 h-6 rounded-full overflow-hidden bg-base-300">
+                                                    <Avatar image={user.image} sex={user.sex} className="w-6 h-6 object-cover" />
+                                                </div>
+                                            </td>
                                             <td>{user.sex}</td>
                                             <td>{user.start_year}</td>
                                             <td className="font-mono text-xs">{user.nmec || "-"}</td>
@@ -1264,7 +1455,7 @@ const BulkImportModal = ({
     const currentPatraoPickerRow = patraoPickerRow !== null ? parsedData[patraoPickerRow] : null;
 
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -1293,7 +1484,8 @@ const BulkImportModal = ({
                             <div className="px-6 pt-4 shrink-0">
                                 <ul className="steps steps-horizontal w-full text-xs">
                                     <li className={classNames("step", step !== "upload" && "step-primary")}>Upload</li>
-                                    <li className={classNames("step", (step === "preview" || step === "assign" || step === "results") && "step-primary")}>Preview</li>
+                                    <li className={classNames("step", (step === "preview" || step === "photos" || step === "assign" || step === "results") && "step-primary")}>Preview</li>
+                                    <li className={classNames("step", (step === "photos" || step === "assign" || step === "results") && "step-primary")}>Fotos</li>
                                     <li className={classNames("step", (step === "assign" || step === "results") && "step-primary")}>Insignias</li>
                                     <li className={classNames("step", step === "results" && "step-primary")}>Resultado</li>
                                 </ul>
@@ -1303,6 +1495,7 @@ const BulkImportModal = ({
                             <div className="p-6 overflow-y-auto flex-1">
                                 {step === "upload" && renderUploadStep()}
                                 {step === "preview" && renderPreviewStep()}
+                                {step === "photos" && renderPhotoStep()}
                                 {step === "assign" && renderAssignStep()}
                                 {step === "results" && renderResultsStep()}
                             </div>
@@ -1343,6 +1536,21 @@ const BulkImportModal = ({
                                                     >
                                                         <MaterialSymbol icon="badge" size={18} />
                                                         Atribuir {totalRolesSelected} Insignia(s)
+                                                    </button>
+                                                </>
+                                            );
+                                        }
+                                        if (step === "photos") {
+                                            return (
+                                                <>
+                                                    <button type="button" className="btn btn-ghost" onClick={() => setStep("assign")}>Saltar</button>
+                                                    <button
+                                                        type="button"
+                                                        className={classNames("btn btn-primary gap-2", { loading: photoUploading })}
+                                                        onClick={handleUploadPhotos}
+                                                    >
+                                                        <MaterialSymbol icon="cloud_upload" size={18} />
+                                                        Guardar e Continuar
                                                     </button>
                                                 </>
                                             );
@@ -1411,9 +1619,11 @@ const BulkImportModal = ({
                     />
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
+
 
 BulkImportModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,

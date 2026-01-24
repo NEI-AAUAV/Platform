@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
@@ -178,7 +179,7 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
         );
     };
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <div className="fixed inset-0 z-[120] flex items-center justify-center p-6">
@@ -268,7 +269,8 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
                     </motion.div>
                 </div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }
 

@@ -10,6 +10,7 @@
  */
 
 import React, { useEffect } from "react";
+import { createPortal } from "react-dom";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import MaterialSymbol from "components/MaterialSymbol";
@@ -78,7 +79,7 @@ const BaseModal = ({
 
     const styles = variantStyles[variant] || variantStyles.default;
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -141,7 +142,8 @@ const BaseModal = ({
                     </div>
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
 
