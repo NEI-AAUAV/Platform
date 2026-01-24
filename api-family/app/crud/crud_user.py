@@ -15,7 +15,6 @@ from PIL import Image, ImageOps
 from io import BytesIO
 from hashlib import md5
 import base64
-import os
 
 
 logger = logging.getLogger(__name__)
@@ -240,15 +239,9 @@ class CRUDUser:
             key = f"family/users/{user_id}/{digest}.jpg"
 
             uploaded = storage_client.upload_image(key, data, "image/jpeg")
-            if uploaded:
-                new_url = uploaded
-            else:
-                # fallback to local static
-                os.makedirs(f"static/family/users/{user_id}", exist_ok=True)
-                local_path = f"/family/users/{user_id}/{digest}.jpg"
-                with open(f"static{local_path}", "wb") as f:
-                    f.write(data)
-                new_url = settings.STATIC_URL + local_path
+            if not uploaded:
+                raise ValueError("Failed to upload image to R2 storage")
+            new_url = uploaded
             
             # Delete old image from R2 if it's different from the new one
             if old_image and old_image != new_url:
