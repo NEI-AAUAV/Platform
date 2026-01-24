@@ -101,7 +101,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                 await FamilyService.createCourse(formData);
             } else {
                 if (!selectedCourse) return;
-                const id = selectedCourse._id || selectedCourse.id;
+                const id = selectedCourse._id;
                 await FamilyService.updateCourse(id, formData);
             }
             await loadCourses();
@@ -121,7 +121,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
 
         setSubmitting(true);
         try {
-            const id = selectedCourse._id || selectedCourse.id;
+            const id = selectedCourse._id;
             await FamilyService.deleteCourse(id);
             await loadCourses();
             handleCreateNew();
@@ -196,7 +196,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                                     <div className="flex flex-col gap-1">
                                         {filteredCourses.map(course => (
                                             <button
-                                                key={course._id || course.id}
+                                                key={course._id}
                                                 className={classNames(
                                                     "flex w-full flex-col gap-0.5 rounded-lg px-3 py-2 text-left text-sm transition-all duration-200",
                                                     (selectedCourse?._id === course._id && !isNew)

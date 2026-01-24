@@ -152,11 +152,11 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
             // Filter out self if editing
             let newItems = (response.items || []).filter(
-                (u) => !isEdit || (u._id || u.id) !== (user?._id || user?.id)
+                (u) => !isEdit || u._id !== user?._id
             );
 
-            // Normalize IDs
-            newItems = newItems.map(u => ({ ...u, _id: u._id || u.id }));
+            // Normalize IDs - ensure _id exists (MongoDB always returns _id)
+            newItems = newItems.map(u => ({ ...u, _id: u._id }));
 
             if (resetList || patraoPage === 0) {
                 setPatraoList(newItems);
@@ -176,7 +176,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         } finally {
             setPatraoLoading(false);
         }
-    }, [debouncedSearch, isEdit, user?._id, user?.id, patraoPage]);
+    }, [debouncedSearch, isEdit, user?._id, patraoPage]);
 
     useEffect(() => {
         if (isOpen) {
@@ -213,8 +213,8 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
     // Load user roles when editing
     useEffect(() => {
         async function loadUserRoles() {
-            if (!user?._id && !user?.id) return;
-            const uid = user._id || user.id;
+            if (!user?._id) return;
+            const uid = user._id;
             setRolesLoading(true);
             try {
                 const response = await FamilyService.getRolesForUser(uid);
@@ -229,12 +229,12 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         if (isOpen && isEdit) {
             loadUserRoles();
         }
-    }, [isOpen, isEdit, user?._id, user?.id]);
+    }, [isOpen, isEdit, user?._id]);
 
     // Load children (Pedaços)
     useEffect(() => {
-        if (isOpen && isEdit && (user?._id || user?.id)) {
-            const uid = user._id || user.id;
+        if (isOpen && isEdit && user?._id) {
+            const uid = user._id;
             FamilyService.getUserChildren(uid)
                 .then(setChildrenList)
                 .catch(err => {
@@ -244,7 +244,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         } else {
             setChildrenList([]);
         }
-    }, [isOpen, isEdit, user?._id, user?.id]);
+    }, [isOpen, isEdit, user?._id]);
 
     // Reset form
     useEffect(() => {
@@ -264,8 +264,8 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             if (user.patrao_id) {
                 FamilyService.getUserById(user.patrao_id)
                     .then((p) => {
-                        // Normalize ID
-                        const pNorm = { ...p, _id: p._id || p.id };
+                        // Ensure _id exists (MongoDB always returns _id)
+                        const pNorm = { ...p, _id: p._id };
                         setSelectedPatrao(pNorm);
                     })
                     .catch(() =>
@@ -291,7 +291,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
             // Handle initialPatrao for new "pedaços"
             if (initialPatrao) {
-                const pNorm = { ...initialPatrao, _id: initialPatrao._id || initialPatrao.id };
+                const pNorm = { ...initialPatrao, _id: initialPatrao._id };
                 setSelectedPatrao(pNorm);
             } else {
                 setSelectedPatrao(null);
@@ -319,7 +319,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 course_id: data.course_id ? parseInt(data.course_id) : null,
             };
 
-            const uid = user?._id || user?.id;
+            const uid = user?._id;
 
             if (isEdit) {
                 await FamilyService.updateUser(uid, payload);
@@ -329,7 +329,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 if (pendingRoles.length > 0) {
                     await Promise.all(pendingRoles.map(role =>
                         FamilyService.assignRole({
-                            user_id: newUser._id || newUser.id,
+                            user_id: newUser._id,
                             role_id: role.role_id,
                             year: role.year
                         })
@@ -394,7 +394,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
     const handleUpdatePhoto = async () => {
         if (!isEdit || (!imageFile && !removeImage)) return;
-        const uid = user?._id || user?.id;
+        const uid = user?._id;
         setImageUpdating(true);
         setError(null);
         try {
@@ -456,11 +456,11 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
         try {
             await FamilyService.assignRole({
-                user_id: user._id || user.id,
+                user_id: user._id,
                 role_id: selectedNode._id,
                 year: roleYear,
             });
-            const response = await FamilyService.getRolesForUser(user._id || user.id);
+            const response = await FamilyService.getRolesForUser(user._id);
             setUserRoles(response.items || []);
         } catch (err) {
             alert(err.response?.data?.detail || "Erro ao adicionar insígnia");
@@ -802,7 +802,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                 >
                                                     <option value="">Sem Curso</option>
                                                     {courses.map(course => (
-                                                        <option key={course._id || course.id} value={course._id || course.id}>
+                                                        <option key={course._id} value={course._id}>
                                                             {course.short} - {course.name}
                                                         </option>
                                                     ))}
@@ -898,7 +898,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                             {childrenList.map(child => (
                                                                 <button
                                                                     type="button"
-                                                                    key={child._id || child.id}
+                                                                    key={child._id}
                                                                     className="flex w-full items-center gap-3 rounded-lg border border-base-content/10 bg-base-100 p-2 hover:bg-base-200 cursor-pointer transition-colors text-left"
                                                                     onClick={() => onSwitchUser(child)}
                                                                 >

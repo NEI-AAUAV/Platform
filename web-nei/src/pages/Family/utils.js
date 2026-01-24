@@ -129,7 +129,7 @@ export function wouldCreateCycle(userId, patraoId, allUsers) {
     // Build quick lookup
     const userMap = {};
     allUsers.forEach(u => {
-        userMap[u._id || u.id] = u;
+        userMap[u._id] = u;
     });
 
     // Walk up from patraoId to see if we reach userId
@@ -137,8 +137,8 @@ export function wouldCreateCycle(userId, patraoId, allUsers) {
     const visited = new Set();
 
     while (current?.patrao_id) {
-        if (visited.has(current._id || current.id)) break; // Already a cycle exists
-        visited.add(current._id || current.id);
+        if (visited.has(current._id)) break; // Already a cycle exists
+        visited.add(current._id);
 
         if (current.patrao_id === userId) {
             return true; // Would create cycle

@@ -52,16 +52,16 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
 
     // Load children (pedaços)
     useEffect(() => {
-        if (isOpen && user?.id) {
+        if (isOpen && user?._id) {
             setLoading(true);
-            FamilyService.getUserChildren(user.id)
+            FamilyService.getUserChildren(user._id)
                 .then(setChildrenList)
                 .catch(() => setChildrenList([]))
                 .finally(() => setLoading(false));
         } else {
             setChildrenList([]);
         }
-    }, [isOpen, user?.id]);
+    }, [isOpen, user?._id]);
 
     // Lock body scroll when modal is open
     useEffect(() => {
@@ -86,7 +86,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
     // Get course name from ID
     const getCourseName = (courseId) => {
         if (!courseId) return null;
-        const course = courses.find(c => (c._id || c.id) === courseId);
+        const course = courses.find(c => c._id === courseId);
         return course ? `${course.short} - ${course.name}` : null;
     };
 
@@ -292,7 +292,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                         <button
                                             type="button"
                                             className="flex w-full items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors text-left"
-                                            onClick={() => handleNavigate(patraoData._id || patraoData.id)}
+                                            onClick={() => handleNavigate(patraoData._id)}
                                         >
                                             <div className="avatar h-10 w-10">
                                                 <Avatar
@@ -324,9 +324,9 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                             {childrenList.map(child => (
                                                 <button
                                                     type="button"
-                                                    key={child._id || child.id}
+                                                    key={child._id}
                                                     className="flex w-full items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors text-left"
-                                                    onClick={() => handleNavigate(child._id || child.id)}
+                                                    onClick={() => handleNavigate(child._id)}
                                                 >
                                                     <div className="avatar h-10 w-10">
                                                         <Avatar

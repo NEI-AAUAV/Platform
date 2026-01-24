@@ -45,7 +45,7 @@ const MembersList = ({ members, membersLoading, yearFormat, onRemove }) => {
         <div className="space-y-2">
             {members.map((member, idx) => (
                 <div
-                    key={member._id || idx}
+                    key={member._id ?? idx}
                     className="flex items-center gap-3 p-3 bg-base-200/50 rounded-lg hover:bg-base-200"
                 >
                     <div
