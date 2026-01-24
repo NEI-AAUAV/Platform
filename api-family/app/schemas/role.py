@@ -43,6 +43,7 @@ class RoleInDB(RoleBase):
     def dict(self, **kwargs):
         """Override dict() to always use field names (not aliases) for serialization."""
         # Force by_alias=False to serialize as 'id' instead of '_id'
+        # Important: this ensures frontend gets 'id' consistently
         kwargs['by_alias'] = False
         return super().dict(**kwargs)
 
@@ -51,7 +52,16 @@ class RoleInDB(RoleBase):
         allow_population_by_field_name = True
 
 
+class RoleTreeNode(RoleInDB):
+    """Schema for a role in a tree structure."""
+    children: List["RoleTreeNode"] = Field(default_factory=list)
+
+
 class RoleList(BaseModel):
     """Schema for paginated role list response."""
     items: List[RoleInDB]
     total: int
+
+
+# Required for self-referencing model
+RoleTreeNode.update_forward_refs()

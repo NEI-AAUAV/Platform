@@ -66,11 +66,14 @@ class CRUDRole:
             return []
         
         # Create lookup dict
-        roles_by_id = {r["_id"]: {**r, "children": []} for r in all_roles}
+        roles_by_id = {}
+        for r in all_roles:
+            role_dict = {**r, "id": r["_id"], "children": []}
+            roles_by_id[r["_id"]] = role_dict
         
         # Build tree
         roots = []
-        for role_id, role in roles_by_id.items():
+        for orig_id, role in roles_by_id.items():
             super_role = role.get("super_roles", "")
             if super_role == "":
                 roots.append(role)

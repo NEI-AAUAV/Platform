@@ -170,7 +170,7 @@ const RoleTree = ({ nodes, depth = 0, selectedNode, isNew, formData, onSelect })
             )}
 
             {nodes.map(node => {
-                const isSelected = selectedNode?.id === node.id && !isNew;
+                const isSelected = selectedNode && !isNew && selectedNode.id === node.id;
                 const isParentOfNew = isNew && formData.super_roles === node.id;
                 const hasChildren = node.children && node.children.length > 0;
 
@@ -416,7 +416,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
     const handleAddChild = () => {
         if (!selectedNode) return;
         const parentId = selectedNode.id;
-        
+
         setIsNew(true);
         setFormData({
             name: "",

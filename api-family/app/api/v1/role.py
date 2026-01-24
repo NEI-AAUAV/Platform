@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, Query, Security
 
 from app.api import auth
 from app.crud.crud_role import role as crud_role
-from app.schemas.role import RoleCreate, RoleUpdate, RoleInDB, RoleList
+from app.schemas.role import RoleCreate, RoleUpdate, RoleInDB, RoleList, RoleTreeNode
 
 
 router = APIRouter()
@@ -39,10 +39,10 @@ def get_roles(
     return RoleList(items=roles, total=total)
 
 
-@router.get("/tree", status_code=200)
+@router.get("/tree", status_code=200, response_model=List[RoleTreeNode])
 def get_roles_tree(
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
-) -> Any:
+):
     """
     Get all roles organized as a hierarchical tree.
     
