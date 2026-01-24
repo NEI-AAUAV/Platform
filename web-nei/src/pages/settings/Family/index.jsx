@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
 
 import MaterialSymbol from "components/MaterialSymbol";
+import { Toaster } from "components/ui/toaster";
 
 import FamilyService from "services/FamilyService";
 import UserForm from "./UserForm";
@@ -18,9 +19,7 @@ import RoleManagerModal from "components/RoleManagerModal";
 import CourseManagerModal from "components/CourseManagerModal";
 import { organizations, colors } from "pages/Family/data";
 import { useUserStore } from "stores/useUserStore";
-
-import malePic from "assets/default_profile/male.svg";
-import femalePic from "assets/default_profile/female.svg";
+import Avatar from "components/Avatar";
 
 const collectMissingPatraoIds = (users, userMap) => {
   const missing = new Set();
@@ -55,10 +54,11 @@ const renderPatraoCell = (user, patrao) => {
     return (
       <div className="flex items-center gap-2">
         <div className="avatar placeholder h-6 w-6 rounded-full bg-base-300">
-          <img
-            src={patrao.image || (patrao.sex === 'F' ? femalePic : malePic)}
-            alt=""
-            className="rounded-full"
+          <Avatar
+            image={patrao.image}
+            sex={patrao.sex}
+            alt={patrao.name || "avatar"}
+            className="h-6 w-6 rounded-full object-cover"
           />
         </div>
         <span className="truncate font-medium">{patrao.name}</span>
@@ -882,9 +882,10 @@ export function Component() {
                                       "--tw-ring-color": userColor
                                     }}
                                   >
-                                    <img
-                                      src={user.image || (user.sex === "F" ? femalePic : malePic)}
-                                      alt=""
+                                    <Avatar
+                                      image={user.image}
+                                      sex={user.sex}
+                                      alt={user.name || "avatar"}
                                       className="object-cover"
                                     />
                                   </div>
@@ -1111,6 +1112,9 @@ export function Component() {
         onConfirmDelete={handleDelete}
         onReparent={handleReparentAndDelete}
       />
+
+      {/* Toasts */}
+      <Toaster />
 
     </div >
   );

@@ -14,6 +14,7 @@ class UserBase(BaseModel):
     start_year: Optional[int] = Field(None, ge=0, le=99, description="Year of entry (0-99)")
     nmec: Optional[int] = Field(None, description="Número mecanográfico")
     faina_name: Optional[str] = Field(None, max_length=50, description="Nome de faina")
+    image: Optional[str] = None
     course_id: Optional[int] = Field(None, description="Course ID for other courses")
     patrao_id: Optional[int] = Field(None, description="Patrão user ID (null for roots)")
     end_year: Optional[int] = Field(None, ge=0, le=99, description="Year of end (0-99)")

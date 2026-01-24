@@ -87,6 +87,18 @@ const FamilyService = {
         return await client.put(`/user/${id}`, data);
     },
 
+    async updateUserImage(id, file, { remove = false } = {}) {
+        const form = new FormData();
+        if (file) form.append("image", file);
+        form.append("remove", remove ? "true" : "false");
+        // Do NOT set Content-Type manually; browser will add proper multipart boundary
+        return await client.put(`/user/${id}/image`, form, {
+            timeout: 30000,
+            maxBodyLength: Infinity,
+            maxContentLength: Infinity,
+        });
+    },
+
     /**
      * Delete a user (requires MANAGER_FAMILY scope)
      * @param {number} id - User ID

@@ -4,7 +4,7 @@ User API endpoints for Family Tree.
 
 from typing import List, Optional
 
-from fastapi import APIRouter, HTTPException, Query, Security
+from fastapi import APIRouter, HTTPException, Query, Security, UploadFile, File, Form
 
 from app.api import auth
 from app.crud.crud_user import user as crud_user
@@ -113,6 +113,32 @@ def get_user_children(
     
     children = crud_user.get_children(id)
     return children
+
+
+@router.put("/{id}/image", status_code=200, response_model=UserInDB)
+async def update_user_image(
+    id: int,
+    image: UploadFile = File(None),
+    remove: bool = Form(False),
+    _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
+):
+    """
+    Upload or remove a user's photo.
+    Send multipart/form-data with `image` file; pass `remove=true` to delete.
+    """
+    from app.services.storage import storage_client
+    if not storage_client.enabled:
+        raise HTTPException(status_code=503, detail="Image upload is disabled: R2 storage is not configured.")
+
+    if remove and image is not None:
+        raise HTTPException(status_code=400, detail="Choose image or remove, not both")
+
+    image_bytes = None if remove else (await image.read() if image is not None else None)
+
+    updated = await crud_user.update_image(id, image_bytes)
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"User with id {id} not found")
+    return updated
 
 
 @router.post("/", status_code=201, response_model=UserInDB)

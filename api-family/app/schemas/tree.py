@@ -24,6 +24,7 @@ class UserTreeNode(BaseModel):
     id: int = Field(..., alias="_id")
     name: Optional[str] = None
     faina_name: Optional[str] = None
+    image: Optional[str] = None
     sex: Optional[str] = None
     start_year: Optional[int] = None
     end_year: Optional[int] = None

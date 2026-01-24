@@ -15,9 +15,7 @@ import FamilyService from "services/FamilyService";
 import { formatYear } from "pages/Family/utils";
 import { colors } from "pages/Family/data";
 import heartBorder from "assets/icons/heart_border.svg";
-
-import malePic from "assets/default_profile/male.svg";
-import femalePic from "assets/default_profile/female.svg";
+import Avatar from "components/Avatar";
 
 /**
  * @param {Object} props
@@ -184,10 +182,11 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                             boxShadow: `0 0 0 2px hsl(var(--b1))`
                                         }}
                                     >
-                                        <img
-                                            src={user.sex === "F" ? femalePic : malePic}
-                                            alt=""
-                                            className="h-full w-full object-cover"
+                                        <Avatar
+                                            image={user.image}
+                                            sex={user.sex}
+                                            alt={user.name || "avatar"}
+                                            className="h-24 w-24 object-cover"
                                         />
                                     </div>
                                 </div>
@@ -296,10 +295,11 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                             onClick={() => handleNavigate(patraoData._id || patraoData.id)}
                                         >
                                             <div className="avatar h-10 w-10">
-                                                <img
-                                                    src={patraoData.sex === "F" ? femalePic : malePic}
-                                                    alt=""
-                                                    className="rounded-full"
+                                                <Avatar
+                                                    image={patraoData.image}
+                                                    sex={patraoData.sex}
+                                                    alt={patraoData.name || "avatar"}
+                                                    className="h-10 w-10 rounded-full object-cover"
                                                 />
                                             </div>
                                             <div className="flex-1 min-w-0">
@@ -329,10 +329,11 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                                     onClick={() => handleNavigate(child._id || child.id)}
                                                 >
                                                     <div className="avatar h-10 w-10">
-                                                        <img
-                                                            src={child.sex === "F" ? femalePic : malePic}
-                                                            alt=""
-                                                            className="rounded-full"
+                                                        <Avatar
+                                                            image={child.image}
+                                                            sex={child.sex}
+                                                            alt={child.name || "avatar"}
+                                                            className="h-10 w-10 rounded-full object-cover"
                                                         />
                                                     </div>
                                                     <div className="flex-1 min-w-0">

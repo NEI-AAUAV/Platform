@@ -9,6 +9,12 @@ from pymongo.collection import ReturnDocument
 
 from app.db.db import User as UserCollection
 from app.schemas.user import UserCreate, UserUpdate
+from app.services.storage import storage_client
+from app.core.config import settings
+from PIL import Image, ImageOps
+from io import BytesIO
+from hashlib import md5
+import base64
 
 
 logger = logging.getLogger(__name__)
@@ -202,6 +208,56 @@ class CRUDUser:
     def get_all(self) -> List[dict]:
         """Get all users."""
         return list(self.collection.find())
+
+    async def update_image(self, user_id: int, image_bytes: bytes | None) -> Optional[dict]:
+        """Update user image. If image_bytes is None, remove image."""
+        user = self.get(user_id)
+        if not user:
+            return None
+
+        new_url = None
+        old_image = user.get("image")
+
+        if image_bytes is not None:
+            # Reject overly large uploads early
+            if len(image_bytes) > 2 * 1024 * 1024:
+                raise ValueError("Image must be under 2MB")
+
+            try:
+                img = Image.open(BytesIO(image_bytes))
+            except Exception:
+                raise ValueError("Invalid image")
+
+            img = ImageOps.exif_transpose(img)
+            img = img.convert("RGB")
+            # Constrain to a sane size to save bandwidth/storage
+            img.thumbnail((1200, 1200))
+            buf = BytesIO()
+            img.save(buf, format="JPEG", quality=85, optimize=True, progressive=True)
+            data = buf.getvalue()
+            digest = md5(data).hexdigest()
+            key = f"family/users/{user_id}/{digest}.jpg"
+
+            uploaded = storage_client.upload_image(key, data, "image/jpeg")
+            if not uploaded:
+                raise ValueError("Failed to upload image to R2 storage")
+            new_url = uploaded
+            
+            # Delete old image from R2 if it's different from the new one
+            if old_image and old_image != new_url:
+                storage_client.delete_image(old_image)
+        else:
+            # Removing image - delete old one from R2
+            if old_image:
+                storage_client.delete_image(old_image)
+
+        update_doc = {"$set": {"image": new_url}}
+        updated = self.collection.find_one_and_update(
+            {"_id": user_id},
+            update_doc,
+            return_document=ReturnDocument.AFTER,
+        )
+        return updated
     
     def get_roots(self) -> List[dict]:
         """Get users without patrão (root nodes of the tree)."""
@@ -503,6 +559,7 @@ class CRUDUser:
                 "_id": 1,
                 "name": 1,
                 "faina_name": 1,
+                "image": 1,
                 "sex": 1,
                 "start_year": 1,
                 "end_year": 1,

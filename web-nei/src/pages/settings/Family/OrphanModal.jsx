@@ -16,8 +16,7 @@ import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
 import { colors } from "pages/Family/data";
 
-import malePic from "assets/default_profile/male.svg";
-import femalePic from "assets/default_profile/female.svg";
+import Avatar from "components/Avatar";
 
 const OrphanModal = ({
     isOpen,
@@ -145,10 +144,11 @@ const OrphanModal = ({
                                         className="w-10 h-10 rounded-full flex items-center justify-center"
                                         style={{ backgroundColor: colors[userToDelete.start_year % colors.length] }}
                                     >
-                                        <img
-                                            src={userToDelete.image || (userToDelete.sex === "F" ? femalePic : malePic)}
-                                            alt=""
-                                            className="w-full h-full rounded-full object-cover"
+                                        <Avatar
+                                            image={userToDelete.image}
+                                            sex={userToDelete.sex}
+                                            alt={userToDelete.name || ''}
+                                            className="w-10 h-10 rounded-full object-cover"
                                         />
                                     </div>
                                     <div>
@@ -280,10 +280,11 @@ const OrphanModal = ({
                                                                     className="w-6 h-6 rounded-full"
                                                                     style={{ backgroundColor: colors[(p.start_year || 0) % colors.length] }}
                                                                 >
-                                                                    <img
-                                                                        src={p.image || (p.sex === "F" ? femalePic : malePic)}
-                                                                        alt=""
-                                                                        className="w-full h-full rounded-full object-cover"
+                                                                    <Avatar
+                                                                        image={p.image}
+                                                                        sex={p.sex}
+                                                                        alt={p.name || ''}
+                                                                        className="w-6 h-6 rounded-full object-cover"
                                                                     />
                                                                 </div>
                                                                 <span className="truncate font-medium">{p.name}</span>

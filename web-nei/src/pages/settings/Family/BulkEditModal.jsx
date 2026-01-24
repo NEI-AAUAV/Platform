@@ -16,8 +16,6 @@ import FamilyService from "services/FamilyService";
 import { colors } from "pages/Family/data";
 import { formatYear } from "pages/Family/utils";
 
-// malePic and femalePic unused imports removed per SonarQube S1128
-
 const BulkEditModal = ({
     isOpen,
     onClose,

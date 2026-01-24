@@ -8,9 +8,7 @@ import FamilyService from "services/FamilyService";
 import { organizations, colors } from "pages/Family/data";
 import { formatYear } from "pages/Family/utils";
 import IconPicker from "components/IconPicker";
-
-import malePic from "assets/default_profile/male.svg";
-import femalePic from "assets/default_profile/female.svg";
+import Avatar from "components/Avatar";
 
 const getModalTitle = (isNew, formData, selectedNode) => {
     if (isNew) {
@@ -56,10 +54,11 @@ const MembersList = ({ members, membersLoading, yearFormat, onRemove }) => {
                             ringColor: colors[(member.user?.start_year || 0) % colors.length]
                         }}
                     >
-                        <img
-                            src={member.user?.image || (member.user?.sex === 'F' ? femalePic : malePic)}
-                            alt=""
-                            className="rounded-full object-cover"
+                        <Avatar
+                            image={member.user?.image}
+                            sex={member.user?.sex}
+                            alt={member.user?.name || "avatar"}
+                            className="h-10 w-10 rounded-full object-cover"
                         />
                     </div>
                     <div className="flex-1 min-w-0">

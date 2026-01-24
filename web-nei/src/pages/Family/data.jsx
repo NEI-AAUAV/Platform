@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import data from "assets/db.json";
 import femalePic from "assets/default_profile/female.svg";
 import malePic from "assets/default_profile/male.svg";
+import otherPic from "assets/default_profile/other.svg";
 import nei from "assets/icons/nei.svg";
 import aettua from "assets/icons/aettua.svg";
 import anzol from "assets/icons/anzol.svg";
@@ -347,37 +348,55 @@ export function buildTree(users = null, options = {}) {
     .attr("class", "node")
     .attr("transform", (d) => `translate(${d.x},${d.y})`);
 
-  // node images
-  d3.select("defs")
-    .selectAll("pattern.image")
-    .data(
-      root
-        .descendants()
-        .slice(1)
-        .filter((d) => !!d.data.image)
-    )
-    .enter()
-    .append("pattern")
-    .attr("id", (d) => d.data.id)
-    .attr("width", 1)
-    .attr("height", 1)
-    .attr("patternContentUnits", "objectBoundingBox")
-    .append("image")
-    .attr(
-      "xlink:xlink:href",
-      (d) =>
-        import.meta.env.BASE_URL + "treeei/optimized/" + d.data.image + ".jpeg"
-    )
-    .attr("height", 1)
-    .attr("width", 1)
-    .attr("preserveAspectRatio", "xMidYMid slice");
+  const resolveNodeImage = (img) => {
+    if (!img) return null;
+    // If API returns full URL (R2), use as-is
+    if (img.startsWith("http://") || img.startsWith("https://")) return img;
+    // Fallback to legacy static path
+    return import.meta.env.BASE_URL + "treeei/optimized/" + img + ".jpeg";
+  };
+
+  // Pre-validate image URLs before creating SVG patterns
+  const defs = d3.select("defs");
+  const nodesWithImages = root.descendants().slice(1).filter((d) => !!d.data.image);
+  const validateImage = (url) => {
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
+  };
+
+  // Async validation and pattern creation
+  (async () => {
+    for (const d of nodesWithImages) {
+      const url = resolveNodeImage(d.data.image);
+      const ok = await validateImage(url);
+      if (ok) {
+        const pattern = defs.append("pattern")
+          .attr("class", "image")
+          .attr("id", d.data.id)
+          .attr("width", 1)
+          .attr("height", 1)
+          .attr("patternContentUnits", "objectBoundingBox");
+        pattern.append("image")
+          .attr("xlink:xlink:href", url)
+          .attr("height", 1)
+          .attr("width", 1)
+          .attr("preserveAspectRatio", "xMidYMid slice");
+      } else {
+        // If image fails, clear image so fallback is used
+        d.data.image = null;
+      }
+    }
+  })();
 
   const getNodeImageId = (d) => {
-    return d.data.image
-      ? d.data.id
-      : d.data.sex === "M"
-        ? "default_male"
-        : "default_female";
+    if (d.data.image) return d.data.id;
+    if (d.data.sex === "M") return "default_male";
+    if (d.data.sex === "F") return "default_female";
+    return "default_other";
   };
 
   // circle with the person image
@@ -860,6 +879,7 @@ export const patterns = [
   { id: "heart_border", image: heartBorder },
   { id: "default_male", image: malePic },
   { id: "default_female", image: femalePic },
+  { id: "default_other", image: otherPic },
   // Static fallback patterns for old data without backend icon URLs
   // These are only used when roles don't have .icon field from backend
   { id: "NEI", image: nei },
