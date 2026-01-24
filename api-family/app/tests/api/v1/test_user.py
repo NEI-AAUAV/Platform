@@ -166,9 +166,9 @@ class TestBulkCreateUsers:
         data = response.json()
         assert data["dry_run"] is True
         assert data["total_created"] == 1  # Would be created
-        # The mock user has _id = -1
+        # The mock user has id = -1
         if data["created"]:
-            assert data["created"][0]["_id"] == -1
+            assert data["created"][0]["id"] == -1
     
     def test_bulk_create_atomic_mode_aborts_on_error(self, auth_client: TestClient):
         """Test that atomic mode aborts entire operation if any validation fails."""
