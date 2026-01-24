@@ -270,7 +270,9 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                                                 This avoids redundancy like "Consoante (NEI)" when org is already NEI
                                                                 But keeps useful context like "Vogal (Direção)" for AETTUA sub-sections */}
                                                             {ins.parent_org_name && ins.parent_org_name !== ins.name && (
-                                                                <span className="text-base-content/50 font-normal"> ({ins.parent_org_name})</span>
+                                                                <span className="text-base-content/50 font-normal">
+                                                                    {" "}({ins.parent_org_name})
+                                                                </span>
                                                             )}
                                                         </div>
                                                         <div className="text-sm text-base-content/50">
@@ -368,12 +370,15 @@ ProfileViewModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     user: PropTypes.shape({
         id: PropTypes.number,
+        _id: PropTypes.number,
         name: PropTypes.string,
         sex: PropTypes.oneOf(["M", "F"]),
         start_year: PropTypes.number,
         end_year: PropTypes.number,
         course_id: PropTypes.number,
         parent: PropTypes.number,
+        nmec: PropTypes.number,
+        image: PropTypes.string,
         organizations: PropTypes.arrayOf(PropTypes.shape({
             name: PropTypes.string,
             role: PropTypes.string,

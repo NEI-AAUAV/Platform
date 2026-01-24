@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import malePic from "assets/default_profile/male.svg";
 import femalePic from "assets/default_profile/female.svg";
 import otherPic from "assets/default_profile/other.svg";
@@ -39,7 +40,13 @@ function getSafeImage(image, fallback) {
  */
 export default function Avatar({ image, sex, alt = "avatar", className = "", ...rest }) {
   // Pick fallback based on sex
-  const fallback = sex === "F" ? femalePic : sex === "M" ? malePic : otherPic;
+  let fallback = otherPic;
+  if (sex === "F") {
+    fallback = femalePic;
+  } else if (sex === "M") {
+    fallback = malePic;
+  }
+  
   const initialSrc = getSafeImage(image, fallback);
   const [src, setSrc] = React.useState(initialSrc);
 
@@ -57,3 +64,10 @@ export default function Avatar({ image, sex, alt = "avatar", className = "", ...
     />
   );
 }
+
+Avatar.propTypes = {
+  image: PropTypes.string,
+  sex: PropTypes.oneOf(["M", "F"]),
+  alt: PropTypes.string,
+  className: PropTypes.string,
+};
