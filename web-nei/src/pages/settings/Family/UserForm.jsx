@@ -109,6 +109,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         handleSubmit,
         reset,
         control,
+        watch,
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
@@ -320,6 +321,17 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 await FamilyService.updateUser(uid, payload);
             } else {
                 const newUser = await FamilyService.createUser(payload);
+
+                // Upload photo if provided
+                if (imageFile) {
+                    try {
+                        await FamilyService.updateUserImage(newUser.id, imageFile);
+                    } catch (photoErr) {
+                        console.error("Failed to upload photo for new user:", photoErr);
+                        // Don't fail the entire creation if photo upload fails
+                    }
+                }
+
                 // Process pending roles
                 if (pendingRoles.length > 0) {
                     await Promise.all(pendingRoles.map(role =>
@@ -346,10 +358,13 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                     nmec: null,
                     course_id: data.course_id, // Keep course often useful
                 });
-                // Clear roles/children
+                // Clear roles/children and photo
                 setPendingRoles([]);
                 setUserRoles([]);
                 setChildrenList([]);
+                setImageFile(null);
+                setPreview(null);
+                setRemoveImage(false);
                 // selectedPatrao remains correct
 
                 // Show brief success feedback if possible, or just ready state
@@ -558,7 +573,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                         <div className="avatar">
                                                             <div className="h-10 w-10 rounded-full bg-base-300">
                                                                 <Avatar
-                                                                    image={p.photoUrl}
+                                                                    image={p.image}
                                                                     sex={p.sex}
                                                                     alt={p.name || "avatar"}
                                                                     className="h-10 w-10 rounded-full object-cover"
@@ -630,7 +645,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                     >
                                         <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-6" style={{ WebkitOverflowScrolling: 'touch' }}>
                                             {/* Photo Section */}
-                                            {isEdit && (
+                                            {(
                                                 <div className="rounded-xl border border-base-content/10 bg-base-200/50 p-4">
                                                     <div className="mb-3 flex items-center justify-between">
                                                         <h4 className="font-bold flex items-center gap-2">
@@ -644,7 +659,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                             <div className="h-16 w-16 rounded-full ring-2 ring-offset-2 ring-offset-base-100 ring-base-content/10 bg-base-300 overflow-hidden">
                                                                 <Avatar
                                                                     image={preview ?? user?.image}
-                                                                    sex={user?.sex}
+                                                                    sex={user?.sex || watch("sex")}
                                                                     alt={user?.name || 'preview'}
                                                                     className="h-16 w-16 object-cover"
                                                                 />
@@ -660,32 +675,39 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                                         onChange={handleImageInputChange}
                                                                         disabled={removeImage}
                                                                     />
-                                                                    <label className="label cursor-pointer w-fit">
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            className="checkbox checkbox-sm mr-2"
-                                                                            checked={removeImage}
-                                                                            onChange={(e) => {
-                                                                                setRemoveImage(e.target.checked);
-                                                                                if (e.target.checked) {
-                                                                                    setImageFile(null);
-                                                                                    setPreview(null);
-                                                                                }
-                                                                            }}
-                                                                        />
-                                                                        <span className="label-text">Remover foto</span>
-                                                                    </label>
+                                                                    {isEdit && (
+                                                                        <label className="label cursor-pointer w-fit">
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                className="checkbox checkbox-sm mr-2"
+                                                                                checked={removeImage}
+                                                                                onChange={(e) => {
+                                                                                    setRemoveImage(e.target.checked);
+                                                                                    if (e.target.checked) {
+                                                                                        setImageFile(null);
+                                                                                        setPreview(null);
+                                                                                    }
+                                                                                }}
+                                                                            />
+                                                                            <span className="label-text">Remover foto</span>
+                                                                        </label>
+                                                                    )}
+                                                                    {!isEdit && imageFile && (
+                                                                        <span className="text-xs text-success">✓ Foto será enviada ao criar o membro</span>
+                                                                    )}
                                                                 </div>
-                                                                <div>
-                                                                    <button
-                                                                        type="button"
-                                                                        className={classNames("btn btn-primary btn-sm", { loading: imageUpdating })}
-                                                                        disabled={imageUpdating || (!imageFile && !removeImage)}
-                                                                        onClick={handleUpdatePhoto}
-                                                                    >
-                                                                        Guardar Foto
-                                                                    </button>
-                                                                </div>
+                                                                {isEdit && (
+                                                                    <div>
+                                                                        <button
+                                                                            type="button"
+                                                                            className={classNames("btn btn-primary btn-sm", { loading: imageUpdating })}
+                                                                            disabled={imageUpdating || (!imageFile && !removeImage)}
+                                                                            onClick={handleUpdatePhoto}
+                                                                        >
+                                                                            Guardar Foto
+                                                                        </button>
+                                                                    </div>
+                                                                )}
                                                             </>
                                                         ) : (
                                                             <div className="flex-1 flex flex-col gap-2">
@@ -1005,7 +1027,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                             />
                         </motion.div>
                     </div >
-                    
+
                     {/* Toast Container - Inside Modal Portal */}
                     <Toaster />
                 </>

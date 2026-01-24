@@ -136,7 +136,7 @@ const BulkImportModal = ({
     onComplete,
     allUsers = [],
 }) => {
-    // Steps: "upload" | "preview" | "assign" | "results"
+    // Steps: "upload" | "preview" | "photos" | "assign" | "results"
     const [step, setStep] = useState("upload");
     const [parsedData, setParsedData] = useState([]);
     const [errors, setErrors] = useState([]);
@@ -172,6 +172,11 @@ const BulkImportModal = ({
         faina_name: false,
         patrao: true,
     });
+
+    // Photo upload state
+    const [userPhotos, setUserPhotos] = useState({}); // { rowIdx: File }
+    const [photoPreviews, setPhotoPreviews] = useState({}); // { rowIdx: blobURL }
+    const [photoUploading, setPhotoUploading] = useState(false);
 
     const fileInputRef = useRef(null);
 
@@ -220,6 +225,8 @@ const BulkImportModal = ({
             setUserRoles({});
             setTemplateColumns({ nmec: true, faina_name: false, patrao: true });
             setWarnings([]);
+            setUserPhotos({});
+            setPhotoPreviews({});
         }
     }, [isOpen]);
 
@@ -722,7 +729,7 @@ const BulkImportModal = ({
             }
 
             if (response.total_created > 0) {
-                setStep("assign");
+                setStep("photos");
             } else {
                 setStep("results");
             }
@@ -742,6 +749,115 @@ const BulkImportModal = ({
             setLoading(false);
         }
     };
+
+    // Photo upload handlers (adapted from UserForm.jsx)
+    const handlePhotoSelect = (rowIdx, file) => {
+        if (!file) {
+            setUserPhotos(prev => {
+                const updated = { ...prev };
+                delete updated[rowIdx];
+                return updated;
+            });
+            setPhotoPreviews(prev => {
+                const updated = { ...prev };
+                if (updated[rowIdx]) {
+                    URL.revokeObjectURL(updated[rowIdx]);
+                    delete updated[rowIdx];
+                }
+                return updated;
+            });
+            return;
+        }
+
+        // Validate file size (2MB max)
+        const maxSize = 2 * 1024 * 1024;
+        if (file.size > maxSize) {
+            alert("Imagem demasiado grande (máx. 2MB)");
+            return;
+        }
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert("Apenas imagens são permitidas");
+            return;
+        }
+
+        setUserPhotos(prev => ({ ...prev, [rowIdx]: file }));
+        setPhotoPreviews(prev => {
+            // Clean up old preview if exists
+            if (prev[rowIdx]) {
+                URL.revokeObjectURL(prev[rowIdx]);
+            }
+            return { ...prev, [rowIdx]: URL.createObjectURL(file) };
+        });
+    };
+
+    const handleRemovePhoto = (rowIdx) => {
+        setUserPhotos(prev => {
+            const updated = { ...prev };
+            delete updated[rowIdx];
+            return updated;
+        });
+        setPhotoPreviews(prev => {
+            const updated = { ...prev };
+            if (updated[rowIdx]) {
+                URL.revokeObjectURL(updated[rowIdx]);
+                delete updated[rowIdx];
+            }
+            return updated;
+        });
+    };
+
+    // Upload photos after users are created
+    const handleUploadPhotos = async () => {
+        if (!results?.created?.length) return;
+
+        setPhotoUploading(true);
+        let successCount = 0;
+        let failCount = 0;
+        const updatedUsers = [...results.created];
+
+        try {
+            for (let i = 0; i < results.created.length; i++) {
+                const user = results.created[i];
+                const photoFile = userPhotos[i];
+
+                if (photoFile) {
+                    try {
+                        const updatedUser = await FamilyService.updateUserImage(user.id, photoFile);
+                        // Update the user object with the new image URL
+                        if (updatedUser?.image) {
+                            updatedUsers[i] = { ...updatedUsers[i], image: updatedUser.image };
+                        }
+                        successCount++;
+                    } catch (err) {
+                        console.error(`Failed to upload photo for ${user.name}:`, err);
+                        failCount++;
+                    }
+                }
+            }
+
+            setResults(prev => ({
+                ...prev,
+                created: updatedUsers,
+                photosUploaded: successCount,
+                photosFailed: failCount
+            }));
+
+            // Proceed to assign step
+            setStep("assign");
+        } finally {
+            setPhotoUploading(false);
+        }
+    };
+
+    // Cleanup photo previews on unmount
+    useEffect(() => {
+        return () => {
+            Object.values(photoPreviews).forEach(url => URL.revokeObjectURL(url));
+        };
+    }, [photoPreviews]);
+
 
     // Assign individual roles (supports multiple per user)
     const handleAssignRoles = async () => {
@@ -1074,6 +1190,83 @@ const BulkImportModal = ({
         </div>
     );
 
+    // Render photos step
+    const renderPhotosStep = () => {
+        const photosWithUploads = Object.keys(userPhotos).length;
+
+        return (
+            <div className="space-y-4">
+                <div className="bg-info/10 rounded-xl p-4 text-center">
+                    <MaterialSymbol icon="photo_camera" size={40} className="text-info" />
+                    <h3 className="font-bold text-lg mt-2">Adicionar Fotos (Opcional)</h3>
+                    <p className="text-sm text-base-content/60 mt-1">
+                        {photosWithUploads} de {results?.total_created} membros com foto
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto">
+                    {results?.created?.map((user, userIdx) => {
+                        const hasPhoto = !!userPhotos[userIdx];
+                        const preview = photoPreviews[userIdx];
+
+                        return (
+                            <div
+                                key={user.id || userIdx}
+                                className="flex items-center gap-3 p-3 bg-base-200/50 rounded-xl hover:bg-base-200 transition-colors"
+                            >
+                                <div
+                                    className="w-16 h-16 rounded-full overflow-hidden border-2 flex-shrink-0"
+                                    style={{ borderColor: colors[(user.start_year || 0) % colors.length] }}
+                                >
+                                    <Avatar
+                                        image={preview || user.image}
+                                        sex={user.sex}
+                                        alt={user.name || "avatar"}
+                                        className="w-16 h-16 object-cover"
+                                    />
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-medium truncate">{user.name}</p>
+                                    <p className="text-xs text-base-content/50">Ano {user.start_year}</p>
+                                </div>
+
+                                <div className="flex gap-2">
+                                    {hasPhoto ? (
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-ghost btn-circle"
+                                            onClick={() => handleRemovePhoto(userIdx)}
+                                            title="Remover foto"
+                                        >
+                                            <MaterialSymbol icon="delete" size={18} />
+                                        </button>
+                                    ) : null}
+
+                                    <label className="btn btn-sm btn-primary btn-circle cursor-pointer">
+                                        <MaterialSymbol icon={hasPhoto ? "edit" : "add_a_photo"} size={18} />
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    handlePhotoSelect(userIdx, file);
+                                                }
+                                                e.target.value = "";
+                                            }}
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    };
+
     // Render assign step (individual roles)
     const renderAssignStep = () => (
         <div className="space-y-4">
@@ -1173,6 +1366,8 @@ const BulkImportModal = ({
                 </div>
 
                 {results?.rolesAssigned > 0 && <p className="text-success text-sm mt-1">{results?.rolesAssigned} insignia(s) atribuida(s)</p>}
+                {results?.photosUploaded > 0 && <p className="text-success text-sm mt-1">{results?.photosUploaded} foto(s) enviada(s)</p>}
+                {results?.photosFailed > 0 && <p className="text-error text-sm mt-1">{results?.photosFailed} foto(s) falharam</p>}
             </div>
 
             {/* Warnings */}
@@ -1206,6 +1401,7 @@ const BulkImportModal = ({
                         <table className="table table-sm w-full">
                             <thead className="bg-base-200">
                                 <tr>
+                                    <th>Foto</th>
                                     <th>Nome</th>
                                     <th>Sexo</th>
                                     <th>Ano</th>
@@ -1220,6 +1416,18 @@ const BulkImportModal = ({
                                     const roles = userRoles[idx] || [];
                                     return (
                                         <tr key={user.id ?? idx}>
+                                            <td>
+                                                <div className="avatar">
+                                                    <div className="w-8 h-8 rounded-full">
+                                                        <Avatar
+                                                            image={user.image}
+                                                            sex={user.sex}
+                                                            alt={user.name}
+                                                            className="w-8 h-8 object-cover"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td className="font-medium">{user.name}</td>
                                             <td>{user.sex}</td>
                                             <td>{user.start_year}</td>
@@ -1381,16 +1589,17 @@ const BulkImportModal = ({
                             <div className="px-6 pt-4 shrink-0">
                                 <ul className="steps steps-horizontal w-full text-xs">
                                     <li className={classNames("step", step !== "upload" && "step-primary")}>Upload</li>
-                                    <li className={classNames("step", (step === "preview" || step === "assign" || step === "results") && "step-primary")}>Preview</li>
+                                    <li className={classNames("step", (step === "preview" || step === "photos" || step === "assign" || step === "results") && "step-primary")}>Preview</li>
+                                    <li className={classNames("step", (step === "photos" || step === "assign" || step === "results") && "step-primary")}>Fotos</li>
                                     <li className={classNames("step", (step === "assign" || step === "results") && "step-primary")}>Insignias</li>
                                     <li className={classNames("step", step === "results" && "step-primary")}>Resultado</li>
                                 </ul>
                             </div>
 
-                            {/* Content */}
                             <div className="p-6 overflow-y-auto flex-1">
                                 {step === "upload" && renderUploadStep()}
                                 {step === "preview" && renderPreviewStep()}
+                                {step === "photos" && renderPhotosStep()}
                                 {step === "assign" && renderAssignStep()}
                                 {step === "results" && renderResultsStep()}
                             </div>
@@ -1405,8 +1614,14 @@ const BulkImportModal = ({
                                             Voltar
                                         </button>
                                     )}
-                                    {step === "assign" && (
+                                    {step === "photos" && (
                                         <button type="button" className="btn btn-ghost gap-2" onClick={() => setStep("preview")}>
+                                            <MaterialSymbol icon="arrow_back" size={18} />
+                                            Voltar
+                                        </button>
+                                    )}
+                                    {step === "assign" && (
+                                        <button type="button" className="btn btn-ghost gap-2" onClick={() => setStep("photos")}>
                                             <MaterialSymbol icon="arrow_back" size={18} />
                                             Voltar
                                         </button>
@@ -1418,6 +1633,23 @@ const BulkImportModal = ({
                                     {(() => {
                                         if (step === "results") {
                                             return <button type="button" className="btn btn-primary" onClick={onClose}>Fechar</button>;
+                                        }
+                                        if (step === "photos") {
+                                            const photosCount = Object.keys(userPhotos).length;
+                                            return (
+                                                <>
+                                                    <button type="button" className="btn btn-ghost" onClick={() => setStep("assign")} disabled={photoUploading}>Saltar Fotos</button>
+                                                    <button
+                                                        type="button"
+                                                        className={classNames("btn btn-primary gap-2", { loading: photoUploading })}
+                                                        onClick={handleUploadPhotos}
+                                                        disabled={photoUploading}
+                                                    >
+                                                        <MaterialSymbol icon="upload" size={18} />
+                                                        {photosCount > 0 ? `Enviar ${photosCount} Foto(s)` : "Continuar"}
+                                                    </button>
+                                                </>
+                                            );
                                         }
                                         if (step === "assign") {
                                             return (

@@ -169,8 +169,8 @@ const RoleTree = ({ nodes, depth = 0, selectedNode, isNew, formData, onSelect })
             )}
 
             {nodes.map(node => {
-                const isSelected = selectedNode?.id === node.id && !isNew;
-                const isParentOfNew = isNew && formData.super_roles === node.id;
+                const isSelected = selectedNode && !isNew && (selectedNode.id === node.id || (node._id && selectedNode.id === node._id));
+                const isParentOfNew = isNew && formData.super_roles === (node.id || node._id);
                 const hasChildren = node.children && node.children.length > 0;
 
                 let IconComponent = null;
@@ -187,7 +187,7 @@ const RoleTree = ({ nodes, depth = 0, selectedNode, isNew, formData, onSelect })
                 }
 
                 return (
-                    <div key={node.id} className="relative">
+                    <div key={node.id || node._id} className="relative">
                         <button
                             className={classNames(
                                 "flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm transition-all duration-200",
@@ -431,8 +431,8 @@ export default function RoleManagerModal({ isOpen, onClose }) {
 
     const handleAddChild = () => {
         if (!selectedNode) return;
-        const parentId = selectedNode.id;
-        
+        const parentId = selectedNode.id || selectedNode._id;
+
         setIsNew(true);
         setFormData({
             name: "",
