@@ -47,7 +47,6 @@ SortIcon.propTypes = {
   field: PropTypes.string.isRequired,
   currentSort: PropTypes.string.isRequired,
   sortDir: PropTypes.string.isRequired,
-  sortDir: PropTypes.string.isRequired,
 };
 
 const renderPatraoCell = (user, patrao) => {

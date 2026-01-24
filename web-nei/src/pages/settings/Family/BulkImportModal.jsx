@@ -1215,7 +1215,7 @@ const BulkImportModal = ({
                                 </tr>
                             </thead>
                             <tbody>
-                                {results.created.slice(0, 5).map((user, idx) => {
+                                {(results?.created || []).slice(0, 5).map((user, idx) => {
                                     const patrao = user.patrao_id ? allUsers.find(u => u._id === user.patrao_id) : null;
                                     const roles = userRoles[idx] || [];
                                     return (

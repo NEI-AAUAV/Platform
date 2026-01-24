@@ -261,10 +261,7 @@ export function getFainaHierarchy({ sex, start_year, organizations }, end_year) 
 }
 
 export function showLabelFaina({ fainaNames, start_year }, end_year) {
-    if (fainaNames && start_year + 1 <= end_year) {
-        return true;
-    }
-    return false;
+    return !!(fainaNames && start_year + 1 <= end_year);
 }
 
 export function labelFamilies(node) {
