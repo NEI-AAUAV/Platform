@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
 
 import MaterialSymbol from "components/MaterialSymbol";
 import { Toaster } from "components/ui/toaster";
+import { BaseModal } from "components/Modal";
 
 import FamilyService from "services/FamilyService";
 import UserForm from "./UserForm";
@@ -1094,43 +1094,42 @@ export function Component() {
       />
 
       {/* Delete Confirmation - Only show when no orphan modal needed */}
-      <AnimatePresence>
-        {deleteModal && !showOrphanModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="w-full max-w-sm rounded-xl bg-base-100 p-6 shadow-xl"
+      <BaseModal
+        isOpen={!!deleteModal && !showOrphanModal}
+        onClose={() => setDeleteModal(null)}
+        title="Eliminar Membro?"
+        icon="delete"
+        iconClassName="text-error"
+        variant="error"
+        maxWidth="max-w-sm"
+        footer={
+          <>
+            <button
+              className="btn btn-ghost"
+              onClick={() => setDeleteModal(null)}
+              disabled={deleting}
             >
-              <h3 className="text-lg font-bold">Eliminar Membro?</h3>
-              <p className="py-4">
-                Tem a certeza que deseja eliminar <b>{deleteModal.name}</b>?
-                <br />
-                <span className="text-sm text-warning mt-2 block bg-warning/10 p-2 rounded">
-                  <MaterialSymbol icon="warning" className="align-bottom mr-1" size={16} />
-                  Atenção: Os seus pedaços ficarão órfãos!
-                </span>
-              </p>
-              <div className="flex justify-end gap-3">
-                <button
-                  className="btn btn-ghost"
-                  onClick={() => setDeleteModal(null)}
-                  disabled={deleting}
-                >
-                  Cancelar
-                </button>
-                <button
-                  className={classNames("btn btn-error", { loading: deleting })}
-                  onClick={handleDelete}
-                >
-                  Eliminar
-                </button>
-              </div>
-            </motion.div>
+              Cancelar
+            </button>
+            <button
+              className={classNames("btn btn-error", { loading: deleting })}
+              onClick={handleDelete}
+            >
+              Eliminar
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <p>
+            Tem a certeza que deseja eliminar <b>{deleteModal?.name}</b>?
+          </p>
+          <div className="text-sm text-warning bg-warning/10 p-2 rounded">
+            <MaterialSymbol icon="warning" className="align-bottom mr-1" size={16} />
+            Atenção: Os seus pedaços ficarão órfãos!
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      </BaseModal>
 
       {/* Role Picker Modal for Filter */}
       <RolePickerModal

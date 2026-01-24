@@ -19,7 +19,8 @@ import classNames from "classnames";
 
 import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
-import { RolePickerModal } from "components/Family";
+import { RolePickerModal, PatraoPicker } from "components/Family";
+import { BaseModal, useBodyScrollLock } from "components/Modal";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { colors } from "pages/Family/data";
@@ -224,24 +225,7 @@ const BulkImportModal = ({
     }, [isOpen]);
 
     // Lock body scroll
-    useEffect(() => {
-        if (isOpen) {
-            const scrollY = window.scrollY;
-            document.body.style.position = 'fixed';
-            document.body.style.top = `-${scrollY}px`;
-            document.body.style.left = '0';
-            document.body.style.right = '0';
-            document.body.style.overflow = 'hidden';
-            return () => {
-                document.body.style.position = '';
-                document.body.style.top = '';
-                document.body.style.left = '';
-                document.body.style.right = '';
-                document.body.style.overflow = '';
-                window.scrollTo(0, scrollY);
-            };
-        }
-    }, [isOpen]);
+    useBodyScrollLock(isOpen);
 
     // Resolve patrao from name, nmec, or ID
     const resolvePatrao = useCallback((value) => {
@@ -1031,7 +1015,6 @@ const BulkImportModal = ({
                     className="btn btn-ghost btn-xs"
                     onClick={() => {
                         setStep("upload");
-                        setFile(null);
                         setParsedData([]);
                         setErrors([]);
                     }}
@@ -1277,79 +1260,8 @@ const BulkImportModal = ({
         </div>
     );
 
-    // Patrao picker modal
-    const renderPatraoPicker = () => {
-        if (patraoPickerRow === null) return null;
-        const row = parsedData[patraoPickerRow];
-        if (!row) return null;
-
-        const searchResults = patraoSearch ? patraoSearchResults : (row.patrao_matches || allUsers.slice(0, 10));
-
-        return (
-            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                <button
-                    type="button"
-                    className="absolute inset-0 bg-black/50 cursor-default w-full h-full border-none"
-                    onClick={() => setPatraoPickerRow(null)}
-                    aria-label="Fechar seletor"
-                />
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="relative bg-base-100 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
-                >
-                    <div className="p-4 border-b border-base-content/10">
-                        <h4 className="font-bold">Escolher Patrão para "{row.name}"</h4>
-                        <p className="text-xs text-base-content/60">Pesquisa por nome, nmec ou ID</p>
-                    </div>
-
-                    <div className="p-4">
-                        <div className="relative">
-                            <MaterialSymbol icon="search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
-                            <input
-                                type="text"
-                                placeholder="Pesquisar..."
-                                className="input input-bordered w-full pl-10"
-                                value={patraoSearch}
-                                onChange={(e) => setPatraoSearch(e.target.value)}
-                                autoFocus
-                            />
-                        </div>
-                    </div>
-
-                    <div className="max-h-64 overflow-y-auto px-4 pb-4 space-y-1">
-                        {searchResults.map(u => (
-                            <button key={u.id} type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 text-left" onClick={() => setPatrao(patraoPickerRow, u)}>
-                                <div className="w-10 h-10 rounded-full overflow-hidden border-2" style={{ borderColor: colors[u.start_year % colors.length] }}>
-                                    <Avatar
-                                        image={u.image}
-                                        sex={u.sex}
-                                        alt={u.name || ''}
-                                        className="w-10 h-10 object-cover"
-                                    />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-medium truncate">{u.name}</p>
-                                    <p className="text-xs text-base-content/50">{u.nmec && `#${u.nmec} · `}Ano {u.start_year}</p>
-                                </div>
-                                <span className="text-xs font-mono bg-base-200 px-2 py-1 rounded">ID {u.id}</span>
-                            </button>
-                        ))}
-                        <button type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 border border-dashed border-base-content/20" onClick={() => setPatrao(patraoPickerRow, null)}>
-                            <div className="w-10 h-10 rounded-full bg-base-200 flex items-center justify-center">
-                                <MaterialSymbol icon="person_off" size={20} className="text-base-content/40" />
-                            </div>
-                            <span className="text-base-content/60">Sem patrão (raiz)</span>
-                        </button>
-                    </div>
-
-                    <div className="p-4 border-t border-base-content/10">
-                        <button type="button" className="btn btn-ghost w-full" onClick={() => setPatraoPickerRow(null)}>Cancelar</button>
-                    </div>
-                </motion.div>
-            </div>
-        );
-    };
+    // Patrao picker modal - using PatraoPicker component
+    const currentPatraoPickerRow = patraoPickerRow !== null ? parsedData[patraoPickerRow] : null;
 
 
     return (
@@ -1400,7 +1312,7 @@ const BulkImportModal = ({
                                 {/* Back button */}
                                 <div>
                                     {step === "preview" && (
-                                        <button type="button" className="btn btn-ghost gap-2" onClick={() => { setStep("upload"); setFile(null); setParsedData([]); setErrors([]); }}>
+                                        <button type="button" className="btn btn-ghost gap-2" onClick={() => { setStep("upload"); setParsedData([]); setErrors([]); }}>
                                             <MaterialSymbol icon="arrow_back" size={18} />
                                             Voltar
                                         </button>
@@ -1458,7 +1370,33 @@ const BulkImportModal = ({
                         </motion.div>
                     </div>
 
-                    {renderPatraoPicker()}
+                    {/* Patrao Picker Modal */}
+                    <BaseModal
+                        isOpen={patraoPickerRow !== null}
+                        onClose={() => {
+                            setPatraoPickerRow(null);
+                            setPatraoSearch("");
+                        }}
+                        title={currentPatraoPickerRow ? `Escolher Patrão para "${currentPatraoPickerRow.name}"` : "Selecionar Patrão"}
+                        subtitle="Pesquisa por nome, nmec ou ID"
+                        maxWidth="max-w-lg"
+                        zIndex={60}
+                    >
+                        <div className="max-h-96 overflow-hidden flex flex-col">
+                            <PatraoPicker
+                                selectedPatrao={currentPatraoPickerRow?.patrao_user || null}
+                                onSelect={(user) => {
+                                    if (patraoPickerRow !== null) {
+                                        setPatrao(patraoPickerRow, user);
+                                        setPatraoPickerRow(null);
+                                        setPatraoSearch("");
+                                    }
+                                }}
+                                title=""
+                                className="flex-1"
+                            />
+                        </div>
+                    </BaseModal>
 
                     <RolePickerModal
                         isOpen={showRolePicker}

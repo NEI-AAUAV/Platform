@@ -64,6 +64,12 @@ services:
     depends_on:
       db_pg:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/docs\").read()'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - backend
     restart: unless-stopped
@@ -107,6 +113,7 @@ services:
       R2_PUBLIC_BASE_URL: ${R2_PUBLIC_BASE_URL}
     volumes:
       - ./api-family:/api_family
+      - ./data_import:/data/import:ro
       - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:
       db_mongo:
@@ -137,9 +144,12 @@ services:
       #- ./dev/proxy/locations.rally.conf:/etc/nginx/conf.d/locations.rally.conf:ro
       #- ./dev/proxy/locations.gala.conf:/etc/nginx/conf.d/locations.gala.conf:ro
     depends_on:
-      - web_nei
-      - api_nei
-      - api_family
+      web_nei:
+        condition: service_started
+      api_nei:
+        condition: service_healthy
+      api_family:
+        condition: service_started
       # - api_tacaua
     networks:
       - backend

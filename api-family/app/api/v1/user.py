@@ -13,7 +13,7 @@ from app.schemas.user import (
     UserCreate, UserUpdate, UserInDB, UserList,
     UserBulkCreate, BulkCreateError, BulkCreateResponse
 )
-from app.constants import DEFAULT_SKIP, DEFAULT_LIMIT, MAX_LIMIT
+from app.constants import DEFAULT_SKIP, DEFAULT_LIMIT, MAX_LIMIT, DEFAULT_SORT_FIELD, DEFAULT_SORT_ORDER
 
 
 
@@ -30,8 +30,8 @@ def get_users(
     year: Optional[int] = Query(default=None, description="Filter by exact start_year"),
     role_id: Optional[str] = Query(default=None, description="Filter by role ID"),
     role_year: Optional[int] = Query(default=None, description="Filter by role year (year of role assignment)"),
-    sort_by: Optional[str] = Query(default="name", description="Sort field: name, _id (or id), year, nmec, patrao_id"),
-    order: Optional[str] = Query(default="asc", description="Sort order: asc, desc"),
+    sort_by: Optional[str] = Query(default=DEFAULT_SORT_FIELD, description="Sort field: name, _id (or id), year, nmec, patrao_id"),
+    order: Optional[str] = Query(default=DEFAULT_SORT_ORDER, description="Sort order: asc, desc"),
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
 ):
     """

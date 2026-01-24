@@ -11,6 +11,7 @@ from app.db.db import User as UserCollection
 from app.schemas.user import UserCreate, UserUpdate
 from app.services.storage import storage_client
 from app.core.config import settings
+from app.constants import INFINITY_SORT_VALUE
 from PIL import Image, ImageOps
 from io import BytesIO
 from hashlib import md5
@@ -519,7 +520,7 @@ class CRUDUser:
         # Use $addFields + $ifNull to ensure nulls sort to end (consistent with Python)
         pipeline = [
             {"$addFields": {
-                "_sort_year": {"$ifNull": ["$start_year", 9999]}
+                "_sort_year": {"$ifNull": ["$start_year", INFINITY_SORT_VALUE]}
             }},
             {"$sort": {"_sort_year": 1}},
             # Lookup user roles with nested lookup to get role details including hidden
