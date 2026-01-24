@@ -54,10 +54,11 @@ const renderPatraoCell = (user, patrao) => {
     return (
       <div className="flex items-center gap-2">
         <div className="avatar placeholder h-6 w-6 rounded-full bg-base-300">
-          <img
-            src={patrao.image || (patrao.sex === 'F' ? femalePic : malePic)}
-            alt=""
-            className="rounded-full"
+          <Avatar
+            image={patrao.image}
+            sex={patrao.sex}
+            alt={patrao.name || "avatar"}
+            className="h-6 w-6 rounded-full object-cover"
           />
         </div>
         <span className="truncate font-medium">{patrao.name}</span>
