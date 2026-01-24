@@ -472,11 +472,10 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                                                 }}
                                                             >
                                                                 <Avatar
-                                                                    src={member.user?.image}
+                                                                    image={member.user?.image}
                                                                     sex={member.user?.sex}
                                                                     alt={member.user?.name || ''}
-                                                                    className="rounded-full object-cover"
-                                                                    size={40}
+                                                                    className="w-10 h-10 rounded-full object-cover"
                                                                 />
                                                             </div>
                                                             <div className="flex-1 min-w-0">

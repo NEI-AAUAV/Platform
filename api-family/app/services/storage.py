@@ -52,5 +52,32 @@ class StorageClient:
             logger.error(f"Failed to upload to R2: {e}")
             return None
 
+    def delete_image(self, image_url: Optional[str]) -> bool:
+        """Delete image from R2 by URL. Returns True if deleted or not an R2 URL, False on error."""
+        if not self.enabled or not image_url:
+            return True  # Not an error if R2 disabled or no URL
+        
+        # Check if this is an R2 URL
+        r2_base = settings.R2_PUBLIC_BASE_URL.rstrip('/')
+        if not image_url.startswith(r2_base):
+            # Not an R2 URL (might be local static), nothing to delete
+            return True
+        
+        # Extract key from URL
+        # URL format: https://pub-xxx.r2.dev/family/users/123/abc.jpg
+        # Key: family/users/123/abc.jpg
+        try:
+            key = image_url[len(r2_base) + 1:]  # +1 for the leading slash
+            logger.info(f"Deleting image from R2: {key}")
+            self.client.delete_object(
+                Bucket=settings.R2_BUCKET,
+                Key=key,
+            )
+            logger.info(f"Successfully deleted from R2: {key}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to delete image from R2: {e}")
+            return False
+
 
 storage_client = StorageClient()

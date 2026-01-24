@@ -249,7 +249,14 @@ class CRUDUser:
                 with open(f"static{local_path}", "wb") as f:
                     f.write(data)
                 new_url = settings.STATIC_URL + local_path
-        # if image_bytes is None -> remove
+            
+            # Delete old image from R2 if it's different from the new one
+            if old_image and old_image != new_url:
+                storage_client.delete_image(old_image)
+        else:
+            # Removing image - delete old one from R2
+            if old_image:
+                storage_client.delete_image(old_image)
 
         update_doc = {"$set": {"image": new_url}}
         updated = self.collection.find_one_and_update(

@@ -682,11 +682,10 @@ const BulkImportModal = ({
                                                 style={{ borderColor: colors[u.start_year % colors.length] }}
                                             >
                                                 <Avatar
-                                                    src={u.image}
+                                                    image={u.image}
                                                     sex={u.sex}
                                                     alt={u.name || ''}
-                                                    className="w-full h-full object-cover"
-                                                    size={32}
+                                                    className="w-8 h-8 object-cover"
                                                 />
                                             </div>
                                             <div className="flex-1 min-w-0">
@@ -905,11 +904,10 @@ const BulkImportModal = ({
                                                 <button type="button" className="flex items-center gap-1 px-2 py-0.5 bg-base-200 rounded-lg text-xs hover:bg-base-300" onClick={() => setPatraoPickerRow(idx)}>
                                                     <div className="w-5 h-5 rounded-full overflow-hidden" style={{ borderColor: colors[row.patrao_user.start_year % colors.length] }}>
                                                         <Avatar
-                                                            src={row.patrao_user?.image}
+                                                            image={row.patrao_user?.image}
                                                             sex={row.patrao_user?.sex}
                                                             alt={row.patrao_user?.name || ''}
-                                                            className="w-full h-full object-cover"
-                                                            size={32}
+                                                            className="w-5 h-5 object-cover"
                                                         />
                                                     </div>
                                                     <span className="truncate max-w-[80px]">{row.patrao_user.name}</span>
@@ -967,11 +965,10 @@ const BulkImportModal = ({
                             style={{ borderColor: colors[user.start_year % colors.length] }}
                         >
                             <Avatar
-                                src={user.image}
+                                image={user.image}
                                 sex={user.sex}
                                 alt={user.name || ''}
-                                className="w-full h-full object-cover"
-                                size={40}
+                                className="w-10 h-10 object-cover"
                             />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -1215,11 +1212,10 @@ const BulkImportModal = ({
                             <button key={u._id} type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 text-left" onClick={() => setPatrao(patraoPickerRow, u)}>
                                 <div className="w-10 h-10 rounded-full overflow-hidden border-2" style={{ borderColor: colors[u.start_year % colors.length] }}>
                                     <Avatar
-                                        src={u.image}
+                                        image={u.image}
                                         sex={u.sex}
                                         alt={u.name || ''}
-                                        className="w-full h-full object-cover"
-                                        size={32}
+                                        className="w-10 h-10 object-cover"
                                     />
                                 </div>
                                 <div className="flex-1 min-w-0">

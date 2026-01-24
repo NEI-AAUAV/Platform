@@ -98,6 +98,11 @@ services:
       MONGO_PASSWORD: mongo
       MONGO_DB: family
       PUBLIC_KEY: /jwt.key.pub
+      R2_ENDPOINT_URL: ${R2_ENDPOINT_URL}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      R2_BUCKET: ${R2_BUCKET}
+      R2_PUBLIC_BASE_URL: ${R2_PUBLIC_BASE_URL}
     volumes:
       - ./api-family:/api_family
       - ./dev-keys/jwt.key.pub:/jwt.key.pub:ro
@@ -132,8 +137,8 @@ services:
     depends_on:
       - web_nei
       - api_nei
+      - api_family
       # - api_tacaua
-      # - api_family
     networks:
       - backend
       - frontend

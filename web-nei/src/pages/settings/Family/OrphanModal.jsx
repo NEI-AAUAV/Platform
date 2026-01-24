@@ -145,11 +145,10 @@ const OrphanModal = ({
                                         style={{ backgroundColor: colors[userToDelete.start_year % colors.length] }}
                                     >
                                         <Avatar
-                                            src={userToDelete.image}
+                                            image={userToDelete.image}
                                             sex={userToDelete.sex}
                                             alt={userToDelete.name || ''}
-                                            className="w-full h-full rounded-full object-cover"
-                                            size={40}
+                                            className="w-10 h-10 rounded-full object-cover"
                                         />
                                     </div>
                                     <div>
@@ -271,11 +270,10 @@ const OrphanModal = ({
                                                             style={{ backgroundColor: colors[(p.start_year || 0) % colors.length] }}
                                                         >
                                                             <Avatar
-                                                                src={p.image}
+                                                                image={p.image}
                                                                 sex={p.sex}
                                                                 alt={p.name || ''}
-                                                                className="w-full h-full rounded-full object-cover"
-                                                                size={24}
+                                                                className="w-6 h-6 rounded-full object-cover"
                                                             />
                                                         </div>
                                                         <span className="truncate font-medium">{p.name}</span>

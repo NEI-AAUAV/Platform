@@ -167,11 +167,10 @@ const BulkDeleteModal = ({
                                                     className="flex items-center gap-2 px-2 py-1 bg-base-100 rounded-lg text-sm border border-base-content/10"
                                                 >
                                                     <Avatar
-                                                        src={user.image}
+                                                        image={user.image}
                                                         sex={user.sex}
                                                         alt={user.name || ''}
                                                         className="w-5 h-5 rounded-full object-cover"
-                                                        size={20}
                                                     />
                                                     <span className="truncate max-w-[120px]">{user.name}</span>
                                                     <div

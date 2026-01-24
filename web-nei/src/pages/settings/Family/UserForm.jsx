@@ -414,11 +414,6 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             });
         } catch (err) {
             let errorMessage = err.response?.data?.detail || err.message || "Erro ao atualizar foto";
-            setError(errorMessage);
-            // Special handling for 503 (uploads disabled)
-            if (err.response?.status === 503) {
-                errorMessage = "O upload de fotos está desativado: o armazenamento R2 não está configurado.";
-            }
             toast({
                 title: "Erro ao atualizar foto",
                 description: errorMessage,
@@ -652,45 +647,55 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                                     image={preview ?? user?.image}
                                                                     sex={user?.sex}
                                                                     alt={user?.name || 'preview'}
-                                                                    className="object-cover"
-                                                                    size={64}
+                                                                    className="h-16 w-16 object-cover"
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="flex-1 flex flex-col gap-2">
-                                                            <input
-                                                                type="file"
-                                                                accept="image/*"
-                                                                className="file-input file-input-bordered file-input-sm w-full max-w-xs"
-                                                                onChange={handleImageInputChange}
-                                                                disabled={removeImage}
-                                                            />
-                                                            <label className="label cursor-pointer w-fit">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    className="checkbox checkbox-sm mr-2"
-                                                                    checked={removeImage}
-                                                                    onChange={(e) => {
-                                                                        setRemoveImage(e.target.checked);
-                                                                        if (e.target.checked) {
-                                                                            setImageFile(null);
-                                                                            setPreview(null);
-                                                                        }
-                                                                    }}
-                                                                />
-                                                                <span className="label-text">Remover foto</span>
-                                                            </label>
-                                                        </div>
-                                                        <div>
-                                                            <button
-                                                                type="button"
-                                                                className={classNames("btn btn-primary btn-sm", { loading: imageUpdating })}
-                                                                disabled={imageUpdating || (!imageFile && !removeImage)}
-                                                                onClick={handleUpdatePhoto}
-                                                            >
-                                                                Guardar Foto
-                                                            </button>
-                                                        </div>
+                                                        {imageUploadAvailable ? (
+                                                            <>
+                                                                <div className="flex-1 flex flex-col gap-2">
+                                                                    <input
+                                                                        type="file"
+                                                                        accept="image/*"
+                                                                        className="file-input file-input-bordered file-input-sm w-full max-w-xs"
+                                                                        onChange={handleImageInputChange}
+                                                                        disabled={removeImage}
+                                                                    />
+                                                                    <label className="label cursor-pointer w-fit">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            className="checkbox checkbox-sm mr-2"
+                                                                            checked={removeImage}
+                                                                            onChange={(e) => {
+                                                                                setRemoveImage(e.target.checked);
+                                                                                if (e.target.checked) {
+                                                                                    setImageFile(null);
+                                                                                    setPreview(null);
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                        <span className="label-text">Remover foto</span>
+                                                                    </label>
+                                                                </div>
+                                                                <div>
+                                                                    <button
+                                                                        type="button"
+                                                                        className={classNames("btn btn-primary btn-sm", { loading: imageUpdating })}
+                                                                        disabled={imageUpdating || (!imageFile && !removeImage)}
+                                                                        onClick={handleUpdatePhoto}
+                                                                    >
+                                                                        Guardar Foto
+                                                                    </button>
+                                                                </div>
+                                                            </>
+                                                        ) : (
+                                                            <div className="flex-1 flex flex-col gap-2">
+                                                                <div className="flex items-center gap-2 rounded-lg bg-base-300/60 px-3 py-2 text-base-content/70 text-sm border border-dashed border-base-content/10">
+                                                                    <MaterialSymbol icon="cloud_off" size={18} className="opacity-60" />
+                                                                    <span>Upload de fotos desativado (sem armazenamento configurado)</span>
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             )}
@@ -868,11 +873,10 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                                 >
                                                                     <div className="avatar h-8 w-8 rounded-full bg-base-300">
                                                                         <Avatar
-                                                                            src={child.image}
+                                                                            image={child.image}
                                                                             sex={child.sex}
                                                                             alt={child.name || ''}
-                                                                            className="rounded-full object-cover"
-                                                                            size={32}
+                                                                            className="h-8 w-8 rounded-full object-cover"
                                                                         />
                                                                     </div>
                                                                     <div className="flex-1 min-w-0">
