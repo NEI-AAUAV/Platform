@@ -118,9 +118,9 @@ jobs:
           MONGO_PASSWORD: mongo
           MONGO_DB: mongo_test
       
-      - name: Run JavaScript/TypeScript tests
+      - name: Run JavaScript/TypeScript tests with coverage
         run: |
-          cd web-nei && yarn test --run --reporter=verbose
+          cd web-nei && yarn test:coverage --run --reporter=verbose
         env:
           POSTGRES_SERVER: localhost
           POSTGRES_PASSWORD: postgres

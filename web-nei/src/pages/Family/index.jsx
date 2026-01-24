@@ -16,9 +16,11 @@ import { useFamilyTree } from "./useFamilyTree";
 import FamilyContent from "./FamilyContent";
 import FamilySidebar from "./FamilySidebar";
 import UserForm from "../settings/Family/UserForm";
+import ProfileViewModal from "components/ProfileViewModal";
 import { useUserStore } from "stores/useUserStore";
 import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
+import { getNodeById, navigateToNode, highlightLineage } from "./data";
 import "./index.css";
 
 export function Component() {
@@ -32,6 +34,11 @@ export function Component() {
   const [editMode, setEditMode] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+
+  // Profile View State
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [profileUser, setProfileUser] = useState(null);
+
   const { scopes, sessionLoading } = useUserStore((state) => state);
 
   // Check authorization
@@ -92,6 +99,76 @@ export function Component() {
       alert("Erro ao eliminar utilizador: " + (err.message || "Erro desconhecido"));
     }
   };
+
+  // Handle profile view request from Tree
+  const handleNodeViewProfile = (nodeData) => {
+    setProfileUser(nodeData);
+    setIsProfileOpen(true);
+  };
+
+  // Navigate to a node in the tree (for profile modal navigation)
+  const handleNavigateToNode = (userId) => {
+    const node = getNodeById(userId);
+    if (node) {
+      navigateToNode(node);
+      highlightLineage(userId);
+    }
+  };
+
+  // Helper: Render sidebar toggle buttons (reduces cognitive complexity)
+  const renderSidebarToggles = () => (
+    <>
+      <div className="tooltip tooltip-right" data-tip={sidebarOpened ? "Fechar filtros" : "Abrir filtros"}>
+        <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
+          <input
+            type="checkbox"
+            checked={sidebarOpened}
+            onChange={(e) => setSidebarOpened(e.target.checked)}
+          />
+          <CloseIcon className="swap-on" />
+          <TuneIcon className="swap-off" />
+        </label>
+      </div>
+      <div className="tooltip tooltip-right" data-tip={expanded ? "Sair de ecrã inteiro" : "Ecrã inteiro"}>
+        <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
+          <input
+            type="checkbox"
+            checked={expanded}
+            onChange={(e) => setExpanded(e.target.checked)}
+          />
+          <FullScreenExitIcon className="swap-on" />
+          <FullScreenIcon className="swap-off" />
+        </label>
+      </div>
+
+      {/* Edit Mode Toggle */}
+      {canEdit && (
+        <div className="tooltip tooltip-right" data-tip={editMode ? "Desativar edição" : "Editar nós da árvore"}>
+          <button
+            className={classNames(
+              "pointer-events-auto btn btn-sm btn-circle transition-all",
+              editMode ? "btn-warning" : "btn-ghost"
+            )}
+            onClick={() => setEditMode(!editMode)}
+          >
+            <MaterialSymbol icon={editMode ? "edit_off" : "edit_square"} size={18} />
+          </button>
+        </div>
+      )}
+
+      {/* Link to Management Page */}
+      {canEdit && (
+        <div className="tooltip tooltip-right" data-tip="Gestão de Família">
+          <a
+            href="/settings/family"
+            className="pointer-events-auto btn btn-sm btn-circle btn-ghost"
+          >
+            <MaterialSymbol icon="settings" size={18} />
+          </a>
+        </div>
+      )}
+    </>
+  );
 
   return (
     <motion.div
@@ -169,6 +246,7 @@ export function Component() {
               // Edit Props
               editMode={editMode && canEdit}
               onNodeEdit={handleNodeEdit}
+              onNodeViewProfile={handleNodeViewProfile}
             />
           </div>
           <div
@@ -201,61 +279,13 @@ export function Component() {
               </div>
               <div
                 className={classNames(
-                  "rounded-r-box absolute left-full -top-px -bottom-px flex w-12 flex-col items-center gap-3 overflow-hidden py-3",
+                  "rounded-r-box absolute left-full -top-px -bottom-px flex w-12 flex-col items-center gap-3 py-3",
                   sidebarOpened
                     ? "border  border-l-0 border-base-content/10 bg-base-200 shadow-[1px_1px_3px_-1px_rgba(0,0,0,0.1)]"
                     : "bg-transparent"
                 )}
               >
-                <div className="tooltip tooltip-right" data-tip={sidebarOpened ? "Fechar filtros" : "Abrir filtros"}>
-                  <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
-                    <input
-                      type="checkbox"
-                      checked={sidebarOpened}
-                      onChange={(e) => setSidebarOpened(e.target.checked)}
-                    />
-                    <CloseIcon className="swap-on" />
-                    <TuneIcon className="swap-off" />
-                  </label>
-                </div>
-                <div className="tooltip tooltip-right" data-tip={expanded ? "Sair de ecrã inteiro" : "Ecrã inteiro"}>
-                  <label className="pointer-events-auto swap-rotate swap btn-sm btn-circle btn">
-                    <input
-                      type="checkbox"
-                      checked={expanded}
-                      onChange={(e) => setExpanded(e.target.checked)}
-                    />
-                    <FullScreenExitIcon className="swap-on" />
-                    <FullScreenIcon className="swap-off" />
-                  </label>
-                </div>
-
-                {/* Edit Mode Toggle */}
-                {canEdit && (
-                  <div className="tooltip tooltip-right" data-tip={editMode ? "Desativar edição" : "Editar nós da árvore"}>
-                    <button
-                      className={classNames(
-                        "pointer-events-auto btn btn-sm btn-circle transition-all",
-                        editMode ? "btn-warning" : "btn-ghost"
-                      )}
-                      onClick={() => setEditMode(!editMode)}
-                    >
-                      <MaterialSymbol icon={editMode ? "edit_off" : "edit_square"} size={18} />
-                    </button>
-                  </div>
-                )}
-
-                {/* Link to Management Page */}
-                {canEdit && (
-                  <div className="tooltip tooltip-right" data-tip="Gestão de Família">
-                    <a
-                      href="/settings/family"
-                      className="pointer-events-auto btn btn-sm btn-circle btn-ghost"
-                    >
-                      <MaterialSymbol icon="settings" size={18} />
-                    </a>
-                  </div>
-                )}
+                {renderSidebarToggles()}
               </div>
             </div>
           </div>
@@ -275,6 +305,14 @@ export function Component() {
           onBack={() => { }}
         />
       )}
+
+      {/* Profile View Modal - Available to all users */}
+      <ProfileViewModal
+        isOpen={isProfileOpen}
+        user={profileUser}
+        onClose={() => setIsProfileOpen(false)}
+        onNavigateToNode={handleNavigateToNode}
+      />
     </motion.div>
   );
 }

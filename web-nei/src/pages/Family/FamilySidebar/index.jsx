@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useCallback, useEffect } from "react";
+import PropTypes from "prop-types";
 
 import {
   handleSearchChange,
@@ -43,7 +44,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
         let key = o.name; // org_name from API
 
         // If key looks like a role_id path (starts with "."), use role_name as fallback
-        if (key && key.startsWith(".")) {
+        if (key?.startsWith(".")) {
           key = o.role_name || o.role || key;
         }
 
@@ -60,6 +61,14 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
           }
         }
 
+        // Consolidate NEI sub-role short codes (like "RF") under "NEI"
+        // These are role shorts that should not appear as separate legend entries
+        // Check by looking at role_id prefix for NEI roles (.2.*)
+        if (o.role_id?.startsWith(".2.") && key !== "NEI") {
+          // This is a NEI sub-role, consolidate under NEI
+          key = "NEI";
+        }
+
         if (!key) return;
 
         // Only add if not already present (first occurrence wins for display name)
@@ -70,11 +79,25 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
           // Check if we have a hardcoded entry for this org
           const hardcodedOrg = organizations[key];
 
+          // For display name priority:
+          // 1. Hardcoded display name (if exists)
+          // 2. org_name (o.name) - the main organization short code like "NEI", "AETTUA"
+          // 3. key as fallback (which may be role_name for ST sub-roles)
+          // This ensures "NEI" shows as "NEI" in legend, not "Responsável Financeiro"
+          let displayName = hardcodedOrg?.name;
+          if (!displayName) {
+            // Prefer org_name (o.name) if it looks like an org code, not a full role name
+            // Org codes are typically short (<=20 chars) and don't start with "."
+            if (o.name && !o.name.startsWith('.') && o.name.length <= 20) {
+              displayName = o.name;
+            } else {
+              displayName = key;
+            }
+          }
+
           orgsMap.set(key, {
             key: key,
-            // For display name: use hardcoded name, then org_name (key), then role_name as last resort
-            // This ensures NEI roles show "NEI" not "Responsável Financeiro"
-            name: hardcodedOrg?.name || key,
+            name: displayName,
             insignia: hardcodedOrg?.insignia || null, // Will be null for dynamic orgs without icons
             icon: o.icon, // Icon URL from API (if available)
             changeColor: hardcodedOrg?.changeColor || false,
@@ -158,6 +181,33 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
     handleSearchChange(searchData.find((item) => item.id === key));
   }
 
+  // Helper to render organization icon
+  const renderOrgIcon = (org) => {
+    if (org.icon) {
+      return <img src={org.icon} alt="" className="h-4 w-4" />;
+    }
+    if (org.insignia) {
+      return (
+        <img
+          src={org.insignia}
+          alt=""
+          className="h-4 w-4"
+          style={
+            org.changeColor && theme === "dark"
+              ? { filter: "invert(1)" }
+              : {}
+          }
+        />
+      );
+    }
+    return (
+      <div
+        className="h-4 w-4 rounded-full bg-base-content/30"
+        title={`Sem ícone para ${org.name}`}
+      />
+    );
+  };
+
   return (
     <>
       <h5 className="px-3 pt-3 opacity-80">Procurar Membro</h5>
@@ -235,17 +285,20 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
       <h5 className="px-3 pt-3 opacity-80">Matrículas</h5>
       <div className="flex justify-start gap-10 px-5 py-3">
         <div>
-          <div
+          <button
             className={classNames(
               "btn-xs btn-circle btn mx-auto",
-              minYear && endYear === minYear + 9 ? "btn-disabled" : "cursor-pointer"
+              minYear && endYear === minYear + 9 ? "btn-disabled" : ""
             )}
             onClick={() =>
               setEndYear((endYear) => Math.max(--endYear, (minYear || 0) + 9))
             }
+            disabled={minYear && endYear === minYear + 9}
+            type="button"
+            aria-label="Diminuir ano"
           >
             <ExpandLessIcon />
-          </div>
+          </button>
           {[...Array(5).keys()]
             .map((i) => endYear - 9 + i)
             .map((i) => (
@@ -262,17 +315,20 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
                 <BulletYear color={colors[i % colors.length]} index={i} />
               </Fragment>
             ))}
-          <div
+          <button
             className={classNames(
               "btn-xs btn-circle btn mx-auto",
-              endYear === maxYear ? "btn-disabled" : "cursor-pointer"
+              endYear === maxYear ? "btn-disabled" : ""
             )}
             onClick={() =>
               setEndYear((endYear) => Math.min(++endYear, maxYear || 99))
             }
+            disabled={endYear === maxYear}
+            type="button"
+            aria-label="Aumentar ano"
           >
             <ExpandMoreIcon />
-          </div>
+          </button>
         </div>
       </div>
       <h5 className="px-3 pt-3 opacity-80">Insígnias</h5>
@@ -290,25 +346,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
             onClick={() => toggleInsignias(key)}
           >
             {/* Render icon: API icon takes priority over hardcoded insignia */}
-            {org.icon ? (
-              <img src={org.icon} alt="" className="h-4 w-4" />
-            ) : org.insignia ? (
-              <img
-                src={org.insignia}
-                alt=""
-                className="h-4 w-4"
-                style={
-                  org.changeColor && theme === "dark"
-                    ? { filter: "invert(1)" }
-                    : {}
-                }
-              />
-            ) : (
-              <div
-                className="h-4 w-4 rounded-full bg-base-content/30"
-                title={`Sem ícone para ${org.name}`}
-              />
-            )}
+            {renderOrgIcon(org)}
             <div>{org.name}</div>
           </div>
         ))}
@@ -318,3 +356,13 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
 };
 
 export default FamilySidebar;
+
+FamilySidebar.propTypes = {
+  insignias: PropTypes.array,
+  year: PropTypes.number,
+  setInsignias: PropTypes.func,
+  setYear: PropTypes.func,
+  minYear: PropTypes.number,
+  maxYear: PropTypes.number,
+  users: PropTypes.array,
+};

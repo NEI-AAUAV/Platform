@@ -114,6 +114,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             name: "",
             sex: "M",
             start_year: new Date().getFullYear() - 2000,
+            end_year: null,
             faina_name: "",
             nmec: null,
             course_id: null,
@@ -253,7 +254,8 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             reset({
                 name: user.name || "",
                 sex: user.sex || "M",
-                start_year: user.start_year || new Date().getFullYear() - 2000,
+                start_year: user.start_year ?? (new Date().getFullYear() - 2000),
+                end_year: user.end_year ?? null,
                 faina_name: user.faina_name || "",
 
                 nmec: user.nmec || null,
@@ -280,6 +282,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 name: "",
                 sex: "M",
                 start_year: new Date().getFullYear() - 2000,
+                end_year: null,
                 faina_name: "",
 
                 nmec: null,
@@ -343,6 +346,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                     name: "",
                     sex: "M",
                     start_year: data.start_year, // Keep same year often useful
+                    end_year: null,
                     faina_name: "",
                     nmec: null,
                     course_id: data.course_id, // Keep course often useful
@@ -712,9 +716,9 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                             {/* Sex + Year Row */}
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="label">
+                                                    <div className="label">
                                                         <span className="label-text">Sexo</span>
-                                                    </label>
+                                                    </div>
                                                     <Controller
                                                         name="sex"
                                                         control={control}
@@ -759,6 +763,20 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                 />
                                             </div>
 
+                                            {/* End Year */}
+                                            <Input
+                                                label="Ano de Saída (Opcional)"
+                                                type="number"
+                                                placeholder="Deixar vazio se ainda ativo"
+                                                error={errors.end_year}
+                                                {...register("end_year", {
+                                                    min: { value: 0, message: "Inválido" },
+                                                    max: { value: 99, message: "2 dígitos" },
+                                                    valueAsNumber: true,
+                                                    setValueAs: (v) => (v === "" || Number.isNaN(v) ? null : v),
+                                                })}
+                                            />
+
                                             {/* Faina Name + Nmec Row */}
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <Input
@@ -776,8 +794,9 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
                                             {/* Course Selector */}
                                             <div className="form-control">
-                                                <label className="label"><span className="label-text">Curso</span></label>
+                                                <label className="label" htmlFor="course-select"><span className="label-text">Curso</span></label>
                                                 <select
+                                                    id="course-select"
                                                     className="select select-bordered w-full"
                                                     {...register("course_id")}
                                                 >
@@ -805,42 +824,53 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                 </div>
 
                                                 <div className="min-h-[60px] rounded-xl border border-dashed border-base-content/20 bg-base-200/50 p-4">
-                                                    {rolesLoading ? (
-                                                        <div className="flex justify-center py-2">
-                                                            <span className="loading loading-spinner loading-sm"></span>
-                                                        </div>
-                                                    ) : displayRoles.length === 0 ? (
-                                                        <p className="text-center text-sm text-base-content/50">
-                                                            Nenhuma insígnia atribuída
-                                                        </p>
-                                                    ) : (
-                                                        <div className="flex flex-wrap gap-3">
-                                                            {displayRoles.map((role) => (
-                                                                <div
-                                                                    key={role._id || role.tempId}
-                                                                    className="flex items-center gap-2 rounded-lg bg-base-100 p-2 shadow-sm ring-1 ring-base-content/10"
-                                                                >
-                                                                    {/* Try to show icon if available - check API icon first, then static map */}
-                                                                    {(role.icon || (role.org_name && organizations[role.org_name])) && (
-                                                                        <img src={role.icon || organizations[role.org_name]?.insignia} alt="" className="h-6 w-6 object-contain" />
-                                                                    )}
-                                                                    <div className="flex flex-col">
-                                                                        <span className="text-xs font-bold leading-tight">
-                                                                            {role.role_name || role.name || role.org_name || role.role_id}
-                                                                        </span>
-                                                                        <span className="text-[10px] text-base-content/60">Ano {role.year}</span>
-                                                                    </div>
-                                                                    <button
-                                                                        type="button"
-                                                                        className="ml-1 rounded-full p-1 text-base-content/40 hover:bg-error/10 hover:text-error"
-                                                                        onClick={() => handleRemoveRole(role._id || role.tempId)}
-                                                                    >
-                                                                        <MaterialSymbol icon="close" size={14} />
-                                                                    </button>
+                                                    {(() => {
+                                                        if (rolesLoading) {
+                                                            return (
+                                                                <div className="flex justify-center py-2">
+                                                                    <span className="loading loading-spinner loading-sm"></span>
                                                                 </div>
-                                                            ))}
-                                                        </div>
-                                                    )}
+                                                            );
+                                                        }
+                                                        if (displayRoles.length === 0) {
+                                                            return (
+                                                                <p className="text-center text-sm text-base-content/50">
+                                                                    Nenhuma insígnia atribuída
+                                                                </p>
+                                                            );
+                                                        }
+                                                        return (
+                                                            <div className="flex flex-wrap gap-3">
+                                                                {displayRoles.map((role) => (
+                                                                    <div
+                                                                        key={role._id || role.tempId}
+                                                                        className="flex items-center gap-2 rounded-lg bg-base-100 p-2 shadow-sm ring-1 ring-base-content/10"
+                                                                    >
+                                                                        {/* Try to show icon if available - check API icon first, then static map */}
+                                                                        {(role.icon || (role.org_name && organizations[role.org_name])) && (
+                                                                            <img src={role.icon || organizations[role.org_name]?.insignia} alt="" className="h-6 w-6 object-contain" />
+                                                                        )}
+                                                                        <div className="flex flex-col">
+                                                                            <span className="text-xs font-bold leading-tight">
+                                                                                {role.role_name || role.name || role.org_name || role.role_id}
+                                                                                {role.parent_org_name && role.parent_org_name !== role.org_name && (
+                                                                                    <span className="font-normal text-base-content/50"> ({role.parent_org_name})</span>
+                                                                                )}
+                                                                            </span>
+                                                                            <span className="text-[10px] text-base-content/60">Ano {role.year}</span>
+                                                                        </div>
+                                                                        <button
+                                                                            type="button"
+                                                                            className="ml-1 rounded-full p-1 text-base-content/40 hover:bg-error/10 hover:text-error"
+                                                                            onClick={() => handleRemoveRole(role._id || role.tempId)}
+                                                                        >
+                                                                            <MaterialSymbol icon="close" size={14} />
+                                                                        </button>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        );
+                                                    })()}
                                                 </div>
                                             </div>
 
@@ -866,9 +896,10 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                     {childrenList.length > 0 ? (
                                                         <div className="grid grid-cols-1 gap-2">
                                                             {childrenList.map(child => (
-                                                                <div
+                                                                <button
+                                                                    type="button"
                                                                     key={child._id || child.id}
-                                                                    className="flex items-center gap-3 rounded-lg border border-base-content/10 bg-base-100 p-2 hover:bg-base-200 cursor-pointer transition-colors"
+                                                                    className="flex w-full items-center gap-3 rounded-lg border border-base-content/10 bg-base-100 p-2 hover:bg-base-200 cursor-pointer transition-colors text-left"
                                                                     onClick={() => onSwitchUser(child)}
                                                                 >
                                                                     <div className="avatar h-8 w-8 rounded-full bg-base-300">
@@ -886,7 +917,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                                         </div>
                                                                     </div>
                                                                     <MaterialSymbol icon="chevron_right" className="text-base-content/30" />
-                                                                </div>
+                                                                </button>
                                                             ))}
                                                         </div>
                                                     ) : (

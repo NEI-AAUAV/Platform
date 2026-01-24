@@ -58,7 +58,8 @@ const BulkDeleteModal = ({
                     });
                 }
             } catch (err) {
-                // Ignore errors in check
+                // Ignore errors in check (orphan detection is best-effort)
+                console.debug("Failed to check orphans for user " + user._id, err);
             }
         }
         setOrphanWarnings(warnings);
@@ -208,12 +209,13 @@ const BulkDeleteModal = ({
                                 {/* Confirmation input */}
                                 {!loading && errors.length === 0 && (
                                     <div>
-                                        <label className="label">
+                                        <label className="label" htmlFor="confirm-delete-input">
                                             <span className="label-text">
                                                 Escreva <strong className="text-error">{confirmPhrase}</strong> para confirmar:
                                             </span>
                                         </label>
                                         <input
+                                            id="confirm-delete-input"
                                             type="text"
                                             className={classNames(
                                                 "input input-bordered w-full",
@@ -249,8 +251,8 @@ const BulkDeleteModal = ({
                                         <div>
                                             <p className="font-bold">Alguns membros não foram eliminados:</p>
                                             <ul className="mt-1 text-xs">
-                                                {errors.map((e, i) => (
-                                                    <li key={i}>{e.user.name}: {e.error}</li>
+                                                {errors.map((e) => (
+                                                    <li key={e.user._id}>{e.user.name}: {e.error}</li>
                                                 ))}
                                             </ul>
                                         </div>

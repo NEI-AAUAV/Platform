@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
@@ -19,6 +20,110 @@ import CourseManagerModal from "components/CourseManagerModal";
 import { organizations, colors } from "pages/Family/data";
 import { useUserStore } from "stores/useUserStore";
 import Avatar from "components/Avatar";
+
+const collectMissingPatraoIds = (users, userMap) => {
+  const missing = new Set();
+  for (const u of users) {
+    const id = u?.patrao_id;
+    if (id && !userMap?.[id]) missing.add(id);
+  }
+  return missing;
+};
+
+const fetchUsersByIds = async (ids) => {
+  const requests = ids.map((id) => FamilyService.getUserById(id).catch(() => null));
+  const results = await Promise.all(requests);
+  return results.filter(Boolean);
+};
+
+// Sort Icon Helper - Extracted (Fix S6774/S6478)
+const SortIcon = ({ field, currentSort, sortDir }) => {
+  if (currentSort !== field) return <MaterialSymbol icon="unfold_more" size={16} className="text-base-content/20" />;
+  return <MaterialSymbol icon={sortDir === "asc" ? "expand_less" : "expand_more"} size={16} className="text-active" />;
+};
+
+SortIcon.propTypes = {
+  field: PropTypes.string.isRequired,
+  currentSort: PropTypes.string.isRequired,
+  sortDir: PropTypes.string.isRequired,
+  sortDir: PropTypes.string.isRequired,
+};
+
+const renderPatraoCell = (user, patrao) => {
+  if (patrao) {
+    return (
+      <div className="flex items-center gap-2">
+        <div className="avatar placeholder h-6 w-6 rounded-full bg-base-300">
+          <img
+            src={patrao.image || (patrao.sex === 'F' ? femalePic : malePic)}
+            alt=""
+            className="rounded-full"
+          />
+        </div>
+        <span className="truncate font-medium">{patrao.name}</span>
+      </div>
+    );
+  }
+
+  if (user.patrao_id) {
+    return (
+      <span className="text-error text-xs" title={`ID: ${user.patrao_id}`}>
+        {`ID: ${user.patrao_id}`} <span className="opacity-50">(Fetching...)</span>
+      </span>
+    );
+  }
+
+  return <span className="text-base-content/30 italic">Raiz</span>;
+};
+
+// Helper component to render role icon safely with fallback
+// Avoids S2486/S5148 (XSS via innerHTML)
+const RoleIcon = ({ role, organizations, formatYear }) => {
+  const [error, setError] = useState(false);
+  const [logo, setLogo] = useState(null);
+
+  useEffect(() => {
+    let currentLogo = null;
+    if (role.icon) {
+      currentLogo = role.icon;
+    } else if (role.org_name && organizations[role.org_name]) {
+      currentLogo = organizations[role.org_name].insignia;
+    }
+    setLogo(currentLogo);
+    setError(false);
+  }, [role, organizations]);
+
+  const roleTitle = role.role_name || role.name || role.org_name || "Cargo";
+  const parentContext = role.parent_org_name && role.parent_org_name !== roleTitle ? ` (${role.parent_org_name})` : "";
+  const tooltip = `${roleTitle}${parentContext} (${formatYear(role.year, role.year_display_format)})`;
+
+  if (error || !logo) {
+    return (
+      <div className="tooltip tooltip-primary" data-tip={tooltip}>
+        <span className="badge badge-sm badge-outline text-[10px] whitespace-nowrap">
+          {role.org_name || role.role_id || "?"}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="tooltip tooltip-primary" data-tip={tooltip}>
+      <img
+        src={logo}
+        alt={roleTitle}
+        className="h-6 w-6 object-contain hover:scale-110 transition-transform"
+        onError={() => setError(true)}
+      />
+    </div>
+  );
+};
+
+RoleIcon.propTypes = {
+  role: PropTypes.object.isRequired,
+  organizations: PropTypes.object.isRequired,
+  formatYear: PropTypes.func.isRequired,
+};
 
 /**
  * Family Admin Interface - /settings/family
@@ -151,34 +256,75 @@ export function Component() {
     if (!hasAccess) return;
     if (!users.length) return;
 
-    const missingIds = new Set();
-    users.forEach(u => {
-      if (u.patrao_id && !userMap[u.patrao_id]) {
-        missingIds.add(u.patrao_id);
-      }
-    });
+    const missingIds = collectMissingPatraoIds(users, userMap);
+    if (missingIds.size === 0) return;
 
-    if (missingIds.size > 0) {
-      const fetchMissing = async () => {
-        try {
-          // Fetch each missing ID individually (not optimal but ensures correctness)
-          // In production, backend should support keys list.
-          const promises = Array.from(missingIds).map(id =>
-            FamilyService.getUserById(id).catch(() => null)
-          );
-          const results = await Promise.all(promises);
-          const found = results.filter(u => u);
-
-          if (found.length > 0) {
-            setAllUsers(prev => [...prev, ...found]);
-          }
-        } catch (err) {
-          console.error("Failed to fetch missing patrões", err);
+    let cancelled = false;
+    (async () => {
+      try {
+        // Fetch each missing ID individually (not optimal but ensures correctness)
+        // In production, backend should support keys list.
+        const found = await fetchUsersByIds(Array.from(missingIds));
+        if (!cancelled && found.length > 0) {
+          setAllUsers(prev => [...prev, ...found]);
         }
-      };
-      fetchMissing();
-    }
+      } catch (err) {
+        if (!cancelled) console.error("Failed to fetch missing patrões", err);
+      }
+    })();
+
+    return () => { cancelled = true; };
   }, [users, userMap, hasAccess]);
+
+  // --- MOVED HOOKS (Fix S6440) ---
+
+  // Check if all users on current page are selected
+  const allCurrentPageSelected = useMemo(() => {
+    if (users.length === 0) return false;
+    return users.every(u => selectedIds.has(u._id));
+  }, [users, selectedIds]);
+
+  // Check if some (but not all) users on current page are selected
+  const someCurrentPageSelected = useMemo(() => {
+    if (users.length === 0) return false;
+    const selectedCount = users.filter(u => selectedIds.has(u._id)).length;
+    return selectedCount > 0 && selectedCount < users.length;
+  }, [users, selectedIds]);
+
+  // Get selected users from allUsers (persists across pagination)
+  const selectedUsers = useMemo(() => {
+    const result = [];
+    for (const id of selectedIds) {
+      const user = allUsers.find(u => u._id === id) || users.find(u => u._id === id);
+      if (user) result.push(user);
+    }
+    return result;
+  }, [allUsers, users, selectedIds]);
+
+  // Dynamic years from DB
+  const [years, setYears] = useState([]);
+
+  useEffect(() => {
+    FamilyService.getYears()
+      .then(data => setYears(data || []))
+      .catch(err => console.error("Failed to load years", err));
+  }, []);
+
+  // Custom Year Dropdown logic
+  const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
+  const yearDropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (yearDropdownRef.current && !yearDropdownRef.current.contains(event.target)) {
+        setYearDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // --- END MOVED HOOKS ---
 
   // Authorization check - AFTER all hooks
   // Wait for session to load before checking
@@ -244,11 +390,7 @@ export function Component() {
     setPage(0);
   };
 
-  // Sort Icon Helper
-  const SortIcon = ({ field }) => {
-    if (sortBy !== field) return <MaterialSymbol icon="unfold_more" size={16} className="text-base-content/20" />;
-    return <MaterialSymbol icon={sortOrder === "asc" ? "expand_less" : "expand_more"} size={16} className="text-active" />;
-  };
+
 
   // Check if user has children before deleting
   const handleDeleteRequest = async (user) => {
@@ -263,6 +405,7 @@ export function Component() {
         setShowOrphanModal(false);
       }
     } catch (err) {
+      console.debug("Ignored exception in check children:", err);
       // If can't check children, proceed with simple delete modal
       setDeleteModal(user);
       setShowOrphanModal(false);
@@ -328,13 +471,11 @@ export function Component() {
             next.add(users[i]._id);
           }
         }
-      } else {
+      } else if (next.has(userId)) {
         // Normal click: toggle selection
-        if (next.has(userId)) {
-          next.delete(userId);
-        } else {
-          next.add(userId);
-        }
+        next.delete(userId);
+      } else {
+        next.add(userId);
       }
 
       return next;
@@ -343,31 +484,9 @@ export function Component() {
     setLastSelectedIndex(rowIndex);
   };
 
-  // Simple toggle for checkbox (no shift support needed)
-  const toggleSelectUser = (userId) => {
-    setSelectedIds(prev => {
-      const next = new Set(prev);
-      if (next.has(userId)) {
-        next.delete(userId);
-      } else {
-        next.add(userId);
-      }
-      return next;
-    });
-  };
 
-  // Check if all users on current page are selected
-  const allCurrentPageSelected = useMemo(() => {
-    if (users.length === 0) return false;
-    return users.every(u => selectedIds.has(u._id));
-  }, [users, selectedIds]);
 
-  // Check if some (but not all) users on current page are selected
-  const someCurrentPageSelected = useMemo(() => {
-    if (users.length === 0) return false;
-    const selectedCount = users.filter(u => selectedIds.has(u._id)).length;
-    return selectedCount > 0 && selectedCount < users.length;
-  }, [users, selectedIds]);
+
 
   const toggleSelectAll = () => {
     setSelectedIds(prev => {
@@ -406,16 +525,7 @@ export function Component() {
     setSelectedIds(new Set(matchingUsers.map(u => u._id)));
   };
 
-  // Get selected users from allUsers (persists across pagination)
-  // Falls back to current page if user not in allUsers cache
-  const selectedUsers = useMemo(() => {
-    const result = [];
-    for (const id of selectedIds) {
-      const user = allUsers.find(u => u._id === id) || users.find(u => u._id === id);
-      if (user) result.push(user);
-    }
-    return result;
-  }, [allUsers, users, selectedIds]);
+
 
   const handleBulkDelete = () => {
     // Open bulk delete modal instead of window.confirm
@@ -444,14 +554,7 @@ export function Component() {
 
   const totalPages = Math.ceil(total / limit);
 
-  // Dynamic years from DB
-  const [years, setYears] = useState([]);
 
-  useEffect(() => {
-    FamilyService.getYears()
-      .then(data => setYears(data || []))
-      .catch(err => console.error("Failed to load years", err));
-  }, []);
 
   // Helper to format year
   const formatYear = (y, fmt) => {
@@ -470,19 +573,7 @@ export function Component() {
     return y;
   };
 
-  // Custom Year Dropdown logic
-  const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
-  const yearDropdownRef = useRef(null);
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (yearDropdownRef.current && !yearDropdownRef.current.contains(event.target)) {
-        setYearDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
 
   return (
@@ -600,7 +691,8 @@ export function Component() {
               {roleFilterName || "Filtrar por Insígnia"}
             </span>
             {roleFilterId ? (
-              <div
+              <button
+                type="button"
                 className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-base-content/10 hover:bg-base-content/20"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -608,9 +700,10 @@ export function Component() {
                   setRoleFilterName(null);
                   setPage(0);
                 }}
+                aria-label="Limpar filtro de insígnia"
               >
                 <MaterialSymbol icon="close" size={14} />
-              </div>
+              </button>
             ) : (
               <MaterialSymbol icon="arrow_drop_down" size={24} className="text-base-content/50" />
             )}
@@ -711,14 +804,20 @@ export function Component() {
                           title={allCurrentPageSelected ? "Desselecionar página" : "Selecionar página"}
                         />
                       </th>
-                      <th className="cursor-pointer hover:bg-base-200" onClick={() => toggleSort("name")}>
-                        <div className="flex items-center gap-2">Membro <SortIcon field="name" /></div>
+                      <th className="p-0">
+                        <button className="flex w-full items-center gap-2 p-3 font-bold hover:bg-base-200" onClick={() => toggleSort("name")}>
+                          Membro <SortIcon field="name" currentSort={sortBy} sortDir={sortOrder} />
+                        </button>
                       </th>
-                      <th className="hidden md:table-cell cursor-pointer hover:bg-base-200" onClick={() => toggleSort("patrao_id")}>
-                        <div className="flex items-center gap-2">Patrão <SortIcon field="patrao_id" /></div>
+                      <th className="hidden p-0 md:table-cell">
+                        <button className="flex w-full items-center gap-2 p-3 font-bold hover:bg-base-200" onClick={() => toggleSort("patrao_id")}>
+                          Patrão <SortIcon field="patrao_id" currentSort={sortBy} sortDir={sortOrder} />
+                        </button>
                       </th>
-                      <th className="w-[10%] text-center cursor-pointer hover:bg-base-200" onClick={() => toggleSort("year")}>
-                        <div className="flex items-center justify-center gap-2">Ano <SortIcon field="year" /></div>
+                      <th className="w-[10%] p-0 text-center">
+                        <button className="flex w-full items-center justify-center gap-2 p-3 font-bold hover:bg-base-200" onClick={() => toggleSort("year")}>
+                          Ano <SortIcon field="year" currentSort={sortBy} sortDir={sortOrder} />
+                        </button>
                       </th>
                       <th>Insígnias</th>
                       <th className="text-right">Ações</th>
@@ -807,27 +906,8 @@ export function Component() {
                               </div>
                             </td>
 
-                            {/* Patrão - Hidden on mobile */}
                             <td className="hidden md:table-cell">
-                              {patrao ? (
-                                <div className="flex items-center gap-2">
-                                  <div className="avatar placeholder h-6 w-6 rounded-full bg-base-300">
-                                    <Avatar
-                                      image={patrao.image}
-                                      sex={patrao.sex}
-                                      alt={patrao.name || "avatar"}
-                                      className="rounded-full"
-                                    />
-                                  </div>
-                                  <span className="truncate font-medium">{patrao.name}</span>
-                                </div>
-                              ) : user.patrao_id ? (
-                                <span className="text-error text-xs" title={`ID: ${user.patrao_id}`}>
-                                  {`ID: ${user.patrao_id}`} <span className="opacity-50">(Fetching...)</span>
-                                </span>
-                              ) : (
-                                <span className="text-base-content/30 italic">Raiz</span>
-                              )}
+                              {renderPatraoCell(user, patrao)}
                             </td>
 
                             {/* Year */}
@@ -839,43 +919,14 @@ export function Component() {
                             <td>
                               <div className="flex flex-wrap gap-1">
                                 {(userRoles.length === 0 || userRoles.every(r => r.hidden)) && <span className="text-xs text-base-content/30">-</span>}
-                                {userRoles.filter(role => !role.hidden).map((role, idx) => {
-                                  // Try to find matching logo
-                                  let logo = null;
-                                  if (role.icon) {
-                                    logo = role.icon;
-                                  } else if (role.org_name && organizations[role.org_name]) {
-                                    logo = organizations[role.org_name].insignia;
-                                  }
-
-                                  const roleTitle = role.role_name || role.name || role.org_name || "Cargo";
-                                  const tooltip = `${roleTitle} (${formatYear(role.year, role.year_display_format)})`;
-
-                                  return (
-                                    <div
-                                      key={`${role.role_id}_${idx}`}
-                                      className="tooltip tooltip-primary"
-                                      data-tip={tooltip}
-                                    >
-                                      {logo ? (
-                                        <img
-                                          src={logo}
-                                          alt={roleTitle}
-                                          className="h-6 w-6 object-contain hover:scale-110 transition-transform"
-                                          onError={(e) => {
-                                            // Fallback if image fails
-                                            e.target.style.display = 'none';
-                                            e.target.parentElement.innerHTML = `<span class="badge badge-sm badge-outline text-[10px] whitespace-nowrap">${role.org_name || role.role_id || "?"}</span>`;
-                                          }}
-                                        />
-                                      ) : (
-                                        <span className="badge badge-sm badge-outline text-[10px] whitespace-nowrap">
-                                          {role.org_name || role.role_id || "?"}
-                                        </span>
-                                      )}
-                                    </div>
-                                  );
-                                })}
+                                {userRoles.filter(role => !role.hidden).map((role, idx) => (
+                                  <RoleIcon
+                                    key={`${role.role_id}_${idx}`}
+                                    role={role}
+                                    organizations={organizations}
+                                    formatYear={formatYear}
+                                  />
+                                ))}
                               </div>
                             </td>
 
@@ -1056,7 +1107,7 @@ export function Component() {
           setOrphanChildren([]);
         }}
         userToDelete={deleteModal}
-        children={orphanChildren}
+        orphanChildren={orphanChildren}
         onConfirmDelete={handleDelete}
         onReparent={handleReparentAndDelete}
       />

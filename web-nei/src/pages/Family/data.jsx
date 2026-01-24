@@ -14,6 +14,13 @@ import pa from "assets/icons/pa.svg";
 import aauav from "assets/icons/aauav.svg";
 import heartBorder from "assets/icons/heart_border.svg";
 import faina from "assets/icons/faina.svg";
+import {
+  separateName,
+  getFainaHierarchy,
+  showLabelFaina,
+  labelFamilies,
+  formatYear
+} from "./utils";
 
 // Dynamic year bounds - set via buildTree options
 let currentMinYear = 8;
@@ -98,8 +105,9 @@ let lastTransform = d3.zoomIdentity.scale(0.5);
 let svg, zoom, groups, labels, fainaLabels;
 export let searchData = [];
 
-// Export root node for breadcrumbs and external access
-export let treeRoot = null;
+// Export root node for breadcrumbs and external access (use getTreeRoot() to access)
+let _treeRoot = null;
+export const getTreeRoot = () => _treeRoot;
 
 // Store node map for quick lookup by ID
 const nodeMap = new Map();
@@ -108,99 +116,10 @@ const nodeMap = new Map();
 let onNodeSelectCallback = null;
 let onNodeHoverCallback = null;
 let onNodeEditCallback = null;
+let onNodeViewProfileCallback = null;
 let isEditMode = false;
 
-function separateName(name) {
-  const maxChars = 15,
-    middleIndex = Math.ceil(name.length / 2);
 
-  let name1 = name.slice(0, middleIndex).split(" "),
-    name2 = name.slice(middleIndex).split(" "),
-    nameMid = name1.slice(-1)[0] + name2.slice(0, 1)[0];
-
-  name1 = name1.slice(0, -1).join(" ");
-  name2 = name2.slice(1).join(" ");
-
-  if (name1.length >= name2.length) {
-    name2 = (nameMid + " " + name2).trim();
-  } else {
-    name1 = (name1 + " " + nameMid).trim();
-  }
-
-  let isTruncated = false,
-    tname1 = name1,
-    tname2 = name2;
-
-  if (name1.length > maxChars) {
-    isTruncated = true;
-    tname1 = name1.slice(0, maxChars - 3) + "...";
-  }
-  if (name2.length > maxChars) {
-    isTruncated = true;
-    tname2 = name2.slice(0, maxChars - 3) + "...";
-  }
-
-  return { name1, name2, isTruncated, tname1, tname2 };
-}
-
-// Helper to format year (D3 Context)
-function formatYear(y, fmt) {
-  if (!y && y !== 0) return "-";
-
-  if (fmt === "academic") {
-    const yearNum = parseInt(y);
-    const yy = yearNum % 100;
-    const next = (yy + 1) % 100;
-    return `${yy.toString().padStart(2, "0")}/${next.toString().padStart(2, '0')}`;
-  }
-
-  if (y < 100) return `20${y.toString().padStart(2, "0")}`;
-  return y;
-}
-
-function getFainaHierarchy({ sex, start_year, organizations }, end_year) {
-  if (organizations)
-    for (const o of organizations) {
-      if (o.name === "CF" && o.year === end_year && o.role) return o.role;
-      if (o.name === "ST" && o.year === end_year) return o.role;
-    }
-
-  const maleHierarchies = ["Junco", "Moço", "Marnoto", "Mestre"];
-  const femaleHierarchies = ["Caniça", "Moça", "Salineira", "Mestre"];
-
-  const index = Math.min(end_year - start_year - 1, 3);
-  return sex === "M" ? maleHierarchies[index] : femaleHierarchies[index];
-}
-
-function showLabelFaina({ fainaNames, start_year }, end_year) {
-  if (fainaNames && start_year + 1 <= end_year) {
-    return true;
-  }
-  return false;
-}
-
-function labelFamilies(node) {
-  if (node.parent) {
-    if (node.parent.id === 0) {
-      node.family = node.id; // head of the family
-    } else {
-      node.family = node.parent.family;
-    }
-  }
-
-  if (node.children) {
-    node.family_depth = 0;
-    node.family_count = 0;
-    for (const n of node.children) {
-      labelFamilies(n);
-      node.family_depth = Math.max(node.family_depth, n.family_depth);
-      node.family_count += n.family_count;
-    }
-  } else {
-    node.family_depth = node.depth;
-    node.family_count = 1;
-  }
-}
 
 /**
  * Build the family tree visualization
@@ -222,6 +141,7 @@ export function buildTree(users = null, options = {}) {
   onNodeSelectCallback = options.onNodeSelect || null;
   onNodeHoverCallback = options.onNodeHover || null;
   onNodeEditCallback = options.onNodeEdit || null;
+  onNodeViewProfileCallback = options.onNodeViewProfile || null;
   isEditMode = options.editMode || false;
 
   // Use provided users or fall back to static data
@@ -262,7 +182,7 @@ export function buildTree(users = null, options = {}) {
       let roleTitle = o.role_name || o.role || o.name;
 
       // If id looks like a role_id path (starts with "."), use role_name as fallback for ID
-      if (id && id.startsWith(".")) {
+      if (id?.startsWith(".")) {
         id = o.role_name || o.role || id;
       }
 
@@ -282,6 +202,13 @@ export function buildTree(users = null, options = {}) {
         }
       }
 
+      // Consolidate NEI sub-role short codes (like "RF") under "NEI"
+      // These are role shorts that should not appear as separate insignia entries
+      // Check by looking at role_id prefix for NEI roles (.2.*)
+      if (o.role_id?.startsWith(".2.") && id !== "NEI") {
+        id = "NEI";
+      }
+
       if (!id) return;
 
       if (!insigniasMap.has(id)) {
@@ -296,6 +223,7 @@ export function buildTree(users = null, options = {}) {
 
       insigniasMap.get(id).roles.push({
         title: roleTitle,
+        parentOrg: o.parent_org_name,
         year: o.year,
         format: o.year_display_format || "civil"
       });
@@ -340,7 +268,7 @@ export function buildTree(users = null, options = {}) {
   const root = treeStructure(dataStructure);
 
   // Store root for external access
-  treeRoot = root;
+  _treeRoot = root;
 
   // Build node map for quick lookup
   nodeMap.clear();
@@ -540,7 +468,19 @@ export function buildTree(users = null, options = {}) {
       return `url(#${getInsigniaPatternId(d)})`;
     })
     .append("title")
-    .text(d => d.roles.map(r => `${r.title} (${formatYear(r.year, r.format)})`).join('\n'));
+    .text(function (d) {
+      // Get the insignia id to check for redundancy
+      const insigniaId = d.id;
+
+      return d.roles.map(r => {
+        // Only show parentOrg if it's different from the main org (insignia id)
+        // This avoids redundancy like "Consoante (NEI)" when the insignia is already NEI
+        // But keeps useful context like "Vogal (Direção)" for AETTUA sub-sections
+        const shouldShowParent = r.parentOrg && r.parentOrg !== insigniaId;
+        const parentContext = shouldShowParent ? ` (${r.parentOrg})` : "";
+        return `${r.title}${parentContext} (${formatYear(r.year, r.format)})`;
+      }).join('\n');
+    });
 
   // circle with the gradient year color
   const nodesProfileGrad = nodes
@@ -592,16 +532,6 @@ export function buildTree(users = null, options = {}) {
         .attr("y", (d, i) => y(i))
         .style("opacity", o)
         .ease(d3.easeBackOut.overshoot(2));
-    })
-    .on("mouseenter", function (event, d) {
-      if (onNodeHoverCallback && d.data.id) {
-        onNodeHoverCallback(d.data.id, true);
-      }
-    })
-    .on("mouseleave", function (event, d) {
-      if (onNodeHoverCallback && d.data.id) {
-        onNodeHoverCallback(d.data.id, false);
-      }
     });
 
   // border with the year color
@@ -618,6 +548,117 @@ export function buildTree(users = null, options = {}) {
     .attr("r", 24)
     .style("filter", `brightness(1.3)`)
     .style("fill", `url(#heart_border)`);
+
+  // Profile view button - positioned to the left of node
+  const profileButtons = nodes
+    .append("g")
+    .attr("class", "profile-btn")
+    .attr("transform", "translate(-26, 0)")
+    .style("cursor", "pointer")
+    .style("opacity", 0)
+    .on("click", function (event, d) {
+      event.stopPropagation();
+      if (onNodeViewProfileCallback && d.data.id) {
+        onNodeViewProfileCallback(d.data);
+      }
+    })
+    .on("mouseenter", function () {
+      // Keep button visible when hovering over it
+      d3.select(this).style("opacity", 1);
+      // Simple scale up on hover
+      d3.select(this).select("path")
+        .transition()
+        .duration(150)
+        .attr("transform", "translate(-6, -6) scale(0.55)");
+    })
+    .on("mouseleave", function () {
+      // Reset scale
+      d3.select(this).select("path")
+        .transition()
+        .duration(150)
+        .attr("transform", "translate(-6, -6) scale(0.5)");
+    });
+
+  // Invisible hover bridge - creates a hover area between node and button
+  profileButtons
+    .append("rect")
+    .attr("class", "hover-bridge")
+    .attr("x", -12)
+    .attr("y", -12)
+    .attr("width", 38)
+    .attr("height", 24)
+    .attr("fill", "transparent")
+    .style("pointer-events", "all");
+
+  // Button icon - just the eye icon in black with white outline
+  profileButtons
+    .append("path")
+    .attr("d", "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z")
+    .attr("transform", "translate(-6, -6) scale(0.5)")
+    .attr("fill", "#000")
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 2)
+    .style("filter", "drop-shadow(0 2px 4px rgba(255,255,255,0.9))")
+    .style("pointer-events", "none");
+
+  // Add hover handlers to nodes to show/hide profile button AND insignias
+  nodes
+    .on("mouseenter", function (event, d) {
+      const parent = this;
+
+      // Show profile button
+      d3.select(this).select(".profile-btn")
+        .transition()
+        .duration(200)
+        .style("opacity", 1);
+
+      // Show insignias automatically on hover
+      if (!parent.classList.contains("active")) {
+        const x = (i) => Math.cos(((-i + 1) / 5) * Math.PI) * 30 - 5;
+        const y = (i) => Math.sin(((-i + 1) / 5) * Math.PI) * 30 - 5;
+
+        d3.select(parent)
+          .select("g.insignias")
+          .selectAll("rect.insignia")
+          .transition()
+          .duration(300)
+          .attr("x", (d, i) => x(i))
+          .attr("y", (d, i) => y(i))
+          .style("opacity", 1)
+          .ease(d3.easeBackOut.overshoot(2));
+      }
+
+      // Also trigger existing hover callback
+      if (onNodeHoverCallback && d.data.id) {
+        onNodeHoverCallback(d.data.id, true);
+      }
+    })
+    .on("mouseleave", function (event, d) {
+      const parent = this;
+
+      // Hide profile button
+      d3.select(this).select(".profile-btn")
+        .transition()
+        .duration(200)
+        .style("opacity", 0);
+
+      // Hide insignias if not clicked/active
+      if (!parent.classList.contains("active")) {
+        d3.select(parent)
+          .select("g.insignias")
+          .selectAll("rect.insignia")
+          .transition()
+          .duration(200)
+          .attr("x", -5)
+          .attr("y", -5)
+          .style("opacity", 0);
+      }
+
+      // Also trigger existing hover callback
+      if (onNodeHoverCallback && d.data.id) {
+        onNodeHoverCallback(d.data.id, false);
+      }
+    });
 
   labels = groups
     .append("g")
@@ -754,6 +795,12 @@ export function buildTree(users = null, options = {}) {
       .transition()
       .duration(300)
       .attr("transform", (d) => `translate(${d.x},${d.y + (close ? 26 : 18)})`);
+
+    // Profile buttons - position relative to node size when zoomed
+    profileButtons
+      .transition()
+      .duration(300)
+      .attr("transform", close ? "translate(-32, 0)" : "translate(-26, 0)");
   }
 
   updateNodes(false);
@@ -918,6 +965,35 @@ export function clearHighlight() {
 }
 
 /**
+ * Build SVG path segment between two nodes (helper for animatePathToNode)
+ */
+function buildPathSegment(prev, current) {
+  const sx = prev.x;
+  const sy = prev.y + 68;
+  const tx = current.x;
+  const ty = current.y;
+  const hy = 0.5 * (ty - sy);
+  const off = 5;
+  let dir = 0;
+  if (sx > tx) {
+    dir = -1;
+  } else if (sx < tx) {
+    dir = 1;
+  }
+
+  let segment = ` L${sx},${sy} v${hy - off - 10}`;
+
+  if (dir !== 0) {
+    segment += ` c0,${off} 0,${off} ${off * dir},${off}`;
+    segment += ` h${tx - sx - 3 * off * dir}`;
+    segment += ` c${2 * off * dir},0 ${2 * off * dir},0 ${2 * off * dir},${2 * off}`;
+  }
+
+  segment += ` L${tx},${ty}`;
+  return segment;
+}
+
+/**
  * Animate a path from root to the specified node
  * Path renders BEHIND nodes and nodes glow as the line passes through
  * @param {number} nodeId - ID of the target node
@@ -943,35 +1019,9 @@ export function animatePathToNode(nodeId) {
   groups.selectAll(".node").classed("node-glow", false);
 
   // Build path data following tree link structure
-  let pathData = "";
-
-  for (let i = 0; i < pathNodes.length; i++) {
-    const n = pathNodes[i];
-
-    if (i === 0) {
-      pathData = `M${n.x},${n.y}`;
-    } else {
-      const prev = pathNodes[i - 1];
-      const sx = prev.x;
-      const sy = prev.y + 68;
-      const tx = n.x;
-      const ty = n.y;
-      const hy = 0.5 * (ty - sy);
-      const off = 5;
-
-      let dir = sx - tx > 0 ? -1 : sx - tx < 0 ? 1 : 0;
-
-      pathData += ` L${sx},${sy}`;
-      pathData += ` v${hy - off - 10}`;
-
-      if (dir !== 0) {
-        pathData += ` c0,${off} 0,${off} ${off * dir},${off}`;
-        pathData += ` h${tx - sx - 3 * off * dir}`;
-        pathData += ` c${2 * off * dir},0 ${2 * off * dir},0 ${2 * off * dir},${2 * off}`;
-      }
-
-      pathData += ` L${tx},${ty}`;
-    }
+  let pathData = `M${pathNodes[0].x},${pathNodes[0].y}`;
+  for (let i = 1; i < pathNodes.length; i++) {
+    pathData += buildPathSegment(pathNodes[i - 1], pathNodes[i]);
   }
 
   // INSERT path at the BEGINNING of svg group so it renders BEHIND nodes

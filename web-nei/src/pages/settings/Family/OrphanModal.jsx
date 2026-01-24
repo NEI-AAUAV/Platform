@@ -22,7 +22,7 @@ const OrphanModal = ({
     isOpen,
     onClose,
     userToDelete,
-    children: orphanChildren = [],
+    orphanChildren = [],
     onConfirmDelete,
     onReparent
 }) => {
@@ -159,9 +159,9 @@ const OrphanModal = ({
 
                                 {/* Orphan children preview */}
                                 <div>
-                                    <label className="label">
+                                    <div className="label">
                                         <span className="label-text font-bold">Pedaços afetados:</span>
-                                    </label>
+                                    </div>
                                     <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-base-200 rounded-lg">
                                         {orphanChildren.map(child => (
                                             <div
@@ -180,9 +180,9 @@ const OrphanModal = ({
 
                                 {/* Action selector */}
                                 <div className="space-y-2">
-                                    <label className="label">
+                                    <div className="label">
                                         <span className="label-text font-bold">O que fazer com os pedaços?</span>
-                                    </label>
+                                    </div>
 
                                     <label className={classNames(
                                         "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors",
@@ -196,6 +196,7 @@ const OrphanModal = ({
                                             className="radio radio-error"
                                             checked={action === "delete"}
                                             onChange={() => setAction("delete")}
+                                            aria-label="Eliminar de qualquer forma"
                                         />
                                         <div>
                                             <div className="font-medium">Eliminar de qualquer forma</div>
@@ -217,6 +218,7 @@ const OrphanModal = ({
                                             className="radio radio-success"
                                             checked={action === "reparent"}
                                             onChange={() => setAction("reparent")}
+                                            aria-label="Transferir para outro patrão"
                                         />
                                         <div>
                                             <div className="font-medium">Transferir para outro patrão</div>
@@ -246,43 +248,54 @@ const OrphanModal = ({
                                         </div>
 
                                         <div className="max-h-40 overflow-y-auto rounded-lg border border-base-content/10">
-                                            {patraoLoading ? (
-                                                <div className="flex justify-center py-4">
-                                                    <span className="loading loading-spinner loading-sm"></span>
-                                                </div>
-                                            ) : patraoList.length === 0 ? (
-                                                <div className="py-4 text-center text-sm text-base-content/50">
-                                                    Nenhum resultado
-                                                </div>
-                                            ) : (
-                                                patraoList.map(p => (
-                                                    <button
-                                                        key={p._id}
-                                                        type="button"
-                                                        className={classNames(
-                                                            "flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-base-200",
-                                                            selectedPatrao?._id === p._id && "bg-success/10"
-                                                        )}
-                                                        onClick={() => setSelectedPatrao(p)}
-                                                    >
-                                                        <div
-                                                            className="w-6 h-6 rounded-full"
-                                                            style={{ backgroundColor: colors[(p.start_year || 0) % colors.length] }}
-                                                        >
-                                                            <Avatar
-                                                                image={p.image}
-                                                                sex={p.sex}
-                                                                alt={p.name || ''}
-                                                                className="w-6 h-6 rounded-full object-cover"
-                                                            />
+                                            {(() => {
+                                                if (patraoLoading) {
+                                                    return (
+                                                        <div className="flex justify-center py-4">
+                                                            <span className="loading loading-spinner loading-sm"></span>
                                                         </div>
-                                                        <span className="truncate font-medium">{p.name}</span>
-                                                        {selectedPatrao?._id === p._id && (
-                                                            <MaterialSymbol icon="check_circle" size={16} className="ml-auto text-success" />
-                                                        )}
-                                                    </button>
-                                                ))
-                                            )}
+                                                    );
+                                                }
+                                                if (patraoList.length === 0) {
+                                                    return (
+                                                        <div className="py-4 text-center text-sm text-base-content/50">
+                                                            Nenhum resultado
+                                                        </div>
+                                                    );
+                                                }
+                                                return (
+                                                    <>
+                                                        {patraoList.map(p => (
+                                                            <button
+                                                                key={p._id}
+                                                                type="button"
+                                                                className={classNames(
+                                                                    "flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-base-200",
+                                                                    selectedPatrao?._id === p._id && "bg-success/10"
+                                                                )}
+                                                                onClick={() => setSelectedPatrao(p)}
+                                                                aria-label={`Selecionar ${p.name}`}
+                                                            >
+                                                                <div
+                                                                    className="w-6 h-6 rounded-full"
+                                                                    style={{ backgroundColor: colors[(p.start_year || 0) % colors.length] }}
+                                                                >
+                                                                    <Avatar
+                                                                        image={p.image}
+                                                                        sex={p.sex}
+                                                                        alt={p.name || ''}
+                                                                        className="w-6 h-6 rounded-full object-cover"
+                                                                    />
+                                                                </div>
+                                                                <span className="truncate font-medium">{p.name}</span>
+                                                                {selectedPatrao?._id === p._id && (
+                                                                    <MaterialSymbol icon="check_circle" size={16} className="ml-auto text-success" />
+                                                                )}
+                                                            </button>
+                                                        ))}
+                                                    </>
+                                                );
+                                            })()}
                                         </div>
                                     </div>
                                 )}
@@ -331,7 +344,7 @@ OrphanModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     userToDelete: PropTypes.object,
-    children: PropTypes.array,
+    orphanChildren: PropTypes.array,
     onConfirmDelete: PropTypes.func,
     onReparent: PropTypes.func,
 };

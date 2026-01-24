@@ -5,7 +5,7 @@
  * Actions: Add Insignia, Remove Insignia, Set Course, Set Year
  */
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
@@ -13,15 +13,14 @@ import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
 import RolePickerModal from "components/RolePickerModal";
 import FamilyService from "services/FamilyService";
-import { colors, organizations } from "pages/Family/data";
+import { colors } from "pages/Family/data";
 import { formatYear } from "pages/Family/utils";
 
 const BulkEditModal = ({
     isOpen,
     onClose,
     selectedUsers = [],
-    onComplete,
-    allUsers = [] // For patrão lookup
+    onComplete
 }) => {
     // Bulk action state
     const [action, setAction] = useState("add_role");
@@ -84,10 +83,50 @@ const BulkEditModal = ({
         }
     }, [isOpen]);
 
-    // Get patrão info
-    const getPatrao = (user) => {
-        if (!user?.patrao_id) return null;
-        return allUsers.find(u => u._id === user.patrao_id);
+
+    // Helper: Execute the selected action for a single user
+    const executeActionForUser = async (user) => {
+        if (action === "add_role" && selectedRole) {
+            await FamilyService.assignRole({
+                user_id: user._id,
+                role_id: selectedRole._id,
+                year: roleYear
+            });
+            return true;
+        }
+        if (action === "set_course" && selectedCourse) {
+            await FamilyService.updateUser(user._id, {
+                ...user,
+                course_id: parseInt(selectedCourse)
+            });
+            return true;
+        }
+        if (action === "set_year") {
+            await FamilyService.updateUser(user._id, {
+                ...user,
+                start_year: newYear
+            });
+            return true;
+        }
+        return false;
+    };
+
+    // Helper: Process and display results 
+    const processResults = (successCount, errorCount, errorMessages) => {
+        if (errorCount === 0) {
+            setSuccess(`${successCount} membro(s) atualizados com sucesso!`);
+            setTimeout(() => {
+                onComplete?.();
+                onClose();
+            }, 1500);
+        } else if (successCount > 0) {
+            setSuccess(`${successCount} atualizados, ${errorCount} com erro.`);
+            if (errorMessages.length > 0) {
+                setError(errorMessages.slice(0, 3).join("; "));
+            }
+        } else {
+            setError(errorMessages.slice(0, 3).join("; ") || "Erro ao aplicar alterações");
+        }
     };
 
     const handleApply = async () => {
@@ -108,26 +147,8 @@ const BulkEditModal = ({
                 setProgress({ current: i + 1, total: selectedUsers.length });
 
                 try {
-                    if (action === "add_role" && selectedRole) {
-                        await FamilyService.assignRole({
-                            user_id: user._id,
-                            role_id: selectedRole._id,
-                            year: roleYear
-                        });
-                        successCount++;
-                    } else if (action === "set_course" && selectedCourse) {
-                        await FamilyService.updateUser(user._id, {
-                            ...user,
-                            course_id: parseInt(selectedCourse)
-                        });
-                        successCount++;
-                    } else if (action === "set_year") {
-                        await FamilyService.updateUser(user._id, {
-                            ...user,
-                            start_year: newYear
-                        });
-                        successCount++;
-                    }
+                    const executed = await executeActionForUser(user);
+                    if (executed) successCount++;
                 } catch (err) {
                     console.error(`Failed action for ${user.name}:`, err);
                     errorCount++;
@@ -138,21 +159,7 @@ const BulkEditModal = ({
                 }
             }
 
-            if (errorCount === 0) {
-                setSuccess(`${successCount} membro(s) atualizados com sucesso!`);
-                setTimeout(() => {
-                    onComplete?.();
-                    onClose();
-                }, 1500);
-            } else if (successCount > 0) {
-                setSuccess(`${successCount} atualizados, ${errorCount} com erro.`);
-                if (errorMessages.length > 0) {
-                    setError(errorMessages.slice(0, 3).join("; "));
-                }
-            } else {
-                setError(errorMessages.slice(0, 3).join("; ") || "Erro ao aplicar alterações");
-            }
-
+            processResults(successCount, errorCount, errorMessages);
         } catch (err) {
             setError(err.message || "Erro ao aplicar alterações");
         } finally {
@@ -244,9 +251,9 @@ const BulkEditModal = ({
 
                                 {/* Action selector */}
                                 <div>
-                                    <label className="label">
+                                    <div className="label">
                                         <span className="label-text font-semibold">Ação a executar</span>
-                                    </label>
+                                    </div>
                                     <div className="grid grid-cols-3 gap-2">
                                         {[
                                             { value: "add_role", icon: "badge", label: "Adicionar Insígnia" },
@@ -276,10 +283,11 @@ const BulkEditModal = ({
                                 {action === "add_role" && (
                                     <div className="space-y-4 bg-base-200/30 rounded-xl p-4">
                                         <div>
-                                            <label className="label">
+                                            <label className="label" htmlFor="insignia-select">
                                                 <span className="label-text">Insígnia</span>
                                             </label>
                                             <button
+                                                id="insignia-select"
                                                 type="button"
                                                 className={classNames(
                                                     "btn w-full justify-between",
@@ -301,11 +309,12 @@ const BulkEditModal = ({
                                             </button>
                                         </div>
                                         <div>
-                                            <label className="label">
+                                            <label className="label" htmlFor="role-year-input">
                                                 <span className="label-text">Ano do mandato</span>
                                             </label>
                                             <div className="flex gap-2 items-center">
                                                 <input
+                                                    id="role-year-input"
                                                     type="number"
                                                     className="input input-bordered w-24"
                                                     value={roleYear}
@@ -323,10 +332,11 @@ const BulkEditModal = ({
 
                                 {action === "set_course" && (
                                     <div className="bg-base-200/30 rounded-xl p-4">
-                                        <label className="label">
+                                        <label className="label" htmlFor="course-select">
                                             <span className="label-text">Curso</span>
                                         </label>
                                         <select
+                                            id="course-select"
                                             className="select select-bordered w-full"
                                             value={selectedCourse}
                                             onChange={(e) => setSelectedCourse(e.target.value)}
@@ -343,11 +353,12 @@ const BulkEditModal = ({
 
                                 {action === "set_year" && (
                                     <div className="bg-base-200/30 rounded-xl p-4">
-                                        <label className="label">
+                                        <label className="label" htmlFor="new-year-input">
                                             <span className="label-text">Novo ano de entrada</span>
                                         </label>
                                         <div className="flex gap-2 items-center">
                                             <input
+                                                id="new-year-input"
                                                 type="number"
                                                 className="input input-bordered w-24"
                                                 value={newYear}
@@ -445,8 +456,7 @@ BulkEditModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     selectedUsers: PropTypes.array,
-    onComplete: PropTypes.func,
-    allUsers: PropTypes.array,
+    onComplete: PropTypes.func.isRequired,
 };
 
 export default BulkEditModal;

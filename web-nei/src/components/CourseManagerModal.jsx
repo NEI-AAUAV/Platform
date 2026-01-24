@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
 import { motion, AnimatePresence } from "framer-motion";
 import classNames from "classnames";
@@ -141,12 +142,21 @@ export default function CourseManagerModal({ isOpen, onClose }) {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-6" onClick={onClose}>
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-6">
+                    {/* Backdrop Button - Accessible way to close strictly using a button */}
+                    <button
+                        type="button"
+                        className="fixed inset-0 h-full w-full cursor-default bg-black/40 backdrop-blur-[2px]"
+                        onClick={onClose}
+                        aria-label="Fechar modal"
+                    />
+
+                    {/* Modal Content - Sibling to backdrop, not child */}
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
-                        className="flex max-h-[90vh] w-full max-w-4xl flex-col lg:flex-row overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
+                        className="relative z-10 flex max-h-[90vh] w-full max-w-4xl flex-col lg:flex-row overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Sidebar: List - Hidden on mobile when editing */}
@@ -243,8 +253,9 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                             <div className="min-h-0 flex-1 overflow-y-auto p-6" style={{ WebkitOverflowScrolling: 'touch' }}>
                                 <form onSubmit={handleSave} className="flex flex-col gap-4 max-w-lg mx-auto">
                                     <div className="form-control">
-                                        <label className="label"><span className="label-text">Nome</span></label>
+                                        <label className="label" htmlFor="course-name"><span className="label-text">Nome</span></label>
                                         <input
+                                            id="course-name"
                                             type="text"
                                             className="input input-bordered"
                                             required
@@ -256,8 +267,9 @@ export default function CourseManagerModal({ isOpen, onClose }) {
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="form-control">
-                                            <label className="label"><span className="label-text">Abreviatura</span></label>
+                                            <label className="label" htmlFor="course-short"><span className="label-text">Abreviatura</span></label>
                                             <input
+                                                id="course-short"
                                                 type="text"
                                                 className="input input-bordered"
                                                 required
@@ -267,8 +279,9 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                                             />
                                         </div>
                                         <div className="form-control">
-                                            <label className="label"><span className="label-text">Grau</span></label>
+                                            <label className="label" htmlFor="course-degree"><span className="label-text">Grau</span></label>
                                             <select
+                                                id="course-degree"
                                                 className="select select-bordered"
                                                 value={formData.degree}
                                                 onChange={e => setFormData({ ...formData, degree: e.target.value })}
@@ -323,3 +336,8 @@ export default function CourseManagerModal({ isOpen, onClose }) {
         </AnimatePresence>
     );
 }
+
+CourseManagerModal.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+};
