@@ -1,7 +1,7 @@
 import os
 import pathlib
 
-from pydantic import AnyHttpUrl, BaseSettings, MongoDsn, validator
+from pydantic import AnyHttpUrl, BaseSettings, MongoDsn, root_validator, validator
 from typing import List, Optional, Union
 
 
@@ -37,16 +37,30 @@ class Settings(BaseSettings):
     MONGO_USER: str = os.getenv('MONGO_USER', "mongo")
     MONGO_PASSWORD: str = os.getenv('MONGO_PASSWORD', "mongo")
     MONGO_DB: str = os.getenv('MONGO_DB', "mongo")
-    MONGO_URI: Optional[
-        MongoDsn
-    ] = f"mongodb://{MONGO_USER}" \
-        f":{MONGO_PASSWORD}@{MONGO_SERVER}" \
-        f":27017/{MONGO_DB}?authSource=admin"
-    TEST_MONGO_URI: Optional[
-        MongoDsn
-    ] = f"mongodb://{MONGO_USER}" \
-        f":{MONGO_PASSWORD}@{MONGO_SERVER}" \
-        f":27017/{MONGO_DB}_test??authSource={MONGO_USER}"
+    # authSource is the database name where user credentials are stored
+    # For root users: "admin", for dedicated users: database name (MONGO_DB)
+    # Defaults to MONGO_DB (production), can be overridden to "admin" for development
+    MONGO_AUTH_SOURCE: Optional[str] = os.getenv('MONGO_AUTH_SOURCE')
+    MONGO_URI: Optional[MongoDsn] = None
+    TEST_MONGO_URI: Optional[MongoDsn] = None
+
+    @root_validator
+    def build_mongo_uris(cls, values):
+        """Build MongoDB URIs with authSource after all fields are validated"""
+        auth_source = values.get('MONGO_AUTH_SOURCE') or values.get('MONGO_DB', 'mongo')
+        mongo_user = values.get('MONGO_USER', 'mongo')
+        mongo_password = values.get('MONGO_PASSWORD', 'mongo')
+        mongo_server = values.get('MONGO_SERVER', 'localhost')
+        mongo_db = values.get('MONGO_DB', 'mongo')
+        
+        values['MONGO_AUTH_SOURCE'] = auth_source
+        values['MONGO_URI'] = f"mongodb://{mongo_user}" \
+                              f":{mongo_password}@{mongo_server}" \
+                              f":27017/{mongo_db}?authSource={auth_source}"
+        values['TEST_MONGO_URI'] = f"mongodb://{mongo_user}" \
+                                   f":{mongo_password}@{mongo_server}" \
+                                   f":27017/{mongo_db}_test?authSource={auth_source}"
+        return values
 
     # Auth settings
     ## Path to JWT signing keys
