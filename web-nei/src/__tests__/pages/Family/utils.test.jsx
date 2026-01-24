@@ -34,10 +34,10 @@ describe('Family/utils.js', () => {
 
     describe('wouldCreateCycle', () => {
         const users = [
-            { id: 1, _id: 1, name: 'Root' },
-            { id: 2, _id: 2, name: 'Child', patrao_id: 1 },
-            { id: 3, _id: 3, name: 'Grandchild', patrao_id: 2 },
-            { id: 4, _id: 4, name: 'Unrelated' },
+            { id: 1, name: 'Root' },
+            { id: 2, name: 'Child', patrao_id: 1 },
+            { id: 3, name: 'Grandchild', patrao_id: 2 },
+            { id: 4, name: 'Unrelated' },
         ];
 
         it('detects direct cycle (assigning self as patrao)', () => {
@@ -168,11 +168,11 @@ describe('Family/utils.js', () => {
     describe('flattenTree', () => {
         it('flattens a simple tree', () => {
             const tree = {
-                _id: 1,
+                id: 1,
                 name: 'Root',
                 children: [
-                    { _id: 2, name: 'Child 1' },
-                    { _id: 3, name: 'Child 2' }
+                    { id: 2, name: 'Child 1' },
+                    { id: 3, name: 'Child 2' }
                 ]
             };
 
@@ -185,8 +185,8 @@ describe('Family/utils.js', () => {
 
         it('handles array of roots', () => {
             const roots = [
-                { _id: 1, name: 'Root 1' },
-                { _id: 2, name: 'Root 2' }
+                { id: 1, name: 'Root 1' },
+                { id: 2, name: 'Root 2' }
             ];
 
             const flat = flattenTree(roots);

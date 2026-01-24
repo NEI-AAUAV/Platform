@@ -111,12 +111,12 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
             <div className="grid grid-cols-2 gap-3 p-1">
                 {currentNodes.map((node) => {
                     const icon = getIconForNode(node);
-                    const isSelected = selectedRoleNode?._id === node._id;
+                    const isSelected = selectedRoleNode?.id === node.id;
                     const hasChildren = node.children && node.children.length > 0;
 
                     return (
                         <div
-                            key={node._id}
+                            key={node.id}
                             className={classNames(
                                 "group relative flex flex-col items-center justify-center gap-3 rounded-xl border p-4 transition-all",
                                 isSelected

@@ -33,8 +33,8 @@ describe('CourseManagerModal', () => {
     const mockOnClose = vi.fn();
 
     const mockCourses = [
-        { _id: '1', name: 'Computer Science', short: 'LEI', degree: 'Licenciatura', show: true },
-        { _id: '2', name: 'Informatics Engineering', short: 'MEI', degree: 'Mestrado', show: false }
+        { id: '1', name: 'Computer Science', short: 'LEI', degree: 'Licenciatura', show: true },
+        { id: '2', name: 'Informatics Engineering', short: 'MEI', degree: 'Mestrado', show: false }
     ];
 
     beforeEach(() => {

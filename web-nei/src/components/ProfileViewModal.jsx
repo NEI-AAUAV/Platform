@@ -52,8 +52,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
 
     // Load children (pedaços)
     useEffect(() => {
-        // Handle both id (from D3 tree) and _id (from API)
-        const userId = user?._id || user?.id;
+        const userId = user?.id;
         if (isOpen && userId) {
             setLoading(true);
             FamilyService.getUserChildren(userId)
@@ -63,7 +62,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
         } else {
             setChildrenList([]);
         }
-    }, [isOpen, user?._id, user?.id]);
+    }, [isOpen, user?.id]);
 
     // Lock body scroll when modal is open
     useEffect(() => {
@@ -88,7 +87,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
     // Get course name from ID
     const getCourseName = (courseId) => {
         if (!courseId) return null;
-        const course = courses.find(c => c._id === courseId);
+        const course = courses.find(c => c.id === courseId);
         return course ? `${course.short} - ${course.name}` : null;
     };
 
@@ -296,7 +295,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                         <button
                                             type="button"
                                             className="flex w-full items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors text-left"
-                                            onClick={() => handleNavigate(patraoData._id)}
+                                            onClick={() => handleNavigate(patraoData.id)}
                                         >
                                             <div className="avatar h-10 w-10">
                                                 <Avatar
@@ -328,9 +327,9 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                             {childrenList.map(child => (
                                                 <button
                                                     type="button"
-                                                    key={child._id}
+                                                    key={child.id}
                                                     className="flex w-full items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors text-left"
-                                                    onClick={() => handleNavigate(child._id)}
+                                                    onClick={() => handleNavigate(child.id)}
                                                 >
                                                     <div className="avatar h-10 w-10">
                                                         <Avatar
@@ -371,10 +370,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
 ProfileViewModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     user: PropTypes.shape({
-        // Accept both id (from D3 tree nodes) and _id (from API)
-        // Component uses: user._id || user.id
         id: PropTypes.number,
-        _id: PropTypes.number,
         name: PropTypes.string,
         sex: PropTypes.oneOf(["M", "F"]),
         start_year: PropTypes.number,

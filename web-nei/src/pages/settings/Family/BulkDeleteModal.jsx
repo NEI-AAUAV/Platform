@@ -50,7 +50,7 @@ const BulkDeleteModal = ({
         const warnings = [];
         for (const user of selectedUsers.slice(0, 10)) { // Check first 10
             try {
-                const children = await FamilyService.getUserChildren(user._id);
+                const children = await FamilyService.getUserChildren(user.id);
                 if (children && children.length > 0) {
                     warnings.push({
                         user,
@@ -60,7 +60,7 @@ const BulkDeleteModal = ({
                 }
             } catch (err) {
                 // Ignore errors in check (orphan detection is best-effort)
-                console.debug("Failed to check orphans for user " + user._id, err);
+                console.debug("Failed to check orphans for user " + user.id, err);
             }
         }
         setOrphanWarnings(warnings);
@@ -82,7 +82,7 @@ const BulkDeleteModal = ({
         for (let i = 0; i < selectedUsers.length; i++) {
             const user = selectedUsers[i];
             try {
-                await FamilyService.deleteUser(user._id);
+                await FamilyService.deleteUser(user.id);
                 setProgress(prev => ({ ...prev, current: i + 1 }));
             } catch (err) {
                 newErrors.push({
@@ -165,7 +165,7 @@ const BulkDeleteModal = ({
                                         <div className="flex flex-wrap gap-2">
                                             {selectedUsers.map(user => (
                                                 <div
-                                                    key={user._id}
+                                                    key={user.id}
                                                     className="flex items-center gap-2 px-2 py-1 bg-base-100 rounded-lg text-sm border border-base-content/10"
                                                 >
                                                     <Avatar
@@ -194,7 +194,7 @@ const BulkDeleteModal = ({
                                             <p className="font-bold">Atenção: Alguns membros têm pedaços!</p>
                                             <ul className="mt-1 text-xs opacity-80">
                                                 {orphanWarnings.map(w => (
-                                                    <li key={w.user._id}>
+                                                    <li key={w.user.id}>
                                                         {w.user.name}: {w.childrenCount} pedaço(s)
                                                         ({w.childrenNames.join(", ")}{w.childrenCount > 3 ? "..." : ""})
                                                     </li>
@@ -253,7 +253,7 @@ const BulkDeleteModal = ({
                                             <p className="font-bold">Alguns membros não foram eliminados:</p>
                                             <ul className="mt-1 text-xs">
                                                 {errors.map((e) => (
-                                                    <li key={e.user._id}>{e.user.name}: {e.error}</li>
+                                                    <li key={e.user.id}>{e.user.name}: {e.error}</li>
                                                 ))}
                                             </ul>
                                         </div>

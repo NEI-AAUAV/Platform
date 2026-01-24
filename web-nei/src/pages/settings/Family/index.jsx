@@ -26,7 +26,17 @@ const collectMissingPatraoIds = (users, userMap) => {
   const missing = new Set();
   for (const u of users) {
     const id = u?.patrao_id;
-    if (id && !userMap?.[id]) missing.add(id);
+    // Normalize to number for lookup (userMap keys are always numbers)
+    if (id !== null && id !== undefined) {
+      const normalizedId = typeof id === 'number' ? id : parseInt(id, 10);
+      if (!isNaN(normalizedId)) {
+        // Check if the patrão exists in userMap by id
+        const found = userMap[normalizedId];
+        if (!found) {
+          missing.add(normalizedId);
+        }
+      }
+    }
   }
   return missing;
 };
@@ -201,7 +211,8 @@ export function Component() {
       try {
         // Fetch a large number of users to populate the Patrão map
         const usersRes = await FamilyService.getUsers({ limit: 500 });
-        setAllUsers(usersRes.items || []);
+        const normalized = usersRes.items || [];
+        setAllUsers(normalized);
       } catch (err) {
         console.error("Failed to load initial data:", err);
       }
@@ -210,12 +221,18 @@ export function Component() {
   }, [hasAccess]);
 
   // Create patrão lookup map
-  // Robustly handle both _id and id fields
   const userMap = useMemo(() => {
     const map = {};
     allUsers.forEach((u) => {
-      if (u._id) map[u._id] = u;
-      if (u.id) map[u.id] = u;
+      // API returns id (aliased from MongoDB _id)
+      const userId = u.id;
+      if (userId !== null && userId !== undefined) {
+        // Store as number (patrao_id references id, which is always a number)
+        const numId = typeof userId === 'number' ? userId : parseInt(userId, 10);
+        if (!isNaN(numId)) {
+          map[numId] = u;
+        }
+      }
     });
     return map;
   }, [allUsers]);
@@ -237,7 +254,8 @@ export function Component() {
       }
 
       const response = await FamilyService.getUsers(params);
-      setUsers(response.items || []);
+      const normalized = response.items || [];
+      setUsers(normalized);
       setTotal(response.total || 0);
     } catch (err) {
       console.error("Failed to load users:", err);
@@ -252,43 +270,89 @@ export function Component() {
     fetchUsers();
   }, [fetchUsers, hasAccess]);
 
+  // Track fetched patrão IDs to avoid infinite loops
+  const fetchedPatraoIdsRef = useRef(new Set());
+
   // Fetch missing Patrões
   useEffect(() => {
     if (!hasAccess) return;
     if (!users.length) return;
+    // Wait for initial data load to complete before fetching patrões
+    // This prevents race condition where userMap is empty because allUsers hasn't loaded yet
+    if (allUsers.length === 0) {
+      // Initial data is still loading, wait for it to complete
+      return;
+    }
 
     const missingIds = collectMissingPatraoIds(users, userMap);
     if (missingIds.size === 0) return;
+
+    // Filter out IDs we've already fetched (to prevent infinite loops)
+    const newMissingIds = Array.from(missingIds).filter(id => !fetchedPatraoIdsRef.current.has(id));
+    if (newMissingIds.length === 0) return;
+
+    // Debug: log what we're trying to fetch
+    if (newMissingIds.length > 0) {
+      console.log(`[Patrão Fetch] Fetching ${newMissingIds.length} missing patrões:`, newMissingIds);
+      console.log(`[Patrão Fetch] Current userMap has ${Object.keys(userMap).length} users`);
+    }
+
+    // Mark these IDs as being fetched
+    newMissingIds.forEach(id => fetchedPatraoIdsRef.current.add(id));
 
     let cancelled = false;
     (async () => {
       try {
         // Fetch each missing ID individually (not optimal but ensures correctness)
         // In production, backend should support keys list.
-        const found = await fetchUsersByIds(Array.from(missingIds));
+        const found = await fetchUsersByIds(newMissingIds);
         if (!cancelled && found.length > 0) {
-          setAllUsers(prev => [...prev, ...found]);
+          console.log(`[Patrão Fetch] Successfully fetched ${found.length} patrões:`, found.map(u => ({ id: u.id, name: u.name })));
+          // API returns id (aliased from MongoDB _id)
+          const normalized = found;
+          setAllUsers(prev => {
+            // Avoid duplicates by checking id
+            const existingIds = new Set(prev.map(p => {
+              const pid = p.id;
+              return pid !== null && pid !== undefined ? (typeof pid === 'number' ? pid : parseInt(pid, 10)) : null;
+            }).filter(Boolean));
+            const unique = normalized.filter(u => {
+              const uid = u.id;
+              if (uid === null || uid === undefined) return false;
+              const numUid = typeof uid === 'number' ? uid : parseInt(uid, 10);
+              return !isNaN(numUid) && !existingIds.has(numUid);
+            });
+            console.log(`[Patrão Fetch] Adding ${unique.length} new patrões to userMap`);
+            return [...prev, ...unique];
+          });
+        } else if (!cancelled) {
+          console.warn(`[Patrão Fetch] No users found for IDs:`, newMissingIds);
         }
       } catch (err) {
-        if (!cancelled) console.error("Failed to fetch missing patrões", err);
+        if (!cancelled) {
+          console.error("[Patrão Fetch] Failed to fetch missing patrões", err);
+          console.error("[Patrão Fetch] IDs that failed:", newMissingIds);
+        }
+        // Remove from fetched set on error so we can retry
+        newMissingIds.forEach(id => fetchedPatraoIdsRef.current.delete(id));
       }
     })();
 
     return () => { cancelled = true; };
-  }, [users, userMap, hasAccess]);
+  }, [users, userMap, allUsers, hasAccess]);
 
   // --- MOVED HOOKS (Fix S6440) ---
 
   // Check if all users on current page are selected
   const allCurrentPageSelected = useMemo(() => {
     if (users.length === 0) return false;
-    return users.every(u => selectedIds.has(u._id));
+    return users.every(u => selectedIds.has(u.id));
   }, [users, selectedIds]);
 
   // Check if some (but not all) users on current page are selected
   const someCurrentPageSelected = useMemo(() => {
     if (users.length === 0) return false;
-    const selectedCount = users.filter(u => selectedIds.has(u._id)).length;
+    const selectedCount = users.filter(u => selectedIds.has(u.id)).length;
     return selectedCount > 0 && selectedCount < users.length;
   }, [users, selectedIds]);
 
@@ -296,7 +360,7 @@ export function Component() {
   const selectedUsers = useMemo(() => {
     const result = [];
     for (const id of selectedIds) {
-      const user = allUsers.find(u => u._id === id) || users.find(u => u._id === id);
+      const user = allUsers.find(u => u.id === id) || users.find(u => u.id === id);
       if (user) result.push(user);
     }
     return result;
@@ -396,7 +460,7 @@ export function Component() {
   // Check if user has children before deleting
   const handleDeleteRequest = async (user) => {
     try {
-      const children = await FamilyService.getUserChildren(user._id);
+      const children = await FamilyService.getUserChildren(user.id);
       if (children && children.length > 0) {
         setOrphanChildren(children);
         setDeleteModal(user);
@@ -417,7 +481,7 @@ export function Component() {
     if (!deleteModal) return;
     setDeleting(true);
     try {
-      await FamilyService.deleteUser(deleteModal._id);
+      await FamilyService.deleteUser(deleteModal.id);
       setDeleteModal(null);
       setShowOrphanModal(false);
       setOrphanChildren([]);
@@ -439,10 +503,10 @@ export function Component() {
     try {
       // Update each child to new patron
       await Promise.all(orphanChildren.map(child =>
-        FamilyService.updateUser(child._id, { ...child, patrao_id: newPatraoId })
+        FamilyService.updateUser(child.id, { ...child, patrao_id: newPatraoId })
       ));
       // Now delete the original user
-      await FamilyService.deleteUser(deleteModal._id);
+      await FamilyService.deleteUser(deleteModal.id);
       setDeleteModal(null);
       setShowOrphanModal(false);
       setOrphanChildren([]);
@@ -469,7 +533,7 @@ export function Component() {
         const end = Math.max(lastSelectedIndex, rowIndex);
         for (let i = start; i <= end; i++) {
           if (users[i]) {
-            next.add(users[i]._id);
+            next.add(users[i].id);
           }
         }
       } else if (next.has(userId)) {
@@ -494,10 +558,10 @@ export function Component() {
       const next = new Set(prev);
       if (allCurrentPageSelected) {
         // Deselect all on current page
-        users.forEach(u => next.delete(u._id));
+        users.forEach(u => next.delete(u.id));
       } else {
         // Select all on current page
-        users.forEach(u => next.add(u._id));
+        users.forEach(u => next.add(u.id));
       }
       return next;
     });
@@ -518,12 +582,12 @@ export function Component() {
         const q = debouncedSearch.toLowerCase();
         const matchesName = u.name?.toLowerCase().includes(q);
         const matchesNmec = u.nmec?.toString().includes(q);
-        const matchesId = u._id?.toString() === q;
+        const matchesId = u.id?.toString() === q;
         if (!matchesName && !matchesNmec && !matchesId) return false;
       }
       return true;
     });
-    setSelectedIds(new Set(matchingUsers.map(u => u._id)));
+    setSelectedIds(new Set(matchingUsers.map(u => u.id)));
   };
 
 
@@ -842,14 +906,27 @@ export function Component() {
                       </>
                     ) : (
                       users.map((user, rowIndex) => {
-                        const patrao = user.patrao_id ? (userMap[user.patrao_id] || null) : null;
+                        // Look up patrão by patrao_id
+                        const patraoId = user.patrao_id;
+                        let patrao = null;
+                        if (patraoId !== null && patraoId !== undefined) {
+                          // Normalize to number (patrao_id is always a number, but be safe)
+                          const numId = typeof patraoId === 'number' ? patraoId : parseInt(patraoId, 10);
+                          if (!isNaN(numId)) {
+                            patrao = userMap[numId] || null;
+                            // Debug: log if patrão not found
+                            if (!patrao && process.env.NODE_ENV === 'development') {
+                              console.debug(`[Patrão Lookup] User ${user.id} has patrao_id ${numId}, but not found in userMap. userMap keys:`, Object.keys(userMap).slice(0, 10));
+                            }
+                          }
+                        }
                         const userColor = colors[user.start_year % colors.length] || "#ccc";
                         const userRoles = user.user_roles || [];
-                        const isSelected = selectedIds.has(user._id);
+                        const isSelected = selectedIds.has(user.id);
 
                         return (
                           <tr
-                            key={user._id}
+                            key={user.id}
                             className={classNames(
                               "border-base-content/5 transition-colors cursor-pointer select-none",
                               isSelected
@@ -859,7 +936,7 @@ export function Component() {
                             onClick={(e) => {
                               // Don't trigger if clicking on buttons or inputs
                               if (e.target.closest('button, a, input')) return;
-                              handleRowSelect(user._id, rowIndex, e);
+                              handleRowSelect(user.id, rowIndex, e);
                             }}
                           >
                             {/* Checkbox */}
@@ -868,7 +945,7 @@ export function Component() {
                                 type="checkbox"
                                 className={classNames("checkbox checkbox-sm", isSelected && "checkbox-primary")}
                                 checked={isSelected}
-                                onChange={(e) => handleRowSelect(user._id, rowIndex, e)}
+                                onChange={(e) => handleRowSelect(user.id, rowIndex, e)}
                               />
                             </td>
                             {/* Member + ID */}
@@ -893,7 +970,7 @@ export function Component() {
                                 <div className="min-w-0">
                                   <div className="flex items-baseline gap-2">
                                     <div className="truncate font-bold">{user.name}</div>
-                                    <span className="text-xs text-base-content/40 font-mono">#{user._id}</span>
+                                    <span className="text-xs text-base-content/40 font-mono">#{user.id}</span>
                                   </div>
                                   <div className="flex items-center gap-2 text-sm text-base-content/60">
                                     {user.faina_name && <span>{user.faina_name}</span>}
@@ -1062,7 +1139,7 @@ export function Component() {
         onClose={() => setShowRoleFilterModal(false)}
         hideYear={false}
         onSelect={(node, year) => {
-          setRoleFilterId(node._id);
+          setRoleFilterId(node.id);
           setRoleFilterName(node.name + (year ? ` (${year})` : ''));
           setRoleFilterYear(year);
           setPage(0);

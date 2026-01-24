@@ -35,7 +35,7 @@ const getSafeIconPath = (rawPath) => {
 
     // 1. Safe local icons - URI-encoded for additional safety layer
     if (trimmed.startsWith("/icons/")) {
-        const match = trimmed.match(SAFE_ICON_PATTERN);
+        const match = SAFE_ICON_PATTERN.exec(trimmed);
         // encodeURI ensures any special chars are escaped for HTML attribute context
         return match ? encodeURI(match[0]) : "";
     }

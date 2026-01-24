@@ -153,19 +153,16 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
             // Filter out self if editing
             let newItems = (response.items || []).filter(
-                (u) => !isEdit || u._id !== user?._id
+                (u) => !isEdit || u.id !== user?.id
             );
-
-            // Normalize IDs - ensure _id exists (MongoDB always returns _id)
-            newItems = newItems.map(u => ({ ...u, _id: u._id }));
 
             if (resetList || patraoPage === 0) {
                 setPatraoList(newItems);
             } else {
                 setPatraoList(prev => {
                     // Avoid duplicates
-                    const existingIds = new Set(prev.map(p => p._id));
-                    const uniqueNew = newItems.filter(p => !existingIds.has(p._id));
+                    const existingIds = new Set(prev.map(p => p.id));
+                    const uniqueNew = newItems.filter(p => !existingIds.has(p.id));
                     return [...prev, ...uniqueNew];
                 });
             }
@@ -177,7 +174,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         } finally {
             setPatraoLoading(false);
         }
-    }, [debouncedSearch, isEdit, user?._id, patraoPage]);
+    }, [debouncedSearch, isEdit, user?.id, patraoPage]);
 
     useEffect(() => {
         if (isOpen) {
@@ -188,7 +185,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
     // Ensure selected patrão is in the list
     useEffect(() => {
         if (selectedPatrao && patraoList.length > 0) {
-            const exists = patraoList.find(p => p._id === selectedPatrao._id);
+            const exists = patraoList.find(p => p.id === selectedPatrao.id);
             if (!exists) {
                 setPatraoList(prev => [selectedPatrao, ...prev]);
             }
@@ -202,7 +199,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             // Need a small timeout to allow DOM to update if list changed
             setTimeout(() => {
                 const selectedEl = patraoListRef.current?.querySelector(
-                    `[data-id="${selectedPatrao._id}"]`
+                    `[data-id="${selectedPatrao.id}"]`
                 );
                 if (selectedEl) {
                     selectedEl.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -214,8 +211,8 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
     // Load user roles when editing
     useEffect(() => {
         async function loadUserRoles() {
-            if (!user?._id) return;
-            const uid = user._id;
+            if (!user?.id) return;
+            const uid = user.id;
             setRolesLoading(true);
             try {
                 const response = await FamilyService.getRolesForUser(uid);
@@ -230,12 +227,12 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         if (isOpen && isEdit) {
             loadUserRoles();
         }
-    }, [isOpen, isEdit, user?._id]);
+    }, [isOpen, isEdit, user?.id]);
 
     // Load children (Pedaços)
     useEffect(() => {
-        if (isOpen && isEdit && user?._id) {
-            const uid = user._id;
+        if (isOpen && isEdit && user?.id) {
+            const uid = user.id;
             FamilyService.getUserChildren(uid)
                 .then(setChildrenList)
                 .catch(err => {
@@ -245,7 +242,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         } else {
             setChildrenList([]);
         }
-    }, [isOpen, isEdit, user?._id]);
+    }, [isOpen, isEdit, user?.id]);
 
     // Reset form
     useEffect(() => {
@@ -265,13 +262,11 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
             if (user.patrao_id) {
                 FamilyService.getUserById(user.patrao_id)
                     .then((p) => {
-                        // Ensure _id exists (MongoDB always returns _id)
-                        const pNorm = { ...p, _id: p._id };
-                        setSelectedPatrao(pNorm);
+                        setSelectedPatrao(p);
                     })
                     .catch(() =>
                         setSelectedPatrao({
-                            _id: user.patrao_id,
+                            id: user.patrao_id,
                             name: `ID ${user.patrao_id}`,
                         })
                     );
@@ -292,8 +287,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
             // Handle initialPatrao for new "pedaços"
             if (initialPatrao) {
-                const pNorm = { ...initialPatrao, _id: initialPatrao._id };
-                setSelectedPatrao(pNorm);
+                setSelectedPatrao(initialPatrao);
             } else {
                 setSelectedPatrao(null);
             }
@@ -314,13 +308,13 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         try {
             const payload = {
                 ...data,
-                patrao_id: selectedPatrao?._id || null,
+                patrao_id: selectedPatrao?.id || null,
                 faina_name: data.faina_name || null,
                 nmec: data.nmec || null,
                 course_id: data.course_id ? parseInt(data.course_id) : null,
             };
 
-            const uid = user?._id;
+            const uid = user?.id;
 
             if (isEdit) {
                 await FamilyService.updateUser(uid, payload);
@@ -330,7 +324,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 if (pendingRoles.length > 0) {
                     await Promise.all(pendingRoles.map(role =>
                         FamilyService.assignRole({
-                            user_id: newUser._id,
+                            user_id: newUser.id,
                             role_id: role.role_id,
                             year: role.year
                         })
@@ -395,7 +389,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
     const handleUpdatePhoto = async () => {
         if (!isEdit || (!imageFile && !removeImage)) return;
-        const uid = user?._id;
+        const uid = user?.id;
         setImageUpdating(true);
         setError(null);
         try {
@@ -436,7 +430,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         }
         try {
             await FamilyService.removeRole(roleId);
-            setUserRoles((prev) => prev.filter((r) => r._id !== roleId));
+            setUserRoles((prev) => prev.filter((r) => r.id !== roleId));
         } catch (err) {
             alert(getErrorMessage(err, "Erro ao remover insígnia"));
         }
@@ -447,7 +441,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
         if (!isEdit) {
             setPendingRoles(prev => [...prev, {
                 tempId: Date.now(), // temp ID for UI
-                role_id: selectedNode._id,
+                role_id: selectedNode.id,
                 year: roleYear,
                 org_name: selectedNode.short || selectedNode.name, // Approximate display
                 name: selectedNode.name
@@ -457,11 +451,11 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
         try {
             await FamilyService.assignRole({
-                user_id: user._id,
-                role_id: selectedNode._id,
+                user_id: user.id,
+                role_id: selectedNode.id,
                 year: roleYear,
             });
-            const response = await FamilyService.getRolesForUser(user._id);
+            const response = await FamilyService.getRolesForUser(user.id);
             setUserRoles(response.items || []);
         } catch (err) {
             alert(getErrorMessage(err, "Erro ao adicionar insígnia"));
@@ -552,12 +546,12 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                             <>
                                                 {patraoList.map((p) => (
                                                     <button
-                                                        key={p._id}
-                                                        data-id={p._id}
+                                                        key={p.id}
+                                                        data-id={p.id}
                                                         type="button"
                                                         className={classNames(
                                                             "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-base-300",
-                                                            { "bg-primary/10": selectedPatrao?._id === p._id }
+                                                            { "bg-primary/10": selectedPatrao?.id === p.id }
                                                         )}
                                                         onClick={() => setSelectedPatrao(p)}
                                                     >
@@ -578,7 +572,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                                 {p.nmec && ` • ${p.nmec}`}
                                                             </div>
                                                         </div>
-                                                        {selectedPatrao?._id === p._id && (
+                                                        {selectedPatrao?.id === p.id && (
                                                             <MaterialSymbol
                                                                 icon="check_circle"
                                                                 size={20}
@@ -803,7 +797,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                 >
                                                     <option value="">Sem Curso</option>
                                                     {courses.map(course => (
-                                                        <option key={course._id} value={course._id}>
+                                                        <option key={course.id} value={course.id}>
                                                             {course.short} - {course.name}
                                                         </option>
                                                     ))}
@@ -844,7 +838,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                             <div className="flex flex-wrap gap-3">
                                                                 {displayRoles.map((role) => (
                                                                     <div
-                                                                        key={role._id || role.tempId}
+                                                                        key={role.id || role.tempId}
                                                                         className="flex items-center gap-2 rounded-lg bg-base-100 p-2 shadow-sm ring-1 ring-base-content/10"
                                                                     >
                                                                         {/* Try to show icon if available - check API icon first, then static map */}
@@ -863,7 +857,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                                         <button
                                                                             type="button"
                                                                             className="ml-1 rounded-full p-1 text-base-content/40 hover:bg-error/10 hover:text-error"
-                                                                            onClick={() => handleRemoveRole(role._id || role.tempId)}
+                                                                            onClick={() => handleRemoveRole(role.id || role.tempId)}
                                                                         >
                                                                             <MaterialSymbol icon="close" size={14} />
                                                                         </button>
@@ -899,7 +893,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                                             {childrenList.map(child => (
                                                                 <button
                                                                     type="button"
-                                                                    key={child._id}
+                                                                    key={child.id}
                                                                     className="flex w-full items-center gap-3 rounded-lg border border-base-content/10 bg-base-100 p-2 hover:bg-base-200 cursor-pointer transition-colors text-left"
                                                                     onClick={() => onSwitchUser(child)}
                                                                 >

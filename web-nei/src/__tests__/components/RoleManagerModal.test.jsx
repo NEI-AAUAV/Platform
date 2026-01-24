@@ -45,7 +45,7 @@ describe('RoleManagerModal', () => {
     const mockOnClose = vi.fn();
 
     const mockRoleTree = [
-        { _id: 'root1', name: 'Root Role', children: [{ _id: 'child1', name: 'Child Role', super_roles: 'root1', children: [] }] }
+        { id: 'root1', name: 'Root Role', children: [{ id: 'child1', name: 'Child Role', super_roles: 'root1', children: [] }] }
     ];
 
     beforeEach(() => {
@@ -100,7 +100,7 @@ describe('RoleManagerModal', () => {
 
         await user.type(screen.getByLabelText('Nome'), 'New Role');
 
-        FamilyService.createRole.mockResolvedValue({ _id: 'new1', name: 'New Role' });
+        FamilyService.createRole.mockResolvedValue({ id: 'new1', name: 'New Role' });
 
         fireEvent.click(screen.getByRole('button', { name: /Criar/i }));
 

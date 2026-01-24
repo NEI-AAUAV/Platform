@@ -38,7 +38,13 @@ class UserRoleUpdate(BaseModel):
 
 class UserRoleInDB(UserRoleBase):
     """Schema for user-role response from database."""
-    _id: str = Field(..., description="User-role ID (MongoDB _id)")
+    id: str = Field(..., alias='_id', description="User-role ID (MongoDB _id)")
+
+    def dict(self, **kwargs):
+        """Override dict() to always use field names (not aliases) for serialization."""
+        # Force by_alias=False to serialize as 'id' instead of '_id'
+        kwargs['by_alias'] = False
+        return super().dict(**kwargs)
 
     class Config:
         orm_mode = True
@@ -47,21 +53,33 @@ class UserRoleInDB(UserRoleBase):
 
 class UserDetailsNested(BaseModel):
     """Nested user details for UserRoleWithDetails."""
-    _id: Optional[int] = Field(None, description="User ID (MongoDB _id)")
+    id: Optional[int] = Field(None, alias='_id', description="User ID (MongoDB _id)")
     name: Optional[str] = None
     image: Optional[str] = None
     sex: Optional[str] = None
     start_year: Optional[int] = None
 
+    def dict(self, **kwargs):
+        """Override dict() to always use field names (not aliases) for serialization."""
+        # Force by_alias=False to serialize as 'id' instead of '_id'
+        kwargs['by_alias'] = False
+        return super().dict(**kwargs)
+
 
 class UserRoleWithDetails(UserRoleBase):
     """User-role with expanded user and role info."""
-    _id: str = Field(..., description="User-role ID (MongoDB _id)")
+    id: str = Field(..., alias='_id', description="User-role ID (MongoDB _id)")
     user_name: Optional[str] = None  # Keep for backward compatibility
     user: Optional[UserDetailsNested] = None  # Full user details for frontend
     role_name: Optional[str] = None
     role_short: Optional[str] = None
     year_display_format: Optional[str] = None
+
+    def dict(self, **kwargs):
+        """Override dict() to always use field names (not aliases) for serialization."""
+        # Force by_alias=False to serialize as 'id' instead of '_id'
+        kwargs['by_alias'] = False
+        return super().dict(**kwargs)
 
     class Config:
         orm_mode = True

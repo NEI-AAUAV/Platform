@@ -34,7 +34,7 @@ describe('useFamilyTree', () => {
     it('fetches tree data successfully', async () => {
         const mockData = {
             roots: [
-                { _id: 1, name: 'Root User', children: [] }
+                { id: 1, name: 'Root User', children: [] }
             ],
             min_year: 2015,
             max_year: 2024,
@@ -80,7 +80,7 @@ describe('useFamilyTree', () => {
     it('provides refetch function', async () => {
         FamilyService.getTree
             .mockResolvedValueOnce({ roots: [], min_year: 2015, max_year: 2020 })
-            .mockResolvedValueOnce({ roots: [{ _id: 1, name: 'New' }], min_year: 2015, max_year: 2024 });
+            .mockResolvedValueOnce({ roots: [{ id: 1, name: 'New' }], min_year: 2015, max_year: 2024 });
 
         const { result } = renderHook(() => useFamilyTree());
 

@@ -58,11 +58,11 @@ const OrphanModal = ({
 
             // Filter out the user being deleted and all orphan children
             const excludeIds = new Set([
-                userToDelete?._id,
-                ...orphanChildren.map(c => c._id)
+                userToDelete?.id,
+                ...orphanChildren.map(c => c.id)
             ]);
 
-            const filtered = (response.items || []).filter(u => !excludeIds.has(u._id));
+            const filtered = (response.items || []).filter(u => !excludeIds.has(u.id));
             setPatraoList(filtered);
 
         } catch (err) {
@@ -70,7 +70,7 @@ const OrphanModal = ({
         } finally {
             setPatraoLoading(false);
         }
-    }, [patraoSearch, userToDelete?._id, orphanChildren]);
+    }, [patraoSearch, userToDelete?.id, orphanChildren]);
 
     useEffect(() => {
         if (isOpen && action === "reparent") {
@@ -86,7 +86,7 @@ const OrphanModal = ({
             if (action === "delete") {
                 await onConfirmDelete?.();
             } else if (action === "reparent" && selectedPatrao) {
-                await onReparent?.(selectedPatrao._id);
+                await onReparent?.(selectedPatrao.id);
             }
             onClose();
         } catch (err) {
@@ -166,7 +166,7 @@ const OrphanModal = ({
                                     <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-base-200 rounded-lg">
                                         {orphanChildren.map(child => (
                                             <div
-                                                key={child._id}
+                                                key={child.id}
                                                 className="flex items-center gap-1 px-2 py-1 bg-base-100 rounded-lg text-xs"
                                             >
                                                 <div
@@ -268,11 +268,11 @@ const OrphanModal = ({
                                                     <>
                                                         {patraoList.map(p => (
                                                             <button
-                                                                key={p._id}
+                                                                key={p.id}
                                                                 type="button"
                                                                 className={classNames(
                                                                     "flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-base-200",
-                                                                    selectedPatrao?._id === p._id && "bg-success/10"
+                                                                    selectedPatrao?.id === p.id && "bg-success/10"
                                                                 )}
                                                                 onClick={() => setSelectedPatrao(p)}
                                                                 aria-label={`Selecionar ${p.name}`}
@@ -289,7 +289,7 @@ const OrphanModal = ({
                                                                     />
                                                                 </div>
                                                                 <span className="truncate font-medium">{p.name}</span>
-                                                                {selectedPatrao?._id === p._id && (
+                                                                {selectedPatrao?.id === p.id && (
                                                                     <MaterialSymbol icon="check_circle" size={16} className="ml-auto text-success" />
                                                                 )}
                                                             </button>

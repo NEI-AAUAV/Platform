@@ -21,7 +21,13 @@ class UserRole(BaseModel):
 
 class UserTreeNode(BaseModel):
     """A node in the user family tree."""
-    _id: int = Field(..., description="User ID (MongoDB _id)")
+    id: int = Field(..., alias='_id', description="User ID (MongoDB _id)")
+    
+    def dict(self, **kwargs):
+        """Override dict() to always use field names (not aliases) for serialization."""
+        # Force by_alias=False to serialize as 'id' instead of '_id'
+        kwargs['by_alias'] = False
+        return super().dict(**kwargs)
     name: Optional[str] = None
     faina_name: Optional[str] = None
     image: Optional[str] = None

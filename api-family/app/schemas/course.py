@@ -37,7 +37,13 @@ class CourseUpdate(BaseModel):
 
 class CourseInDB(CourseBase):
     """Course as stored in database."""
-    _id: int = Field(..., description="Course ID (MongoDB _id)")
+    id: int = Field(..., alias='_id', description="Course ID (MongoDB _id)")
+    
+    def dict(self, **kwargs):
+        """Override dict() to always use field names (not aliases) for serialization."""
+        # Force by_alias=False to serialize as 'id' instead of '_id'
+        kwargs['by_alias'] = False
+        return super().dict(**kwargs)
     
     class Config:
         orm_mode = True

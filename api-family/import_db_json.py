@@ -1,12 +1,15 @@
 """
-Import JSON files from app/db/ directory to MongoDB.
+Import JSON files to MongoDB.
 This is a one-time migration script for importing legacy data.
 
 Usage:
-    python api-family/import_db_json.py
+    python api-family/import_db_json.py [source_directory]
+
+If source_directory is not provided, defaults to api-family/app/db/
 """
 import json
 import os
+import sys
 from pathlib import Path
 from pymongo import MongoClient
 from app.core.config import settings
@@ -21,17 +24,22 @@ def load_json(path):
         print(f"FAILED TO LOAD {path}: {e}")
         return None
 
-def import_users():
-    """Import users from users.json or users_seed.json."""
-    db_dir = Path(__file__).parent / "app" / "db"
+def get_source_dir():
+    """Get source directory from command line or use default."""
+    if len(sys.argv) > 1:
+        source_dir = Path(sys.argv[1])
+        if not source_dir.exists():
+            print(f"ERROR: Source directory does not exist: {source_dir}")
+            sys.exit(1)
+        return source_dir
+    return Path(__file__).parent / "app" / "db"
+
+def import_users(source_dir):
+    """Import users from users_seed.json."""
+    users_path = source_dir / "users_seed.json"
     
-    # Try users.json first, fallback to users_seed.json
-    users_path = db_dir / "users.json"
     if not users_path.exists():
-        users_path = db_dir / "users_seed.json"
-    
-    if not users_path.exists():
-        print(f"Users file not found in {db_dir}")
+        print(f"ERROR: users_seed.json not found in {source_dir}")
         return 0
     
     users = load_json(users_path)
@@ -54,17 +62,12 @@ def import_users():
     client.close()
     return count
 
-def import_user_roles():
-    """Import user roles from user_roles.json or user_roles_seed.json."""
-    db_dir = Path(__file__).parent / "app" / "db"
-    
-    # Try user_roles.json first, fallback to user_roles_seed.json
-    roles_path = db_dir / "user_roles.json"
-    if not roles_path.exists():
-        roles_path = db_dir / "user_roles_seed.json"
+def import_user_roles(source_dir):
+    """Import user roles from user_roles_seed.json."""
+    roles_path = source_dir / "user_roles_seed.json"
     
     if not roles_path.exists():
-        print(f"User roles file not found in {db_dir}")
+        print(f"ERROR: user_roles_seed.json not found in {source_dir}")
         return 0
     
     user_roles = load_json(roles_path)
@@ -93,13 +96,12 @@ def import_user_roles():
     client.close()
     return count
 
-def import_courses():
+def import_courses(source_dir):
     """Import courses from courses.json."""
-    db_dir = Path(__file__).parent / "app" / "db"
-    courses_path = db_dir / "courses.json"
+    courses_path = source_dir / "courses.json"
     
     if not courses_path.exists():
-        print(f"Courses file not found in {db_dir}")
+        print(f"Courses file not found in {source_dir}")
         return 0
     
     courses = load_json(courses_path)
@@ -122,13 +124,12 @@ def import_courses():
     client.close()
     return count
 
-def import_counters():
+def import_counters(source_dir):
     """Import counters from counters.json."""
-    db_dir = Path(__file__).parent / "app" / "db"
-    counters_path = db_dir / "counters.json"
+    counters_path = source_dir / "counters.json"
     
     if not counters_path.exists():
-        print(f"Counters file not found in {db_dir}")
+        print(f"Counters file not found in {source_dir}")
         return 0
     
     counters = load_json(counters_path)
@@ -151,13 +152,12 @@ def import_counters():
     client.close()
     return count
 
-def import_roles():
+def import_roles(source_dir):
     """Import roles from roles.json."""
-    db_dir = Path(__file__).parent / "app" / "db"
-    roles_path = db_dir / "roles.json"
+    roles_path = source_dir / "roles.json"
     
     if not roles_path.exists():
-        print(f"Roles file not found in {db_dir}")
+        print(f"ERROR: roles.json not found in {source_dir}")
         return 0
     
     roles = load_json(roles_path)
@@ -181,17 +181,25 @@ def import_roles():
     return count
 
 if __name__ == "__main__":
-    print("Starting import from app/db/ JSON files...")
-    print(f"Connecting to: {settings.MONGO_URI}")
+    source_dir = get_source_dir()
+    
+    print("=" * 60)
+    print("MongoDB JSON Import Script")
+    print("=" * 60)
+    print(f"Source directory: {source_dir}")
+    print(f"MongoDB URI: {settings.MONGO_URI}")
     print(f"Database: {settings.MONGO_DB}")
-    print("-" * 50)
+    print("-" * 60)
     
-    import_roles()
-    import_courses()
-    import_counters()
-    import_users()
-    import_user_roles()
+    # Import in order: roles, courses, counters, users, user_roles
+    # (roles and courses should exist before user_roles)
+    import_roles(source_dir)
+    import_courses(source_dir)
+    import_counters(source_dir)
+    import_users(source_dir)
+    import_user_roles(source_dir)
     
-    print("-" * 50)
+    print("-" * 70)
     print("Import completed!")
+    print("=" * 70)
 

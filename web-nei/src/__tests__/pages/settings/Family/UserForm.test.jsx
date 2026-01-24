@@ -36,7 +36,7 @@ vi.mock('../../../../components/form', () => ({
 vi.mock('../../../../components/RolePickerModal', () => ({
     default: ({ isOpen, onSelect }) => isOpen ? (
         <div role="dialog" data-testid="role-picker">
-            <button onClick={() => onSelect({ _id: 'role1', name: 'Role 1', short: 'R1' }, 2024)}>Select Role</button>
+            <button onClick={() => onSelect({ id: 'role1', name: 'Role 1', short: 'R1' }, 2024)}>Select Role</button>
         </div>
     ) : null
 }));
@@ -58,8 +58,8 @@ describe('UserForm', () => {
     const mockOnSave = vi.fn();
     const mockOnDelete = vi.fn();
 
-    const mockCourses = [{ _id: 1, name: 'Computer Science', short: 'LEI' }];
-    const mockPatroes = { items: [{ _id: 10, name: 'Patrao User', sex: 'M' }] };
+    const mockCourses = [{ id: 1, name: 'Computer Science', short: 'LEI' }];
+    const mockPatroes = { items: [{ id: 10, name: 'Patrao User', sex: 'M' }] };
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -86,8 +86,8 @@ describe('UserForm', () => {
     });
 
     it('initializes for editing an existing user', async () => {
-        const mockUser = { _id: 1, name: 'Test User', sex: 'M', start_year: 20, course_id: 1, patrao_id: 10 };
-        FamilyService.getUserById.mockResolvedValue({ _id: 10, name: 'Patrao User' });
+        const mockUser = { id: 1, name: 'Test User', sex: 'M', start_year: 20, course_id: 1, patrao_id: 10 };
+        FamilyService.getUserById.mockResolvedValue({ id: 10, name: 'Patrao User' });
 
         render(<UserForm user={mockUser} isOpen={true} onClose={mockOnClose} />);
 

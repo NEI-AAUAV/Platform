@@ -102,7 +102,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                 await FamilyService.createCourse(formData);
             } else {
                 if (!selectedCourse) return;
-                const id = selectedCourse._id;
+                const id = selectedCourse.id;
                 await FamilyService.updateCourse(id, formData);
             }
             await loadCourses();
@@ -122,7 +122,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
 
         setSubmitting(true);
         try {
-            const id = selectedCourse._id;
+            const id = selectedCourse.id;
             await FamilyService.deleteCourse(id);
             await loadCourses();
             handleCreateNew();
@@ -197,10 +197,10 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                                     <div className="flex flex-col gap-1">
                                         {filteredCourses.map(course => (
                                             <button
-                                                key={course._id}
+                                                key={course.id}
                                                 className={classNames(
                                                     "flex w-full flex-col gap-0.5 rounded-lg px-3 py-2 text-left text-sm transition-all duration-200",
-                                                    (selectedCourse?._id === course._id && !isNew)
+                                                    (selectedCourse?.id === course.id && !isNew)
                                                         ? "bg-primary text-primary-content shadow-md"
                                                         : "hover:bg-base-200 text-base-content/80"
                                                 )}
@@ -214,7 +214,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
                                                 </div>
                                                 <span className={classNames(
                                                     "text-xs truncate",
-                                                    (selectedCourse?._id === course._id && !isNew) ? "opacity-80" : "opacity-60"
+                                                    (selectedCourse?.id === course.id && !isNew) ? "opacity-80" : "opacity-60"
                                                 )}>
                                                     {course.name}
                                                 </span>

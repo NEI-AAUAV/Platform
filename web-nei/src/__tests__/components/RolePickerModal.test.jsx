@@ -36,11 +36,11 @@ describe('RolePickerModal', () => {
 
     const mockRoleTree = [
         {
-            _id: '1',
+            id: '1',
             name: 'Root',
             children: [
-                { _id: '2', name: 'NEI', short: 'NEI', children: [] },
-                { _id: '3', name: 'Groups', children: [{ _id: '4', name: 'CEI', short: 'CEI', children: [] }] }
+                { id: '2', name: 'NEI', short: 'NEI', children: [] },
+                { id: '3', name: 'Groups', children: [{ id: '4', name: 'CEI', short: 'CEI', children: [] }] }
             ]
         }
     ];

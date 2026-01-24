@@ -92,7 +92,7 @@ const CreatedUserRow = ({ user, userIdx, roles = [], onRemoveRole, onAddRole }) 
             <div className="flex flex-wrap gap-1 mt-2">
                 {roles.map((r, roleIdx) => (
                     <RoleChip
-                        key={`${r.role?._id || r.role?.name || "role"}-${r.year}-${roleIdx}`}
+                        key={`${r.role?.id || r.role?.name || "role"}-${r.year}-${roleIdx}`}
                         roleName={r.role?.name}
                         year={r.year}
                         onRemove={makeRemoveRoleHandler(onRemoveRole, userIdx, roleIdx)}
@@ -121,7 +121,7 @@ CreatedUserRow.propTypes = {
     userIdx: PropTypes.number.isRequired,
     roles: PropTypes.arrayOf(PropTypes.shape({
         role: PropTypes.shape({
-            _id: PropTypes.string,
+            id: PropTypes.string,
             name: PropTypes.string,
         }),
         year: PropTypes.number,
@@ -179,7 +179,7 @@ const BulkImportModal = ({
     const userMap = useMemo(() => {
         const map = { byId: {}, byName: {}, byNmec: {} };
         allUsers.forEach(u => {
-            if (u._id) map.byId[u._id] = u;
+            if (u.id) map.byId[u.id] = u;
             const nameLower = (u.name || "").toLowerCase().trim();
             if (nameLower) {
                 if (!map.byName[nameLower]) map.byName[nameLower] = [];
@@ -201,7 +201,7 @@ const BulkImportModal = ({
                 if (u.name?.toLowerCase().includes(query)) return true;
                 if (u.faina_name?.toLowerCase().includes(query)) return true;
                 if (!isNaN(queryNum) && u.nmec?.toString().includes(query)) return true;
-                if (!isNaN(queryNum) && u._id === queryNum) return true;
+                if (!isNaN(queryNum) && u.id === queryNum) return true;
                 return false;
             })
             .slice(0, 12);
@@ -260,7 +260,7 @@ const BulkImportModal = ({
         if (!isNaN(asNum)) {
             if (userMap.byNmec[asNum]) {
                 console.log(`[resolvePatrao] Found by nmec: ${asNum}`);
-                return { id: userMap.byNmec[asNum]._id, resolved: true, user: userMap.byNmec[asNum] };
+                return { id: userMap.byNmec[asNum].id, resolved: true, user: userMap.byNmec[asNum] };
             }
             if (userMap.byId[asNum]) {
                 console.log(`[resolvePatrao] Found by ID: ${asNum}`);
@@ -274,7 +274,7 @@ const BulkImportModal = ({
         console.log(`[resolvePatrao] Exact name match for "${nameLower}":`, matches);
         if (matches?.length === 1) {
             console.log(`[resolvePatrao] Found exact name match: ${matches[0].name}`);
-            return { id: matches[0]._id, resolved: true, user: matches[0] };
+            return { id: matches[0].id, resolved: true, user: matches[0] };
         } else if (matches?.length > 1) {
             console.log(`[resolvePatrao] Ambiguous: ${matches.length} matches`);
             return { id: null, resolved: false, ambiguous: true, matches };
@@ -285,7 +285,7 @@ const BulkImportModal = ({
         console.log(`[resolvePatrao] Partial matches for "${nameLower}":`, partial.length);
         if (partial.length === 1) {
             console.log(`[resolvePatrao] Found partial match: ${partial[0].name}`);
-            return { id: partial[0]._id, resolved: true, user: partial[0] };
+            return { id: partial[0].id, resolved: true, user: partial[0] };
         } else if (partial.length > 1) {
             console.log(`[resolvePatrao] Ambiguous partial: ${partial.length} matches`);
             return { id: null, resolved: false, ambiguous: true, matches: partial.slice(0, 5) };
@@ -661,7 +661,7 @@ const BulkImportModal = ({
         setParsedData(prev => {
             const updated = [...prev];
             const row = { ...updated[rowIdx] };
-            row.patrao_id = user?._id || null;
+            row.patrao_id = user?.id || null;
             row.patrao_input = user?.name || "";
             row.patrao_resolved = true;
             row.patrao_user = user || null;
@@ -759,8 +759,8 @@ const BulkImportModal = ({
                     if (roleInfo?.role) {
                         try {
                             await FamilyService.assignRole({
-                                user_id: user._id,
-                                role_id: roleInfo.role._id,
+                                user_id: user.id,
+                                role_id: roleInfo.role.id,
                                 year: roleInfo.year || new Date().getFullYear() - 2000
                             });
                             successCount++;
@@ -782,7 +782,7 @@ const BulkImportModal = ({
         setUserRoles(prev => {
             const roles = prev[userIdx] || [];
             // Prevent duplicates
-            if (roles.some(r => r.role._id === role._id)) return prev;
+            if (roles.some(r => r.role.id === role.id)) return prev;
             return { ...prev, [userIdx]: [...roles, { role, year }] };
         });
     };
@@ -883,7 +883,7 @@ const BulkImportModal = ({
                             {patraoSearch && patraoSearchResults.length > 0 && (
                                 <div className="max-h-64 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                                     {patraoSearchResults.map(u => (
-                                        <div key={u._id} className="flex items-center gap-3 bg-base-200/50 rounded-xl px-3 py-2 text-sm">
+                                        <div key={u.id} className="flex items-center gap-3 bg-base-200/50 rounded-xl px-3 py-2 text-sm">
                                             <div
                                                 className="w-8 h-8 rounded-full overflow-hidden border-2 shrink-0"
                                                 style={{ borderColor: colors[u.start_year % colors.length] }}
@@ -905,12 +905,12 @@ const BulkImportModal = ({
                                                 <button
                                                     className="badge badge-primary badge-outline font-mono font-bold hover:bg-primary hover:text-primary-content cursor-pointer transition-colors"
                                                     onClick={() => {
-                                                        navigator.clipboard.writeText(u._id);
+                                                        navigator.clipboard.writeText(u.id);
                                                         // Optional: show toast
                                                     }}
                                                     title="Copiar ID"
                                                 >
-                                                    ID: {u._id}
+                                                    ID: {u.id}
                                                 </button>
                                                 {u.nmec && (
                                                     <span className="text-[10px] text-base-content/40 font-mono">
@@ -1086,7 +1086,7 @@ const BulkImportModal = ({
             <div className="max-h-60 overflow-y-auto space-y-2">
                 {results?.created?.map((user, userIdx) => (
                     <CreatedUserRow
-                        key={user._id || userIdx}
+                        key={user.id || userIdx}
                         user={user}
                         userIdx={userIdx}
                         roles={userRoles[userIdx] || []}
@@ -1216,10 +1216,10 @@ const BulkImportModal = ({
                             </thead>
                             <tbody>
                                 {(results?.created || []).slice(0, 5).map((user, idx) => {
-                                    const patrao = user.patrao_id ? allUsers.find(u => u._id === user.patrao_id) : null;
+                                    const patrao = user.patrao_id ? allUsers.find(u => u.id === user.patrao_id) : null;
                                     const roles = userRoles[idx] || [];
                                     return (
-                                        <tr key={user._id ?? idx}>
+                                        <tr key={user.id ?? idx}>
                                             <td className="font-medium">{user.name}</td>
                                             <td>{user.sex}</td>
                                             <td>{user.start_year}</td>
@@ -1229,7 +1229,7 @@ const BulkImportModal = ({
                                                 {roles.length > 0 ? (
                                                     <div className="flex flex-wrap gap-1">
                                                         {roles.map((r) => (
-                                                            <span key={r.role._id} className="badge badge-primary badge-sm">{r.role.name}</span>
+                                                            <span key={r.role.id} className="badge badge-primary badge-sm">{r.role.name}</span>
                                                         ))}
                                                     </div>
                                                 ) : "-"}
@@ -1319,7 +1319,7 @@ const BulkImportModal = ({
 
                     <div className="max-h-64 overflow-y-auto px-4 pb-4 space-y-1">
                         {searchResults.map(u => (
-                            <button key={u._id} type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 text-left" onClick={() => setPatrao(patraoPickerRow, u)}>
+                            <button key={u.id} type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 text-left" onClick={() => setPatrao(patraoPickerRow, u)}>
                                 <div className="w-10 h-10 rounded-full overflow-hidden border-2" style={{ borderColor: colors[u.start_year % colors.length] }}>
                                     <Avatar
                                         image={u.image}
@@ -1332,7 +1332,7 @@ const BulkImportModal = ({
                                     <p className="font-medium truncate">{u.name}</p>
                                     <p className="text-xs text-base-content/50">{u.nmec && `#${u.nmec} · `}Ano {u.start_year}</p>
                                 </div>
-                                <span className="text-xs font-mono bg-base-200 px-2 py-1 rounded">ID {u._id}</span>
+                                <span className="text-xs font-mono bg-base-200 px-2 py-1 rounded">ID {u.id}</span>
                             </button>
                         ))}
                         <button type="button" className="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-base-200 border border-dashed border-base-content/20" onClick={() => setPatrao(patraoPickerRow, null)}>

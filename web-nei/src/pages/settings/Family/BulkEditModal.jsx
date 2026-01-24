@@ -89,21 +89,21 @@ const BulkEditModal = ({
     const executeActionForUser = async (user) => {
         if (action === "add_role" && selectedRole) {
             await FamilyService.assignRole({
-                user_id: user._id,
-                role_id: selectedRole._id,
+                user_id: user.id,
+                role_id: selectedRole.id,
                 year: roleYear
             });
             return true;
         }
         if (action === "set_course" && selectedCourse) {
-            await FamilyService.updateUser(user._id, {
+            await FamilyService.updateUser(user.id, {
                 ...user,
                 course_id: parseInt(selectedCourse)
             });
             return true;
         }
         if (action === "set_year") {
-            await FamilyService.updateUser(user._id, {
+            await FamilyService.updateUser(user.id, {
                 ...user,
                 start_year: newYear
             });
@@ -232,7 +232,7 @@ const BulkEditModal = ({
                                     <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
                                         {selectedUsers.slice(0, 20).map(user => (
                                             <div
-                                                key={user._id}
+                                                key={user.id}
                                                 className="flex items-center gap-2 px-3 py-1.5 bg-base-100 rounded-lg text-sm border border-base-content/5"
                                             >
                                                 <div
@@ -344,7 +344,7 @@ const BulkEditModal = ({
                                         >
                                             <option value="">Selecionar curso...</option>
                                             {courses.map(course => (
-                                                <option key={course._id} value={course._id}>
+                                                <option key={course.id} value={course.id}>
                                                     {course.short} - {course.name}
                                                 </option>
                                             ))}

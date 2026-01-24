@@ -14,11 +14,22 @@ import PropTypes from 'prop-types';
  */
 export function flattenTree(tree) {
     const users = [];
+    // Track all user IDs to validate parent references
+    const userIds = new Set();
 
     function traverse(node, parentId = null) {
+        // Add this node's ID to the set
+        const nodeId = node.id;
+        userIds.add(nodeId);
+        
+        // parentId defaults to null but is always provided when called:
+        // - 0 for root nodes
+        // - parent's ID for child nodes
+        // The API tree structure already handles orphaned users by making them roots
+        
         // Create user object matching expected format
         const user = {
-            id: node._id,
+            id: nodeId,
             parent: parentId,
             name: node.name,
             faina_name: node.faina_name,
@@ -60,7 +71,7 @@ export function flattenTree(tree) {
         // Process children
         if (node.children && node.children.length > 0) {
             for (const child of node.children) {
-                traverse(child, node._id);
+                traverse(child, nodeId);
             }
         }
     }
@@ -69,14 +80,30 @@ export function flattenTree(tree) {
     if (Array.isArray(tree)) {
         // Add virtual root node
         users.push({ id: 0, parent: null, name: "Root" });
+        userIds.add(0);
         for (const root of tree) {
+            // All root nodes should have parent: 0 (virtual root)
+            // Root nodes may have patrao_id set (orphaned users), but they're roots now
             traverse(root, 0);
         }
     } else if (tree) {
-        traverse(tree, null);
+        // Single tree - add virtual root and make the tree a child of it
+        users.push({ id: 0, parent: null, name: "Root" });
+        userIds.add(0);
+        traverse(tree, 0);
     }
 
-    return users;
+    // Final validation: ensure all parent references exist
+    // If any parent doesn't exist, make it point to virtual root
+    const validUsers = users.map(user => {
+        if (user.parent !== null && !userIds.has(user.parent)) {
+            console.warn(`User ${user.id} has missing parent ${user.parent}, making it a root`);
+            return { ...user, parent: 0 };
+        }
+        return user;
+    });
+
+    return validUsers;
 }
 
 /**
@@ -129,7 +156,7 @@ export function wouldCreateCycle(userId, patraoId, allUsers) {
     // Build quick lookup
     const userMap = {};
     allUsers.forEach(u => {
-        userMap[u._id] = u;
+        userMap[u.id] = u;
     });
 
     // Walk up from patraoId to see if we reach userId
@@ -137,8 +164,8 @@ export function wouldCreateCycle(userId, patraoId, allUsers) {
     const visited = new Set();
 
     while (current?.patrao_id) {
-        if (visited.has(current._id)) break; // Already a cycle exists
-        visited.add(current._id);
+        if (visited.has(current.id)) break; // Already a cycle exists
+        visited.add(current.id);
 
         if (current.patrao_id === userId) {
             return true; // Would create cycle
@@ -189,7 +216,6 @@ export function formatYear(y, fmt = 'civil') {
 // PropTypes definitions for documentation
 export const UserShape = PropTypes.shape({
     id: PropTypes.number,
-    _id: PropTypes.number,
     parent: PropTypes.number,
     name: PropTypes.string.isRequired,
     sex: PropTypes.oneOf(['M', 'F']),

@@ -38,7 +38,13 @@ class RoleUpdate(BaseModel):
 
 class RoleInDB(RoleBase):
     """Schema for role response from database."""
-    _id: str = Field(..., description="Role ID in path format (e.g., '.1.5.') - MongoDB _id")
+    id: str = Field(..., alias='_id', description="Role ID in path format (e.g., '.1.5.') - MongoDB _id")
+
+    def dict(self, **kwargs):
+        """Override dict() to always use field names (not aliases) for serialization."""
+        # Force by_alias=False to serialize as 'id' instead of '_id'
+        kwargs['by_alias'] = False
+        return super().dict(**kwargs)
 
     class Config:
         orm_mode = True

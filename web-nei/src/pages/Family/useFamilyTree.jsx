@@ -40,8 +40,9 @@ export function useFamilyTree(options = {}) {
             const data = await FamilyService.getTree(options);
             const flatUsers = flattenTree(data.roots || data);
             setUsers(flatUsers);
-            setMinYear(data.min_year);
-            setMaxYear(data.max_year);
+            // Use nullish coalescing to ensure null instead of undefined for consistency
+            setMinYear(data.min_year ?? null);
+            setMaxYear(data.max_year ?? null);
         } catch (err) {
             console.error("Failed to load family tree:", err);
             setError(err);

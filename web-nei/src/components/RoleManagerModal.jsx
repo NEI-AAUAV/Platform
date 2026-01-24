@@ -46,7 +46,7 @@ const MembersList = ({ members, membersLoading, yearFormat, onRemove }) => {
         <div className="space-y-2">
             {members.map((member, idx) => (
                 <div
-                    key={member._id ?? idx}
+                    key={member.id ?? idx}
                     className="flex items-center gap-3 p-3 bg-base-200/50 rounded-lg hover:bg-base-200"
                 >
                     <div
@@ -76,7 +76,7 @@ const MembersList = ({ members, membersLoading, yearFormat, onRemove }) => {
                     <button
                         type="button"
                         className="btn btn-ghost btn-xs btn-error"
-                        onClick={() => onRemove(member._id)}
+                        onClick={() => onRemove(member.id)}
                         title="Remover insígnia"
                     >
                         <MaterialSymbol icon="close" size={16} />
@@ -89,7 +89,7 @@ const MembersList = ({ members, membersLoading, yearFormat, onRemove }) => {
 
 MembersList.propTypes = {
     members: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string,
+        id: PropTypes.string,
         user: PropTypes.shape({
             name: PropTypes.string,
             start_year: PropTypes.number,
@@ -147,7 +147,7 @@ MembersView.propTypes = {
 
 const findRoleName = (nodes, id) => {
     for (const node of nodes) {
-        if (node._id === id) return node.name;
+        if (node.id === id) return node.name;
         if (node.children) {
             const found = findRoleName(node.children, id);
             if (found) return found;
@@ -169,8 +169,8 @@ const RoleTree = ({ nodes, depth = 0, selectedNode, isNew, formData, onSelect })
             )}
 
             {nodes.map(node => {
-                const isSelected = selectedNode?._id === node._id && !isNew;
-                const isParentOfNew = isNew && formData.super_roles === node._id;
+                const isSelected = selectedNode?.id === node.id && !isNew;
+                const isParentOfNew = isNew && formData.super_roles === node.id;
                 const hasChildren = node.children && node.children.length > 0;
 
                 let IconComponent = null;
@@ -187,7 +187,7 @@ const RoleTree = ({ nodes, depth = 0, selectedNode, isNew, formData, onSelect })
                 }
 
                 return (
-                    <div key={node._id} className="relative">
+                    <div key={node.id} className="relative">
                         <button
                             className={classNames(
                                 "flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm transition-all duration-200",
@@ -241,7 +241,7 @@ const RoleTree = ({ nodes, depth = 0, selectedNode, isNew, formData, onSelect })
 
 RoleTree.propTypes = {
     nodes: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string.isRequired,
+        id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         short: PropTypes.string,
         icon: PropTypes.string,
@@ -254,7 +254,7 @@ RoleTree.propTypes = {
     })),
     depth: PropTypes.number,
     selectedNode: PropTypes.shape({
-        _id: PropTypes.string,
+        id: PropTypes.string,
         year_display_format: PropTypes.string,
         icon: PropTypes.string,
         children: PropTypes.array,
@@ -378,7 +378,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
     // Reload members when year filter changes
     useEffect(() => {
         if (selectedNode && !isNew && activeTab === "members") {
-            fetchRoleMembers(selectedNode._id, memberYearFilter);
+            fetchRoleMembers(selectedNode.id, memberYearFilter);
         }
     }, [memberYearFilter, activeTab]);
 
@@ -399,7 +399,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
             hidden: node.hidden || false
         });
         // Pre-fetch members
-        fetchRoleMembers(node._id, null);
+        fetchRoleMembers(node.id, null);
     };
 
     const handleRemoveRoleFromMember = async (userRoleId) => {
@@ -408,7 +408,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
         try {
             await FamilyService.removeRole(userRoleId);
             // Refresh members list
-            fetchRoleMembers(selectedNode._id, memberYearFilter);
+            fetchRoleMembers(selectedNode.id, memberYearFilter);
         } catch (err) {
             alert("Erro ao remover: " + getErrorMessage(err, "Erro desconhecido"));
         }
@@ -431,15 +431,8 @@ export default function RoleManagerModal({ isOpen, onClose }) {
 
     const handleAddChild = () => {
         if (!selectedNode) return;
-        const parentId = selectedNode._id;
-        // setIsNew(true); // Don't unselect parent, just switch logic?
-        // Actually, distinct mode.
-        // Let's keep selectedNode as the "Active Context".
-        // But we are creating a NEW node under it.
-
-        // Better UX: 
-        // Select a node -> See Details.
-        // Button "Add Child" -> Clears form, sets mode to New, sets super_roles to selectedNode._id
+        const parentId = selectedNode.id;
+        
         setIsNew(true);
         setFormData({
             name: "",
@@ -461,7 +454,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                 await FamilyService.createRole(formData);
             } else {
                 if (!selectedNode) return;
-                await FamilyService.updateRole(selectedNode._id, formData);
+                await FamilyService.updateRole(selectedNode.id, formData);
             }
             await loadTree();
             // Reset form if new, or keep editing if update? 
@@ -486,7 +479,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
 
         setSubmitting(true);
         try {
-            await FamilyService.deleteRole(selectedNode._id);
+            await FamilyService.deleteRole(selectedNode.id);
             await loadTree();
             setSelectedNode(null);
             setIsNew(false);
