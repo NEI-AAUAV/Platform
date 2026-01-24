@@ -60,4 +60,5 @@ jobs:
           MONGO_USER: mongo
           MONGO_PASSWORD: mongo
           MONGO_DB: family_test
+          MONGO_AUTH_SOURCE: admin
         run: poetry run pytest

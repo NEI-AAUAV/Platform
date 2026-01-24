@@ -117,6 +117,7 @@ jobs:
           MONGO_USER: mongo
           MONGO_PASSWORD: mongo
           MONGO_DB: mongo_test
+          MONGO_AUTH_SOURCE: admin
       
       - name: Run JavaScript/TypeScript tests with coverage
         run: |
@@ -130,6 +131,7 @@ jobs:
           MONGO_USER: mongo
           MONGO_PASSWORD: mongo
           MONGO_DB: mongo_test
+          MONGO_AUTH_SOURCE: admin
       
       - name: Create Custom Trust Store with SonarQube Certificate
         run: |

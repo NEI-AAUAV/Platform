@@ -52,16 +52,18 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
 
     // Load children (pedaços)
     useEffect(() => {
-        if (isOpen && user?._id) {
+        // Handle both id (from D3 tree) and _id (from API)
+        const userId = user?._id || user?.id;
+        if (isOpen && userId) {
             setLoading(true);
-            FamilyService.getUserChildren(user._id)
+            FamilyService.getUserChildren(userId)
                 .then(setChildrenList)
                 .catch(() => setChildrenList([]))
                 .finally(() => setLoading(false));
         } else {
             setChildrenList([]);
         }
-    }, [isOpen, user?._id]);
+    }, [isOpen, user?._id, user?.id]);
 
     // Lock body scroll when modal is open
     useEffect(() => {
@@ -369,6 +371,8 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
 ProfileViewModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     user: PropTypes.shape({
+        // Accept both id (from D3 tree nodes) and _id (from API)
+        // Component uses: user._id || user.id
         id: PropTypes.number,
         _id: PropTypes.number,
         name: PropTypes.string,
