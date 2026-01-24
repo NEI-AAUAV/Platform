@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 
-import data from "assets/db.json";
 import femalePic from "assets/default_profile/female.svg";
 import malePic from "assets/default_profile/male.svg";
 import otherPic from "assets/default_profile/other.svg";
@@ -123,7 +122,7 @@ let isEditMode = false;
 
 /**
  * Build the family tree visualization
- * @param {Array} [users] - Optional user data from API. Falls back to db.json if not provided.
+ * @param {Array} users - User data from API (required)
  * @param {Object} [options] - Build options
  * @param {number} [options.minYear] - Minimum year from API
  * @param {number} [options.maxYear] - Maximum year from API
@@ -132,7 +131,7 @@ let isEditMode = false;
  * @param {boolean} [options.editMode] - Whether tree is in edit mode
  * @param {Function} [options.onNodeEdit] - Callback when node is clicked in edit mode
  */
-export function buildTree(users = null, options = {}) {
+export function buildTree(users, options = {}) {
   // Update dynamic year bounds from API
   if (options.minYear !== undefined) currentMinYear = options.minYear;
   if (options.maxYear !== undefined) currentMaxYear = options.maxYear;
@@ -144,8 +143,13 @@ export function buildTree(users = null, options = {}) {
   onNodeViewProfileCallback = options.onNodeViewProfile || null;
   isEditMode = options.editMode || false;
 
-  // Use provided users or fall back to static data
-  const userData = users || data.users;
+  // Require users data from API
+  if (!users || !Array.isArray(users) || users.length === 0) {
+    console.warn("buildTree: No users data provided");
+    return;
+  }
+
+  const userData = users;
 
   const assignInsignias = () => {
     const insignias = ["nei", "aettua"];
