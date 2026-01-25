@@ -10,12 +10,11 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import MaterialSymbol from "components/MaterialSymbol";
-import { RolePickerModal } from "components/Family";
 import FamilyService from "services/FamilyService";
 import { formatYear } from "pages/Family/utils";
 import { getErrorMessage } from "utils/error";
 import { BaseModal, useBodyScrollLock, ProgressBar } from "components/Modal";
-import { UserListDisplay } from "components/Family";
+import { UserListDisplay, RolePickerModal } from "components/Family";
 
 const BulkEditModal = ({
     isOpen,

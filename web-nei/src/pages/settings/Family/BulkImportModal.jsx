@@ -740,8 +740,9 @@ const BulkImportModal = ({
         let successCount = 0;
 
         try {
-            for (let i = 0; i < results.created.length; i++) {
-                const user = results.created[i];
+            for (let i = 0; i < (results?.created?.length || 0); i++) {
+                const user = results?.created?.[i];
+                if (!user) continue;
                 const roles = userRoles[i] || [];
 
                 for (const roleInfo of roles) {
@@ -1075,7 +1076,7 @@ const BulkImportModal = ({
         const objectUrl = URL.createObjectURL(file);
         setPhotoPreviews(prev => {
             // Revoke old URL if it exists to avoid memory leaks
-            if (prev[idx] && prev[idx].startsWith('blob:')) {
+            if (prev[idx]?.startsWith('blob:')) {
                 URL.revokeObjectURL(prev[idx]);
             }
             return { ...prev, [idx]: objectUrl };
@@ -1102,7 +1103,7 @@ const BulkImportModal = ({
 
             const promises = Object.entries(userPhotos).map(async ([idxStr, file]) => {
                 const idx = parseInt(idxStr);
-                const user = results.created[idx];
+                const user = results?.created?.[idx];
                 if (!user) return; // Should not happen
 
                 try {
@@ -1413,8 +1414,8 @@ const BulkImportModal = ({
                                 })}
                             </tbody>
                         </table>
-                        {results.created.length > 5 && (
-                            <p className="text-xs text-center text-base-content/50 py-2">+ {results.created.length - 5} mais...</p>
+                        {(results?.created?.length || 0) > 5 && (
+                            <p className="text-xs text-center text-base-content/50 py-2">+ {(results?.created?.length || 0) - 5} mais...</p>
                         )}
                     </div>
                 </div>
