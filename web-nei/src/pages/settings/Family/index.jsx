@@ -9,13 +9,11 @@ import { BaseModal } from "components/Modal";
 
 import FamilyService from "services/FamilyService";
 import UserForm from "./UserForm";
-import { RolePickerModal } from "components/Family";
+import { RolePickerModal, RoleManagerModal, CourseManagerModal } from "components/Family";
 import BulkEditModal from "./BulkEditModal";
 import BulkDeleteModal from "./BulkDeleteModal";
 import BulkImportModal from "./BulkImportModal";
 import OrphanModal from "./OrphanModal";
-
-import { RoleManagerModal, CourseManagerModal } from "components/Family";
 import { organizations, colors } from "pages/Family/data";
 import { getErrorMessage } from "utils/error";
 import { useUserStore } from "stores/useUserStore";
@@ -44,6 +42,36 @@ const fetchUsersByIds = async (ids) => {
   const requests = ids.map((id) => FamilyService.getUserById(id).catch(() => null));
   const results = await Promise.all(requests);
   return results.filter(Boolean);
+};
+
+// Helper to normalize user ID to number
+const normalizeUserId = (id) => {
+  if (id === null || id === undefined) return null;
+  return typeof id === 'number' ? id : parseInt(id, 10);
+};
+
+// Helper to extract existing user IDs from previous users list
+const extractExistingIds = (prevUsers) => {
+  const existingIds = new Set();
+  for (const p of prevUsers) {
+    const normalizedId = normalizeUserId(p.id);
+    if (normalizedId !== null && !isNaN(normalizedId)) {
+      existingIds.add(normalizedId);
+    }
+  }
+  return existingIds;
+};
+
+// Helper to filter unique users that don't exist in the existing set
+const filterUniqueUsers = (normalizedUsers, existingIds) => {
+  const unique = [];
+  for (const u of normalizedUsers) {
+    const normalizedId = normalizeUserId(u.id);
+    if (normalizedId !== null && !isNaN(normalizedId) && !existingIds.has(normalizedId)) {
+      unique.push(u);
+    }
+  }
+  return unique;
 };
 
 // Sort Icon Helper - Extracted (Fix S6774/S6478)
@@ -311,16 +339,8 @@ export function Component() {
           const normalized = found;
           setAllUsers(prev => {
             // Avoid duplicates by checking id
-            const existingIds = new Set(prev.map(p => {
-              const pid = p.id;
-              return pid !== null && pid !== undefined ? (typeof pid === 'number' ? pid : parseInt(pid, 10)) : null;
-            }).filter(Boolean));
-            const unique = normalized.filter(u => {
-              const uid = u.id;
-              if (uid === null || uid === undefined) return false;
-              const numUid = typeof uid === 'number' ? uid : parseInt(uid, 10);
-              return !isNaN(numUid) && !existingIds.has(numUid);
-            });
+            const existingIds = extractExistingIds(prev);
+            const unique = filterUniqueUsers(normalized, existingIds);
             console.log(`[Patrão Fetch] Adding ${unique.length} new patrões to userMap`);
             return [...prev, ...unique];
           });
