@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RoleManagerModal } from '../../components/Family';
+import RoleManagerModal from '../../components/Family/Modals/RoleManagerModal';
 
 // Mock dependencies
 vi.mock('../../services/FamilyService', () => ({
