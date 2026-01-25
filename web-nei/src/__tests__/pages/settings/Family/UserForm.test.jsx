@@ -33,13 +33,30 @@ vi.mock('../../../../components/form', () => ({
         </label>
     ))
 }));
-vi.mock('../../../../components/RolePickerModal', () => ({
-    default: ({ isOpen, onSelect }) => isOpen ? (
+// Mock Family components
+vi.mock('../../../../components/Family', () => {
+    const RolePickerModal = ({ isOpen, onSelect }) => isOpen ? (
         <div role="dialog" data-testid="role-picker">
-            <button onClick={() => onSelect({ id: 'role1', name: 'Role 1', short: 'R1' }, 2024)}>Select Role</button>
+            <button aria-label="role" onClick={() => onSelect({ id: 'role1', name: 'Role 1', short: 'R1' }, 2024)}>Select Role</button>
         </div>
-    ) : null
-}));
+    ) : null;
+    
+    return {
+        RolePickerModal,
+        PatraoPicker: () => <div data-testid="patrao-picker">PatraoPicker</div>,
+        ChildrenList: () => <div data-testid="children-list">ChildrenList</div>,
+        RoleDisplay: ({ onAdd, roles = [] }) => (
+            <div data-testid="role-display">
+                <button onClick={onAdd}>Adicionar</button>
+                {roles.map((role) => (
+                    <div key={role.id || role.tempId} data-testid={`role-${role.id || role.tempId}`}>
+                        {role.name || role.org_name || role.role_name || 'Role'}
+                    </div>
+                ))}
+            </div>
+        ),
+    };
+});
 vi.mock('framer-motion', () => ({
     motion: { div: ({ children, className, onClick }) => <div className={className} onClick={onClick}>{children}</div> },
     AnimatePresence: ({ children }) => <>{children}</>
@@ -110,8 +127,19 @@ describe('UserForm', () => {
             expect(screen.getByTestId('role-picker')).toBeInTheDocument();
         });
 
+
+        // Debug: log all button accessible names in the modal
+        const buttons = screen.getAllByRole('button');
+        // eslint-disable-next-line no-console
+        console.log('Buttons in modal:', buttons.map(b => b.getAttribute('aria-label') || b.textContent));
+
+        // Debug: log all button texts and aria-labels in the modal
+        // Debug: print the modal HTML
+        // eslint-disable-next-line no-console
+        console.log('Modal HTML:', screen.getByTestId('role-picker').outerHTML);
+
         // Simulate selecting a role in the modal
-        fireEvent.click(screen.getByRole('button', { name: /role/i }));
+        fireEvent.click(screen.getByText('Select Role'));
 
         // Wait for the role to appear in the list
         await waitFor(() => {
