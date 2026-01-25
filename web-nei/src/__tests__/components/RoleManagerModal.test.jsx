@@ -4,6 +4,9 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RoleManagerModal from '../../components/Family/Modals/RoleManagerModal';
 
+
+
+
 // Mock dependencies
 vi.mock('../../services/FamilyService', () => ({
     default: {
@@ -28,7 +31,10 @@ vi.mock('../../components/IconPicker', () => ({
     )
 }));
 vi.mock('framer-motion', () => ({
-    motion: { div: ({ children, className, onClick }) => <div className={className} onClick={onClick}>{children}</div> },
+    motion: {
+        div: ({ children, className, onClick }) => <div className={className} onClick={onClick}>{children}</div>,
+        dialog: ({ children, className, onClick, style }) => <div role="dialog" className={className} onClick={onClick} style={style}>{children}</div>
+    },
     AnimatePresence: ({ children }) => <>{children}</>
 }));
 vi.mock('../../pages/Family/data', () => ({
