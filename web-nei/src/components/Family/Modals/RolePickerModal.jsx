@@ -182,7 +182,7 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
     return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[120] flex items-center justify-center p-6">
+                <div className="fixed inset-0 z-[120] flex items-center justify-center p-6" data-testid="role-picker">
                     {/* Backdrop Button - Accessible way to close */}
                     <button
                         type="button"
