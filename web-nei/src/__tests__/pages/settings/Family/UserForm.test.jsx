@@ -102,9 +102,18 @@ describe('UserForm', () => {
     it('handles assigning roles', async () => {
         render(<UserForm isOpen={true} onClose={mockOnClose} />);
 
+        // Click 'Adicionar' to open the role picker modal
         fireEvent.click(screen.getByText('Adicionar'));
-        fireEvent.click(screen.getByText('Select Role'));
 
+        // Wait for the role picker modal to appear
+        await waitFor(() => {
+            expect(screen.getByTestId('role-picker')).toBeInTheDocument();
+        });
+
+        // Simulate selecting a role in the modal
+        fireEvent.click(screen.getByRole('button', { name: /role/i }));
+
+        // Wait for the role to appear in the list
         await waitFor(() => {
             expect(screen.getByText('Role 1')).toBeInTheDocument();
         });
