@@ -24,96 +24,93 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
 
   // Build dynamic organization list from users data
   // This allows showing any organization from the API, not just hardcoded ones
+  // Helper: Determine if organization should be skipped
+  const shouldSkipOrg = (o) => o.hidden === true;
+
+  // Helper: Determine the key for the organization
+  const getOrgKey = (o) => {
+    let key = o.name; // org_name from API
+
+    // If key looks like a role_id path (starts with "."), use role_name as fallback
+    if (key?.startsWith(".")) {
+      key = o.role_name || o.role || key;
+    }
+
+    // Special handling for ST sub-roles
+    if (o.name === "ST" || key === "ST") {
+      const roleMap = {
+        "Mestre Escrivão": "escrivao",
+        "Mestre Pescador": "pescador",
+        "Mestre do Salgado": "salgado",
+      };
+      const mappedKey = roleMap[o.role] || roleMap[o.role_name];
+      if (mappedKey) {
+        key = mappedKey;
+      }
+    }
+
+    // Consolidate NEI sub-role short codes (like "RF") under "NEI"
+    if (o.role_id?.startsWith(".2.") && key !== "NEI") {
+      key = "NEI";
+    }
+
+    return key;
+  };
+
+  // Helper: Update the map with the organization
+  const updateOrgsMap = (orgsMap, key, o) => {
+    const currentRoleId = o.role_id || '';
+
+    if (!orgsMap.has(key)) {
+      // Check if we have a hardcoded entry for this org
+      const hardcodedOrg = organizations[key];
+
+      // Determine display name
+      let displayName = hardcodedOrg?.name;
+      if (!displayName) {
+        if (o.name && !o.name.startsWith('.') && o.name.length <= 20) {
+          displayName = o.name;
+        } else {
+          displayName = key;
+        }
+      }
+
+      orgsMap.set(key, {
+        key: key,
+        name: displayName,
+        insignia: hardcodedOrg?.insignia || null,
+        icon: o.icon,
+        changeColor: hardcodedOrg?.changeColor || false,
+        isHardcoded: !!hardcodedOrg,
+        role_id: currentRoleId
+      });
+    } else {
+      // Update with shorter role_id if found
+      const existing = orgsMap.get(key);
+      if (currentRoleId && (!existing.role_id || currentRoleId.length < existing.role_id.length)) {
+        existing.role_id = currentRoleId;
+      }
+    }
+  };
+
+  // Build dynamic organization list from users data
   const dynamicOrgs = React.useMemo(() => {
     if (!users || users.length === 0) {
       return new Map();
     }
 
     const orgsMap = new Map();
-    let hiddenCount = 0;
 
     users.forEach(u => {
       u.organizations?.forEach(o => {
-        // Skip hidden roles
-        if (o.hidden === true) {
-          hiddenCount++;
-          return;
-        }
+        if (shouldSkipOrg(o)) return;
 
-        // Determine the key (same logic as data.jsx)
-        let key = o.name; // org_name from API
-
-        // If key looks like a role_id path (starts with "."), use role_name as fallback
-        if (key?.startsWith(".")) {
-          key = o.role_name || o.role || key;
-        }
-
-        // Special handling for ST sub-roles
-        if (o.name === "ST" || key === "ST") {
-          const roleMap = {
-            "Mestre Escrivão": "escrivao",
-            "Mestre Pescador": "pescador",
-            "Mestre do Salgado": "salgado",
-          };
-          const mappedKey = roleMap[o.role] || roleMap[o.role_name];
-          if (mappedKey) {
-            key = mappedKey;
-          }
-        }
-
-        // Consolidate NEI sub-role short codes (like "RF") under "NEI"
-        // These are role shorts that should not appear as separate legend entries
-        // Check by looking at role_id prefix for NEI roles (.2.*)
-        if (o.role_id?.startsWith(".2.") && key !== "NEI") {
-          // This is a NEI sub-role, consolidate under NEI
-          key = "NEI";
-        }
-
+        const key = getOrgKey(o);
         if (!key) return;
 
-        // Only add if not already present (first occurrence wins for display name)
-        // But always keep the shortest (base) role_id for proper sorting
-        const currentRoleId = o.role_id || '';
-
-        if (!orgsMap.has(key)) {
-          // Check if we have a hardcoded entry for this org
-          const hardcodedOrg = organizations[key];
-
-          // For display name priority:
-          // 1. Hardcoded display name (if exists)
-          // 2. org_name (o.name) - the main organization short code like "NEI", "AETTUA"
-          // 3. key as fallback (which may be role_name for ST sub-roles)
-          // This ensures "NEI" shows as "NEI" in legend, not "Responsável Financeiro"
-          let displayName = hardcodedOrg?.name;
-          if (!displayName) {
-            // Prefer org_name (o.name) if it looks like an org code, not a full role name
-            // Org codes are typically short (<=20 chars) and don't start with "."
-            if (o.name && !o.name.startsWith('.') && o.name.length <= 20) {
-              displayName = o.name;
-            } else {
-              displayName = key;
-            }
-          }
-
-          orgsMap.set(key, {
-            key: key,
-            name: displayName,
-            insignia: hardcodedOrg?.insignia || null, // Will be null for dynamic orgs without icons
-            icon: o.icon, // Icon URL from API (if available)
-            changeColor: hardcodedOrg?.changeColor || false,
-            isHardcoded: !!hardcodedOrg,
-            role_id: currentRoleId // Store role_id for sorting
-          });
-        } else {
-          // Update with shorter role_id if found (base/parent org takes priority)
-          const existing = orgsMap.get(key);
-          if (currentRoleId && (!existing.role_id || currentRoleId.length < existing.role_id.length)) {
-            existing.role_id = currentRoleId;
-          }
-        }
+        updateOrgsMap(orgsMap, key, o);
       });
     });
-
 
     // Sort by role_id to maintain hierarchical order from database
     const sortedEntries = [...orgsMap.entries()].sort((a, b) => {

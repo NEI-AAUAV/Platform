@@ -485,15 +485,15 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                         onClick={onClose}
                         aria-label="Fechar modal"
                     />
-                    <motion.div
+                    <motion.dialog
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
                         className="relative flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-2xl"
-                        role="dialog"
-                        aria-modal="true"
+                        style={{ border: "none", background: "inherit", padding: 0 }}
                         aria-label="Gestor de Insígnias"
                         onClick={(e) => e.stopPropagation()}
+                        open
                     >
                         <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
                             {/* Sidebar: Tree - Hidden on mobile when editing */}
@@ -772,7 +772,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
+                    </motion.dialog>
                 </div>
             )}
         </AnimatePresence>

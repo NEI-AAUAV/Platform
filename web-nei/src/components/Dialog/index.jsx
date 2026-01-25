@@ -50,8 +50,8 @@ export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
     return startMonthYear !== endMonthYear
       ? `${startDay} de ${startMonthYear} – ${endDay} de ${endMonthYear}`
       : startDay !== endDay
-      ? `${startDay} – ${endDay} de ${startMonthYear}`
-      : `${startDay} de ${startMonthYear}`;
+        ? `${startDay} – ${endDay} de ${startMonthYear}`
+        : `${startDay} de ${startMonthYear}`;
   }
 
   const eventDialog = useMemo(() => {
@@ -217,23 +217,24 @@ const Dialog = ({
       </div>
       <AnimatePresence>
         {visible && (
-          <motion.div
+          <motion.dialog
             initial={{ opacity: 1, zIndex: 40 }}
             animate={{ opacity: 1, zIndex: 40 }}
             exit={{ opacity: 0, zIndex: 50 }}
             transition={{ duration: 0.3 }}
             layoutId={layoutId}
             ref={dialogRef}
-            role="dialog"
             className={classNames(
               "absolute min-w-[380px] rounded-lg border border-base-content/10 bg-base-300 p-4 shadow-md",
               windowSize.width >= 640
                 ? `Dialog Dialog--${dialogPos}`
                 : "!fixed !min-w-[280px] left-1 right-1 top-20"
             )}
+            style={{ border: "none", background: "inherit", padding: "1rem" }}
+            open
           >
             {dialog}
-          </motion.div>
+          </motion.dialog>
         )}
       </AnimatePresence>
     </div>

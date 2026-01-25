@@ -1429,7 +1429,7 @@ const BulkImportModal = ({
                     <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium text-error flex items-center gap-2">
                             <MaterialSymbol icon="error" size={20} />
-                            Erros ({results.errors.length})
+                            Erros ({results?.errors?.length})
                         </h4>
                         <button
                             onClick={handleExportErrors}
@@ -1440,7 +1440,7 @@ const BulkImportModal = ({
                         </button>
                     </div>
                     <div className="max-h-32 overflow-y-auto space-y-1 border border-error/20 rounded-lg p-2 bg-error/5">
-                        {results.errors.map((err, i) => (
+                        {results?.errors?.map((err, i) => (
                             <div key={`${err.row}-${i}`} className="text-sm p-2 rounded hover:bg-white/50 flex gap-2">
                                 <span className="font-mono text-xs font-bold opacity-50 shrink-0">L{err.row + 1}</span>
                                 <span>{getErrorMessage(err, "Erro desconhecido")}</span>
