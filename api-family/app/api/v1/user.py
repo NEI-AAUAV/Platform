@@ -164,12 +164,12 @@ def create_user(
             )
     
     # Validate course_id exists if provided
-    if obj_in.course_id is not None:
-        if not crud_course.exists(obj_in.course_id):
-            raise HTTPException(
-                status_code=400, 
-                detail=f"Course with id {obj_in.course_id} not found"
-            )
+    # Validate course_id exists if provided
+    if obj_in.course_id is not None and not crud_course.exists(obj_in.course_id):
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Course with id {obj_in.course_id} not found"
+        )
     
     # Validate nmec is unique if provided
     if obj_in.nmec is not None:
@@ -219,156 +219,64 @@ def create_users_bulk(
             detail=f"Máximo de {MAX_BATCH_SIZE} utilizadores por pedido. Enviados: {len(users_in)}"
         )
     
-    created_users = []
-    errors = []
-    warnings = []
-    
-    # Current year for future year validation
-    current_year = datetime.now().year % 100
-    
-    # Pre-collect all patrao_ids and course_ids for batch lookup
+    # Pre-fetch existing IDs
     all_patrao_ids = {u.patrao_id for u in users_in if u.patrao_id is not None}
     all_course_ids = {u.course_id for u in users_in if u.course_id is not None}
     
-    # Batch lookup for patrao_ids
     existing_patrao_ids = set(crud_user.get_existing_ids(list(all_patrao_ids))) if all_patrao_ids else set()
+    existing_course_ids = _fetch_existing_course_ids(all_course_ids)
     
-    # Batch lookup for course_ids
-    existing_course_ids = set()
-    if all_course_ids:
-        for cid in all_course_ids:
-            if crud_course.exists(cid):
-                existing_course_ids.add(cid)
+    # Detect duplicates within batch (warnings)
+    warnings = _detect_batch_duplicates(users_in)
     
-    # Track nmecs and names seen in this batch
-    seen_nmecs = set()
-    seen_names = {}  # name -> list of row indices
-    
-    # First pass: detect duplicate names (warning only)
-    for idx, user_data in enumerate(users_in):
-        name_lower = user_data.name.strip().lower()
-        if name_lower not in seen_names:
-            seen_names[name_lower] = []
-        seen_names[name_lower].append(idx)
-    
-    # Generate warnings for duplicate names
-    for name, indices in seen_names.items():
-        if len(indices) > 1:
-            rows_str = ", ".join(str(i + 1) for i in indices)
-            warnings.append(f"Nome duplicado '{name}' nas linhas: {rows_str}")
-    
-    # Track users to create for atomic mode
+    # Validation loop
     users_to_create = []
+    errors = []
     
+    seen_nmecs = set()
+    current_year = datetime.now().year % 100
+
     for idx, user_data in enumerate(users_in):
-        error_msg = None
+        error_msg = _validate_bulk_user(
+            user_data, 
+            current_year, 
+            existing_patrao_ids, 
+            existing_course_ids, 
+            seen_nmecs
+        )
+        
         data_dict = user_data.dict()
-        
-        # Validate start_year is not in future
-        if user_data.start_year > current_year:
-            error_msg = f"Ano {user_data.start_year} é no futuro (ano atual: {current_year})"
-        
-        # Validate patrao_id exists (using pre-fetched set)
-        if error_msg is None and user_data.patrao_id is not None:
-            if user_data.patrao_id not in existing_patrao_ids:
-                error_msg = f"Patrão com id {user_data.patrao_id} não encontrado"
-        
-        # Validate course_id exists (using pre-fetched set)
-        if error_msg is None and user_data.course_id is not None:
-            if user_data.course_id not in existing_course_ids:
-                error_msg = f"Curso com id {user_data.course_id} não encontrado"
-        
-        # Validate nmec is unique (in DB and in this batch)
-        if error_msg is None and user_data.nmec is not None:
-            if user_data.nmec in seen_nmecs:
-                error_msg = f"Nmec {user_data.nmec} duplicado neste ficheiro"
-            else:
-                existing = crud_user.get_by_nmec(user_data.nmec)
-                if existing:
-                    error_msg = f"Utilizador com nmec {user_data.nmec} já existe"
-                else:
-                    seen_nmecs.add(user_data.nmec)
-        
         if error_msg:
-            errors.append(BulkCreateError(
-                row=idx,
-                data=data_dict,
-                message=error_msg
-            ))
+            errors.append(BulkCreateError(row=idx, data=data_dict, message=error_msg))
         else:
             users_to_create.append((idx, user_data, data_dict))
-    
-    # Atomic mode: if any errors, don't create anything
-    if atomic and errors:
-        logger.info(f"Bulk create (atomic): aborted due to {len(errors)} validation errors")
-        return BulkCreateResponse(
-            created=[],
-            errors=errors,
-            warnings=warnings,
-            total_submitted=len(users_in),
-            total_created=0,
-            total_errors=len(errors),
-            dry_run=dry_run
+            if user_data.nmec:
+                seen_nmecs.add(user_data.nmec)
+
+    # Handle dry run and atomic checks
+    if (atomic and errors) or dry_run:
+        return _build_bulk_response(
+            users_in, 
+            users_to_create if dry_run else [], 
+            errors, 
+            warnings, 
+            dry_run
         )
     
-    # Dry-run mode: don't actually create, just return what would happen
-    if dry_run:
-        logger.info(f"Bulk create (dry-run): would create {len(users_to_create)} users")
-        # Create mock responses for dry-run
-        mock_created = []
-        for idx, user_data, data_dict in users_to_create:
-            mock_user = {
-                **data_dict,
-                "_id": -1,  # Placeholder ID
-                "user_roles": []
-            }
-            mock_created.append(mock_user)
-        
-        return BulkCreateResponse(
-            created=mock_created,
-            errors=errors,
-            warnings=warnings,
-            total_submitted=len(users_in),
-            total_created=len(mock_created),
-            total_errors=len(errors),
-            dry_run=True
-        )
-    
-    # Actually create users
+    # Execute creation
+    created_users = []
     for idx, user_data, data_dict in users_to_create:
         try:
-            user_create = UserCreate(**data_dict)
-            user = crud_user.create(obj_in=user_create)
+            # Create user
+            user = crud_user.create(obj_in=UserCreate(**data_dict))
             created_users.append(user)
-            
-            # Add newly created user to existing_patrao_ids for subsequent rows
+            # Add to valid patraos for subsequent
             existing_patrao_ids.add(user["_id"])
-        except ValueError as e:
-            # Validation errors (e.g., invalid data format)
-            errors.append(BulkCreateError(
-                row=idx,
-                data=data_dict,
-                message=f"Erro de validação: {str(e)}"
-            ))
-        except HTTPException as e:
-            # Business logic errors from CRUD layer
-            errors.append(BulkCreateError(
-                row=idx,
-                data=data_dict,
-                message=e.detail if hasattr(e, 'detail') else str(e)
-            ))
         except Exception as e:
-            # Unexpected errors - log full traceback for debugging
-            logger.exception(f"Unexpected error creating user at row {idx}: {e}")
-            errors.append(BulkCreateError(
-                row=idx,
-                data=data_dict,
-                message=f"Erro inesperado: {str(e)}"
-            ))
-    
-    # Log the operation
-    logger.info(f"Bulk create: {len(created_users)} created, {len(errors)} errors")
-    
+            msg = e.detail if hasattr(e, 'detail') else str(e)
+            logger.exception(f"Error creating user row {idx}: {e}")
+            errors.append(BulkCreateError(row=idx, data=data_dict, message=msg))
+
     return BulkCreateResponse(
         created=created_users,
         errors=errors,
@@ -377,6 +285,91 @@ def create_users_bulk(
         total_created=len(created_users),
         total_errors=len(errors),
         dry_run=False
+    )
+
+
+def _fetch_existing_course_ids(course_ids: set) -> set:
+    """Fetch valid course IDs from set."""
+    valid = set()
+    if course_ids:
+        for cid in course_ids:
+            if crud_course.exists(cid):
+                valid.add(cid)
+    return valid
+
+
+def _detect_batch_duplicates(users_in: List[UserBulkCreate]) -> List[str]:
+    """Identify duplicate names in batch and return warnings."""
+    seen_names = {}
+    warnings = []
+    for idx, user_data in enumerate(users_in):
+        name_lower = user_data.name.strip().lower()
+        if name_lower not in seen_names:
+            seen_names[name_lower] = []
+        seen_names[name_lower].append(idx)
+    
+    for name, indices in seen_names.items():
+        if len(indices) > 1:
+            rows_str = ", ".join(str(i + 1) for i in indices)
+            warnings.append(f"Nome duplicado '{name}' nas linhas: {rows_str}")
+    return warnings
+
+
+def _validate_bulk_user(
+    user_data: UserBulkCreate,
+    current_year: int,
+    existing_patrao_ids: set,
+    existing_course_ids: set,
+    seen_nmecs: set
+) -> Optional[str]:
+    """Validate a single user for bulk creation."""
+    # Future year check
+    if user_data.start_year > current_year:
+        return f"Ano {user_data.start_year} é no futuro (ano atual: {current_year})"
+    
+    # Patrão check
+    if user_data.patrao_id is not None and user_data.patrao_id not in existing_patrao_ids:
+        return f"Patrão com id {user_data.patrao_id} não encontrado"
+    
+    # Course check
+    if user_data.course_id is not None and user_data.course_id not in existing_course_ids:
+        return f"Curso com id {user_data.course_id} não encontrado"
+    
+    # NMEC unique check
+    if user_data.nmec is not None:
+        if user_data.nmec in seen_nmecs:
+            return f"Nmec {user_data.nmec} duplicado neste ficheiro"
+        if crud_user.get_by_nmec(user_data.nmec):
+            return f"Utilizador com nmec {user_data.nmec} já existe"
+            
+    return None
+
+
+def _build_bulk_response(
+    users_in: List,
+    users_to_create: List,
+    errors: List,
+    warnings: List,
+    dry_run: bool
+) -> BulkCreateResponse:
+    """Build response for dry-run or atomic failure."""
+    mock_created = []
+    if dry_run:
+        for idx, _, data_dict in users_to_create:
+            mock_created.append({
+                **data_dict, 
+                "_id": -1, 
+                "user_roles": []
+            })
+            
+    return BulkCreateResponse(
+        created=mock_created,
+        errors=errors,
+        warnings=warnings,
+        total_submitted=len(users_in),
+        total_created=len(mock_created),
+        total_errors=len(errors),
+        dry_run=dry_run
     )
 
 
@@ -405,12 +398,11 @@ def update_user(
             )
     
     # Validate course_id if being updated
-    if obj_in.course_id is not None:
-        if not crud_course.exists(obj_in.course_id):
-            raise HTTPException(
-                status_code=400, 
-                detail=f"Course with id {obj_in.course_id} not found"
-            )
+    if obj_in.course_id is not None and not crud_course.exists(obj_in.course_id):
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Course with id {obj_in.course_id} not found"
+        )
     
     # Validate nmec uniqueness if being updated
     if obj_in.nmec is not None:

@@ -38,6 +38,34 @@ class CRUDUser:
         """Get user by nmec (número mecanográfico)."""
         return self.collection.find_one({"nmec": nmec})
     
+    def _add_role_filter(self, q: dict, role_id: str, role_year: Optional[int]) -> None:
+        """Add role filters to query."""
+        from app.db.db import UserRole
+        role_query = {"role_id": {MONGO_REGEX: f"^{re.escape(role_id)}"}}
+        if role_year is not None:
+            role_query["year"] = role_year
+        user_ids = [ur["user_id"] for ur in UserRole.find(role_query)]
+        
+        if "_id" in q:
+             q.setdefault("$and", []).append({"_id": {"$in": user_ids}})
+        else:
+            q["_id"] = {"$in": user_ids}
+
+    def _add_search_filter(self, q: dict, search: str) -> None:
+        """Add search filters to query."""
+        search = search.strip()
+        or_conditions = [{"name": {MONGO_REGEX: search, "$options": "i"}}]
+        
+        if search.isdigit():
+            search_int = int(search)
+            or_conditions.append({"_id": search_int})
+            or_conditions.append({"nmec": search_int})
+        
+        if "$or" in q:
+             q.setdefault("$and", []).append({"$or": or_conditions})
+        else:
+             q["$or"] = or_conditions
+
     def _build_common_query(
         self, 
         base_query: Optional[dict] = None,
@@ -62,36 +90,10 @@ class CRUDUser:
             q["patrao_id"] = patrao_id
             
         if role_id:
-            # First find users with this role in user_roles
-            from app.db.db import UserRole
-            # Use regex to allow filtering by parent organization (prefix match)
-            role_query = {"role_id": {MONGO_REGEX: f"^{re.escape(role_id)}"}}
-            if role_year is not None:
-                role_query["year"] = role_year
-            user_ids = [ur["user_id"] for ur in UserRole.find(role_query)]
-            
-            # Merge with existing constraints
-            if "_id" in q:
-                 q.setdefault("$and", []).append({"_id": {"$in": user_ids}})
-            else:
-                q["_id"] = {"$in": user_ids}
+            self._add_role_filter(q, role_id, role_year)
         
         if search:
-            search = search.strip()
-            # Build $or query for multi-field search
-            or_conditions = [
-                {"name": {MONGO_REGEX: search, "$options": "i"}}
-            ]
-            # If search is numeric, also search by _id and nmec
-            if search.isdigit():
-                search_int = int(search)
-                or_conditions.append({"_id": search_int})
-                or_conditions.append({"nmec": search_int})
-            
-            if "$or" in q:
-                 q.setdefault("$and", []).append({"$or": or_conditions})
-            else:
-                 q["$or"] = or_conditions
+            self._add_search_filter(q, search)
                  
         return q
 
