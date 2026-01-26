@@ -264,18 +264,8 @@ def create_users_bulk(
         )
     
     # Execute creation
-    created_users = []
-    for idx, user_data, data_dict in users_to_create:
-        try:
-            # Create user
-            user = crud_user.create(obj_in=UserCreate(**data_dict))
-            created_users.append(user)
-            # Add to valid patraos for subsequent
-            existing_patrao_ids.add(user["_id"])
-        except Exception as e:
-            msg = e.detail if hasattr(e, 'detail') else str(e)
-            logger.exception(f"Error creating user row {idx}: {e}")
-            errors.append(BulkCreateError(row=idx, data=data_dict, message=msg))
+    created_users, creation_errors = _execute_bulk_creation(users_to_create, existing_patrao_ids)
+    errors.extend(creation_errors)
 
     return BulkCreateResponse(
         created=created_users,
@@ -286,6 +276,29 @@ def create_users_bulk(
         total_errors=len(errors),
         dry_run=False
     )
+
+
+def _execute_bulk_creation(
+    users_to_create: List[tuple],
+    existing_patrao_ids: set
+) -> tuple[List[dict], List[BulkCreateError]]:
+    """Execute the user creation transaction."""
+    created_users = []
+    errors = []
+    
+    for idx, _, data_dict in users_to_create:
+        try:
+            # Create user
+            user = crud_user.create(obj_in=UserCreate(**data_dict))
+            created_users.append(user)
+            # Add to valid patraos for subsequent
+            existing_patrao_ids.add(user["_id"])
+        except Exception as e:
+            msg = e.detail if hasattr(e, 'detail') else str(e)
+            logger.error(f"Error creating user row {idx}: {e}")
+            errors.append(BulkCreateError(row=idx, data=data_dict, message=msg))
+            
+    return created_users, errors
 
 
 def _fetch_existing_course_ids(course_ids: set) -> set:
