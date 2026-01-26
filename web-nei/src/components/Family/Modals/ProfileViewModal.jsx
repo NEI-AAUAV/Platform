@@ -102,6 +102,14 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
     const courseName = getCourseName(user.course_id);
     const insignias = getUserInsignias();
 
+    // Group insignias by organization (name)
+    const groupedByOrg = insignias.reduce((acc, ins) => {
+        const org = ins.name || "Outros";
+        if (!acc[org]) acc[org] = [];
+        acc[org].push(ins);
+        return acc;
+    }, {});
+
     return createPortal(
         <AnimatePresence>
             {isOpen && (
@@ -220,63 +228,74 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                     </div>
                                 )}
 
-                                {/* Insignias - Dynamic from backend */}
-                                {insignias.length > 0 && (
+                                {/* Insignias - Grouped by organization (with hierarchy if parent_org_name) */}
+                                {Object.keys(groupedByOrg).length > 0 && (
                                     <div>
-                                        <h3 className="text-sm font-bold text-base-content/60 uppercase tracking-wide mb-3">
-                                            Insígnias
-                                        </h3>
-                                        <div className="space-y-2">
-                                            {insignias.map((ins, idx) => (
-                                                <div
-                                                    key={`${ins.name}-${ins.year}-${idx}`}
-                                                    className="flex items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors"
-                                                >
-                                                    {/* Dynamic icon from backend */}
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-base-300 flex-shrink-0">
-                                                        {ins.icon ? (
-                                                            <img
-                                                                src={ins.icon}
-                                                                alt=""
-                                                                className="h-6 w-6 object-contain"
-                                                            />
-                                                        ) : (
-                                                            <MaterialSymbol
-                                                                icon="badge"
-                                                                size={20}
-                                                                className="text-base-content/50"
-                                                            />
-                                                        )}
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="font-medium truncate">
-                                                            {/* Show full role context: role_name + parent org if different from main org */}
-                                                            {ins.role_name || ins.role || ins.name}
-                                                            {/* Only show parent_org_name if it's different from the main org name
-                                                                This avoids redundancy like "Consoante (NEI)" when org is already NEI
-                                                                But keeps useful context like "Vogal (Direção)" for AETTUA sub-sections */}
-                                                            {ins.parent_org_name && ins.parent_org_name !== ins.name && (
-                                                                <span className="text-base-content/50 font-normal">
-                                                                    {" "}({ins.parent_org_name})
-                                                                </span>
-                                                            )}
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <h4 className="font-bold flex items-center gap-2">
+                                                <MaterialSymbol icon="military_tech" size={20} className="text-primary" />
+                                                Insígnias
+                                                <span className="badge badge-sm badge-ghost">{insignias.length}</span>
+                                            </h4>
+                                        </div>
+                                        <div className="space-y-4">
+                                            {Object.entries(groupedByOrg).map(([org, items]) => {
+                                                // Find parent org name if any of the items have it and it's different from org
+                                                const parentOrg = items.find(ins => ins.parent_org_name && ins.parent_org_name !== org)?.parent_org_name;
+                                                return (
+                                                    <div key={org}>
+                                                        <div className="font-semibold text-base-content/80 mb-2">
+                                                            {parentOrg ? `${parentOrg} › ${org}` : org}
                                                         </div>
-                                                        <div className="text-sm text-base-content/50">
-                                                            {formatYear(ins.year, ins.year_display_format || "civil")}
+                                                        <div className="space-y-2">
+                                                            {items.map((ins, idx) => (
+                                                                <div
+                                                                    key={`${ins.role_name || ins.role || ins.name}-${ins.year}-${idx}`}
+                                                                    className="flex items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors"
+                                                                >
+                                                                    {/* Dynamic icon from backend */}
+                                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-base-300 flex-shrink-0">
+                                                                        {ins.icon ? (
+                                                                            <img
+                                                                                src={ins.icon}
+                                                                                alt=""
+                                                                                className="h-6 w-6 object-contain"
+                                                                            />
+                                                                        ) : (
+                                                                            <MaterialSymbol
+                                                                                icon="badge"
+                                                                                size={20}
+                                                                                className="text-base-content/50"
+                                                                            />
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <div className="font-medium truncate">
+                                                                            {ins.role_name || ins.role || ins.name}
+                                                                        </div>
+                                                                        <div className="text-sm text-base-content/50">
+                                                                            {formatYear(ins.year, ins.year_display_format || "civil")}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 )}
 
                                 {/* Patrão */}
                                 {patraoData && (
-                                    <div>
-                                        <h3 className="text-sm font-bold text-base-content/60 uppercase tracking-wide mb-3">
-                                            Patrão
-                                        </h3>
+                                    <div className="mt-4 border-t border-base-content/10 pt-4">
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <h4 className="font-bold flex items-center gap-2">
+                                                <MaterialSymbol icon="workspace_premium" size={20} className="text-primary" />
+                                                Patrão
+                                            </h4>
+                                        </div>
                                         <button
                                             type="button"
                                             className="flex w-full items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors text-left"
