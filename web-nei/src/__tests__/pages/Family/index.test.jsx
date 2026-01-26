@@ -8,6 +8,12 @@ vi.mock('../../../services/FamilyService', () => ({
     default: {
         getUserChildren: vi.fn(),
         deleteUser: vi.fn(),
+        getCourses: vi.fn().mockResolvedValue({ items: [] }),
+        getUserById: vi.fn().mockResolvedValue({}),
+        updateUser: vi.fn().mockResolvedValue({}),
+        createUser: vi.fn().mockResolvedValue({ id: 99 }),
+        updateUserImage: vi.fn().mockResolvedValue({}),
+        assignRole: vi.fn().mockResolvedValue({}),
     },
 }));
 

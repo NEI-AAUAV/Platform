@@ -14,7 +14,7 @@ import BulkEditModal from "./BulkEditModal";
 import BulkDeleteModal from "./BulkDeleteModal";
 import BulkImportModal from "./BulkImportModal";
 import OrphanModal from "./OrphanModal";
-import { organizations, colors } from "pages/Family/data";
+import { organizations, colors } from "pages/Family/config";
 import { getErrorMessage } from "utils/error";
 import { useUserStore } from "stores/useUserStore";
 import Avatar from "components/Avatar";

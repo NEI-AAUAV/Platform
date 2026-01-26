@@ -80,7 +80,6 @@ class CRUDUserRole:
     
     def get_with_details(
         self, 
-        user_roles: Optional[List[dict]] = None,
         user_id: Optional[int] = None,
         role_id: Optional[str] = None,
         year: Optional[int] = None,
