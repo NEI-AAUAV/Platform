@@ -1,7 +1,7 @@
 """
 User API endpoints for Family Tree.
 """
-
+import logging
 from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException, Query, Security, UploadFile, File, Form
@@ -18,6 +18,7 @@ from app.constants import DEFAULT_SKIP, DEFAULT_LIMIT, MAX_LIMIT, DEFAULT_SORT_F
 
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.get("/", status_code=200, response_model=UserList)
@@ -206,10 +207,7 @@ def create_users_bulk(
     
     Returns: { created, errors, warnings, total_submitted, total_created, total_errors, dry_run }
     """
-    import logging
     from datetime import datetime
-    
-    logger = logging.getLogger(__name__)
     
     # Batch size limit
     MAX_BATCH_SIZE = 100
