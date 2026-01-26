@@ -20,6 +20,9 @@ import base64
 
 logger = logging.getLogger(__name__)
 
+MONGO_REGEX = "$regex"
+MONGO_LOOKUP = "$lookup"
+
 
 class CRUDUser:
     """CRUD operations for User collection."""
@@ -35,6 +38,63 @@ class CRUDUser:
         """Get user by nmec (número mecanográfico)."""
         return self.collection.find_one({"nmec": nmec})
     
+    def _build_common_query(
+        self, 
+        base_query: Optional[dict] = None,
+        *,
+        start_year_gte: Optional[int] = None,
+        year: Optional[int] = None,
+        patrao_id: Optional[int] = None,
+        role_id: Optional[str] = None,
+        role_year: Optional[int] = None,
+        search: Optional[str] = None
+    ) -> dict:
+        """Build MongoDB query from common filters."""
+        q = base_query.copy() if base_query else {}
+        
+        if start_year_gte is not None:
+            q["start_year"] = {"$gte": start_year_gte}
+            
+        if year is not None:
+             q["start_year"] = year
+        
+        if patrao_id is not None:
+            q["patrao_id"] = patrao_id
+            
+        if role_id:
+            # First find users with this role in user_roles
+            from app.db.db import UserRole
+            # Use regex to allow filtering by parent organization (prefix match)
+            role_query = {"role_id": {MONGO_REGEX: f"^{re.escape(role_id)}"}}
+            if role_year is not None:
+                role_query["year"] = role_year
+            user_ids = [ur["user_id"] for ur in UserRole.find(role_query)]
+            
+            # Merge with existing constraints
+            if "_id" in q:
+                 q.setdefault("$and", []).append({"_id": {"$in": user_ids}})
+            else:
+                q["_id"] = {"$in": user_ids}
+        
+        if search:
+            search = search.strip()
+            # Build $or query for multi-field search
+            or_conditions = [
+                {"name": {MONGO_REGEX: search, "$options": "i"}}
+            ]
+            # If search is numeric, also search by _id and nmec
+            if search.isdigit():
+                search_int = int(search)
+                or_conditions.append({"_id": search_int})
+                or_conditions.append({"nmec": search_int})
+            
+            if "$or" in q:
+                 q.setdefault("$and", []).append({"$or": or_conditions})
+            else:
+                 q["$or"] = or_conditions
+                 
+        return q
+
     def get_multi(
         self, 
         *, 
@@ -50,57 +110,14 @@ class CRUDUser:
         order: Optional[str] = "asc"
     ) -> List[dict]:
         """Get multiple users with optional filters and sorting."""
-        query = {}
-        
-        if start_year_gte is not None:
-            query["start_year"] = {"$gte": start_year_gte}
-            
-        if year is not None:
-             query["start_year"] = year
-        
-        if patrao_id is not None:
-            query["patrao_id"] = patrao_id
-            
-        if role_id:
-            # First find users with this role in user_roles
-            from app.db.db import UserRole
-            # Use regex to allow filtering by parent organization (prefix match)
-            # role_id ".1." should match ".1.2." etc.
-            role_query = {"role_id": {"$regex": f"^{re.escape(role_id)}"}}
-            # Also filter by year if provided
-            if role_year is not None:
-                role_query["year"] = role_year
-            user_ids = [
-                ur["user_id"] 
-                for ur in UserRole.find(role_query)
-            ]
-            query["_id"] = {"$in": user_ids}
-        
-        if search:
-            search = search.strip()
-            # Build $or query for multi-field search
-            or_conditions = [
-                # Name: case-insensitive partial match
-                {"name": {"$regex": search, "$options": "i"}}
-            ]
-            # If search is numeric, also search by _id and nmec
-            if search.isdigit():
-                search_int = int(search)
-                or_conditions.append({"_id": search_int})
-                or_conditions.append({"nmec": search_int})
-            
-            # Use $and if we already have query constraints (like role_id filter)
-            if query:
-                # If query already has keys, we need to respect them by putting relevant logic properly
-                pass # Handled below
-            
-            # If we have an existing _id constraint (from role_id), we must merge or use $and
-            if "_id" in query:
-                query["$and"] = [
-                    {"$or": or_conditions}
-                ]
-            else:
-                 query["$or"] = or_conditions
+        query = self._build_common_query(
+            start_year_gte=start_year_gte,
+            year=year,
+            patrao_id=patrao_id,
+            role_id=role_id,
+            role_year=role_year,
+            search=search
+        )
         
         # Determine sort direction
         sort_dir = 1 if order == "asc" else -1
@@ -121,7 +138,7 @@ class CRUDUser:
             {"$sort": {sort_field: sort_dir}},
             {"$skip": skip},
             {"$limit": limit},
-            {"$lookup": {
+            {MONGO_LOOKUP: {
                 "from": "user_roles",
                 "localField": "_id",
                 "foreignField": "user_id",
@@ -157,53 +174,13 @@ class CRUDUser:
         role_year: Optional[int] = None
     ) -> int:
         """Count users matching query."""
-        q = query.copy() if query else {}
-        
-        if year is not None:
-             q["start_year"] = year
-             
-        if role_id:
-            # First find users with this role in user_roles
-            from app.db.db import UserRole
-            role_query = {"role_id": {"$regex": f"^{re.escape(role_id)}"}}
-            # Also filter by year if provided
-            if role_year is not None:
-                role_query["year"] = role_year
-            user_ids = [
-                ur["user_id"] 
-                for ur in UserRole.find(role_query)
-            ]
-            # Handle potential conflict if _id is already filtered (unlikely for count but safe to handle)
-            if "_id" in q:
-                # Intersect existing IDs with role IDs
-                # BUT $in takes a list. Complex.
-                # Simplified: assumes q doesn't have _id constraint yet or we overwrite it cautiously.
-                # For safety, let's use $and if needed.
-                q["$and"] = [
-                    {"_id": {"$in": user_ids}},
-                    {"_id": q["_id"]}
-                ]
-                del q["_id"]
-            else:
-                q["_id"] = {"$in": user_ids}
-
-        if search:
-            search = search.strip()
-            or_conditions = [
-                {"name": {"$regex": search, "$options": "i"}}
-            ]
-            if search.isdigit():
-                search_int = int(search)
-                or_conditions.append({"_id": search_int})
-                or_conditions.append({"nmec": search_int})
-            
-            if "_id" in q:
-                 q["$and"] = [
-                    {"$or": or_conditions}
-                ]
-            else:
-                q["$or"] = or_conditions
-                
+        q = self._build_common_query(
+            base_query=query,
+            year=year,
+            role_id=role_id,
+            role_year=role_year,
+            search=search
+        )
         return self.collection.count_documents(q)
     
     def get_all(self) -> List[dict]:
@@ -422,10 +399,9 @@ class CRUDUser:
         parts = role_id.rstrip('.').split('.')
         for i in range(len(parts) - 1, 0, -1):
             parent_path = '.'.join(parts[:i]) + '.'
-            if parent_path in org_map:
-                icon = org_map[parent_path].get("icon")
-                if icon:
-                    return icon
+            parent_info = org_map.get(parent_path)
+            if parent_info and parent_info.get("icon"):
+                return parent_info["icon"]
         
         return None
 
@@ -450,10 +426,9 @@ class CRUDUser:
         parts = role_id.rstrip('.').split('.')
         for i in range(len(parts) - 1, 0, -1):
             parent_path = '.'.join(parts[:i]) + '.'
-            if parent_path in org_map:
-                fmt = org_map[parent_path].get("format")
-                if fmt:
-                    return fmt
+            parent_info = org_map.get(parent_path)
+            if parent_info and parent_info.get("format"):
+                return parent_info["format"]
         
         return "civil"
 
@@ -465,6 +440,13 @@ class CRUDUser:
         # Try with/without trailing dot
         alt_key = role_id.rstrip('.') if role_id.endswith('.') else role_id + '.'
         return alt_key if alt_key in org_map else role_id
+
+
+    def _resolve_role_name(self, role_info: dict, user_sex: Optional[str]) -> str:
+        """Resolve role name, using female variant if applicable."""
+        if user_sex == "F" and role_info.get("female_name"):
+            return role_info["female_name"]
+        return role_info.get("name")
 
     def _enrich_role(self, role: dict, org_map: dict, user_sex: str = None) -> None:
         """Enrich a single role dict with org_name, role_name, icon, hidden, format.
@@ -487,28 +469,24 @@ class CRUDUser:
         
         # Normalize role_id for lookup
         lookup_key = self._normalize_role_key(role_id, org_map)
+        effective_id = lookup_key if lookup_key in org_map else role_id
         
         if lookup_key in org_map:
-            role_info = org_map[lookup_key]
-            # Use female_name if user is female and role has feminine variant
-            if user_sex == "F" and role_info.get("female_name"):
-                role["role_name"] = role_info.get("female_name")
-            else:
-                role["role_name"] = role_info.get("name")
-            # Use inherited format (traverses up hierarchy if not defined on this role)
-            role["year_display_format"] = self._get_inherited_format(lookup_key, org_map)
-            role["icon"] = self._get_inherited_icon(lookup_key, org_map)
-            hidden = role_info.get("hidden")
-            role["hidden"] = hidden if hidden is not None else False
-            # Add parent org name for display context (e.g., "Direção" for "Presidente da Direção")
-            role["parent_org_name"] = self._get_immediate_parent_name(lookup_key, org_map)
+            role["role_name"] = self._resolve_role_name(org_map[lookup_key], user_sex)
         else:
-            # Fallback for unknown roles - still try to inherit format
             role["role_name"] = role.get("org_name")
-            role["year_display_format"] = self._get_inherited_format(role_id, org_map) if role_id else "civil"
-            role["icon"] = self._get_inherited_icon(role_id, org_map) if role_id else None
-            role["hidden"] = self._get_inherited_hidden(role_id, org_map) if role_id else False
-            role["parent_org_name"] = self._get_immediate_parent_name(role_id, org_map) if role_id else None
+            
+        # Set inherited/computed properties using effective_id
+        if effective_id:
+            role["year_display_format"] = self._get_inherited_format(effective_id, org_map)
+            role["icon"] = self._get_inherited_icon(effective_id, org_map)
+            role["hidden"] = self._get_inherited_hidden(effective_id, org_map)
+            role["parent_org_name"] = self._get_immediate_parent_name(effective_id, org_map)
+        else:
+            role["year_display_format"] = "civil"
+            role["icon"] = None
+            role["hidden"] = False
+            role["parent_org_name"] = None
 
     
     def _build_tree(self) -> Tuple[dict, List[dict], int]:
@@ -524,14 +502,14 @@ class CRUDUser:
             }},
             {"$sort": {"_sort_year": 1}},
             # Lookup user roles with nested lookup to get role details including hidden
-            {"$lookup": {
+            {MONGO_LOOKUP: {
                 "from": "user_roles",
                 "localField": "_id",
                 "foreignField": "user_id",
                 "as": "user_roles",
                 "pipeline": [
                     # For each user_role, lookup the role details
-                    {"$lookup": {
+                    {MONGO_LOOKUP: {
                         "from": "roles",
                         "localField": "role_id",
                         "foreignField": "_id",
