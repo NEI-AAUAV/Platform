@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
 import Avatar from "components/Avatar";
@@ -179,3 +180,17 @@ export default function UserPhotoUpload({ user, isEdit, watch, register, onSave,
         </div>
     );
 }
+
+UserPhotoUpload.propTypes = {
+    user: PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        image: PropTypes.string,
+        sex: PropTypes.string,
+        name: PropTypes.string,
+    }),
+    isEdit: PropTypes.bool,
+    watch: PropTypes.func,
+    register: PropTypes.func,
+    onSave: PropTypes.func,
+    onImageChange: PropTypes.func,
+};

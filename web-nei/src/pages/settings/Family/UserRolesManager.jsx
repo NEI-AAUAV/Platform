@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { RoleDisplay, RolePickerModal } from "components/Family";
 import FamilyService from "services/FamilyService";
 import { getErrorMessage } from "utils/error";
@@ -90,3 +91,12 @@ export default function UserRolesManager({ user, isEdit, pendingRoles, setPendin
         </>
     );
 }
+
+UserRolesManager.propTypes = {
+    user: PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    }),
+    isEdit: PropTypes.bool,
+    pendingRoles: PropTypes.array,
+    setPendingRoles: PropTypes.func,
+};

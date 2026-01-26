@@ -24,7 +24,7 @@ import {
 } from "./utils";
 // Re-export for backward compatibility
 export { colors, organizations } from "./config";
-import { colors, organizations } from "./config";
+import { colors } from "./config";
 
 // Dynamic year bounds - set via buildTree options
 let currentMinYear = 8;
