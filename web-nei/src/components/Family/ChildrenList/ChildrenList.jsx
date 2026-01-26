@@ -8,7 +8,7 @@ import MaterialSymbol from "components/MaterialSymbol";
 import Avatar from "components/Avatar";
 
 const ChildrenList = ({
-    children = [],
+    childrenData = [],
     onAddChild,
     onSelectChild,
     addButtonLabel = "Adicionar",
@@ -20,7 +20,7 @@ const ChildrenList = ({
                 <h4 className="font-bold flex items-center gap-2">
                     <MaterialSymbol icon="face" size={20} className="text-primary" />
                     Pedaços
-                    <span className="badge badge-sm badge-ghost">{children.length}</span>
+                    <span className="badge badge-sm badge-ghost">{childrenData.length}</span>
                 </h4>
                 {onAddChild && (
                     <button
@@ -34,9 +34,9 @@ const ChildrenList = ({
                 )}
             </div>
 
-            {children.length > 0 ? (
+            {childrenData.length > 0 ? (
                 <div className="grid grid-cols-1 gap-2">
-                    {children.map(child => (
+                    {childrenData.map(child => (
                         <button
                             type="button"
                             key={child.id}
@@ -73,7 +73,7 @@ const ChildrenList = ({
 };
 
 ChildrenList.propTypes = {
-    children: PropTypes.arrayOf(PropTypes.shape({
+    childrenData: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
         name: PropTypes.string,
         image: PropTypes.string,

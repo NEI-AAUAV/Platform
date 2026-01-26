@@ -189,7 +189,7 @@ class CRUDUser:
         """Get all users."""
         return list(self.collection.find())
 
-    async def update_image(self, user_id: int, image_bytes: bytes | None) -> Optional[dict]:
+    def update_image(self, user_id: int, image_bytes: bytes | None) -> Optional[dict]:
         """Update user image. If image_bytes is None, remove image."""
         user = self.get(user_id)
         if not user:

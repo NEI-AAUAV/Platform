@@ -8,7 +8,6 @@ import classNames from "classnames";
 import { Input } from "components/form";
 import MaterialSymbol from "components/MaterialSymbol";
 import { CloseIcon } from "assets/icons/google";
-import { useToast } from "components/ui/use-toast";
 import { Toaster } from "components/ui/toaster";
 import UserPhotoUpload from "./UserPhotoUpload";
 import UserRolesManager from "./UserRolesManager";
@@ -364,7 +363,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
                                             {isEdit && (
                                                 <ChildrenList
-                                                    children={childrenList}
+                                                    childrenData={childrenList}
                                                     onAddChild={() => onAddChild(user)}
                                                     onSelectChild={onSwitchUser}
                                                 />

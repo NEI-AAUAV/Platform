@@ -33,15 +33,17 @@ const RoleDisplay = ({
             </div>
 
             <div className="min-h-[60px] rounded-xl border border-dashed border-base-content/20 bg-base-200/50 p-4">
-                {loading ? (
+                {loading && (
                     <div className="flex justify-center py-2">
                         <span className="loading loading-spinner loading-sm"></span>
                     </div>
-                ) : roles.length === 0 ? (
+                )}
+                {!loading && roles.length === 0 && (
                     <p className="text-center text-sm text-base-content/50">
                         {emptyMessage}
                     </p>
-                ) : (
+                )}
+                {!loading && roles.length > 0 && (
                     <div className="flex flex-wrap gap-3">
                         {roles.map((role) => (
                             <div

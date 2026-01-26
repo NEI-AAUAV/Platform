@@ -302,7 +302,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                 {/* Pedaços (Children) */}
                                 {!loading && childrenList.length > 0 && (
                                     <ChildrenList
-                                        children={childrenList}
+                                        childrenData={childrenList}
                                         onAddChild={null}
                                         onSelectChild={(child) => handleNavigate(child.id)}
                                         addButtonLabel=""

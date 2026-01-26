@@ -134,9 +134,14 @@ async def update_user_image(
     if remove and image is not None:
         raise HTTPException(status_code=400, detail="Choose image or remove, not both")
 
-    image_bytes = None if remove else (await image.read() if image is not None else None)
+    if remove:
+        image_bytes = None
+    elif image is not None:
+        image_bytes = await image.read()
+    else:
+        image_bytes = None
 
-    updated = await crud_user.update_image(id, image_bytes)
+    updated = crud_user.update_image(id, image_bytes)
     if not updated:
         raise HTTPException(status_code=404, detail=f"User with id {id} not found")
     return updated
