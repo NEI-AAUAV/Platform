@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { useCourses, useUserChildren } from "hooks/useFamilyData";
 import PropTypes from "prop-types";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,7 +14,7 @@ import MaterialSymbol from "components/MaterialSymbol";
 import { CloseIcon } from "assets/icons/google";
 import FamilyService from "services/FamilyService";
 import { formatYear } from "pages/Family/utils";
-import { colors } from "pages/Family/data";
+import { colors } from "pages/Family/config";
 import heartBorder from "assets/icons/heart_border.svg";
 import Avatar from "components/Avatar";
 import { ChildrenList } from "../index";
@@ -27,19 +28,9 @@ import { useBodyScrollLock } from "components/Modal";
  * @param {Function} props.onNavigateToNode - Navigate to another node in tree (receives user ID)
  */
 const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
-    const [courses, setCourses] = useState([]);
+    const { courses } = useCourses();
+    const { children: childrenList, loading } = useUserChildren(isOpen ? user?.id : null);
     const [patraoData, setPatraoData] = useState(null);
-    const [childrenList, setChildrenList] = useState([]);
-    const [loading, setLoading] = useState(false);
-
-    // Load courses for name lookup
-    useEffect(() => {
-        if (isOpen) {
-            FamilyService.getCourses({ limit: 100 })
-                .then(res => setCourses(res.items || []))
-                .catch(console.error);
-        }
-    }, [isOpen]);
 
     // Load patrão data if user has one
     useEffect(() => {
@@ -52,19 +43,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
         }
     }, [isOpen, user?.parent]);
 
-    // Load children (pedaços)
-    useEffect(() => {
-        const userId = user?.id;
-        if (isOpen && userId) {
-            setLoading(true);
-            FamilyService.getUserChildren(userId)
-                .then(setChildrenList)
-                .catch(() => setChildrenList([]))
-                .finally(() => setLoading(false));
-        } else {
-            setChildrenList([]);
-        }
-    }, [isOpen, user?.id]);
+
 
     // Lock body scroll when modal is open
     useBodyScrollLock(isOpen);
