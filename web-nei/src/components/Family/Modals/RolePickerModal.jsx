@@ -25,13 +25,19 @@ export default function RolePickerModal({
 }) {
     const [roleTree, setRoleTree] = useState([]);
 
+    const getInitialRoleYear = () => {
+        if (initialYear !== undefined) {
+            return initialYear;
+        }
+        if (requireYear) {
+            return new Date().getFullYear() - 2000;
+        }
+        return null;
+    };
+
     // Default to initialYear if provided. 
     // If not provided: if required -> current year, if not required -> null (all years)
-    const [roleYear, setRoleYear] = useState(
-        initialYear !== undefined
-            ? initialYear
-            : (requireYear ? new Date().getFullYear() - 2000 : null)
-    );
+    const [roleYear, setRoleYear] = useState(getInitialRoleYear);
     const [pickerPath, setPickerPath] = useState([]); // Breadcrumb path: [Node, Node]
     const [selectedRoleNode, setSelectedRoleNode] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -57,11 +63,7 @@ export default function RolePickerModal({
             setPickerPath([]);
             setSelectedRoleNode(null);
             setLoading(false);
-            setRoleYear(
-                initialYear !== undefined
-                    ? initialYear
-                    : (requireYear ? new Date().getFullYear() - 2000 : null)
-            );
+            setRoleYear(getInitialRoleYear());
         }
     }, [isOpen, initialYear, requireYear]);
 
