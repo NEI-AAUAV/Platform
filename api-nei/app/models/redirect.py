@@ -14,11 +14,11 @@ class Redirect(Base):
     _redirect: Mapped[str] = mapped_column("redirect", String(2048))
 
 
-    @hybrid_property
+    @property
     def redirect(self) -> str:
         # Only prepend STATIC_URL if _redirect looks like a static asset path
         if self._redirect.startswith("/static/"):
-            return settings.HOST + self._redirect
+            return settings.STATIC_URL + self._redirect[len("/static/nei"):]
         return self._redirect
 
     @redirect.setter
