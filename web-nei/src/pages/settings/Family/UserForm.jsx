@@ -46,6 +46,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
     // Image state lifted for submission
     const [imageFile, setImageFile] = useState(null);
+    const [uploadKey, setUploadKey] = useState(0);
 
     // Lock body scroll when modal is open
     useBodyScrollLock(isOpen);
@@ -120,6 +121,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
         setError(null);
         setImageFile(null);
+        setUploadKey(prev => prev + 1);
     }, [user, reset, isOpen, initialPatrao]);
 
     const processSubmit = async (data, shouldClose = true) => {
@@ -177,6 +179,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 });
                 setPendingRoles([]);
                 setImageFile(null);
+                setUploadKey(prev => prev + 1);
             }
         } catch (err) {
             const errorMessage = getErrorMessage(err, "Erro ao guardar");
@@ -246,6 +249,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                                     >
                                         <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-6" style={{ WebkitOverflowScrolling: 'touch' }}>
                                             <UserPhotoUpload
+                                                key={uploadKey}
                                                 user={user}
                                                 isEdit={isEdit}
                                                 watch={watch}
