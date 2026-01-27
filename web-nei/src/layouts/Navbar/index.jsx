@@ -458,7 +458,7 @@ const Navbar = () => {
                         </Link>
                       </li>
                     )}
-                    {!config.PRODUCTION && (scopes?.includes("manager-family") || scopes?.includes("admin")) && (
+                    {(scopes?.includes("manager-family") || scopes?.includes("admin")) && (
                       <li>
                         <Link to="/settings/family">
                           <FamilyPersonIcon /> Família
