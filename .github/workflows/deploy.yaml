@@ -194,16 +194,23 @@ jobs:
 
     - name: Deploy with docker-compose
       run: |
+        set -euo pipefail
+
         if [ "${{ github.event.inputs.extension }}" = "rally" ]; then
-          docker-compose -f compose.prod.yml -f extensions/rally/compose.override.prod.yml pull
-          docker-compose -f compose.prod.yml -f extensions/rally/compose.override.prod.yml up -d --remove-orphans
+          COMPOSE_ARGS="-f compose.prod.yml -f extensions/rally/compose.override.prod.yml"
         elif [ "${{ github.event.inputs.extension }}" = "gala" ]; then
-          docker-compose -f compose.prod.yml -f extensions/gala/compose.override.prod.yml pull
-          docker-compose -f compose.prod.yml -f extensions/gala/compose.override.prod.yml up -d --remove-orphans
+          COMPOSE_ARGS="-f compose.prod.yml -f extensions/gala/compose.override.prod.yml"
         else
-          docker-compose -f compose.prod.yml pull
-          docker-compose -f compose.prod.yml up -d --remove-orphans
+          COMPOSE_ARGS="-f compose.prod.yml"
         fi
+
+        # Pull images sequentially to avoid OOM on low-memory systems
+        for service in $(docker compose $COMPOSE_ARGS config --services); do
+          echo "Pulling $service..."
+          docker compose $COMPOSE_ARGS pull "$service" || echo "Warning: Failed to pull $service, continuing..."
+        done
+
+        docker compose $COMPOSE_ARGS up -d --remove-orphans
 
     - name: Manage extensions and sync nginx
       run: |
