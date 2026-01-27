@@ -35,3 +35,6 @@ export function parseJWT(token) {
     throw new Error('Failed to parse JWT: ' + error.message);
   }
 }
+
+// Re-export error utilities for convenience
+export { getErrorMessage, isErrorStatus, getErrorStatus } from './error';

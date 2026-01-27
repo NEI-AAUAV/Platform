@@ -1,1 +1,1 @@
-__all__ = ['user', 'patch'] # FIXME: is this working?
+__all__ = ['user']

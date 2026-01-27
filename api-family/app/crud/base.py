@@ -28,15 +28,16 @@ class CRUDBase(Generic[CollectionType, CreateSchemaType, UpdateSchemaType, Model
         self.pk_auto_increment = pk_auto_increment
 
     def next(self):
-        doc = Counter.find_one_and_update([
-            {'_id', self.collection.name},
-            {'$inc', {'seq_value': 1}},
-            True
-        ])
-        return doc.seq_value
+        doc = Counter.find_one_and_update(
+            {'_id': self.collection.name},
+            {'$inc': {'seq_value': 1}},
+            upsert=True,
+            return_document=ReturnDocument.AFTER
+        )
+        return doc['seq_value']
 
     def get(self, *, id: int) -> Any:
-        doc = self.collection.find_one({'_id', id})
+        doc = self.collection.find_one({'_id': id})
         return doc
 
     def get_multi(
@@ -48,7 +49,7 @@ class CRUDBase(Generic[CollectionType, CreateSchemaType, UpdateSchemaType, Model
     def create(self, *, obj_in: CreateSchemaType) -> CollectionType:
         obj_in_data = obj_in.dict()
         if self.pk_auto_increment:
-            obj_in_data['_id'] = self.next_id()
+            obj_in_data['_id'] = self.next()
 
         doc = self.collection.insert_one(self.model(**obj_in_data))
         return doc

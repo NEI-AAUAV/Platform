@@ -1,8 +1,7 @@
-import { Fragment, useState, useCallback, useEffect } from "react";
+import React, { Fragment, useState, useCallback, useEffect } from "react";
+import PropTypes from "prop-types";
 
 import {
-  MAX_YEAR,
-  MIN_YEAR,
   handleSearchChange,
   organizations,
   colors,
@@ -17,11 +16,111 @@ import classNames from "classnames";
 import Autocomplete from "components/Autocomplete";
 import { ExpandMoreIcon, ExpandLessIcon } from "assets/icons/google";
 
-const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
+const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYear, users }) => {
   const [endYear, setEndYear] = useState(-1);
   // const [fainaNames, setFainaNames] = useState(false);
   const [selName, setSelName] = useState(null);
   const theme = useUserStore((state) => state.theme);
+
+  // Build dynamic organization list from users data
+  // This allows showing any organization from the API, not just hardcoded ones
+  // Helper: Determine if organization should be skipped
+  const shouldSkipOrg = (o) => o.hidden === true;
+
+  // Helper: Determine the key for the organization
+  const getOrgKey = (o) => {
+    let key = o.name; // org_name from API
+
+    // If key looks like a role_id path (starts with "."), use role_name as fallback
+    if (key?.startsWith(".")) {
+      key = o.role_name || o.role || key;
+    }
+
+    // Special handling for ST sub-roles
+    if (o.name === "ST" || key === "ST") {
+      const roleMap = {
+        "Mestre Escrivão": "escrivao",
+        "Mestre Pescador": "pescador",
+        "Mestre do Salgado": "salgado",
+      };
+      const mappedKey = roleMap[o.role] || roleMap[o.role_name];
+      if (mappedKey) {
+        key = mappedKey;
+      }
+    }
+
+    // Consolidate NEI sub-role short codes (like "RF") under "NEI"
+    if (o.role_id?.startsWith(".2.") && key !== "NEI") {
+      key = "NEI";
+    }
+
+    return key;
+  };
+
+  // Helper: Update the map with the organization
+  const updateOrgsMap = (orgsMap, key, o) => {
+    const currentRoleId = o.role_id || '';
+
+    if (!orgsMap.has(key)) {
+      // Check if we have a hardcoded entry for this org
+      const hardcodedOrg = organizations[key];
+
+      // Determine display name
+      let displayName = hardcodedOrg?.name;
+      if (!displayName) {
+        if (o.name && !o.name.startsWith('.') && o.name.length <= 20) {
+          displayName = o.name;
+        } else {
+          displayName = key;
+        }
+      }
+
+      orgsMap.set(key, {
+        key: key,
+        name: displayName,
+        insignia: hardcodedOrg?.insignia || null,
+        icon: o.icon,
+        changeColor: hardcodedOrg?.changeColor || false,
+        isHardcoded: !!hardcodedOrg,
+        role_id: currentRoleId
+      });
+    } else {
+      // Update with shorter role_id if found
+      const existing = orgsMap.get(key);
+      if (currentRoleId && (!existing.role_id || currentRoleId.length < existing.role_id.length)) {
+        existing.role_id = currentRoleId;
+      }
+    }
+  };
+
+  // Build dynamic organization list from users data
+  const dynamicOrgs = React.useMemo(() => {
+    if (!users || users.length === 0) {
+      return new Map();
+    }
+
+    const orgsMap = new Map();
+
+    users.forEach(u => {
+      u.organizations?.forEach(o => {
+        if (shouldSkipOrg(o)) return;
+
+        const key = getOrgKey(o);
+        if (!key) return;
+
+        updateOrgsMap(orgsMap, key, o);
+      });
+    });
+
+    // Sort by role_id to maintain hierarchical order from database
+    const sortedEntries = [...orgsMap.entries()].sort((a, b) => {
+      const roleIdA = a[1].role_id || '';
+      const roleIdB = b[1].role_id || '';
+      return roleIdA.localeCompare(roleIdB);
+    });
+
+    return new Map(sortedEntries);
+  }, [users]);
 
   // const toggeFainaNames = () => {
   //   changeLabels(!fainaNames);
@@ -29,16 +128,20 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
   // };
 
   useEffect(() => {
-    setEndYear(MAX_YEAR);
-  }, []);
-  
+    if (maxYear !== null && maxYear !== undefined) {
+      setEndYear(maxYear);
+    }
+  }, [maxYear]);
+
   const toggleInsignias = (name) => {
-    const i = insignias.indexOf(name);
-
-    if (i !== -1) insignias.splice(i, 1);
-    else insignias.push(name);
-
-    setInsignias([...insignias]);
+    setInsignias(prev => {
+      const index = prev.indexOf(name);
+      if (index !== -1) {
+        return prev.filter((_, i) => i !== index);
+      } else {
+        return [...prev, name];
+      }
+    });
   };
 
   const customRenderOption = (item) => (
@@ -75,9 +178,36 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
     handleSearchChange(searchData.find((item) => item.id === key));
   }
 
+  // Helper to render organization icon
+  const renderOrgIcon = (org) => {
+    if (org.icon) {
+      return <img src={org.icon} alt="" className="h-4 w-4" />;
+    }
+    if (org.insignia) {
+      return (
+        <img
+          src={org.insignia}
+          alt=""
+          className="h-4 w-4"
+          style={
+            org.changeColor && theme === "dark"
+              ? { filter: "invert(1)" }
+              : {}
+          }
+        />
+      );
+    }
+    return (
+      <div
+        className="h-4 w-4 rounded-full bg-base-content/30"
+        title={`Sem ícone para ${org.name}`}
+      />
+    );
+  };
+
   return (
     <>
-      <h5 className="px-3 pt-3 opacity-80">Procurar</h5>
+      <h5 className="px-3 pt-3 opacity-80">Procurar Membro</h5>
       <div className="px-3 py-3">
         <div className="w-56">
           <Autocomplete
@@ -88,7 +218,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
             }))}
             value={selName}
             onChange={handleChange}
-            placeholder="Nome"
+            placeholder="Pesquisar por nome..."
             renderOption={customRenderOption}
           />
         </div>
@@ -135,7 +265,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
               />
             )}
           /> */}
-{/* 
+      {/* 
       <h5 className="px-3 pt-3 opacity-80">Nomes</h5>
       <div className="px-5 py-3">
         <div
@@ -152,17 +282,20 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
       <h5 className="px-3 pt-3 opacity-80">Matrículas</h5>
       <div className="flex justify-start gap-10 px-5 py-3">
         <div>
-          <div
+          <button
             className={classNames(
               "btn-xs btn-circle btn mx-auto",
-              endYear === MIN_YEAR + 9 ? "btn-disabled" : "cursor-pointer"
+              minYear && endYear === minYear + 9 ? "btn-disabled" : ""
             )}
             onClick={() =>
-              setEndYear((endYear) => Math.max(--endYear, MIN_YEAR + 9))
+              setEndYear((endYear) => Math.max(--endYear, (minYear || 0) + 9))
             }
+            disabled={minYear && endYear === minYear + 9}
+            type="button"
+            aria-label="Diminuir ano"
           >
             <ExpandLessIcon />
-          </div>
+          </button>
           {[...Array(5).keys()]
             .map((i) => endYear - 9 + i)
             .map((i) => (
@@ -179,22 +312,25 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
                 <BulletYear color={colors[i % colors.length]} index={i} />
               </Fragment>
             ))}
-          <div
+          <button
             className={classNames(
               "btn-xs btn-circle btn mx-auto",
-              endYear === MAX_YEAR ? "btn-disabled" : "cursor-pointer"
+              endYear === maxYear ? "btn-disabled" : ""
             )}
             onClick={() =>
-              setEndYear((endYear) => Math.min(++endYear, MAX_YEAR))
+              setEndYear((endYear) => Math.min(++endYear, maxYear || 99))
             }
+            disabled={endYear === maxYear}
+            type="button"
+            aria-label="Aumentar ano"
           >
             <ExpandMoreIcon />
-          </div>
+          </button>
         </div>
       </div>
       <h5 className="px-3 pt-3 opacity-80">Insígnias</h5>
       <div className="px-5 py-3">
-        {Object.entries(organizations).map(([key, org]) => (
+        {[...dynamicOrgs.entries()].map(([key, org]) => (
           <div
             key={key}
             className={classNames(
@@ -206,15 +342,8 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
             )}
             onClick={() => toggleInsignias(key)}
           >
-            <img
-              src={org.insignia}
-              className="h-4 w-4"
-              style={
-                org.changeColor && theme === "dark"
-                  ? { filter: "invert(1)" }
-                  : {}
-              }
-            />
+            {/* Render icon: API icon takes priority over hardcoded insignia */}
+            {renderOrgIcon(org)}
             <div>{org.name}</div>
           </div>
         ))}
@@ -224,3 +353,13 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear }) => {
 };
 
 export default FamilySidebar;
+
+FamilySidebar.propTypes = {
+  insignias: PropTypes.array,
+  year: PropTypes.number,
+  setInsignias: PropTypes.func,
+  setYear: PropTypes.func,
+  minYear: PropTypes.number,
+  maxYear: PropTypes.number,
+  users: PropTypes.array,
+};

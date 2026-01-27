@@ -1,8 +1,58 @@
+"""
+Course schemas for Family API.
+"""
 
-from pydantic import BaseModel, constr
+from enum import Enum
+from typing import Optional
+from pydantic import BaseModel, Field, constr
+
+
+class DegreeType(str, Enum):
+    """Valid degree types for courses."""
+    LICENCIATURA = "Licenciatura"
+    MESTRADO = "Mestrado"
+    PROGRAMA_DOUTORAL = "Programa Doutoral"
 
 
 class CourseBase(BaseModel):
-    short: constr(max_length=8)
-    name: str
+    """Base course schema with common fields."""
+    short: constr(max_length=8) = Field(..., description="Course abbreviation (e.g., LEI, MEI)")
+    name: str = Field(..., description="Full course name")
+    degree: DegreeType = Field(..., description="Degree type")
+    show: Optional[bool] = Field(default=False, description="Whether to show in UI")
 
+
+class CourseCreate(CourseBase):
+    """Schema for creating a new course."""
+    pass
+
+
+class CourseUpdate(BaseModel):
+    """Schema for updating a course. All fields optional."""
+    short: Optional[constr(max_length=8)] = None
+    name: Optional[str] = None
+    degree: Optional[DegreeType] = None
+    show: Optional[bool] = None
+
+
+class CourseInDB(CourseBase):
+    """Course as stored in database."""
+    id: int = Field(..., alias='_id', description="Course ID (MongoDB _id)")
+    
+    def dict(self, **kwargs):
+        """Override dict() to always use field names (not aliases) for serialization."""
+        # Force by_alias=False to serialize as 'id' instead of '_id'
+        kwargs['by_alias'] = False
+        return super().dict(**kwargs)
+    
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
+
+
+class CourseList(BaseModel):
+    """Paginated list of courses."""
+    items: list[CourseInDB]
+    total: int
+    skip: int
+    limit: int

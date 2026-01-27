@@ -1,0 +1,102 @@
+"""
+UserRole schemas for Family Tree API.
+Associates users with roles for specific years.
+"""
+
+from typing import Optional, List
+from pydantic import BaseModel, Field, validator
+import re
+
+
+# Regex pattern for role_id path format (e.g., '.1.5.', '.1.5.9.')
+ROLE_ID_PATTERN = re.compile(r'^\.(\d+\.)+$')
+
+
+class UserRoleBase(BaseModel):
+    """Base user-role association model."""
+    user_id: int = Field(..., description="User ID")
+    role_id: str = Field(..., description="Role ID (path format, e.g. '.1.5.')")
+    year: int = Field(..., ge=0, le=99, description="Year of the role (0-99)")
+
+    @validator('role_id')
+    def validate_role_id_format(cls, v):
+        """Validate that role_id follows the path format (.X.Y.Z.)."""
+        if not ROLE_ID_PATTERN.match(v):
+            raise ValueError(f"role_id must follow path format (e.g. '.1.5.'), got: {v}")
+        return v
+
+
+class UserRoleCreate(UserRoleBase):
+    """Schema for creating a new user-role association."""
+    pass
+
+
+class UserRoleUpdate(BaseModel):
+    """Schema for updating a user-role. Only year can be updated."""
+    year: Optional[int] = Field(None, ge=0, le=99)
+
+
+class UserRoleInDB(UserRoleBase):
+    """Schema for user-role response from database."""
+    id: str = Field(..., alias='_id', description="User-role ID (MongoDB _id)")
+
+    def dict(self, **kwargs):
+        """Override dict() to always use field names (not aliases) for serialization."""
+        # Force by_alias=False to serialize as 'id' instead of '_id'
+        kwargs['by_alias'] = False
+        return super().dict(**kwargs)
+
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
+
+
+class UserDetailsNested(BaseModel):
+    """Nested user details for UserRoleWithDetails."""
+    id: Optional[int] = Field(None, alias='_id', description="User ID (MongoDB _id)")
+    name: Optional[str] = None
+    image: Optional[str] = None
+    sex: Optional[str] = None
+    start_year: Optional[int] = None
+
+    def dict(self, **kwargs):
+        """Override dict() to always use field names (not aliases) for serialization."""
+        # Force by_alias=False to serialize as 'id' instead of '_id'
+        kwargs['by_alias'] = False
+        return super().dict(**kwargs)
+
+
+class UserRoleWithDetails(UserRoleBase):
+    """User-role with expanded user and role info."""
+    id: str = Field(..., alias='_id', description="User-role ID (MongoDB _id)")
+    user_name: Optional[str] = None  # Keep for backward compatibility
+    user: Optional[UserDetailsNested] = None  # Full user details for frontend
+    role_name: Optional[str] = None
+    role_short: Optional[str] = None
+    year_display_format: Optional[str] = None
+
+    def dict(self, **kwargs):
+        """Override dict() to always use field names (not aliases) for serialization."""
+        # Force by_alias=False to serialize as 'id' instead of '_id'
+        kwargs['by_alias'] = False
+        return super().dict(**kwargs)
+
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
+
+
+class UserRoleList(BaseModel):
+    """Schema for paginated user-role list response."""
+    items: List[UserRoleInDB]
+    total: int
+    skip: int = Field(0, description="Number of items skipped")
+    limit: int = Field(100, description="Maximum number of items returned")
+
+
+class UserRoleDetailsList(BaseModel):
+    """Schema for paginated user-role details list response."""
+    items: List[UserRoleWithDetails]
+    total: int
+    skip: int = Field(0, description="Number of items skipped")
+    limit: int = Field(100, description="Maximum number of items returned")

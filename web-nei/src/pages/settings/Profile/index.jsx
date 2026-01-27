@@ -17,6 +17,7 @@ import classNames from "classnames";
 
 import service from "services/NEIService";
 import { LinkAdapter } from "components";
+import { getErrorMessage } from "utils/error";
 
 import malePic from "assets/default_profile/male.svg";
 import femalePic from "assets/default_profile/female.svg";
@@ -158,7 +159,7 @@ export function Component() {
       .catch((err) => {
         setResponse({
           status: Status.error,
-          message: err.message || "Erro ao atualizar perfil",
+          message: getErrorMessage(err, "Erro ao atualizar perfil"),
         });
       });
   };

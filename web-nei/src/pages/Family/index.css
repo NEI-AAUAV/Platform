@@ -77,3 +77,108 @@
 #treeei svg.treeei defs marker#dot circle {
   fill: silver;
 }
+
+/* Lineage Highlighting Styles */
+#treeei svg.treeei g.highlighted-ancestor circle.profile-border {
+  stroke: hsl(var(--in)) !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 6px hsl(var(--in) / 0.5));
+}
+
+#treeei svg.treeei g.highlighted-ancestor path {
+  stroke: hsl(var(--in)) !important;
+  stroke-width: 2px !important;
+}
+
+#treeei svg.treeei g.highlighted-descendant circle.profile-border {
+  stroke: hsl(var(--su)) !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(0 0 6px hsl(var(--su) / 0.5));
+}
+
+#treeei svg.treeei g.highlighted-descendant path {
+  stroke: hsl(var(--su)) !important;
+  stroke-width: 2px !important;
+}
+
+#treeei svg.treeei g.highlighted-selected circle.profile-border {
+  stroke: hsl(var(--p)) !important;
+  stroke-width: 4px !important;
+  filter: drop-shadow(0 0 8px hsl(var(--p) / 0.7));
+}
+
+#treeei svg.treeei g.highlighted-dimmed {
+  opacity: 0.15 !important;
+  transition: opacity 0.3s ease;
+}
+
+#treeei svg.treeei g.highlighted-ancestor,
+#treeei svg.treeei g.highlighted-descendant,
+#treeei svg.treeei g.highlighted-selected {
+  opacity: 1 !important;
+  transition: opacity 0.3s ease;
+}
+
+/* Animated lineage path */
+#treeei svg.treeei path.animated-lineage-path {
+  pointer-events: none;
+}
+
+/* Accessibility - Focus states */
+#treeei svg.treeei g.node:focus-visible circle.profile-border,
+#treeei svg.treeei g.node:focus circle.profile-border {
+  outline: 2px solid hsl(var(--p));
+  outline-offset: 2px;
+}
+
+#treeei svg.treeei g.node {
+  cursor: pointer;
+}
+
+#treeei svg.treeei g.node[tabindex] {
+  outline: none;
+}
+
+/* Node Glow Effect - Applied during animated path */
+#treeei svg.treeei g.node.node-glow circle.profile-border {
+  stroke: #22c55e !important;
+  stroke-width: 4px !important;
+  filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.9)) drop-shadow(0 0 20px rgba(34, 197, 94, 0.6)) !important;
+  animation: nodeGlowPulse 0.5s ease-out;
+}
+
+#treeei svg.treeei g.node.node-glow circle.profile-grad {
+  filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.8));
+}
+
+@keyframes nodeGlowPulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.5));
+  }
+
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 16px rgba(34, 197, 94, 1));
+  }
+
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.9));
+  }
+}
+
+
+/* Profile View Button - Minimalist Icon Only */
+#treeei svg.treeei g.profile-btn {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+#treeei svg.treeei g.node:hover g.profile-btn {
+  opacity: 1;
+}
+
+#treeei svg.treeei g.profile-btn path {
+  transition: transform 0.15s ease;
+}

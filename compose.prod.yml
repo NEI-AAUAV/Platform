@@ -12,7 +12,7 @@ services:
       # Run the job at 4h37 every day to minimize db load
       ofelia.job-exec.cleanup_logins.schedule: "0 37 4 * * *"
       ofelia.job-exec.cleanup_logins.command: "psql -U postgres -d postgres -f /scripts/cleanup-logins.sql"
-    volumes: 
+    volumes:
       - ./scripts/:/scripts/:ro
       # - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
       # - ./api-rally/app/db/setup.sql:/docker-entrypoint-initdb.d/rally-0001.sql
@@ -27,7 +27,7 @@ services:
     restart: always
 
   db_mongo:
-    image: mongo:6.0.5-jammy
+    image: mongo:6.0.27-jammy
     ports:
       - 27017:27017
     environment:
@@ -70,7 +70,7 @@ services:
       EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
       IDP_SECRET_KEY: ${IDP_SECRET_KEY}
       RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
-    volumes: 
+    volumes:
       - /deploy/api-nei/static:/api_nei/static
       - /deploy/keys/jwt.key:/jwt.key:ro
       - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
@@ -78,6 +78,12 @@ services:
     depends_on:
       db_pg:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs').read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - backend
     restart: always
@@ -107,28 +113,40 @@ services:
   #   profiles:
   #     - disabled
 
-  # api_family:
-  #   image: ghcr.io/nei-aauav/api-family:${TAG:-latest}
-  #   build:
-  #     context: api-family
-  #     dockerfile: Dockerfile.prod
-  #   ports:
-  #     - 8002:8002
-  #   environment:
-  #     MONGO_SERVER: db_mongo
-  #     MONGO_PASSWORD: ${MONGO_PASSWORD}
-  #     PUBLIC_KEY: /jwt.key.pub
-  #   volumes:
-  #     - /deploy/api-family/static:/api_family/static
-  #     - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
-  #   depends_on:
-  #     db_mongo:
-  #       condition: service_healthy
-  #   networks:
-  #     - backend
-  #   restart: always
-  #   profiles:
-  #     - disabled
+  api_family:
+    image: ghcr.io/nei-aauav/api-family:${TAG:-latest}
+    build:
+      context: api-family
+      dockerfile: Dockerfile.prod
+    ports:
+      - 8002:8002
+    environment:
+      MONGO_SERVER: db_mongo
+      MONGO_USER: mongo
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DB: ${MONGO_DB:-family}
+      MONGO_AUTH_SOURCE: admin
+      PUBLIC_KEY: /jwt.key.pub
+      R2_ENDPOINT_URL: ${R2_ENDPOINT_URL}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      R2_BUCKET: ${R2_BUCKET}
+      R2_PUBLIC_BASE_URL: ${R2_PUBLIC_BASE_URL}
+    volumes:
+      - ./data_import:/data/import:ro
+      - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
+    depends_on:
+      db_mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8002/docs').read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - backend
+    restart: always
 
   web_nei:
     image: ghcr.io/nei-aauav/web-nei:${TAG:-latest}
@@ -140,7 +158,6 @@ services:
     networks:
       - frontend
     restart: always
-
 
   ofelia:
     image: mcuadros/ofelia:latest

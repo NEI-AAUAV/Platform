@@ -81,6 +81,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           cd api-nei && poetry install --no-root && poetry run pip install pytest-cov
+          cd ../api-family && poetry install --no-root && poetry run pip install pytest-cov
       
       - name: Cache Yarn dependencies
         uses: actions/cache@v3
@@ -108,6 +109,7 @@ jobs:
       - name: Run Python tests
         run: |
           cd api-nei && poetry run pytest --cov=app --cov-report=xml
+          cd ../api-family && poetry run pytest --cov=app --cov-report=xml
         env:
           POSTGRES_SERVER: localhost
           POSTGRES_PASSWORD: postgres
@@ -117,10 +119,11 @@ jobs:
           MONGO_USER: mongo
           MONGO_PASSWORD: mongo
           MONGO_DB: mongo_test
+          MONGO_AUTH_SOURCE: admin
       
-      - name: Run JavaScript/TypeScript tests
+      - name: Run JavaScript/TypeScript tests with coverage
         run: |
-          cd web-nei && yarn test --run --reporter=verbose
+          cd web-nei && yarn test:coverage --run --reporter=verbose
         env:
           POSTGRES_SERVER: localhost
           POSTGRES_PASSWORD: postgres
@@ -130,6 +133,7 @@ jobs:
           MONGO_USER: mongo
           MONGO_PASSWORD: mongo
           MONGO_DB: mongo_test
+          MONGO_AUTH_SOURCE: admin
       
       - name: Create Custom Trust Store with SonarQube Certificate
         run: |
