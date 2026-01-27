@@ -121,7 +121,7 @@ const routes = [
     ],
   },
   // Family Manager - requires manager-family or admin scope
-  !isProd && {
+  {
     path: "/",
     element: (
       <ProtectedRoute requiredScopes={["manager-family", "admin"]}>
