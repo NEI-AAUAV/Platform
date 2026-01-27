@@ -6,6 +6,7 @@ import classNames from "classnames";
 import MaterialSymbol from "components/MaterialSymbol";
 import { Toaster } from "components/ui/toaster";
 import { BaseModal } from "components/Modal";
+import { useToast } from "components/ui/use-toast";
 
 import FamilyService from "services/FamilyService";
 import UserForm from "./UserForm";
@@ -171,6 +172,7 @@ RoleIcon.propTypes = {
 export function Component() {
   // Check authorization - useUserStore must be called unconditionally
   const { scopes, sessionLoading } = useUserStore((state) => state);
+  const { toast } = useToast();
 
   // All hooks must be declared unconditionally (React rules of hooks)
   const [users, setUsers] = useState([]);
@@ -501,6 +503,7 @@ export function Component() {
     setDeleting(true);
     try {
       await FamilyService.deleteUser(deleteModal.id);
+      const deletedName = deleteModal.name;
       setDeleteModal(null);
       setShowOrphanModal(false);
       setOrphanChildren([]);
@@ -508,8 +511,17 @@ export function Component() {
       // Refresh lookup
       const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
+
+      toast({
+        title: "Membro eliminado",
+        description: deletedName ? `O membro ${deletedName} foi eliminado.` : "O membro foi eliminado.",
+      });
     } catch (err) {
-      alert(getErrorMessage(err, "Erro ao eliminar"));
+      toast({
+        title: "Erro ao eliminar membro",
+        description: getErrorMessage(err, "Erro ao eliminar"),
+        variant: "destructive",
+      });
     } finally {
       setDeleting(false);
     }
@@ -532,8 +544,17 @@ export function Component() {
       fetchUsers();
       const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
+
+      toast({
+        title: "Membro eliminado",
+        description: "O membro foi eliminado e os pedaços foram reatribuídos.",
+      });
     } catch (err) {
-      alert(getErrorMessage(err, "Erro ao processar"));
+      toast({
+        title: "Erro ao eliminar membro",
+        description: getErrorMessage(err, "Erro ao processar"),
+        variant: "destructive",
+      });
     } finally {
       setDeleting(false);
     }

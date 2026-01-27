@@ -15,7 +15,7 @@ const ChildrenList = ({
     emptyMessage = "Não tem pedaços registados"
 }) => {
     return (
-        <div className="mt-4 border-t border-base-content/10 pt-4">
+        <div>
             <div className="mb-3 flex items-center justify-between">
                 <h4 className="font-bold flex items-center gap-2">
                     <MaterialSymbol icon="face" size={20} className="text-primary" />

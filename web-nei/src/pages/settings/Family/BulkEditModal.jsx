@@ -15,6 +15,7 @@ import { formatYear } from "pages/Family/utils";
 import { getErrorMessage } from "utils/error";
 import { BaseModal, useBodyScrollLock, ProgressBar } from "components/Modal";
 import { UserListDisplay, RolePickerModal } from "components/Family";
+import { useToast } from "components/ui/use-toast";
 
 const BulkEditModal = ({
     isOpen,
@@ -22,6 +23,7 @@ const BulkEditModal = ({
     selectedUsers = [],
     onComplete
 }) => {
+    const { toast } = useToast();
     // Bulk action state
     const [action, setAction] = useState("add_role");
     const [loading, setLoading] = useState(false);
@@ -101,6 +103,10 @@ const BulkEditModal = ({
             setTimeout(() => {
                 onComplete?.();
                 onClose();
+                toast({
+                    title: "Edição em massa concluída",
+                    description: `${successCount} membro(s) atualizados com sucesso.`,
+                });
             }, 1500);
         } else if (successCount > 0) {
             setSuccess(`${successCount} atualizados, ${errorCount} com erro.`);

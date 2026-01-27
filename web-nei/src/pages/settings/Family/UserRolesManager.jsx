@@ -1,11 +1,13 @@
 
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useToast } from "components/ui/use-toast";
 import { RoleDisplay, RolePickerModal } from "components/Family";
 import FamilyService from "services/FamilyService";
 import { getErrorMessage } from "utils/error";
 
 export default function UserRolesManager({ user, isEdit, pendingRoles, setPendingRoles }) {
+    const { toast } = useToast();
     const [userRoles, setUserRoles] = useState([]);
     const [rolesLoading, setRolesLoading] = useState(false);
     const [showRolePicker, setShowRolePicker] = useState(false);
@@ -41,8 +43,16 @@ export default function UserRolesManager({ user, isEdit, pendingRoles, setPendin
         try {
             await FamilyService.removeRole(roleId);
             setUserRoles((prev) => prev.filter((r) => r.id !== roleId));
+            toast({
+                title: "Insígnia removida",
+                description: "A insígnia foi removida do membro.",
+            });
         } catch (err) {
-            alert(getErrorMessage(err, "Erro ao remover insígnia"));
+            toast({
+                title: "Erro ao remover insígnia",
+                description: getErrorMessage(err, "Erro ao remover insígnia"),
+                variant: "destructive",
+            });
         }
     };
 
@@ -67,8 +77,16 @@ export default function UserRolesManager({ user, isEdit, pendingRoles, setPendin
             });
             const response = await FamilyService.getRolesForUser(user.id);
             setUserRoles(response.items || []);
+            toast({
+                title: "Insígnia adicionada",
+                description: `A insígnia ${selectedNode.name} foi adicionada ao membro.`,
+            });
         } catch (err) {
-            alert(getErrorMessage(err, "Erro ao adicionar insígnia"));
+            toast({
+                title: "Erro ao adicionar insígnia",
+                description: getErrorMessage(err, "Erro ao adicionar insígnia"),
+                variant: "destructive",
+            });
         }
     };
 

@@ -89,6 +89,10 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
         return acc;
     }, {});
 
+    const hasInsigniasSection = Object.keys(groupedByOrg).length > 0;
+    const hasPatraoSection = Boolean(patraoData);
+    const hasChildrenSection = !loading && childrenList.length > 0;
+
     return createPortal(
         <AnimatePresence>
             {isOpen && (
@@ -208,7 +212,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                 )}
 
                                 {/* Insignias - Grouped by organization (with hierarchy if parent_org_name) */}
-                                {Object.keys(groupedByOrg).length > 0 && (
+                                {hasInsigniasSection && (
                                     <div>
                                         <div className="mb-3 flex items-center justify-between">
                                             <h4 className="font-bold flex items-center gap-2">
@@ -268,7 +272,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
 
                                 {/* Patrão */}
                                 {patraoData && (
-                                    <div className="mt-4 border-t border-base-content/10 pt-4">
+                                    <div className={`mt-4 ${hasInsigniasSection ? "border-t border-base-content/10 pt-4" : ""}`}>
                                         <div className="mb-3 flex items-center justify-between">
                                             <h4 className="font-bold flex items-center gap-2">
                                                 <MaterialSymbol icon="workspace_premium" size={20} className="text-primary" />
@@ -300,14 +304,16 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                 )}
 
                                 {/* Pedaços (Children) */}
-                                {!loading && childrenList.length > 0 && (
-                                    <ChildrenList
-                                        childrenData={childrenList}
-                                        onAddChild={null}
-                                        onSelectChild={(child) => handleNavigate(child.id)}
-                                        addButtonLabel=""
-                                        emptyMessage=""
-                                    />
+                                {hasChildrenSection && (
+                                    <div className={`mt-4 ${(hasInsigniasSection || hasPatraoSection) ? "border-t border-base-content/10 pt-4" : ""}`}>
+                                        <ChildrenList
+                                            childrenData={childrenList}
+                                            onAddChild={null}
+                                            onSelectChild={(child) => handleNavigate(child.id)}
+                                            addButtonLabel=""
+                                            emptyMessage=""
+                                        />
+                                    </div>
                                 )}
 
                                 {loading && (

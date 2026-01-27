@@ -9,6 +9,7 @@ import { Input } from "components/form";
 import MaterialSymbol from "components/MaterialSymbol";
 import { CloseIcon } from "assets/icons/google";
 import { Toaster } from "components/ui/toaster";
+import { useToast } from "components/ui/use-toast";
 import UserPhotoUpload from "./UserPhotoUpload";
 import UserRolesManager from "./UserRolesManager";
 import { useUserChildren, useCourses } from "hooks/useFamilyData";
@@ -26,6 +27,7 @@ const sexOptions = [
  * Split-layout modal for creating/editing family tree members
  */
 const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAddChild, onSwitchUser, canGoBack, onBack }) => {
+    const { toast } = useToast();
     // Patrão state
     const [selectedPatrao, setSelectedPatrao] = useState(null);
 
@@ -140,6 +142,11 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
 
             if (isEdit) {
                 await FamilyService.updateUser(uid, payload);
+
+                toast({
+                    title: "Membro atualizado",
+                    description: `Os dados de ${user?.name || "membro"} foram atualizados com sucesso.`,
+                });
             } else {
                 const newUser = await FamilyService.createUser(payload);
 
@@ -162,6 +169,11 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                         })
                     ));
                 }
+
+                toast({
+                    title: "Membro criado",
+                    description: `O membro ${newUser.name} foi criado com sucesso.`,
+                });
             }
             onSave?.();
 

@@ -13,6 +13,7 @@ import FamilyService from "services/FamilyService";
 import { getErrorMessage } from "utils/error";
 import { BaseModal, ProgressBar } from "components/Modal";
 import { UserListDisplay } from "components/Family";
+import { useToast } from "components/ui/use-toast";
 
 const BulkDeleteModal = ({
     isOpen,
@@ -20,6 +21,7 @@ const BulkDeleteModal = ({
     selectedUsers = [],
     onComplete
 }) => {
+    const { toast } = useToast();
     const [confirmText, setConfirmText] = useState("");
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState({ current: 0, total: 0 });
@@ -98,7 +100,17 @@ const BulkDeleteModal = ({
             setTimeout(() => {
                 onComplete?.();
                 onClose();
+                toast({
+                    title: "Eliminação em massa concluída",
+                    description: `${selectedUsers.length} membro(s) eliminados.`,
+                });
             }, 500);
+        } else {
+            toast({
+                title: "Alguns membros não foram eliminados",
+                description: `${newErrors.length} membro(s) falharam na eliminação.`,
+                variant: "destructive",
+            });
         }
     };
 

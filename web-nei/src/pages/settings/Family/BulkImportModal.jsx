@@ -27,6 +27,7 @@ import * as XLSX from "xlsx";
 import { colors } from "pages/Family/data";
 import Avatar from "components/Avatar";
 import { getErrorMessage } from "utils/error";
+import { useToast } from "components/ui/use-toast";
 
 // CSV Headers
 const REQUIRED_HEADERS = ["name", "sex", "start_year"];
@@ -138,6 +139,7 @@ const BulkImportModal = ({
     onComplete,
     allUsers = [],
 }) => {
+    const { toast } = useToast();
     // Steps: "upload" | "preview" | "assign" | "results"
     const [step, setStep] = useState("upload");
     const [parsedData, setParsedData] = useState([]);
@@ -717,6 +719,12 @@ const BulkImportModal = ({
             }
 
             onComplete?.();
+            if (response.total_created > 0) {
+                toast({
+                    title: "Importação concluída",
+                    description: `${response.total_created} membro(s) importados com sucesso.`,
+                });
+            }
         } catch (err) {
             console.error("Bulk import failed:", err);
             setResults({
