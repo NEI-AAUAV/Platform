@@ -78,6 +78,12 @@ services:
     depends_on:
       db_pg:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs').read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - backend
     restart: always
@@ -116,8 +122,10 @@ services:
       - 8002:8002
     environment:
       MONGO_SERVER: db_mongo
+      MONGO_USER: mongo
       MONGO_PASSWORD: ${MONGO_PASSWORD}
       MONGO_DB: ${MONGO_DB:-family}
+      MONGO_AUTH_SOURCE: admin
       PUBLIC_KEY: /jwt.key.pub
       R2_ENDPOINT_URL: ${R2_ENDPOINT_URL}
       R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
@@ -125,10 +133,17 @@ services:
       R2_BUCKET: ${R2_BUCKET}
       R2_PUBLIC_BASE_URL: ${R2_PUBLIC_BASE_URL}
     volumes:
+      - ./data_import:/data/import:ro
       - /deploy/keys/jwt.key.pub:/jwt.key.pub:ro
     depends_on:
       db_mongo:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8002/docs').read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - backend
     restart: always
