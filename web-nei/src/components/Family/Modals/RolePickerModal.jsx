@@ -14,9 +14,24 @@ import FamilyService from "services/FamilyService";
  * @param {function} onClose
  * @param {function} onSelect - callback(node, year)
  */
-export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = false }) {
+export default function RolePickerModal({
+    isOpen,
+    onClose,
+    onSelect,
+    hideYear = false,
+    title = "Escolher Filtro",
+    initialYear,
+    requireYear = false
+}) {
     const [roleTree, setRoleTree] = useState([]);
-    const [roleYear, setRoleYear] = useState(new Date().getFullYear() - 2000);
+
+    // Default to initialYear if provided. 
+    // If not provided: if required -> current year, if not required -> null (all years)
+    const [roleYear, setRoleYear] = useState(
+        initialYear !== undefined
+            ? initialYear
+            : (requireYear ? new Date().getFullYear() - 2000 : null)
+    );
     const [pickerPath, setPickerPath] = useState([]); // Breadcrumb path: [Node, Node]
     const [selectedRoleNode, setSelectedRoleNode] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -42,8 +57,13 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
             setPickerPath([]);
             setSelectedRoleNode(null);
             setLoading(false);
+            setRoleYear(
+                initialYear !== undefined
+                    ? initialYear
+                    : (requireYear ? new Date().getFullYear() - 2000 : null)
+            );
         }
-    }, [isOpen]);
+    }, [isOpen, initialYear, requireYear]);
 
     const navigateToNode = (node) => {
         setPickerPath([...pickerPath, node]);
@@ -179,6 +199,8 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
         );
     };
 
+    const isYearValid = !requireYear || (roleYear !== null && roleYear !== "");
+
     return createPortal(
         <AnimatePresence>
             {isOpen && (
@@ -206,7 +228,7 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
                                 </button>
                             )}
                             <h3 className="text-lg font-bold">
-                                {pickerPath.length === 0 ? "Escolher Filtro" : pickerPath[pickerPath.length - 1].name}
+                                {pickerPath.length === 0 ? title : pickerPath[pickerPath.length - 1].name}
                             </h3>
                             <button
 
@@ -220,20 +242,24 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
                         {/* Year Selection (Conditionally visible) */}
                         {!hideYear && (
                             <div className="flex items-center justify-between border-b border-base-content/10 bg-base-200/30 px-6 py-3">
-                                <span className="text-sm font-medium">Ano da Insígnia (Opcional)</span>
+                                <span className="text-sm font-medium">
+                                    {requireYear ? "Ano da Insígnia (Obrigatório)" : "Ano da Insígnia (Opcional)"}
+                                </span>
                                 <div className="flex items-center gap-2">
-                                    <button
-                                        className="btn btn-ghost btn-xs text-xs font-normal"
-                                        onClick={() => setRoleYear(null)}
-                                        disabled={!roleYear}
-                                    >
-                                        Limpar
-                                    </button>
+                                    {!requireYear && (
+                                        <button
+                                            className="btn btn-ghost btn-xs text-xs font-normal"
+                                            onClick={() => setRoleYear(null)}
+                                            disabled={!roleYear}
+                                        >
+                                            Limpar
+                                        </button>
+                                    )}
                                     <input
                                         type="number"
                                         className="input input-bordered input-sm w-20 text-center"
-                                        value={roleYear || ""}
-                                        placeholder="-"
+                                        value={roleYear !== null ? roleYear : ""}
+                                        placeholder={requireYear ? "Ex: 24" : "-"}
                                         onChange={(e) =>
                                             setRoleYear(e.target.value ? parseInt(e.target.value) : null)
                                         }
@@ -241,7 +267,7 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
                                         max={99}
                                     />
                                     <span className="text-sm text-base-content/50">
-                                        {roleYear ? `(20${roleYear} | ${roleYear}/${roleYear + 1})` : "(Todos)"}
+                                        {roleYear !== null ? `(20${roleYear} | ${roleYear}/${roleYear + 1})` : "(Todos)"}
                                     </span>
                                 </div>
                             </div>
@@ -258,12 +284,19 @@ export default function RolePickerModal({ isOpen, onClose, onSelect, hideYear = 
                                 <button
                                     className={classNames("btn btn-primary w-full", {
                                         loading: loading,
+                                        "btn-disabled": !isYearValid
                                     })}
+                                    disabled={!isYearValid}
                                     onClick={handleSelect}
                                 >
                                     Selecionar {selectedRoleNode.label || selectedRoleNode.name}
                                     {selectedRoleNode.short ? ` (${selectedRoleNode.short})` : ""}
                                 </button>
+                                {!isYearValid && (
+                                    <div className="text-center text-xs text-error mt-2">
+                                        O ano é obrigatório
+                                    </div>
+                                )}
                             </div>
                         )}
                     </motion.div>
@@ -279,4 +312,7 @@ RolePickerModal.propTypes = {
     onClose: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
     hideYear: PropTypes.bool,
+    title: PropTypes.string,
+    initialYear: PropTypes.number,
+    requireYear: PropTypes.bool,
 };

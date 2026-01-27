@@ -1156,6 +1156,8 @@ export function Component() {
         isOpen={showRoleFilterModal}
         onClose={() => setShowRoleFilterModal(false)}
         hideYear={false}
+        title="Escolher Filtro"
+        initialYear={null}
         onSelect={(node, year) => {
           setRoleFilterId(node.id);
           setRoleFilterName(node.name + (year ? ` (${year})` : ''));

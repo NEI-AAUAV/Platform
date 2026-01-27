@@ -87,6 +87,9 @@ export default function UserRolesManager({ user, isEdit, pendingRoles, setPendin
                 isOpen={showRolePicker}
                 onClose={() => setShowRolePicker(false)}
                 onSelect={handleAddRoleCallback}
+                title="Atribuir Insígnia"
+                requireYear={true}
+                initialYear={new Date().getFullYear() - 2000}
             />
         </>
     );
