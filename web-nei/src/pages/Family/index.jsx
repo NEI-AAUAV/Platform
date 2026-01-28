@@ -311,6 +311,7 @@ export function Component() {
       <ProfileViewModal
         isOpen={isProfileOpen}
         user={profileUser}
+        allUsers={users}
         onClose={() => setIsProfileOpen(false)}
         onNavigateToNode={handleNavigateToNode}
       />

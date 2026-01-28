@@ -3,16 +3,16 @@
  * 
  * Shows member details: name, entry year, course, and insignias with dynamic icons from backend.
  * Allows navigation to patrão and pedaços within the tree.
+ * 
+ * Optimized to use local data (no extra API calls).
  */
 
-import { useState, useEffect } from "react";
-import { useCourses, useUserChildren } from "hooks/useFamilyData";
+import { useCourses } from "hooks/useFamilyData";
 import PropTypes from "prop-types";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import MaterialSymbol from "components/MaterialSymbol";
 import { CloseIcon } from "assets/icons/google";
-import FamilyService from "services/FamilyService";
 import { formatYear } from "pages/Family/utils";
 import { colors } from "pages/Family/config";
 import heartBorder from "assets/icons/heart_border.svg";
@@ -24,26 +24,12 @@ import { useBodyScrollLock } from "components/Modal";
  * @param {Object} props
  * @param {boolean} props.isOpen - Whether modal is open
  * @param {Object} props.user - User data from tree node
+ * @param {Array} props.allUsers - List of all users (for local lookup of patrão/children)
  * @param {Function} props.onClose - Close handler
  * @param {Function} props.onNavigateToNode - Navigate to another node in tree (receives user ID)
  */
-const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
+const ProfileViewModal = ({ isOpen, user, allUsers, onClose, onNavigateToNode }) => {
     const { courses } = useCourses();
-    const { children: childrenList, loading } = useUserChildren(isOpen ? user?.id : null);
-    const [patraoData, setPatraoData] = useState(null);
-
-    // Load patrão data if user has one
-    useEffect(() => {
-        if (isOpen && user?.parent) {
-            FamilyService.getUserById(user.parent)
-                .then(setPatraoData)
-                .catch(() => setPatraoData(null));
-        } else {
-            setPatraoData(null);
-        }
-    }, [isOpen, user?.parent]);
-
-
 
     // Lock body scroll when modal is open
     useBodyScrollLock(isOpen);
@@ -77,6 +63,19 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
 
     if (!user) return null;
 
+    // --- Local Data Lookups ---
+
+    // Find Patrão in allUsers
+    const patraoData = user.parent && user.parent !== 0 // 0 is virtual root
+        ? allUsers.find(u => u.id === user.parent)
+        : null;
+
+    // Find Children (Pedaços) in allUsers
+    // Note: Use 'parent' property which refers to ID in the flattened structure
+    const childrenList = allUsers
+        ? allUsers.filter(u => u.parent === user.id)
+        : [];
+
     const yearColor = colors[(user.start_year || 0) % colors.length];
     const courseName = getCourseName(user.course_id);
     const insignias = getUserInsignias();
@@ -91,7 +90,7 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
 
     const hasInsigniasSection = Object.keys(groupedByOrg).length > 0;
     const hasPatraoSection = Boolean(patraoData);
-    const hasChildrenSection = !loading && childrenList.length > 0;
+    const hasChildrenSection = childrenList.length > 0;
 
     return createPortal(
         <AnimatePresence>
@@ -316,11 +315,6 @@ const ProfileViewModal = ({ isOpen, user, onClose, onNavigateToNode }) => {
                                     </div>
                                 )}
 
-                                {loading && (
-                                    <div className="flex justify-center py-4">
-                                        <span className="loading loading-spinner loading-sm"></span>
-                                    </div>
-                                )}
                             </div>
                         </motion.div>
                     </div>
@@ -354,6 +348,7 @@ ProfileViewModal.propTypes = {
             hidden: PropTypes.bool,
         })),
     }),
+    allUsers: PropTypes.array,
     onClose: PropTypes.func.isRequired,
     onNavigateToNode: PropTypes.func,
 };
