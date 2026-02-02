@@ -31,6 +31,7 @@ pydantic-extra-types = "^2.4.1"
 h11 = "^0.16.0"
 requests = "^2.32.4"
 urllib3 = "^2.5.0"
+itsdangerous = "^2.1.2"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.4"

@@ -33,6 +33,7 @@ app = FastAPI(
         {"url": "https://nei.web.ua.pt", "description": "Production environment"},
     ],
 )
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,

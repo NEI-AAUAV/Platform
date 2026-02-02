@@ -19,6 +19,7 @@ class User(Base):
     iupi: Mapped[Optional[str]] = mapped_column(String(36), unique=True)
     nmec: Mapped[Optional[int]] = mapped_column(unique=True)
     hashed_password: Mapped[Optional[str]] = mapped_column(Text)
+    authentik_sub: Mapped[Optional[str]] = mapped_column(String(255), unique=True)
     name: Mapped[str] = mapped_column(String(20))
     surname: Mapped[str] = mapped_column(String(20))
     gender: Mapped[Optional[GenderEnum]] = mapped_column(
