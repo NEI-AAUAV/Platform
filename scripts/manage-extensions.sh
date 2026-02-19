@@ -155,7 +155,16 @@ except OSError:
 # Function to manage extension containers
 manage_extension() {
     local extension="$1"
-    local override_file="$COMPOSE_DIR/extensions/$extension/compose.override.yml"
+    # Determine compose files based on environment
+    local base_compose="compose.yml"
+    local extension_override="compose.override.yml"
+    
+    if [[ "${PRODUCTION:-false}" == "true" ]]; then
+        base_compose="compose.prod.yml"
+        extension_override="compose.override.prod.yml"
+    fi
+
+    local override_file="$COMPOSE_DIR/extensions/$extension/$extension_override"
     
     if [[ ! -f "$override_file" ]]; then
         echo "✗ Error: Override file not found: $override_file"
@@ -172,7 +181,18 @@ manage_extension() {
     if is_extension_enabled "$extension"; then
         echo "Starting $extension extension..."
         
-        if ! docker-compose -f "$COMPOSE_DIR/compose.yml" -f "$override_file" up -d; then
+        # Check if already running (to avoid restarting in prod if deployed by CI)
+        if [[ "${PRODUCTION:-false}" == "true" ]]; then
+             # In production, CI might have already started it. We verify health.
+             if wait_for_extension "$extension"; then
+                 echo "✓ $extension already running and healthy"
+                 return 0
+             else
+                 echo "⚠ $extension not running/healthy, attempting to start..."
+             fi
+        fi
+
+        if ! docker-compose -f "$COMPOSE_DIR/$base_compose" -f "$override_file" up -d; then
             echo "✗ Failed to start $extension containers"
             echo "  Check docker-compose logs for details"
             return 1
