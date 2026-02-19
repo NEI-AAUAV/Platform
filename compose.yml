@@ -56,6 +56,11 @@ services:
       JWT_SECRET_KEY_PATH: /jwt.key
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
       ENABLED_EXTENSIONS: ${ENABLED_EXTENSIONS:-} # Comma-separated list of enabled extensions (empty = no extensions)
+      # OIDC/Authentik Configuration
+      OIDC_ENABLED: ${OIDC_ENABLED:-false}
+      OIDC_DISCOVERY_URL: ${OIDC_DISCOVERY_URL:-https://nei.web.ua.pt/authentik/application/o/nei-platform/.well-known/openid-configuration}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
     volumes:
       - ./api-nei:/api_nei
       - ./extensions:/extensions:ro

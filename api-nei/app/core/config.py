@@ -125,5 +125,12 @@ class Settings(BaseSettings):
     ARRAIAL_RATE_LIMIT_PER_MINUTE: int = int(os.getenv("ARRAIAL_RATE_LIMIT_PER_MINUTE", "180"))
     ARRAIAL_RATE_LIMIT_BURST: int = int(os.getenv("ARRAIAL_RATE_LIMIT_BURST", "60"))
 
+    # OIDC/Authentik settings
+    OIDC_ENABLED: bool = False  # Feature flag
+    OIDC_DISCOVERY_URL: str = "https://nei.web.ua.pt/authentik/application/o/nei-platform/.well-known/openid-configuration"
+    OIDC_CLIENT_ID: str = ""
+    OIDC_CLIENT_SECRET: str = ""
+    OIDC_SCOPES: List[str] = ["openid", "profile", "email", "nei_scopes", "nei_nmec", "nei_iupi"]
+
 
 settings = Settings()
