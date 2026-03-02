@@ -79,6 +79,11 @@ const data = [
     name: "Taça UA",
     dropdown: [
       {
+        name: "Resultados",
+        link: "https://slicf.github.io/mmr_ta-aua/",
+        external: true,
+      },
+      {
         name: "Cancioneiro",
         link: import.meta.env.BASE_URL + "tacaua-assets/CancioneiroClaque.pdf",
         external: true,
