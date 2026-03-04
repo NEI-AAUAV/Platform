@@ -50,7 +50,6 @@
     "tailwindcss-animate": "^1.0.7",
     "tar-fs": "^2.1.4",
     "tsparticles": "^2.9.3",
-    "tsparticles-interaction-particles-repulse": "^2.9.3",
     "tsparticles-plugin-polygon-mask": "^2.9.3",
     "tw-colors": "^2.0.3",
     "xlsx": "^0.18.5",

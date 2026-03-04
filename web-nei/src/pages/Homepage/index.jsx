@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
 import { loadPolygonMaskPlugin } from "tsparticles-plugin-polygon-mask";
-import { loadParticlesRepulseInteraction } from "tsparticles-interaction-particles-repulse";
 
 import service from "services/NEIService";
 
@@ -47,7 +46,6 @@ export function Component() {
 
   const particlesInit = useCallback(async (engine) => {
     await loadPolygonMaskPlugin(engine); // awaitable
-    await loadParticlesRepulseInteraction(engine);
     await loadFull(engine);
   }, []);
 
