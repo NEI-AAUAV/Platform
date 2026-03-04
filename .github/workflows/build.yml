@@ -93,7 +93,7 @@ jobs:
 
       - name: Install Node.js dependencies
         run: |
-          cd web-nei && yarn install
+          cd web-nei && for i in 1 2 3; do yarn install --network-timeout 100000 && break || sleep 10; done
       
       - name: Create test database
         run: |
