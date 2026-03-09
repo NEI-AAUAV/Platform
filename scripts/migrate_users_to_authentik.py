@@ -33,8 +33,10 @@ Dependencies (install with pip):
 
 import argparse
 import os
+import re
 import sys
 import textwrap
+import unicodedata
 from dataclasses import dataclass
 from typing import Optional
 
@@ -115,6 +117,19 @@ def fetch_users_by_emails(conn, emails: list[str]) -> list[PlatformUser]:
         return [_row_to_user(r) for r in cur.fetchall()]
 
 
+def _slugify(text: str) -> str:
+    """Lowercase, strip accents, replace non-alphanumeric runs with underscores."""
+    text = unicodedata.normalize("NFKD", text)
+    text = text.encode("ascii", "ignore").decode("ascii")
+    text = text.lower()
+    return re.sub(r"[^a-z0-9]+", "_", text).strip("_")
+
+
+def _make_username(user: PlatformUser, suffix: str = "") -> str:
+    base = _slugify(f"{user.name}_{user.surname}") or f"user_{user.id}"
+    return f"{base}{suffix}"
+
+
 def _row_to_user(row: dict) -> PlatformUser:
     return PlatformUser(
         id=row["id"],
@@ -177,16 +192,11 @@ class AuthentikAPI:
         Sets needs_email_verification=True in attributes so the Authentik
         authentication flow can check this flag and prompt for email
         verification on the user's first login.
+
+        Username is derived from name_surname (slugified). If that collides,
+        falls back to name_surname_<platform_id>, which is always unique.
         """
-        # nmec is unique per student; fall back to email-prefix + id to avoid collisions
-        if user.nmec:
-            username = str(user.nmec)
-        elif user.email:
-            username = f"{user.email.split('@')[0]}_{user.id}"
-        else:
-            username = f"user_{user.id}"
-        payload = {
-            "username": username,
+        base_payload = {
             "name": f"{user.name} {user.surname}".strip(),
             "email": user.email or "",
             "is_active": True,
@@ -202,7 +212,21 @@ class AuthentikAPI:
                 "needs_email_verification": True,
             },
         }
-        return self._post("/core/users/", json=payload)
+
+        for suffix in ("", f"_{user.id}"):
+            username = _make_username(user, suffix)
+            r = self.session.post(
+                f"{self.base}/api/v3/core/users/",
+                json={**base_payload, "username": username},
+                verify=self.verify_ssl,
+            )
+            if r.status_code == 400 and "username" in r.text and not suffix:
+                print(f"    Username '{username}' taken — retrying with '_{user.id}' suffix.")
+                continue
+            r.raise_for_status()
+            return r.json()
+
+        raise RuntimeError(f"Could not create Authentik user for platform #{user.id}")
 
 
 # ---------------------------------------------------------------------------
