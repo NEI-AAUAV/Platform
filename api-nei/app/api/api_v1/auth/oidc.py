@@ -1,44 +1,81 @@
 """
 OIDC/OpenID Connect authentication endpoints for Authentik integration.
 
-This module provides OAuth2/OIDC authentication flow to integrate with
-the Authentik identity provider running in the infrastructure.
+Flow
+----
+Login:
+  1. GET /auth/oidc/login  →  redirect to Authentik with a signed state cookie
+  2. GET /auth/oidc/callback  →  verify state, exchange code, upsert user, return platform JWT
+
+Account linking (allows existing password users to link to Authentik SSO):
+  1. POST /auth/oidc/link  →  redirect to Authentik with signed state cookie (contains user_id)
+  2. GET /auth/oidc/link-callback  →  verify state, set authentik_sub on existing user
+
+State / CSRF protection
+-----------------------
+A random nonce is generated on /oidc/login and /oidc/link.  It is:
+  - Sent as the `state` query parameter to Authentik (so Authentik echoes it back).
+  - Stored in a short-lived, HttpOnly, signed cookie (using itsdangerous).
+
+On callback the cookie is read, the signature is verified, and the nonce is
+compared to the `state` parameter returned by Authentik.  Any mismatch or
+missing cookie is rejected with 401.
+
+Authentik property-mapping requirements
+----------------------------------------
+The userinfo endpoint must expose these custom claims (configure via
+Authentik → Customisation → Property Mappings → Scope Mappings):
+
+  Scope: nei_nmec
+    Expression:  return {"nmec": request.user.attributes.get("nmec")}
+
+  Scope: nei_iupi
+    Expression:  return {"iupi": request.user.attributes.get("iupi")}
+
+  Scope: nei_scopes
+    Expression:  return {"scopes": request.user.attributes.get("platform_scopes", ["default"])}
+
+These scopes must be added to the nei-platform Application → Protocol Settings.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from fastapi.responses import RedirectResponse
-from sqlalchemy.orm import Session
-from authlib.integrations.starlette_client import OAuth, OAuthError
-from loguru import logger
+import secrets
 from typing import Optional
 
+import httpx
+from authlib.integrations.starlette_client import OAuth
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi.responses import RedirectResponse
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
+from loguru import logger
+from sqlalchemy.orm import Session
+
+from app import crud
 from app.api import deps
 from app.core.config import settings
 from app.models.user import User
 from app.models.user.user_email import UserEmail
-from app.schemas.user import UserCreate, ScopeEnum
-from app import crud
-from ._deps import Token, generate_response, verify_token, AuthData
+from app.schemas.user import ScopeEnum, UserCreate
+
+from ._deps import AuthData, Token, generate_response, private_key, verify_token
 
 router = APIRouter()
 
-# Initialize OAuth client
+
+# ---------------------------------------------------------------------------
+# OAuth client setup
+# ---------------------------------------------------------------------------
+
 oauth = OAuth()
 
 if settings.OIDC_ENABLED:
-    # For development: disable SSL verification if needed
-    # In production, ensure proper SSL certificates are configured
-    import httpx
-    
-    client_kwargs = {
+    client_kwargs: dict = {
         "scope": " ".join(settings.OIDC_SCOPES),
         "token_endpoint_auth_method": "client_secret_post",
     }
-    
-    # Disable SSL verification for development/self-signed certs
     if not settings.PRODUCTION:
+        # Allow self-signed certs in development
         client_kwargs["verify"] = False
-    
+
     oauth.register(
         name="authentik",
         client_id=settings.OIDC_CLIENT_ID,
@@ -48,238 +85,310 @@ if settings.OIDC_ENABLED:
     )
 
 
+# ---------------------------------------------------------------------------
+# State cookie helpers
+# ---------------------------------------------------------------------------
+
+_STATE_COOKIE = "oauth_state"
+_STATE_MAX_AGE = 600  # 10 minutes — plenty for the Authentik round-trip
+
+
+def _signer() -> URLSafeTimedSerializer:
+    # Reuse the JWT private key as the HMAC secret — already confidential,
+    # available on startup, consistent across restarts and replicas.
+    return URLSafeTimedSerializer(private_key)
+
+
+def _set_state_cookie(
+    response: Response,
+    nonce: str,
+    *,
+    redirect_to: Optional[str] = None,
+    user_id: Optional[int] = None,
+) -> None:
+    """Sign and store OAuth state in an HttpOnly cookie."""
+    payload: dict = {"n": nonce}
+    if redirect_to:
+        payload["r"] = redirect_to
+    if user_id is not None:
+        payload["u"] = user_id
+    response.set_cookie(
+        _STATE_COOKIE,
+        _signer().dumps(payload),
+        httponly=True,
+        secure=settings.PRODUCTION,
+        samesite="lax",
+        max_age=_STATE_MAX_AGE,
+    )
+
+
+def _verify_and_pop_state_cookie(request: Request, response: Response, nonce: str) -> dict:
+    """Read, verify and clear the state cookie.  Raises 401 on any failure."""
+    cookie_val = request.cookies.get(_STATE_COOKIE)
+    # Always clear the cookie regardless of outcome (prevent replay)
+    response.delete_cookie(_STATE_COOKIE, httponly=True, samesite="lax")
+
+    if not cookie_val:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Missing OAuth state cookie")
+
+    try:
+        payload = _signer().loads(cookie_val, max_age=_STATE_MAX_AGE)
+    except SignatureExpired:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "OAuth state expired — please try again")
+    except BadSignature:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid OAuth state")
+
+    if payload.get("n") != nonce:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "OAuth state mismatch")
+
+    return payload
+
+
+# ---------------------------------------------------------------------------
+# Authentik metadata / token exchange helpers
+# ---------------------------------------------------------------------------
+
+async def _load_endpoints() -> tuple[str, str]:
+    """Return (token_endpoint, userinfo_endpoint) from Authentik discovery."""
+    meta = await oauth.authentik.load_server_metadata()
+    return meta["token_endpoint"], meta["userinfo_endpoint"]
+
+
+async def _exchange_code(
+    code: str,
+    redirect_uri: str,
+    token_endpoint: str,
+    userinfo_endpoint: str,
+) -> dict:
+    """Exchange an authorization code for userinfo.  Returns the userinfo dict."""
+    verify_ssl = settings.PRODUCTION
+    async with httpx.AsyncClient(verify=verify_ssl) as client:
+        token_resp = await client.post(
+            token_endpoint,
+            data={
+                "grant_type": "authorization_code",
+                "code": code,
+                "redirect_uri": redirect_uri,
+                "client_id": settings.OIDC_CLIENT_ID,
+                "client_secret": settings.OIDC_CLIENT_SECRET,
+            },
+        )
+        token_resp.raise_for_status()
+        token = token_resp.json()
+
+        userinfo_resp = await client.get(
+            userinfo_endpoint,
+            headers={"Authorization": f"Bearer {token['access_token']}"},
+        )
+        userinfo_resp.raise_for_status()
+        return userinfo_resp.json()
+
+
+# ---------------------------------------------------------------------------
+# User upsert
+# ---------------------------------------------------------------------------
+
+def _parse_scopes(raw) -> list[str]:
+    """Normalise scopes from an OIDC claim (list or space-separated string)."""
+    if isinstance(raw, str):
+        items = raw.split()
+    elif isinstance(raw, list):
+        items = raw
+    else:
+        return ["default"]
+
+    valid = []
+    for s in items:
+        try:
+            valid.append(ScopeEnum(s.strip().lower()).value)
+        except ValueError:
+            logger.warning(f"Unknown scope from Authentik: {s!r} — skipping")
+    return valid or ["default"]
+
+
 def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
-    """
-    Get existing user or create new user from OIDC userinfo.
+    """Get or create a platform user from Authentik userinfo, syncing data on every login.
 
-    This function handles both scenarios:
-    1. User already exists with authentik_sub - return existing user
-    2. User doesn't exist - create new user with data from Authentik
+    Lookup order:
+      1. By authentik_sub  — fast path for already-linked users
+      2. By email          — auto-link accounts created during the migration
 
-    **Parameters**
-    * `db`: SQLAlchemy database session
-    * `userinfo`: OIDC userinfo dict containing user claims
-
-    **Returns**
-    * User object
+    On every login, name / surname / nmec / iupi / scopes are synced from
+    Authentik so the platform DB stays consistent with Authentik as the IdP.
     """
     authentik_sub = userinfo.get("sub")
     email = userinfo.get("email")
 
     if not authentik_sub or not email:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid OIDC response: missing sub or email",
+            status.HTTP_400_BAD_REQUEST,
+            "Invalid OIDC response: missing sub or email",
         )
 
-    # Try to find user by authentik_sub first
-    user = db.query(User).filter(User.authentik_sub == authentik_sub).first()
+    # Parse claims
+    name_parts = userinfo.get("name", "").split(" ", 1)
+    name = (name_parts[0] or "").strip()[:20] or "User"
+    surname = (name_parts[1] if len(name_parts) > 1 else "").strip()[:20]
+    nmec: Optional[int] = userinfo.get("nmec")
+    iupi: Optional[str] = userinfo.get("iupi")
+    scopes = _parse_scopes(userinfo.get("scopes", []))
+
+    # 1. Look up by authentik_sub
+    user: Optional[User] = db.query(User).filter(User.authentik_sub == authentik_sub).first()
+
+    if not user:
+        # 2. Look up by email — covers migrated users who haven't logged in via OIDC yet
+        email_row = db.query(UserEmail).filter(UserEmail.email == email).first()
+        if email_row:
+            user = db.query(User).filter(User.id == email_row.user_id).first()
+            if user:
+                logger.info(f"Auto-linking user {user.id} to Authentik sub {authentik_sub!r}")
 
     if user:
-        logger.info(f"Found existing user with authentik_sub: {user.id}")
-        return user
+        # Sync mutable fields — Authentik is the source of truth after migration
+        changed = False
 
-    # Try to find user by email (for account linking)
-    user_email = db.query(UserEmail).filter(UserEmail.email == email).first()
+        def _set(attr: str, value) -> None:
+            nonlocal changed
+            if value is not None and getattr(user, attr) != value:
+                setattr(user, attr, value)
+                changed = True
 
-    if user_email:
-        # User exists but not linked to Authentik - link it now
-        user = db.query(User).filter(User.id == user_email.user_id).first()
-        if user:
-            logger.info(f"Linking existing user {user.id} to Authentik sub: {authentik_sub}")
-            user.authentik_sub = authentik_sub
+        _set("authentik_sub", authentik_sub)
+        _set("name", name)
+        _set("surname", surname)
+        _set("nmec", nmec)
+        _set("iupi", iupi)
+        if scopes and set(user.scopes or []) != set(scopes):
+            user.scopes = scopes
+            changed = True
+
+        if changed:
             db.commit()
             db.refresh(user)
-            return user
 
-    # User doesn't exist - create new one
-    logger.info(f"Creating new user from Authentik: {email}")
+        logger.info(f"OIDC login: user {user.id} ({'synced' if changed else 'unchanged'})")
+        return user
 
-    # Extract user data from OIDC claims
-    name_parts = userinfo.get("name", "").split(" ", 1)
-    name = name_parts[0] if name_parts else userinfo.get("preferred_username", "User")
-    surname = name_parts[1] if len(name_parts) > 1 else ""
-
-    # Get NEI-specific attributes
-    nmec = userinfo.get("nmec")
-    iupi = userinfo.get("iupi")
-    scopes_data = userinfo.get("scopes", ["DEFAULT"])
-
-    # Parse scopes - could be a list or space-separated string
-    if isinstance(scopes_data, str):
-        scopes = scopes_data.split(" ")
-    else:
-        scopes = scopes_data if isinstance(scopes_data, list) else ["DEFAULT"]
-
-    # Validate scopes against enum (normalize to lowercase first)
-    valid_scopes = []
-    for scope in scopes:
-        try:
-            # Normalize to lowercase for comparison
-            normalized_scope = scope.strip().lower()
-            valid_scopes.append(ScopeEnum(normalized_scope).value)
-        except ValueError:
-            logger.warning(f"Invalid scope from Authentik: {scope}, skipping")
-
-    if not valid_scopes:
-        valid_scopes = ["default"]
-
-    # Create user object
-    user_create = UserCreate(
-        name=name[:20] if name else "User",  # Respect max length
-        surname=surname[:20] if surname else "",
-        email=email,
-        password=None,  # No password for OIDC users
-        scopes=valid_scopes,
-        nmec=nmec,
-        iupi=iupi,
+    # 3. New user — create from OIDC data
+    logger.info(f"Creating new user from Authentik: {email!r}")
+    user = crud.user.create(
+        db=db,
+        obj_in=UserCreate(
+            name=name,
+            surname=surname,
+            email=email,
+            password=None,
+            scopes=scopes,
+            nmec=nmec,
+            iupi=iupi,
+        ),
+        active=True,
     )
-
-    # Create user in database
-    user = crud.user.create(db=db, obj_in=user_create, active=True)
-
-    # Link to Authentik
     user.authentik_sub = authentik_sub
     db.commit()
     db.refresh(user)
-
-    logger.info(f"Created new user {user.id} from Authentik")
+    logger.info(f"Created user {user.id} from Authentik")
     return user
 
 
-@router.get(
-    "/oidc/login",
-    responses={
-        503: {"description": "OIDC authentication is disabled"},
-    },
-)
-async def oidc_login(request: Request, redirect_to: Optional[str] = None):
-    """
-    Initiate OIDC authentication flow.
+# ---------------------------------------------------------------------------
+# Guard
+# ---------------------------------------------------------------------------
 
-    Redirects the user to Authentik for authentication.
-
-    **Query Parameters**
-    * `redirect_to`: Optional URL to redirect to after successful login
-
-    **Returns**
-    * Redirect response to Authentik authorization endpoint
-    """
+def _require_oidc() -> None:
     if not settings.OIDC_ENABLED:
         raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="OIDC authentication is not enabled",
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            "OIDC authentication is not enabled",
         )
 
-    # Build callback URL
-    callback_url = str(request.url_for("oidc_callback"))
-    if redirect_to:
-        callback_url = f"{callback_url}?redirect_to={redirect_to}"
 
-    # Manually build authorization URL (avoiding session dependency)
-    auth_url = await oauth.authentik.create_authorization_url(callback_url)
-    
-    return RedirectResponse(url=auth_url["url"])
+# ---------------------------------------------------------------------------
+# Routes
+# ---------------------------------------------------------------------------
+
+@router.get(
+    "/oidc/login",
+    responses={503: {"description": "OIDC authentication is disabled"}},
+)
+async def oidc_login(
+    request: Request,
+    response: Response,
+    redirect_to: Optional[str] = None,
+):
+    """Initiate OIDC login: redirect to Authentik.
+
+    **Query Parameters**
+    * `redirect_to`: Optional URL the frontend should navigate to after login
+      (returned in the callback JSON so the client can act on it).
+    """
+    _require_oidc()
+
+    nonce = secrets.token_urlsafe(32)
+    redirect_uri = str(request.url_for("oidc_callback"))
+    await oauth.authentik.load_server_metadata()
+    auth_url_data = await oauth.authentik.create_authorization_url(redirect_uri, state=nonce)
+    auth_url = auth_url_data["url"]
+
+    redirect_response = RedirectResponse(url=auth_url)
+    _set_state_cookie(redirect_response, nonce, redirect_to=redirect_to)
+    return redirect_response
 
 
 @router.get(
     "/oidc/callback",
     response_model=Token,
     responses={
-        401: {"description": "Authentication failed"},
+        401: {"description": "Authentication failed or invalid state"},
         503: {"description": "OIDC authentication is disabled"},
     },
 )
 async def oidc_callback(
     request: Request,
+    response: Response,
     code: str,
-    state: Optional[str] = None,
+    state: str,
     db: Session = Depends(deps.get_db),
-    redirect_to: Optional[str] = None,
 ):
+    """Handle Authentik callback: verify state, exchange code, return platform tokens.
+
+    On success the response body is `{access_token, token_type}` (same as
+    password login).  If `redirect_to` was passed to `/oidc/login`, it is
+    included in the response as `redirect_to` so the frontend can navigate.
     """
-    Handle OIDC callback from Authentik.
+    _require_oidc()
 
-    Exchanges authorization code for tokens, retrieves user info,
-    and creates/updates user in the platform database.
-
-    **Query Parameters**
-    * `code`: Authorization code from Authentik (automatic)
-    * `state`: State parameter for CSRF protection (automatic)
-    * `redirect_to`: Optional URL to redirect to after login
-
-    **Returns**
-    * Token response with access_token and refresh cookie
-    """
-    if not settings.OIDC_ENABLED:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="OIDC authentication is not enabled",
-        )
+    state_payload = _verify_and_pop_state_cookie(request, response, state)
+    redirect_to: Optional[str] = state_payload.get("r")
 
     try:
-        # Load server metadata if not already loaded
-        await oauth.authentik.load_server_metadata()
-        
-        # Manually exchange code for token using httpx
-        token_endpoint = oauth.authentik.server_metadata["token_endpoint"]
-        
-        # Use same SSL verification setting as OAuth client
-        verify_ssl = settings.PRODUCTION
-        
-        async with httpx.AsyncClient(verify=verify_ssl) as client:
-            # Exchange authorization code for tokens
-            token_response = await client.post(
-                token_endpoint,
-                data={
-                    "grant_type": "authorization_code",
-                    "code": code,
-                    "redirect_uri": str(request.url_for("oidc_callback")),
-                    "client_id": settings.OIDC_CLIENT_ID,
-                    "client_secret": settings.OIDC_CLIENT_SECRET,
-                },
-            )
-            token_response.raise_for_status()
-            token = token_response.json()
-
-            # Get user information from userinfo endpoint
-            userinfo_endpoint = oauth.authentik.server_metadata["userinfo_endpoint"]
-            userinfo_response = await client.get(
-                userinfo_endpoint,
-                headers={"Authorization": f"Bearer {token['access_token']}"},
-            )
-            userinfo_response.raise_for_status()
-            userinfo = userinfo_response.json()
-
+        token_endpoint, userinfo_endpoint = await _load_endpoints()
+        redirect_uri = str(request.url_for("oidc_callback"))
+        userinfo = await _exchange_code(code, redirect_uri, token_endpoint, userinfo_endpoint)
         logger.debug(f"OIDC userinfo: {userinfo}")
 
-        # Create or get user from OIDC data
         user = get_or_create_user_from_oidc(db, userinfo)
+        token_response = generate_response(db, user)
 
-        # Generate platform JWT tokens using existing infrastructure
-        response = generate_response(db, user)
+        if redirect_to:
+            # Surface redirect_to so the frontend SPA can navigate after it
+            # receives and stores the token.
+            token_response.headers["X-Redirect-To"] = redirect_to
 
-        # If redirect_to provided, could handle redirect here
-        # For API, we just return the tokens
-        return response
+        return token_response
 
-    except OAuthError as e:
-        logger.error(f"OAuth error during OIDC callback: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Authentication failed: {str(e)}",
-        )
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"Unexpected error during OIDC callback: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Authentication failed due to server error",
-        )
+        logger.error(f"OIDC callback error: {e}")
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Authentication failed")
 
 
 @router.post(
     "/oidc/link",
     responses={
+        400: {"description": "Account already linked"},
         401: {"description": "Not authenticated"},
         503: {"description": "OIDC authentication is disabled"},
     },
@@ -289,138 +398,82 @@ async def start_oidc_link(
     auth_data: AuthData = Depends(verify_token),
     db: Session = Depends(deps.get_db),
 ):
+    """Start account linking: redirect authenticated user to Authentik.
+
+    Allows users who registered with a password to link their account to
+    Authentik so they can use SSO in the future.
     """
-    Start account linking flow for existing users.
+    _require_oidc()
 
-    Allows users who registered with password to link their account
-    to Authentik for SSO access.
-
-    **Returns**
-    * Redirect URL to Authentik for account linking
-    """
-    if not settings.OIDC_ENABLED:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="OIDC authentication is not enabled",
-        )
-
-    # Get current user from auth_data
-    user = db.query(User).filter(User.id == auth_data.user_id).first()
+    user = db.query(User).filter(User.id == auth_data.sub).first()
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
     if user.authentik_sub:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Account is already linked to Authentik",
-        )
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Account is already linked to Authentik")
 
-    # Create state token containing user_id for verification in callback
-    # Note: In production, this should be a signed JWT or stored in Redis
-    state = f"link:{user.id}"
+    nonce = secrets.token_urlsafe(32)
+    redirect_uri = str(request.url_for("oidc_link_callback"))
+    await oauth.authentik.load_server_metadata()
+    auth_url_data = await oauth.authentik.create_authorization_url(redirect_uri, state=nonce)
+    auth_url = auth_url_data["url"]
 
-    callback_url = request.url_for("oidc_link_callback")
-    callback_url = f"{callback_url}?state={state}"
-
-    return await oauth.authentik.authorize_redirect(request, callback_url)
+    link_response = RedirectResponse(url=auth_url)
+    _set_state_cookie(link_response, nonce, user_id=auth_data.sub)
+    return link_response
 
 
 @router.get(
     "/oidc/link-callback",
     responses={
-        401: {"description": "Invalid state or authentication failed"},
+        401: {"description": "Invalid or expired state"},
+        409: {"description": "Authentik account already linked to another user"},
         503: {"description": "OIDC authentication is disabled"},
     },
 )
 async def oidc_link_callback(
     request: Request,
+    response: Response,
+    code: str,
     state: str,
     db: Session = Depends(deps.get_db),
 ):
-    """
-    Complete account linking flow.
+    """Complete account linking."""
+    _require_oidc()
 
-    Links an existing platform user account to their Authentik identity.
+    state_payload = _verify_and_pop_state_cookie(request, response, state)
+    user_id = state_payload.get("u")
+    if user_id is None:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid state: missing user context")
 
-    **Query Parameters**
-    * `state`: State token containing user_id (automatic)
-    * `code`: Authorization code from Authentik (automatic)
-
-    **Returns**
-    * Success message
-    """
-    if not settings.OIDC_ENABLED:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="OIDC authentication is not enabled",
-        )
-
-    # Verify state and extract user_id
-    if not state.startswith("link:"):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid state parameter",
-        )
-
-    try:
-        user_id = int(state.split(":")[1])
-    except (IndexError, ValueError):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid state parameter",
-        )
-
-    # Get user
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
     if user.authentik_sub:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Account is already linked",
-        )
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Account is already linked")
 
     try:
-        # Exchange authorization code for tokens
-        token = await oauth.authentik.authorize_access_token(request)
-        userinfo = token.get("userinfo") or await oauth.authentik.userinfo(token=token)
+        token_endpoint, userinfo_endpoint = await _load_endpoints()
+        redirect_uri = str(request.url_for("oidc_link_callback"))
+        userinfo = await _exchange_code(code, redirect_uri, token_endpoint, userinfo_endpoint)
 
         authentik_sub = userinfo.get("sub")
         if not authentik_sub:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid OIDC response",
-            )
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid OIDC response: missing sub")
 
-        # Check if this Authentik account is already linked to another user
         existing = db.query(User).filter(User.authentik_sub == authentik_sub).first()
         if existing:
             raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="This Authentik account is already linked to another user",
+                status.HTTP_409_CONFLICT,
+                "This Authentik account is already linked to another user",
             )
 
-        # Link the accounts
         user.authentik_sub = authentik_sub
         db.commit()
+        logger.info(f"Linked user {user.id} to Authentik sub {authentik_sub!r}")
+        return {"status": "success", "message": "Account successfully linked to Authentik"}
 
-        logger.info(f"Successfully linked user {user.id} to Authentik sub: {authentik_sub}")
-
-        return {
-            "status": "success",
-            "message": "Account successfully linked to Authentik",
-        }
-
-    except OAuthError as e:
-        logger.error(f"OAuth error during account linking: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Authentication failed: {str(e)}",
-        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"OIDC link-callback error: {e}")
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Account linking failed")
