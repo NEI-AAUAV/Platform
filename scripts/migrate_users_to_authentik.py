@@ -81,6 +81,20 @@ def fetch_users_by_ids(conn, ids: list[int]) -> list[PlatformUser]:
         return [_row_to_user(r) for r in cur.fetchall()]
 
 
+def fetch_all_users(conn) -> list[PlatformUser]:
+    with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        cur.execute(
+            """
+            SELECT u.id, u.name, u.surname, u.hashed_password, u.nmec, u.scopes,
+                   ue.email
+            FROM nei.user u
+            LEFT JOIN nei.user_email ue ON ue.user_id = u.id AND ue.active = true
+            ORDER BY u.id
+            """,
+        )
+        return [_row_to_user(r) for r in cur.fetchall()]
+
+
 def fetch_users_by_emails(conn, emails: list[str]) -> list[PlatformUser]:
     with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
         cur.execute(
@@ -259,14 +273,16 @@ def main():
                         help="Platform user IDs to migrate")
     parser.add_argument("--emails", nargs="+", metavar="EMAIL",
                         help="Platform user emails to migrate")
+    parser.add_argument("--all", action="store_true", dest="all_users",
+                        help="Migrate all platform users (use after validating with --ids first)")
     parser.add_argument("--dry-run", action="store_true",
                         help="Preview what would happen without making any changes")
     parser.add_argument("--no-verify-ssl", action="store_true",
                         help="Disable SSL verification (for self-signed certs)")
     args = parser.parse_args()
 
-    if not args.ids and not args.emails:
-        parser.error("Provide at least --ids or --emails")
+    if not args.ids and not args.emails and not args.all_users:
+        parser.error("Provide at least --ids, --emails, or --all")
 
     # Read env vars
     platform_db_url = os.environ.get("PLATFORM_DB_URL", "postgresql://postgres:postgres@localhost:5432/postgres")
@@ -300,10 +316,18 @@ def main():
 
     # Fetch users from platform DB
     users = []
-    if args.ids:
-        users += fetch_users_by_ids(platform_conn, args.ids)
-    if args.emails:
-        users += fetch_users_by_emails(platform_conn, args.emails)
+    if args.all_users:
+        if not args.dry_run:
+            confirm = input("Migrate ALL users? This cannot be undone. Type 'yes' to confirm: ")
+            if confirm.strip().lower() != "yes":
+                print("Aborted.")
+                sys.exit(0)
+        users = fetch_all_users(platform_conn)
+    else:
+        if args.ids:
+            users += fetch_users_by_ids(platform_conn, args.ids)
+        if args.emails:
+            users += fetch_users_by_emails(platform_conn, args.emails)
 
     if not users:
         print("No users found matching the given criteria.")
