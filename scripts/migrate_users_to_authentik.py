@@ -70,11 +70,13 @@ def fetch_users_by_ids(conn, ids: list[int]) -> list[PlatformUser]:
     with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
         cur.execute(
             """
-            SELECT u.id, u.name, u.surname, u.hashed_password, u.nmec, u.scopes,
+            SELECT DISTINCT ON (u.id)
+                   u.id, u.name, u.surname, u.hashed_password, u.nmec, u.scopes,
                    ue.email
             FROM nei.user u
             LEFT JOIN nei.user_email ue ON ue.user_id = u.id AND ue.active = true
             WHERE u.id = ANY(%s)
+            ORDER BY u.id
             """,
             (ids,),
         )
@@ -85,7 +87,8 @@ def fetch_all_users(conn) -> list[PlatformUser]:
     with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
         cur.execute(
             """
-            SELECT u.id, u.name, u.surname, u.hashed_password, u.nmec, u.scopes,
+            SELECT DISTINCT ON (u.id)
+                   u.id, u.name, u.surname, u.hashed_password, u.nmec, u.scopes,
                    ue.email
             FROM nei.user u
             LEFT JOIN nei.user_email ue ON ue.user_id = u.id AND ue.active = true
@@ -99,11 +102,13 @@ def fetch_users_by_emails(conn, emails: list[str]) -> list[PlatformUser]:
     with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
         cur.execute(
             """
-            SELECT u.id, u.name, u.surname, u.hashed_password, u.nmec, u.scopes,
+            SELECT DISTINCT ON (u.id)
+                   u.id, u.name, u.surname, u.hashed_password, u.nmec, u.scopes,
                    ue.email
             FROM nei.user u
             JOIN nei.user_email ue ON ue.user_id = u.id AND ue.active = true
             WHERE ue.email = ANY(%s)
+            ORDER BY u.id
             """,
             (emails,),
         )
@@ -173,7 +178,13 @@ class AuthentikAPI:
         authentication flow can check this flag and prompt for email
         verification on the user's first login.
         """
-        username = user.email.split("@")[0] if user.email else f"user_{user.id}"
+        # nmec is unique per student; fall back to email-prefix + id to avoid collisions
+        if user.nmec:
+            username = str(user.nmec)
+        elif user.email:
+            username = f"{user.email.split('@')[0]}_{user.id}"
+        else:
+            username = f"user_{user.id}"
         payload = {
             "username": username,
             "name": f"{user.name} {user.surname}".strip(),
