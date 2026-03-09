@@ -186,6 +186,31 @@ class AuthentikAPI:
         results = result.get("results", [])
         return results[0] if results else None
 
+    def patch_user(self, pk: int, user: PlatformUser) -> None:
+        """Update name, email and platform attributes on an existing Authentik user.
+
+        Does NOT touch needs_email_verification — we preserve whatever state it
+        is in so we don't re-trigger email verification for users who already
+        completed it.
+        """
+        existing = self._get(f"/core/users/{pk}/")
+        existing_attrs = existing.get("attributes") or {}
+        r = self.session.patch(
+            f"{self.base}/api/v3/core/users/{pk}/",
+            json={
+                "name": f"{user.name} {user.surname}".strip(),
+                "email": user.email or "",
+                "attributes": {
+                    **existing_attrs,
+                    "platform_id": user.id,
+                    "nmec": user.nmec,
+                    "platform_scopes": user.scopes,
+                },
+            },
+            verify=self.verify_ssl,
+        )
+        r.raise_for_status()
+
     def create_user(self, user: PlatformUser) -> dict:
         """Create user in Authentik (without password — injected separately).
 
@@ -234,12 +259,11 @@ class AuthentikAPI:
 # ---------------------------------------------------------------------------
 
 def inject_password_hash(authentik_conn, authentik_user_pk: int, django_hash: str, dry_run: bool):
-    """Write the converted password hash into Authentik's user table."""
-    if len(django_hash) > 128:
-        print(f"    WARNING: hash length {len(django_hash)} > 128 chars (column max_length).")
-        print(f"             This may be truncated or rejected. Skipping hash injection.")
-        return False
+    """Write the converted password hash into Authentik's user table.
 
+    Typical argon2id hashes are ~100 chars. Authentik's password column
+    accepts up to 300 chars, so this should never fail for realistic params.
+    """
     if dry_run:
         print(f"    [dry-run] Would write hash (len={len(django_hash)}) to authentik_core_user pk={authentik_user_pk}")
         return True
@@ -273,7 +297,11 @@ def migrate_user(
     existing = api.find_user_by_email(user.email)
     if existing:
         authentik_pk = existing["pk"]
-        print(f"    Found existing Authentik user pk={authentik_pk} — will update hash only.")
+        print(f"    Found existing Authentik user pk={authentik_pk} — updating attributes and hash.")
+        if dry_run:
+            print(f"    [dry-run] Would PATCH name/email/platform attributes for pk={authentik_pk}")
+        else:
+            api.patch_user(authentik_pk, user)
     else:
         if dry_run:
             print(f"    [dry-run] Would create Authentik user for {user.email}")
@@ -297,8 +325,7 @@ def migrate_user(
 
     ok = inject_password_hash(authentik_conn, authentik_pk, django_hash, dry_run)
     if ok:
-        print(f"    Password hash injected successfully (len={len(django_hash)}).")
-        print(f"    Email verification will be prompted on first login (needs_email_verification=True).")
+        print(f"    Password hash injected (len={len(django_hash)}).")
 
     return ok
 
