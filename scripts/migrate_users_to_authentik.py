@@ -167,7 +167,12 @@ class AuthentikAPI:
         return results[0] if results else None
 
     def create_user(self, user: PlatformUser) -> dict:
-        """Create user in Authentik (without password — injected separately)."""
+        """Create user in Authentik (without password — injected separately).
+
+        Sets needs_email_verification=True in attributes so the Authentik
+        authentication flow can check this flag and prompt for email
+        verification on the user's first login.
+        """
         username = user.email.split("@")[0] if user.email else f"user_{user.id}"
         payload = {
             "username": username,
@@ -179,24 +184,14 @@ class AuthentikAPI:
                 "platform_id": user.id,
                 "nmec": user.nmec,
                 "platform_scopes": user.scopes,
+                # Checked by the Authentik authentication flow policy:
+                # if True, the Email Verification stage is shown on first login.
+                # Authentik clears this (or sets email_verified=True) after
+                # the user completes verification.
+                "needs_email_verification": True,
             },
         }
         return self._post("/core/users/", json=payload)
-
-    def send_verification_email(self, authentik_pk: int) -> str:
-        """
-        Trigger Authentik's recovery flow for the user, which sends them an
-        email with a link to verify their address.
-
-        The link goes through whichever recovery flow is configured in Authentik.
-        To make this purely an email verification (no forced password change),
-        configure the recovery flow in Authentik to include an Email Verification
-        stage but no Password Change stage — or make the password stage optional.
-
-        Returns the recovery link URL (also sent by email if an email stage is set up).
-        """
-        result = self._post(f"/core/users/{authentik_pk}/recovery/", json={})
-        return result.get("link", "")
 
 
 # ---------------------------------------------------------------------------
@@ -232,7 +227,6 @@ def migrate_user(
     api: AuthentikAPI,
     authentik_conn,
     dry_run: bool,
-    send_verification_email: bool = False,
 ) -> bool:
     print(f"\n  User #{user.id} — {user.name} {user.surname} <{user.email}>")
 
@@ -269,15 +263,7 @@ def migrate_user(
     ok = inject_password_hash(authentik_conn, authentik_pk, django_hash, dry_run)
     if ok:
         print(f"    Password hash injected successfully (len={len(django_hash)}).")
-
-    if send_verification_email:
-        if dry_run:
-            print(f"    [dry-run] Would send verification email to {user.email}")
-        else:
-            link = api.send_verification_email(authentik_pk)
-            print(f"    Verification email sent to {user.email}.")
-            if link:
-                print(f"    Recovery link (backup): {link}")
+        print(f"    Email verification will be prompted on first login (needs_email_verification=True).")
 
     return ok
 
@@ -302,8 +288,6 @@ def main():
                         help="Migrate all platform users (use after validating with --ids first)")
     parser.add_argument("--dry-run", action="store_true",
                         help="Preview what would happen without making any changes")
-    parser.add_argument("--send-verification-email", action="store_true",
-                        help="Send a verification email to each migrated user via Authentik's recovery flow")
     parser.add_argument("--no-verify-ssl", action="store_true",
                         help="Disable SSL verification (for self-signed certs)")
     args = parser.parse_args()
@@ -370,8 +354,7 @@ def main():
     fail_count = 0
     for user in users:
         try:
-            success = migrate_user(user, api, authentik_conn, args.dry_run,
-                                   send_verification_email=args.send_verification_email)
+            success = migrate_user(user, api, authentik_conn, args.dry_run)
             if success:
                 ok_count += 1
             else:
