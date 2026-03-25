@@ -5,7 +5,7 @@ Flow
 ----
 Login:
   1. GET /auth/oidc/login  →  redirect to Authentik with a signed state cookie
-  2. GET /auth/oidc/callback  →  verify state, exchange code, upsert user, return platform JWT
+  2. GET /auth/oidc/callback  →  verify state, exchange code, upsert user, redirect to frontend
 
 Account linking (allows existing password users to link to Authentik SSO):
   1. POST /auth/oidc/link  →  redirect to Authentik with signed state cookie (contains user_id)
@@ -21,23 +21,14 @@ On callback the cookie is read, the signature is verified, and the nonce is
 compared to the `state` parameter returned by Authentik.  Any mismatch or
 missing cookie is rejected with 401.
 
-Authentik property-mapping requirements
-----------------------------------------
-The userinfo endpoint must expose these custom claims (configure via
-Authentik → Customisation → Property Mappings → Scope Mappings):
-
-  Scope: nei_nmec
-    Expression:  return {"nmec": request.user.attributes.get("nmec")}
-
-  Scope: nei_iupi
-    Expression:  return {"iupi": request.user.attributes.get("iupi")}
-
-  Scope: nei_scopes
-    Expression:  return {"scopes": request.user.attributes.get("platform_scopes", ["default"])}
-
-These scopes must be added to the nei-platform Application → Protocol Settings.
+Scopes
+------
+Scopes are resolved from OIDC claims on every login (Authentik is the source of
+truth).  The `scopes` claim is checked first (set via nei_scopes property mapping
+in Authentik).  Falls back to `groups`, stripping an optional "nei-" prefix.
 """
 
+import json
 import secrets
 from typing import Optional
 
@@ -73,7 +64,6 @@ if settings.OIDC_ENABLED:
         "token_endpoint_auth_method": "client_secret_post",
     }
     if not settings.PRODUCTION:
-        # Allow self-signed certs in development
         client_kwargs["verify"] = False
 
     oauth.register(
@@ -90,12 +80,10 @@ if settings.OIDC_ENABLED:
 # ---------------------------------------------------------------------------
 
 _STATE_COOKIE = "oauth_state"
-_STATE_MAX_AGE = 600  # 10 minutes — plenty for the Authentik round-trip
+_STATE_MAX_AGE = 600  # 10 minutes
 
 
 def _signer() -> URLSafeTimedSerializer:
-    # Reuse the JWT private key as the HMAC secret — already confidential,
-    # available on startup, consistent across restarts and replicas.
     return URLSafeTimedSerializer(private_key)
 
 
@@ -106,7 +94,6 @@ def _set_state_cookie(
     redirect_to: Optional[str] = None,
     user_id: Optional[int] = None,
 ) -> None:
-    """Sign and store OAuth state in an HttpOnly cookie."""
     payload: dict = {"n": nonce}
     if redirect_to:
         payload["r"] = redirect_to
@@ -123,9 +110,7 @@ def _set_state_cookie(
 
 
 def _verify_and_pop_state_cookie(request: Request, response: Response, nonce: str) -> dict:
-    """Read, verify and clear the state cookie.  Raises 401 on any failure."""
     cookie_val = request.cookies.get(_STATE_COOKIE)
-    # Always clear the cookie regardless of outcome (prevent replay)
     response.delete_cookie(_STATE_COOKIE, httponly=True, samesite="lax")
 
     if not cookie_val:
@@ -145,11 +130,18 @@ def _verify_and_pop_state_cookie(request: Request, response: Response, nonce: st
 
 
 # ---------------------------------------------------------------------------
-# Authentik metadata / token exchange helpers
+# Authentik helpers
 # ---------------------------------------------------------------------------
 
+def _callback_uri() -> str:
+    return f"{settings.OIDC_REDIRECT_BASE_URL}{settings.API_V1_STR}/auth/oidc/callback"
+
+
+def _link_callback_uri() -> str:
+    return f"{settings.OIDC_REDIRECT_BASE_URL}{settings.API_V1_STR}/auth/oidc/link-callback"
+
+
 async def _load_endpoints() -> tuple[str, str]:
-    """Return (token_endpoint, userinfo_endpoint) from Authentik discovery."""
     meta = await oauth.authentik.load_server_metadata()
     return meta["token_endpoint"], meta["userinfo_endpoint"]
 
@@ -160,7 +152,6 @@ async def _exchange_code(
     token_endpoint: str,
     userinfo_endpoint: str,
 ) -> dict:
-    """Exchange an authorization code for userinfo.  Returns the userinfo dict."""
     verify_ssl = settings.PRODUCTION
     async with httpx.AsyncClient(verify=verify_ssl) as client:
         token_resp = await client.post(
@@ -188,17 +179,26 @@ async def _exchange_code(
 # User upsert
 # ---------------------------------------------------------------------------
 
-def _parse_scopes(raw) -> list[str]:
-    """Normalise scopes from an OIDC claim (list or space-separated string)."""
-    if isinstance(raw, str):
-        items = raw.split()
-    elif isinstance(raw, list):
-        items = raw
+def _parse_scopes(userinfo: dict) -> list[str]:
+    """Resolve platform scopes from OIDC claims.
+
+    Checks the `scopes` claim first (set via nei_scopes property mapping in
+    Authentik).  Falls back to `groups`, stripping an optional "nei-" prefix.
+    """
+    raw = userinfo.get("scopes")
+
+    if raw is not None:
+        candidates = raw.split() if isinstance(raw, str) else (raw if isinstance(raw, list) else [])
     else:
-        return ["default"]
+        candidates = []
+        for group in userinfo.get("groups", []):
+            name = group.strip().lower()
+            if name.startswith("nei-"):
+                name = name[4:]
+            candidates.append(name)
 
     valid = []
-    for s in items:
+    for s in candidates:
         try:
             valid.append(ScopeEnum(s.strip().lower()).value)
         except ValueError:
@@ -207,15 +207,7 @@ def _parse_scopes(raw) -> list[str]:
 
 
 def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
-    """Get or create a platform user from Authentik userinfo, syncing data on every login.
-
-    Lookup order:
-      1. By authentik_sub  — fast path for already-linked users
-      2. By email          — auto-link accounts created during the migration
-
-    On every login, name / surname / nmec / iupi / scopes are synced from
-    Authentik so the platform DB stays consistent with Authentik as the IdP.
-    """
+    """Get or create a platform user from Authentik userinfo, syncing on every login."""
     authentik_sub = userinfo.get("sub")
     email = userinfo.get("email")
 
@@ -225,19 +217,16 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
             "Invalid OIDC response: missing sub or email",
         )
 
-    # Parse claims
     name_parts = userinfo.get("name", "").split(" ", 1)
     name = (name_parts[0] or "").strip()[:20] or "User"
     surname = (name_parts[1] if len(name_parts) > 1 else "").strip()[:20]
     nmec: Optional[int] = userinfo.get("nmec")
     iupi: Optional[str] = userinfo.get("iupi")
-    scopes = _parse_scopes(userinfo.get("scopes", []))
+    scopes = _parse_scopes(userinfo)
 
-    # 1. Look up by authentik_sub
     user: Optional[User] = db.query(User).filter(User.authentik_sub == authentik_sub).first()
 
     if not user:
-        # 2. Look up by email — covers migrated users who haven't logged in via OIDC yet
         email_row = db.query(UserEmail).filter(UserEmail.email == email).first()
         if email_row:
             user = db.query(User).filter(User.id == email_row.user_id).first()
@@ -245,7 +234,6 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
                 logger.info(f"Auto-linking user {user.id} to Authentik sub {authentik_sub!r}")
 
     if user:
-        # Sync mutable fields — Authentik is the source of truth after migration
         changed = False
 
         def _set(attr: str, value) -> None:
@@ -270,7 +258,6 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
         logger.info(f"OIDC login: user {user.id} ({'synced' if changed else 'unchanged'})")
         return user
 
-    # 3. New user — create from OIDC data
     logger.info(f"Creating new user from Authentik: {email!r}")
     user = crud.user.create(
         db=db,
@@ -313,32 +300,22 @@ def _require_oidc() -> None:
     responses={503: {"description": "OIDC authentication is disabled"}},
 )
 async def oidc_login(
-    request: Request,
     response: Response,
     redirect_to: Optional[str] = None,
 ):
-    """Initiate OIDC login: redirect to Authentik.
-
-    **Query Parameters**
-    * `redirect_to`: Optional URL the frontend should navigate to after login
-      (returned in the callback JSON so the client can act on it).
-    """
     _require_oidc()
 
     nonce = secrets.token_urlsafe(32)
-    redirect_uri = str(request.url_for("oidc_callback"))
     await oauth.authentik.load_server_metadata()
-    auth_url_data = await oauth.authentik.create_authorization_url(redirect_uri, state=nonce)
-    auth_url = auth_url_data["url"]
+    auth_url_data = await oauth.authentik.create_authorization_url(_callback_uri(), state=nonce)
 
-    redirect_response = RedirectResponse(url=auth_url)
+    redirect_response = RedirectResponse(url=auth_url_data["url"])
     _set_state_cookie(redirect_response, nonce, redirect_to=redirect_to)
     return redirect_response
 
 
 @router.get(
     "/oidc/callback",
-    response_model=Token,
     responses={
         401: {"description": "Authentication failed or invalid state"},
         503: {"description": "OIDC authentication is disabled"},
@@ -351,12 +328,6 @@ async def oidc_callback(
     state: str,
     db: Session = Depends(deps.get_db),
 ):
-    """Handle Authentik callback: verify state, exchange code, return platform tokens.
-
-    On success the response body is `{access_token, token_type}` (same as
-    password login).  If `redirect_to` was passed to `/oidc/login`, it is
-    included in the response as `redirect_to` so the frontend can navigate.
-    """
     _require_oidc()
 
     state_payload = _verify_and_pop_state_cookie(request, response, state)
@@ -364,19 +335,23 @@ async def oidc_callback(
 
     try:
         token_endpoint, userinfo_endpoint = await _load_endpoints()
-        redirect_uri = str(request.url_for("oidc_callback"))
-        userinfo = await _exchange_code(code, redirect_uri, token_endpoint, userinfo_endpoint)
+        userinfo = await _exchange_code(code, _callback_uri(), token_endpoint, userinfo_endpoint)
         logger.debug(f"OIDC userinfo: {userinfo}")
 
         user = get_or_create_user_from_oidc(db, userinfo)
         token_response = generate_response(db, user)
+        access_token = json.loads(token_response.body)["access_token"]
 
+        frontend_url = f"{settings.OIDC_REDIRECT_BASE_URL}/auth/oidc/return?token={access_token}"
         if redirect_to:
-            # Surface redirect_to so the frontend SPA can navigate after it
-            # receives and stores the token.
-            token_response.headers["X-Redirect-To"] = redirect_to
+            frontend_url += f"&redirect_to={redirect_to}"
 
-        return token_response
+        redirect = RedirectResponse(url=frontend_url, status_code=302)
+        for header_name, header_value in token_response.raw_headers:
+            if header_name.lower() == b"set-cookie":
+                redirect.raw_headers.append((header_name, header_value))
+
+        return redirect
 
     except HTTPException:
         raise
@@ -394,15 +369,10 @@ async def oidc_callback(
     },
 )
 async def start_oidc_link(
-    request: Request,
+    response: Response,
     auth_data: AuthData = Depends(verify_token),
     db: Session = Depends(deps.get_db),
 ):
-    """Start account linking: redirect authenticated user to Authentik.
-
-    Allows users who registered with a password to link their account to
-    Authentik so they can use SSO in the future.
-    """
     _require_oidc()
 
     user = db.query(User).filter(User.id == auth_data.sub).first()
@@ -412,12 +382,10 @@ async def start_oidc_link(
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Account is already linked to Authentik")
 
     nonce = secrets.token_urlsafe(32)
-    redirect_uri = str(request.url_for("oidc_link_callback"))
     await oauth.authentik.load_server_metadata()
-    auth_url_data = await oauth.authentik.create_authorization_url(redirect_uri, state=nonce)
-    auth_url = auth_url_data["url"]
+    auth_url_data = await oauth.authentik.create_authorization_url(_link_callback_uri(), state=nonce)
 
-    link_response = RedirectResponse(url=auth_url)
+    link_response = RedirectResponse(url=auth_url_data["url"])
     _set_state_cookie(link_response, nonce, user_id=auth_data.sub)
     return link_response
 
@@ -437,7 +405,6 @@ async def oidc_link_callback(
     state: str,
     db: Session = Depends(deps.get_db),
 ):
-    """Complete account linking."""
     _require_oidc()
 
     state_payload = _verify_and_pop_state_cookie(request, response, state)
@@ -453,8 +420,7 @@ async def oidc_link_callback(
 
     try:
         token_endpoint, userinfo_endpoint = await _load_endpoints()
-        redirect_uri = str(request.url_for("oidc_link_callback"))
-        userinfo = await _exchange_code(code, redirect_uri, token_endpoint, userinfo_endpoint)
+        userinfo = await _exchange_code(code, _link_callback_uri(), token_endpoint, userinfo_endpoint)
 
         authentik_sub = userinfo.get("sub")
         if not authentik_sub:

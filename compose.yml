@@ -61,6 +61,7 @@ services:
       OIDC_DISCOVERY_URL: ${OIDC_DISCOVERY_URL:-https://nei.web.ua.pt/authentik/application/o/nei-platform/.well-known/openid-configuration}
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      OIDC_REDIRECT_BASE_URL: ${OIDC_REDIRECT_BASE_URL:-}
     volumes:
       - ./api-nei:/api_nei
       - ./extensions:/extensions:ro

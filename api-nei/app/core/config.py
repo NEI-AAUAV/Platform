@@ -69,6 +69,9 @@ class Settings(BaseSettings):
                 f":5432/{self.POSTGRES_DB}_test"
             )
 
+        if not self.OIDC_REDIRECT_BASE_URL:
+            self.OIDC_REDIRECT_BASE_URL = self.HOST
+
         return self
 
     # Auth settings
@@ -131,6 +134,9 @@ class Settings(BaseSettings):
     OIDC_CLIENT_ID: str = ""
     OIDC_CLIENT_SECRET: str = ""
     OIDC_SCOPES: List[str] = ["openid", "profile", "email", "nei_scopes", "nei_nmec", "nei_iupi"]
+    ## Public base URL for OIDC redirect_uri and post-login frontend redirect.
+    ## Defaults to HOST if not set. Set via OIDC_REDIRECT_BASE_URL env var.
+    OIDC_REDIRECT_BASE_URL: str = ""
 
 
 settings = Settings()
