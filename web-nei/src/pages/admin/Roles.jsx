@@ -3,31 +3,28 @@ import service from "services/NEIService";
 import { useUserStore } from "stores/useUserStore";
 import { getArraialSocket } from "services/SocketService";
 
-// Base scopes that are always available
-const BASE_SCOPES = [
-  "admin",
-  "manager-nei",
-  "manager-arraial",
-  "manager-tacaua",
-  "manager-family"
-];
-
 const SUCCESS_MESSAGE_TIMEOUT = 3000;
 
 export function Component() {
   const { token } = useUserStore((s) => s);
-  
-  // Dynamic scopes will be loaded from the API
-  const [dynamicScopes, setDynamicScopes] = useState([]);
-  const ALL_SCOPES = useMemo(() => [...BASE_SCOPES, ...dynamicScopes], [dynamicScopes]);
+
   const [users, setUsers] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [groupsLoading, setGroupsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [saving, setSaving] = useState(false);
   const [me, setMe] = useState(null);
   const [meLoading, setMeLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [pendingToggle, setPendingToggle] = useState(null); // "{groupPk}:{userId}"
   const timeoutsRef = React.useRef([]);
+
+  const [arraialConfig, setArraialConfig] = useState(null);
+  const [cfgLoading, setCfgLoading] = useState(true);
+  const [cfgSaving, setCfgSaving] = useState(false);
+
+  const [emailFilter, setEmailFilter] = useState("");
+  const [groupFilter, setGroupFilter] = useState("");
 
   React.useEffect(() => {
     return () => {
@@ -35,22 +32,6 @@ export function Component() {
       timeoutsRef.current = [];
     };
   }, []);
-
-  // Helper function to get user display name
-  const getUserDisplayName = (user) => {
-    return user.name || user.email || 'user';
-  };
-
-  const [arraialConfig, setArraialConfig] = useState(null);
-  const [cfgLoading, setCfgLoading] = useState(true);
-  const [cfgSaving, setCfgSaving] = useState(false);
-
-  // Filter states
-  const [emailFilter, setEmailFilter] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
-  
-  // Track users being edited to keep them visible during role changes
-  const [editingUsers, setEditingUsers] = useState(new Set());
 
   const loadMe = () => {
     setMeLoading(true);
@@ -63,16 +44,20 @@ export function Component() {
 
   const loadUsers = () => {
     setLoading(true);
-    setError(null);
     service
       .getUsers()
-      .then((data) => {
-        setUsers(data);
-      })
-      .catch((err) => {
-        setError("Failed to load users");
-      })
+      .then((data) => setUsers(data))
+      .catch(() => setError("Failed to load users"))
       .finally(() => setLoading(false));
+  };
+
+  const loadGroups = () => {
+    setGroupsLoading(true);
+    service
+      .getAuthentikGroups()
+      .then((data) => setGroups(data))
+      .catch(() => setGroups([]))
+      .finally(() => setGroupsLoading(false));
   };
 
   const loadArraialConfig = () => {
@@ -84,41 +69,18 @@ export function Component() {
       .finally(() => setCfgLoading(false));
   };
 
-  const loadDynamicScopes = () => {
-    // Load dynamic scopes from the OAuth2 scheme using the service layer
-    service
-      .getDynamicScopes()
-      .then(data => {
-        if (data && Array.isArray(data.scopes)) {
-          // Filter out base scopes to get only extension scopes
-          const extensionScopes = data.scopes.filter(scope => 
-            !BASE_SCOPES.includes(scope)
-          );
-          setDynamicScopes(extensionScopes);
-        }
-      })
-      .catch(() => {
-        // If the endpoint doesn't exist or fails, just use base scopes
-        setDynamicScopes([]);
-      });
-  };
-
   useEffect(() => {
     if (!token) return;
-    // Always load /user/me first to see current scopes
     loadMe();
-    // Load dynamic scopes from extensions
-    loadDynamicScopes();
   }, [token]);
 
   useEffect(() => {
     if (!token) return;
-    // If we already have admin scope, try loading all users and config
     if (me && Array.isArray(me.scopes) && me.scopes.includes("admin")) {
       loadUsers();
+      loadGroups();
       loadArraialConfig();
     } else if (!meLoading && !me) {
-      // If /user/me failed, still try users (server will return 403 if user lacks permissions)
       loadUsers();
     }
   }, [token, me, meLoading]);
@@ -126,7 +88,6 @@ export function Component() {
   // Subscribe to Arraial config WebSocket updates
   useEffect(() => {
     if (!me || !Array.isArray(me.scopes) || !me.scopes.includes("admin")) return;
-
     const socket = getArraialSocket();
     const onMessage = (event) => {
       try {
@@ -134,51 +95,42 @@ export function Component() {
         if (data?.topic === "ARRAIAL_CONFIG" && typeof data.enabled === "boolean") {
           setArraialConfig({ enabled: data.enabled, paused: !!data.paused });
         }
-      } catch (_) {}
+      } catch {
+        // Ignore non-JSON or unexpected messages
+      }
     };
     socket.addEventListener("message", onMessage);
-    return () => {
-      socket.removeEventListener("message", onMessage);
-    };
+    return () => socket.removeEventListener("message", onMessage);
   }, [me]);
 
-  const toggleScope = (user, scope) => {
-    // Mark user as being edited
-    setEditingUsers(prev => new Set([...prev, user.id]));
-    
-    const next = users.map((u) =>
-      u.id === user.id
-        ? {
-            ...u,
-            scopes: u.scopes?.includes(scope)
-              ? u.scopes.filter((s) => s !== scope)
-              : [...(u.scopes || []), scope],
-          }
-        : u
-    );
-    setUsers(next);
-  };
+  const toggleGroupMembership = async (user, group) => {
+    const key = `${group.pk}:${user.id}`;
+    if (pendingToggle == key) return;
 
-  const saveScopes = async (user) => {
+    const isMember = group.member_subs.includes(user.authentik_sub);
+
+    if (!user.authentik_sub) {
+      setError(`${user.name || user.email} has not logged in via Authentik yet`);
+      return;
+    }
+
+    setPendingToggle(key);
     try {
-      setSaving(true);
-      await service.updateUserScopes(user.id, user.scopes || []);
-      setSuccessMessage(`Scopes updated successfully for ${getUserDisplayName(user)}`);
+      if (isMember) {
+        await service.removeUserFromAuthentikGroup(group.pk, user.id);
+      } else {
+        await service.addUserToAuthentikGroup(group.pk, user.id);
+      }
+      setSuccessMessage(
+        `${isMember ? "Removed" : "Added"} ${user.name || user.email} ${isMember ? "from" : "to"} ${group.name}`
+      );
       const id = setTimeout(() => setSuccessMessage(null), SUCCESS_MESSAGE_TIMEOUT);
       timeoutsRef.current.push(id);
-      
-      // Remove user from editing set after successful save
-      setEditingUsers(prev => {
-        const next = new Set(prev);
-        next.delete(user.id);
-        return next;
-      });
-      
-      loadUsers();
+      loadGroups();
     } catch (e) {
-      setError(`Failed to update scopes: ${e?.message || 'Unknown error'}`);
+      setError(`Failed to update group membership: ${e?.message || "Unknown error"}`);
     } finally {
-      setSaving(false);
+      setPendingToggle(null);
     }
   };
 
@@ -188,50 +140,42 @@ export function Component() {
       setCfgSaving(true);
       await service.setArraialConfig(enabled, finalPaused);
       setArraialConfig({ enabled, paused: finalPaused });
-      setSuccessMessage(`Arraial ${enabled ? 'enabled' : 'disabled'} successfully`);
+      setSuccessMessage(`Arraial ${enabled ? "enabled" : "disabled"} successfully`);
       const id = setTimeout(() => setSuccessMessage(null), SUCCESS_MESSAGE_TIMEOUT);
       timeoutsRef.current.push(id);
     } catch (e) {
-      setError(`Failed to save Arraial config: ${e?.message || 'Unknown error'}`);
+      setError(`Failed to save Arraial config: ${e?.message || "Unknown error"}`);
     } finally {
       setCfgSaving(false);
     }
   };
 
-  // Clear editing state when filters change (to avoid stuck editing states)
-  React.useEffect(() => {
-    setEditingUsers(new Set());
-  }, [emailFilter, roleFilter]);
-
-  // Filter users based on email and role filters
-  const filteredUsers = React.useMemo(() => {
+  const filteredUsers = useMemo(() => {
     return users.filter((user) => {
-      // Always show users being edited (even if they don't match current filters)
-      if (editingUsers.has(user.id)) {
-        return true;
-      }
-      
-      // Handle null/undefined emails properly
-      const emailMatch = !emailFilter || 
-        (user.email && user.email.toLowerCase().includes(emailFilter.toLowerCase()));
-      
-      const roleMatch = !roleFilter || 
-        (user.scopes && user.scopes.includes(roleFilter));
-      
-      return emailMatch && roleMatch;
+      const emailMatch =
+        !emailFilter ||
+        user.email?.toLowerCase().includes(emailFilter.toLowerCase());
+
+      const groupMatch =
+        !groupFilter ||
+        groups.some(
+          (g) => g.pk === groupFilter && g.member_subs.includes(user.authentik_sub)
+        );
+
+      return emailMatch && groupMatch;
     });
-  }, [users, emailFilter, roleFilter, editingUsers]);
+  }, [users, emailFilter, groupFilter, groups]);
 
   if (!token) return <div className="p-4">Unauthorized</div>;
 
-  const showUsersTable = !loading && users.length > 0;
+  const isAdmin = me?.scopes?.includes("admin") ?? false;
 
   return (
-    <div className="mx-auto w-full max-w-4xl p-4">
+    <div className="mx-auto w-full max-w-5xl p-4">
       <h1>Admin · Roles</h1>
 
-      {/* Arraial toggle (admin-only) */}
-      {me && Array.isArray(me.scopes) && me.scopes.includes("admin") && (
+      {/* Arraial toggle */}
+      {isAdmin && (
         <div className="mt-3 rounded bg-base-200 p-3">
           <div className="mb-2 font-semibold">Arraial</div>
           {cfgLoading || !arraialConfig ? (
@@ -262,14 +206,12 @@ export function Component() {
               <button
                 className="btn btn-error btn-sm self-start"
                 onClick={async () => {
+                  if (!globalThis.confirm("Reset Arraial? This will clear points, boosts, and history for the event.")) return;
                   try {
-                    const ok = window.confirm("Reset Arraial? This will clear points, boosts, and history for the event.");
-                    if (!ok) return;
                     await service.resetArraial();
-                    // Refresh current config and let WS update points/boosts
                     loadArraialConfig();
-                  } catch (e) {
-                    setError("Failed to reset Arraial");
+                  } catch (resetError) {
+                    setError(`Failed to reset Arraial: ${resetError?.message || "Unknown error"}`);
                   }
                 }}
               >
@@ -280,36 +222,31 @@ export function Component() {
         </div>
       )}
 
-      {/* Current user scopes (always shown) */}
+      {/* Current user info */}
       <div className="mt-2 rounded bg-base-200 p-3">
-        {meLoading ? (
-          <div className="text-sm opacity-70">Checking your permissions…</div>
-        ) : me ? (
+        {meLoading && <div className="text-sm opacity-70">Checking your permissions…</div>}
+        {!meLoading && !me && <div className="text-sm opacity-70">Could not load your profile.</div>}
+        {!meLoading && me && (
           <div className="text-sm">
             <div>
               You are logged in as <strong>{me.name} {me.surname}</strong>
             </div>
             <div className="mt-1">
-              Your scopes: {Array.isArray(me.scopes) && me.scopes.length > 0 ? (
+              Your scopes:{" "}
+              {me.scopes?.length > 0 ? (
                 <span className="badge badge-outline">{me.scopes.join(", ")}</span>
               ) : (
                 <span className="opacity-70">none</span>
               )}
             </div>
-            {!Array.isArray(me.scopes) || me.scopes.length === 0 ? (
-              <div className="mt-2 text-xs opacity-70">
-                If you were just promoted, log out and log back in so your token includes the new scopes.
-              </div>
-            ) : null}
           </div>
-        ) : (
-          <div className="text-sm opacity-70">Could not load your profile.</div>
         )}
       </div>
 
       {error && (
         <div className="alert alert-error my-3">
           <span>{error}</span>
+          <button className="btn btn-sm btn-circle btn-ghost" onClick={() => setError(null)}>✕</button>
         </div>
       )}
 
@@ -317,8 +254,8 @@ export function Component() {
         <div className="toast toast-bottom toast-end z-50">
           <div className="alert alert-success">
             <span>{successMessage}</span>
-            <button 
-              className="btn btn-sm btn-circle btn-ghost" 
+            <button
+              className="btn btn-sm btn-circle btn-ghost"
               onClick={() => setSuccessMessage(null)}
             >
               ✕
@@ -327,17 +264,20 @@ export function Component() {
         </div>
       )}
 
-      {showUsersTable ? (
+      {/* Authentik Groups management */}
+      {isAdmin && (
         <div className="mt-3">
-          {/* Filter Controls */}
+          <div className="mb-2 font-semibold">Authentik Groups</div>
+
+          {/* Filters */}
           <div className="rounded bg-base-200 p-3 mb-3">
-            <div className="mb-2 font-semibold">Filter Users</div>
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
-                <label className="label">
+                <label htmlFor="filter-email" className="label">
                   <span className="label-text">Email</span>
                 </label>
                 <input
+                  id="filter-email"
                   type="text"
                   placeholder="Filter by email..."
                   className="input input-bordered input-sm w-full"
@@ -346,18 +286,19 @@ export function Component() {
                 />
               </div>
               <div className="flex-1">
-                <label className="label">
-                  <span className="label-text">Role/Scope</span>
+                <label htmlFor="filter-group" className="label">
+                  <span className="label-text">Group</span>
                 </label>
                 <select
+                  id="filter-group"
                   className="select select-bordered select-sm w-full"
-                  value={roleFilter}
-                  onChange={(e) => setRoleFilter(e.target.value)}
+                  value={groupFilter}
+                  onChange={(e) => setGroupFilter(e.target.value)}
                 >
-                  <option value="">All roles</option>
-                  {ALL_SCOPES.map((scope) => (
-                    <option key={scope} value={scope}>
-                      {scope}
+                  <option value="">All groups</option>
+                  {groups.map((g) => (
+                    <option key={g.pk} value={g.pk}>
+                      {g.name}
                     </option>
                   ))}
                 </select>
@@ -365,12 +306,9 @@ export function Component() {
               <div className="flex items-end">
                 <button
                   className="btn btn-outline btn-sm"
-                  onClick={() => {
-                    setEmailFilter("");
-                    setRoleFilter("");
-                  }}
+                  onClick={() => { setEmailFilter(""); setGroupFilter(""); }}
                 >
-                  Clear Filters
+                  Clear
                 </button>
               </div>
             </div>
@@ -381,60 +319,68 @@ export function Component() {
             )}
           </div>
 
-          <div className="overflow-auto rounded bg-base-200 p-2 max-h-96">
-            <table className="table table-zebra">
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Email</th>
-                <th>Scopes</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.map((u) => (
-                <tr key={u.id} className={editingUsers.has(u.id) ? "bg-primary/10" : ""}>
-                  <td>{u.name} {u.surname}</td>
-                  <td className="font-mono text-sm">{u.email}</td>
-                  <td>
-                    <div className="flex flex-wrap gap-2">
-                      {ALL_SCOPES.map((s) => (
-                        <label key={s} className="label cursor-pointer gap-2">
-                          <input
-                            type="checkbox"
-                            className="checkbox checkbox-sm"
-                            checked={!!(u.scopes || []).includes(s)}
-                            onChange={() => toggleScope(u, s)}
-                          />
-                          <span className="label-text text-xs">{s}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="text-right">
-                    <button
-                      className="btn btn-sm"
-                      disabled={saving || !editingUsers.has(u.id)}
-                      onClick={() => saveScopes(u)}
-                    >
-                      Save
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          </div>
-          
-          {filteredUsers.length === 0 && users.length > 0 && (
-            <div className="mt-3 text-center text-sm opacity-70">
-              No users match the current filters.
+          {loading || groupsLoading ? (
+            <div className="text-sm opacity-70">Loading…</div>
+          ) : (
+            <div className="overflow-auto rounded bg-base-200 p-2 max-h-[32rem]">
+              <table className="table table-zebra table-sm">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    {groups.map((g) => (
+                      <th key={g.pk} className="text-center text-xs whitespace-nowrap">
+                        {g.name.replace(/^nei-/, "")}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.map((u) => (
+                    <tr key={u.id} className={u.authentik_sub ? "" : "opacity-50"}>
+                      <td className="whitespace-nowrap">
+                        {u.name} {u.surname}
+                        {!u.authentik_sub && (
+                          <span className="ml-1 badge badge-xs badge-ghost" title="Has not logged in via Authentik">
+                            no SSO
+                          </span>
+                        )}
+                      </td>
+                      <td className="font-mono text-xs">{u.email}</td>
+                      {groups.map((g) => {
+                        const isMember = u.authentik_sub && g.member_subs.includes(u.authentik_sub);
+                        const key = `${g.pk}:${u.id}`;
+                        return (
+                          <td key={g.pk} className="text-center">
+                            <input
+                              type="checkbox"
+                              className="checkbox checkbox-sm"
+                              checked={!!isMember}
+                              disabled={!u.authentik_sub || pendingToggle == key}
+                              onChange={() => toggleGroupMembership(u, g)}
+                            />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                  {filteredUsers.length === 0 && (
+                    <tr>
+                      <td colSpan={2 + groups.length} className="text-center opacity-60 py-4">
+                        No users match the current filters.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
-      ) : (
+      )}
+
+      {!isAdmin && !meLoading && (
         <div className="mt-3 text-sm opacity-70">
-          {loading ? "Loading…" : "Users not available. You might need admin scope or a fresh login."}
+          You need admin scope to manage groups. Log out and back in if you were recently promoted.
         </div>
       )}
     </div>

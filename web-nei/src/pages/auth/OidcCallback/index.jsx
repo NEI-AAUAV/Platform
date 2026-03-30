@@ -15,10 +15,15 @@ export function Component() {
       return;
     }
 
-    useUserStore.getState().login({ token });
+    try {
+      useUserStore.getState().login({ token });
+    } catch {
+      navigate("/auth/login");
+      return;
+    }
 
     if (redirect_to) {
-      window.location.replace(redirect_to);
+      globalThis.location.replace(redirect_to);
     } else {
       navigate("/");
     }

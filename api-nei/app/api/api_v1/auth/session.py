@@ -1,12 +1,16 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, Cookie, Response, status
 
 from loguru import logger
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from jose import JWTError
 from datetime import datetime
 
 from app import crud
 from app.api import deps
+from app.core.config import settings
 from app.models.device_login import DeviceLogin
 
 from ._deps import (
@@ -135,10 +139,16 @@ async def verify(
     )
 
 
+class LogoutResponse(BaseModel):
+    status: str
+    message: str
+    end_session_url: Optional[str] = None
+
+
 @router.post(
     "/logout",
     responses={401: {"description": "Invalid refresh token"}},
-    response_model=OperationSuccessfulResponse,
+    response_model=LogoutResponse,
 )
 async def logout(
     response: Response,
@@ -154,6 +164,18 @@ async def logout(
     db.delete(device_login)
     db.commit()
 
-    return OperationSuccessfulResponse(
-        status="success", message="You have been logged out."
+    end_session_url: Optional[str] = None
+    if settings.OIDC_ENABLED:
+        # Derive end-session URL from discovery URL:
+        # .../o/{slug}/.well-known/openid-configuration -> .../o/{slug}/end-session/
+        idp_base = settings.OIDC_DISCOVERY_URL.split("/.well-known/")[0]
+        post_logout_uri = settings.OIDC_REDIRECT_BASE_URL
+        end_session_url = f"{idp_base}/end-session/?post_logout_redirect_uri={post_logout_uri}"
+        if device_login.oidc_id_token:
+            end_session_url += f"&id_token_hint={device_login.oidc_id_token}"
+
+    return LogoutResponse(
+        status="success",
+        message="You have been logged out.",
+        end_session_url=end_session_url,
     )

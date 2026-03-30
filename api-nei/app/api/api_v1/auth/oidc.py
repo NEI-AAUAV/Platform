@@ -151,7 +151,8 @@ async def _exchange_code(
     redirect_uri: str,
     token_endpoint: str,
     userinfo_endpoint: str,
-) -> dict:
+) -> tuple[dict, Optional[str]]:
+    """Returns (userinfo, id_token)."""
     verify_ssl = settings.PRODUCTION
     async with httpx.AsyncClient(verify=verify_ssl) as client:
         token_resp = await client.post(
@@ -172,7 +173,7 @@ async def _exchange_code(
             headers={"Authorization": f"Bearer {token['access_token']}"},
         )
         userinfo_resp.raise_for_status()
-        return userinfo_resp.json()
+        return userinfo_resp.json(), token.get("id_token")
 
 
 # ---------------------------------------------------------------------------
@@ -206,6 +207,54 @@ def _parse_scopes(userinfo: dict) -> list[str]:
     return valid or ["default"]
 
 
+def _parse_name(userinfo: dict) -> tuple[str, str]:
+    first_name = userinfo.get("first_name", "").strip()
+    last_name = userinfo.get("last_name", "").strip()
+    if not first_name:
+        name_parts = userinfo.get("name", "").split(" ", 1)
+        first_name = name_parts[0].strip()
+        last_name = (name_parts[1] if len(name_parts) > 1 else "").strip()
+    return first_name[:20] or "User", last_name[:20]
+
+
+def _find_user_by_sub_or_email(db: Session, authentik_sub: str, email: str) -> Optional[User]:
+    user = db.query(User).filter(User.authentik_sub == authentik_sub).first()
+    if user:
+        return user
+    email_row = db.query(UserEmail).filter(UserEmail.email == email).first()
+    if not email_row:
+        return None
+    user = db.query(User).filter(User.id == email_row.user_id).first()
+    if user:
+        logger.info(f"Auto-linking user {user.id} to Authentik sub {authentik_sub!r}")
+    return user
+
+
+def _sync_user(db: Session, user: User, *, authentik_sub: str, name: str, surname: str,
+               nmec: Optional[int], iupi: Optional[str], scopes: list[str]) -> bool:
+    changed = False
+
+    def _set(attr: str, value) -> None:
+        nonlocal changed
+        if value is not None and getattr(user, attr) != value:
+            setattr(user, attr, value)
+            changed = True
+
+    _set("authentik_sub", authentik_sub)
+    _set("name", name)
+    _set("surname", surname)
+    _set("nmec", nmec)
+    _set("iupi", iupi)
+    if scopes and set(user.scopes or []) != set(scopes):
+        user.scopes = scopes
+        changed = True
+
+    if changed:
+        db.commit()
+        db.refresh(user)
+    return changed
+
+
 def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
     """Get or create a platform user from Authentik userinfo, syncing on every login."""
     authentik_sub = userinfo.get("sub")
@@ -217,44 +266,16 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
             "Invalid OIDC response: missing sub or email",
         )
 
-    name_parts = userinfo.get("name", "").split(" ", 1)
-    name = (name_parts[0] or "").strip()[:20] or "User"
-    surname = (name_parts[1] if len(name_parts) > 1 else "").strip()[:20]
+    name, surname = _parse_name(userinfo)
     nmec: Optional[int] = userinfo.get("nmec")
     iupi: Optional[str] = userinfo.get("iupi")
     scopes = _parse_scopes(userinfo)
 
-    user: Optional[User] = db.query(User).filter(User.authentik_sub == authentik_sub).first()
-
-    if not user:
-        email_row = db.query(UserEmail).filter(UserEmail.email == email).first()
-        if email_row:
-            user = db.query(User).filter(User.id == email_row.user_id).first()
-            if user:
-                logger.info(f"Auto-linking user {user.id} to Authentik sub {authentik_sub!r}")
+    user = _find_user_by_sub_or_email(db, authentik_sub, email)
 
     if user:
-        changed = False
-
-        def _set(attr: str, value) -> None:
-            nonlocal changed
-            if value is not None and getattr(user, attr) != value:
-                setattr(user, attr, value)
-                changed = True
-
-        _set("authentik_sub", authentik_sub)
-        _set("name", name)
-        _set("surname", surname)
-        _set("nmec", nmec)
-        _set("iupi", iupi)
-        if scopes and set(user.scopes or []) != set(scopes):
-            user.scopes = scopes
-            changed = True
-
-        if changed:
-            db.commit()
-            db.refresh(user)
-
+        changed = _sync_user(db, user, authentik_sub=authentik_sub, name=name,
+                             surname=surname, nmec=nmec, iupi=iupi, scopes=scopes)
         logger.info(f"OIDC login: user {user.id} ({'synced' if changed else 'unchanged'})")
         return user
 
@@ -335,11 +356,11 @@ async def oidc_callback(
 
     try:
         token_endpoint, userinfo_endpoint = await _load_endpoints()
-        userinfo = await _exchange_code(code, _callback_uri(), token_endpoint, userinfo_endpoint)
+        userinfo, id_token = await _exchange_code(code, _callback_uri(), token_endpoint, userinfo_endpoint)
         logger.debug(f"OIDC userinfo: {userinfo}")
 
         user = get_or_create_user_from_oidc(db, userinfo)
-        token_response = generate_response(db, user)
+        token_response = generate_response(db, user, oidc_id_token=id_token)
         access_token = json.loads(token_response.body)["access_token"]
 
         frontend_url = f"{settings.OIDC_REDIRECT_BASE_URL}/auth/oidc/return?token={access_token}"

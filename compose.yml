@@ -62,6 +62,8 @@ services:
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
       OIDC_REDIRECT_BASE_URL: ${OIDC_REDIRECT_BASE_URL:-}
+      AUTHENTIK_URL: ${AUTHENTIK_URL:-https://nei.web.ua.pt/authentik}
+      AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN:-}
     volumes:
       - ./api-nei:/api_nei
       - ./extensions:/extensions:ro

@@ -34,6 +34,8 @@ const config = {
   GOOGLE_CALENDAR_URL: `https://www.googleapis.com/calendar/v3`,
   GOOGLE_RECAPTCHA_CDN: `https://www.google.com/recaptcha/api.js`,
   GOOGLE_RECAPTCHA_KEY: `6LejnQ4lAAAAAFsMWR1S2Rw3LJv02KcbdOL-aNUh`,
+  AUTHENTIK_URL: "https://nei.web.ua.pt/authentik",
+  AUTHENTIK_ENROLL_URL: "https://nei.web.ua.pt/authentik/if/flow/nei-register-flow/",
   // Arraial configuration
   ENABLE_ARRAIAL: import.meta.env.VITE_ENABLE_ARRAIAL === "True",
   ARRAIAL: {

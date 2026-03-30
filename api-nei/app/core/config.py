@@ -138,5 +138,9 @@ class Settings(BaseSettings):
     ## Defaults to HOST if not set. Set via OIDC_REDIRECT_BASE_URL env var.
     OIDC_REDIRECT_BASE_URL: str = ""
 
+    # Authentik Admin API
+    AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"
+    AUTHENTIK_TOKEN: str = ""
+
 
 settings = Settings()

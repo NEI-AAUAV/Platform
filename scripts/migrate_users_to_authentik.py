@@ -270,7 +270,7 @@ def inject_password_hash(authentik_conn, authentik_user_pk: int, django_hash: st
 
     with authentik_conn.cursor() as cur:
         cur.execute(
-            "UPDATE authentik_core_user SET password = %s WHERE pk = %s",
+            "UPDATE authentik_core_user SET password = %s WHERE id = %s",
             (django_hash, authentik_user_pk),
         )
     authentik_conn.commit()

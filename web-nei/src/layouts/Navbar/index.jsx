@@ -268,9 +268,18 @@ const Navbar = () => {
   function logout() {
     service
       .logout()
-      .then(() => {
+      .then((data) => {
         destroyArraialSocket();
         useUserStore.getState().logout();
+        if (data?.end_session_url) {
+          const iframe = document.createElement("iframe");
+          iframe.style.display = "none";
+          iframe.src = data.end_session_url;
+          document.body.appendChild(iframe);
+          setTimeout(() => {
+            document.body.removeChild(iframe);
+          }, 2000);
+        }
         navigate("/");
       })
       .catch((err) => {
