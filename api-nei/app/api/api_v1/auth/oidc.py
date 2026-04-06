@@ -255,6 +255,36 @@ def _sync_user(db: Session, user: User, *, authentik_sub: str, name: str, surnam
     return changed
 
 
+async def _sync_authentik_user_name(email: str, full_name: str) -> None:
+    """Best-effort update of the Authentik user's display name."""
+    if not settings.AUTHENTIK_TOKEN or not full_name:
+        return
+    try:
+        verify_ssl = settings.PRODUCTION
+        headers = {"Authorization": f"Bearer {settings.AUTHENTIK_TOKEN}"}
+        async with httpx.AsyncClient(verify=verify_ssl) as client:
+            resp = await client.get(
+                f"{settings.AUTHENTIK_URL}/api/v3/core/users/",
+                params={"email": email},
+                headers=headers,
+            )
+            resp.raise_for_status()
+            users = resp.json().get("results", [])
+            if not users:
+                return
+            ak_user = users[0]
+            if ak_user.get("name") == full_name:
+                return
+            await client.patch(
+                f"{settings.AUTHENTIK_URL}/api/v3/core/users/{ak_user['pk']}/",
+                json={"name": full_name},
+                headers=headers,
+            )
+            logger.info(f"Synced Authentik user {ak_user['pk']} name to {full_name!r}")
+    except Exception as e:
+        logger.warning(f"Failed to sync Authentik user name: {e}")
+
+
 def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
     """Get or create a platform user from Authentik userinfo, syncing on every login."""
     authentik_sub = userinfo.get("sub")
@@ -360,6 +390,15 @@ async def oidc_callback(
         logger.debug(f"OIDC userinfo: {userinfo}")
 
         user = get_or_create_user_from_oidc(db, userinfo)
+
+        # Sync display name back to Authentik (best-effort, non-blocking)
+        email = userinfo.get("email", "")
+        first_name = userinfo.get("first_name", "")
+        last_name = userinfo.get("last_name", "")
+        full_name = f"{first_name} {last_name}".strip()
+        if full_name:
+            await _sync_authentik_user_name(email, full_name)
+
         token_response = generate_response(db, user, oidc_id_token=id_token)
         access_token = json.loads(token_response.body)["access_token"]
 
