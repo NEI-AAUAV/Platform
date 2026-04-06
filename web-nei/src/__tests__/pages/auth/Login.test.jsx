@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import React from 'react'
 import { render } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 
@@ -13,8 +12,9 @@ import { useUserStore } from '../../../stores/useUserStore'
 const { Component } = await import('../../../pages/auth/Login/index')
 
 const replaceMock = vi.fn()
+const DEFAULT_STATE = { sessionLoading: false, token: null }
 
-function renderWith(search = '', storeState = { sessionLoading: false, token: null }) {
+function renderWith(search = '', storeState = DEFAULT_STATE) {
   useUserStore.mockImplementation((selector) => selector(storeState))
   return render(
     <MemoryRouter initialEntries={[`/auth/login${search}`]}>
@@ -28,11 +28,7 @@ function renderWith(search = '', storeState = { sessionLoading: false, token: nu
 describe('Login', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    Object.defineProperty(window, 'location', {
-      value: { replace: replaceMock },
-      writable: true,
-      configurable: true,
-    })
+    vi.stubGlobal('location', { replace: replaceMock })
   })
 
   it('does nothing while session is loading', () => {

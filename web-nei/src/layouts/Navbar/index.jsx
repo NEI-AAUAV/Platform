@@ -277,7 +277,7 @@ const Navbar = () => {
           iframe.src = data.end_session_url;
           document.body.appendChild(iframe);
           setTimeout(() => {
-            document.body.removeChild(iframe);
+            iframe.remove();
           }, 2000);
         }
         navigate("/");

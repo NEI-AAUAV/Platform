@@ -11,13 +11,13 @@ export function Component() {
     if (sessionLoading) return;
     if (token) {
       const redirect_to = searchParams.get("redirect_to");
-      window.location.replace(redirect_to || "/");
+      globalThis.location.replace(redirect_to || "/");
       return;
     }
 
     const redirect_to = searchParams.get("redirect_to");
-    const oidcUrl = `${config.API_NEI_URL}/auth/oidc/login${redirect_to ? `?redirect_to=${encodeURIComponent(redirect_to)}` : ""}`;
-    window.location.replace(oidcUrl);
+    const query = redirect_to ? `?redirect_to=${encodeURIComponent(redirect_to)}` : "";
+    globalThis.location.replace(`${config.API_NEI_URL}/auth/oidc/login${query}`);
   }, [sessionLoading]);
 
   return (

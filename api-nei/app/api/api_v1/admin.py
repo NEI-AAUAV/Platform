@@ -17,6 +17,7 @@ DELETE /admin/authentik/groups/{group_pk}/members/{user_id}
 """
 
 import uuid
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Security, status
 from sqlalchemy.orm import Session
@@ -27,6 +28,9 @@ from app.api.api_v1.auth import _deps as auth
 from app.core.config import settings
 from app.models.user import User
 from app.schemas.user import ScopeEnum
+
+DbSession = Annotated[Session, Depends(deps.get_db)]
+AdminAuth = Annotated[auth.AuthData, Security(auth.verify_token, scopes=[ScopeEnum.ADMIN])]
 
 
 def _validate_uuid(value: str, name: str) -> str:
@@ -108,8 +112,8 @@ async def list_authentik_groups(
 async def add_group_member(
     group_pk: str,
     user_id: int,
-    db: Session = Depends(deps.get_db),
-    _: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
+    db: DbSession,
+    _: AdminAuth,
 ):
     """Add a platform user to an Authentik group."""
     user = db.query(User).filter(User.id == user_id).first()
@@ -142,8 +146,8 @@ async def add_group_member(
 async def remove_group_member(
     group_pk: str,
     user_id: int,
-    db: Session = Depends(deps.get_db),
-    _: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
+    db: DbSession,
+    _: AdminAuth,
 ):
     """Remove a platform user from an Authentik group."""
     user = db.query(User).filter(User.id == user_id).first()

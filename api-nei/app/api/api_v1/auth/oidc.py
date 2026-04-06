@@ -30,7 +30,7 @@ in Authentik).  Falls back to `groups`, stripping an optional "nei-" prefix.
 
 import json
 import secrets
-from typing import Optional
+from typing import Annotated, Optional
 
 import httpx
 from authlib.integrations.starlette_client import OAuth
@@ -48,6 +48,9 @@ from app.models.user.user_email import UserEmail
 from app.schemas.user import ScopeEnum, UserCreate
 
 from ._deps import AuthData, Token, generate_response, private_key, verify_token
+
+DbSession = Annotated[Session, Depends(deps.get_db)]
+CurrentUser = Annotated[AuthData, Depends(verify_token)]
 
 router = APIRouter()
 
@@ -180,6 +183,24 @@ async def _exchange_code(
 # User upsert
 # ---------------------------------------------------------------------------
 
+def _candidates_from_scopes_claim(raw) -> list[str]:
+    if isinstance(raw, str):
+        return raw.split()
+    if isinstance(raw, list):
+        return raw
+    return []
+
+
+def _candidates_from_groups(userinfo: dict) -> list[str]:
+    candidates = []
+    for group in userinfo.get("groups", []):
+        name = group.strip().lower()
+        if name.startswith("nei-"):
+            name = name[4:]
+        candidates.append(name)
+    return candidates
+
+
 def _parse_scopes(userinfo: dict) -> list[str]:
     """Resolve platform scopes from OIDC claims.
 
@@ -187,16 +208,11 @@ def _parse_scopes(userinfo: dict) -> list[str]:
     Authentik).  Falls back to `groups`, stripping an optional "nei-" prefix.
     """
     raw = userinfo.get("scopes")
-
-    if raw is not None:
-        candidates = raw.split() if isinstance(raw, str) else (raw if isinstance(raw, list) else [])
-    else:
-        candidates = []
-        for group in userinfo.get("groups", []):
-            name = group.strip().lower()
-            if name.startswith("nei-"):
-                name = name[4:]
-            candidates.append(name)
+    candidates = (
+        _candidates_from_scopes_claim(raw)
+        if raw is not None
+        else _candidates_from_groups(userinfo)
+    )
 
     valid = []
     for s in candidates:
@@ -377,7 +393,7 @@ async def oidc_callback(
     response: Response,
     code: str,
     state: str,
-    db: Session = Depends(deps.get_db),
+    db: DbSession,
 ):
     _require_oidc()
 
@@ -430,8 +446,8 @@ async def oidc_callback(
 )
 async def start_oidc_link(
     response: Response,
-    auth_data: AuthData = Depends(verify_token),
-    db: Session = Depends(deps.get_db),
+    auth_data: CurrentUser,
+    db: DbSession,
 ):
     _require_oidc()
 
@@ -463,7 +479,7 @@ async def oidc_link_callback(
     response: Response,
     code: str,
     state: str,
-    db: Session = Depends(deps.get_db),
+    db: DbSession,
 ):
     _require_oidc()
 
