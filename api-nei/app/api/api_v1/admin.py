@@ -16,6 +16,8 @@ DELETE /admin/authentik/groups/{group_pk}/members/{user_id}
     Remove a platform user from an Authentik group.
 """
 
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException, Security, status
 from sqlalchemy.orm import Session
 import httpx
@@ -25,6 +27,15 @@ from app.api.api_v1.auth import _deps as auth
 from app.core.config import settings
 from app.models.user import User
 from app.schemas.user import ScopeEnum
+
+
+def _validate_uuid(value: str, name: str) -> str:
+    """Raise 422 if value is not a valid UUID, preventing path traversal."""
+    try:
+        return str(uuid.UUID(value))
+    except ValueError:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"{name} must be a valid UUID")
+
 
 router = APIRouter()
 
@@ -110,8 +121,9 @@ async def add_group_member(
             "User has not logged in via Authentik yet (no authentik_sub)",
         )
 
+    safe_group_pk = _validate_uuid(group_pk, "group_pk")
     authentik_pk = await _authentik_user_pk(user.authentik_sub)
-    url = f"{settings.AUTHENTIK_URL}/api/v3/core/groups/{group_pk}/add_user/"
+    url = f"{settings.AUTHENTIK_URL}/api/v3/core/groups/{safe_group_pk}/add_user/"
     verify_ssl = settings.PRODUCTION
     async with httpx.AsyncClient(verify=verify_ssl) as client:
         resp = await client.post(
@@ -143,8 +155,9 @@ async def remove_group_member(
             "User has no authentik_sub",
         )
 
+    safe_group_pk = _validate_uuid(group_pk, "group_pk")
     authentik_pk = await _authentik_user_pk(user.authentik_sub)
-    url = f"{settings.AUTHENTIK_URL}/api/v3/core/groups/{group_pk}/remove_user/"
+    url = f"{settings.AUTHENTIK_URL}/api/v3/core/groups/{safe_group_pk}/remove_user/"
     verify_ssl = settings.PRODUCTION
     async with httpx.AsyncClient(verify=verify_ssl) as client:
         resp = await client.post(

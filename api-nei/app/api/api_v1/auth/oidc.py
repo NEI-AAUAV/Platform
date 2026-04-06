@@ -480,7 +480,7 @@ async def oidc_link_callback(
 
     try:
         token_endpoint, userinfo_endpoint = await _load_endpoints()
-        userinfo = await _exchange_code(code, _link_callback_uri(), token_endpoint, userinfo_endpoint)
+        userinfo, _ = await _exchange_code(code, _link_callback_uri(), token_endpoint, userinfo_endpoint)
 
         authentik_sub = userinfo.get("sub")
         if not authentik_sub:
