@@ -3,12 +3,13 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 
-vi.mock('stores/useUserStore', () => ({ useUserStore: vi.fn() }))
-vi.mock('config', () => ({
+// Must use relative paths — vi.mock factories don't resolve tsconfig path aliases
+vi.mock('../../../stores/useUserStore', () => ({ useUserStore: vi.fn() }))
+vi.mock('../../../config', () => ({
   default: { API_NEI_URL: 'http://localhost/api/nei/v1' },
 }))
 
-import { useUserStore } from 'stores/useUserStore'
+import { useUserStore } from '../../../stores/useUserStore'
 const { Component } = await import('../../../pages/auth/Login/index')
 
 const replaceMock = vi.fn()
@@ -44,7 +45,7 @@ describe('Login', () => {
     expect(replaceMock).toHaveBeenCalledWith('/')
   })
 
-  it('redirects to redirect_to param when logged in with redirect', () => {
+  it('redirects to redirect_to param when logged in', () => {
     renderWith('?redirect_to=%2Fprofile', { sessionLoading: false, token: 'valid-token' })
     expect(replaceMock).toHaveBeenCalledWith('/profile')
   })

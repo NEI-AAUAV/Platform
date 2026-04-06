@@ -3,18 +3,22 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 
-const mockNavigate = vi.fn()
+// vi.hoisted ensures these are defined before mock factories run (which are hoisted)
+const { mockNavigate, mockLogin } = vi.hoisted(() => ({
+  mockNavigate: vi.fn(),
+  mockLogin: vi.fn(),
+}))
+
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal()
   return { ...actual, useNavigate: () => mockNavigate }
 })
 
-const mockLogin = vi.fn()
-vi.mock('stores/useUserStore', () => ({
+// Must use relative path — vi.mock factories don't resolve tsconfig path aliases
+vi.mock('../../../stores/useUserStore', () => ({
   useUserStore: { getState: () => ({ login: mockLogin }) },
 }))
 
-// Lazy import after mocks are hoisted
 const { Component } = await import('../../../pages/auth/OidcCallback/index')
 
 function renderWith(search = '') {
@@ -33,7 +37,7 @@ describe('OidcCallback', () => {
     vi.unstubAllGlobals()
   })
 
-  it('redirects to /auth/login when no token in URL', () => {
+  it('navigates to /auth/login when no token in URL', () => {
     renderWith()
     expect(mockNavigate).toHaveBeenCalledWith('/auth/login')
   })
@@ -44,7 +48,7 @@ describe('OidcCallback', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/')
   })
 
-  it('calls location.replace when redirect_to is present', () => {
+  it('calls location.replace when redirect_to is set', () => {
     const replaceMock = vi.fn()
     vi.stubGlobal('location', { replace: replaceMock })
     renderWith('?token=mytoken123&redirect_to=%2Fdashboard')
@@ -52,7 +56,7 @@ describe('OidcCallback', () => {
     expect(replaceMock).toHaveBeenCalledWith('/dashboard')
   })
 
-  it('redirects to /auth/login when login throws', () => {
+  it('navigates to /auth/login when login throws', () => {
     mockLogin.mockImplementation(() => { throw new Error('login failed') })
     renderWith('?token=badtoken')
     expect(mockNavigate).toHaveBeenCalledWith('/auth/login')

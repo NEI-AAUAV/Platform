@@ -1,10 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
-// --- mocks ------------------------------------------------------------------
-
-vi.mock('services/NEIService', () => ({
+// Must use relative paths — vi.mock factories don't resolve tsconfig path aliases
+vi.mock('../../../services/NEIService', () => ({
   default: {
     getCurrUser: vi.fn(),
     getUsers: vi.fn(),
@@ -17,25 +15,27 @@ vi.mock('services/NEIService', () => ({
   },
 }))
 
-vi.mock('stores/useUserStore', () => ({
-  useUserStore: vi.fn(),
-}))
+vi.mock('../../../stores/useUserStore', () => ({ useUserStore: vi.fn() }))
 
-vi.mock('services/SocketService', () => ({
+vi.mock('../../../services/SocketService', () => ({
   getArraialSocket: vi.fn(() => ({
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
   })),
 }))
 
-import service from 'services/NEIService'
-import { useUserStore } from 'stores/useUserStore'
+import service from '../../../services/NEIService'
+import { useUserStore } from '../../../stores/useUserStore'
 const { Component } = await import('../../../pages/admin/Roles')
 
-// ---------------------------------------------------------------------------
-
-const ADMIN_USER = { id: 1, name: 'Admin', surname: 'User', email: 'admin@test.com', scopes: ['admin'], authentik_sub: 'sub-admin' }
-const PLAIN_USER = { id: 2, name: 'Bob', surname: 'Smith', email: 'bob@test.com', scopes: ['default'], authentik_sub: null }
+const ADMIN_USER = {
+  id: 1, name: 'Admin', surname: 'User', email: 'admin@test.com',
+  scopes: ['admin'], authentik_sub: 'sub-admin',
+}
+const PLAIN_USER = {
+  id: 2, name: 'Bob', surname: 'Smith', email: 'bob@test.com',
+  scopes: ['default'], authentik_sub: null,
+}
 const GROUP = { pk: 'grp-uuid-1', name: 'nei-admin', member_subs: ['sub-admin'] }
 
 function setup(token = 'tok') {
@@ -80,40 +80,7 @@ describe('Roles', () => {
     await waitFor(() => expect(service.getAuthentikGroups).toHaveBeenCalled())
   })
 
-  it('shows error when user has no authentik_sub on toggle', async () => {
-    setup()
-    render(<Component />)
-    await waitFor(() => expect(service.getUsers).toHaveBeenCalled())
-
-    // Bob has no authentik_sub — toggling should set an error, not call the API
-    const checkboxes = screen.queryAllByRole('checkbox', { name: '' })
-    const disabledCheckbox = checkboxes.find((c) => c.disabled)
-    if (disabledCheckbox) {
-      // Disabled checkboxes for users without SSO don't call toggleGroupMembership
-      expect(service.addUserToAuthentikGroup).not.toHaveBeenCalled()
-    }
-  })
-
-  it('calls addUserToAuthentikGroup when toggling a non-member', async () => {
-    // Make admin user NOT a member of the group
-    service.getAuthentikGroups.mockResolvedValue([{ ...GROUP, member_subs: [] }])
-    service.addUserToAuthentikGroup.mockResolvedValue({})
-    setup()
-    render(<Component />)
-    await waitFor(() => expect(service.getAuthentikGroups).toHaveBeenCalled())
-
-    const checkboxes = screen.queryAllByRole('checkbox')
-    // The group membership checkbox for admin user (has sub, not a member)
-    const memberCheckbox = checkboxes.find((c) => !c.disabled && c.type === 'checkbox' && c.className.includes('checkbox'))
-    if (memberCheckbox) {
-      fireEvent.click(memberCheckbox)
-      await waitFor(() =>
-        expect(service.addUserToAuthentikGroup).toHaveBeenCalledWith('grp-uuid-1', ADMIN_USER.id)
-      )
-    }
-  })
-
-  it('renders email filter input', async () => {
+  it('renders email filter input for admin', async () => {
     setup()
     render(<Component />)
     await waitFor(() => expect(service.getUsers).toHaveBeenCalled())
@@ -123,16 +90,16 @@ describe('Roles', () => {
   it('filters users by email', async () => {
     setup()
     render(<Component />)
-    await waitFor(() => expect(service.getUsers).toHaveBeenCalled())
-
-    const emailInput = screen.getByPlaceholderText(/Filter by email/)
-    fireEvent.change(emailInput, { target: { value: 'admin' } })
+    await waitFor(() => expect(screen.getByPlaceholderText(/Filter by email/)).toBeInTheDocument())
+    fireEvent.change(screen.getByPlaceholderText(/Filter by email/), {
+      target: { value: 'admin' },
+    })
     await waitFor(() =>
       expect(screen.getByText(/Showing 1 of 2 users/)).toBeInTheDocument()
     )
   })
 
-  it('shows arraial config toggle for admin', async () => {
+  it('shows arraial config section for admin', async () => {
     service.getArraialConfig.mockResolvedValue({ enabled: true, paused: false })
     setup()
     render(<Component />)
@@ -141,7 +108,7 @@ describe('Roles', () => {
     )
   })
 
-  it('calls setArraialConfig when arraial toggle is clicked', async () => {
+  it('calls setArraialConfig when arraial toggle changes', async () => {
     service.getArraialConfig.mockResolvedValue({ enabled: false, paused: false })
     service.setArraialConfig.mockResolvedValue({})
     setup()
@@ -150,14 +117,39 @@ describe('Roles', () => {
       expect(screen.getByText('Enable Arraial')).toBeInTheDocument()
     )
 
-    const [enableToggle] = screen.getAllByRole('checkbox').filter(
-      (c) => !c.className.includes('checkbox-sm')
+    // The arraial toggles are .toggle checkboxes (not .checkbox-sm)
+    const enableToggle = screen
+      .getAllByRole('checkbox')
+      .find((c) => c.className.includes('toggle') && !c.className.includes('checkbox-sm'))
+    fireEvent.click(enableToggle)
+    await waitFor(() =>
+      expect(service.setArraialConfig).toHaveBeenCalledWith(true, false)
     )
-    if (enableToggle) {
-      fireEvent.click(enableToggle)
-      await waitFor(() =>
-        expect(service.setArraialConfig).toHaveBeenCalledWith(true, false)
-      )
-    }
+  })
+
+  it('shows no-SSO badge for user without authentik_sub', async () => {
+    setup()
+    render(<Component />)
+    await waitFor(() => expect(screen.getByText('no SSO')).toBeInTheDocument())
+  })
+
+  it('calls addUserToAuthentikGroup for non-member with sub', async () => {
+    // Admin user is NOT a member
+    service.getAuthentikGroups.mockResolvedValue([{ ...GROUP, member_subs: [] }])
+    service.addUserToAuthentikGroup.mockResolvedValue({})
+    setup()
+    render(<Component />)
+
+    // Wait for the table to appear (loading resolves)
+    await waitFor(() => expect(screen.getByText('no SSO')).toBeInTheDocument())
+
+    const memberCheckboxes = screen
+      .getAllByRole('checkbox')
+      .filter((c) => c.className.includes('checkbox-sm') && !c.disabled)
+    expect(memberCheckboxes.length).toBeGreaterThan(0)
+    fireEvent.click(memberCheckboxes[0])
+    await waitFor(() =>
+      expect(service.addUserToAuthentikGroup).toHaveBeenCalledWith('grp-uuid-1', ADMIN_USER.id)
+    )
   })
 })

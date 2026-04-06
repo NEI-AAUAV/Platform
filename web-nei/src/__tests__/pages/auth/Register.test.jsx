@@ -2,7 +2,8 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import React from 'react'
 import { render } from '@testing-library/react'
 
-vi.mock('config', () => ({
+// Must use relative path — vi.mock factories don't resolve tsconfig path aliases
+vi.mock('../../../config', () => ({
   default: { AUTHENTIK_ENROLL_URL: 'https://test.example.com/enroll' },
 }))
 

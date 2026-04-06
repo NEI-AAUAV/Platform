@@ -1,9 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-const mockClient = { get: vi.fn(), post: vi.fn(), delete: vi.fn() }
+// vi.hoisted ensures mockClient is defined before the mock factory below runs
+const mockClient = vi.hoisted(() => ({
+  get: vi.fn(),
+  post: vi.fn(),
+  delete: vi.fn(),
+}))
 
-vi.mock('config', () => ({ default: { API_NEI_URL: 'http://localhost/api/nei/v1' } }))
-vi.mock('services/client', () => ({ createClient: () => mockClient }))
+// Must use relative paths — vi.mock factories don't resolve tsconfig path aliases
+vi.mock('../../config', () => ({ default: { API_NEI_URL: 'http://localhost/api/nei/v1' } }))
+vi.mock('../../services/client', () => ({ createClient: () => mockClient }))
 
 const service = (await import('../../services/NEIService')).default
 
@@ -30,5 +36,11 @@ describe('NEIService - Authentik admin methods', () => {
     expect(mockClient.delete).toHaveBeenCalledWith(
       '/admin/authentik/groups/grp-uuid/members/42'
     )
+  })
+
+  it('logout calls POST /auth/logout/', async () => {
+    mockClient.post.mockResolvedValue({ status: 'ok', end_session_url: null })
+    await service.logout()
+    expect(mockClient.post).toHaveBeenCalledWith('/auth/logout/')
   })
 })
