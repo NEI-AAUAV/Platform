@@ -28,7 +28,7 @@
     "form-data": "^4.0.5",
     "framer-motion": "^10.16.4",
     "glob": "^10.5.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.1",
     "lucide-react": "^0.297.0",
     "papaparse": "^5.5.3",
     "popmotion": "^11.0.5",
