@@ -60,6 +60,8 @@ const routes = [
       { path: "/videos/:id", lazy: () => import("./pages/Video") },
       { path: "/teams", lazy: () => import("./pages/Team") },
       { path: "/rgm", lazy: () => import("./pages/RGM") },
+      { path: "/jobs", lazy: () => import("./pages/Jobs") },
+      { path: "/jobs/edit/:id", lazy: () => import("./pages/Jobs/CreateJobOffer") },
       !isProd && {
         path: "/news/:id?",
         lazy: () => import("./pages/News/NewsList"),
@@ -132,6 +134,21 @@ const routes = [
       {
         path: "/settings/family",
         lazy: () => import("./pages/settings/Family"),
+      },
+    ],
+  },
+  // job offer creation - requires manager-jobs or admin scope
+  {
+    path: "/",
+    element: (
+      <ProtectedRoute requiredScopes={["manager-jobs", "admin"]}>
+        <Layout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "/jobs/new",
+        lazy: () => import("./pages/Jobs/CreateJobOffer"),
       },
     ],
   },

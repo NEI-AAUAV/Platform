@@ -95,6 +95,10 @@ const data = [
     link: "/news",
     disabled: config.PRODUCTION,
   },
+  {
+    name: "Emprego",
+    link: "/jobs",
+  },
   !config.PRODUCTION && {
     name: "Taça UA",
     link: "/taca-ua",
