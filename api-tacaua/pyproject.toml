@@ -9,7 +9,7 @@ python = "^3.10"
 SQLAlchemy = {extras = ["postgresql-psycopg2binary"], version = "^2.0.25"}
 pydantic = "^2.6.0"
 loguru = "^0.7.2"
-python-multipart = "^0.0.7"
+python-multipart = ">=0.0.7,<0.0.27"
 fastapi = "^0.109.1"
 requests = "^2.32.2"
 Pillow = "^10.3.0"
