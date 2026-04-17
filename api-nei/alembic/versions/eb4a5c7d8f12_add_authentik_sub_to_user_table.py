@@ -46,11 +46,15 @@ def upgrade() -> None:
 def downgrade() -> None:
     bind = op.get_bind()
 
-    # OIDC-only users have NULL hashed_password; reverting the column to NOT NULL
-    # would fail against such rows. Delete those users first so the schema change
-    # can proceed cleanly.
+    # OIDC-only users have NULL hashed_password; reverting to NOT NULL would
+    # fail against those rows. Set a placeholder so the schema change can
+    # proceed without destroying data. Accounts with this placeholder cannot
+    # log in via password (which is correct — they must use OIDC or reset).
     bind.execute(
-        sa.text('DELETE FROM nei."user" WHERE hashed_password IS NULL')
+        sa.text(
+            "UPDATE nei.\"user\" SET hashed_password = '!oidc-placeholder!' "
+            "WHERE hashed_password IS NULL"
+        )
     )
 
     op.alter_column(

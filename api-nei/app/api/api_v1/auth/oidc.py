@@ -34,6 +34,7 @@ from typing import Annotated, Optional
 
 import httpx
 from authlib.integrations.starlette_client import OAuth
+from sqlalchemy.exc import IntegrityError
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
@@ -139,12 +140,13 @@ def _verify_and_pop_state_cookie(request: Request, response: Response, nonce: st
 def _is_safe_redirect(value: Optional[str]) -> bool:
     """Only allow relative, same-origin paths. Blocks open-redirect payloads
     like '//evil.com', 'http://evil.com', and backslash-prefixed variants."""
-    if not value:
+    if not value or not isinstance(value, str):
         return False
-    if not value.startswith("/"):
+    v = value.strip()
+    if not v.startswith("/"):
         return False
-    # '//foo' and '/\foo' are protocol-relative / scheme-confusion vectors.
-    if value.startswith("//") or value.startswith("/\\"):
+    # '//foo', '/\foo', and whitespace-confusion vectors like '/\t/evil.com'.
+    if len(v) > 1 and v[1] in ("/", "\\", "\t", " ", "\n", "\r"):
         return False
     return True
 
@@ -329,7 +331,10 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
     """Get or create a platform user from Authentik userinfo, syncing on every login."""
     authentik_sub = userinfo.get("sub")
     email = userinfo.get("email")
-    email_verified = bool(userinfo.get("email_verified"))
+    _ev_claim = userinfo.get("email_verified")
+    email_verified = _ev_claim is True or (
+        isinstance(_ev_claim, str) and _ev_claim.lower() == "true"
+    )
 
     if not authentik_sub or not email:
         raise HTTPException(
@@ -362,24 +367,32 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
         return user
 
     logger.info(f"Creating new user from Authentik: {email!r}")
-    user = crud.user.create(
-        db=db,
-        obj_in=UserCreate(
-            name=name,
-            surname=surname,
-            email=email,
-            password=None,
-            scopes=scopes,
-            nmec=nmec,
-            iupi=iupi,
-        ),
-        active=True,
-    )
-    user.authentik_sub = authentik_sub
-    db.commit()
-    db.refresh(user)
-    logger.info(f"Created user {user.id} from Authentik")
-    return user
+    try:
+        user = crud.user.create(
+            db=db,
+            obj_in=UserCreate(
+                name=name,
+                surname=surname,
+                email=email,
+                password=None,
+                scopes=scopes,
+                nmec=nmec,
+                iupi=iupi,
+            ),
+            active=True,
+        )
+        user.authentik_sub = authentik_sub
+        db.commit()
+        db.refresh(user)
+        logger.info(f"Created user {user.id} from Authentik")
+        return user
+    except IntegrityError:
+        db.rollback()
+        user = _find_user_by_sub_or_email(db, authentik_sub, email, email_verified=True)
+        if user:
+            logger.info(f"Concurrent create race resolved: returning user {user.id}")
+            return user
+        raise
 
 
 # ---------------------------------------------------------------------------
@@ -556,6 +569,13 @@ async def oidc_link_callback(
         authentik_sub = userinfo.get("sub")
         if not authentik_sub:
             raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid OIDC response: missing sub")
+
+        _ev = userinfo.get("email_verified")
+        if not (_ev is True or (isinstance(_ev, str) and _ev.lower() == "true")):
+            raise HTTPException(
+                status.HTTP_403_FORBIDDEN,
+                "Authentik account email is not verified — verify your email before linking",
+            )
 
         existing = db.query(User).filter(User.authentik_sub == authentik_sub).first()
         if existing:

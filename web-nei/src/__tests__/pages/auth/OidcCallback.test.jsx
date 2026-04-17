@@ -73,6 +73,12 @@ describe('OidcCallback', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/')
   })
 
+  it('ignores tab-confusion redirect_to (/\\t/evil.com) and navigates home', () => {
+    renderWith('#token=mytoken123&redirect_to=%2F%09%2Fevil.com')
+    expect(mockLogin).toHaveBeenCalledWith({ token: 'mytoken123' })
+    expect(mockNavigate).toHaveBeenCalledWith('/')
+  })
+
   it('navigates to /auth/login when login throws', () => {
     mockLogin.mockImplementation(() => { throw new Error('login failed') })
     renderWith('#token=badtoken')

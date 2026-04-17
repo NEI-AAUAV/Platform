@@ -10,8 +10,9 @@ function parseHash(hash) {
 
 function isSafeRedirect(value) {
   if (!value || typeof value !== "string") return false;
-  if (!value.startsWith("/")) return false;
-  if (value.startsWith("//") || value.startsWith("/\\")) return false;
+  const v = value.trim();
+  if (!v.startsWith("/")) return false;
+  if (v.length > 1 && "/\\\t \n\r".includes(v[1])) return false;
   return true;
 }
 

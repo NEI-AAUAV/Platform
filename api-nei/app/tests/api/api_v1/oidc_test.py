@@ -1,8 +1,10 @@
 from datetime import datetime
+from unittest.mock import patch
 
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
+from sqlalchemy.exc import IntegrityError
 
 from app.api.api_v1.auth.oidc import (
     _is_safe_redirect,
@@ -175,6 +177,18 @@ def test_get_or_create_rejects_missing_email_verified_claim(db: SessionTesting):
     assert exc.value.status_code == 403
 
 
+def test_get_or_create_race_condition_returns_existing_user(db: SessionTesting):
+    # Simulate two concurrent first-logins for the same user: the second INSERT
+    # hits a unique-constraint violation (IntegrityError). The handler must
+    # roll back and return the row committed by the first request.
+    u1 = get_or_create_user_from_oidc(db, _USERINFO)
+
+    with patch("app.crud.user.create", side_effect=IntegrityError("", {}, None)):
+        u2 = get_or_create_user_from_oidc(db, _USERINFO)
+
+    assert u1.id == u2.id
+
+
 def test_get_or_create_does_not_auto_link_when_email_unverified(db: SessionTesting):
     # If an attacker registers in the IDP with a victim's email but hasn't
     # verified it, they must not be auto-linked to the victim's platform account.
@@ -225,6 +239,9 @@ def test_is_safe_redirect_accepts_relative_paths(value):
         "http://evil.com",
         "https://evil.com/x",
         "javascript:alert(1)",
+        "/\tevil.com",          # tab confusion
+        "/ /evil.com",          # space confusion
+        "/\nevil.com",          # newline confusion
     ],
 )
 def test_is_safe_redirect_rejects_unsafe_values(value):
