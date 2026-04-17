@@ -11,7 +11,7 @@ from app.core.config import settings
 from .base import Base
 
 # Update me after finishing writing a migration
-last_known_good_revision = "caaa223a3654"
+last_known_good_revision = "3f1a2b4c5d6e"
 
 
 def init_db() -> None:
