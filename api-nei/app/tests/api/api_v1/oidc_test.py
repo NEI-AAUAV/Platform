@@ -4,7 +4,12 @@ import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
-from app.api.api_v1.auth.oidc import _parse_name, _parse_scopes, get_or_create_user_from_oidc
+from app.api.api_v1.auth.oidc import (
+    _is_safe_redirect,
+    _parse_name,
+    _parse_scopes,
+    get_or_create_user_from_oidc,
+)
 from app.core.config import settings
 from app.models.user import User
 from app.models.user.user_email import UserEmail
@@ -94,6 +99,7 @@ def test_parse_name_truncates_to_20():
 _USERINFO = {
     "sub": "oidc-sub-test-001",
     "email": "oidctest@example.com",
+    "email_verified": True,
     "first_name": "Alice",
     "last_name": "Doe",
     "scopes": ["default"],
@@ -153,6 +159,86 @@ def test_get_or_create_missing_email_raises_400(db: SessionTesting):
     with pytest.raises(HTTPException) as exc:
         get_or_create_user_from_oidc(db, {"sub": "some-sub"})
     assert exc.value.status_code == 400
+
+
+def test_get_or_create_rejects_unverified_email(db: SessionTesting):
+    userinfo = {**_USERINFO, "email_verified": False}
+    with pytest.raises(HTTPException) as exc:
+        get_or_create_user_from_oidc(db, userinfo)
+    assert exc.value.status_code == 403
+
+
+def test_get_or_create_rejects_missing_email_verified_claim(db: SessionTesting):
+    userinfo = {k: v for k, v in _USERINFO.items() if k != "email_verified"}
+    with pytest.raises(HTTPException) as exc:
+        get_or_create_user_from_oidc(db, userinfo)
+    assert exc.value.status_code == 403
+
+
+def test_get_or_create_does_not_auto_link_when_email_unverified(db: SessionTesting):
+    # If an attacker registers in the IDP with a victim's email but hasn't
+    # verified it, they must not be auto-linked to the victim's platform account.
+    existing = User(
+        name="Victim",
+        surname="User",
+        hashed_password="hashed",
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
+    )
+    db.add(existing)
+    db.flush()
+    db.add(UserEmail(user_id=existing.id, email="victim@example.com", active=True))
+    db.commit()
+
+    attacker_userinfo = {
+        **_USERINFO,
+        "sub": "attacker-sub",
+        "email": "victim@example.com",
+        "email_verified": False,
+    }
+    with pytest.raises(HTTPException) as exc:
+        get_or_create_user_from_oidc(db, attacker_userinfo)
+    assert exc.value.status_code == 403
+
+    db.refresh(existing)
+    assert existing.authentik_sub is None
+
+
+# ---------------------------------------------------------------------------
+# _is_safe_redirect
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("value", ["/", "/dashboard", "/auth/login?x=1", "/a/b/c"])
+def test_is_safe_redirect_accepts_relative_paths(value):
+    assert _is_safe_redirect(value) is True
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        None,
+        "",
+        "dashboard",            # no leading slash
+        "//evil.com",           # protocol-relative
+        "/\\evil.com",          # backslash variant
+        "http://evil.com",
+        "https://evil.com/x",
+        "javascript:alert(1)",
+    ],
+)
+def test_is_safe_redirect_rejects_unsafe_values(value):
+    assert _is_safe_redirect(value) is False
+
+
+# ---------------------------------------------------------------------------
+# manager-gamification scope is recognized
+# ---------------------------------------------------------------------------
+
+
+def test_parse_scopes_accepts_manager_gamification():
+    result = _parse_scopes({"scopes": ["manager-gamification"]})
+    assert result == ["manager-gamification"]
 
 
 # ---------------------------------------------------------------------------

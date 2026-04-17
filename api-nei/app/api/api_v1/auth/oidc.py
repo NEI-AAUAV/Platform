@@ -136,6 +136,19 @@ def _verify_and_pop_state_cookie(request: Request, response: Response, nonce: st
 # Authentik helpers
 # ---------------------------------------------------------------------------
 
+def _is_safe_redirect(value: Optional[str]) -> bool:
+    """Only allow relative, same-origin paths. Blocks open-redirect payloads
+    like '//evil.com', 'http://evil.com', and backslash-prefixed variants."""
+    if not value:
+        return False
+    if not value.startswith("/"):
+        return False
+    # '//foo' and '/\foo' are protocol-relative / scheme-confusion vectors.
+    if value.startswith("//") or value.startswith("/\\"):
+        return False
+    return True
+
+
 def _callback_uri() -> str:
     return f"{settings.OIDC_REDIRECT_BASE_URL}{settings.API_V1_STR}/auth/oidc/callback"
 
@@ -233,10 +246,21 @@ def _parse_name(userinfo: dict) -> tuple[str, str]:
     return first_name[:20] or "User", last_name[:20]
 
 
-def _find_user_by_sub_or_email(db: Session, authentik_sub: str, email: str) -> Optional[User]:
+def _find_user_by_sub_or_email(
+    db: Session,
+    authentik_sub: str,
+    email: str,
+    *,
+    email_verified: bool,
+) -> Optional[User]:
     user = db.query(User).filter(User.authentik_sub == authentik_sub).first()
     if user:
         return user
+
+    # Auto-linking by email requires a verified email
+    if not email_verified:
+        return None
+
     email_row = db.query(UserEmail).filter(UserEmail.email == email).first()
     if not email_row:
         return None
@@ -297,7 +321,7 @@ async def _sync_authentik_user_name(email: str, full_name: str) -> None:
                 headers=headers,
             )
             logger.info(f"Synced Authentik user {ak_user['pk']} name to {full_name!r}")
-    except Exception as e:
+    except httpx.HTTPError as e:
         logger.warning(f"Failed to sync Authentik user name: {e}")
 
 
@@ -305,6 +329,7 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
     """Get or create a platform user from Authentik userinfo, syncing on every login."""
     authentik_sub = userinfo.get("sub")
     email = userinfo.get("email")
+    email_verified = bool(userinfo.get("email_verified"))
 
     if not authentik_sub or not email:
         raise HTTPException(
@@ -312,12 +337,23 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
             "Invalid OIDC response: missing sub or email",
         )
 
+    # Reject logins with an unverified email: we cannot safely trust the
+    # email claim (for auto-linking or for new-account creation) otherwise.
+    if not email_verified:
+        logger.warning(f"Rejecting OIDC login with unverified email: {email!r}")
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN,
+            "Email is not verified in the identity provider",
+        )
+
     name, surname = _parse_name(userinfo)
     nmec: Optional[int] = userinfo.get("nmec")
     iupi: Optional[str] = userinfo.get("iupi")
     scopes = _parse_scopes(userinfo)
 
-    user = _find_user_by_sub_or_email(db, authentik_sub, email)
+    user = _find_user_by_sub_or_email(
+        db, authentik_sub, email, email_verified=email_verified
+    )
 
     if user:
         changed = _sync_user(db, user, authentik_sub=authentik_sub, name=name,
@@ -372,12 +408,17 @@ async def oidc_login(
 ):
     _require_oidc()
 
+    # Silently drop unsafe redirects rather than failing the login flow.
+    safe_redirect = redirect_to if _is_safe_redirect(redirect_to) else None
+    if redirect_to and not safe_redirect:
+        logger.warning(f"Rejecting unsafe redirect_to: {redirect_to!r}")
+
     nonce = secrets.token_urlsafe(32)
     await oauth.authentik.load_server_metadata()
     auth_url_data = await oauth.authentik.create_authorization_url(_callback_uri(), state=nonce)
 
     redirect_response = RedirectResponse(url=auth_url_data["url"])
-    _set_state_cookie(redirect_response, nonce, redirect_to=redirect_to)
+    _set_state_cookie(redirect_response, nonce, redirect_to=safe_redirect)
     return redirect_response
 
 
@@ -398,12 +439,18 @@ async def oidc_callback(
     _require_oidc()
 
     state_payload = _verify_and_pop_state_cookie(request, response, state)
-    redirect_to: Optional[str] = state_payload.get("r")
+    raw_redirect = state_payload.get("r")
+    redirect_to = raw_redirect if _is_safe_redirect(raw_redirect) else None
 
     try:
         token_endpoint, userinfo_endpoint = await _load_endpoints()
         userinfo, id_token = await _exchange_code(code, _callback_uri(), token_endpoint, userinfo_endpoint)
-        logger.debug(f"OIDC userinfo: {userinfo}")
+        logger.debug(
+            "OIDC userinfo received (sub=%s, groups=%s, scopes=%s)",
+            userinfo.get("sub"),
+            userinfo.get("groups"),
+            userinfo.get("scopes"),
+        )
 
         user = get_or_create_user_from_oidc(db, userinfo)
 
@@ -418,9 +465,14 @@ async def oidc_callback(
         token_response = generate_response(db, user, oidc_id_token=id_token)
         access_token = json.loads(token_response.body)["access_token"]
 
-        frontend_url = f"{settings.OIDC_REDIRECT_BASE_URL}/auth/oidc/return?token={access_token}"
+        # Return the access token in the URL fragment (#) rather than the query
+        # string (?): fragments are not sent to the server, not stored in access
+        # logs, and not included in Referer headers. The frontend reads it from
+        # window.location.hash and clears it after use.
+        fragment = f"token={access_token}"
         if redirect_to:
-            frontend_url += f"&redirect_to={redirect_to}"
+            fragment += f"&redirect_to={redirect_to}"
+        frontend_url = f"{settings.OIDC_REDIRECT_BASE_URL}/auth/oidc/return#{fragment}"
 
         redirect = RedirectResponse(url=frontend_url, status_code=302)
         for header_name, header_value in token_response.raw_headers:
@@ -431,8 +483,11 @@ async def oidc_callback(
 
     except HTTPException:
         raise
-    except Exception as e:
-        logger.error(f"OIDC callback error: {e}")
+    except httpx.HTTPError as e:
+        logger.exception(f"OIDC token/userinfo exchange failed: {e}")
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, "Identity provider unreachable")
+    except Exception:
+        logger.exception("Unhandled OIDC callback error")
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Authentication failed")
 
 
@@ -516,6 +571,9 @@ async def oidc_link_callback(
 
     except HTTPException:
         raise
-    except Exception as e:
-        logger.error(f"OIDC link-callback error: {e}")
+    except httpx.HTTPError as e:
+        logger.exception(f"OIDC link-callback exchange failed: {e}")
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, "Identity provider unreachable")
+    except Exception:
+        logger.exception("Unhandled OIDC link-callback error")
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Account linking failed")

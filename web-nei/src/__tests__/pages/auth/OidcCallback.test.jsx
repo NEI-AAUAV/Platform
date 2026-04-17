@@ -21,9 +21,9 @@ vi.mock('../../../stores/useUserStore', () => ({
 
 const { Component } = await import('../../../pages/auth/OidcCallback/index')
 
-function renderWith(search = '') {
+function renderWith(hash = '') {
   return render(
-    <MemoryRouter initialEntries={[`/auth/oidc/return${search}`]}>
+    <MemoryRouter initialEntries={[`/auth/oidc/return${hash}`]}>
       <Routes>
         <Route path="/auth/oidc/return" element={<Component />} />
       </Routes>
@@ -42,23 +42,40 @@ describe('OidcCallback', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/auth/login')
   })
 
-  it('calls login and navigates home when token is present', () => {
-    renderWith('?token=mytoken123')
+  it('calls login and navigates home when token is present in fragment', () => {
+    renderWith('#token=mytoken123')
     expect(mockLogin).toHaveBeenCalledWith({ token: 'mytoken123' })
     expect(mockNavigate).toHaveBeenCalledWith('/')
   })
 
-  it('calls location.replace when redirect_to is set', () => {
+  it('calls location.replace when redirect_to is a safe relative path', () => {
     const replaceMock = vi.fn()
-    vi.stubGlobal('location', { replace: replaceMock })
-    renderWith('?token=mytoken123&redirect_to=%2Fdashboard')
+    vi.stubGlobal('location', {
+      replace: replaceMock,
+      hash: '#token=mytoken123&redirect_to=%2Fdashboard',
+      pathname: '/auth/oidc/return',
+      search: '',
+    })
+    renderWith('#token=mytoken123&redirect_to=%2Fdashboard')
     expect(mockLogin).toHaveBeenCalledWith({ token: 'mytoken123' })
     expect(replaceMock).toHaveBeenCalledWith('/dashboard')
   })
 
+  it('ignores unsafe absolute redirect_to and navigates home', () => {
+    renderWith('#token=mytoken123&redirect_to=https%3A%2F%2Fevil.com')
+    expect(mockLogin).toHaveBeenCalledWith({ token: 'mytoken123' })
+    expect(mockNavigate).toHaveBeenCalledWith('/')
+  })
+
+  it('ignores protocol-relative redirect_to and navigates home', () => {
+    renderWith('#token=mytoken123&redirect_to=%2F%2Fevil.com')
+    expect(mockLogin).toHaveBeenCalledWith({ token: 'mytoken123' })
+    expect(mockNavigate).toHaveBeenCalledWith('/')
+  })
+
   it('navigates to /auth/login when login throws', () => {
     mockLogin.mockImplementation(() => { throw new Error('login failed') })
-    renderWith('?token=badtoken')
+    renderWith('#token=badtoken')
     expect(mockNavigate).toHaveBeenCalledWith('/auth/login')
   })
 })

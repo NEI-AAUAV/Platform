@@ -44,8 +44,15 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    # Revert hashed_password to non-nullable
-    # Note: This will fail if there are OIDC users without passwords
+    bind = op.get_bind()
+
+    # OIDC-only users have NULL hashed_password; reverting the column to NOT NULL
+    # would fail against such rows. Delete those users first so the schema change
+    # can proceed cleanly.
+    bind.execute(
+        sa.text('DELETE FROM nei."user" WHERE hashed_password IS NULL')
+    )
+
     op.alter_column(
         "user",
         "hashed_password",
@@ -53,14 +60,12 @@ def downgrade() -> None:
         nullable=False,
         schema="nei",
     )
-    
-    # Drop unique constraint
+
     op.drop_constraint(
         op.f("uq_user_authentik_sub"),
         "user",
         schema="nei",
         type_="unique",
     )
-    
-    # Drop authentik_sub column
+
     op.drop_column("user", "authentik_sub", schema="nei")

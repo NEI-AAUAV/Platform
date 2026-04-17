@@ -1,14 +1,36 @@
 import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUserStore } from "stores/useUserStore";
 
+// Parse URL fragment (#foo=bar&baz=qux). Returns {} when absent.
+function parseHash(hash) {
+  if (!hash || hash.length < 2) return {};
+  return Object.fromEntries(new URLSearchParams(hash.slice(1)));
+}
+
+function isSafeRedirect(value) {
+  if (!value || typeof value !== "string") return false;
+  if (!value.startsWith("/")) return false;
+  if (value.startsWith("//") || value.startsWith("/\\")) return false;
+  return true;
+}
+
 export function Component() {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = searchParams.get("token");
-    const redirect_to = searchParams.get("redirect_to");
+    const params = parseHash(globalThis.location.hash);
+    const token = params.token;
+    const redirect_to = params.redirect_to;
+
+    // Clear the token from the URL so it doesn't linger in browser history.
+    if (globalThis.history?.replaceState) {
+      globalThis.history.replaceState(
+        null,
+        "",
+        globalThis.location.pathname + globalThis.location.search
+      );
+    }
 
     if (!token) {
       navigate("/auth/login");
@@ -22,7 +44,7 @@ export function Component() {
       return;
     }
 
-    if (redirect_to) {
+    if (isSafeRedirect(redirect_to)) {
       globalThis.location.replace(redirect_to);
     } else {
       navigate("/");
