@@ -66,6 +66,7 @@ if settings.OIDC_ENABLED:
     client_kwargs: dict = {
         "scope": " ".join(settings.OIDC_SCOPES),
         "token_endpoint_auth_method": "client_secret_post",
+        "code_challenge_method": "S256",
     }
     if not settings.PRODUCTION:
         client_kwargs["verify"] = False
