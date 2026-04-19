@@ -34,6 +34,8 @@ from typing import Annotated, Optional
 
 import httpx
 from authlib.integrations.starlette_client import OAuth
+from authlib.jose import JsonWebKey, jwt
+from authlib.jose.errors import JoseError
 from sqlalchemy.exc import IntegrityError
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
@@ -94,16 +96,22 @@ def _signer() -> URLSafeTimedSerializer:
 
 def _set_state_cookie(
     response: Response,
-    nonce: str,
+    state: str,
     *,
+    oidc_nonce: Optional[str] = None,
     redirect_to: Optional[str] = None,
     user_id: Optional[int] = None,
+    code_verifier: Optional[str] = None,
 ) -> None:
-    payload: dict = {"n": nonce}
+    payload: dict = {"s": state}
+    if oidc_nonce:
+        payload["n"] = oidc_nonce
     if redirect_to:
         payload["r"] = redirect_to
     if user_id is not None:
         payload["u"] = user_id
+    if code_verifier:
+        payload["v"] = code_verifier
     response.set_cookie(
         _STATE_COOKIE,
         _signer().dumps(payload),
@@ -114,7 +122,7 @@ def _set_state_cookie(
     )
 
 
-def _verify_and_pop_state_cookie(request: Request, response: Response, nonce: str) -> dict:
+def _verify_and_pop_state_cookie(request: Request, response: Response, state: str) -> dict:
     cookie_val = request.cookies.get(_STATE_COOKIE)
     response.delete_cookie(_STATE_COOKIE, httponly=True, samesite="lax")
 
@@ -128,7 +136,10 @@ def _verify_and_pop_state_cookie(request: Request, response: Response, nonce: st
     except BadSignature:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid OAuth state")
 
-    if payload.get("n") != nonce:
+    # Constant-time comparison; also handle the pre-migration "n" key for
+    # cookies issued by the previous version of this code.
+    stored = payload.get("s") or payload.get("n")
+    if not stored or not secrets.compare_digest(stored, state):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "OAuth state mismatch")
 
     return payload
@@ -165,24 +176,71 @@ async def _load_endpoints() -> tuple[str, str]:
     return meta["token_endpoint"], meta["userinfo_endpoint"]
 
 
+async def _fetch_jwks(jwks_uri: str) -> dict:
+    verify_ssl = settings.PRODUCTION
+    async with httpx.AsyncClient(verify=verify_ssl) as client:
+        resp = await client.get(jwks_uri)
+        resp.raise_for_status()
+        return resp.json()
+
+
+async def _validate_id_token(
+    id_token: str,
+    *,
+    expected_nonce: Optional[str],
+    expected_sub: Optional[str],
+) -> None:
+    """Validate the ID token's signature, issuer, audience, expiry, and nonce.
+
+    Raises HTTPException(401) on any validation failure. The token is
+    authoritative for identity claims; the userinfo response is only trusted
+    after this passes.
+    """
+    meta = await oauth.authentik.load_server_metadata()
+    jwks = await _fetch_jwks(meta["jwks_uri"])
+    key_set = JsonWebKey.import_key_set(jwks)
+
+    claims_options = {
+        "iss": {"essential": True, "values": [meta["issuer"]]},
+        "aud": {"essential": True, "values": [settings.OIDC_CLIENT_ID]},
+        "exp": {"essential": True},
+    }
+    try:
+        claims = jwt.decode(id_token, key_set, claims_options=claims_options)
+        claims.validate()
+    except JoseError as e:
+        logger.warning(f"ID token validation failed: {e}")
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid ID token")
+
+    if expected_nonce and claims.get("nonce") != expected_nonce:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "ID token nonce mismatch")
+
+    if expected_sub and claims.get("sub") != expected_sub:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "ID token subject mismatch")
+
+
 async def _exchange_code(
     code: str,
     redirect_uri: str,
     token_endpoint: str,
     userinfo_endpoint: str,
+    code_verifier: Optional[str] = None,
 ) -> tuple[dict, Optional[str]]:
     """Returns (userinfo, id_token)."""
     verify_ssl = settings.PRODUCTION
+    token_data = {
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": redirect_uri,
+        "client_id": settings.OIDC_CLIENT_ID,
+        "client_secret": settings.OIDC_CLIENT_SECRET,
+    }
+    if code_verifier:
+        token_data["code_verifier"] = code_verifier
     async with httpx.AsyncClient(verify=verify_ssl) as client:
         token_resp = await client.post(
             token_endpoint,
-            data={
-                "grant_type": "authorization_code",
-                "code": code,
-                "redirect_uri": redirect_uri,
-                "client_id": settings.OIDC_CLIENT_ID,
-                "client_secret": settings.OIDC_CLIENT_SECRET,
-            },
+            data=token_data,
         )
         token_resp.raise_for_status()
         token = token_resp.json()
@@ -427,12 +485,21 @@ async def oidc_login(
     if redirect_to and not safe_redirect:
         logger.warning(f"Rejecting unsafe redirect_to: {redirect_to!r}")
 
-    nonce = secrets.token_urlsafe(32)
+    state = secrets.token_urlsafe(32)
+    oidc_nonce = secrets.token_urlsafe(32)
     await oauth.authentik.load_server_metadata()
-    auth_url_data = await oauth.authentik.create_authorization_url(_callback_uri(), state=nonce)
+    auth_url_data = await oauth.authentik.create_authorization_url(
+        _callback_uri(), state=state, nonce=oidc_nonce,
+    )
 
     redirect_response = RedirectResponse(url=auth_url_data["url"])
-    _set_state_cookie(redirect_response, nonce, redirect_to=safe_redirect)
+    _set_state_cookie(
+        redirect_response,
+        state,
+        oidc_nonce=oidc_nonce,
+        redirect_to=safe_redirect,
+        code_verifier=auth_url_data.get("code_verifier"),
+    )
     return redirect_response
 
 
@@ -455,12 +522,26 @@ async def oidc_callback(
     state_payload = _verify_and_pop_state_cookie(request, response, state)
     raw_redirect = state_payload.get("r")
     redirect_to = raw_redirect if _is_safe_redirect(raw_redirect) else None
+    code_verifier = state_payload.get("v")
+    expected_nonce = state_payload.get("n")
 
     try:
         token_endpoint, userinfo_endpoint = await _load_endpoints()
-        userinfo, id_token = await _exchange_code(code, _callback_uri(), token_endpoint, userinfo_endpoint)
+        userinfo, id_token = await _exchange_code(
+            code, _callback_uri(), token_endpoint, userinfo_endpoint,
+            code_verifier=code_verifier,
+        )
+
+        if not id_token:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Missing ID token from identity provider")
+        await _validate_id_token(
+            id_token,
+            expected_nonce=expected_nonce,
+            expected_sub=userinfo.get("sub"),
+        )
+
         logger.debug(
-            "OIDC userinfo received (sub=%s, groups=%s, scopes=%s)",
+            "OIDC userinfo received (sub={}, groups={}, scopes={})",
             userinfo.get("sub"),
             userinfo.get("groups"),
             userinfo.get("scopes"),
@@ -526,12 +607,21 @@ async def start_oidc_link(
     if user.authentik_sub:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Account is already linked to Authentik")
 
-    nonce = secrets.token_urlsafe(32)
+    state = secrets.token_urlsafe(32)
+    oidc_nonce = secrets.token_urlsafe(32)
     await oauth.authentik.load_server_metadata()
-    auth_url_data = await oauth.authentik.create_authorization_url(_link_callback_uri(), state=nonce)
+    auth_url_data = await oauth.authentik.create_authorization_url(
+        _link_callback_uri(), state=state, nonce=oidc_nonce,
+    )
 
     link_response = RedirectResponse(url=auth_url_data["url"])
-    _set_state_cookie(link_response, nonce, user_id=auth_data.sub)
+    _set_state_cookie(
+        link_response,
+        state,
+        oidc_nonce=oidc_nonce,
+        user_id=auth_data.sub,
+        code_verifier=auth_url_data.get("code_verifier"),
+    )
     return link_response
 
 
@@ -556,6 +646,8 @@ async def oidc_link_callback(
     user_id = state_payload.get("u")
     if user_id is None:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid state: missing user context")
+    code_verifier = state_payload.get("v")
+    expected_nonce = state_payload.get("n")
 
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
@@ -565,7 +657,18 @@ async def oidc_link_callback(
 
     try:
         token_endpoint, userinfo_endpoint = await _load_endpoints()
-        userinfo, _ = await _exchange_code(code, _link_callback_uri(), token_endpoint, userinfo_endpoint)
+        userinfo, id_token = await _exchange_code(
+            code, _link_callback_uri(), token_endpoint, userinfo_endpoint,
+            code_verifier=code_verifier,
+        )
+
+        if not id_token:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Missing ID token from identity provider")
+        await _validate_id_token(
+            id_token,
+            expected_nonce=expected_nonce,
+            expected_sub=userinfo.get("sub"),
+        )
 
         authentik_sub = userinfo.get("sub")
         if not authentik_sub:

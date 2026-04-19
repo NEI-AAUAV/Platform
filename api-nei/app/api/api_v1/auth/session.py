@@ -165,14 +165,18 @@ async def logout(
     db.commit()
 
     end_session_url: Optional[str] = None
-    if settings.OIDC_ENABLED:
-        # Derive end-session URL from discovery URL:
-        # .../o/{slug}/.well-known/openid-configuration -> .../o/{slug}/end-session/
+    if settings.OIDC_ENABLED and device_login.oidc_id_token:
+        # RP-initiated logout: redirect the user's browser through Authentik's
+        # end-session endpoint so the SSO cookie is cleared. Without id_token_hint
+        # Authentik would show a confirmation prompt; we already authenticated
+        # this request via refresh token, so pass the hint to skip it.
         idp_base = settings.OIDC_DISCOVERY_URL.split("/.well-known/")[0]
-        post_logout_uri = settings.OIDC_REDIRECT_BASE_URL
-        end_session_url = f"{idp_base}/end-session/?post_logout_redirect_uri={post_logout_uri}"
-        if device_login.oidc_id_token:
-            end_session_url += f"&id_token_hint={device_login.oidc_id_token}"
+        post_logout_uri = f"{settings.OIDC_REDIRECT_BASE_URL}/auth/login"
+        end_session_url = (
+            f"{idp_base}/end-session/"
+            f"?post_logout_redirect_uri={post_logout_uri}"
+            f"&id_token_hint={device_login.oidc_id_token}"
+        )
 
     return LogoutResponse(
         status="success",

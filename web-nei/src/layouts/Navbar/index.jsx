@@ -272,18 +272,17 @@ const Navbar = () => {
         destroyArraialSocket();
         useUserStore.getState().logout();
         if (data?.end_session_url) {
-          const iframe = document.createElement("iframe");
-          iframe.style.display = "none";
-          iframe.src = data.end_session_url;
-          document.body.appendChild(iframe);
-          setTimeout(() => {
-            iframe.remove();
-          }, 2000);
+          // Top-level navigation so Authentik's Set-Cookie on the logout
+          // response actually clears the SSO cookie. An iframe would not.
+          window.location.href = data.end_session_url;
+          return;
         }
         navigate("/");
       })
       .catch((err) => {
         console.error(err);
+        useUserStore.getState().logout();
+        navigate("/");
       });
   }
 
