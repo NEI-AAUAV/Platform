@@ -21,7 +21,20 @@ vi.mock('../../../stores/useUserStore', () => ({
 
 const { Component } = await import('../../../pages/auth/OidcCallback/index')
 
+// The component reads globalThis.location.hash directly. MemoryRouter keeps
+// its URL in React context, not window.location — so every test that needs a
+// hash must stub `location`. Centralize that in renderWith and expose the
+// location.replace spy for tests that assert on it.
+let locationReplaceSpy
+
 function renderWith(hash = '') {
+  locationReplaceSpy = vi.fn()
+  vi.stubGlobal('location', {
+    replace: locationReplaceSpy,
+    hash,
+    pathname: '/auth/oidc/return',
+    search: '',
+  })
   return render(
     <MemoryRouter initialEntries={[`/auth/oidc/return${hash}`]}>
       <Routes>
@@ -49,16 +62,9 @@ describe('OidcCallback', () => {
   })
 
   it('calls location.replace when redirect_to is a safe relative path', () => {
-    const replaceMock = vi.fn()
-    vi.stubGlobal('location', {
-      replace: replaceMock,
-      hash: '#token=mytoken123&redirect_to=%2Fdashboard',
-      pathname: '/auth/oidc/return',
-      search: '',
-    })
     renderWith('#token=mytoken123&redirect_to=%2Fdashboard')
     expect(mockLogin).toHaveBeenCalledWith({ token: 'mytoken123' })
-    expect(replaceMock).toHaveBeenCalledWith('/dashboard')
+    expect(locationReplaceSpy).toHaveBeenCalledWith('/dashboard')
   })
 
   it('ignores unsafe absolute redirect_to and navigates home', () => {
