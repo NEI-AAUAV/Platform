@@ -69,6 +69,9 @@ services:
       EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
       EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
       IDP_SECRET_KEY: ${IDP_SECRET_KEY}
+      OIDC_ENABLED: ${OIDC_ENABLED:-false}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
     volumes:
       - /deploy/api-nei/static:/api_nei/static
