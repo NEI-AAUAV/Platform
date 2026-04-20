@@ -41,7 +41,7 @@ export function Component() {
     try {
       useUserStore.getState().login({ token });
     } catch {
-      navigate("/auth/login");
+      navigate("/auth/login?error=session_failed");
       return;
     }
 

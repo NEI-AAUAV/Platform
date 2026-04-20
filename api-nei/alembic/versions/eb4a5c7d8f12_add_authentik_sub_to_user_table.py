@@ -44,12 +44,21 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    # WARNING: This downgrade is effectively one-way for OIDC-only users.
+    #
+    # OIDC-only users have NULL hashed_password. Reverting hashed_password to
+    # NOT NULL requires writing *something* to those rows — we use a
+    # placeholder that cannot match any bcrypt verify. A re-upgrade does NOT
+    # restore the original NULLs; those users now have a garbage hash and
+    # (since authentik_sub is dropped below) no way back into their account
+    # except a password reset via email.
+    #
+    # Before running this in production:
+    #   1. Snapshot the database.
+    #   2. Either send password-reset emails to every OIDC-only user first,
+    #      or communicate the outage to users.
+    #   3. Expect to manually reconcile authentik_sub after re-upgrade.
     bind = op.get_bind()
-
-    # OIDC-only users have NULL hashed_password; reverting to NOT NULL would
-    # fail against those rows. Set a placeholder so the schema change can
-    # proceed without destroying data. Accounts with this placeholder cannot
-    # log in via password (which is correct — they must use OIDC or reset).
     bind.execute(
         sa.text(
             "UPDATE nei.\"user\" SET hashed_password = '!oidc-placeholder!' "

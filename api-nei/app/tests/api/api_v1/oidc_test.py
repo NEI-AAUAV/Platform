@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.exc import IntegrityError
 
 from app.api.api_v1.auth.oidc import (
+    _is_email_verified,
     _is_safe_redirect,
     _parse_name,
     _parse_scopes,
@@ -242,10 +243,30 @@ def test_is_safe_redirect_accepts_relative_paths(value):
         "/\tevil.com",          # tab confusion
         "/ /evil.com",          # space confusion
         "/\nevil.com",          # newline confusion
+        "/%2f/evil.com",        # percent-encoded slash-slash
+        "/%09/evil.com",        # percent-encoded tab
     ],
 )
 def test_is_safe_redirect_rejects_unsafe_values(value):
     assert _is_safe_redirect(value) is False
+
+
+# ---------------------------------------------------------------------------
+# _is_email_verified
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("value", [True, "true", "TRUE", "True"])
+def test_is_email_verified_accepts(value):
+    assert _is_email_verified(value) is True
+
+
+@pytest.mark.parametrize(
+    "value",
+    [False, "false", "0", "1", 0, 1, None, "", "yes", {"verified": True}],
+)
+def test_is_email_verified_rejects(value):
+    assert _is_email_verified(value) is False
 
 
 # ---------------------------------------------------------------------------

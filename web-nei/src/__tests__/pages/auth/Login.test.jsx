@@ -59,4 +59,31 @@ describe('Login', () => {
       expect.stringContaining('redirect_to=')
     )
   })
+
+  it('shows error screen and does NOT auto-redirect when error=unverified', () => {
+    const { getByText } = renderWith(
+      '?error=unverified',
+      { sessionLoading: false, token: null },
+    )
+    expect(replaceMock).not.toHaveBeenCalled()
+    expect(getByText('Verify your email to continue')).toBeTruthy()
+  })
+
+  it('shows generic error for unknown error code', () => {
+    const { getByText } = renderWith(
+      '?error=something_weird',
+      { sessionLoading: false, token: null },
+    )
+    expect(replaceMock).not.toHaveBeenCalled()
+    expect(getByText('Sign-in failed')).toBeTruthy()
+  })
+
+  it('preserves redirect_to on the Try again link', () => {
+    const { getByText } = renderWith(
+      '?error=session&redirect_to=%2Fdashboard',
+      { sessionLoading: false, token: null },
+    )
+    const link = getByText('Try again').closest('a')
+    expect(link.getAttribute('href')).toBe('/auth/login?redirect_to=%2Fdashboard')
+  })
 })

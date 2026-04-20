@@ -30,7 +30,8 @@ in Authentik).  Falls back to `groups`, stripping an optional "nei-" prefix.
 
 import json
 import secrets
-from typing import Annotated, Optional
+from typing import Annotated, Any, Optional
+from urllib.parse import quote, unquote
 
 import httpx
 from authlib.integrations.starlette_client import OAuth
@@ -151,16 +152,29 @@ def _verify_and_pop_state_cookie(request: Request, response: Response, state: st
 
 def _is_safe_redirect(value: Optional[str]) -> bool:
     """Only allow relative, same-origin paths. Blocks open-redirect payloads
-    like '//evil.com', 'http://evil.com', and backslash-prefixed variants."""
+    like '//evil.com', 'http://evil.com', percent-encoded variants, and
+    whitespace-prefixed bypasses. Decoded once, then re-checked."""
     if not value or not isinstance(value, str):
         return False
     v = value.strip()
-    if not v.startswith("/"):
+    try:
+        decoded = unquote(v).strip()
+    except Exception:
         return False
-    # '//foo', '/\foo', and whitespace-confusion vectors like '/\t/evil.com'.
-    if len(v) > 1 and v[1] in ("/", "\\", "\t", " ", "\n", "\r"):
-        return False
+    for candidate in (v, decoded):
+        if not candidate.startswith("/"):
+            return False
+        if len(candidate) > 1 and candidate[1] in ("/", "\\", "\t", " ", "\n", "\r"):
+            return False
     return True
+
+
+def _is_email_verified(claim: Any) -> bool:
+    """Accept `email_verified` only if it's the boolean True or the string
+    'true' (case-insensitive). All other values — False, "false", 0, 1,
+    None, missing — return False. This avoids Python's boolean trap where
+    bool("false") is True."""
+    return claim is True or (isinstance(claim, str) and claim.lower() == "true")
 
 
 def _callback_uri() -> str:
@@ -390,10 +404,7 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
     """Get or create a platform user from Authentik userinfo, syncing on every login."""
     authentik_sub = userinfo.get("sub")
     email = userinfo.get("email")
-    _ev_claim = userinfo.get("email_verified")
-    email_verified = _ev_claim is True or (
-        isinstance(_ev_claim, str) and _ev_claim.lower() == "true"
-    )
+    email_verified = _is_email_verified(userinfo.get("email_verified"))
 
     if not authentik_sub or not email:
         raise HTTPException(
@@ -411,8 +422,20 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
         )
 
     name, surname = _parse_name(userinfo)
-    nmec: Optional[int] = userinfo.get("nmec")
-    iupi: Optional[str] = userinfo.get("iupi")
+    # Defensive coercion: Authentik property mappings are user-authored Python
+    # and may emit the wrong type (list/dict) if misconfigured. Discard
+    # unparseable values rather than crash downstream DB writes.
+    _raw_nmec = userinfo.get("nmec")
+    nmec: Optional[int] = None
+    if isinstance(_raw_nmec, int):
+        nmec = _raw_nmec
+    elif isinstance(_raw_nmec, str) and _raw_nmec.isdigit():
+        nmec = int(_raw_nmec)
+
+    _raw_iupi = userinfo.get("iupi")
+    iupi: Optional[str] = (
+        _raw_iupi[:64] if isinstance(_raw_iupi, str) and _raw_iupi else None
+    )
     scopes = _parse_scopes(userinfo)
 
     user = _find_user_by_sub_or_email(
@@ -464,6 +487,15 @@ def _require_oidc() -> None:
             status.HTTP_503_SERVICE_UNAVAILABLE,
             "OIDC authentication is not enabled",
         )
+
+
+def _login_error_redirect(code: str) -> RedirectResponse:
+    """Send the user back to the frontend login page with an error code so the
+    UI can render a specific, actionable message instead of raw JSON."""
+    return RedirectResponse(
+        url=f"{settings.OIDC_REDIRECT_BASE_URL}/auth/login?error={quote(code, safe='')}",
+        status_code=302,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -564,9 +596,9 @@ async def oidc_callback(
         # string (?): fragments are not sent to the server, not stored in access
         # logs, and not included in Referer headers. The frontend reads it from
         # window.location.hash and clears it after use.
-        fragment = f"token={access_token}"
+        fragment = f"token={quote(access_token, safe='')}"
         if redirect_to:
-            fragment += f"&redirect_to={redirect_to}"
+            fragment += f"&redirect_to={quote(redirect_to, safe='')}"
         frontend_url = f"{settings.OIDC_REDIRECT_BASE_URL}/auth/oidc/return#{fragment}"
 
         redirect = RedirectResponse(url=frontend_url, status_code=302)
@@ -576,14 +608,24 @@ async def oidc_callback(
 
         return redirect
 
-    except HTTPException:
-        raise
+    except HTTPException as e:
+        # Map to friendly error codes the frontend can render. 503 (OIDC
+        # disabled) still raises so API clients see it clearly.
+        if e.status_code == status.HTTP_503_SERVICE_UNAVAILABLE:
+            raise
+        error_code = {
+            status.HTTP_403_FORBIDDEN: "unverified",
+            status.HTTP_401_UNAUTHORIZED: "session",
+            status.HTTP_400_BAD_REQUEST: "invalid_response",
+        }.get(e.status_code, "unknown")
+        logger.info(f"OIDC callback failed ({e.status_code}): {e.detail}")
+        return _login_error_redirect(error_code)
     except httpx.HTTPError as e:
-        logger.exception(f"OIDC token/userinfo exchange failed: {e}")
-        raise HTTPException(status.HTTP_502_BAD_GATEWAY, "Identity provider unreachable")
+        logger.warning(f"OIDC token/userinfo exchange failed: {e}")
+        return _login_error_redirect("idp_unreachable")
     except Exception:
         logger.exception("Unhandled OIDC callback error")
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Authentication failed")
+        return _login_error_redirect("unknown")
 
 
 @router.post(
@@ -674,8 +716,7 @@ async def oidc_link_callback(
         if not authentik_sub:
             raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid OIDC response: missing sub")
 
-        _ev = userinfo.get("email_verified")
-        if not (_ev is True or (isinstance(_ev, str) and _ev.lower() == "true")):
+        if not _is_email_verified(userinfo.get("email_verified")):
             raise HTTPException(
                 status.HTTP_403_FORBIDDEN,
                 "Authentik account email is not verified — verify your email before linking",

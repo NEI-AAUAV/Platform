@@ -79,9 +79,9 @@ describe('OidcCallback', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/')
   })
 
-  it('navigates to /auth/login when login throws', () => {
+  it('navigates to /auth/login?error=session_failed when login throws', () => {
     mockLogin.mockImplementation(() => { throw new Error('login failed') })
     renderWith('#token=badtoken')
-    expect(mockNavigate).toHaveBeenCalledWith('/auth/login')
+    expect(mockNavigate).toHaveBeenCalledWith('/auth/login?error=session_failed')
   })
 })
