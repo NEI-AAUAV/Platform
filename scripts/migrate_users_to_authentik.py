@@ -182,9 +182,37 @@ class AuthentikAPI:
         return r.json()
 
     def find_user_by_email(self, email: str) -> Optional[dict]:
+        """Return the first Authentik user with this email, or None.
+
+        Note: Authentik does not enforce email uniqueness at the storage layer,
+        so this may pick one of several matches. Prefer find_existing(user),
+        which tries platform_id first.
+        """
         result = self._get("/core/users/", params={"email": email})
         results = result.get("results", [])
         return results[0] if results else None
+
+    def find_user_by_platform_id(self, platform_id: int) -> Optional[dict]:
+        """Match an existing Authentik user by the platform_id attribute we
+        stamp at migration time. This is a stable identity even if the user's
+        email later changes."""
+        # Authentik supports JSON-attribute filters via ?attributes={"k":v}.
+        result = self._get(
+            "/core/users/",
+            params={"attributes": f'{{"platform_id":{int(platform_id)}}}'},
+        )
+        results = result.get("results", [])
+        return results[0] if results else None
+
+    def find_existing(self, user: "PlatformUser") -> Optional[dict]:
+        """Look for an already-migrated Authentik user for this platform user.
+        platform_id is authoritative; email is the fallback."""
+        existing = self.find_user_by_platform_id(user.id)
+        if existing:
+            return existing
+        if user.email:
+            return self.find_user_by_email(user.email)
+        return None
 
     def patch_user(self, pk: int, user: PlatformUser) -> None:
         """Update name, email and platform attributes on an existing Authentik user.
@@ -273,6 +301,11 @@ def inject_password_hash(authentik_conn, authentik_user_pk: int, django_hash: st
             "UPDATE authentik_core_user SET password = %s WHERE id = %s",
             (django_hash, authentik_user_pk),
         )
+        if cur.rowcount != 1:
+            authentik_conn.rollback()
+            raise RuntimeError(
+                f"Password UPDATE affected {cur.rowcount} rows for pk={authentik_user_pk}"
+            )
     authentik_conn.commit()
     return True
 
@@ -281,11 +314,82 @@ def inject_password_hash(authentik_conn, authentik_user_pk: int, django_hash: st
 # Main migration logic
 # ---------------------------------------------------------------------------
 
+def _upsert_authentik_user(
+    user: PlatformUser,
+    api: AuthentikAPI,
+    *,
+    dry_run: bool,
+    update_existing: bool,
+) -> tuple[Optional[int], str]:
+    """Create or update the Authentik user.
+
+    Returns (authentik_pk, status). `status` is one of:
+      "skipped"  - user already existed and --update-existing was not set
+      "updated"  - user already existed and was patched
+      "created"  - user did not exist (pk is None on dry-run)
+    """
+    existing = api.find_existing(user)
+    if existing:
+        authentik_pk = existing["pk"]
+        matched_by = (
+            "platform_id"
+            if (existing.get("attributes") or {}).get("platform_id") == user.id
+            else "email"
+        )
+        print(f"    Found existing Authentik user pk={authentik_pk} (matched by {matched_by}).")
+
+        if not update_existing:
+            print("    SKIP: user already migrated. Pass --update-existing to refresh attributes.")
+            return authentik_pk, "skipped"
+
+        if dry_run:
+            print(f"    [dry-run] Would PATCH name/email/platform attributes for pk={authentik_pk}")
+        else:
+            api.patch_user(authentik_pk, user)
+            print(f"    Attributes updated on pk={authentik_pk}.")
+        return authentik_pk, "updated"
+
+    if dry_run:
+        print(f"    [dry-run] Would create Authentik user for {user.email}")
+        return None, "created"
+
+    created = api.create_user(user)
+    authentik_pk = created["pk"]
+    print(f"    Created Authentik user pk={authentik_pk}.")
+    return authentik_pk, "created"
+
+
+def _inject_if_possible(
+    user: PlatformUser,
+    authentik_pk: Optional[int],
+    authentik_conn,
+    dry_run: bool,
+) -> bool:
+    if not user.hashed_password:
+        print("    NOTE: no password hash on platform (OIDC-only user). Skipping injection.")
+        return True
+    try:
+        django_hash = passlib_to_django_argon2(user.hashed_password)
+    except ValueError as e:
+        print(f"    SKIP: unsupported password hash format ({e}).")
+        return False
+    if authentik_pk is None:
+        print(f"    [dry-run] Would inject hash (len={len(django_hash)})")
+        return True
+    ok = inject_password_hash(authentik_conn, authentik_pk, django_hash, dry_run)
+    if ok:
+        print(f"    Password hash injected (len={len(django_hash)}).")
+    return ok
+
+
 def migrate_user(
     user: PlatformUser,
     api: AuthentikAPI,
     authentik_conn,
+    *,
     dry_run: bool,
+    update_existing: bool,
+    overwrite_passwords: bool,
 ) -> bool:
     print(f"\n  User #{user.id} — {user.name} {user.surname} <{user.email}>")
 
@@ -293,41 +397,17 @@ def migrate_user(
         print("    SKIP: no active email on record.")
         return False
 
-    # Check if already exists in Authentik
-    existing = api.find_user_by_email(user.email)
-    if existing:
-        authentik_pk = existing["pk"]
-        print(f"    Found existing Authentik user pk={authentik_pk} — updating attributes and hash.")
-        if dry_run:
-            print(f"    [dry-run] Would PATCH name/email/platform attributes for pk={authentik_pk}")
-        else:
-            api.patch_user(authentik_pk, user)
-    else:
-        if dry_run:
-            print(f"    [dry-run] Would create Authentik user for {user.email}")
-            authentik_pk = None
-        else:
-            created = api.create_user(user)
-            authentik_pk = created["pk"]
-            print(f"    Created Authentik user pk={authentik_pk}")
+    _pk, status = _upsert_authentik_user(
+        user, api, dry_run=dry_run, update_existing=update_existing,
+    )
 
-    # Handle password
-    if not user.hashed_password:
-        print("    NOTE: no password hash (OIDC-only user). Skipping hash injection.")
-        print("          User will need to set a password in Authentik or use SSO.")
+    if status == "skipped":
+        return True
+    if status == "updated" and not overwrite_passwords:
+        print("    Password: preserved (existing user; pass --overwrite-passwords to re-inject).")
         return True
 
-    django_hash = passlib_to_django_argon2(user.hashed_password)
-
-    if authentik_pk is None:
-        print(f"    [dry-run] Would inject hash (len={len(django_hash)})")
-        return True
-
-    ok = inject_password_hash(authentik_conn, authentik_pk, django_hash, dry_run)
-    if ok:
-        print(f"    Password hash injected (len={len(django_hash)}).")
-
-    return ok
+    return _inject_if_possible(user, _pk, authentik_conn, dry_run)
 
 
 def main():
@@ -352,6 +432,13 @@ def main():
                         help="Preview what would happen without making any changes")
     parser.add_argument("--no-verify-ssl", action="store_true",
                         help="Disable SSL verification (for self-signed certs)")
+    parser.add_argument("--update-existing", action="store_true",
+                        help="Refresh attributes on users that already exist in Authentik "
+                             "(default: skip them, so reruns only onboard new users).")
+    parser.add_argument("--overwrite-passwords", action="store_true",
+                        help="Re-inject the platform's password hash for users that already "
+                             "exist in Authentik. WARNING: clobbers passwords the user may "
+                             "have reset via Authentik. Default: off.")
     args = parser.parse_args()
 
     if not args.ids and not args.emails and not args.all_users:
@@ -416,7 +503,14 @@ def main():
     fail_count = 0
     for user in users:
         try:
-            success = migrate_user(user, api, authentik_conn, args.dry_run)
+            success = migrate_user(
+                user,
+                api,
+                authentik_conn,
+                dry_run=args.dry_run,
+                update_existing=args.update_existing,
+                overwrite_passwords=args.overwrite_passwords,
+            )
             if success:
                 ok_count += 1
             else:
