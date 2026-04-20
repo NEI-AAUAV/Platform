@@ -21,19 +21,25 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PRODUCTION: true
+      # Secrets (genuine credentials)
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-      EMAIL_SENDER_ADDRESS: ${{ secrets.EMAIL_SENDER_ADDRESS }}
-      EMAIL_SMTP_HOST: ${{ secrets.EMAIL_SMTP_HOST }}
       EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
-      EMAIL_SMTP_USER: ${{ secrets.EMAIL_SMTP_USER }}
       IDP_SECRET_KEY: ${{ secrets.IDP_SECRET_KEY }}
       RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
-      R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
       R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-      R2_BUCKET: ${{ secrets.R2_BUCKET }}
-      R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
+      OIDC_CLIENT_SECRET: ${{ secrets.OIDC_CLIENT_SECRET }}
+      AUTHENTIK_TOKEN: ${{ secrets.AUTHENTIK_TOKEN }}
+      # Variables (public / non-sensitive config)
+      EMAIL_SENDER_ADDRESS: ${{ vars.EMAIL_SENDER_ADDRESS }}
+      EMAIL_SMTP_HOST: ${{ vars.EMAIL_SMTP_HOST }}
+      EMAIL_SMTP_USER: ${{ vars.EMAIL_SMTP_USER }}
+      R2_ENDPOINT_URL: ${{ vars.R2_ENDPOINT_URL }}
+      R2_BUCKET: ${{ vars.R2_BUCKET }}
+      R2_PUBLIC_BASE_URL: ${{ vars.R2_PUBLIC_BASE_URL }}
+      OIDC_ENABLED: ${{ vars.OIDC_ENABLED || 'true' }}
+      OIDC_CLIENT_ID: ${{ vars.OIDC_CLIENT_ID }}
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
 
     steps:
@@ -121,20 +127,26 @@ jobs:
     runs-on: self-hosted
     env:
       PRODUCTION: true
+      # Secrets (genuine credentials)
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-      EMAIL_SENDER_ADDRESS: ${{ secrets.EMAIL_SENDER_ADDRESS }}
-      EMAIL_SMTP_HOST: ${{ secrets.EMAIL_SMTP_HOST }}
       EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
-      EMAIL_SMTP_USER: ${{ secrets.EMAIL_SMTP_USER }}
       IDP_SECRET_KEY: ${{ secrets.IDP_SECRET_KEY }}
       RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
-      R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
       R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-      R2_BUCKET: ${{ secrets.R2_BUCKET }}
-      R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
       TEAM_JWT_SECRET_KEY: ${{ secrets.TEAM_JWT_SECRET_KEY }}
+      OIDC_CLIENT_SECRET: ${{ secrets.OIDC_CLIENT_SECRET }}
+      AUTHENTIK_TOKEN: ${{ secrets.AUTHENTIK_TOKEN }}
+      # Variables (public / non-sensitive config)
+      EMAIL_SENDER_ADDRESS: ${{ vars.EMAIL_SENDER_ADDRESS }}
+      EMAIL_SMTP_HOST: ${{ vars.EMAIL_SMTP_HOST }}
+      EMAIL_SMTP_USER: ${{ vars.EMAIL_SMTP_USER }}
+      R2_ENDPOINT_URL: ${{ vars.R2_ENDPOINT_URL }}
+      R2_BUCKET: ${{ vars.R2_BUCKET }}
+      R2_PUBLIC_BASE_URL: ${{ vars.R2_PUBLIC_BASE_URL }}
+      OIDC_ENABLED: ${{ vars.OIDC_ENABLED || 'true' }}
+      OIDC_CLIENT_ID: ${{ vars.OIDC_CLIENT_ID }}
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
     steps:
     - name: Fix permissions before checkout
