@@ -19,6 +19,7 @@ from . import (
     arraial,
     arraial_ws,
     extensions,
+    admin,
 )
 
 
@@ -41,3 +42,4 @@ router.include_router(event.router, prefix="/event", tags=["Events"])
 router.include_router(arraial.router, prefix="/arraial", tags=["Arraial"])
 router.include_router(arraial_ws.router, tags=["Arraial WebSocket"])
 router.include_router(extensions.router, tags=["Extensions"])
+router.include_router(admin.router, prefix="/admin", tags=["Admin"])

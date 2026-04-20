@@ -268,13 +268,21 @@ const Navbar = () => {
   function logout() {
     service
       .logout()
-      .then(() => {
+      .then((data) => {
         destroyArraialSocket();
         useUserStore.getState().logout();
+        if (data?.end_session_url) {
+          // Top-level navigation so Authentik's Set-Cookie on the logout
+          // response actually clears the SSO cookie. An iframe would not.
+          window.location.href = data.end_session_url;
+          return;
+        }
         navigate("/");
       })
       .catch((err) => {
         console.error(err);
+        useUserStore.getState().logout();
+        navigate("/");
       });
   }
 

@@ -1,5 +1,6 @@
 from datetime import datetime
-from sqlalchemy import ForeignKey, ForeignKey
+from typing import Optional
+from sqlalchemy import ForeignKey, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.user import User
@@ -13,3 +14,4 @@ class DeviceLogin(Base):
     session_id: Mapped[int] = mapped_column(primary_key=True)
     refreshed_at: Mapped[datetime]
     expires_at: Mapped[datetime]
+    oidc_id_token: Mapped[Optional[str]] = mapped_column(Text, nullable=True)

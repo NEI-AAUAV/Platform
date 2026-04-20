@@ -88,7 +88,16 @@ def init_logging():
     # set logs output, level and format
     level_log = logging.INFO if settings.PRODUCTION else logging.DEBUG
     logger.remove(0)  # Remove default stderr sink
-    logger.add(sys.stderr, level=level_log, format=format_record)
+    # diagnose=False in production so tracebacks don't include frame locals —
+    # prevents sensitive values (OAuth codes, tokens, passwords) from being
+    # written to logs when an unexpected exception bubbles through.
+    logger.add(
+        sys.stderr,
+        level=level_log,
+        format=format_record,
+        diagnose=not settings.PRODUCTION,
+        backtrace=True,
+    )
     logger.level("INFO", color="<blue>")
     logger.level("WARNING", color="<yellow>")
     logger.level("ERROR", color="<red>")

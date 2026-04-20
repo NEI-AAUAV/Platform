@@ -34,6 +34,7 @@ class ScopeEnum(str, Enum):
     MANAGER_TACAUA = "manager-tacaua"
     MANAGER_FAMILY = "manager-family"
     MANAGER_ARRAIAL = "manager-arraial"
+    MANAGER_GAMIFICATION = "manager-gamification"
     DEFAULT = "default"
 
 
@@ -81,6 +82,7 @@ class AdminUserListing(ManagerUserListing):
     iupi: Optional[Annotated[str, StringConstraints(max_length=36)]]
     scopes: List[str] = []
     email: Optional[str] = None
+    authentik_sub: Optional[str] = None
 
 
 class UserCreateBase(UserBase):

@@ -1,245 +1,84 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import logo from "assets/icons/ua_logo.svg";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useUserStore } from "stores/useUserStore";
-
-import classNames from "classnames";
 import config from "config";
 
-import { useLoading } from "utils/hooks";
-
-import service from "services/NEIService";
-
-const Status = {
-  loading: 1,
-  success: 2,
-  error: 3,
-  loadingLogin: 4,
-  loadingLoginIdP: 5,
-  errorLogin: 6,
-  errorLoginIdP: 7,
+// Error codes surfaced by the backend's oidc_callback. Keep in sync with
+// _login_error_redirect in api-nei/app/api/api_v1/auth/oidc.py.
+const ERROR_COPY = {
+  unverified: {
+    title: "Verify your email to continue",
+    body: "We sent you a verification link. Check your inbox (and spam folder), click the link, and come back to sign in.",
+  },
+  session: {
+    title: "Your sign-in session expired",
+    body: "Too much time passed between starting and completing sign-in. Please try again.",
+  },
+  idp_unreachable: {
+    title: "Sign-in service is temporarily unavailable",
+    body: "We couldn't reach the identity provider. Please try again in a moment.",
+  },
+  session_failed: {
+    title: "Something went wrong starting your session",
+    body: "Please try signing in again.",
+  },
+  invalid_response: {
+    title: "Sign-in failed",
+    body: "The identity provider returned an unexpected response. Please try again.",
+  },
+  unknown: {
+    title: "Sign-in failed",
+    body: "An unexpected error happened. Please try again, or contact us if the problem persists.",
+  },
 };
 
-export function Component({ onRedirect }) {
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-  const navigate = useNavigate();
+function startOidcLogin(redirect_to) {
+  const query = redirect_to ? `?redirect_to=${encodeURIComponent(redirect_to)}` : "";
+  globalThis.location.replace(`${config.API_NEI_URL}/auth/oidc/login${query}`);
+}
+
+export function Component() {
   const [searchParams] = useSearchParams();
-  const [response, setResponse] = useLoading({
-    status: onRedirect && Status.loadingLoginIdP,
-  });
   const { sessionLoading, token } = useUserStore((state) => state);
 
+  const error = searchParams.get("error");
   const redirect_to = searchParams.get("redirect_to");
 
   useEffect(() => {
-    if (!sessionLoading && token) {
-      if (redirect_to) window.location.replace(redirect_to);
-      else navigate("/");
-    }
-  }, [sessionLoading, token]);
-
-  // UseEffect to handle the response from the API
-  useEffect(() => {
-    switch (response.status) {
-      case Status.errorLogin:
-        addErrors();
-        break;
-      default:
-        removeErrors();
-        break;
-    }
-  }, [response]);
-
-  // UseEffect to handle the redirect from the IdP
-  useEffect(() => {
-    if (!onRedirect) {
+    if (sessionLoading) return;
+    if (token) {
+      globalThis.location.replace(redirect_to || "/");
       return;
     }
-    if (searchParams.get("consent") === "no") {
-      setResponse({
-        status: Status.errorLoginIdP,
-        message: "Permissão não concedida.",
-      });
-      return;
-    }
+    if (error) return; // Render error screen; don't auto-loop into OIDC.
+    startOidcLogin(redirect_to);
+  }, [sessionLoading, token, error, redirect_to]);
 
-    const params = {
-      oauthToken: searchParams.get("oauth_token"),
-      oauthVerifier: searchParams.get("oauth_verifier"),
-    };
-
-    service
-      .redirectIdP(params)
-      .then(({ access_token }) => {
-        useUserStore.getState().login({ token: access_token });
-        setResponse(
-          {
-            status: Status.success,
-          },
-          2000
-        );
-      })
-      .catch(() => {
-        setResponse(
-          {
-            status: Status.errorLoginIdP,
-            message: "Link inválido. Tenta novamente.",
-          },
-          2000
-        );
-      });
-  }, []);
-
-  const loginIdP = useCallback(() => {
-    setResponse({ status: Status.loadingLoginIdP });
-    service
-      .loginIdP()
-      .then(({ url }) => {
-        // Redirect to the IdP service
-        window.location.href = url;
-      })
-      .catch(() => {
-        setResponse(
-          {
-            status: Status.errorLoginIdP,
-            message: "Serviço indisponível.",
-          },
-          1000
-        );
-      });
-  });
-
-  const login = useCallback((event) => {
-    event.preventDefault();
-    setResponse({ status: Status.loadingLogin });
-
-    const formData = new FormData(event.target);
-    service
-      .login(formData)
-      .then(({ access_token }) => {
-        useUserStore.getState().login({ token: access_token });
-        setResponse({ status: Status.success }, 0);
-      })
-      .catch((e) => {
-        console.error(e);
-        setResponse(
-          {
-            status: Status.errorLogin,
-            message: "Credenciais inválidas. Tenta novamente.",
-          },
-          1000
-        );
-      });
-  });
-
-  const addErrors = useCallback(() => {
-    emailRef.current.classList.add("input-error");
-    passwordRef.current.classList.add("input-error");
-  });
-
-  const removeErrors = useCallback(() => {
-    emailRef.current.classList.remove("input-error");
-    passwordRef.current.classList.remove("input-error");
-  });
-
-  const loading = [
-    Status.loading,
-    Status.loadingLogin,
-    Status.loadingLoginIdP,
-  ].includes(response.status);
+  if (error) {
+    const copy = ERROR_COPY[error] || ERROR_COPY.unknown;
+    const retryHref = redirect_to
+      ? `/auth/login?redirect_to=${encodeURIComponent(redirect_to)}`
+      : "/auth/login";
+    return (
+      <div className="flex h-screen items-center justify-center p-6">
+        <div className="card w-full max-w-md bg-base-100 shadow-xl">
+          <div className="card-body items-center text-center">
+            <h2 className="card-title text-2xl">{copy.title}</h2>
+            <p className="py-2 text-base-content/80">{copy.body}</p>
+            <div className="card-actions mt-4">
+              <Link to={retryHref} className="btn btn-primary" replace>
+                Try again
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="rounded-box m-auto flex h-fit max-w-lg flex-col bg-base-200 px-3 py-8 align-middle shadow-secondary drop-shadow-md xs:px-14 sm:max-w-md">
-      <div className="text-center text-3xl">Iniciar sessão</div>
-      {config.PROCUCTION ? (
-        <>
-          <button
-            disabled={loading}
-            onClick={loginIdP}
-            className={classNames(
-              "btn-block btn relative m-auto mt-8 before:absolute before:left-8",
-              {
-                loading: response.status === Status.loadingLoginIdP,
-              }
-            )}
-          >
-            <img src={logo} className="object-fit h-7 bg-center" />
-          </button>
-          <p
-            className={classNames("mt-2 text-center text-xs text-error", {
-              hidden: response.status !== Status.errorLoginIdP,
-            })}
-          >
-            {response.message}
-          </p>
-          <div className="divider mt-8 text-base-content/50">ou</div>
-        </>
-      ) : (
-        <div className="mt-8" />
-      )}
-      <form onSubmit={login}>
-        <div className="flex flex-col">
-          <label className="label">
-            <span className="label-text">Email</span>
-          </label>
-          <input
-            className="input-bordered input mb-1 w-full"
-            name="username"
-            placeholder="Email"
-            type="email"
-            ref={emailRef}
-            required
-          />
-          <label className="label">
-            <span className="label-text">Palavra-passe</span>
-          </label>
-          <input
-            className="input-bordered input w-full"
-            name="password"
-            placeholder="Palavra-passe"
-            type="password"
-            ref={passwordRef}
-            required
-          />
-          <Link to={"/auth/forgot"} className="label link-primary link text-sm">
-            Esqueceste-te da tua password?
-          </Link>
-          <button
-            disabled={loading}
-            type="submit"
-            className={classNames(
-              "btn-primary btn-block btn relative m-auto mt-8 before:absolute before:left-8",
-              {
-                loading: response.status === Status.loadingLogin,
-              }
-            )}
-          >
-            Entrar
-          </button>
-          <p
-            className={classNames("mt-2 text-center text-xs text-error", {
-              hidden: response.status !== Status.errorLogin,
-            })}
-          >
-            {response.message}
-          </p>
-          <p className="m-auto mt-2 text-xs sm:text-sm">
-            Não estás registado?{" "}
-            <Link
-              to={{
-                pathname: "/auth/register",
-                search: redirect_to
-                  ? `?redirect_to=${encodeURIComponent(redirect_to)}`
-                  : null,
-              }}
-              className="link-primary link"
-            >
-              Cria uma conta aqui.
-            </Link>
-          </p>
-        </div>
-      </form>
+    <div className="flex h-screen items-center justify-center">
+      <span className="loading loading-spinner loading-lg" />
     </div>
   );
 }

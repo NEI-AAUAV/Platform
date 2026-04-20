@@ -208,7 +208,20 @@ const NEIService = {
 
   async getExtensionsManifest() {
     return await client.get("/extensions/manifest");
-  }
+  },
+
+  // Admin: Authentik groups
+  async getAuthentikGroups() {
+    return await client.get("/admin/authentik/groups");
+  },
+
+  async addUserToAuthentikGroup(groupPk, userId) {
+    return await client.post(`/admin/authentik/groups/${groupPk}/members/${userId}`);
+  },
+
+  async removeUserFromAuthentikGroup(groupPk, userId) {
+    return await client.delete(`/admin/authentik/groups/${groupPk}/members/${userId}`);
+  },
 };
 
 // Export a singleton service

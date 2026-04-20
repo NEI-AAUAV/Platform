@@ -185,6 +185,7 @@ def generate_response(
     db: Session,
     user: User,
     device_login: DeviceLogin | None = None,
+    oidc_id_token: str | None = None,
 ) -> Response:
     """Creates a new authorization response for a user
 
@@ -192,6 +193,7 @@ def generate_response(
     * `db`: A SQLAlchemy ORM session
     * `user`: The user's information
     * `device_login`: The device login information if refreshing the session, otherwise None
+    * `oidc_id_token`: The OIDC ID token from the IDP, stored for RP-initiated logout
 
     **Returns**
     A response with the refresh token cookie set and the
@@ -213,6 +215,7 @@ def generate_response(
             session_id=int(iat.timestamp()),
             refreshed_at=iat,
             expires_at=iat + settings.REFRESH_TOKEN_EXPIRE,
+            oidc_id_token=oidc_id_token,
         )
         db.add(device_login)
     else:

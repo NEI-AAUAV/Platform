@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from . import login, register, session, reset, token, magic_link, scopes
+from . import login, register, session, reset, token, magic_link, scopes, oidc
 from ._deps import verify_token, auth_responses, AuthData, GetAuthData, get_auth_data
 
 router = APIRouter()
@@ -11,6 +11,7 @@ router.include_router(reset.router)
 router.include_router(token.router)
 router.include_router(magic_link.router)
 router.include_router(scopes.router)
+router.include_router(oidc.router)
 
 # This silences import not used errors for reexports
 assert verify_token, "verify_token is imported to be re-exported"

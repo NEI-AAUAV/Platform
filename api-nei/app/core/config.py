@@ -69,6 +69,9 @@ class Settings(BaseSettings):
                 f":5432/{self.POSTGRES_DB}_test"
             )
 
+        if not self.OIDC_REDIRECT_BASE_URL:
+            self.OIDC_REDIRECT_BASE_URL = self.HOST
+
         return self
 
     # Auth settings
@@ -124,6 +127,20 @@ class Settings(BaseSettings):
     # Arraial rate limiting (token bucket)
     ARRAIAL_RATE_LIMIT_PER_MINUTE: int = int(os.getenv("ARRAIAL_RATE_LIMIT_PER_MINUTE", "180"))
     ARRAIAL_RATE_LIMIT_BURST: int = int(os.getenv("ARRAIAL_RATE_LIMIT_BURST", "60"))
+
+    # OIDC/Authentik settings
+    OIDC_ENABLED: bool = False  # Feature flag
+    OIDC_DISCOVERY_URL: str = "https://nei.web.ua.pt/authentik/application/o/nei-platform/.well-known/openid-configuration"
+    OIDC_CLIENT_ID: str = ""
+    OIDC_CLIENT_SECRET: str = ""
+    OIDC_SCOPES: List[str] = ["openid", "profile", "email", "nei_scopes", "nei_nmec", "nei_iupi"]
+    ## Public base URL for OIDC redirect_uri and post-login frontend redirect.
+    ## Defaults to HOST if not set. Set via OIDC_REDIRECT_BASE_URL env var.
+    OIDC_REDIRECT_BASE_URL: str = ""
+
+    # Authentik Admin API
+    AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"
+    AUTHENTIK_TOKEN: str = ""
 
 
 settings = Settings()
