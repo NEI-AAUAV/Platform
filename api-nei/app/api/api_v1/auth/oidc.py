@@ -519,10 +519,21 @@ async def oidc_login(
 
     state = secrets.token_urlsafe(32)
     oidc_nonce = secrets.token_urlsafe(32)
-    await oauth.authentik.load_server_metadata()
-    auth_url_data = await oauth.authentik.create_authorization_url(
-        _callback_uri(), state=state, nonce=oidc_nonce,
-    )
+    try:
+        await oauth.authentik.load_server_metadata()
+        auth_url_data = await oauth.authentik.create_authorization_url(
+            _callback_uri(), state=state, nonce=oidc_nonce,
+        )
+    except httpx.HTTPError as e:
+        # Authentik unreachable or discovery document fetch failed. Send the
+        # user back to the login page with a specific error code rather than
+        # leaving them on a raw 500 — they can retry, and the UI shows a
+        # friendly "sign-in service temporarily unavailable" message.
+        logger.warning(f"OIDC login: discovery fetch failed: {e}")
+        return _login_error_redirect("idp_unreachable")
+    except Exception:
+        logger.exception("Unhandled error starting OIDC login")
+        return _login_error_redirect("unknown")
 
     redirect_response = RedirectResponse(url=auth_url_data["url"])
     _set_state_cookie(
@@ -651,10 +662,14 @@ async def start_oidc_link(
 
     state = secrets.token_urlsafe(32)
     oidc_nonce = secrets.token_urlsafe(32)
-    await oauth.authentik.load_server_metadata()
-    auth_url_data = await oauth.authentik.create_authorization_url(
-        _link_callback_uri(), state=state, nonce=oidc_nonce,
-    )
+    try:
+        await oauth.authentik.load_server_metadata()
+        auth_url_data = await oauth.authentik.create_authorization_url(
+            _link_callback_uri(), state=state, nonce=oidc_nonce,
+        )
+    except httpx.HTTPError as e:
+        logger.warning(f"OIDC link-start: discovery fetch failed: {e}")
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, "Identity provider unreachable")
 
     link_response = RedirectResponse(url=auth_url_data["url"])
     _set_state_cookie(
