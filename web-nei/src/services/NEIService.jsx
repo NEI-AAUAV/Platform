@@ -163,7 +163,7 @@ const NEIService = {
   async getArraialPoints() {
     return await client.get("/arraial/points");
   },
-  
+
   async updateArraialPoints(data) {
     return await client.put("/arraial/points", data);
   },
@@ -208,7 +208,26 @@ const NEIService = {
 
   async getExtensionsManifest() {
     return await client.get("/extensions/manifest");
-  }
+  },
+
+  // job offers
+  async getJobOffers(params) {
+    return await client.get("/job-offers/", { params });
+  },
+
+  async getJobOfferById(id) {
+    return await client.get(`/job-offers/${id}`);
+  },
+
+  async createJobOffer(data) {
+    return await client.post("/job-offers/", data);
+  },
+
+  async updateJobOffer(id, data) {
+    return await client.put(`/job-offers/${id}`, data);
+  },
+
+
 };
 
 // Export a singleton service

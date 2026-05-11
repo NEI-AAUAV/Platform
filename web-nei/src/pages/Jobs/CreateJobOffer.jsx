@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate, useParams } from "react-router-dom"; // <-- Added useParams
+import { useNavigate, useParams } from "react-router-dom";
 import Typist from "react-typist";
 
 import { jobOfferSchema } from "./schemas";
 import { useToast } from "components/ui/use-toast";
-// TODO import service method
+import NEIService from "services/NEIService";
 
 export function Component() {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ export function Component() {
     const { toast } = useToast();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isLoading, setIsLoading] = useState(!!id); // Load only if we are editing
+    const [isLoading, setIsLoading] = useState(!!id);
 
     const isEditMode = !!id;
 
@@ -30,37 +30,42 @@ export function Component() {
         },
     });
 
-    // fetch data in edit mode
     useEffect(() => {
         if (isEditMode) {
-            // api call here
-            setTimeout(() => {
-                reset({
-                    title: "Engenheiro de Software Junior",
-                    company: "Tech Corp",
-                    location: "Aveiro (Híbrido)",
-                    description: "Procuramos um recém-graduado motivado para se juntar à nossa equipa de desenvolvimento backend.\n\nRequisitos:\n- Experiência com Python e APIs REST\n- Conhecimentos de bases de dados relacionais (PostgreSQL)\n- Vontade de aprender e trabalhar em equipa.",
-                    expirationDate: "2026-05-30",
-                    applicationUrl: "https://example.com/apply/1",
-                    isActive: true,
+            setIsLoading(true);
+            NEIService.getJobOfferById(id)
+                .then((response) => {
+                    reset(response.data);
+                })
+                .catch((error) => {
+                    console.error("Failed to fetch job offer:", error);
+                    toast({
+                        title: "Erro",
+                        description: "Não foi possível carregar os dados desta oferta.",
+                        variant: "destructive",
+                    });
+                    navigate("/jobs");
+                })
+                .finally(() => {
+                    setIsLoading(false);
                 });
-                setIsLoading(false);
-            }, 600);
         }
-    }, [id, isEditMode, reset]);
+    }, [id, isEditMode, reset, navigate, toast]);
 
     const onSubmit = async (data) => {
         setIsSubmitting(true);
         try {
             if (isEditMode) {
-                // TODO API call for update
+                // PUT request
+                await NEIService.updateJobOffer(id, data);
                 toast({
                     title: "Atualizada!",
                     description: "A oferta de emprego foi atualizada com sucesso.",
                     variant: "success",
                 });
             } else {
-                // TODO API call for create
+                // POST request
+                await NEIService.createJobOffer(data);
                 toast({
                     title: "Publicada!",
                     description: "A nova oferta de emprego foi publicada com sucesso.",
@@ -69,9 +74,10 @@ export function Component() {
             }
             navigate("/jobs");
         } catch (error) {
+            console.error("Submission error:", error);
             toast({
                 title: "Erro",
-                description: "Ocorreu um erro ao processar o pedido.",
+                description: "Ocorreu um erro ao processar o pedido. Tente novamente.",
                 variant: "destructive",
             });
         } finally {
@@ -98,6 +104,7 @@ export function Component() {
             </h2>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-base-200 p-8 rounded-xl shadow-lg">
+                {/* ... The rest of your form inputs stay EXACTLY the same ... */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="form-control w-full">
                         <label className="label"><span className="label-text font-semibold">Título da Oferta</span></label>

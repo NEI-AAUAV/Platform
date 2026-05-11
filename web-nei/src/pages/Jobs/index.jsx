@@ -1,14 +1,12 @@
-// src/pages/Jobs/index.jsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Typist from "react-typist";
 import { Spinner } from "react-bootstrap";
-import { motion, AnimatePresence } from "framer-motion";
 import { useUserStore } from "stores/useUserStore";
 
 import PageNav from "../../components/PageNav";
 import JobDetailsModal from "./JobDetailsModal";
-// TODO import api service
+import NEIService from "services/NEIService";
 
 export function Component() {
     const { scopes } = useUserStore((state) => state);
@@ -22,33 +20,28 @@ export function Component() {
 
     const canManageJobs = scopes?.includes("admin") || scopes?.includes("manager-jobs");
 
-    const fetchPage = (p_num) => {
+    const fetchPage = async (p_num) => {
         setIsLoading(true);
+        try {
+            const limit = 10;
+            const skip = (p_num - 1) * limit;
 
-        // dummy data for now -> api call goes here later on
-        setTimeout(() => {
-            setJobs([
-                {
-                    id: 1,
-                    title: "Engenheiro de Software Junior",
-                    company: "Tech Corp",
-                    location: "Aveiro (Híbrido)",
-                    description: "Procuramos um recém-graduado motivado para se juntar à nossa equipa de desenvolvimento backend. Experiência com Python e APIs REST é valorizada.",
-                    expirationDate: "2026-05-30"
-                },
-                {
-                    id: 2,
-                    title: "Estágio de Verão - Frontend",
-                    company: "WebSolutions",
-                    location: "Remoto",
-                    description: "Estágio remunerado de 3 meses focado no desenvolvimento de interfaces interativas utilizando React, Tailwind CSS e Zustand.",
-                    expirationDate: "2026-06-15"
-                }
-            ]);
+            const response = await NEIService.getJobOffers({ skip, limit });
+
+            console.log("Raw API Response:", response);
+
+            const fetchedJobs = response.data !== undefined ? response.data : response;
+
+            setJobs(fetchedJobs);
             setCurrPage(p_num);
-            setTotalPages(1);
+
+            setTotalPages(fetchedJobs?.length === limit ? p_num + 1 : p_num);
+        } catch (error) {
+            console.error("Failed to fetch job offers:", error);
+            setJobs([]);
+        } finally {
             setIsLoading(false);
-        }, 800);
+        }
     };
 
     useEffect(() => {
@@ -56,10 +49,10 @@ export function Component() {
     }, []);
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="container mx-auto px-4 py-8 max-w-6xl relative">
             <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
                 <h2 className="text-3xl font-bold m-0 text-center md:text-left">
-                    <Typist>Ofertas de Emprego</Typist>
+                    <Typist>Bolsa de Emprego</Typist>
                 </h2>
 
                 {canManageJobs && (
@@ -94,21 +87,23 @@ export function Component() {
                                         Expira a: {new Date(job.expirationDate).toLocaleDateString("pt-PT")}
                                     </span>
 
-                                    {canManageJobs && (
-                                        <Link
-                                            to={`/jobs/edit/${job.id}`}
-                                            className="btn btn-warning btn-sm btn-outline"
-                                        >
-                                            Editar
-                                        </Link>
-                                    )}
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        {canManageJobs && (
+                                            <Link
+                                                to={`/jobs/edit/${job.id}`}
+                                                className="btn btn-warning btn-sm btn-outline"
+                                            >
+                                                Editar
+                                            </Link>
+                                        )}
 
-                                    <button
-                                        className="btn btn-secondary btn-sm"
-                                        onClick={() => setSelectedJob(job)}
-                                    >
-                                        Ver Detalhes
-                                    </button>
+                                        <button
+                                            className="btn btn-secondary btn-sm"
+                                            onClick={() => setSelectedJob(job)}
+                                        >
+                                            Ver Detalhes
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -126,16 +121,12 @@ export function Component() {
                 </div>
             )}
 
-            <AnimatePresence>
-                {selectedJob && (
-                    <JobDetailsModal
-                        key={selectedJob.id}
-                        job={selectedJob}
-                        close={() => setSelectedJob(null)}
-                    />
-                )}
-            </AnimatePresence>
-
+            {selectedJob && (
+                <JobDetailsModal
+                    job={selectedJob}
+                    close={() => setSelectedJob(null)}
+                />
+            )}
         </div>
     );
-};
+}

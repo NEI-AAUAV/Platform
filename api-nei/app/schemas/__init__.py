@@ -10,3 +10,4 @@ from .redirect import RedirectInDB, RedirectCreate, RedirectUpdate
 from .news import NewsInDB, NewsCategories, NewsCreate, NewsUpdate
 from .course import CourseInDB, CourseCreate, CourseUpdate
 from .event import *
+from .job_offer import *

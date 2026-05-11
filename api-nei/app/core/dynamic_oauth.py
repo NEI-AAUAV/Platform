@@ -69,6 +69,7 @@ def create_dynamic_oauth_scheme() -> DynamicOAuth2PasswordBearer:
         "manager-tacaua": "Edit data related to tacaua.",
         "manager-nei": "Edit data related to nei.",
         "manager-arraial": "Edit data related to arraial.",
+        "manager-jobs": "Edit data related to the job offers",
     }
     
     scheme = DynamicOAuth2PasswordBearer(

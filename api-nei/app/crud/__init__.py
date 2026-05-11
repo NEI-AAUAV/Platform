@@ -21,3 +21,4 @@ from .crud_news import news
 from .crud_course import course
 from .crud_user_matriculation import user_matriculation
 from .crud_event import event
+from .crud_job_offer import job_offer

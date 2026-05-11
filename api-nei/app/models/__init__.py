@@ -18,3 +18,4 @@ from .rgm import Rgm
 from .senior import Senior
 from .subject import Subject
 from .teacher import Teacher
+from .job_offer import JobOffer
