@@ -100,8 +100,16 @@ jobs:
       id: compose-files
       run: |
         if [ "${{ github.event.inputs.extension }}" = "rally" ]; then
+          if [ ! -f "extensions/rally/compose.override.prod.yml" ]; then
+            echo "Error: rally extension selected but extensions/rally/compose.override.prod.yml not found (submodule not initialized?)" >&2
+            exit 1
+          fi
           echo "COMPOSE_FILE=compose.prod.yml,extensions/rally/compose.override.prod.yml" >> "$GITHUB_OUTPUT"
         elif [ "${{ github.event.inputs.extension }}" = "gala" ]; then
+          if [ ! -f "extensions/gala/compose.override.prod.yml" ]; then
+            echo "Error: gala extension selected but extensions/gala/compose.override.prod.yml not found (submodule not initialized?)" >&2
+            exit 1
+          fi
           echo "COMPOSE_FILE=compose.prod.yml,extensions/gala/compose.override.prod.yml" >> "$GITHUB_OUTPUT"
         else
           echo "COMPOSE_FILE=compose.prod.yml" >> "$GITHUB_OUTPUT"

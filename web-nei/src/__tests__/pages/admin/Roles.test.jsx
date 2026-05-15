@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
-// Must use relative paths — vi.mock factories don't resolve tsconfig path aliases
+// Must use relative paths - vi.mock factories don't resolve tsconfig path aliases
 vi.mock('../../../services/NEIService', () => ({
   default: {
     getCurrUser: vi.fn(),

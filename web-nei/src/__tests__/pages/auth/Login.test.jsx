@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 
-// Must use relative paths — vi.mock factories don't resolve tsconfig path aliases
+// Must use relative paths - vi.mock factories don't resolve tsconfig path aliases
 vi.mock('../../../stores/useUserStore', () => ({ useUserStore: vi.fn() }))
 vi.mock('../../../config', () => ({
   default: { API_NEI_URL: 'http://localhost/api/nei/v1' },

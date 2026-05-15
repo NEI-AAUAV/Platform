@@ -120,7 +120,7 @@ def test_get_or_create_creates_new_user(db: SessionTesting):
 
 def test_get_or_create_returns_existing_user_by_sub(db: SessionTesting):
     u1 = get_or_create_user_from_oidc(db, _USERINFO)
-    # Same sub, different email — must return the same user
+    # Same sub, different email - must return the same user
     u2 = get_or_create_user_from_oidc(db, {**_USERINFO, "email": "other@example.com"})
     assert u1.id == u2.id
 
