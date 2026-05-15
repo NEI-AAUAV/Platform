@@ -5,6 +5,8 @@ fileignoreconfig:
   checksum: 200d63c1f032bef1f3e0324c1a25a56fe90c00b0722f2f93458e9f881e45d728
 - filename: extensions/rally
   checksum: b4a09f785a6bd707bb35b12eb5b52ba1aa5b4ab602208e0e5995525e200f2183
+- filename: extensions/gala
+  checksum: b6797c4f09bd8d8ed0afbfed753dfa33341db5b2c021fb2f649e9bc8ed62f8b7
 - filename: package-lock.json
   checksum: 80df2e6906cd598931c88e66097b146c0502a38b4085cf7927fc874bfefba7f6
 - filename: web-nei/src/pages/Arraial/index.jsx
