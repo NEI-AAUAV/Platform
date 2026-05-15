@@ -172,7 +172,7 @@ def _is_safe_redirect(value: Optional[str]) -> bool:
 def _is_email_verified(claim: Any) -> bool:
     """Accept `email_verified` only if it's the boolean True or the string
     'true' (case-insensitive). All other values — False, "false", 0, 1,
-    None, missing — return False. This avoids Python's boolean trap where
+    None, missing - return False. This avoids Python's boolean trap where
     bool("false") is True."""
     return claim is True or (isinstance(claim, str) and claim.lower() == "true")
 

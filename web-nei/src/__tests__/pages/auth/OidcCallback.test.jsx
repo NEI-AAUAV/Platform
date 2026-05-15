@@ -14,7 +14,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
   return { ...actual, useNavigate: () => mockNavigate }
 })
 
-// Must use relative path — vi.mock factories don't resolve tsconfig path aliases
+// Must use relative path - vi.mock factories don't resolve tsconfig path aliases
 vi.mock('../../../stores/useUserStore', () => ({
   useUserStore: { getState: () => ({ login: mockLogin }) },
 }))
@@ -22,7 +22,7 @@ vi.mock('../../../stores/useUserStore', () => ({
 const { Component } = await import('../../../pages/auth/OidcCallback/index')
 
 // The component reads globalThis.location.hash directly. MemoryRouter keeps
-// its URL in React context, not window.location — so every test that needs a
+// its URL in React context, not window.location - so every test that needs a
 // hash must stub `location`. Centralize that in renderWith and expose the
 // location.replace spy for tests that assert on it.
 let locationReplaceSpy

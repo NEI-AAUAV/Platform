@@ -7,7 +7,7 @@ const mockClient = vi.hoisted(() => ({
   delete: vi.fn(),
 }))
 
-// Must use relative paths — vi.mock factories don't resolve tsconfig path aliases
+// Must use relative paths - vi.mock factories don't resolve tsconfig path aliases
 vi.mock('../../config', () => ({ default: { API_NEI_URL: 'http://localhost/api/nei/v1' } }))
 vi.mock('../../services/client', () => ({ createClient: () => mockClient }))
 
