@@ -129,7 +129,7 @@ const Navbar = () => {
 
         const filtered = items
           .filter(reqOk)
-          .map((e) => ({ label: e.label, href: e.href, key: normalizeLink(e.href), dynamicVisibility: e.dynamicVisibility }))
+          .map((e) => ({ label: e.label, href: e.href, key: normalizeLink(e.href), dynamicVisibility: e.dynamicVisibility, branded: e.branded ?? false }))
           .filter((e) => !existingLinks.has(e.key));
 
         // Check dynamic visibility for items that have it
@@ -372,6 +372,7 @@ const Navbar = () => {
                 </li>
               )}
               {extNav
+                .filter((e) => !e.branded)
                 .map((e, idx) => (
                   <li key={`ext-${idx}`}>
                     <LinkAdapter to={e.href} reloadDocument>
@@ -381,24 +382,25 @@ const Navbar = () => {
                 ))}
             </ul>
           </div>
-          {/* Jantar Gala Button */}
-          {config.ENABLE_GALA && (
-            <Link
-              to={`${config.BASE_URL}/gala`}
-              reloadDocument
-              className="btn-ghost btn-sm btn-circle btn
-              gap-2.5 border-0
-              bg-gradient-to-r from-[#F7BBAC] to-[#C58676]
-              hover:brightness-90 md:!w-fit
-              md:!px-3"
-            >
-              <span className="hidden text-black/70 md:block">
-                <span className="hidden lg:me-1 lg:inline-block">Jantar</span>
-                <span className="hidden md:inline-block">Gala</span>
-              </span>
-              <GalaLogo className="fill-black/70" />
-            </Link>
-          )}
+          {extNav
+            .filter((e) => e.branded)
+            .map((e, idx) => (
+              <Link
+                key={`ext-branded-${idx}`}
+                to={e.href}
+                reloadDocument
+                className="btn-ghost btn-sm btn-circle btn
+                gap-2.5 border-0
+                bg-gradient-to-r from-[#F7BBAC] to-[#C58676]
+                hover:brightness-90 md:!w-fit
+                md:!px-3"
+              >
+                <span className="hidden text-black/70 md:block">
+                  {e.label}
+                </span>
+                <GalaLogo className="fill-black/70" />
+              </Link>
+            ))}
 
           <div className="navbar-end !w-fit grow gap-x-3 pl-3">
             <div
