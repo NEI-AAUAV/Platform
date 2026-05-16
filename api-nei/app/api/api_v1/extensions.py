@@ -83,6 +83,7 @@ def get_extensions_manifest() -> Dict[str, Any]:
                     "requiresScopes": e.get("requiresScopes", []),
                     "dynamicVisibility": e.get("dynamicVisibility"),
                     "extension": ext,
+                    "branded": bool(e.get("branded", False)),
                 })
         except Exception as exc:
             logger.error(f"Failed reading {path}: {exc}")
