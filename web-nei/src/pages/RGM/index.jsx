@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Spinner } from "react-bootstrap";
 import { motion } from "framer-motion";
-import Typist from "react-typist";
+import { Typewriter } from "react-simple-typewriter";
 
 import Tabs from "components/Tabs";
 
@@ -97,7 +97,7 @@ export function Component() {
     <div className="d-flex flex-column flex-wrap">
       <div style={{ whiteSpace: "pre", overflowWrap: "break-word" }}>
         <h2 className="mb-5 text-center">
-          <Typist>Arquivo da Mesa da RGM</Typist>
+          <Typewriter words={["Arquivo da Mesa da RGM"]} loop={1} />
         </h2>
       </div>
       <Tabs

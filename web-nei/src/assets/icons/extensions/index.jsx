@@ -1,1 +1,1 @@
-export { ReactComponent as GalaLogo } from "./gala-logo.svg";
+export { default as GalaLogo } from "./gala-logo.svg?react";

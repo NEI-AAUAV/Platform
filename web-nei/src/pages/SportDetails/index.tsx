@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Typist from "react-typist";
+import { Typewriter } from "react-simple-typewriter";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import MaterialSymbol from "components/MaterialSymbol";
@@ -104,7 +104,7 @@ export function Component() {
           )}
         />
         <h2 className="text-center">
-          <Typist>Taça UA</Typist>
+          <Typewriter words={["Taça UA"]} loop={1} />
         </h2>
         <div className="relative flex flex-row items-start gap-5">
           <Button

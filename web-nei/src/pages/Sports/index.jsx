@@ -11,9 +11,9 @@ import img3 from "./img/unknown3.png";
 import equipa from "./img/equipa.jpg";
 import { useNavigate } from "react-router-dom";
 
-import { ReactComponent as Futsal } from "../../assets/icons/tacaua/high_contrast/voleibol.svg";
+import Futsal from "../../assets/icons/tacaua/high_contrast/voleibol.svg?react";
 
-import Typist from "react-typist";
+import { Typewriter } from "react-simple-typewriter";
 
 import "./index.css";
 /* import SportTable from "./SportTable"; */
@@ -133,7 +133,7 @@ export function Component() {
     <>
       <div className="d-flex flex-column flex-wrap">
         <h2 className="mb-5 text-center">
-          <Typist>Taça UA</Typist>
+          <Typewriter words={["Taça UA"]} loop={1} />
         </h2>
       </div>
       <div

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Typist from "react-typist";
+import { Typewriter } from "react-simple-typewriter";
 import { Form, Button, Alert } from "react-bootstrap";
 
 const FeedbackForm = () => {
@@ -67,7 +67,7 @@ const FeedbackForm = () => {
   return (
     <div>
       <h2 className="text-center">
-        <Typist>Dá-nos o teu feedback!</Typist>
+        <Typewriter words={["Dá-nos o teu feedback!"]} loop={1} />
       </h2>
       <p className="mb-0 text-center">
         Utiliza este formulário para nos fazeres chegar as tuas sugestões acerca

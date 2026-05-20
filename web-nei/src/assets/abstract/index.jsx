@@ -1,3 +1,3 @@
-export { ReactComponent as DecorativeSepBottom } from "./decorative-sep-bottom.svg";
-export { ReactComponent as DecorativeSepMiddle } from "./decorative-sep-middle.svg";
-export { ReactComponent as DecorativeSepTop } from "./decorative-sep-top.svg";
+export { default as DecorativeSepBottom } from "./decorative-sep-bottom.svg?react";
+export { default as DecorativeSepMiddle } from "./decorative-sep-middle.svg?react";
+export { default as DecorativeSepTop } from "./decorative-sep-top.svg?react";

@@ -8,7 +8,7 @@ import service from "services/NEIService";
 
 import ReactLogo from "assets/images/theming-gradient.svg";
 // import backgroundAvif from 'assets/images/theming-gradient.png';
-import { ReactComponent as BackgroundImage } from "assets/images/theming-gradient.svg";
+import BackgroundImage from "assets/images/theming-gradient.svg?react";
 
 import MockupTerminal from "components/MockupTerminal";
 import NewsList2 from "../News/NewsList2";

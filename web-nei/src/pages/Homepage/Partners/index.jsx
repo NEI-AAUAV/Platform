@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ImageCard from "components/ImageCard"
 import { Col, Row } from "react-bootstrap";
-import Typist from 'react-typist';
+import { Typewriter } from "react-simple-typewriter";
 import DCard from "../../../components/Cards/DCard";
 import service from 'services/NEIService';
 
@@ -20,7 +20,7 @@ const Partners = () => {
 
   return (
     <div>
-      <h2 className="text-center mb-4"><Typist>Parceiros</Typist></h2>
+      <h2 className="text-center mb-4"><Typewriter words={["Parceiros"]} loop={1} /></h2>
 
       <div className="flex flex-row gap-20">
         {partners.map((partner, index) => {
