@@ -25,7 +25,7 @@
     "d3": "^7.4.4",
     "daisyui": "^2.45.0",
     "flowbite-datepicker": "^1.2.2",
-    "form-data": "^4.0.5",
+    "form-data": "^4.0.6",
     "framer-motion": "^10.16.4",
     "glob": "^10.5.0",
     "lodash": "^4.18.1",
@@ -43,7 +43,7 @@
     "react-material-symbols": "^4.1.1",
     "react-particles": "^2.9.3",
     "react-query": "^3.39.3",
-    "react-router-dom": "^6.14.2",
+    "react-router-dom": "^6.30.4",
     "react-simple-typewriter": "^5.0.1",
     "read-excel-file": "^5.8.8",
     "tailwind-merge": "^2.1.0",
@@ -99,11 +99,14 @@
     "source-map-explorer": "^2.5.3",
     "svgo": "^3.3.3",
     "typescript": "^5.1.6",
-    "vite": "6.4.2",
+    "vite": "6.4.3",
     "vite-plugin-image-optimizer": "^1.1.6",
     "vite-plugin-svgr": "^5.0.0",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.34.0"
+  },
+  "resolutions": {
+    "form-data": "^4.0.6"
   },
   "peerDependencies": {
     "@emotion/react": "^11.10.0"
