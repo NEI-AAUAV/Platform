@@ -106,7 +106,10 @@
     "vitest": "^3.2.6"
   },
   "resolutions": {
-    "form-data": "^4.0.6"
+    "form-data": "^4.0.6",
+    "ws": ">=8.21.0",
+    "js-yaml": ">=4.2.0",
+    "@babel/runtime": ">=7.26.10"
   },
   "peerDependencies": {
     "@emotion/react": "^11.10.0"
