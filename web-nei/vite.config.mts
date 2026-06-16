@@ -22,8 +22,15 @@ export default defineConfig(({ mode }) => ({
     outDir: "build",
   },
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "."),
-    },
+    alias: [
+      {
+        find: /^@babel\/runtime\/helpers\/esm\/(.*)/,
+        replacement: "@babel/runtime/helpers/$1",
+      },
+      {
+        find: "@",
+        replacement: path.resolve(__dirname, "."),
+      },
+    ],
   },
 }));
