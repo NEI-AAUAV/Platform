@@ -1,8 +1,8 @@
-export { ReactComponent as DiscordIcon } from "./discord.svg";
-export { ReactComponent as GithubIcon } from "./github.svg";
-export { ReactComponent as GoogleDriveIcon } from "./google-drive.svg";
-export { ReactComponent as FacebookIcon } from "./facebook.svg";
-export { ReactComponent as LinktreeIcon } from "./linktree.svg";
-export { ReactComponent as InstagramIcon } from "./instagram.svg";
-export { ReactComponent as LinkedinIcon } from "./linkedin.svg";
-export { ReactComponent as YoutubeIcon } from "./youtube.svg";
+export { default as DiscordIcon } from "./discord.svg?react";
+export { default as GithubIcon } from "./github.svg?react";
+export { default as GoogleDriveIcon } from "./google-drive.svg?react";
+export { default as FacebookIcon } from "./facebook.svg?react";
+export { default as LinktreeIcon } from "./linktree.svg?react";
+export { default as InstagramIcon } from "./instagram.svg?react";
+export { default as LinkedinIcon } from "./linkedin.svg?react";
+export { default as YoutubeIcon } from "./youtube.svg?react";

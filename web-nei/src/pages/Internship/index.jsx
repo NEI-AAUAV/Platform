@@ -1,7 +1,7 @@
 import "./index.css";
 import Card from "./components/InternshipCard/index";
 import { Col, Row } from "react-bootstrap";
-import Typist from "react-typist";
+import { Typewriter } from "react-simple-typewriter";
 
 const animationBase = parseFloat(import.meta.env.VITE_ANIMATION_BASE);
 const animationIncrement = parseFloat(
@@ -18,7 +18,7 @@ const Internship = () => {
       style={{ animationDelay: animationBase + animationIncrement }}
     >
       <h2 className="mb-5 text-center">
-        <Typist>Oportunidades Olisipo Way</Typist>
+        <Typewriter words={["Oportunidades Olisipo Way"]} loop={1} />
       </h2>
       <div className="text-center mt-5">
         <p>

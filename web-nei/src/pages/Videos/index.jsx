@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import Typist from "react-typist";
+import { Typewriter } from "react-simple-typewriter";
 import { motion } from "framer-motion";
 import { debounce } from "lodash";
 
@@ -112,7 +112,7 @@ export function Component() {
   return (
     <div>
       <h2 className="text-center">
-        <Typist>Vídeos</Typist>
+        <Typewriter words={["Vídeos"]} loop={1} />
       </h2>
 
       {/* TODO: filter videos */}

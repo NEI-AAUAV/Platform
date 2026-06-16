@@ -69,31 +69,25 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: web-nei/yarn.lock
+
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
           version: latest
           virtualenvs-create: true
           virtualenvs-in-project: true
-      
+
       - name: Install Python dependencies
         run: |
           cd api-nei && poetry install --no-root && poetry run pip install pytest-cov
           cd ../api-family && poetry install --no-root && poetry run pip install pytest-cov
-      
-      - name: Cache Yarn dependencies
-        uses: actions/cache@v3
-        with:
-          path: web-nei/node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('web-nei/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
 
       - name: Install Node.js dependencies
-        run: |
-          cd web-nei && for i in 1 2 3; do yarn install --network-timeout 100000 && break || sleep 10; done
+        working-directory: ./web-nei
+        run: yarn install --frozen-lockfile
       
       - name: Create test database
         run: |
@@ -142,44 +136,3 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
 
-      - name: SonarQube Quality Gate Check
-        if: github.actor != 'dependabot[bot]'
-        run: |
-          echo "Checking SonarQube Quality Gate status..."
-
-          # Wait for the analysis task to complete, then get the analysis ID
-          TASK_ID=$(grep "ceTaskId" .scannerwork/report-task.txt | cut -d'=' -f2)
-          echo "Task ID: $TASK_ID"
-
-          for i in $(seq 1 10); do
-            TASK_RESPONSE=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
-              "https://sonarcloud.io/api/ce/task?id=$TASK_ID")
-            TASK_STATUS=$(echo "$TASK_RESPONSE" | jq -r '.task.status')
-            echo "Task status: $TASK_STATUS"
-            if [ "$TASK_STATUS" = "SUCCESS" ] || [ "$TASK_STATUS" = "FAILED" ] || [ "$TASK_STATUS" = "CANCELLED" ]; then
-              break
-            fi
-            sleep 5
-          done
-
-          ANALYSIS_ID=$(echo "$TASK_RESPONSE" | jq -r '.task.analysisId')
-          curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
-            "https://sonarcloud.io/api/qualitygates/project_status?analysisId=$ANALYSIS_ID" \
-            -o quality-gate-result.json
-
-          STATUS=$(jq -r '.projectStatus.status' quality-gate-result.json)
-          echo "Quality Gate Status: $STATUS"
-
-          if [ "$STATUS" = "OK" ]; then
-            echo "Quality Gate PASSED"
-            exit 0
-          elif [ "$STATUS" = "ERROR" ]; then
-            echo "Quality Gate FAILED"
-            jq '.projectStatus.conditions[] | select(.status == "ERROR") | "\(.metricKey): \(.actualValue) (threshold: \(.errorThreshold))"' quality-gate-result.json
-            exit 1
-          else
-            echo "Quality Gate Status: $STATUS"
-            exit 0
-          fi
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

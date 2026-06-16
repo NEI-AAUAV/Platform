@@ -23,7 +23,7 @@ import FamilyService from "services/FamilyService";
 import { RolePickerModal, PatraoPicker } from "components/Family";
 import { BaseModal, useBodyScrollLock } from "components/Modal";
 import Papa from "papaparse";
-import * as XLSX from "xlsx";
+import readXlsxFile from "read-excel-file";
 import { colors } from "pages/Family/data";
 import Avatar from "components/Avatar";
 import { getErrorMessage } from "utils/error";
@@ -401,22 +401,28 @@ const BulkImportModal = ({
     const processFile = (selectedFile) => {
         setWarnings([]); // Clear warnings
 
-        const isExcel = selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
+        const isExcel = selectedFile.name.endsWith(".xlsx");
 
         if (isExcel) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: "array" });
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: "" });
-
-                const { data: parsed, errors: parseErrors } = processParsedData(jsonData);
-                setParsedData(parsed);
-                setErrors(parseErrors);
-                if (parsed.length > 0) setStep("preview");
-            };
-            reader.readAsArrayBuffer(selectedFile);
+            readXlsxFile(selectedFile)
+                .then((rows) => {
+                    if (rows.length === 0) return;
+                    const headers = rows[0].map((h) => String(h ?? ""));
+                    const jsonData = rows.slice(1).map((row) => {
+                        const obj = {};
+                        headers.forEach((h, i) => {
+                            obj[h] = row[i] ?? "";
+                        });
+                        return obj;
+                    });
+                    const { data: parsed, errors: parseErrors } = processParsedData(jsonData);
+                    setParsedData(parsed);
+                    setErrors(parseErrors);
+                    if (parsed.length > 0) setStep("preview");
+                })
+                .catch((err) => {
+                    setErrors([{ row: 0, message: "Erro ao ler Excel: " + (err?.message ?? "Erro desconhecido") }]);
+                });
         } else {
             // Assume CSV
             Papa.parse(selectedFile, {
@@ -455,7 +461,7 @@ const BulkImportModal = ({
         e.stopPropagation();
         setDragActive(false);
         const droppedFile = e.dataTransfer.files?.[0];
-        if (droppedFile && (droppedFile.name.endsWith(".csv") || droppedFile.name.endsWith(".xls") || droppedFile.name.endsWith(".xlsx"))) {
+        if (droppedFile && (droppedFile.name.endsWith(".csv") || droppedFile.name.endsWith(".xlsx"))) {
             processFile(droppedFile);
         }
     };
@@ -962,7 +968,7 @@ const BulkImportModal = ({
                     onDrop={handleDrop}
                     aria-label="Carregar ficheiro CSV ou Excel"
                 >
-                    <input ref={fileInputRef} type="file" accept=".csv, .xlsx, .xls" className="hidden" onChange={handleFileChange} />
+                    <input ref={fileInputRef} type="file" accept=".csv, .xlsx" className="hidden" onChange={handleFileChange} />
                     <div className="flex flex-col items-center text-center">
                         <div className={classNames(
                             "w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-colors",
@@ -974,7 +980,7 @@ const BulkImportModal = ({
                         <p className="text-sm text-base-content/60">
                             {dragActive ? "Larga o ficheiro aqui!" : "Tem o ficheiro pronto? Clique para carregar ou arraste-o."}
                         </p>
-                        <p className="text-xs text-base-content/40 mt-1">Suporta .csv, .xlsx</p>
+                        <p className="text-xs text-base-content/40 mt-1">Suporta .csv, .xlsx (Excel 2007+)</p>
                     </div>
                 </button>
 

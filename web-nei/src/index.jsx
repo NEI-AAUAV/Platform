@@ -5,7 +5,6 @@ import App from "./App";
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import "./index.css";
-import "react-typist/dist/Typist.css";
 import "react-material-symbols/rounded";
 
 const container = document.getElementById("root");
