@@ -30,6 +30,7 @@ in Authentik).  Falls back to `groups`, stripping an optional "nei-" prefix.
 
 import json
 import secrets
+from datetime import datetime, timedelta
 from typing import Annotated, Any, Optional
 from urllib.parse import quote, unquote
 
@@ -47,6 +48,7 @@ from sqlalchemy.orm import Session
 from app import crud
 from app.api import deps
 from app.core.config import settings
+from app.models.oauth_state import OAuthState
 from app.models.user import User
 from app.models.user.user_email import UserEmail
 from app.schemas.user import ScopeEnum, UserCreate
@@ -88,7 +90,7 @@ if settings.OIDC_ENABLED:
 # ---------------------------------------------------------------------------
 
 _STATE_COOKIE = "oauth_state"
-_STATE_MAX_AGE = 600  # 10 minutes
+_STATE_MAX_AGE = 1800  # 30 minutes — enough time for slow email delivery
 
 
 def _signer() -> URLSafeTimedSerializer:
@@ -103,6 +105,7 @@ def _set_state_cookie(
     redirect_to: Optional[str] = None,
     user_id: Optional[int] = None,
     code_verifier: Optional[str] = None,
+    db: Optional[Session] = None,
 ) -> None:
     payload: dict = {"s": state}
     if oidc_nonce:
@@ -121,29 +124,82 @@ def _set_state_cookie(
         samesite="lax",
         max_age=_STATE_MAX_AGE,
     )
+    if db is not None:
+        try:
+            db.query(OAuthState).filter(OAuthState.state == state).delete()
+            db.add(OAuthState(
+                state=state,
+                verifier=code_verifier,
+                nonce=oidc_nonce,
+                redirect=redirect_to,
+                expires_at=datetime.utcnow() + timedelta(seconds=_STATE_MAX_AGE),
+            ))
+            db.commit()
+        except Exception:
+            db.rollback()
+            logger.warning("Failed to persist OAuth state to DB — cookie-only fallback applies")
 
 
-def _verify_and_pop_state_cookie(request: Request, response: Response, state: str) -> dict:
+def _verify_and_pop_state_cookie(
+    request: Request,
+    response: Response,
+    state: str,
+    *,
+    db: Optional[Session] = None,
+) -> dict:
     cookie_val = request.cookies.get(_STATE_COOKIE)
     response.delete_cookie(_STATE_COOKIE, httponly=True, samesite="lax")
 
-    if not cookie_val:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Missing OAuth state cookie")
+    if cookie_val:
+        try:
+            payload = _signer().loads(cookie_val, max_age=_STATE_MAX_AGE)
+        except SignatureExpired:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, "OAuth state expired — please try again")
+        except BadSignature:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid OAuth state")
 
-    try:
-        payload = _signer().loads(cookie_val, max_age=_STATE_MAX_AGE)
-    except SignatureExpired:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "OAuth state expired — please try again")
-    except BadSignature:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid OAuth state")
+        # Constant-time comparison; also handle the pre-migration "n" key for
+        # cookies issued by the previous version of this code.
+        stored = payload.get("s") or payload.get("n")
+        if not stored or not secrets.compare_digest(stored, state):
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, "OAuth state mismatch")
 
-    # Constant-time comparison; also handle the pre-migration "n" key for
-    # cookies issued by the previous version of this code.
-    stored = payload.get("s") or payload.get("n")
-    if not stored or not secrets.compare_digest(stored, state):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "OAuth state mismatch")
+        if db is not None:
+            try:
+                db.query(OAuthState).filter(OAuthState.state == state).delete()
+                db.commit()
+            except Exception:
+                db.rollback()
 
-    return payload
+        return payload
+
+    # Cookie missing (e.g. callback arrived in a different browser after email
+    # verification). Try the DB-backed state as a fallback.
+    if db is not None:
+        row = db.query(OAuthState).filter(OAuthState.state == state).first()
+        if row and row.expires_at > datetime.utcnow():
+            payload = {"s": row.state}
+            if row.nonce:
+                payload["n"] = row.nonce
+            if row.redirect:
+                payload["r"] = row.redirect
+            if row.verifier:
+                payload["v"] = row.verifier
+            try:
+                db.delete(row)
+                db.commit()
+            except Exception:
+                db.rollback()
+            return payload
+
+    raise HTTPException(status.HTTP_401_UNAUTHORIZED, "missing_state_cookie")
+
+
+def cleanup_expired_oauth_states(db: Session) -> int:
+    """Delete expired OAuthState rows. Returns the number of rows deleted."""
+    deleted = db.query(OAuthState).filter(OAuthState.expires_at < datetime.utcnow()).delete()
+    db.commit()
+    return deleted
 
 
 # ---------------------------------------------------------------------------
@@ -508,6 +564,7 @@ def _login_error_redirect(code: str) -> RedirectResponse:
 )
 async def oidc_login(
     response: Response,
+    db: DbSession,
     redirect_to: Optional[str] = None,
 ):
     _require_oidc()
@@ -542,6 +599,7 @@ async def oidc_login(
         oidc_nonce=oidc_nonce,
         redirect_to=safe_redirect,
         code_verifier=auth_url_data.get("code_verifier"),
+        db=db,
     )
     return redirect_response
 
@@ -562,7 +620,7 @@ async def oidc_callback(
 ):
     _require_oidc()
 
-    state_payload = _verify_and_pop_state_cookie(request, response, state)
+    state_payload = _verify_and_pop_state_cookie(request, response, state, db=db)
     raw_redirect = state_payload.get("r")
     redirect_to = raw_redirect if _is_safe_redirect(raw_redirect) else None
     code_verifier = state_payload.get("v")
@@ -626,9 +684,17 @@ async def oidc_callback(
             raise
         error_code = {
             status.HTTP_403_FORBIDDEN: "unverified",
-            status.HTTP_401_UNAUTHORIZED: "session",
             status.HTTP_400_BAD_REQUEST: "invalid_response",
-        }.get(e.status_code, "unknown")
+        }.get(e.status_code)
+        if error_code is None:
+            if e.status_code == status.HTTP_401_UNAUTHORIZED:
+                error_code = (
+                    "email_verified_relogin"
+                    if getattr(e, "detail", "") == "missing_state_cookie"
+                    else "session"
+                )
+            else:
+                error_code = "unknown"
         logger.info(f"OIDC callback failed ({e.status_code}): {e.detail}")
         return _login_error_redirect(error_code)
     except httpx.HTTPError as e:
