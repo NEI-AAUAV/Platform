@@ -48,19 +48,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-          submodules: recursive
-          token: ${{ secrets.GH_PAT }}
+          # Shallow clones should be disabled for a better relevancy of analysis.
+          fetch-depth: 0
+          # No submodules: this job only builds, tests, and analyzes the core
+          # platform (api-nei, api-family, web-nei; see sonar.sources). Checking
+          # out extensions/* here required secrets.GH_PAT, which pull_request
+          # runs (Dependabot and forks) don't receive — that was the
+          # "Input required and not supplied: token" checkout failure. Dropping
+          # it lets the default GITHUB_TOKEN handle the checkout.
 
-      - name: Update extension submodules to tracked branches
-        run: |
-          # Initialize and update Rally submodule (required)
-          git submodule update --init extensions/rally || true
-          git submodule update --remote --merge extensions/rally || true
-          # Initialize and update Gala submodule (optional - may fail if repo is private or not accessible)
-          git submodule update --init extensions/gala || echo "Warning: Gala submodule not accessible, skipping"
-          git submodule update --remote --merge extensions/gala || echo "Warning: Gala submodule update failed, skipping"
-      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
