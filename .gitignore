@@ -148,6 +148,10 @@ dmypy.json
 # Never ignore .gitkeep files
 !**/.gitkeep
 
+# Rally was extracted into its own standalone repo (Platform-rally-extension)
+# and is no longer a submodule. A local clone may still sit here; ignore it.
+extensions/rally/
+
 # Extension build artifacts (submodules handle their own .gitignore)
 extensions/*/web-*/node_modules/
 extensions/*/web-*/.pnpm-store/

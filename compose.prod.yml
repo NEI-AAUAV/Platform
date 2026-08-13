@@ -15,7 +15,6 @@ services:
     volumes:
       - ./scripts/:/scripts/:ro
       # - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
-      # - ./api-rally/app/db/setup.sql:/docker-entrypoint-initdb.d/rally-0001.sql
       - pg_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
