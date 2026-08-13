@@ -5,8 +5,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 
+from loguru import logger
+
 from app.api.api_v1 import router as api_v1_router
 from app.db.init_db import init_db
+from app.db.session import SessionLocal
 from app.core.logging import init_logging
 from app.core.config import settings
 from app.core.extension_scopes import load_scopes_from_manifests
@@ -21,6 +24,18 @@ async def lifespan(_: FastAPI):
     load_scopes_from_manifests()
     # Update OAuth2 scheme with extension scopes
     dynamic_oauth2_scheme.update_scopes()
+    # Remove OAuth state rows left over from previous sessions
+    try:
+        from app.api.api_v1.auth.oidc import cleanup_expired_oauth_states
+        db = SessionLocal()
+        try:
+            n = cleanup_expired_oauth_states(db)
+            if n:
+                logger.info(f"Cleaned up {n} expired OAuth state row(s) on startup")
+        finally:
+            db.close()
+    except Exception:
+        logger.warning("OAuth state cleanup on startup failed — continuing")
     yield
 
 

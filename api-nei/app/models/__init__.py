@@ -1,3 +1,4 @@
+from .oauth_state import OAuthState
 from .user import User
 from .event import Event
 from .faina import FainaMember, FainaRole, Faina
