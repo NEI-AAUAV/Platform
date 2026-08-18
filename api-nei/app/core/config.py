@@ -84,7 +84,7 @@ class Settings(BaseSettings):
     ## How long access tokens are valid for
     ACCESS_TOKEN_EXPIRE: timedelta = timedelta(hours=1)
     ## How long refresh tokens are valid for
-    REFRESH_TOKEN_EXPIRE: timedelta = timedelta(days=7)
+    REFRESH_TOKEN_EXPIRE: timedelta = timedelta(hours=24)
     ## How long the email confirmation tokens are valid for
     CONFIRMATION_TOKEN_EXPIRE: timedelta = timedelta(days=1)
     ## How long the password reset tokens are valid for
