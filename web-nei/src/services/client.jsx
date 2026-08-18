@@ -26,11 +26,9 @@ export async function refreshToken() {
     .create({
       baseURL: config.API_NEI_URL,
       timeout: 5000,
-      headers: {
-        Authorization: `Bearer ${useUserStore.getState().token}`,
-      },
+      withCredentials: true,
     })
-    .post("/auth/refresh/")
+    .post("/auth/refresh")
     .then(({ data: { access_token } }) => {
       useUserStore.getState().login({ token: access_token });
       return access_token;
@@ -44,6 +42,7 @@ export const createClient = (baseURL) => {
   const client = axios.create({
     baseURL,
     timeout: 5000,
+    withCredentials: true,
   });
 
   client.interceptors.request.use(

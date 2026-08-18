@@ -44,7 +44,8 @@ describe('createClient', () => {
     
     expect(mockedAxios.create).toHaveBeenCalledWith({
       baseURL,
-      timeout: 5000
+      timeout: 5000,
+      withCredentials: true
     })
     expect(client).toBe(mockAxiosInstance)
   })
