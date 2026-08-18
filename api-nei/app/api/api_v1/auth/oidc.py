@@ -71,7 +71,7 @@ if settings.OIDC_ENABLED:
         "token_endpoint_auth_method": "client_secret_post",
         "code_challenge_method": "S256",
     }
-    if not settings.PRODUCTION:
+    if not settings.OIDC_VERIFY_SSL:
         client_kwargs["verify"] = False
 
     oauth.register(
@@ -191,7 +191,7 @@ async def _load_endpoints() -> tuple[str, str]:
 
 
 async def _fetch_jwks(jwks_uri: str) -> dict:
-    verify_ssl = settings.PRODUCTION
+    verify_ssl = settings.OIDC_VERIFY_SSL
     async with httpx.AsyncClient(verify=verify_ssl) as client:
         resp = await client.get(jwks_uri)
         resp.raise_for_status()
@@ -241,7 +241,7 @@ async def _exchange_code(
     code_verifier: Optional[str] = None,
 ) -> tuple[dict, Optional[str]]:
     """Returns (userinfo, id_token)."""
-    verify_ssl = settings.PRODUCTION
+    verify_ssl = settings.OIDC_VERIFY_SSL
     token_data = {
         "grant_type": "authorization_code",
         "code": code,
@@ -375,7 +375,7 @@ async def _sync_authentik_user_name(email: str, full_name: str) -> None:
     if not settings.AUTHENTIK_TOKEN or not full_name:
         return
     try:
-        verify_ssl = settings.PRODUCTION
+        verify_ssl = settings.OIDC_VERIFY_SSL
         headers = {"Authorization": f"Bearer {settings.AUTHENTIK_TOKEN}"}
         async with httpx.AsyncClient(verify=verify_ssl) as client:
             resp = await client.get(

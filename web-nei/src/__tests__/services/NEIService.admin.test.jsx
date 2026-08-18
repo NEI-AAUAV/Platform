@@ -38,9 +38,9 @@ describe('NEIService - Authentik admin methods', () => {
     )
   })
 
-  it('logout calls POST /auth/logout/', async () => {
+  it('logout calls POST /auth/logout', async () => {
     mockClient.post.mockResolvedValue({ status: 'ok', end_session_url: null })
     await service.logout()
-    expect(mockClient.post).toHaveBeenCalledWith('/auth/logout/')
+    expect(mockClient.post).toHaveBeenCalledWith('/auth/logout')
   })
 })

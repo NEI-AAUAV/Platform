@@ -140,7 +140,7 @@ const NEIService = {
   },
 
   async logout() {
-    return await client.post("/auth/logout/");
+    return await client.post("/auth/logout");
   },
 
   async verifyEmail(params) {

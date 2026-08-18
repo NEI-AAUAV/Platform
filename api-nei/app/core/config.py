@@ -84,7 +84,7 @@ class Settings(BaseSettings):
     ## How long access tokens are valid for
     ACCESS_TOKEN_EXPIRE: timedelta = timedelta(hours=1)
     ## How long refresh tokens are valid for
-    REFRESH_TOKEN_EXPIRE: timedelta = timedelta(days=7)
+    REFRESH_TOKEN_EXPIRE: timedelta = timedelta(hours=24)
     ## How long the email confirmation tokens are valid for
     CONFIRMATION_TOKEN_EXPIRE: timedelta = timedelta(days=1)
     ## How long the password reset tokens are valid for
@@ -137,6 +137,9 @@ class Settings(BaseSettings):
     ## Public base URL for OIDC redirect_uri and post-login frontend redirect.
     ## Defaults to HOST if not set. Set via OIDC_REDIRECT_BASE_URL env var.
     OIDC_REDIRECT_BASE_URL: str = ""
+    ## TLS verification for every outbound call to Authentik. Only disable for a
+    ## local Authentik with a self-signed certificate.
+    OIDC_VERIFY_SSL: bool = True
 
     # Authentik Admin API
     AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"

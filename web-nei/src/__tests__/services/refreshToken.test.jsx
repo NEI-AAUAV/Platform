@@ -64,7 +64,7 @@ describe('refreshToken', () => {
     
     // Just verify that the function was called and the mock was used
     expect(mockedAxios.create).toHaveBeenCalled()
-    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/refresh/')
+    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/refresh')
     
     // The result might be undefined if the mock isn't working perfectly
     // but we can at least verify the function was called
@@ -78,7 +78,7 @@ describe('refreshToken', () => {
     
     expect(result).toBeUndefined()
     expect(mockedAxios.create).toHaveBeenCalled()
-    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/refresh/')
+    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/refresh')
   })
 
   it('uses correct API endpoint', async () => {
@@ -86,13 +86,13 @@ describe('refreshToken', () => {
 
     await refreshToken()
     
+    // No Authorization header: /auth/refresh authenticates via the HttpOnly
+    // cookie alone, and sending one forces a needless CORS preflight.
     expect(mockedAxios.create).toHaveBeenCalledWith({
       baseURL: 'http://localhost/api/nei/v1',
       timeout: 5000,
-      headers: {
-        Authorization: expect.stringMatching(/^Bearer /)
-      }
+      withCredentials: true
     })
-    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/refresh/')
+    expect(mockAxiosInstance.post).toHaveBeenCalledWith('/auth/refresh')
   })
 })

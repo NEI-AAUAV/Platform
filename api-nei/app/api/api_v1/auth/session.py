@@ -1,12 +1,13 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Cookie, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Cookie, status
+from fastapi.responses import JSONResponse
 
 from loguru import logger
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from jose import JWTError
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app import crud
 from app.api import deps
@@ -15,6 +16,7 @@ from app.models.device_login import DeviceLogin
 
 from ._deps import (
     Token,
+    clear_refresh_cookie,
     generate_response,
     decode_token,
     REFRESH_TOKEN_TYPE,
@@ -43,6 +45,7 @@ def _validate_refresh_token(db, token):
         session_id = int(payload["sid"])
         issued_at = payload["iat"]
         token_type = payload["type"]
+        token_jti = payload.get("jti")
     except (JWTError, ValueError, KeyError):
         raise credentials_exception
 
@@ -50,14 +53,17 @@ def _validate_refresh_token(db, token):
     if token_type != REFRESH_TOKEN_TYPE:
         raise credentials_exception
 
-    # Get the token's session from the database
-    device_login = db.get(DeviceLogin, (user_id, session_id))
+    # Get the token's session from the database. The check-and-rotate below is
+    # not atomic under READ COMMITTED, so the row is locked: without it two
+    # concurrent refreshes carrying the same token both pass and the session
+    # silently forks.
+    device_login = db.get(DeviceLogin, (user_id, session_id), with_for_update=True)
     if device_login is None:
         raise credentials_exception
 
     # Safety check that the session hasn't expired, the token should already
     # encode this.
-    if device_login.expires_at < datetime.now():
+    if device_login.expires_at < datetime.now(timezone.utc):
         logger.warning(f"Token that should be expired was accepted")
         # Remove the device login from the database since it's no longer used
         db.delete(device_login)
@@ -65,9 +71,19 @@ def _validate_refresh_token(db, token):
 
         raise credentials_exception
 
-    # Check that this token issue date isn't before the last token refresh, if
-    # this happens it might mean someone got the token and is trying to replay it
-    if int(device_login.refreshed_at.timestamp()) > issued_at:
+    # Detect replay: the token must carry the jti of the session's current
+    # rotation. Sessions predating the jti migration have none, so they fall
+    # back to the old whole-second timestamp comparison for one rotation and
+    # then self-heal. A token bearing a jti against such a row is rejected, so
+    # the fallback is not a downgrade path.
+    if device_login.refresh_jti is None:
+        replayed = token_jti is not None or (
+            int(device_login.refreshed_at.timestamp()) > issued_at
+        )
+    else:
+        replayed = token_jti != device_login.refresh_jti
+
+    if replayed:
         logger.warning(f"A refresh token was resubmitted")
         # Preemptively remove the device login in order to prevent the token
         # from being used by a malicious third party.
@@ -151,18 +167,21 @@ class LogoutResponse(BaseModel):
     response_model=LogoutResponse,
 )
 async def logout(
-    response: Response,
     db: Session = Depends(deps.get_db),
     refresh: str | None = Cookie(default=None),
 ):
-    # remove the refresh token cookie from the client
-    response.delete_cookie("refresh")
-
-    _, device_login = _validate_refresh_token(db, refresh)
-
-    # invalidate the user's token and clear it from the server-side
-    db.delete(device_login)
-    db.commit()
+    try:
+        _, device_login = _validate_refresh_token(db, refresh)
+    except HTTPException as exc:
+        # The token is unusable, but the client is still holding it. Clear it
+        # anyway so a stale cookie can't strand the user in a logged-out limbo.
+        failed = JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail},
+            headers=exc.headers,
+        )
+        clear_refresh_cookie(failed)
+        return failed
 
     end_session_url: Optional[str] = None
     if settings.OIDC_ENABLED and device_login.oidc_id_token:
@@ -178,8 +197,16 @@ async def logout(
             f"&id_token_hint={device_login.oidc_id_token}"
         )
 
-    return LogoutResponse(
-        status="success",
-        message="You have been logged out.",
-        end_session_url=end_session_url,
+    # invalidate the user's token and clear it from the server-side
+    db.delete(device_login)
+    db.commit()
+
+    response = JSONResponse(
+        content=LogoutResponse(
+            status="success",
+            message="You have been logged out.",
+            end_session_url=end_session_url,
+        ).model_dump()
     )
+    clear_refresh_cookie(response)
+    return response

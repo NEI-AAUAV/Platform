@@ -317,3 +317,47 @@ def test_oidc_link_callback_disabled(client: TestClient):
         follow_redirects=False,
     )
     assert r.status_code == 503
+
+
+def test_oidc_verify_ssl_defaults_true():
+    """TLS verification must not be inferred from ENV: a deployment that is not
+    literally ENV=production would otherwise accept a forged Authentik cert."""
+    assert settings.OIDC_VERIFY_SSL is True
+
+
+def test_fetch_jwks_passes_verify_flag(monkeypatch):
+    import asyncio
+
+    from app.api.api_v1.auth import oidc
+
+    captured = {}
+
+    class _FakeResponse:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"keys": []}
+
+    class _FakeClient:
+        def __init__(self, verify=True, **kwargs):
+            captured["verify"] = verify
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def get(self, url):
+            return _FakeResponse()
+
+    monkeypatch.setattr(oidc.httpx, "AsyncClient", _FakeClient)
+
+    monkeypatch.setattr(settings, "OIDC_VERIFY_SSL", True)
+    asyncio.run(oidc._fetch_jwks("https://authentik.example/jwks"))
+    assert captured["verify"] is True
+
+    monkeypatch.setattr(settings, "OIDC_VERIFY_SSL", False)
+    asyncio.run(oidc._fetch_jwks("https://authentik.example/jwks"))
+    assert captured["verify"] is False

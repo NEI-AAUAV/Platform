@@ -1,3 +1,5 @@
+import secrets
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from fastapi.responses import JSONResponse, Response
@@ -20,6 +22,10 @@ from app.core.dynamic_oauth import dynamic_oauth2_scheme
 
 ACCESS_TOKEN_TYPE: str = "access"
 REFRESH_TOKEN_TYPE: str = "refresh"
+# Cookie identity is (name, domain, path); set and delete must agree or the
+# browser silently keeps the cookie.
+REFRESH_COOKIE_NAME: str = "refresh"
+REFRESH_COOKIE_PATH: str = f"{settings.API_V1_STR}/auth"
 VERIFICATION_TOKEN_TYPE: str = "verification"
 PASSWORD_RESET_TOKEN_TYPE: str = "reset"
 MAGIC_LINK_TOKEN_TYPE: str = "magic"
@@ -207,6 +213,9 @@ def generate_response(
     # created device login and refreshed token otherwise the token could be
     # denied because the dates mismatch.
     iat = datetime.now(timezone.utc)
+    # Rotation identity. Kept in a local because db.commit() below expires the
+    # instance, and the value must match what goes into the token.
+    refresh_jti = secrets.token_urlsafe(32)
 
     if device_login is None:
         # Create a new session and add it to the database if no session exists
@@ -216,11 +225,13 @@ def generate_response(
             refreshed_at=iat,
             expires_at=iat + settings.REFRESH_TOKEN_EXPIRE,
             oidc_id_token=oidc_id_token,
+            refresh_jti=refresh_jti,
         )
         db.add(device_login)
     else:
         # Update the last time the token was refreshed if the session already exists
         device_login.refreshed_at = iat
+        device_login.refresh_jti = refresh_jti
 
     # Flush all changes to the database to ensure consistency
     db.commit()
@@ -248,6 +259,7 @@ def generate_response(
             "sub": str(user.id),
             "type": REFRESH_TOKEN_TYPE,
             "sid": device_login.session_id,
+            "jti": refresh_jti,
         },
     )
 
@@ -255,16 +267,27 @@ def generate_response(
 
     response = JSONResponse(content=token_data.model_dump())
     response.set_cookie(
-        key="refresh",
+        key=REFRESH_COOKIE_NAME,
         value=refresh_token,
         expires=device_login.expires_at.astimezone(tz=timezone.utc),
         secure=settings.PRODUCTION,
         httponly=True,
         samesite="strict",
         # Only pass the cookie to the auth endpoints
-        path=f"{settings.API_V1_STR}/auth",
+        path=REFRESH_COOKIE_PATH,
     )
     return response
+
+
+def clear_refresh_cookie(response: Response) -> None:
+    """Expires the refresh cookie client-side, mirroring `generate_response`."""
+    response.delete_cookie(
+        REFRESH_COOKIE_NAME,
+        path=REFRESH_COOKIE_PATH,
+        secure=settings.PRODUCTION,
+        httponly=True,
+        samesite="strict",
+    )
 
 
 class OperationSuccessfulResponse(BaseModel):
