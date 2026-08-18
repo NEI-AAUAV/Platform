@@ -355,3 +355,121 @@ def test_expired_session_is_rejected(
         follow_redirects=True,
     )
     assert r.status_code == 401
+
+
+def test_refresh_rotates_jti(db: SessionTesting, app: FastAPI, client: TestClient) -> None:
+    r1_refresh = _login(client)
+    r2 = TestClient(app, cookies={"refresh": r1_refresh}).post(
+        f"{settings.API_V1_STR}/auth/refresh",
+        follow_redirects=True,
+    )
+    assert r2.status_code == 200
+
+    jti1 = jwt.get_unverified_claims(r1_refresh)["jti"]
+    jti2 = jwt.get_unverified_claims(r2.cookies["refresh"])["jti"]
+    assert jti1 != jti2
+    assert _session_row(db, r1_refresh).refresh_jti == jti2
+
+
+def test_refresh_replay_kills_session(
+    db: SessionTesting, app: FastAPI, client: TestClient
+) -> None:
+    r1_refresh = _login(client)
+    claims = jwt.get_unverified_claims(r1_refresh)
+
+    assert TestClient(app, cookies={"refresh": r1_refresh}).post(
+        f"{settings.API_V1_STR}/auth/refresh", follow_redirects=True
+    ).status_code == 200
+
+    replayed = TestClient(app, cookies={"refresh": r1_refresh}).post(
+        f"{settings.API_V1_STR}/auth/refresh",
+        follow_redirects=True,
+    )
+    assert replayed.status_code == 401
+    # The whole session is torn down, not just this request rejected.
+    assert db.get(DeviceLogin, (int(claims["sub"]), int(claims["sid"]))) is None
+
+
+def test_refresh_replay_detected_within_same_second(
+    db: SessionTesting, app: FastAPI, client: TestClient, monkeypatch
+) -> None:
+    """The old check compared whole-second timestamps, so a token replayed in
+    the same second it was issued slipped through."""
+    from app.api.api_v1.auth import _deps
+
+    frozen = datetime.now(timezone.utc)
+    monkeypatch.setattr(_deps, "datetime", _FrozenDatetime(frozen))
+
+    r1_refresh = _login(client)
+    assert TestClient(app, cookies={"refresh": r1_refresh}).post(
+        f"{settings.API_V1_STR}/auth/refresh", follow_redirects=True
+    ).status_code == 200
+
+    replayed = TestClient(app, cookies={"refresh": r1_refresh}).post(
+        f"{settings.API_V1_STR}/auth/refresh",
+        follow_redirects=True,
+    )
+    assert replayed.status_code == 401
+
+
+def test_pre_migration_session_heals(
+    db: SessionTesting, app: FastAPI, client: TestClient
+) -> None:
+    """A session created before the jti migration has no stored jti and its
+    token carries no jti claim; it must refresh once and gain one."""
+    refresh = _login(client)
+    row = _session_row(db, refresh)
+    row.refresh_jti = None
+    db.commit()
+
+    claims = jwt.get_unverified_claims(refresh)
+    legacy_token = _legacy_refresh_token(claims)
+
+    r = TestClient(app, cookies={"refresh": legacy_token}).post(
+        f"{settings.API_V1_STR}/auth/refresh",
+        follow_redirects=True,
+    )
+    assert r.status_code == 200
+    assert _session_row(db, refresh).refresh_jti is not None
+
+
+def test_pre_migration_row_rejects_token_with_jti(
+    db: SessionTesting, app: FastAPI, client: TestClient
+) -> None:
+    """Closes the downgrade path: a jti-bearing token must not be accepted
+    against a row that has no jti yet."""
+    refresh = _login(client)
+    row = _session_row(db, refresh)
+    row.refresh_jti = None
+    db.commit()
+
+    r = TestClient(app, cookies={"refresh": refresh}).post(
+        f"{settings.API_V1_STR}/auth/refresh",
+        follow_redirects=True,
+    )
+    assert r.status_code == 401
+
+
+class _FrozenDatetime:
+    """Pins datetime.now() so login and refresh share one `iat`."""
+
+    def __init__(self, value: datetime) -> None:
+        self._value = value
+
+    def now(self, tz=None) -> datetime:
+        return self._value
+
+
+def _legacy_refresh_token(claims: dict) -> str:
+    """Mint a refresh token in the pre-migration format, without a jti."""
+    from app.api.api_v1.auth._deps import REFRESH_TOKEN_TYPE, create_token
+
+    return create_token(
+        {
+            "iat": claims["iat"],
+            "exp": claims["exp"],
+            "sub": claims["sub"],
+            "type": REFRESH_TOKEN_TYPE,
+            "sid": claims["sid"],
+        }
+    )

@@ -1,3 +1,5 @@
+import secrets
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from fastapi.responses import JSONResponse, Response
@@ -211,6 +213,9 @@ def generate_response(
     # created device login and refreshed token otherwise the token could be
     # denied because the dates mismatch.
     iat = datetime.now(timezone.utc)
+    # Rotation identity. Kept in a local because db.commit() below expires the
+    # instance, and the value must match what goes into the token.
+    refresh_jti = secrets.token_urlsafe(32)
 
     if device_login is None:
         # Create a new session and add it to the database if no session exists
@@ -220,11 +225,13 @@ def generate_response(
             refreshed_at=iat,
             expires_at=iat + settings.REFRESH_TOKEN_EXPIRE,
             oidc_id_token=oidc_id_token,
+            refresh_jti=refresh_jti,
         )
         db.add(device_login)
     else:
         # Update the last time the token was refreshed if the session already exists
         device_login.refreshed_at = iat
+        device_login.refresh_jti = refresh_jti
 
     # Flush all changes to the database to ensure consistency
     db.commit()
@@ -252,6 +259,7 @@ def generate_response(
             "sub": str(user.id),
             "type": REFRESH_TOKEN_TYPE,
             "sid": device_login.session_id,
+            "jti": refresh_jti,
         },
     )
 
