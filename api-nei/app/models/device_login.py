@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from sqlalchemy import ForeignKey, ForeignKey, Text
+from sqlalchemy import DateTime, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.user import User
@@ -12,6 +12,6 @@ class DeviceLogin(Base):
         ForeignKey(User.id, ondelete="CASCADE"), primary_key=True
     )
     session_id: Mapped[int] = mapped_column(primary_key=True)
-    refreshed_at: Mapped[datetime]
-    expires_at: Mapped[datetime]
+    refreshed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     oidc_id_token: Mapped[Optional[str]] = mapped_column(Text, nullable=True)

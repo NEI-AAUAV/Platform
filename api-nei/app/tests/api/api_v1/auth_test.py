@@ -3,11 +3,12 @@ import pytest
 
 from fastapi.testclient import TestClient
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from jose import jwt
 
 from app.core.config import settings
 from app.models import User
+from app.models.device_login import DeviceLogin
 from app.models.user.user_email import UserEmail
 from app.tests.conftest import SessionTesting
 from app.api.api_v1.auth.register import _create_email_verification_token
@@ -307,3 +308,50 @@ def test_logout_invalidates_session(app: FastAPI, client: TestClient) -> None:
         follow_redirects=True,
     )
     assert replayed.status_code == 401
+
+
+def _session_row(db: SessionTesting, refresh: str) -> DeviceLogin:
+    claims = jwt.get_unverified_claims(refresh)
+    row = db.get(DeviceLogin, (int(claims["sub"]), int(claims["sid"])))
+    assert row is not None
+    return row
+
+
+def test_refresh_under_non_utc_timezone(
+    db: SessionTesting, app: FastAPI, client: TestClient, monkeypatch
+) -> None:
+    """Expiry used to be compared against naive local time while the column
+    stored UTC, so under WEST a live session was rejected an hour early."""
+    import time
+
+    refresh = _login(client)
+    row = _session_row(db, refresh)
+    row.expires_at = datetime.now(timezone.utc) + timedelta(minutes=30)
+    db.commit()
+
+    monkeypatch.setenv("TZ", "Europe/Lisbon")
+    time.tzset()
+    try:
+        r = TestClient(app, cookies={"refresh": refresh}).post(
+            f"{settings.API_V1_STR}/auth/refresh",
+            follow_redirects=True,
+        )
+        assert r.status_code == 200
+    finally:
+        monkeypatch.undo()
+        time.tzset()
+
+
+def test_expired_session_is_rejected(
+    db: SessionTesting, app: FastAPI, client: TestClient
+) -> None:
+    refresh = _login(client)
+    row = _session_row(db, refresh)
+    row.expires_at = datetime.now(timezone.utc) - timedelta(seconds=1)
+    db.commit()
+
+    r = TestClient(app, cookies={"refresh": refresh}).post(
+        f"{settings.API_V1_STR}/auth/refresh",
+        follow_redirects=True,
+    )
+    assert r.status_code == 401

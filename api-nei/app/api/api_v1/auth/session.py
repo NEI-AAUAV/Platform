@@ -7,7 +7,7 @@ from loguru import logger
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from jose import JWTError
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app import crud
 from app.api import deps
@@ -59,7 +59,7 @@ def _validate_refresh_token(db, token):
 
     # Safety check that the session hasn't expired, the token should already
     # encode this.
-    if device_login.expires_at < datetime.now():
+    if device_login.expires_at < datetime.now(timezone.utc):
         logger.warning(f"Token that should be expired was accepted")
         # Remove the device login from the database since it's no longer used
         db.delete(device_login)
