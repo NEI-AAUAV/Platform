@@ -137,6 +137,9 @@ class Settings(BaseSettings):
     ## Public base URL for OIDC redirect_uri and post-login frontend redirect.
     ## Defaults to HOST if not set. Set via OIDC_REDIRECT_BASE_URL env var.
     OIDC_REDIRECT_BASE_URL: str = ""
+    ## TLS verification for every outbound call to Authentik. Only disable for a
+    ## local Authentik with a self-signed certificate.
+    OIDC_VERIFY_SSL: bool = True
 
     # Authentik Admin API
     AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"

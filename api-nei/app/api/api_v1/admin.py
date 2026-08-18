@@ -56,7 +56,7 @@ def _authentik_headers() -> dict:
 async def _authentik_user_pk(authentik_sub: str) -> int:
     """Resolve an Authentik user PK (int) from their UUID (authentik_sub)."""
     url = f"{settings.AUTHENTIK_URL}/api/v3/core/users/"
-    verify_ssl = settings.PRODUCTION
+    verify_ssl = settings.OIDC_VERIFY_SSL
     async with httpx.AsyncClient(verify=verify_ssl) as client:
         resp = await client.get(
             url,
@@ -85,7 +85,7 @@ async def list_authentik_groups(
         )
 
     url = f"{settings.AUTHENTIK_URL}/api/v3/core/groups/"
-    verify_ssl = settings.PRODUCTION
+    verify_ssl = settings.OIDC_VERIFY_SSL
     groups = []
     params = {"include_users": "true", "page_size": 100}
 
@@ -128,7 +128,7 @@ async def add_group_member(
     safe_group_pk = _validate_uuid(group_pk, "group_pk")
     authentik_pk = await _authentik_user_pk(user.authentik_sub)
     url = f"{settings.AUTHENTIK_URL}/api/v3/core/groups/{safe_group_pk}/add_user/"
-    verify_ssl = settings.PRODUCTION
+    verify_ssl = settings.OIDC_VERIFY_SSL
     async with httpx.AsyncClient(verify=verify_ssl) as client:
         resp = await client.post(
             url,
@@ -162,7 +162,7 @@ async def remove_group_member(
     safe_group_pk = _validate_uuid(group_pk, "group_pk")
     authentik_pk = await _authentik_user_pk(user.authentik_sub)
     url = f"{settings.AUTHENTIK_URL}/api/v3/core/groups/{safe_group_pk}/remove_user/"
-    verify_ssl = settings.PRODUCTION
+    verify_ssl = settings.OIDC_VERIFY_SSL
     async with httpx.AsyncClient(verify=verify_ssl) as client:
         resp = await client.post(
             url,
