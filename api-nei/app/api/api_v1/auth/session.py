@@ -1,6 +1,7 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Cookie, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Cookie, status
+from fastapi.responses import JSONResponse
 
 from loguru import logger
 from pydantic import BaseModel
@@ -15,6 +16,7 @@ from app.models.device_login import DeviceLogin
 
 from ._deps import (
     Token,
+    clear_refresh_cookie,
     generate_response,
     decode_token,
     REFRESH_TOKEN_TYPE,
@@ -151,18 +153,21 @@ class LogoutResponse(BaseModel):
     response_model=LogoutResponse,
 )
 async def logout(
-    response: Response,
     db: Session = Depends(deps.get_db),
     refresh: str | None = Cookie(default=None),
 ):
-    # remove the refresh token cookie from the client
-    response.delete_cookie("refresh")
-
-    _, device_login = _validate_refresh_token(db, refresh)
-
-    # invalidate the user's token and clear it from the server-side
-    db.delete(device_login)
-    db.commit()
+    try:
+        _, device_login = _validate_refresh_token(db, refresh)
+    except HTTPException as exc:
+        # The token is unusable, but the client is still holding it. Clear it
+        # anyway so a stale cookie can't strand the user in a logged-out limbo.
+        failed = JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail},
+            headers=exc.headers,
+        )
+        clear_refresh_cookie(failed)
+        return failed
 
     end_session_url: Optional[str] = None
     if settings.OIDC_ENABLED and device_login.oidc_id_token:
@@ -178,8 +183,16 @@ async def logout(
             f"&id_token_hint={device_login.oidc_id_token}"
         )
 
-    return LogoutResponse(
-        status="success",
-        message="You have been logged out.",
-        end_session_url=end_session_url,
+    # invalidate the user's token and clear it from the server-side
+    db.delete(device_login)
+    db.commit()
+
+    response = JSONResponse(
+        content=LogoutResponse(
+            status="success",
+            message="You have been logged out.",
+            end_session_url=end_session_url,
+        ).model_dump()
     )
+    clear_refresh_cookie(response)
+    return response

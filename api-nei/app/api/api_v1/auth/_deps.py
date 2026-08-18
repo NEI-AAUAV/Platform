@@ -20,6 +20,10 @@ from app.core.dynamic_oauth import dynamic_oauth2_scheme
 
 ACCESS_TOKEN_TYPE: str = "access"
 REFRESH_TOKEN_TYPE: str = "refresh"
+# Cookie identity is (name, domain, path); set and delete must agree or the
+# browser silently keeps the cookie.
+REFRESH_COOKIE_NAME: str = "refresh"
+REFRESH_COOKIE_PATH: str = f"{settings.API_V1_STR}/auth"
 VERIFICATION_TOKEN_TYPE: str = "verification"
 PASSWORD_RESET_TOKEN_TYPE: str = "reset"
 MAGIC_LINK_TOKEN_TYPE: str = "magic"
@@ -255,16 +259,27 @@ def generate_response(
 
     response = JSONResponse(content=token_data.model_dump())
     response.set_cookie(
-        key="refresh",
+        key=REFRESH_COOKIE_NAME,
         value=refresh_token,
         expires=device_login.expires_at.astimezone(tz=timezone.utc),
         secure=settings.PRODUCTION,
         httponly=True,
         samesite="strict",
         # Only pass the cookie to the auth endpoints
-        path=f"{settings.API_V1_STR}/auth",
+        path=REFRESH_COOKIE_PATH,
     )
     return response
+
+
+def clear_refresh_cookie(response: Response) -> None:
+    """Expires the refresh cookie client-side, mirroring `generate_response`."""
+    response.delete_cookie(
+        REFRESH_COOKIE_NAME,
+        path=REFRESH_COOKIE_PATH,
+        secure=settings.PRODUCTION,
+        httponly=True,
+        samesite="strict",
+    )
 
 
 class OperationSuccessfulResponse(BaseModel):

@@ -254,3 +254,56 @@ def test_verify(db: SessionTesting, client: TestClient) -> None:
     matches = get_by_email(db, inactiveUserEmail)
     assert matches is not None
     assert matches[1].active
+
+
+def _login(client: TestClient) -> str:
+    r = client.post(
+        f"{settings.API_V1_STR}/auth/login/",
+        data={"username": userEmail, "password": user_password},
+        follow_redirects=True,
+    )
+    assert r.status_code == 200
+    return r.cookies["refresh"]
+
+
+def test_logout_clears_cookie_with_matching_path(app: FastAPI, client: TestClient) -> None:
+    refresh = _login(client)
+
+    r = TestClient(app, cookies={"refresh": refresh}).post(
+        f"{settings.API_V1_STR}/auth/logout/",
+        follow_redirects=True,
+    )
+
+    assert r.status_code == 200
+    set_cookie = r.headers["set-cookie"]
+    # Cookie identity is (name, domain, path): a deletion at the default "/"
+    # would create a second slot and leave the real cookie in place.
+    assert f"Path={settings.API_V1_STR}/auth" in set_cookie
+    assert "Max-Age=0" in set_cookie
+
+
+def test_logout_with_invalid_cookie_still_clears(app: FastAPI) -> None:
+    r = TestClient(app, cookies={"refresh": "not-a-jwt"}).post(
+        f"{settings.API_V1_STR}/auth/logout/",
+        follow_redirects=True,
+    )
+
+    assert r.status_code == 401
+    set_cookie = r.headers["set-cookie"]
+    assert f"Path={settings.API_V1_STR}/auth" in set_cookie
+    assert "Max-Age=0" in set_cookie
+
+
+def test_logout_invalidates_session(app: FastAPI, client: TestClient) -> None:
+    refresh = _login(client)
+    authed_client = TestClient(app, cookies={"refresh": refresh})
+
+    assert authed_client.post(
+        f"{settings.API_V1_STR}/auth/logout/", follow_redirects=True
+    ).status_code == 200
+
+    replayed = TestClient(app, cookies={"refresh": refresh}).post(
+        f"{settings.API_V1_STR}/auth/refresh/",
+        follow_redirects=True,
+    )
+    assert replayed.status_code == 401
