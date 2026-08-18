@@ -69,7 +69,7 @@ async def get_token(
         if oauth_token not in tokens:
             raise HTTPException(status_code=404, detail="Token not found")
 
-        print(oauth_verifier, oauth_token, tokens[oauth_token])
+        logger.debug("OAuth callback received; proceeding with access token exchange.")
 
         # Step 3: Access Token
         oauth = AsyncOAuth1Client(
@@ -80,7 +80,7 @@ async def get_token(
             verifier=oauth_verifier,
         )
         oauth_tokens = await oauth.fetch_access_token(access_token_url)
-        print(oauth_tokens)
+        logger.debug("Access token fetched successfully from IdP.")
         token = oauth_tokens.get("oauth_token")
         token_secret = oauth_tokens.get("oauth_token_secret")
         data = await get_data(token, token_secret, scopes=["name", "uu"])
@@ -134,9 +134,9 @@ async def get_data(token, token_secret, scopes):
     data = {}
     for s in scopes:
         res = await oauth.get(f"{get_data_url}?scope={s}&format=json")
-        print(res, token, token_secret, scopes)
+        logger.debug(f"Fetched data from IdP for scope '{s}'.")
         res = res.json()
-        print(res)
+        logger.debug(f"Received response payload for scope '{s}' with keys: {list(res.keys()) if isinstance(res, dict) else 'non-dict payload'}")
         if s == "student_info":
             data["student_info"] = res["NewDataSet"]["ObterDadosAluno"]
         elif s == "student_courses":
