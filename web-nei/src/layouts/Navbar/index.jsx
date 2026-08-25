@@ -75,7 +75,7 @@ const Navbar = () => {
     config.ENABLE_GAMIFICATION &&
       config.WEB_GAMIFICATION_URL && {
         key: "gamification",
-        label: "Gamificação",
+        label: "Quests",
         href: config.WEB_GAMIFICATION_URL,
         disabled: gamificationHealth === "down",
       },
@@ -421,9 +421,7 @@ const Navbar = () => {
                     "pointer-events-none opacity-50": e.disabled,
                   })}
                 >
-                  <a href={e.href} target="_blank" rel="noopener noreferrer">
-                    {e.label}
-                  </a>
+                  <a href={e.href}>{e.label}</a>
                 </li>
               ))}
             </ul>
@@ -612,9 +610,7 @@ const Navbar = () => {
                   "pointer-events-none opacity-50": e.disabled,
                 })}
               >
-                <a href={e.href} target="_blank" rel="noopener noreferrer">
-                  {e.label}
-                </a>
+                <a href={e.href}>{e.label}</a>
               </li>
             ))}
           </ul>
