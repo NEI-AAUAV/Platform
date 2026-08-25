@@ -37,8 +37,8 @@ class ExtensionScopeRegistry:
         Register a scope from an extension
         
         Args:
-            extension_name: Name of the extension (e.g., 'rally', 'gala')
-            scope: The scope string (e.g., 'manager-rally')
+            extension_name: Name of the extension (e.g., 'gala')
+            scope: The scope string (e.g., 'manager-gala')
             description: Human-readable description of the scope
         """
         scope_key = f"{extension_name}:{scope}"

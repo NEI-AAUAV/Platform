@@ -169,13 +169,6 @@ const routes = [
     element: <FullLayout />,
     children: [{ path: "/family", lazy: () => import("./pages/Family") }],
   },
-  // {
-  //   path: "/",
-  //   element: <CleanLayout />,
-  //   children: [
-  //     { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
-  //   ],
-  // },
 ];
 
 export default routes;
