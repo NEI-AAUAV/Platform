@@ -80,7 +80,7 @@ const data = [
     dropdown: [
       {
         name: "Resultados",
-        link: "https://slicf.github.io/mmr_ta-aua/",
+        link: "https://nei-aauav.github.io/mmr_ta-aua/",
         external: true,
       },
       {
