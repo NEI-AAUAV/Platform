@@ -1,7 +1,9 @@
+import uuid
 from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import String, ForeignKey, Enum
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -21,6 +23,8 @@ class News(Base):
         Enum(CategoryEnum, name="category_enum", inherit_schema=True)
     )
     _header: Mapped[Optional[str]] = mapped_column("header", String(2048))
+    # Uploaded via nei-directus; additive, nullable.
+    header_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
     title: Mapped[str] = mapped_column(String(256))
     content: Mapped[Optional[str]] = mapped_column(String(20000))
     created_at: Mapped[datetime]
@@ -32,6 +36,8 @@ class News(Base):
 
     @hybrid_property
     def header(self) -> Optional[str]:
+        if self.header_asset:
+            return f"{settings.DIRECTUS_PUBLIC_URL}assets/{self.header_asset}"
         return self._header and settings.STATIC_URL + self._header
 
     @header.setter

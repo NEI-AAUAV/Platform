@@ -1,7 +1,9 @@
+import uuid
 from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import ForeignKey, SmallInteger, String
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -28,6 +30,9 @@ class Note(Base):
 
     name: Mapped[str] = mapped_column(String(256))
     _location: Mapped[str] = mapped_column("location", String(2048))
+    # Uploaded via nei-directus; additive, nullable — preferred over
+    # `_location` when set (see rgm.py's file_asset for the same pattern).
+    location_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
     year: Mapped[Optional[int]] = mapped_column(SmallInteger, index=True)
 
     summary: Mapped[int] = mapped_column(SmallInteger)
@@ -50,6 +55,8 @@ class Note(Base):
 
     @hybrid_property
     def location(self) -> str:
+        if self.location_asset:
+            return f"{settings.DIRECTUS_PUBLIC_URL}assets/{self.location_asset}"
         if str(self._location).startswith("/"):
             return settings.STATIC_URL + self._location
         return self._location

@@ -23,6 +23,13 @@ class Settings(BaseSettings):
 
     HOST: str = "https://nei.web.ua.pt" if PRODUCTION else "http://localhost"
     STATIC_URL: str = HOST + STATIC_STR
+    # Base URL for assets uploaded through nei-directus (separate repo/
+    # service — see AUTHENTICATION.md "Directus SSO"). Models with a
+    # `*_asset` column resolve it to `{DIRECTUS_PUBLIC_URL}assets/{uuid}`
+    # when set, falling back to their legacy string column otherwise.
+    DIRECTUS_PUBLIC_URL: str = (
+        "https://nei.web.ua.pt/cms/" if PRODUCTION else "http://localhost:8055/"
+    )
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     BACKEND_CORS_ORIGINS: List[str] = [HOST] + (
         []

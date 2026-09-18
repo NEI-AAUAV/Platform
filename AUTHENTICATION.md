@@ -120,3 +120,15 @@ The current model is the right trade for a set of first-party services. Revisit 
 - Sub-minute revocation becomes a hard requirement.
 
 In that case the alternative is to make Authentik's access token the API credential — services become resource servers validating via JWKS, and refresh tokens are held server-side (where `offline_access` would finally be meaningful). The cost is a hard runtime dependency on Authentik in every service, re-modelling scopes as Authentik property mappings, and rewriting the session layer. Do not do it piecemeal.
+
+## Directus SSO
+
+Directus (`nei-directus`, a separate repository — not part of this monorepo, not deployed as a Platform extension) is a content-admin UI for staff, connecting directly to `db_pg`. Unlike api-nei, **Directus keeps Authentik's own tokens** — it validates OIDC sessions itself rather than minting platform JWTs, since it is not one of the first-party services covered by the model above.
+
+- **Login is Authentik-only** (`AUTH_DISABLE_DEFAULT=true`) — there is no local email/password form on the login screen. A break-glass admin account still exists for recovery if Authentik is unreachable; see `nei-directus/README.md` "Break-glass recovery" for the exact toggle.
+- **Dedicated Authentik application/client** — do not reuse the `nei-platform` OIDC client used by api-nei. A separate application (slug `nei-directus`) has its own client id/secret.
+- Redirect URI: `<DIRECTUS_PUBLIC_URL>auth/login/authentik/callback`.
+- Scopes: `openid profile email` — Directus has no use for `nei_scopes`/`nei_nmec`/`nei_iupi`.
+- Config lives entirely in `nei-directus`'s own `.env` (`AUTH_AUTHENTIK_CLIENT_ID`, `AUTH_AUTHENTIK_CLIENT_SECRET`, `AUTH_AUTHENTIK_ISSUER_URL`, `AUTH_AUTHENTIK_DEFAULT_ROLE_ID`) — see that repo's README.
+- Directus's DB user is **not** api-nei's application user. A dedicated, least-privilege Postgres role (`directus_svc`) is provisioned by `nei-directus/sql/01-grants.sql` on every deploy of that repo (the corresponding `api-nei` Alembic migration, `d3c7f0a1b2e4_add_directus_readonly_db_role.py`, documents the same change but currently can't run against this database — see its header note and `nei-directus/README.md` "Known limitations"), granted access only to the specific tables Directus is allowed to manage. The role's login password is set from `nei-directus/.env`'s `DB_PASSWORD`, never committed.
+- Schema ownership does not change: `api-nei`'s Alembic migrations remain the "official" record of table structure. Directus is configured to control field interfaces/permissions on top of existing tables via `nei-directus/config/*.yaml`, applied automatically on deploy — it never runs its own DDL against them (enforced in `nei-directus/scripts/apply-config.mjs`, see its header comment).

@@ -1,7 +1,9 @@
+import uuid
 from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import Date, String, Text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -14,9 +16,13 @@ class History(Base):
     title: Mapped[str] = mapped_column(String(120))
     body: Mapped[Optional[str]] = mapped_column(Text)
     _image: Mapped[Optional[str]] = mapped_column("image", String(2048))
+    # Uploaded via nei-directus; additive, nullable.
+    image_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
 
     @hybrid_property
     def image(self) -> Optional[str]:
+        if self.image_asset:
+            return f"{settings.DIRECTUS_PUBLIC_URL}assets/{self.image_asset}"
         return self._image and settings.STATIC_URL + self._image
 
     @image.setter

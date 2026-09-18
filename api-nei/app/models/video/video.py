@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from typing import Optional, List
 
@@ -9,6 +10,7 @@ from sqlalchemy import (
     String,
     Table,
 )
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -38,6 +40,8 @@ class Video(Base):
     title: Mapped[str] = mapped_column(String(256))
     subtitle: Mapped[Optional[str]] = mapped_column(String(256))
     _image: Mapped[Optional[str]] = mapped_column("image", String(2048))
+    # Uploaded via nei-directus; additive, nullable.
+    image_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
     created_at: Mapped[datetime] = mapped_column(index=True)
     playlist: Mapped[Optional[int]] = mapped_column(SmallInteger)
 
@@ -47,6 +51,8 @@ class Video(Base):
 
     @hybrid_property
     def image(self) -> Optional[str]:
+        if self.image_asset:
+            return f"{settings.DIRECTUS_PUBLIC_URL}assets/{self.image_asset}"
         return self._image and settings.STATIC_URL + self._image
 
     @image.setter
