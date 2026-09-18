@@ -1,0 +1,8 @@
+services:
+  proxy:
+    volumes:
+      - ./dev/proxy/locations.directus.local.conf:/etc/nginx/conf.d/locations.directus.local.conf:ro
+    networks:
+      - backend
+      - frontend
+      - nei-shared

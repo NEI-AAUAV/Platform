@@ -1,7 +1,9 @@
 """extend directus_svc grants to note and team_* tables
 
-NOTE (2026-09-18): applied directly by nei-directus/sql/01-grants.sql on
-every deploy — see d3c7f0a1b2e4's note for why.
+NOTE (2026-09-18, superseded): this was previously also applied directly
+by nei-directus/sql/01-grants.sql on every deploy. Infrastructure's SQL
+has been reduced to role/schema bootstrap only (see e8f0a2b4c6d8); this
+migration is now the sole source of truth for these grants.
 
 Revision ID: f2b4d8e1a9c3
 Revises: e8a1c9f3d6b7

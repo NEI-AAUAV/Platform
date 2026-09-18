@@ -2,13 +2,14 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import String
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.core.config import settings
 from app.db.base_class import Base
+from .rgm_mandate import RgmMandate
 
 
 class Rgm(Base):
@@ -22,6 +23,15 @@ class Rgm(Base):
     # "Directus SSO"); additive, nullable, added by api-nei's
     # e8a1c9f3d6b7 migration. Preferred over `_file` when set.
     file_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
+    # `mandate` (above) is the legacy free-text column, kept for compat.
+    # mandate_id is the real FK to RGM's own mandate calendar, additive.
+    mandate_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey(RgmMandate.id, ondelete="SET NULL"), index=True
+    )
+
+    mandate_ref: Mapped[Optional[RgmMandate]] = relationship(
+        RgmMandate, foreign_keys=[mandate_id], back_populates="documents"
+    )
 
     @hybrid_property
     def file(self) -> str:

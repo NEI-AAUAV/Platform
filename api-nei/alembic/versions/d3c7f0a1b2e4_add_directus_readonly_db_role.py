@@ -43,11 +43,18 @@ Does NOT grant DDL rights on `nei`: schema changes to api-nei's own tables
 stay in api-nei's Alembic migrations, never in Directus's own schema-apply.
 
 NOTE (2026-09-19): `d4e5f6a7b8c9` and its predecessor `c3d4e5f6a7b8` are now
-committed, so `alembic upgrade head` closes to a single head again. This
-grant is still additionally applied at runtime by `nei-directus/sql/01-grants.sql`
-on every deploy of that separate repo, because the two repos have
-independent deploy cycles and `nei-directus` cannot assume `api-nei` has
-already run its migrations.
+committed, so `alembic upgrade head` closes to a single head again.
+
+NOTE (2026-09-18, superseded): this grant was previously also applied at
+runtime by `nei-directus/sql/01-grants.sql` on every deploy of that
+separate repo. That duplication is retired as of e8f0a2b4c6d8:
+Infrastructure now runs `alembic upgrade head` against this schema as
+part of its own deploy (see Infrastructure/services/directus/scripts/
+provision-db.sh), so this migration chain is the single source of truth
+for `nei.*` DDL and `directus_svc` grants — Infrastructure's own SQL is
+reduced to creating the `directus_svc` login role and the `directus`
+schema, which must exist before Directus (a separate service) can even
+attempt to connect.
 
 The role's login password is set separately (out of band, via `ALTER ROLE
 ... PASSWORD` run manually or by ops tooling) — never hardcode a password

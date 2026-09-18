@@ -153,7 +153,6 @@ services:
       - ./dev/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./dev/proxy/locations.conf:/etc/nginx/conf.d/locations.conf:ro
       #- ./dev/proxy/locations.gala.conf:/etc/nginx/conf.d/locations.gala.conf:ro
-      - ./dev/proxy/locations.cms.conf:/etc/nginx/conf.d/locations.cms.conf:ro
     depends_on:
       web_nei:
         condition: service_started
@@ -165,7 +164,6 @@ services:
     networks:
       - backend
       - frontend
-      - nei-shared
     restart: unless-stopped
 
   ofelia:
@@ -184,9 +182,9 @@ networks:
     driver: bridge
   frontend:
     driver: bridge
-  # Shared with the standalone nei-directus repo so its Directus container
-  # can reach db_pg and the proxy can reach directus, without exposing
-  # Postgres's port to the host. Create once: `docker network create nei-shared`.
+  # Shared with the Directus service in the Infrastructure repository so it
+  # can reach db_pg without exposing Postgres's container port to that stack.
+  # Create once: `docker network create nei-shared`.
   nei-shared:
     external: true
 

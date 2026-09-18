@@ -6,7 +6,12 @@ from app.models.user import User
 
 
 class TeamColaborator(Base):
-    user_id: Mapped[int] = mapped_column(ForeignKey(User.id), primary_key=True)
-    mandate: Mapped[str] = mapped_column(String(7), primary_key=True)
+    # Surrogate key (see alembic/versions/b5c7d9e1f3a5_team_colaborator_pk.py):
+    # Directus cannot manage a collection with a composite primary key, so
+    # `id` is now the real PK. The old (user_id, mandate) pair is preserved
+    # as a UNIQUE constraint below, unchanged in meaning.
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey(User.id))
+    mandate: Mapped[str] = mapped_column(String(7))
 
     user: Mapped[User] = relationship(User)

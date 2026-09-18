@@ -16,7 +16,7 @@ def get_team_mandates(db: Session = Depends(deps.get_db), _=Depends(deps.long_ca
     return {"data": data}
 
 
-@router.get("/{mandate}", status_code=200, response_model=TeamMandateTree)
+@router.get("/{mandate:path}", status_code=200, response_model=TeamMandateTree)
 def get_team_mandate_tree(
     mandate: str, db: Session = Depends(deps.get_db), _=Depends(deps.long_cache)
 ):

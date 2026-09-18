@@ -1,7 +1,11 @@
 """add directus asset columns for file-bearing tables
 
-NOTE (2026-09-18): applied directly by nei-directus/sql/02-asset-columns.sql
-on every deploy — see d3c7f0a1b2e4's note for why.
+NOTE (2026-09-18, superseded): this was previously also applied directly by
+nei-directus/sql/02-asset-columns.sql on every deploy, on the assumption
+this chain "couldn't run cleanly." That assumption no longer holds:
+`alembic upgrade head` runs clean and idempotent on an empty database
+(verified). Infrastructure's `sql/02-asset-columns.sql` has been removed;
+this migration is now the sole source of truth for these columns.
 
 Revision ID: e8a1c9f3d6b7
 Revises: d3c7f0a1b2e4

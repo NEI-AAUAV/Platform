@@ -13,7 +13,7 @@ from .news import News
 from .note import Note
 from .partner import Partner
 from .redirect import Redirect
-from .rgm import Rgm
+from .rgm_mandate import RgmMandate
 from .rgm import Rgm
 from .senior import Senior
 from .subject import Subject

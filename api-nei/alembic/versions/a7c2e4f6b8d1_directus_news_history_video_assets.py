@@ -15,13 +15,12 @@ is an M2M field through this junction. The old (video_id, mandate)... err,
 (video_id, video_tag_id) pair is preserved as a UNIQUE constraint, so
 nothing that queried by that pair breaks.
 
-As with d3c7f0a1b2e4/e8a1c9f3d6b7/f2b4d8e1a9c3, the corresponding grants
-for these new tables/columns are applied by nei-directus/sql/*.sql on its
-own deploy (that repo's `db-provision` service), not by this migration —
-see that repo's README for why (this local Alembic chain currently can't
-run cleanly against the dev database; nei-directus/sql/ is the practical
-source of truth for DDL affecting directus_svc access until that's
-reconciled). This migration documents the "official" schema history.
+NOTE (2026-09-18, superseded): the corresponding grants for these tables
+were previously applied only by nei-directus/sql/*.sql, not by Alembic,
+on the assumption this chain "couldn't run cleanly." Verified false —
+`alembic upgrade head` runs clean and idempotent on an empty database.
+Grants for `news`/`history`/`video` are now added by e8f0a2b4c6d8;
+Infrastructure's sql/*.sql DDL for this content has been removed.
 """
 from alembic import op
 import sqlalchemy as sa
@@ -82,6 +81,7 @@ def downgrade():
         ALTER TABLE {SCHEMA}.video__video_tags DROP CONSTRAINT IF EXISTS pk_video__video_tags_id;
         ALTER TABLE {SCHEMA}.video__video_tags DROP CONSTRAINT IF EXISTS uq_video__video_tags_video_tag;
         ALTER TABLE {SCHEMA}.video__video_tags ADD CONSTRAINT pk_video__video_tags PRIMARY KEY (video_id, video_tag_id);
+        ALTER TABLE {SCHEMA}.video__video_tags ALTER COLUMN id DROP DEFAULT;
         DROP SEQUENCE IF EXISTS {SCHEMA}.video__video_tags_id_seq;
         """
     )
