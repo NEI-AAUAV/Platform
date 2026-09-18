@@ -62,17 +62,15 @@ export function Component() {
     setTeam(null);
     setCollaborators(null);
     Promise.all([
-      service.getTeamMembers({ ...params }).then((members) => {
-        members.sort(
-          ({ role: a }, { role: b }) => 
-            b?.weight - a?.weight || a?.name?.localeCompare(b?.name)
+      service.getTeamMandateTree(selectedYear).then(({ categories }) => {
+        const sections = categories.flatMap(({ sections }) => sections);
+        setTeam(
+          sections.map(({ id, name, members }) => ({
+            id,
+            title: name,
+            members,
+          }))
         );
-        const vogaln = members.filter(({ role }) => role?.weight === 4).length;
-        setTeam([
-          { members: members.slice(0, -3-vogaln), title: "Coordenação" },
-          { members: members.slice(-3-vogaln, -3), title: "Vogais" },
-          { members: members.slice(-3), title: "Mesa da RGM" },
-        ]);
       }),
       service.getTeamCollaborators({ ...params }).then((colabs) => {
         colabs.sort(({ user: a }, { user: b }) =>
@@ -122,8 +120,8 @@ export function Component() {
           initial="hidden"
           animate="visible"
         >
-          {team?.map(({ members, title }, index) => (
-            <motion.div key={index} variants={item}>
+          {team?.map(({ id, members, title }) => (
+            <motion.div key={id} variants={item}>
               <div className="flex gap-5 px-2">
                 <h4 className="opacity-80">{title}</h4>
                 <div className="divider mt-1 grow" />
@@ -131,7 +129,7 @@ export function Component() {
               <div
                 className={classNames("flex flex-wrap justify-center sm:gap-5")}
               >
-                {members?.map(({ id, role, header, user }) => (
+                {members?.map(({ id, name, role, header, user }) => (
                   <div
                     key={id}
                     className="grow-0 basis-36 px-3 py-1.5 text-center sm:basis-56 sm:px-6 sm:py-3"
@@ -143,9 +141,9 @@ export function Component() {
                     />
 
                     <p className="mb-1 text-lg font-bold">
-                      {user?.name} {user?.surname}
+                      {user?.name} {user?.surname} {!user && name}
                     </p>
-                    <p className="mb-2 text-gray-500">{role?.name}</p>
+                    <p className="mb-2 text-gray-500">{role}</p>
                     <ul className="flex justify-center space-x-1 sm:mt-0">
                       {!!user?.github && (
                         <li>

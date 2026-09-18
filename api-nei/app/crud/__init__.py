@@ -3,6 +3,9 @@ from .crud_faina_member import faina_member
 from .crud_faina_role import faina_role
 from .crud_note import note
 from .crud_team_role import team_role
+from .crud_team_mandate import team_mandate
+from .crud_team_category import team_category
+from .crud_team_section import team_section
 from .crud_team_member import team_member
 from .crud_team_colaborator import team_colaborator
 from .crud_senior import senior

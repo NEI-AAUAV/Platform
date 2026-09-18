@@ -1,14 +1,7 @@
 """add directus least-privilege db role
 
-NOTE (2026-09-18): the local dev DB's alembic_version is currently ahead of
-this repo's checked-out revisions (an unrecovered `d4e5f6a7b8c9`), so this
-chain cannot cleanly `alembic upgrade head` here. Until that's fixed, the
-equivalent DDL is applied directly by nei-directus/sql/01-grants.sql on
-every deploy of that repo — treat this migration as the "official" record
-of the schema change, and nei-directus/sql/ as what actually runs.
-
 Revision ID: d3c7f0a1b2e4
-Revises: b2c3d4e5f6a7
+Revises: d4e5f6a7b8c9
 Create Date: 2026-09-18
 
 Creates a dedicated Postgres role for the standalone `nei-directus` service
@@ -49,6 +42,13 @@ real Postgres:
 Does NOT grant DDL rights on `nei`: schema changes to api-nei's own tables
 stay in api-nei's Alembic migrations, never in Directus's own schema-apply.
 
+NOTE (2026-09-19): `d4e5f6a7b8c9` and its predecessor `c3d4e5f6a7b8` are now
+committed, so `alembic upgrade head` closes to a single head again. This
+grant is still additionally applied at runtime by `nei-directus/sql/01-grants.sql`
+on every deploy of that separate repo, because the two repos have
+independent deploy cycles and `nei-directus` cannot assume `api-nei` has
+already run its migrations.
+
 The role's login password is set separately (out of band, via `ALTER ROLE
 ... PASSWORD` run manually or by ops tooling) — never hardcode a password
 in a migration file.
@@ -57,7 +57,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "d3c7f0a1b2e4"
-down_revision = "b2c3d4e5f6a7"
+down_revision = "d4e5f6a7b8c9"
 branch_labels = None
 depends_on = None
 

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict
 
 from app.schemas.user.user import AnonymousUserListing
@@ -6,7 +8,8 @@ from .faina_role import FainaRoleInDB
 
 
 class FainaMemberBase(BaseModel):
-    member_id: int
+    member_id: Optional[int] = None
+    name: Optional[str] = None
     faina_id: int
     role_id: int
 
@@ -32,4 +35,5 @@ class FainaMemberInDB(BaseModel):
     id: int
     faina_id: int
     role: FainaRoleInDB
-    member: AnonymousUserListing
+    name: Optional[str] = None
+    member: Optional[AnonymousUserListing] = None

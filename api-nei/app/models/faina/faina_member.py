@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import ForeignKey, UniqueConstraint
+from sqlalchemy import ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 
 from app.core.config import settings
@@ -12,6 +12,8 @@ from .faina_role import FainaRole
 class FainaMember(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     member_id: Mapped[Optional[int]] = mapped_column(ForeignKey(User.id), index=True)
+    # Commission members without a platform account are recorded by name.
+    name: Mapped[Optional[str]] = mapped_column(String(120))
     faina_id: Mapped[int] = mapped_column(
         ForeignKey(f"{settings.SCHEMA_NAME}.faina.id"), index=True
     )
