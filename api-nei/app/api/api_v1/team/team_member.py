@@ -41,6 +41,6 @@ def delete_team_member(
     id: int,
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ):
-    res = crud.team_member.remove(db=db, id=id)
+    res = crud.team_member.delete(db=db, id=id)
     if res is None:
         raise HTTPException(status_code=404, detail="Team member not found")
