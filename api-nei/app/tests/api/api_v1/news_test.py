@@ -71,10 +71,11 @@ def setup_database(db: SessionTesting):
 
 
 def test_get_news(client: TestClient) -> None:
+    """Only published news is listed; NEWS[1] is a draft."""
     r = client.get(f"{settings.API_V1_STR}/news/")
     data = r.json()
     assert r.status_code == 200
-    assert len(data["items"]) == 2
+    assert len(data["items"]) == 1
     assert data["items"][0].keys() >= NEWS[0].keys()
     assert "id" in data["items"][0]
 
@@ -88,11 +89,12 @@ def test_get_news_by_category(client: TestClient) -> None:
 
 
 def test_get_news_by_categories(client: TestClient) -> None:
+    """The Parceria item is a draft, so only the Event one comes back."""
     r = client.get(f"{settings.API_V1_STR}/news/?category[]=Event&category[]=Parceria")
     data = r.json()
     assert r.status_code == 200
-    assert len(data["items"]) == 2
-    assert data["items"][1].keys() >= NEWS[1].keys()
+    assert len(data["items"]) == 1
+    assert data["items"][0].keys() >= NEWS[0].keys()
     assert "id" in data["items"][0]
 
 
@@ -103,7 +105,7 @@ def test_nonexistant_category(client: TestClient) -> None:
 
 
 def test_get_specific_news(db: SessionTesting, client: TestClient) -> None:
-    firstnew = db.query(News).first()
+    firstnew = db.query(News).filter(News.public.is_(True)).first()
     r = client.get(f"{settings.API_V1_STR}/news/{firstnew.id}")
     data = r.json()
     assert data["id"] == firstnew.id
@@ -115,7 +117,8 @@ def test_get_specific_error(client: TestClient) -> None:
 
 
 def test_get_categories(client: TestClient) -> None:
+    """A category with only draft news must not be advertised."""
     r = client.get(f"{settings.API_V1_STR}/news/category")
     data = r.json()
     assert r.status_code == 200
-    assert len(data["data"]) == 2
+    assert data["data"] == ["Event"]

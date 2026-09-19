@@ -28,8 +28,14 @@ class Settings(BaseSettings):
     # `*_asset` column resolve it to `{DIRECTUS_PUBLIC_URL}assets/{uuid}`
     # when set, falling back to their legacy string column otherwise.
     DIRECTUS_PUBLIC_URL: str = (
-        "https://nei.web.ua.pt/cms/" if PRODUCTION else "http://localhost:8055/"
+        "https://nei.web.ua.pt/cms/" if PRODUCTION else "http://localhost/cms/"
     )
+
+    @field_validator("DIRECTUS_PUBLIC_URL")
+    @classmethod
+    def _directus_url_trailing_slash(cls, v: str) -> str:
+        # Without it every asset URL silently becomes ".../cmsassets/<uuid>".
+        return v if v.endswith("/") else v + "/"
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     BACKEND_CORS_ORIGINS: List[str] = [HOST] + (
         []

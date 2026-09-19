@@ -5,7 +5,8 @@ from pydantic import BaseModel, ConfigDict
 
 class MerchBase(BaseModel):
     name: str
-    image: str
+    # Nullable in the DB and writable from the CMS.
+    image: Optional[str] = None
     price: Optional[float]
     number_of_items: Optional[int]
     discontinued: bool

@@ -68,6 +68,7 @@ services:
       AUTHENTIK_URL: ${AUTHENTIK_URL:-https://nei.web.ua.pt/authentik}
       AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN:-}
       # Public base of Directus assets; locally Directus is only reachable through the proxy at /cms/
+      # Must match Infrastructure's DIRECTUS_PUBLIC_URL.
       DIRECTUS_PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-http://localhost/cms/}
     volumes:
       - ./api-nei:/api_nei

@@ -95,6 +95,9 @@ services:
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       AUTHENTIK_URL: ${AUTHENTIK_URL:-https://nei.web.ua.pt/authentik}
       AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN}
+      # Must match Infrastructure's DIRECTUS_PUBLIC_URL: api-nei builds
+      # every CMS asset URL from it.
+      DIRECTUS_PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-https://nei.web.ua.pt/cms/}
       RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
     volumes:
       - /deploy/api-nei/static:/api_nei/static
