@@ -67,6 +67,8 @@ services:
       OIDC_VERIFY_SSL: ${OIDC_VERIFY_SSL:-true}
       AUTHENTIK_URL: ${AUTHENTIK_URL:-https://nei.web.ua.pt/authentik}
       AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN:-}
+      # Public base of Directus assets; locally Directus is only reachable through the proxy at /cms/
+      DIRECTUS_PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-http://localhost/cms/}
     volumes:
       - ./api-nei:/api_nei
       - ./extensions:/extensions:ro
