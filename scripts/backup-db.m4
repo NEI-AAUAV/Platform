@@ -31,13 +31,16 @@ ENCRYPT_RECIPIENT=""
 # The path of the file to store the backup
 
 POSTGRES_USER="${POSTGRES_USER:-postgres}"
-POSTGRES_DB="${POSTGRES_USER:-postgres}"
+POSTGRES_DB="${POSTGRES_DB:-postgres}"
 SCHEMA_NAME="${SCHEMA_NAME:-nei}"
+# Without this, a restore loses directus_files and every CMS asset URL
+# 404s even though the objects are still in R2.
+DIRECTUS_SCHEMA_NAME="${DIRECTUS_SCHEMA_NAME:-directus}"
 
 # Command to execute the backup, the backup is written to stdout
 backup() {
     # To execute the backup `pg_dump` is called from inside the container
-    docker exec -i $_arg_container pg_dump -U $POSTGRES_USER -d $POSTGRES_DB -n $SCHEMA_NAME \
+    docker exec -i $_arg_container pg_dump -U $POSTGRES_USER -d $POSTGRES_DB -n $SCHEMA_NAME -n $DIRECTUS_SCHEMA_NAME \
     --column-inserts --rows-per-insert=1000
 }
 

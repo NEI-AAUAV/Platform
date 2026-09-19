@@ -132,7 +132,7 @@ assign_positional_args 1 "${_positionals[@]}"
 # vvv  PLACE YOUR CODE HERE  vvv
 
 POSTGRES_USER="${POSTGRES_USER:-postgres}"
-POSTGRES_DB="${POSTGRES_USER:-postgres}"
+POSTGRES_DB="${POSTGRES_DB:-postgres}"
 SCHEMA_NAME="${SCHEMA_NAME:-nei}"
 
 
