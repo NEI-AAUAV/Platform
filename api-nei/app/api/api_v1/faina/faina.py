@@ -15,7 +15,7 @@ router = APIRouter()
 def get_faina(
     *,
     db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    _=Depends(deps.cms_cache),
 ) -> Any:
     """
     Return faina information.

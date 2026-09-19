@@ -15,7 +15,7 @@ router = APIRouter()
 def get_faina_role(
     *,
     db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    _=Depends(deps.cms_cache),
 ):
     """
     Return faina information.
@@ -28,7 +28,7 @@ def get_faina_role_by_id(
     *,
     db: Session = Depends(deps.get_db),
     id: int,
-    _=Depends(deps.long_cache),
+    _=Depends(deps.cms_cache),
 ):
     """
     Return faina information.

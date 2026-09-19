@@ -44,7 +44,7 @@ def get_video(
 def get_categories(
     *,
     db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    _=Depends(deps.cms_cache),
 ) -> Any:
     """ "
     Return the categories

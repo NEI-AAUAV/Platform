@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from app.core.assets import asset_url
 from app.core.config import settings
 from app.db.base_class import Base
 from .rgm_mandate import RgmMandate
@@ -55,7 +56,7 @@ class Rgm(Base):
     @hybrid_property
     def file(self) -> Optional[str]:
         if self.file_asset:
-            return f"{settings.DIRECTUS_PUBLIC_URL}assets/{self.file_asset}"
+            return asset_url(self.file_asset)
         return self._file and settings.STATIC_URL + self._file
 
     @file.setter

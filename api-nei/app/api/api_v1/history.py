@@ -12,6 +12,6 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=List[HistoryInDB])
 def get(
     *, db: Session = Depends(deps.get_db),
-    _ = Depends(deps.long_cache)
+    _ = Depends(deps.cms_cache)
 ) -> Any:
     return crud.history.get_multi(db=db)

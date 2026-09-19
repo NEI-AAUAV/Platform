@@ -44,3 +44,5 @@ class CacheControlHeader:
 
 short_cache = CacheControlHeader(max_age=300)  # 5 minutes
 long_cache = CacheControlHeader(max_age=86400)  # 1 day
+# Content edited in Directus: keep it fresh so CMS changes show up quickly.
+cms_cache = CacheControlHeader(max_age=60)  # 1 minute

@@ -168,7 +168,7 @@ def get_note_by_id(
     *,
     id: int,
     db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    _=Depends(deps.cms_cache),
 ) -> Any:
     note_obj = crud.note.get(db=db, id=id)
     if not note_obj:

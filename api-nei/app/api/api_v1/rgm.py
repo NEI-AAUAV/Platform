@@ -27,7 +27,7 @@ def get_rgm(
 @router.get("/mandates", status_code=200, response_model=RgmMandates)
 def get_rgm_mandates(
     db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    _=Depends(deps.cms_cache),
 ) -> Any:
     data = crud.rgm.get_mandates(db=db)
     return {"data": data}

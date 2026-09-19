@@ -30,12 +30,19 @@ class Settings(BaseSettings):
     DIRECTUS_PUBLIC_URL: str = (
         "https://nei.web.ua.pt/cms/" if PRODUCTION else "http://localhost/cms/"
     )
+    # Direct public URLs for files stored in R2 (see app/core/assets.py). Public
+    # base of the bucket including Directus's storage root, e.g.
+    # `https://cdn.example.com/cms`. Empty = always use the Directus proxy.
+    ASSETS_PUBLIC_URL: str = ""
+    # Name of the Directus storage location that ASSETS_PUBLIC_URL serves.
+    ASSETS_STORAGE: str = "r2"
 
     @field_validator("DIRECTUS_PUBLIC_URL")
     @classmethod
     def _directus_url_trailing_slash(cls, v: str) -> str:
         # Without it every asset URL silently becomes ".../cmsassets/<uuid>".
         return v if v.endswith("/") else v + "/"
+
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     BACKEND_CORS_ORIGINS: List[str] = [HOST] + (
         []

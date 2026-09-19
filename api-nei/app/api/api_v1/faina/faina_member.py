@@ -17,7 +17,7 @@ router = APIRouter()
 def get_faina_member(
     *,
     db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    _=Depends(deps.cms_cache),
 ):
     """
     Return faina information.
@@ -30,7 +30,7 @@ def get_faina_member_by_id(
     *,
     id: int,
     db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    _=Depends(deps.cms_cache),
 ):
     """
     Return faina information.

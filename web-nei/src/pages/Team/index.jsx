@@ -57,11 +57,13 @@ export function Component() {
     setTeam(null);
     service.getTeamMandateTree(selectedYear).then(({ sections }) => {
       setTeam(
-        sections.map(({ id, name, members }) => ({
-          id,
-          title: name,
-          members,
-        }))
+        sections
+          .filter(({ members }) => members?.length > 0)
+          .map(({ id, name, members }) => ({
+            id,
+            title: name,
+            members,
+          }))
       );
       setLoading(false);
     });
@@ -123,7 +125,7 @@ export function Component() {
                     {header && (
                       <img
                         src={header}
-                        className="mx-auto mb-4 max-w-[90px] rounded-full shadow-lg sm:max-w-[130px]"
+                        className="mx-auto mb-4 aspect-square w-[90px] rounded-full object-cover shadow-lg sm:w-[130px]"
                         alt=""
                       />
                     )}

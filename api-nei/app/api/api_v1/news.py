@@ -36,7 +36,7 @@ def get_news_list(
 @router.get("/category", status_code=200, response_model=NewsCategories)
 def get_news_categories(
     *, db: Session = Depends(deps.get_db),
-    _ = Depends(deps.long_cache),
+    _ = Depends(deps.cms_cache),
 ) -> Any:
     """
     Return the categories
@@ -49,7 +49,7 @@ def get_news_categories(
 @router.get("/{id}", status_code=200, response_model=NewsInDB)
 def get_news(
     *, id: int, db: Session = Depends(deps.get_db),
-    _ = Depends(deps.long_cache),
+    _ = Depends(deps.cms_cache),
 ) -> Any:
 
     item = crud.news.get(db=db, id=id)

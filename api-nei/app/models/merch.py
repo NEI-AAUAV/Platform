@@ -6,6 +6,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from app.core.assets import asset_url
 from app.core.config import settings
 from app.db.base_class import Base
 
@@ -32,7 +33,7 @@ class Merch(Base):
     @hybrid_property
     def image(self) -> Optional[str]:
         if self.image_asset:
-            return f"{settings.DIRECTUS_PUBLIC_URL}assets/{self.image_asset}"
+            return asset_url(self.image_asset)
         return self._image and settings.STATIC_URL + self._image
 
     @image.setter

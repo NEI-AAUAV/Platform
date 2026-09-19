@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from app.core.assets import asset_url
 from app.core.config import settings
 from app.db.base_class import Base
 from app.schemas.news import CategoryEnum
@@ -37,7 +38,7 @@ class News(Base):
     @hybrid_property
     def header(self) -> Optional[str]:
         if self.header_asset:
-            return f"{settings.DIRECTUS_PUBLIC_URL}assets/{self.header_asset}"
+            return asset_url(self.header_asset)
         return self._header and settings.STATIC_URL + self._header
 
     @header.setter
