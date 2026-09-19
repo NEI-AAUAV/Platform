@@ -18,10 +18,11 @@ def _seed(db: SessionTesting) -> None:
         created_at=datetime(2026, 1, 1),
         updated_at=datetime(2026, 1, 1),
     )
-    db.add_all([user, TeamMandate(mandate="2026/27")])
+    mandate = TeamMandate(mandate="2026/27")
+    db.add_all([user, mandate])
     db.flush()
-    late = TeamSection(mandate="2026/27", name="Vogais", weight=1)
-    first = TeamSection(mandate="2026/27", name="Coordenação", weight=0)
+    late = TeamSection(mandate_id=mandate.id, name="Vogais", weight=1)
+    first = TeamSection(mandate_id=mandate.id, name="Coordenação", weight=0)
     db.add_all([late, first])
     db.flush()
     db.add_all(

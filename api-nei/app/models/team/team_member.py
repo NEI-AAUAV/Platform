@@ -25,7 +25,7 @@ class TeamMember(Base):
     user_id: Mapped[Optional[int]] = mapped_column(ForeignKey(User.id), index=True)
     name: Mapped[str] = mapped_column(String(120))
     role: Mapped[str] = mapped_column(String(120))
-    weight: Mapped[int] = mapped_column(default=0)
+    weight: Mapped[int] = mapped_column(default=0, server_default="0")
 
     @declared_attr.directive
     def __table_args__(cls):

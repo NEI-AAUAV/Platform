@@ -2,9 +2,9 @@ import uuid
 from typing import Optional, List
 
 from pydantic import AnyHttpUrl
-from sqlalchemy import String
+from sqlalchemy import CheckConstraint, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.core.config import settings
@@ -21,6 +21,13 @@ class Faina(Base):
     image_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
 
     members: Mapped[List[FainaMember]] = relationship(FainaMember)
+
+    @declared_attr.directive
+    def __table_args__(cls):
+        return (
+            CheckConstraint("mandate ~ '^[0-9]{4}(/[0-9]{2})?$'", name="mandate_format"),
+            Base.__table_args__,
+        )
 
     @hybrid_property
     def image(self) -> Optional[AnyHttpUrl]:

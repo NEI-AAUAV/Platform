@@ -1,7 +1,7 @@
 from typing import List, TYPE_CHECKING
 
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import CheckConstraint, String
+from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 
 from app.db.base_class import Base
 
@@ -17,6 +17,13 @@ class RgmMandate(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     label: Mapped[str] = mapped_column(String(7), unique=True)
+
+    @declared_attr.directive
+    def __table_args__(cls):
+        return (
+            CheckConstraint("label ~ '^[0-9]{4}(/[0-9]{2})?$'", name="label_format"),
+            Base.__table_args__,
+        )
 
     documents: Mapped[List["Rgm"]] = relationship(
         "Rgm",

@@ -2,9 +2,9 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import CheckConstraint, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.core.config import settings
@@ -26,11 +26,19 @@ class Rgm(Base):
     file_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
     # `mandate` (above) is the legacy free-text column, kept for compat.
     # mandate_id is the real FK to RGM's own mandate calendar, additive.
-    mandate_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey(RgmMandate.id, ondelete="SET NULL"), index=True
+    mandate_id: Mapped[int] = mapped_column(
+        ForeignKey(RgmMandate.id, ondelete="RESTRICT"), nullable=False, index=True
     )
 
-    mandate_ref: Mapped[Optional[RgmMandate]] = relationship(
+    # Directus bypasses the API's validation, so the invariant lives here.
+    @declared_attr.directive
+    def __table_args__(cls):
+        return (
+            CheckConstraint("category IN ('ATA', 'PAO', 'RAC')", name="category_valid"),
+            Base.__table_args__,
+        )
+
+    mandate_ref: Mapped[RgmMandate] = relationship(
         RgmMandate, foreign_keys=[mandate_id], back_populates="documents"
     )
 

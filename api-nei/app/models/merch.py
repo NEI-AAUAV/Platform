@@ -1,9 +1,9 @@
 import uuid
 from typing import Optional
 
-from sqlalchemy import String
+from sqlalchemy import CheckConstraint, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, declared_attr, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.core.config import settings
@@ -20,6 +20,14 @@ class Merch(Base):
     discontinued: Mapped[bool] = mapped_column(default=False, server_default="false")
     price: Mapped[Optional[float]] = mapped_column(default=0)
     number_of_items: Mapped[Optional[int]] = mapped_column(default=0)
+
+    @declared_attr.directive
+    def __table_args__(cls):
+        return (
+            CheckConstraint("price >= 0", name="price_non_negative"),
+            CheckConstraint("number_of_items >= 0", name="number_of_items_non_negative"),
+            Base.__table_args__,
+        )
 
     @hybrid_property
     def image(self) -> Optional[str]:

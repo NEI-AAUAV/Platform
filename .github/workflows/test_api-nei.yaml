@@ -5,11 +5,11 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/api-nei.yaml'
+      - '.github/workflows/test_api-nei.yaml'
       - 'api-nei/**/*'
   pull_request:
     paths:
-      - '.github/workflows/api-nei.yaml'
+      - '.github/workflows/test_api-nei.yaml'
       - 'api-nei/**/*'
   workflow_dispatch:
 

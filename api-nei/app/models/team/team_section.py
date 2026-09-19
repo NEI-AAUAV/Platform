@@ -12,14 +12,14 @@ if TYPE_CHECKING:
 
 class TeamSection(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    mandate: Mapped[str] = mapped_column(
-        ForeignKey(TeamMandate.mandate, ondelete="CASCADE"), index=True
+    mandate_id: Mapped[int] = mapped_column(
+        ForeignKey(TeamMandate.id, ondelete="CASCADE"), nullable=False, index=True
     )
     name: Mapped[str] = mapped_column(String(120))
-    weight: Mapped[int] = mapped_column(default=0)
+    weight: Mapped[int] = mapped_column(default=0, server_default="0")
 
     mandate_ref: Mapped[TeamMandate] = relationship(
-        TeamMandate, foreign_keys=[mandate], back_populates="sections"
+        TeamMandate, foreign_keys=[mandate_id], back_populates="sections"
     )
     members: Mapped[List["TeamMember"]] = relationship(
         "TeamMember",

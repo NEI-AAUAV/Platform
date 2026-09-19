@@ -5,7 +5,7 @@ from datetime import datetime
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.models import Rgm
+from app.models import Rgm, RgmMandate
 from app.tests.conftest import SessionTesting
 
 
@@ -33,8 +33,11 @@ RGM = [
 def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
+    labels = {r["mandate"]: RgmMandate(label=r["mandate"]) for r in RGM}
+    db.add_all(labels.values())
+    db.flush()
     for rgms in RGM:
-        db.add(Rgm(**rgms))
+        db.add(Rgm(mandate_id=labels[rgms["mandate"]].id, **rgms))
     db.commit()
 
 

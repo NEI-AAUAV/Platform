@@ -196,6 +196,11 @@ jobs:
           COMPOSE_ARGS="-f compose.prod.yml"
         fi
 
+        # Shared with the Infrastructure Directus stack (db_pg is attached to
+        # it); it is declared external in compose.prod.yml.
+        docker network inspect nei-shared >/dev/null 2>&1 \
+          || docker network create nei-shared
+
         # Pull images sequentially to avoid OOM on low-memory systems
         for service in $(docker compose $COMPOSE_ARGS config --services); do
           echo "Pulling $service..."

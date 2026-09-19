@@ -23,6 +23,7 @@ services:
       retries: 5
     networks:
       - backend
+      - nei-shared
     restart: always
 
   db_mongo:
@@ -202,6 +203,11 @@ networks:
     driver: bridge
   frontend:
     driver: bridge
+  # Shared with the Directus service in the Infrastructure repository so it
+  # can reach db_pg without exposing Postgres's container port to that stack.
+  # Created by the deploy workflow if missing.
+  nei-shared:
+    external: true
 
 volumes:
   pg_data:
