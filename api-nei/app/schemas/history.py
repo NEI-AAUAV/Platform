@@ -7,7 +7,8 @@ from pydantic import BaseModel, ConfigDict
 class HistoryBase(BaseModel):
     moment: date
     title: str
-    body: str
+    # Nullable in the DB and writable from the CMS.
+    body: Optional[str] = None
     image: Optional[str]
 
 

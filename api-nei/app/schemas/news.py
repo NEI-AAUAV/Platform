@@ -14,11 +14,12 @@ class CategoryEnum(str, Enum):
 
 
 class NewsBase(BaseModel):
-    header: Annotated[str, Field(max_length=256)]
+    # Nullable in the DB and writable from the CMS: a blank value must not 500 the list.
+    header: Optional[Annotated[str, Field(max_length=256)]] = None
     public: Optional[bool]
     title: Annotated[str, Field(max_length=256)]
     category: Annotated[str, Field(max_length=256)]
-    content: Annotated[str, Field(max_length=20000)]
+    content: Optional[Annotated[str, Field(max_length=20000)]] = None
     created_at: datetime
     updated_at: Optional[datetime]
     author_id: int
