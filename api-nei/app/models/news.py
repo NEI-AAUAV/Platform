@@ -32,7 +32,7 @@ class News(Base):
 
     author: Mapped[User] = relationship(User, foreign_keys=[author_id])
 
-    public: Mapped[bool] = mapped_column(default=False)
+    public: Mapped[bool] = mapped_column(default=False, server_default="false")
 
     @hybrid_property
     def header(self) -> Optional[str]:

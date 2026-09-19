@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import ForeignKey, String, UniqueConstraint
+from sqlalchemy import CheckConstraint, ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 
 from app.core.config import settings
@@ -23,6 +23,10 @@ class FainaMember(Base):
     def __table_args__(cls):
         return (
             UniqueConstraint("member_id", "faina_id", "role_id"),
+            CheckConstraint(
+                "member_id IS NOT NULL OR NULLIF(BTRIM(name), '') IS NOT NULL",
+                name="identity_required",
+            ),
             Base.__table_args__,
         )
 

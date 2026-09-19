@@ -46,6 +46,27 @@ services:
       - backend
     restart: always
 
+  # One-shot: applies the api-nei Alembic chain (`nei.*` schema owner) before
+  # api_nei starts. Infrastructure's Directus deploy runs AFTER this and only
+  # verifies the schema; it never migrates it.
+  api_nei_migrate:
+    image: ghcr.io/nei-aauav/api-nei:${TAG:-latest}
+    build:
+      context: api-nei
+      dockerfile: Dockerfile.prod
+    command: ["python", "-m", "alembic", "upgrade", "head"]
+    working_dir: /api_nei
+    environment:
+      ENV: production
+      POSTGRES_SERVER: db_pg
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      db_pg:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: "no"
+
   api_nei:
     image: ghcr.io/nei-aauav/api-nei:${TAG:-latest}
     build:
@@ -82,6 +103,8 @@ services:
     depends_on:
       db_pg:
         condition: service_healthy
+      api_nei_migrate:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs').read()"]
       interval: 10s

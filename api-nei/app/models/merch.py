@@ -17,7 +17,7 @@ class Merch(Base):
     # Uploaded via nei-directus; additive, nullable, preferred over `_image`
     # when set (see alembic migration d7e9f1a3b5c7).
     image_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
-    discontinued: Mapped[bool]
+    discontinued: Mapped[bool] = mapped_column(default=False, server_default="false")
     price: Mapped[Optional[float]] = mapped_column(default=0)
     number_of_items: Mapped[Optional[int]] = mapped_column(default=0)
 

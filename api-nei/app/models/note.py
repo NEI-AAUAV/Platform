@@ -29,19 +29,19 @@ class Note(Base):
     )
 
     name: Mapped[str] = mapped_column(String(256))
-    _location: Mapped[str] = mapped_column("location", String(2048))
+    _location: Mapped[Optional[str]] = mapped_column("location", String(2048))
     # Uploaded via nei-directus; additive, nullable — preferred over
     # `_location` when set (see rgm.py's file_asset for the same pattern).
     location_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
     year: Mapped[Optional[int]] = mapped_column(SmallInteger, index=True)
 
-    summary: Mapped[int] = mapped_column(SmallInteger)
-    tests: Mapped[int] = mapped_column(SmallInteger)
-    bibliography: Mapped[int] = mapped_column(SmallInteger)
-    slides: Mapped[int] = mapped_column(SmallInteger)
-    exercises: Mapped[int] = mapped_column(SmallInteger)
-    projects: Mapped[int] = mapped_column(SmallInteger)
-    notebook: Mapped[int] = mapped_column(SmallInteger)
+    summary: Mapped[int] = mapped_column(SmallInteger, default=0, server_default="0")
+    tests: Mapped[int] = mapped_column(SmallInteger, default=0, server_default="0")
+    bibliography: Mapped[int] = mapped_column(SmallInteger, default=0, server_default="0")
+    slides: Mapped[int] = mapped_column(SmallInteger, default=0, server_default="0")
+    exercises: Mapped[int] = mapped_column(SmallInteger, default=0, server_default="0")
+    projects: Mapped[int] = mapped_column(SmallInteger, default=0, server_default="0")
+    notebook: Mapped[int] = mapped_column(SmallInteger, default=0, server_default="0")
 
     created_at: Mapped[datetime] = mapped_column(index=True)
 
@@ -57,7 +57,9 @@ class Note(Base):
     def location(self) -> str:
         if self.location_asset:
             return f"{settings.DIRECTUS_PUBLIC_URL}assets/{self.location_asset}"
-        if str(self._location).startswith("/"):
+        if not self._location:
+            return ""
+        if self._location.startswith("/"):
             return settings.STATIC_URL + self._location
         return self._location
 

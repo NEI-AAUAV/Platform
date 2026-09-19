@@ -20,7 +20,7 @@ def get_team_mandates(db: Session = Depends(deps.get_db), _=Depends(deps.long_ca
 def get_team_mandate_tree(
     mandate: str, db: Session = Depends(deps.get_db), _=Depends(deps.long_cache)
 ):
-    """Return a mandate's full team, nested by category and section."""
+    """Return a mandate's full team, nested by section."""
     tree = crud.team_mandate.get_tree(db=db, mandate=mandate)
     if tree is None:
         raise HTTPException(status_code=404, detail="Mandate not found")

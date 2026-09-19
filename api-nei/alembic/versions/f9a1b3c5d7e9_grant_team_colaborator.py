@@ -1,16 +1,21 @@
-"""grant directus_svc access to team_colaborator
+"""retired: directus grant for team_colaborator
 
 Revision ID: f9a1b3c5d7e9
 Revises: e8f0a2b4c6d8
 Create Date: 2026-09-18
 
-f2b4d8e1a9c3 deliberately excluded `team_colaborator` from directus_svc's
-grants because it had a composite primary key, which Directus can't
-manage. b5c7d9e1f3a5 fixed that (added a surrogate `id` PK) but never
-actually granted the table — closing that gap here, following the same
-pattern as e8f0a2b4c6d8.
+RETIRED (Directus phase 2): this revision used to grant directus_svc access to team_colaborator.
+That is Directus infrastructure, not application schema, and is now owned by
+the Infrastructure repository (services/directus: sql/01-roles-schema.sql and
+sql/02-table-grants.sql, driven by managed-tables.txt).
+
+The revision id is kept so the Alembic graph stays linear and any database
+that already applied it (developer/staging databases; this revision never
+reached `main`) keeps a valid `alembic_version`. It is intentionally a no-op:
+grants that were already applied are reconciled by Infrastructure's
+provisioning on the next Directus deploy.
 """
-from alembic import op
+from alembic import op  # noqa: F401
 
 # revision identifiers, used by Alembic.
 revision = "f9a1b3c5d7e9"
@@ -18,17 +23,10 @@ down_revision = "e8f0a2b4c6d8"
 branch_labels = None
 depends_on = None
 
-ROLE_NAME = "directus_svc"
-APP_SCHEMA = "nei"
-TABLE = "team_colaborator"
-SEQUENCE = "team_colaborator_id_seq"
-
 
 def upgrade():
-    op.execute(f"GRANT SELECT, INSERT, UPDATE, DELETE ON {APP_SCHEMA}.{TABLE} TO {ROLE_NAME};")
-    op.execute(f"GRANT USAGE, SELECT ON {APP_SCHEMA}.{SEQUENCE} TO {ROLE_NAME};")
+    pass
 
 
 def downgrade():
-    op.execute(f"REVOKE USAGE, SELECT ON {APP_SCHEMA}.{SEQUENCE} FROM {ROLE_NAME};")
-    op.execute(f"REVOKE SELECT, INSERT, UPDATE, DELETE ON {APP_SCHEMA}.{TABLE} FROM {ROLE_NAME};")
+    pass

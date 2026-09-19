@@ -3,7 +3,10 @@ from datetime import datetime
 from typing import Optional, List
 
 from sqlalchemy import (
+    BigInteger,
     Column,
+    UniqueConstraint,
+    text,
     SmallInteger,
     DateTime,
     ForeignKey,
@@ -19,17 +22,22 @@ from app.db.base_class import Base
 from .video_tag import VideoTag
 
 
+# Pure join table. The surrogate `id` (alembic a7c2e4f6b8d1) exists only
+# because Directus cannot introspect a composite-PK junction; it is a known,
+# contained concession and the (video_id, video_tag_id) pair stays UNIQUE.
+# Inserts through the ORM never set it (server default).
 video__video_tags_association_table = Table(
     "video__video_tags",
     Base.metadata,
     Column(
-        "video_id", ForeignKey(f"{settings.SCHEMA_NAME}.video.id"), primary_key=True
-    ),
-    Column(
-        "video_tag_id",
-        ForeignKey(VideoTag.id),
+        "id",
+        BigInteger,
         primary_key=True,
+        server_default=text(f"nextval('{settings.SCHEMA_NAME}.video__video_tags_id_seq'::regclass)"),
     ),
+    Column("video_id", ForeignKey(f"{settings.SCHEMA_NAME}.video.id"), nullable=False),
+    Column("video_tag_id", ForeignKey(VideoTag.id), nullable=False),
+    UniqueConstraint("video_id", "video_tag_id", name="uq_video__video_tags_video_tag"),
     schema=settings.SCHEMA_NAME,
 )
 

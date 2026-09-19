@@ -2,9 +2,11 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from app.schemas.types import MandateStr
+
 
 class TeamSectionBase(BaseModel):
-    category_id: int
+    mandate: MandateStr
     name: str
     weight: int = 0
 
@@ -14,7 +16,7 @@ class TeamSectionCreate(TeamSectionBase):
 
 
 class TeamSectionUpdate(BaseModel):
-    category_id: Optional[int] = None
+    mandate: Optional[MandateStr] = None
     name: Optional[str] = None
     weight: Optional[int] = None
 

@@ -37,7 +37,6 @@ export function Component() {
   const [selectedYear, setSelectedYear] = useState(null);
 
   const [team, setTeam] = useState();
-  const [collaborators, setCollaborators] = useState();
 
   const [loading, setLoading] = useState(true);
 
@@ -52,33 +51,20 @@ export function Component() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-
     if (!selectedYear) return;
-    const params = {
-      mandate: selectedYear,
-    };
 
+    setLoading(true);
     setTeam(null);
-    setCollaborators(null);
-    Promise.all([
-      service.getTeamMandateTree(selectedYear).then(({ categories }) => {
-        const sections = categories.flatMap(({ sections }) => sections);
-        setTeam(
-          sections.map(({ id, name, members }) => ({
-            id,
-            title: name,
-            members,
-          }))
-        );
-      }),
-      service.getTeamCollaborators({ ...params }).then((colabs) => {
-        colabs.sort(({ user: a }, { user: b }) =>
-          a?.name?.localeCompare(b?.name)
-        );
-        setCollaborators(colabs);
-      }),
-    ]).then(() => setLoading(false));
+    service.getTeamMandateTree(selectedYear).then(({ sections }) => {
+      setTeam(
+        sections.map(({ id, name, members }) => ({
+          id,
+          title: name,
+          members,
+        }))
+      );
+      setLoading(false);
+    });
   }, [selectedYear]);
 
   function customRender(tab) {
@@ -134,21 +120,21 @@ export function Component() {
                     key={id}
                     className="grow-0 basis-36 px-3 py-1.5 text-center sm:basis-56 sm:px-6 sm:py-3"
                   >
-                    <img
-                      src={header}
-                      className="mx-auto mb-4 max-w-[90px] rounded-full shadow-lg sm:max-w-[130px]"
-                      alt=""
-                    />
+                    {header && (
+                      <img
+                        src={header}
+                        className="mx-auto mb-4 max-w-[90px] rounded-full shadow-lg sm:max-w-[130px]"
+                        alt=""
+                      />
+                    )}
 
-                    <p className="mb-1 text-lg font-bold">
-                      {user?.name} {user?.surname} {!user && name}
-                    </p>
+                    <p className="mb-1 text-lg font-bold">{name}</p>
                     <p className="mb-2 text-gray-500">{role}</p>
                     <ul className="flex justify-center space-x-1 sm:mt-0">
                       {!!user?.github && (
                         <li>
                           <a
-                            href={user?.github}
+                            href={user.github}
                             target="_blank"
                             rel="noreferrer"
                             className="btn-ghost btn-xs btn-circle btn"
@@ -160,7 +146,7 @@ export function Component() {
                       {!!user?.linkedin && (
                         <li>
                           <a
-                            href={user?.linkedin}
+                            href={user.linkedin}
                             target="_blank"
                             rel="noreferrer"
                             className="btn-ghost btn-xs btn-circle btn"
@@ -176,21 +162,6 @@ export function Component() {
             </motion.div>
           ))}
 
-          {collaborators?.length > 0 && (
-            <motion.div variants={item}>
-              <div className="flex gap-5 px-2">
-                <h4 className="opacity-80">Colaboradores</h4>
-                <div className="divider mt-1 grow" />
-              </div>
-              <div className="mt-2 grid grid-cols-[repeat(auto-fit,_minmax(28ch,_1fr))]">
-                {collaborators?.map(({ user_id, user }) => (
-                  <h5 key={user_id} className="px-7">
-                    {user?.name} {user?.surname}
-                  </h5>
-                ))}
-              </div>
-            </motion.div>
-          )}
         </motion.div>
       )}
     </div>

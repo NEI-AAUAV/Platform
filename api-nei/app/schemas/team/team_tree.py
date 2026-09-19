@@ -2,16 +2,26 @@ from typing import List, Optional
 
 from pydantic import BaseModel, AnyHttpUrl, ConfigDict
 
+class TeamMemberSocial(BaseModel):
+    """Only the public social links of the optionally linked account."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    linkedin: Optional[AnyHttpUrl] = None
+    github: Optional[AnyHttpUrl] = None
+
 
 class TeamMemberNode(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    user_id: Optional[int] = None
+    # `name` is the canonical display identity. `user` is optional
+    # enrichment (social links) for members linked to a platform account.
     name: str
     role: str
     weight: int
     header: Optional[AnyHttpUrl] = None
+    user: Optional[TeamMemberSocial] = None
 
 
 class TeamSectionNode(BaseModel):
@@ -23,15 +33,6 @@ class TeamSectionNode(BaseModel):
     members: List[TeamMemberNode]
 
 
-class TeamCategoryNode(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
-    name: str
-    weight: int
-    sections: List[TeamSectionNode]
-
-
 class TeamMandateTree(BaseModel):
     mandate: str
-    categories: List[TeamCategoryNode]
+    sections: List[TeamSectionNode]

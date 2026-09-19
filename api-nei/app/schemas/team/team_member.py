@@ -11,8 +11,6 @@ class TeamMemberBase(BaseModel):
     name: str
     role: str
     weight: int = 0
-    # Denormalized from section_id's mandate — see the TeamMember model.
-    mandate: Optional[str] = None
 
 
 class TeamMemberCreate(TeamMemberBase):
@@ -29,7 +27,6 @@ class TeamMemberUpdate(BaseModel):
     name: Optional[str] = None
     role: Optional[str] = None
     weight: Optional[int] = None
-    mandate: Optional[str] = None
 
 
 class TeamMemberInDB(TeamMemberBase):

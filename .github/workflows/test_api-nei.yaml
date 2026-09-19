@@ -52,6 +52,8 @@ jobs:
         working-directory: ./api-nei
         run: poetry install --no-interaction --no-root
 
-      - name: Run tests
+      - name: Run tests (includes Alembic single-head, model-drift and ownership guards)
         working-directory: ./api-nei
+        env:
+          TEST_POSTGRES_URI: postgresql://postgres:postgres@localhost:5432/postgres_test
         run: poetry run pytest

@@ -59,13 +59,8 @@ def connection():
     broken migration fails the test suite instead of going unnoticed.
 
     Teardown drops the whole `nei` schema rather than running
-    `alembic downgrade base`: several existing downgrade steps only
-    revoke grants for the tables/sequences they themselves granted, not
-    the blanket `GRANT ... ON ALL SEQUENCES IN SCHEMA nei` from
-    d3c7f0a1b2e4, so a full downgrade to base currently fails trying to
-    drop the `directus_svc` role while unrelated sequence grants remain.
-    Dropping the schema is simpler, faster, and doesn't depend on every
-    downgrade() being individually correct.
+    `alembic downgrade base`, which is simpler, faster and does not depend
+    on every downgrade() being individually correct.
     """
     command.upgrade(_alembic_config(), "head")
     with engine.connect() as connection:

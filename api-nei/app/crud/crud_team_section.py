@@ -5,7 +5,7 @@ from app.schemas.team import TeamSectionCreate, TeamSectionUpdate
 
 class CRUDTeamSection(CRUDBase[TeamSection, TeamSectionCreate, TeamSectionUpdate]):
     _foreign_key_checks = {
-        "fk_team_section_category_id_team_category": "Team category not found!",
+        "fk_team_section_mandate_team_mandate": "Team mandate not found!",
     }
 
 

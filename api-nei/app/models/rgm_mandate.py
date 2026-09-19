@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class RgmMandate(Base):
     """RGM's own mandate calendar — independent from team NEI and
     Comissão de Faina mandates (see
-    Infrastructure/services/directus/sql/05-mandate-fks.sql).
+    alembic revision c1d5e9a3f7b2).
     """
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

@@ -1,101 +1,133 @@
-"""Data-integrity tests for the Team domain.
+"""Integrity tests for the Team domain: mandate -> section -> member.
 
-No dedicated tests existed for team_* before this pass (zero coverage).
-These focus on the invariants the Directus refactor depends on:
-team_colaborator's surrogate PK, and the team_member.mandate
-denormalization staying consistent with section_id (the actual source of
-truth).
+These assert that invalid states are rejected by the database itself, not
+just by the API layer or the CMS form configuration.
 """
 from datetime import datetime
 
 import pytest
+import sqlalchemy as sa
 from sqlalchemy.exc import IntegrityError
 
+from app.core.config import settings
 from app.models.team.team_mandate import TeamMandate
-from app.models.team.team_category import TeamCategory
-from app.models.team.team_section import TeamSection
 from app.models.team.team_member import TeamMember
-from app.models.team.team_colaborator import TeamColaborator
+from app.models.team.team_section import TeamSection
 from app.models.user import User
 from app.tests.conftest import SessionTesting
 
+S = settings.SCHEMA_NAME
 
-def _make_user(db: SessionTesting, name: str, surname: str) -> User:
+
+def _mandate(db: SessionTesting, mandate: str) -> TeamMandate:
+    m = TeamMandate(mandate=mandate)
+    db.add(m)
+    db.flush()
+    return m
+
+
+def _section(db: SessionTesting, mandate: str, name: str = "Coordenação") -> TeamSection:
+    s = TeamSection(mandate=mandate, name=name, weight=0)
+    db.add(s)
+    db.flush()
+    return s
+
+
+def test_section_requires_existing_mandate(db: SessionTesting) -> None:
+    db.add(TeamSection(mandate="1999/00", name="Órfã", weight=0))
+    with pytest.raises(IntegrityError):
+        db.flush()
+
+
+def test_section_mandate_is_not_null(db: SessionTesting) -> None:
+    with pytest.raises(IntegrityError):
+        db.execute(sa.text(f"INSERT INTO {S}.team_section (name, weight) VALUES ('x', 0)"))
+
+
+def test_member_requires_existing_section(db: SessionTesting) -> None:
+    db.add(TeamMember(section_id=-1, name="Ana", role="Vogal"))
+    with pytest.raises(IntegrityError):
+        db.flush()
+
+
+def test_member_name_cannot_be_null(db: SessionTesting) -> None:
+    _mandate(db, "2025/26")
+    section = _section(db, "2025/26")
+    with pytest.raises(IntegrityError):
+        db.execute(
+            sa.text(
+                f"INSERT INTO {S}.team_member (section_id, role, weight)"
+                " VALUES (:s, 'Vogal', 0)"
+            ),
+            {"s": section.id},
+        )
+
+
+@pytest.mark.parametrize("blank", ["", "   "])
+def test_member_name_cannot_be_blank(db: SessionTesting, blank: str) -> None:
+    _mandate(db, "2025/26")
+    section = _section(db, "2025/26")
+    db.add(TeamMember(section_id=section.id, name=blank, role="Vogal"))
+    with pytest.raises(IntegrityError):
+        db.flush()
+
+
+def test_member_without_user_is_valid(db: SessionTesting) -> None:
+    """A member is an editorial entry, independent of any platform account."""
+    _mandate(db, "2025/26")
+    section = _section(db, "2025/26")
+    member = TeamMember(section_id=section.id, name="Bruno", role="Vogal")
+    db.add(member)
+    db.flush()
+    assert member.user_id is None
+
+
+def test_member_has_no_denormalized_mandate_column(db: SessionTesting) -> None:
+    columns = {c["name"] for c in sa.inspect(db.get_bind()).get_columns("team_member", schema=S)}
+    assert "mandate" not in columns
+
+
+def test_category_and_legacy_tables_are_gone(db: SessionTesting) -> None:
+    tables = set(sa.inspect(db.get_bind()).get_table_names(schema=S))
+    assert not {"team_category", "team_role", "team_colaborator"} & tables
+
+
+def test_deleting_section_deletes_its_members(db: SessionTesting) -> None:
+    _mandate(db, "2025/26")
+    section = _section(db, "2025/26")
+    db.add(TeamMember(section_id=section.id, name="Carla", role="Vogal"))
+    db.flush()
+    db.execute(sa.text(f"DELETE FROM {S}.team_section WHERE id = :s"), {"s": section.id})
+    left = db.execute(
+        sa.text(f"SELECT count(*) FROM {S}.team_member WHERE section_id = :s"),
+        {"s": section.id},
+    ).scalar_one()
+    assert left == 0
+
+
+def test_deleting_mandate_deletes_sections(db: SessionTesting) -> None:
+    _mandate(db, "2024/25")
+    section = _section(db, "2024/25")
+    db.execute(sa.text(f"DELETE FROM {S}.team_mandate WHERE mandate = '2024/25'"))
+    left = db.execute(
+        sa.text(f"SELECT count(*) FROM {S}.team_section WHERE id = :s"), {"s": section.id}
+    ).scalar_one()
+    assert left == 0
+
+
+def test_user_linked_member_keeps_own_name(db: SessionTesting) -> None:
     user = User(
-        name=name,
-        surname=surname,
+        name="Diana",
+        surname="Duarte",
         created_at=datetime(2026, 1, 1),
         updated_at=datetime(2026, 1, 1),
     )
     db.add(user)
     db.flush()
-    return user
-
-
-def _make_mandate_section(db: SessionTesting, mandate: str) -> TeamSection:
-    m = TeamMandate(mandate=mandate)
-    db.add(m)
-    db.flush()
-    category = TeamCategory(mandate=mandate, name="Coordenação", weight=0)
-    db.add(category)
-    db.flush()
-    section = TeamSection(category_id=category.id, name="Coordenação", weight=0)
-    db.add(section)
-    db.flush()
-    return section
-
-
-def test_team_member_mandate_matches_section_mandate_when_set(db: SessionTesting) -> None:
-    """team_member.mandate is a denormalization of section -> category ->
-    mandate. When populated (as the CMS refactor's read-only field does),
-    it must agree with the value reachable through section_id — that's
-    the whole point of keeping section_id authoritative."""
-    section = _make_mandate_section(db, "2025/26")
-
-    member = TeamMember(name="Ana", role="Coordenadora", section_id=section.id, mandate="2025/26")
+    _mandate(db, "2025/26")
+    section = _section(db, "2025/26")
+    member = TeamMember(section_id=section.id, user_id=user.id, name="Di", role="Vogal")
     db.add(member)
     db.flush()
-
     db.refresh(member)
-    assert member.mandate == member.section.category.mandate
-
-
-def test_team_member_mandate_can_be_null(db: SessionTesting) -> None:
-    """The denormalized column is nullable — a member created without it
-    set (e.g. directly via the API, bypassing the CMS backfill) must not
-    be rejected by the schema."""
-    section = _make_mandate_section(db, "2026/27")
-
-    member = TeamMember(name="Bruno", role="Vogal", section_id=section.id)
-    db.add(member)
-    db.flush()
-
-    assert member.mandate is None
-
-
-def test_team_colaborator_has_surrogate_id_primary_key(db: SessionTesting) -> None:
-    """Directus cannot manage a table with a composite primary key.
-    team_colaborator was given a surrogate `id` (alembic migration
-    b5c7d9e1f3a5) specifically so it can be onboarded as a collection —
-    confirm the model maps that id, not the old (user_id, mandate) pair."""
-    user = _make_user(db, "Carla", "Costa")
-
-    colaborator = TeamColaborator(user_id=user.id, mandate="2025/26")
-    db.add(colaborator)
-    db.flush()
-
-    assert colaborator.id is not None
-
-
-def test_team_colaborator_uniqueness_preserved_after_pk_change(db: SessionTesting) -> None:
-    """The old (user_id, mandate) pair was preserved as a UNIQUE
-    constraint when the PK became a surrogate id — a duplicate pair must
-    still be rejected, exactly as it was under the old composite PK."""
-    user = _make_user(db, "Diana", "Duarte")
-
-    db.add(TeamColaborator(user_id=user.id, mandate="2025/26"))
-    db.flush()
-
-    db.add(TeamColaborator(user_id=user.id, mandate="2025/26"))
-    with pytest.raises(IntegrityError):
-        db.flush()
+    assert member.name == "Di"

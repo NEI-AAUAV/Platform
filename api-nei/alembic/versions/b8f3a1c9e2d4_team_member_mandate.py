@@ -1,5 +1,9 @@
 """Add team_member.mandate, backfilled from section -> category -> mandate
 
+SUPERSEDED by a2c4e6f8b0d1, which drops this column again: it was a
+denormalization added only for a Directus O2M list and is not part of the
+domain model. Kept in the chain so applied databases stay valid.
+
 Revision ID: b8f3a1c9e2d4
 Revises: a7c2e4f6b8d1
 Create Date: 2026-09-18 00:00:00.000000

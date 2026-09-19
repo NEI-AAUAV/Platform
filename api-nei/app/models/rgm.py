@@ -15,10 +15,11 @@ from .rgm_mandate import RgmMandate
 class Rgm(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     category: Mapped[str] = mapped_column(String(3))
-    mandate: Mapped[str] = mapped_column(String(7), index=True)
+    # Legacy text; `mandate_id` -> rgm_mandate is authoritative (see `mandate`).
+    _mandate: Mapped[Optional[str]] = mapped_column("mandate", String(7), index=True)
     date: Mapped[datetime]
     title: Mapped[str] = mapped_column(String(264))
-    _file: Mapped[str] = mapped_column("file", String(2048))
+    _file: Mapped[Optional[str]] = mapped_column("file", String(2048))
     # Uploaded via nei-directus (separate repo — see AUTHENTICATION.md
     # "Directus SSO"); additive, nullable, added by api-nei's
     # e8a1c9f3d6b7 migration. Preferred over `_file` when set.
@@ -33,11 +34,21 @@ class Rgm(Base):
         RgmMandate, foreign_keys=[mandate_id], back_populates="documents"
     )
 
+    @property
+    def mandate(self) -> Optional[str]:
+        if self.mandate_ref is not None:
+            return self.mandate_ref.label
+        return self._mandate
+
+    @mandate.setter
+    def mandate(self, mandate: Optional[str]):
+        self._mandate = mandate
+
     @hybrid_property
-    def file(self) -> str:
+    def file(self) -> Optional[str]:
         if self.file_asset:
             return f"{settings.DIRECTUS_PUBLIC_URL}assets/{self.file_asset}"
-        return settings.STATIC_URL + self._file
+        return self._file and settings.STATIC_URL + self._file
 
     @file.setter
     def file(self, file: str):

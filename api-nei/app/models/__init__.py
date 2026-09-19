@@ -2,7 +2,7 @@ from .user import User
 from .event import Event
 from .faina import FainaMember, FainaRole, Faina
 from .senior import SeniorStudent, Senior
-from .team import TeamColaborator, TeamMember, TeamRole
+from .team import TeamMandate, TeamSection, TeamMember
 from .video import Video, VideoTag
 from .course import Course
 from .device_login import DeviceLogin

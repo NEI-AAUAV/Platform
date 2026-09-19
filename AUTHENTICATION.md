@@ -123,12 +123,21 @@ In that case the alternative is to make Authentik's access token the API credent
 
 ## Directus SSO
 
-Directus (`nei-directus`, a separate repository — not part of this monorepo, not deployed as a Platform extension) is a content-admin UI for staff, connecting directly to `db_pg`. Unlike api-nei, **Directus keeps Authentik's own tokens** — it validates OIDC sessions itself rather than minting platform JWTs, since it is not one of the first-party services covered by the model above.
+Directus is a content-admin UI for staff. It lives in the **Infrastructure** repository (`services/directus`), not in this monorepo, and connects directly to `db_pg`. Unlike api-nei, **Directus keeps Authentik's own tokens** — it validates OIDC sessions itself rather than minting platform JWTs, since it is not one of the first-party services covered by the model above.
 
-- **Login is Authentik-only** (`AUTH_DISABLE_DEFAULT=true`) — there is no local email/password form on the login screen. A break-glass admin account still exists for recovery if Authentik is unreachable; see `nei-directus/README.md` "Break-glass recovery" for the exact toggle.
+- **Login is Authentik-only** (`AUTH_DISABLE_DEFAULT=true`) — there is no local email/password form. A break-glass admin account exists for recovery if Authentik is unreachable; see Infrastructure's `services/directus/README.md` "Break-glass recovery".
 - **Dedicated Authentik application/client** — do not reuse the `nei-platform` OIDC client used by api-nei. A separate application (slug `nei-directus`) has its own client id/secret.
 - Redirect URI: `<DIRECTUS_PUBLIC_URL>auth/login/authentik/callback`.
 - Scopes: `openid profile email` — Directus has no use for `nei_scopes`/`nei_nmec`/`nei_iupi`.
-- Config lives entirely in `nei-directus`'s own `.env` (`AUTH_AUTHENTIK_CLIENT_ID`, `AUTH_AUTHENTIK_CLIENT_SECRET`, `AUTH_AUTHENTIK_ISSUER_URL`, `AUTH_AUTHENTIK_DEFAULT_ROLE_ID`) — see that repo's README.
-- Directus's DB user is **not** api-nei's application user. A dedicated, least-privilege Postgres role (`directus_svc`) is provisioned by `nei-directus/sql/01-grants.sql` on every deploy of that repo (the corresponding `api-nei` Alembic migration, `d3c7f0a1b2e4_add_directus_readonly_db_role.py`, documents the same change but currently can't run against this database — see its header note and `nei-directus/README.md` "Known limitations"), granted access only to the specific tables Directus is allowed to manage. The role's login password is set from `nei-directus/.env`'s `DB_PASSWORD`, never committed.
-- Schema ownership does not change: `api-nei`'s Alembic migrations remain the "official" record of table structure. Directus is configured to control field interfaces/permissions on top of existing tables via `nei-directus/config/*.yaml`, applied automatically on deploy — it never runs its own DDL against them (enforced in `nei-directus/scripts/apply-config.mjs`, see its header comment).
+- **Onboarding (deliberately manual, fail-safe):** Directus public registration stays **off**. Access is granted by listing a person's email in Infrastructure's `CMS_EDITOR_EMAILS` / `CMS_MANAGER_EMAILS`; provisioning creates the Directus user with the matching fixed-ID role, and their first Authentik login links to it. Authentik must additionally restrict the `nei-directus` application to the staff group. Auto-provisioning on first login (`AUTH_AUTHENTIK_ALLOW_PUBLIC_REGISTRATION=true`) is supported but is only safe once that Authentik binding is verified, so it is not the default. Config lives in Infrastructure's `services/directus/.env`.
+
+### Ownership boundary (Platform vs Infrastructure)
+
+| Owner | Owns |
+|---|---|
+| **Platform / api-nei** | Every `nei.*` table, column, key, constraint, index and data migration — exclusively through `api-nei/alembic/`. Alembic contains **no** Directus role, schema or grant logic. |
+| **Infrastructure** | The Directus deployment, the `directus_svc` login role, the `directus` schema, the table grants Directus needs on `nei.*` (`managed-tables.txt`), and all Directus metadata/roles/policies/permissions/extensions. |
+
+Deployment order: (1) Platform runs `alembic upgrade head` (the `api_nei_migrate` one-shot in `compose.prod.yml`, which api-nei waits for) and starts api-nei; (2) Infrastructure verifies the Platform schema is new enough (it fails with a clear message otherwise — it never runs api-nei migrations), provisions the role/schema/grants, starts Directus and reconciles its metadata. Directus stores asset UUIDs in plain `*_asset` UUID columns; there are no foreign keys from `nei.*` to `directus.*`.
+
+Historic Alembic revisions `d3c7f0a1b2e4`, `f2b4d8e1a9c3`, `e8f0a2b4c6d8`, `f9a1b3c5d7e9` and `b5c7d9e1f3a5` were Directus-infrastructure changes; they are intentionally no-ops now (kept only so the revision graph stays linear).
