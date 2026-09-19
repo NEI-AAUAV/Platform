@@ -10,6 +10,7 @@ from .faina import Faina
 from .history import History
 from .merch import Merch
 from .news import News
+from .note_author import NoteAuthor
 from .note import Note
 from .partner import Partner
 from .redirect import Redirect

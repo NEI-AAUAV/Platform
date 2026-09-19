@@ -12,4 +12,4 @@ class Subject(Base):
     name: Mapped[str] = mapped_column(String(128))
     short: Mapped[str] = mapped_column(String(8))
     link: Mapped[Optional[str]] = mapped_column(String(2048))
-    public: Mapped[bool] = mapped_column(default=False)
+    public: Mapped[bool] = mapped_column(default=False, server_default="false")

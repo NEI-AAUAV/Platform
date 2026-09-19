@@ -13,12 +13,18 @@ from app.db.base_class import Base
 from app.models.user import User
 from app.models.subject import Subject
 from app.models.teacher import Teacher
+from app.models.note_author import NoteAuthor
 
 
 class Note(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     author_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey(User.id, name="fk_author_id"), index=True
+    )
+    # Author without a Platform account; set instead of `author_id`.
+    note_author_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey(NoteAuthor.id, name="fk_note_author_id", ondelete="SET NULL"),
+        index=True,
     )
     subject_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey(Subject.code, name="fk_subject_id"),
@@ -47,6 +53,9 @@ class Note(Base):
     created_at: Mapped[datetime] = mapped_column(index=True)
 
     author: Mapped[Optional[User]] = relationship(User, foreign_keys=[author_id])
+    note_author: Mapped[Optional[NoteAuthor]] = relationship(
+        NoteAuthor, foreign_keys=[note_author_id]
+    )
     subject: Mapped[Optional[Subject]] = relationship(
         Subject, foreign_keys=[subject_id]
     )
