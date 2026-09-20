@@ -33,7 +33,7 @@ def upgrade():
         "note", sa.Column("note_author_id", sa.Integer(), nullable=True), schema=S
     )
     op.create_index(
-        op.f("ix_note_note_author_id"), "note", ["note_author_id"], schema=S
+        op.f("ix_nei_note_note_author_id"), "note", ["note_author_id"], schema=S
     )
     op.create_foreign_key(
         "fk_note_author_id",
@@ -49,6 +49,6 @@ def upgrade():
 
 def downgrade():
     op.drop_constraint("fk_note_author_id", "note", schema=S, type_="foreignkey")
-    op.drop_index(op.f("ix_note_note_author_id"), table_name="note", schema=S)
+    op.drop_index(op.f("ix_nei_note_note_author_id"), table_name="note", schema=S)
     op.drop_column("note", "note_author_id", schema=S)
     op.drop_table("note_author", schema=S)
