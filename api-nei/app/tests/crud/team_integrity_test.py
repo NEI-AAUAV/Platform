@@ -43,8 +43,9 @@ def test_section_requires_existing_mandate(db: SessionTesting) -> None:
 
 
 def test_section_mandate_is_not_null(db: SessionTesting) -> None:
+    stmt = sa.text(f"INSERT INTO {S}.team_section (name, weight) VALUES ('x', 0)")
     with pytest.raises(IntegrityError):
-        db.execute(sa.text(f"INSERT INTO {S}.team_section (name, weight) VALUES ('x', 0)"))
+        db.execute(stmt)
 
 
 def test_member_requires_existing_section(db: SessionTesting) -> None:
@@ -56,14 +57,12 @@ def test_member_requires_existing_section(db: SessionTesting) -> None:
 def test_member_name_cannot_be_null(db: SessionTesting) -> None:
     _mandate(db, "2025/26")
     section = _section(db, "2025/26")
+    stmt = sa.text(
+        f"INSERT INTO {S}.team_member (section_id, role, weight)"
+        " VALUES (:s, 'Vogal', 0)"
+    )
     with pytest.raises(IntegrityError):
-        db.execute(
-            sa.text(
-                f"INSERT INTO {S}.team_member (section_id, role, weight)"
-                " VALUES (:s, 'Vogal', 0)"
-            ),
-            {"s": section.id},
-        )
+        db.execute(stmt, {"s": section.id})
 
 
 @pytest.mark.parametrize("blank", ["", "   "])

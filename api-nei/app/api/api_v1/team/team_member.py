@@ -34,7 +34,11 @@ def update_team_member(
     return res
 
 
-@router.delete("/{id}", status_code=204)
+@router.delete(
+    "/{id}",
+    status_code=204,
+    responses={404: {"description": "Team member not found"}},
+)
 def delete_team_member(
     *,
     db: Session = Depends(deps.get_db),
