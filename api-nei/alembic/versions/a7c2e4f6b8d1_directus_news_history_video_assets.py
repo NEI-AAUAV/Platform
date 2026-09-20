@@ -70,7 +70,7 @@ def upgrade():
         ALTER TABLE {SCHEMA}.video__video_tags DROP CONSTRAINT IF EXISTS pk_video__video_tags;
         ALTER TABLE {SCHEMA}.video__video_tags
             ADD CONSTRAINT uq_video__video_tags_video_tag UNIQUE (video_id, video_tag_id);
-        ALTER TABLE {SCHEMA}.video__video_tags ADD CONSTRAINT pk_video__video_tags_id PRIMARY KEY (id);
+        ALTER TABLE {SCHEMA}.video__video_tags ADD CONSTRAINT pk_video__video_tags PRIMARY KEY (id);
         """
     )
 
@@ -78,7 +78,7 @@ def upgrade():
 def downgrade():
     op.execute(
         f"""
-        ALTER TABLE {SCHEMA}.video__video_tags DROP CONSTRAINT IF EXISTS pk_video__video_tags_id;
+        ALTER TABLE {SCHEMA}.video__video_tags DROP CONSTRAINT IF EXISTS pk_video__video_tags;
         ALTER TABLE {SCHEMA}.video__video_tags DROP CONSTRAINT IF EXISTS uq_video__video_tags_video_tag;
         ALTER TABLE {SCHEMA}.video__video_tags ADD CONSTRAINT pk_video__video_tags PRIMARY KEY (video_id, video_tag_id);
         ALTER TABLE {SCHEMA}.video__video_tags ALTER COLUMN id DROP DEFAULT;
