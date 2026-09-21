@@ -16,6 +16,9 @@ class AuthentikError(Exception):
     public_detail: str
 
 
+_INVALID_RESPONSE = "Authentik returned an invalid response"
+
+
 class AuthentikClient:
     def __init__(self, transport: httpx.AsyncBaseTransport | None = None) -> None:
         self._transport = transport
@@ -63,9 +66,9 @@ class AuthentikClient:
         try:
             data = response.json()
         except ValueError as exc:
-            raise AuthentikError(502, "Authentik returned an invalid response") from exc
+            raise AuthentikError(502, _INVALID_RESPONSE) from exc
         if not isinstance(data, dict):
-            raise AuthentikError(502, "Authentik returned an invalid response")
+            raise AuthentikError(502, _INVALID_RESPONSE)
         return data
 
     async def find_user_pk(self, authentik_sub: str) -> int:
@@ -80,7 +83,7 @@ class AuthentikClient:
         try:
             return int(results[0]["pk"])
         except (KeyError, TypeError, ValueError) as exc:
-            raise AuthentikError(502, "Authentik returned an invalid response") from exc
+            raise AuthentikError(502, _INVALID_RESPONSE) from exc
 
     async def list_groups(self) -> list[dict[str, Any]]:
         url: str | None = f"{settings.AUTHENTIK_URL}/api/v3/core/groups/"

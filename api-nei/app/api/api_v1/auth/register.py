@@ -9,6 +9,7 @@ from email_validator import validate_email, EmailNotValidError
 
 from app import crud
 from app.api import deps, email as emailUtils
+from app.api.deps import DbSession
 from app.api.recaptcha import verify_reCaptcha
 from app.schemas.user import UserBase, UserCreate
 from app.core.config import settings
@@ -81,7 +82,7 @@ class UserRegisterForm(UserBase):
 async def register(
     form_data: UserRegisterForm,
     background_tasks: BackgroundTasks,
-    db: Session = Depends(deps.get_db, scope="function"),
+    db: DbSession,
 ):
     score = await verify_reCaptcha(form_data.recaptcha_token)
 

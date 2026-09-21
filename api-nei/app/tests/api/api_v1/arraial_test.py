@@ -73,7 +73,8 @@ def test_admin_config_update_is_persisted(client: TestClient) -> None:
 
     assert r.status_code == 200
     cfg = client.get(f"{BASE}/config").json()
-    assert cfg["enabled"] is True and cfg["paused"] is True
+    assert cfg["enabled"] is True
+    assert cfg["paused"] is True
 
 
 @pytest.mark.parametrize(
@@ -230,7 +231,8 @@ def test_log_lists_changes_newest_first_with_the_acting_user(
 
     assert [e["nucleo"] for e in items] == ["NEECT", "NEI"]
     assert items[0]["user_id"] == 7
-    assert items[0]["delta"] == 2 and items[0]["new_value"] == 2
+    assert items[0]["delta"] == 2
+    assert items[0]["new_value"] == 2
 
 
 @as_manager
@@ -242,8 +244,10 @@ def test_log_paginates_and_filters(client: TestClient) -> None:
     page = client.get(f"{BASE}/log", params={"limit": 2}).json()
     only_nei = client.get(f"{BASE}/log", params={"nucleo": "NEI"}).json()
 
-    assert len(page["items"]) == 2 and page["next_offset"] == 2
-    assert len(only_nei["items"]) == 3 and only_nei["next_offset"] is None
+    assert len(page["items"]) == 2
+    assert page["next_offset"] == 2
+    assert len(only_nei["items"]) == 3
+    assert only_nei["next_offset"] is None
 
 
 @pytest.mark.parametrize(

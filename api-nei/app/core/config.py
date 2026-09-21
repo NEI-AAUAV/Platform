@@ -158,6 +158,9 @@ class Settings(BaseSettings):
     AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"
     AUTHENTIK_TOKEN: str = ""
 
+    def _missing(self, flag: str, *names: str) -> List[str]:
+        return [f"{n} is required when {flag}" for n in names if not getattr(self, n)]
+
     @model_validator(mode="after")
     def validate_feature_configuration(self) -> "Settings":
         """Fail at boot, not on the first request, when a feature is enabled
@@ -167,13 +170,11 @@ class Settings(BaseSettings):
         if self.PRODUCTION and not self.OIDC_VERIFY_SSL:
             problems.append("OIDC_VERIFY_SSL cannot be disabled in production")
         if self.PRODUCTION and self.OIDC_ENABLED:
-            for name in ("OIDC_CLIENT_ID", "OIDC_CLIENT_SECRET"):
-                if not getattr(self, name):
-                    problems.append(f"{name} is required when OIDC_ENABLED")
+            problems += self._missing("OIDC_ENABLED", "OIDC_CLIENT_ID", "OIDC_CLIENT_SECRET")
         if self.EMAIL_ENABLED:
-            for name in ("EMAIL_SMTP_HOST", "EMAIL_SENDER_ADDRESS"):
-                if not getattr(self, name):
-                    problems.append(f"{name} is required when EMAIL_ENABLED")
+            problems += self._missing(
+                "EMAIL_ENABLED", "EMAIL_SMTP_HOST", "EMAIL_SENDER_ADDRESS"
+            )
         if self.RECAPTCHA_ENABLED and not self.RECAPTCHA_SECRET_KEY:
             problems.append("RECAPTCHA_SECRET_KEY is required when RECAPTCHA_ENABLED")
 

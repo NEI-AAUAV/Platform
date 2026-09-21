@@ -46,7 +46,8 @@ def test_update_locked_updates_only_the_targeted_row(db: SessionTesting) -> None
 
     updated = redirects.update_locked(db, id=target.id, obj_in=_AliasOnly(alias="changed"))
 
-    assert updated is not None and updated.alias == "changed"
+    assert updated is not None
+    assert updated.alias == "changed"
     assert db.scalars(select(Redirect).where(Redirect.alias == "keep")).one()
 
 
@@ -56,7 +57,8 @@ def test_update_locked_without_changes_returns_the_row(db: SessionTesting) -> No
 
     same = redirects.update_locked(db, id=target.id, obj_in=_AliasOnly.model_construct())
 
-    assert same is not None and same.id == target.id
+    assert same is not None
+    assert same.id == target.id
 
 
 def test_update_locked_without_changes_locks_the_row(db: SessionTesting, monkeypatch) -> None:
@@ -78,11 +80,10 @@ def test_update_locked_without_changes_locks_the_row(db: SessionTesting, monkeyp
 
 def test_unmapped_foreign_key_violation_is_a_client_error(db: SessionTesting) -> None:
     students = CRUDBase[SeniorStudent, SeniorStudentCreate, BaseModel](SeniorStudent)
+    orphan = SeniorStudentCreate(user_id=-1, senior_id=-1, image="i.jpg")
 
     with pytest.raises(HTTPException) as exc:
-        students.create(
-            db, obj_in=SeniorStudentCreate(user_id=-1, senior_id=-1, image="i.jpg")
-        )
+        students.create(db, obj_in=orphan)
 
     assert exc.value.status_code == 400
 
@@ -108,11 +109,9 @@ def test_failed_second_operation_rolls_back_first(connection) -> None:
             session, obj_in=RedirectCreate(alias="atomic", redirect="/first")
         )
         students = CRUDBase[SeniorStudent, SeniorStudentCreate, BaseModel](SeniorStudent)
+        orphan = SeniorStudentCreate(user_id=-1, senior_id=-1, image="i.jpg")
         with pytest.raises(HTTPException):
-            students.create(
-                session,
-                obj_in=SeniorStudentCreate(user_id=-1, senior_id=-1, image="i.jpg"),
-            )
+            students.create(session, obj_in=orphan)
         session.rollback()
         assert session.scalar(
             select(Redirect).where(Redirect.alias == "atomic")
@@ -145,12 +144,10 @@ def test_check_violation_becomes_400_not_500(db: SessionTesting) -> None:
     from app.models.team.team_member import TeamMember
 
     members = CRUDBase[TeamMember, _TeamMemberIn, _TeamMemberIn](TeamMember)
+    blank_name = _TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal")
 
     with pytest.raises(HTTPException) as exc:
-        members.create(
-            db,
-            obj_in=_TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal"),
-        )
+        members.create(db, obj_in=blank_name)
 
     assert exc.value.status_code == 400
 
@@ -161,11 +158,11 @@ def test_check_violation_uses_the_mapped_message(db: SessionTesting) -> None:
     class _Mapped(CRUDBase[TeamMember, _TeamMemberIn, _TeamMemberIn]):
         _check_violation_msgs = {"ck_team_member_name_not_blank": "Name is required"}
 
+    mapped = _Mapped(TeamMember)
+    blank_name = _TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal")
+
     with pytest.raises(HTTPException) as exc:
-        _Mapped(TeamMember).create(
-            db,
-            obj_in=_TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal"),
-        )
+        mapped.create(db, obj_in=blank_name)
 
     assert exc.value.detail == "Name is required"
 
@@ -177,8 +174,10 @@ class _AliasWithoutTarget(BaseModel):
 
 
 def test_unclassified_integrity_error_is_not_a_500(db: SessionTesting) -> None:
+    no_target = _AliasWithoutTarget(alias="no-target")
+
     with pytest.raises(HTTPException) as exc:
-        redirects.create(db, obj_in=_AliasWithoutTarget(alias="no-target"))
+        redirects.create(db, obj_in=no_target)
 
     assert exc.value.status_code == 400
 
@@ -187,11 +186,10 @@ def test_team_member_blank_name_reports_the_mapped_message(db: SessionTesting) -
     """Directus writes bypass Pydantic, so the CHECK is still the real guard."""
     from app import crud
 
+    blank_name = _TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal")
+
     with pytest.raises(HTTPException) as exc:
-        crud.team_member.create(
-            db,
-            obj_in=_TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal"),
-        )
+        crud.team_member.create(db, obj_in=blank_name)
 
     assert exc.value.detail == "Name cannot be blank!"
 
@@ -210,7 +208,9 @@ def test_faina_member_identity_reports_the_mapped_message(db: SessionTesting) ->
     db.add(FainaRole(id=1, name="Vogal", weight=0))
     db.flush()
 
+    nameless = _PermissiveFainaMember(faina_id=1, role_id=1)
+
     with pytest.raises(HTTPException) as exc:
-        crud.faina_member.create(db, obj_in=_PermissiveFainaMember(faina_id=1, role_id=1))
+        crud.faina_member.create(db, obj_in=nameless)
 
     assert "name" in exc.value.detail.lower()
