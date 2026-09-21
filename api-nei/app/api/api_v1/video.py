@@ -17,7 +17,7 @@ def get_video(
     page_params: PageParams = Depends(PageParams),
     _=Depends(deps.short_cache),
     tags: List[int] = Query(default=[], alias="tag[]", description="List of Tags"),
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
 ) -> Any:
     all_cat = set(e.id for e in crud.videotag.get_multi(db=db))
 
@@ -34,7 +34,7 @@ def get_video(
 def get_video_by_id(
     *,
     id: int,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.short_cache),
 ) -> Any:
     return crud.video.get(db=db, id=id)
@@ -43,7 +43,7 @@ def get_video_by_id(
 @router.get("/category/", status_code=200, response_model=List[VideoTagInDB])
 def get_categories(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.cms_cache),
 ) -> Any:
     """ "

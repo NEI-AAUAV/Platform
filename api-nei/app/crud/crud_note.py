@@ -3,14 +3,14 @@ from typing import List, Tuple, Optional
 from sqlalchemy import or_
 from sqlalchemy.orm import Query, Session, joinedload
 
-from app.crud.base import CRUDBase
+from app.crud.base import ReadOnlyCRUDBase
 from app.models.note import Note
 from app.models import User
 from app.models.subject import Subject
 from app.models.teacher import Teacher
 
 
-class CRUDNote(CRUDBase[Note, None, None]):
+class CRUDNote(ReadOnlyCRUDBase[Note]):
     @staticmethod
     def _filtered(
         db: Session,
@@ -55,7 +55,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
         )
         if categories:
             query = query.filter(
-                or_(getattr(Note, cat) == 1 for cat in categories))
+                or_(*(getattr(Note, cat) == 1 for cat in categories)))
         total = query.count()
         page_query = query.options(
             joinedload(Note.author),
@@ -65,7 +65,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
         )
         return total, page_query.limit(size).offset((page - 1) * size).all()
 
-    def get_note_students(self, db: Session, year: int, subject_code: int, teacher_id: int, curricular_year: int) -> List[User]:
+    def get_note_students(self, db: Session, year: Optional[int], subject_code: Optional[int], teacher_id: Optional[int], curricular_year: Optional[int]) -> List[User]:
         notes = self._filtered(
             db, year=year, subject=subject_code, teacher=teacher_id,
             curricular_year=curricular_year,
@@ -73,7 +73,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
         ids = set(e.author_id for e in notes)
         return db.query(User).filter(User.id.in_(ids)).all()
 
-    def get_note_teachers(self, db: Session, year: int, subject_code: int, student_id: int, curricular_year: int) -> List[User]:
+    def get_note_teachers(self, db: Session, year: Optional[int], subject_code: Optional[int], student_id: Optional[int], curricular_year: Optional[int]) -> List[Teacher]:
         notes = self._filtered(
             db, year=year, subject=subject_code, student=student_id,
             curricular_year=curricular_year,
@@ -81,7 +81,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
         ids = set(e.teacher_id for e in notes)
         return db.query(Teacher).filter(Teacher.id.in_(ids)).all()
 
-    def get_note_subjects(self, db: Session, year: int, teacher_id: int, student_id: int, curricular_year: int) -> List[str]:
+    def get_note_subjects(self, db: Session, year: Optional[int], teacher_id: Optional[int], student_id: Optional[int], curricular_year: Optional[int]) -> List[Subject]:
         notes = self._filtered(
             db, year=year, teacher=teacher_id, student=student_id,
             curricular_year=curricular_year,
@@ -89,7 +89,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
         codes = set(e.subject_id for e in notes)
         return db.query(Subject).filter(Subject.code.in_(codes)).all()
 
-    def get_note_years(self, db: Session, subject_code: int, student_id: int, teacher_id: int, curricular_year: int) -> List[int]:
+    def get_note_years(self, db: Session, subject_code: Optional[int], student_id: Optional[int], teacher_id: Optional[int], curricular_year: Optional[int]) -> List[int]:
         notes = self._filtered(
             db, subject=subject_code, student=student_id, teacher=teacher_id,
             curricular_year=curricular_year,
@@ -98,7 +98,7 @@ class CRUDNote(CRUDBase[Note, None, None]):
         years.discard(None)
         return list(years)
 
-    def get_note_curricular_year(self, db: Session, year: int, teacher_id: int, student_id: int, subject_code: int) -> List[str]:
+    def get_note_curricular_year(self, db: Session, year: Optional[int], teacher_id: Optional[int], student_id: Optional[int], subject_code: Optional[int]) -> List[str]:
         notes = (
             self._filtered(
                 db, year=year, teacher=teacher_id, student=student_id,

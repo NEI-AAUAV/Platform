@@ -76,3 +76,7 @@ jobs:
         env:
           TEST_POSTGRES_URI: postgresql://postgres:postgres@localhost:5432/postgres_test
         run: poetry run pytest
+
+      - name: Type-check api-nei
+        working-directory: ./api-nei
+        run: poetry run mypy app

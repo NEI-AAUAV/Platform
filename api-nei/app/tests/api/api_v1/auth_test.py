@@ -13,6 +13,7 @@ from app.models.user.user_email import UserEmail
 from app.tests.conftest import SessionTesting
 from app.api.api_v1.auth.register import _create_email_verification_token
 from app.api.api_v1.auth._deps import Token, hash_password
+from app.api.api_v1.auth import _deps as auth_deps
 
 user_password = "test_password"
 user = {
@@ -41,6 +42,29 @@ inactiveUser = {
     "updated_at": datetime.fromtimestamp(0) - settings.CONFIRMATION_TOKEN_EXPIRE,
 }
 inactiveUserEmail = "testUserInactive@test.com"
+
+
+def test_token_is_not_issued_when_security_commit_fails(
+    db: SessionTesting, monkeypatch
+) -> None:
+    account, _ = get_by_email(db, userEmail)
+    token_calls = 0
+
+    def fail_commit() -> None:
+        raise RuntimeError("database unavailable")
+
+    def track_token(*args, **kwargs):
+        nonlocal token_calls
+        token_calls += 1
+        return "token"
+
+    monkeypatch.setattr(db, "commit", fail_commit)
+    monkeypatch.setattr(auth_deps, "create_token", track_token)
+
+    with pytest.raises(RuntimeError, match="database unavailable"):
+        auth_deps.generate_response(db, account)
+
+    assert token_calls == 0
 
 
 @pytest.fixture(autouse=True)

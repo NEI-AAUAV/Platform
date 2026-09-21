@@ -19,6 +19,20 @@ class AuthentikError(Exception):
 class AuthentikClient:
     def __init__(self, transport: httpx.AsyncBaseTransport | None = None) -> None:
         self._transport = transport
+        self._client: httpx.AsyncClient | None = None
+
+    async def start(self) -> None:
+        if self._client is None:
+            self._client = httpx.AsyncClient(
+                verify=settings.OIDC_VERIFY_SSL,
+                timeout=httpx.Timeout(10.0),
+                transport=self._transport,
+            )
+
+    async def close(self) -> None:
+        if self._client is not None:
+            await self._client.aclose()
+            self._client = None
 
     def _headers(self) -> dict[str, str]:
         if not settings.AUTHENTIK_TOKEN:
@@ -27,14 +41,11 @@ class AuthentikClient:
 
     async def _request(self, method: str, url: str, **kwargs: Any) -> httpx.Response:
         try:
-            async with httpx.AsyncClient(
-                verify=settings.OIDC_VERIFY_SSL,
-                timeout=httpx.Timeout(10.0),
-                transport=self._transport,
-            ) as client:
-                response = await client.request(
-                    method, url, headers=self._headers(), **kwargs
-                )
+            await self.start()
+            assert self._client is not None
+            response = await self._client.request(
+                method, url, headers=self._headers(), **kwargs
+            )
         except httpx.TimeoutException as exc:
             raise AuthentikError(504, "Authentik request timed out") from exc
         except httpx.RequestError as exc:

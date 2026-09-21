@@ -67,7 +67,7 @@ def _primary_key(
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    _foreign_key_checks = {}
+    _foreign_key_checks: dict[str, str] = {}
     _unique_violation_msg = "Already exists"
 
     def __init__(self, model: Type[ModelType]):
@@ -182,3 +182,16 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if res is None:
             return None
         return res[0]
+
+
+class ReadOnlyCRUDBase(Generic[ModelType]):
+    """Typed query helpers for resources whose writes are owned elsewhere."""
+
+    def __init__(self, model: Type[ModelType]):
+        self.model = model
+
+    def get(self, db: Session, id: _PrimaryKeyType) -> Optional[ModelType]:
+        return db.get(self.model, id)
+
+    def get_multi(self, db: Session) -> Sequence[ModelType]:
+        return db.scalars(select(self.model)).all()

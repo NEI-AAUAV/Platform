@@ -168,7 +168,9 @@ def load_scopes_from_manifests() -> None:
         os.path.abspath(os.path.join(here, "..", "extensions")),
     ]
 
-    manifests = _iter_extension_manifests(candidates)
+    manifests = _iter_extension_manifests(
+        [candidate for candidate in candidates if candidate is not None]
+    )
     if not manifests:
         logger.info("No extension manifests found for scope registration")
         return
@@ -197,4 +199,3 @@ def load_scopes_from_manifests() -> None:
     if registered:
         ExtensionScopeRegistry.mark_initialized()
         logger.info(f"Registered {registered} scopes from manifests")
-

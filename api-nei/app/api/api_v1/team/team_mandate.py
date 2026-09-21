@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.get("/", status_code=200, response_model=TeamMandates)
-def get_team_mandates(db: Session = Depends(deps.get_db), _=Depends(deps.cms_cache)):
+def get_team_mandates(db: Session = Depends(deps.get_db, scope="function"), _=Depends(deps.cms_cache)):
     """Return every mandate that has a team registered."""
     data = crud.team_mandate.get_mandates(db=db)
     return {"data": data}
@@ -23,7 +23,7 @@ def get_team_mandates(db: Session = Depends(deps.get_db), _=Depends(deps.cms_cac
     responses={404: {"description": "Mandate not found"}},
 )
 def get_team_mandate_tree(
-    mandate: str, db: Session = Depends(deps.get_db), _=Depends(deps.cms_cache)
+    mandate: str, db: Session = Depends(deps.get_db, scope="function"), _=Depends(deps.cms_cache)
 ):
     """Return a mandate's full team, nested by section."""
     tree = crud.team_mandate.get_tree(db=db, mandate=mandate)

@@ -25,7 +25,7 @@ router = APIRouter()
 @router.get("/", status_code=200)
 def get_events(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
 ) -> List[ListingEvent]:
     """
     Fetches all existing events.
@@ -37,7 +37,7 @@ def get_events(
 def get_event_by_id(
     *,
     id: int,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
 ) -> DetailedEvent:
     """
     Fetches an event by it's identifier.
@@ -53,7 +53,7 @@ def update_event(
     *,
     id: int,
     event_in: UpdateEvent,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ) -> DetailedEvent:
     """
@@ -69,7 +69,7 @@ def update_event(
 def create_event(
     *,
     event_in: CreateEvent,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ) -> DetailedEvent:
     """
@@ -88,7 +88,7 @@ def import_users_for_event(
     *,
     id: int,
     users: List[UserCreateForEvent],
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     background_tasks: BackgroundTasks,
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ) -> ImportUsersResult:
@@ -116,7 +116,7 @@ def import_users_for_event(
 def delete_event(
     *,
     id: int,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ) -> Response:
     """

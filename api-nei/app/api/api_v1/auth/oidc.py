@@ -39,6 +39,7 @@ from authlib.jose import JsonWebKey, jwt
 from authlib.jose.errors import JoseError
 from sqlalchemy.exc import IntegrityError
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import RedirectResponse
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from loguru import logger
@@ -53,7 +54,7 @@ from app.schemas.user import ScopeEnum, UserCreate
 
 from ._deps import AuthData, Token, generate_response, private_key, verify_token
 
-DbSession = Annotated[Session, Depends(deps.get_db)]
+DbSession = Annotated[Session, Depends(deps.get_db, scope="function")]
 CurrentUser = Annotated[AuthData, Depends(verify_token)]
 
 router = APIRouter()
@@ -365,6 +366,7 @@ def _sync_user(db: Session, user: User, *, authentik_sub: str, name: str, surnam
         changed = True
 
     if changed:
+        # OIDC identity state must be durable before issuing local credentials.
         db.commit()
         db.refresh(user)
     return changed
@@ -464,11 +466,14 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
             active=True,
         )
         user.authentik_sub = authentik_sub
+        # Persist the external identity link before issuing local credentials.
         db.commit()
         db.refresh(user)
         logger.info(f"Created user {user.id} from Authentik")
         return user
     except IntegrityError:
+        # The rollback is required to recover the session after a concurrent
+        # unique-key race before resolving the now-existing user.
         db.rollback()
         user = _find_user_by_sub_or_email(db, authentik_sub, email, email_verified=True)
         if user:
@@ -590,7 +595,7 @@ async def oidc_callback(
             userinfo.get("scopes"),
         )
 
-        user = get_or_create_user_from_oidc(db, userinfo)
+        user = await run_in_threadpool(get_or_create_user_from_oidc, db, userinfo)
 
         # Sync display name back to Authentik (best-effort, non-blocking)
         email = userinfo.get("email", "")
@@ -654,7 +659,9 @@ async def start_oidc_link(
 ):
     _require_oidc()
 
-    user = db.query(User).filter(User.id == auth_data.sub).first()
+    user = await run_in_threadpool(
+        lambda: db.query(User).filter(User.id == auth_data.sub).first()
+    )
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
     if user.authentik_sub:
@@ -706,7 +713,9 @@ async def oidc_link_callback(
     code_verifier = state_payload.get("v")
     expected_nonce = state_payload.get("n")
 
-    user = db.query(User).filter(User.id == user_id).first()
+    user = await run_in_threadpool(
+        lambda: db.query(User).filter(User.id == user_id).first()
+    )
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
     if user.authentik_sub:
@@ -737,7 +746,9 @@ async def oidc_link_callback(
                 "Authentik account email is not verified — verify your email before linking",
             )
 
-        existing = db.query(User).filter(User.authentik_sub == authentik_sub).first()
+        existing = await run_in_threadpool(
+            lambda: db.query(User).filter(User.authentik_sub == authentik_sub).first()
+        )
         if existing:
             raise HTTPException(
                 status.HTTP_409_CONFLICT,
@@ -745,7 +756,9 @@ async def oidc_link_callback(
             )
 
         user.authentik_sub = authentik_sub
-        db.commit()
+        # Linking must be durable before reporting the security operation as
+        # successful to the caller.
+        await run_in_threadpool(db.commit)
         logger.info(f"Linked user {user.id} to Authentik sub {authentik_sub!r}")
         return {"status": "success", "message": "Account successfully linked to Authentik"}
 

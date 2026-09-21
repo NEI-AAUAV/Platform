@@ -71,7 +71,6 @@ services:
       # Must match Infrastructure's DIRECTUS_PUBLIC_URL.
       DIRECTUS_PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-http://localhost/cms/}
       # Public base of the R2 bucket (with the `cms` root) for direct image URLs; empty = via Directus
-      ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-}
     volumes:
       - ./api-nei:/api_nei
       - ./extensions:/extensions:ro

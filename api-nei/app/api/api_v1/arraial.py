@@ -155,7 +155,7 @@ def _get_config_enabled(db: Session) -> bool:
         .first()
     if row is None:
         db.execute(text("INSERT INTO app_setting(key, value) VALUES ('arraial_enabled', 'false') ON CONFLICT (key) DO NOTHING"))
-        db.commit()
+        db.flush()
         return False
     return (row[0] or "").lower() == "true"
 
@@ -171,7 +171,7 @@ def _set_config_enabled(db: Session, enabled: bool) -> None:
         ),
         {"val": "true" if enabled else "false"},
     )
-    db.commit()
+    db.flush()
 
 
 def _get_config_paused(db: Session) -> bool:
@@ -180,7 +180,7 @@ def _get_config_paused(db: Session) -> bool:
         .first()
     if row is None:
         db.execute(text("INSERT INTO app_setting(key, value) VALUES ('arraial_paused', 'false') ON CONFLICT (key) DO NOTHING"))
-        db.commit()
+        db.flush()
         return False
     return (row[0] or "").lower() == "true"
 
@@ -196,7 +196,7 @@ def _set_config_paused(db: Session, paused: bool) -> None:
         ),
         {"val": "true" if paused else "false"},
     )
-    db.commit()
+    db.flush()
 
 
 def _get_boosts_response() -> dict:
@@ -224,7 +224,7 @@ def _find_points(nucleo: str) -> dict:
 
 
 @router.get("/config", status_code=200, response_model=ArraialConfig)
-def get_arraial_config(*, db: Session = Depends(deps.get_db)) -> Any:
+def get_arraial_config(*, db: Session = Depends(deps.get_db, scope="function")) -> Any:
     return {"enabled": _get_config_enabled(db), "paused": _get_config_paused(db), "boosts": _get_boosts_response()}
 
 
@@ -232,7 +232,7 @@ def get_arraial_config(*, db: Session = Depends(deps.get_db)) -> Any:
 async def update_arraial_config(
     *,
     cfg: ArraialConfig,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
 ) -> Any:
     _set_config_enabled(db, cfg.enabled)
@@ -248,7 +248,7 @@ async def update_arraial_config(
 @router.get("/points", status_code=200, response_model=List[ArraialPoints])
 def get_arraial_points(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
 ) -> Any:
     return _arraial_points
 
@@ -258,7 +258,7 @@ async def update_arraial_points(
     *,
     request: Request,
     points_update: ArraialPointsUpdate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     auth_data: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_ARRAIAL]),
 ) -> Any:
     # Check rate limit
@@ -319,7 +319,7 @@ async def update_arraial_points(
 async def activate_boost(
     *,
     nucleo: str,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     auth_data: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_ARRAIAL]),
 ) -> Any:
     if nucleo not in VALID_NUCLEOS:
@@ -444,7 +444,7 @@ async def rollback_log(
 @router.post("/reset", status_code=200)
 async def reset_arraial(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
 ) -> Any:
     # Reset points to zero

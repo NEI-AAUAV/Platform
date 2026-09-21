@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[PartnerInDB])
 def get_partners(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db, scope="function"),
     _ = Depends(deps.short_cache),
 ) -> Any:
     return crud.partner.get_multi(db=db)
