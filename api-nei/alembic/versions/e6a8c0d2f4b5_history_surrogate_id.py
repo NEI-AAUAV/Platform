@@ -46,9 +46,9 @@ def upgrade() -> None:
     op.execute(
         f"""
         UPDATE {SCHEMA}.history h SET id = r.rn
-        FROM (SELECT moment, ROW_NUMBER() OVER (ORDER BY moment) AS rn
+        FROM (SELECT ctid, ROW_NUMBER() OVER (ORDER BY moment, ctid) AS rn
               FROM {SCHEMA}.history) r
-        WHERE r.moment = h.moment
+        WHERE r.ctid = h.ctid
         """
     )
     op.execute(f"CREATE SEQUENCE {SCHEMA}.history_id_seq OWNED BY {SCHEMA}.history.id")

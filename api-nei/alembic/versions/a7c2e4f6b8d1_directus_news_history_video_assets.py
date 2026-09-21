@@ -41,17 +41,14 @@ ASSET_COLUMNS = [
 
 
 def upgrade():
+    # Infrastructure provisioning created these columns out of band on some deployments.
     for table, column in ASSET_COLUMNS:
-        op.add_column(
-            table,
-            sa.Column(column, sa.dialects.postgresql.UUID(as_uuid=True), nullable=True),
-            schema=SCHEMA,
+        op.execute(
+            f"ALTER TABLE {SCHEMA}.{table} ADD COLUMN IF NOT EXISTS {column} uuid"
         )
 
-    op.add_column(
-        "video__video_tags",
-        sa.Column("id", sa.BigInteger(), nullable=True),
-        schema=SCHEMA,
+    op.execute(
+        f"ALTER TABLE {SCHEMA}.video__video_tags ADD COLUMN IF NOT EXISTS id bigint"
     )
     op.execute(
         f"""
@@ -70,7 +67,7 @@ def upgrade():
         ALTER TABLE {SCHEMA}.video__video_tags DROP CONSTRAINT IF EXISTS pk_video__video_tags;
         ALTER TABLE {SCHEMA}.video__video_tags
             ADD CONSTRAINT uq_video__video_tags_video_tag UNIQUE (video_id, video_tag_id);
-        ALTER TABLE {SCHEMA}.video__video_tags ADD CONSTRAINT pk_video__video_tags_id PRIMARY KEY (id);
+        ALTER TABLE {SCHEMA}.video__video_tags ADD CONSTRAINT pk_video__video_tags PRIMARY KEY (id);
         """
     )
 
@@ -78,7 +75,7 @@ def upgrade():
 def downgrade():
     op.execute(
         f"""
-        ALTER TABLE {SCHEMA}.video__video_tags DROP CONSTRAINT IF EXISTS pk_video__video_tags_id;
+        ALTER TABLE {SCHEMA}.video__video_tags DROP CONSTRAINT IF EXISTS pk_video__video_tags;
         ALTER TABLE {SCHEMA}.video__video_tags DROP CONSTRAINT IF EXISTS uq_video__video_tags_video_tag;
         ALTER TABLE {SCHEMA}.video__video_tags ADD CONSTRAINT pk_video__video_tags PRIMARY KEY (video_id, video_tag_id);
         ALTER TABLE {SCHEMA}.video__video_tags ALTER COLUMN id DROP DEFAULT;

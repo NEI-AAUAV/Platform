@@ -24,11 +24,8 @@ SCHEMA = "nei"
 
 
 def upgrade():
-    op.add_column(
-        "faina",
-        sa.Column("image_asset", sa.dialects.postgresql.UUID(as_uuid=True), nullable=True),
-        schema=SCHEMA,
-    )
+    # Infrastructure provisioning created this column out of band on some deployments.
+    op.execute(f"ALTER TABLE {SCHEMA}.faina ADD COLUMN IF NOT EXISTS image_asset uuid")
 
 
 def downgrade():
