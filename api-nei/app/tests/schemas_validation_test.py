@@ -71,3 +71,28 @@ def test_rgm_category_rejects_anything_else() -> None:
 
     with pytest.raises(ValueError):
         RgmCategoryEnum("XXX")
+
+
+def test_rgm_response_tolerates_a_legacy_category() -> None:
+    """Production holds rows predating ck_rgm_category_valid (e.g. 'CON').
+
+    Typing the response field as the enum turns one stale row into a 500 for
+    the entire listing, since FastAPI validates the whole response model.
+    """
+    from datetime import datetime
+
+    from app.schemas.rgm import RgmInDB
+
+    row = RgmInDB.model_validate(
+        {
+            "id": 61,
+            "category": "CON",
+            "mandate": "2024/25",
+            "mandate_id": 1,
+            "file": "/rgm/PAO/x.pdf",
+            "date": datetime(2024, 1, 1),
+            "title": "t",
+        }
+    )
+
+    assert row.category == "CON"

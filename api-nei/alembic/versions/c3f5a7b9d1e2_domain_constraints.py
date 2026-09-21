@@ -7,7 +7,8 @@ Create Date: 2026-09-19
 Directus writes straight to PostgreSQL, so Pydantic validation never sees
 its rows. True invariants therefore live in the schema:
 
-* rgm.category IN ('ATA', 'PAO', 'RAC')
+* rgm.category IN ('ATA', 'PAO', 'RAC', 'CON')  -- CON: convocatória,
+  in use since 2025
 * merch.price >= 0, merch.number_of_items >= 0
 * rgm_mandate.label and faina.mandate look like AAAA or AAAA/AA (the same
   pattern the API accepts as MandateStr)
@@ -33,7 +34,7 @@ S = "nei"
 MANDATE_RE = "~ '^[0-9]{4}(/[0-9]{2})?$'"
 
 CHECKS = [
-    ("rgm", "category_valid", "category IN ('ATA', 'PAO', 'RAC')"),
+    ("rgm", "category_valid", "category IN ('ATA', 'PAO', 'RAC', 'CON')"),
     ("merch", "price_non_negative", "price >= 0"),
     ("merch", "number_of_items_non_negative", "number_of_items >= 0"),
     ("rgm_mandate", "label_format", f"label {MANDATE_RE}"),

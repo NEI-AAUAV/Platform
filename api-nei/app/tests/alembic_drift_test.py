@@ -191,3 +191,30 @@ def test_create_all_builds_the_whole_schema(empty_url: str) -> None:
         ).scalar_one()
     engine.dispose()
     assert built == len(Base.metadata.tables)
+
+
+def test_convocatoria_rows_survive_the_domain_constraints(drift_url: str) -> None:
+    """CON entered use in 2025, after the vocabulary in the code was written.
+
+    c3f5a7b9d1e2 both validates existing rows and creates the CHECK, so a
+    category it does not know aborts the chain rather than failing later.
+    """
+    schema = settings.SCHEMA_NAME
+    _execute(
+        drift_url,
+        f"""
+        INSERT INTO {schema}.rgm (category, mandate, date, title, file)
+        VALUES ('CON', '2024/25', '2025-06-16', 'Convocatória 16/06/2025', '/rgm/PAO/c.pdf'),
+               ('ATA', '2024/25', '2025-01-10', 'Ata', '/rgm/ATA/a.pdf');
+        """,
+    )
+
+    command.upgrade(_config(drift_url), "head")
+
+    engine = sa.create_engine(drift_url)
+    with engine.connect() as conn:
+        kept = conn.execute(
+            sa.text(f"SELECT category FROM {schema}.rgm ORDER BY category")
+        ).scalars().all()
+    engine.dispose()
+    assert kept == ["ATA", "CON"]
