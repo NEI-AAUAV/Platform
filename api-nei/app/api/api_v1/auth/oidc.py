@@ -47,6 +47,7 @@ from sqlalchemy.orm import Session
 
 from app import crud
 from app.api import deps
+from app.api.deps import DbSession
 from app.core.config import settings
 from app.models.user import User
 from app.models.user.user_email import UserEmail
@@ -54,7 +55,6 @@ from app.schemas.user import ScopeEnum, UserCreate
 
 from ._deps import AuthData, Token, generate_response, private_key, verify_token
 
-DbSession = Annotated[Session, Depends(deps.get_db, scope="function")]
 CurrentUser = Annotated[AuthData, Depends(verify_token)]
 
 router = APIRouter()

@@ -26,12 +26,12 @@ import logging
 from sqlalchemy import select
 
 from app.api import deps
+from app.api.deps import DbSession
 from app.api.api_v1.auth import _deps as auth
 from app.integrations.authentik import AuthentikError, authentik_client
 from app.models.user import User
 from app.schemas.user import ScopeEnum
 
-DbSession = Annotated[Session, Depends(deps.get_db, scope="function")]
 AdminAuth = Annotated[auth.AuthData, Security(auth.verify_token, scopes=[ScopeEnum.ADMIN])]
 logger = logging.getLogger(__name__)
 
