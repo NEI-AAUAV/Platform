@@ -6,6 +6,12 @@ import config from "config";
 // Error codes surfaced by the backend's oidc_callback. Keep in sync with
 // _login_error_redirect in api-nei/app/api/api_v1/auth/oidc.py.
 const ERROR_COPY = {
+  // success:true renders a green notice instead of the default error card
+  email_verified_relogin: {
+    title: "Your account is verified!",
+    body: "Your email was confirmed successfully. Sign in to continue.",
+    success: true,
+  },
   unverified: {
     title: "Verify your email to continue",
     body: "We sent you a verification link. Check your inbox (and spam folder), click the link, and come back to sign in.",
@@ -61,13 +67,13 @@ export function Component() {
       : "/auth/login";
     return (
       <div className="flex h-screen items-center justify-center p-6">
-        <div className="card w-full max-w-md bg-base-100 shadow-xl">
+        <div className={`card w-full max-w-md shadow-xl ${copy.success ? "bg-success/10 border border-success" : "bg-base-100"}`}>
           <div className="card-body items-center text-center">
-            <h2 className="card-title text-2xl">{copy.title}</h2>
+            <h2 className={`card-title text-2xl ${copy.success ? "text-success" : ""}`}>{copy.title}</h2>
             <p className="py-2 text-base-content/80">{copy.body}</p>
             <div className="card-actions mt-4">
-              <Link to={retryHref} className="btn btn-primary" replace>
-                Try again
+              <Link to={retryHref} className={`btn ${copy.success ? "btn-success" : "btn-primary"}`} replace>
+                {copy.success ? "Sign in" : "Try again"}
               </Link>
             </div>
           </div>
