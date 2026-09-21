@@ -16,9 +16,6 @@ class CRUDTeamMember(CRUDBase[TeamMember, TeamMemberCreate, TeamMemberUpdate]):
         "ck_team_member_name_not_blank": "Name cannot be blank!",
     }
 
-    def get_by_section(self, db: Session, section_id: int) -> List[TeamMember]:
-        """Return team members for a given section."""
-        return db.query(TeamMember).filter(TeamMember.section_id == section_id).all()
 
 
 team_member = CRUDTeamMember(TeamMember)

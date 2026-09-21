@@ -1,18 +1,20 @@
 from typing import List
+
+from pydantic import BaseModel
 from sqlalchemy import func
 from sqlalchemy.orm import Session, contains_eager
 
 from app.crud.base import CRUDBase
 from app.models.rgm import Rgm
 from app.models.rgm_mandate import RgmMandate
-from app.schemas.rgm import RgmCreate, RgmUpdate
 
 # The mandate is the related rgm_mandate label; the legacy text column is
 # only a fallback for rows not yet linked.
 _MANDATE = func.coalesce(RgmMandate.label, Rgm._mandate)
 
 
-class CRUDRgm(CRUDBase[Rgm, RgmCreate, RgmUpdate]):
+# RGM documents are created in the CMS; only the read helpers below are used.
+class CRUDRgm(CRUDBase[Rgm, BaseModel, BaseModel]):
 
     def get_by(self, db: Session, category: str | None = None, mandate: str | None = None) -> List[Rgm]:
         # contains_eager reuses this join: RgmInDB.mandate reads mandate_ref,

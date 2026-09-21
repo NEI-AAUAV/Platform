@@ -1,14 +1,15 @@
 from typing import List
 
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from app.crud.base import CRUDBase
 from app.models.team import TeamMandate, TeamSection, TeamMember
-from app.schemas.team import TeamMandateCreate, TeamMandateInDB
 
 
-class CRUDTeamMandate(CRUDBase[TeamMandate, TeamMandateCreate, TeamMandateInDB]):
+# Mandates are created in the CMS; only the read helpers below are used.
+class CRUDTeamMandate(CRUDBase[TeamMandate, BaseModel, BaseModel]):
     def get_mandates(self, db: Session) -> List[str]:
         """Return every distinct mandate, most recent first."""
         stmt = select(TeamMandate.mandate).order_by(TeamMandate.mandate.desc())
