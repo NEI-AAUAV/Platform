@@ -2,14 +2,15 @@ from typing import Optional
 
 from pydantic import BaseModel, AnyHttpUrl, ConfigDict
 
+from app.schemas.types import ShortNameStr
 from app.schemas.user.user import AnonymousUserListing
 
 
 class TeamMemberBase(BaseModel):
     section_id: int
     user_id: Optional[int] = None
-    name: str
-    role: str
+    name: ShortNameStr
+    role: ShortNameStr
     weight: int = 0
 
 
@@ -24,8 +25,8 @@ class TeamMemberUpdate(BaseModel):
 
     section_id: Optional[int] = None
     user_id: Optional[int] = None
-    name: Optional[str] = None
-    role: Optional[str] = None
+    name: Optional[ShortNameStr] = None
+    role: Optional[ShortNameStr] = None
     weight: Optional[int] = None
 
 
