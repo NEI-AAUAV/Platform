@@ -37,3 +37,17 @@ def test_delete_event_is_empty_204(client: TestClient, event_id: int) -> None:
 def test_delete_missing_event_is_404(client: TestClient) -> None:
     response = client.delete(f"{settings.API_V1_STR}/event/999999")
     assert response.status_code == 404
+
+
+def test_events_are_ordered_by_start_then_id(client: TestClient, db: SessionTesting) -> None:
+    now = datetime.now()
+    db.add_all(
+        [
+            Event(name="Later", start=now + timedelta(days=1), end=now + timedelta(days=2)),
+            Event(name="Earlier", start=now, end=now + timedelta(hours=1)),
+        ]
+    )
+    db.flush()
+    response = client.get(f"{settings.API_V1_STR}/event/")
+    assert response.status_code == 200
+    assert [event["name"] for event in response.json()] == ["Earlier", "Later"]

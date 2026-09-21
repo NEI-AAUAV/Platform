@@ -14,7 +14,7 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=List[SeniorInDB])
 def get_seniors(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.long_cache),
 ):
     """
@@ -27,7 +27,7 @@ def get_seniors(
 def create_senior(
     *,
     senior_create_in: SeniorCreate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ):
     """
@@ -41,7 +41,7 @@ def update_senior(
     *,
     id: int,
     senior_update_in: SeniorUpdate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ):
     """
@@ -56,7 +56,7 @@ def update_senior(
 @router.get("/course", status_code=200, response_model=List[str])
 def get_senior_courses(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.long_cache),
 ):
     return crud.senior.get_course(db=db)
@@ -64,7 +64,7 @@ def get_senior_courses(
 
 @router.get("/{course}/year", status_code=200, response_model=List[int])
 def get_senior_course_years(
-    *, db: Session = Depends(deps.get_db), _=Depends(deps.long_cache), course: str
+    *, db: Session = Depends(deps.get_db, scope="function"), _=Depends(deps.long_cache), course: str
 ):
     return crud.senior.get_course_year(db=db, course=course)
 
@@ -72,7 +72,7 @@ def get_senior_course_years(
 @router.get("/{course}/{year}", status_code=200, response_model=SeniorInDB)
 def get_senior_by(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.long_cache),
     course: str,
     year: int,

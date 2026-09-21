@@ -14,7 +14,7 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=List[FainaRoleInDB])
 def get_faina_role(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.cms_cache),
 ):
     """
@@ -26,7 +26,7 @@ def get_faina_role(
 @router.get("/{id}", status_code=200, response_model=FainaRoleInDB)
 def get_faina_role_by_id(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     id: int,
     _=Depends(deps.cms_cache),
 ):
@@ -43,7 +43,7 @@ def get_faina_role_by_id(
 def create_faina_role(
     *,
     faina_role_create_in: FainaRoleCreate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ):
     """
@@ -57,7 +57,7 @@ def update_faina_role(
     *,
     id: int,
     faina_role_update_in: FainaRoleUpdate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ):
     """

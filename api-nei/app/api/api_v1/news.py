@@ -19,7 +19,7 @@ def get_news_list(
         default=[], alias='category[]',
         description="List of categories",
     ),
-    db: Session = Depends(deps.get_db)
+    db: Session = Depends(deps.get_db, scope="function")
 ) -> Any:
     # Validate against the category vocabulary, not against what happens to be
     # published: a real category with nothing published yet is an empty page,
@@ -35,7 +35,7 @@ def get_news_list(
 
 @router.get("/category", status_code=200, response_model=NewsCategories)
 def get_news_categories(
-    *, db: Session = Depends(deps.get_db),
+    *, db: Session = Depends(deps.get_db, scope="function"),
     _ = Depends(deps.cms_cache),
 ) -> Any:
     """
@@ -48,7 +48,7 @@ def get_news_categories(
 
 @router.get("/{id}", status_code=200, response_model=NewsInDB)
 def get_news(
-    *, id: int, db: Session = Depends(deps.get_db),
+    *, id: int, db: Session = Depends(deps.get_db, scope="function"),
     _ = Depends(deps.cms_cache),
 ) -> Any:
 

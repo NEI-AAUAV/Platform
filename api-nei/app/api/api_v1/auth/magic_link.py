@@ -84,11 +84,11 @@ def send_magic_link(
     responses={401: {"description": "Invalid token"}},
     response_model=OperationSuccessfulResponse,
 )
-async def activate_magic_link(
+def activate_magic_link(
     background_tasks: BackgroundTasks,
     token: str,
     password: SecretStr = Form(),
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -110,26 +110,23 @@ async def activate_magic_link(
     if token_type != MAGIC_LINK_TOKEN_TYPE:
         raise credentials_exception
 
-    with db.begin_nested():
-        maybe_user = crud.user.get_email_fq(
-            db, id=user_id, email=email, for_update=True
+    maybe_user = crud.user.get_email_fq(db, id=user_id, email=email, for_update=True)
+    if maybe_user is None:
+        raise credentials_exception
+
+    (user, user_email) = maybe_user
+
+    if user_email.active:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email is already active",
         )
-        if maybe_user is None:
-            raise credentials_exception
 
-        (user, user_email) = maybe_user
-
-        if user_email.active:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email is already active",
-            )
-
-        # Update the user's password
-        user.hashed_password = hash_password(password.get_secret_value())
-        # Activate the user email
-        user_email.active = True
-        db.commit()
+    user.hashed_password = hash_password(password.get_secret_value())
+    user_email.active = True
+    # Activation and password state must be durable before reporting that this
+    # one-time security credential succeeded.
+    db.commit()
 
     if settings.EMAIL_ENABLED:
         # Schedule to send the email with a warning that the password was changed

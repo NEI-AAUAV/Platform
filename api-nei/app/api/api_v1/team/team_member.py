@@ -14,7 +14,7 @@ router = APIRouter()
 def create_team_member(
     *,
     team_create_in: TeamMemberCreate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ):
     return crud.team_member.create(db=db, obj_in=team_create_in)
@@ -24,7 +24,7 @@ def create_team_member(
 def update_team_member(
     *,
     team_update_in: TeamMemberUpdate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     id: int,
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ):
@@ -41,7 +41,7 @@ def update_team_member(
 )
 def delete_team_member(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     id: int,
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ):

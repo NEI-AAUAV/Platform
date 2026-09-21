@@ -101,8 +101,6 @@ services:
       # Public base of the R2 bucket incl. Directus's storage root (e.g.
       # https://cdn.example.com/cms). Empty keeps every asset on the Directus
       # proxy; set it to serve R2-stored files directly.
-      ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-}
-      ASSETS_STORAGE: ${ASSETS_STORAGE:-r2}
       RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
     volumes:
       - /deploy/api-nei/static:/api_nei/static

@@ -20,6 +20,7 @@ import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Security, status
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 import logging
 from sqlalchemy import select
@@ -30,7 +31,7 @@ from app.integrations.authentik import AuthentikError, authentik_client
 from app.models.user import User
 from app.schemas.user import ScopeEnum
 
-DbSession = Annotated[Session, Depends(deps.get_db)]
+DbSession = Annotated[Session, Depends(deps.get_db, scope="function")]
 AdminAuth = Annotated[auth.AuthData, Security(auth.verify_token, scopes=[ScopeEnum.ADMIN])]
 logger = logging.getLogger(__name__)
 
@@ -73,7 +74,7 @@ async def add_group_member(
     _: AdminAuth,
 ):
     """Add a platform user to an Authentik group."""
-    user = db.scalar(select(User).where(User.id == user_id))
+    user = await run_in_threadpool(db.scalar, select(User).where(User.id == user_id))
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
     if not user.authentik_sub:
@@ -100,7 +101,7 @@ async def remove_group_member(
     _: AdminAuth,
 ):
     """Remove a platform user from an Authentik group."""
-    user = db.scalar(select(User).where(User.id == user_id))
+    user = await run_in_threadpool(db.scalar, select(User).where(User.id == user_id))
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
     if not user.authentik_sub:

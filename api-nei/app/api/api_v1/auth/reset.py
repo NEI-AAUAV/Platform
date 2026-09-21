@@ -71,10 +71,10 @@ async def _send_password_reset_token(email: str, name: str, uid: int):
     },
     response_model=OperationSuccessfulResponse,
 )
-async def forgot(
+def forgot(
     background_tasks: BackgroundTasks,
     email: str = Form(),
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
 ):
     try:
         validation = validate_email(
@@ -122,11 +122,11 @@ async def forgot(
     responses={401: {"description": "Invalid authentication token"}},
     response_model=OperationSuccessfulResponse,
 )
-async def reset(
+def reset(
     background_tasks: BackgroundTasks,
     token: str,
     password: SecretStr = Form(),
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

@@ -1,19 +1,19 @@
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 from sqlalchemy import text
-from sqlalchemy.orm import Session
 
-from app.api import deps
 from app.api.api_v1 import router as api_v1_router
 from app.db.init_db import init_db
+from app.db.session import engine
 from app.core.logging import init_logging
 from app.core.config import settings
 from app.core.extension_scopes import load_scopes_from_manifests
 from app.core.dynamic_oauth import dynamic_oauth2_scheme
+from app.integrations.authentik import authentik_client
 
 
 @asynccontextmanager
@@ -24,7 +24,11 @@ async def lifespan(_: FastAPI):
     load_scopes_from_manifests()
     # Update OAuth2 scheme with extension scopes
     dynamic_oauth2_scheme.update_scopes()
-    yield
+    await authentik_client.start()
+    try:
+        yield
+    finally:
+        await authentik_client.close()
 
 
 app = FastAPI(
@@ -56,9 +60,10 @@ def health_live() -> dict[str, str]:
 
 
 @app.get("/health/ready", include_in_schema=False)
-def health_ready(db: Session = Depends(deps.get_db)) -> dict[str, str]:
+def health_ready() -> dict[str, str]:
     try:
-        db.execute(text("SELECT 1"))
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

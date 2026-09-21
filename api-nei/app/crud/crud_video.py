@@ -29,7 +29,9 @@ class CRUDVideo(CRUDBase[Video, VideoCreate, VideoUpdate]):
                 query.join(video__video_tags_association_table)
                 .join(VideoTag)
                 .filter(VideoTag.id.in_(tags))
+                .distinct()
             )
+        query = query.order_by(Video.created_at.desc(), Video.id.desc())
         total = query.count()
 
         page_query = query.options(selectinload(Video.tags))

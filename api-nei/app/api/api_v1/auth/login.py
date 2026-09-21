@@ -46,8 +46,8 @@ def _authenticate_user(db: Session, email: str, password: str) -> User | Literal
     response_model=Token,
     responses={401: {"description": "Incorrect username or password"}},
 )
-async def login(
-    db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()
+def login(
+    db: Session = Depends(deps.get_db, scope="function"), form_data: OAuth2PasswordRequestForm = Depends()
 ):
     try:
         # OAuth2 requires the password flow field to be named 'username' even though

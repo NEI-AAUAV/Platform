@@ -13,7 +13,7 @@ router = APIRouter()
 def get_rgm(
     category: str | None = None,
     mandate: str | None = None,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.short_cache),
 ) -> Any:
     if category:
@@ -28,7 +28,7 @@ def get_rgm(
 
 @router.get("/mandates", status_code=200, response_model=RgmMandates)
 def get_rgm_mandates(
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.cms_cache),
 ) -> Any:
     data = crud.rgm.get_mandates(db=db)

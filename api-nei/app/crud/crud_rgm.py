@@ -1,34 +1,26 @@
 from typing import List
-
-from pydantic import BaseModel
 from sqlalchemy import func
-from sqlalchemy.orm import Session, contains_eager
+from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
 from app.models.rgm import Rgm
 from app.models.rgm_mandate import RgmMandate
+from app.schemas.rgm import RgmCreate, RgmUpdate
 
 # The mandate is the related rgm_mandate label; the legacy text column is
 # only a fallback for rows not yet linked.
 _MANDATE = func.coalesce(RgmMandate.label, Rgm._mandate)
 
 
-# RGM documents are created in the CMS; only the read helpers below are used.
-class CRUDRgm(CRUDBase[Rgm, BaseModel, BaseModel]):
+class CRUDRgm(CRUDBase[Rgm, RgmCreate, RgmUpdate]):
 
     def get_by(self, db: Session, category: str | None = None, mandate: str | None = None) -> List[Rgm]:
-        # contains_eager reuses this join: RgmInDB.mandate reads mandate_ref,
-        # which would otherwise be one extra query per row.
-        query = (
-            db.query(Rgm)
-            .outerjoin(RgmMandate, Rgm.mandate_id == RgmMandate.id)
-            .options(contains_eager(Rgm.mandate_ref))
-        )
+        query = db.query(Rgm).outerjoin(RgmMandate, Rgm.mandate_id == RgmMandate.id)
         if category:
             query = query.filter(Rgm.category == category)
         if mandate:
             query = query.filter(_MANDATE == mandate)
-        return query.order_by(Rgm.date.desc().nullslast(), Rgm.id).all()
+        return query.all()
 
     def get_mandates(self, db: Session) -> List[str]:
         rows = (

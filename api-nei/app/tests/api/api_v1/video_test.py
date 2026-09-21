@@ -72,6 +72,13 @@ def test_get_videos_by_categories(db: SessionTesting, client: TestClient) -> Non
     data = r.json()
     assert r.status_code == 200
     assert len(data["items"]) == 3
+    assert data["total"] == 3
+    assert len({item["id"] for item in data["items"]}) == 3
+    assert [item["title"] for item in data["items"]] == [
+        "Video 1",
+        "Video 3",
+        "Video 2",
+    ]
     assert data["items"][0].keys() >= videos[0].keys()
     assert "id" in data["items"][0]
 

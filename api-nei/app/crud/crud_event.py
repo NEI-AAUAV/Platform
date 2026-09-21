@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.crud import user as crud_user
@@ -19,6 +20,9 @@ class ImportUsersSuccess:
 
 
 class CRUDEvent(CRUDBase[Event, CreateEvent, UpdateEvent]):
+    def get_multi(self, db: Session, **_: object):
+        return db.scalars(select(Event).order_by(Event.start, Event.id)).all()
+
     def import_users(
         self, db: Session, *, id: int, users: List[UserCreateForEvent]
     ) -> Optional[ImportUsersSuccess]:
