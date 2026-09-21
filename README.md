@@ -5,8 +5,19 @@
 ## Quick Start
 
 ```bash
-# Start the platform
+# Optional: local overrides (OIDC, CMS assets, ...). Nothing is required to boot in dev.
+cp .env.example .env
+
+# Start the platform (creates the `nei-shared` docker network if missing and
+# waits for the healthchecks)
 ./start-platform.sh
+```
+
+The CMS (Directus) lives in the separate **Infrastructure** repository
+(`services/directus`). To route `/cms/` to it locally, start it there first, then:
+
+```bash
+WITH_DIRECTUS=1 ./start-platform.sh
 ```
 
 For extension management, see [EXTENSIONS.md](EXTENSIONS.md).

@@ -22,9 +22,10 @@ class PartnerCreate(PartnerBase):
     pass
 
 
-class PartnerUpdate:
-    # Reject updates
-    pass
+class PartnerUpdate(BaseModel):
+    """Updates are not supported: any field is rejected."""
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class PartnerInDB(PartnerBase):

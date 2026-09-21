@@ -145,8 +145,8 @@ class Settings(BaseSettings):
     RECAPTCHA_REGISTER_THRESHOLD: float = 0.5
 
     # Arraial rate limiting (token bucket)
-    ARRAIAL_RATE_LIMIT_PER_MINUTE: int = int(os.getenv("ARRAIAL_RATE_LIMIT_PER_MINUTE", "180"))
-    ARRAIAL_RATE_LIMIT_BURST: int = int(os.getenv("ARRAIAL_RATE_LIMIT_BURST", "60"))
+    ARRAIAL_RATE_LIMIT_PER_MINUTE: int = 180
+    ARRAIAL_RATE_LIMIT_BURST: int = 60
 
     # OIDC/Authentik settings
     OIDC_ENABLED: bool = False  # Feature flag
@@ -164,6 +164,29 @@ class Settings(BaseSettings):
     # Authentik Admin API
     AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"
     AUTHENTIK_TOKEN: str = ""
+
+    @model_validator(mode="after")
+    def validate_feature_configuration(self) -> "Settings":
+        """Fail at boot, not on the first request, when a feature is enabled
+        without what it needs."""
+        problems: List[str] = []
+
+        if self.PRODUCTION and not self.OIDC_VERIFY_SSL:
+            problems.append("OIDC_VERIFY_SSL cannot be disabled in production")
+        if self.PRODUCTION and self.OIDC_ENABLED:
+            for name in ("OIDC_CLIENT_ID", "OIDC_CLIENT_SECRET"):
+                if not getattr(self, name):
+                    problems.append(f"{name} is required when OIDC_ENABLED")
+        if self.EMAIL_ENABLED:
+            for name in ("EMAIL_SMTP_HOST", "EMAIL_SENDER_ADDRESS"):
+                if not getattr(self, name):
+                    problems.append(f"{name} is required when EMAIL_ENABLED")
+        if self.RECAPTCHA_ENABLED and not self.RECAPTCHA_SECRET_KEY:
+            problems.append("RECAPTCHA_SECRET_KEY is required when RECAPTCHA_ENABLED")
+
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
 
 
 settings = Settings()

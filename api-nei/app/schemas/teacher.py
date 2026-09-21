@@ -9,13 +9,11 @@ class TeacherBase(BaseModel):
 
 
 class TeacherCreate(TeacherBase):
-    name: Annotated[Optional[str], Field(max_length=100)]
-    personal_page: Annotated[Optional[str], Field(max_length=50)]
+    pass
 
 
 class TeacherUpdate(TeacherBase):
-    name: Annotated[Optional[str], Field(max_length=100)]
-    personal_page: Annotated[Optional[str], Field(max_length=50)]
+    pass
 
 
 class TeacherInDB(TeacherBase):

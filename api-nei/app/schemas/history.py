@@ -18,9 +18,10 @@ class HistoryCreate(HistoryBase):
     pass
 
 
-class HistoryUpdate:
-    # Reject updates
-    pass
+class HistoryUpdate(BaseModel):
+    """Updates are not supported: any field is rejected."""
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class HistoryInDB(HistoryBase):

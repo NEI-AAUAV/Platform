@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.crud.base import CRUDBase
 from app.models.video import Video, video__video_tags_association_table, VideoTag
@@ -32,7 +32,8 @@ class CRUDVideo(CRUDBase[Video, VideoCreate, VideoUpdate]):
             )
         total = query.count()
 
-        return total, query.limit(size).offset((page - 1) * size).all()
+        page_query = query.options(selectinload(Video.tags))
+        return total, page_query.limit(size).offset((page - 1) * size).all()
 
 
 video = CRUDVideo(Video)

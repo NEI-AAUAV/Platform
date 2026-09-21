@@ -1,10 +1,13 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
+from app.api import deps
 from app.api.api_v1 import router as api_v1_router
 from app.db.init_db import init_db
 from app.core.logging import init_logging
@@ -45,6 +48,23 @@ app.add_middleware(
 
 app.mount(settings.STATIC_STR, StaticFiles(directory="static"), name="static")
 app.include_router(api_v1_router, prefix=settings.API_V1_STR)
+
+
+@app.get("/health/live", include_in_schema=False)
+def health_live() -> dict[str, str]:
+    return {"status": "ok"}
+
+
+@app.get("/health/ready", include_in_schema=False)
+def health_ready(db: Session = Depends(deps.get_db)) -> dict[str, str]:
+    try:
+        db.execute(text("SELECT 1"))
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database unavailable",
+        ) from exc
+    return {"status": "ok"}
 
 if __name__ == "__main__":
     # Use this for debugging purposes only

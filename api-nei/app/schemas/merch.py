@@ -18,9 +18,10 @@ class MerchCreate(MerchBase):
     pass
 
 
-class MerchUpdate:
-    # Reject updates
-    pass
+class MerchUpdate(BaseModel):
+    """Updates are not supported: any field is rejected."""
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class MerchInDB(MerchBase):

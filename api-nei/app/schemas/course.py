@@ -15,9 +15,10 @@ class CourseCreate(CourseBase):
     pass
 
 
-class CourseUpdate:
-    # Reject updates
-    pass
+class CourseUpdate(BaseModel):
+    """Updates are not supported: any field is rejected."""
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class CourseInDB(CourseBase):

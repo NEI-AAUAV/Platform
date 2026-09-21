@@ -64,8 +64,6 @@ class CRUDEvent(CRUDBase[Event, CreateEvent, UpdateEvent]):
                     if participant_scope not in user_model.scopes:
                         user_model.scopes.append(participant_scope)
 
-            db.commit()
-
         return ImportUsersSuccess(event=event, created_users=created_users)
 
 

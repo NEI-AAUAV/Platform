@@ -18,7 +18,7 @@ from app.utils import ValidateFromJson
 from app.api.deps import email_resolver
 from app.core.config import settings
 
-from .user_matriculation import UserMatriculationInBD
+from .user_matriculation import UserMatriculationInDB
 
 
 class GenderEnum(str, Enum):
@@ -75,7 +75,7 @@ class ManagerUserListing(UserListing):
     nmec: Optional[int] = None
     created_at: datetime
     updated_at: datetime
-    matriculation: List[UserMatriculationInBD] = []
+    matriculation: List[UserMatriculationInDB] = []
     email: Optional[str] = None
 
 

@@ -24,7 +24,7 @@ class UserMatriculationUpdate(UserMatriculationBase):
     pass
 
 
-class UserMatriculationInBD(UserMatriculationBase):
+class UserMatriculationInDB(UserMatriculationBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

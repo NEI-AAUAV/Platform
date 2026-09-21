@@ -14,6 +14,25 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository files
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Ruff
+        run: pip install "ruff>=0.8,<1.0"
+
+      - name: Lint api-nei
+        working-directory: ./api-nei
+        run: ruff check app
+
   api-nei:
     runs-on: ubuntu-latest
 
