@@ -207,7 +207,20 @@ jobs:
           docker compose $COMPOSE_ARGS pull "$service" || echo "Warning: Failed to pull $service, continuing..."
         done
 
+        # Migrate before anything is recreated. compose only reports
+        # "didn't complete successfully: exit N" for a failed dependency and
+        # swallows the container's output, so run it explicitly to get the
+        # traceback into this log. api_nei still depends on it in compose,
+        # which keeps manual `up -d` safe; that run is then a no-op.
+        echo "$COMPOSE_ARGS" > /tmp/compose_args
+        docker compose $COMPOSE_ARGS run --rm api_nei_migrate
+
         docker compose $COMPOSE_ARGS up -d --remove-orphans
+
+    - name: Migration logs on failure
+      if: failure()
+      run: |
+        docker compose $(cat /tmp/compose_args) logs --no-color api_nei_migrate || true
 
     - name: Manage extensions and sync nginx
       run: |
