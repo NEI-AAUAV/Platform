@@ -23,6 +23,8 @@ class TeamMemberCreate(TeamMemberBase):
 class TeamMemberUpdate(BaseModel):
     """Properties to receive via API on update."""
 
+    model_config = ConfigDict(extra="forbid")
+
     section_id: Optional[int] = None
     user_id: Optional[int] = None
     name: Optional[ShortNameStr] = None

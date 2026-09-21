@@ -49,3 +49,25 @@ def test_team_member_name_is_stripped() -> None:
 def test_faina_member_name_is_length_bounded() -> None:
     with pytest.raises(ValidationError):
         FainaMemberCreate(faina_id=1, role_id=1, name="x" * 121)
+
+
+def test_team_member_update_rejects_unknown_fields() -> None:
+    """Without extra=forbid a stale PUT body yields 200 having changed nothing."""
+    from app.schemas.team.team_member import TeamMemberUpdate
+
+    with pytest.raises(ValidationError):
+        TeamMemberUpdate(role_id=3)
+
+
+@pytest.mark.parametrize("value", ["ATA", "PAO", "RAC"])
+def test_rgm_category_accepts_the_three_valid_values(value: str) -> None:
+    from app.schemas.rgm import RgmCategoryEnum
+
+    assert RgmCategoryEnum(value).value == value
+
+
+def test_rgm_category_rejects_anything_else() -> None:
+    from app.schemas.rgm import RgmCategoryEnum
+
+    with pytest.raises(ValueError):
+        RgmCategoryEnum("XXX")

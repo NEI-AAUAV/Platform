@@ -4,7 +4,7 @@ from typing import Any, List
 
 from app import crud
 from app.api import deps
-from app.schemas.rgm import RgmInDB, RgmMandates
+from app.schemas.rgm import RgmCategoryEnum, RgmInDB, RgmMandates
 
 router = APIRouter()
 
@@ -16,11 +16,13 @@ def get_rgm(
     db: Session = Depends(deps.get_db),
     _=Depends(deps.short_cache),
 ) -> Any:
-    valid_categories = ["PAO", "RAC", "ATA"]
     if category:
-        if (category := category.upper()) in valid_categories:
-            return crud.rgm.get_by(db=db, category=category, mandate=mandate)
-        raise HTTPException(status_code=400, detail="Bad Request")
+        try:
+            # Accepts any case, as it always has.
+            category = RgmCategoryEnum(category.upper()).value
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Bad Request")
+        return crud.rgm.get_by(db=db, category=category, mandate=mandate)
     return crud.rgm.get_by(db=db, mandate=mandate)
 
 

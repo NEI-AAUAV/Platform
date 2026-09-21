@@ -197,3 +197,18 @@ def test_every_generated_id_is_database_generated(db: SessionTesting) -> None:
         if not (col.get("default") or col.get("identity") or col.get("autoincrement") is True):
             missing.append(table)
     assert not missing, missing
+
+
+def test_tree_ordering_is_deterministic_on_equal_weights(db: SessionTesting) -> None:
+    """Both weights default to 0, so name is the tiebreaker the API relies on."""
+    from app import crud
+
+    _mandate(db, "2098/99")
+    for name in ("Zulu", "Alfa", "Mike"):
+        _section(db, "2098/99", name=name)
+    db.flush()
+    db.expunge_all()
+
+    tree = crud.team_mandate.get_tree(db, "2098/99")
+
+    assert [s.name for s in tree.sections] == ["Alfa", "Mike", "Zulu"]

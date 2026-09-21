@@ -30,5 +30,5 @@ class TeamMandate(Base):
     sections: Mapped[List["TeamSection"]] = relationship(
         "TeamSection",
         back_populates="mandate_ref",
-        order_by="TeamSection.weight",
+        order_by="TeamSection.weight, TeamSection.name",
     )

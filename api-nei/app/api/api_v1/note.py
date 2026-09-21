@@ -175,14 +175,16 @@ def get_note_by_id(
         raise HTTPException(status_code=404, detail="Invalid Note id")
 
     note = NoteInDB.model_validate(note_obj)
-    file_path = f"static{note_obj._location}"
 
-    # Check if the file exists
-    if os.path.exists(file_path):
-        if file_path.endswith(".zip"):
-            note.contents = list_zip_contents(file_path)
-        note.size = os.path.getsize(file_path)
-    else:
-        logger.error(f"File '{file_path}' does not exist")
+    # Only the legacy string column maps to a local file; notes uploaded
+    # through the CMS carry a location_asset instead.
+    if note_obj._location:
+        file_path = f"static{note_obj._location}"
+        if os.path.exists(file_path):
+            if file_path.endswith(".zip"):
+                note.contents = list_zip_contents(file_path)
+            note.size = os.path.getsize(file_path)
+        else:
+            logger.error(f"File '{file_path}' does not exist")
 
     return note
