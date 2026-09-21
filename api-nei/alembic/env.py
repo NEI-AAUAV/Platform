@@ -1,8 +1,7 @@
-import os
-
 from logging.config import fileConfig
 
 from sqlalchemy.schema import CreateSchema
+import sqlalchemy as sa
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
@@ -13,21 +12,17 @@ from app.core.config import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
+# Arbitrary but fixed: only this migration runner uses it.
+_LOCK_KEY = 4242424242
+
 config = context.config
 
-section = config.config_ini_section
-config.set_section_option(
-    section, "POSTGRES_USER", os.environ.get("POSTGRES_USER", "postgres")
-)
-config.set_section_option(
-    section, "POSTGRES_PASSWORD", os.environ.get("POSTGRES_PASSWORD", "postgres")
-)
-config.set_section_option(
-    section, "POSTGRES_SERVER", os.environ.get("POSTGRES_SERVER", "localhost")
-)
-config.set_section_option(
-    section, "POSTGRES_PORT", os.environ.get("POSTGRES_PORT", "5432")
-)
+# The app and the migrations must resolve to the same database. settings is
+# the single source; a caller that supplies its own url (the test suite) wins.
+if not config.get_main_option("sqlalchemy.url", None):
+    # set_main_option goes through ConfigParser, so a percent-encoded
+    # character in the password has to be escaped or it reads as interpolation.
+    config.set_main_option("sqlalchemy.url", settings.POSTGRES_URI.replace("%", "%%"))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -112,9 +107,20 @@ def run_migrations_online() -> None:
             version_table_schema=settings.SCHEMA_NAME,
         )
 
-        connection.execute(CreateSchema(settings.SCHEMA_NAME, if_not_exists=True))
-
         with context.begin_transaction():
+            # Alembic reads the version table with a plain SELECT, so two
+            # deploys can both plan the same chain; the second then dies on a
+            # duplicate-key error from CREATE SCHEMA IF NOT EXISTS, which is
+            # not race-safe across concurrent transactions. The advisory lock
+            # is transaction-scoped: the second run waits, re-reads, no-ops.
+            connection.execute(sa.text("SELECT pg_advisory_xact_lock(:key)"), {"key": _LOCK_KEY})
+            # Never queue behind a long read from the old container, which is
+            # still serving while this runs. Migrations themselves may be slow,
+            # so no statement timeout.
+            connection.execute(sa.text("SET LOCAL lock_timeout = '5s'"))
+            connection.execute(sa.text("SET LOCAL statement_timeout = '0'"))
+
+            connection.execute(CreateSchema(settings.SCHEMA_NAME, if_not_exists=True))
             context.run_migrations()
 
     finally:

@@ -45,3 +45,36 @@ def test_email_requires_smtp_host_and_sender() -> None:
 def test_recaptcha_requires_secret_key() -> None:
     with pytest.raises(ValidationError, match="RECAPTCHA_SECRET_KEY"):
         _settings(RECAPTCHA_ENABLED=True)
+
+
+# ---- the URL the app and the migrations must agree on ----------------------
+def test_postgres_uri_uses_the_configured_database() -> None:
+    """alembic used to hardcode /postgres, so POSTGRES_DB migrated nothing."""
+    assert _settings(POSTGRES_DB="nei").POSTGRES_URI.endswith("/nei")
+
+
+def test_postgres_uri_uses_the_configured_port() -> None:
+    assert ":6543/" in _settings(POSTGRES_PORT=6543).POSTGRES_URI
+
+
+def test_postgres_uri_quotes_a_password_containing_at() -> None:
+    """An f-string parses 'pa@ss' as a host, connecting somewhere else."""
+    from sqlalchemy.engine import make_url
+
+    url = make_url(_settings(POSTGRES_PASSWORD="pa@ss", POSTGRES_SERVER="db").POSTGRES_URI)
+
+    assert url.password == "pa@ss"
+    assert url.host == "db"
+
+
+def test_postgres_uri_quotes_a_password_containing_percent() -> None:
+    from sqlalchemy.engine import make_url
+
+    url = make_url(_settings(POSTGRES_PASSWORD="pa%ss").POSTGRES_URI)
+
+    assert url.password == "pa%ss"
+
+
+def test_an_explicit_uri_is_left_alone() -> None:
+    explicit = "postgresql://u:p@elsewhere:5432/other"
+    assert _settings(POSTGRES_URI=explicit).POSTGRES_URI == explicit
