@@ -14,8 +14,8 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=List[FainaInDB])
 def get_faina(
     *,
-    db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    db: Session = Depends(deps.get_db, scope="function"),
+    _=Depends(deps.cms_cache),
 ) -> Any:
     """
     Return faina information.
@@ -27,7 +27,7 @@ def get_faina(
 def create_faina(
     *,
     faina_create_in: FainaCreate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ) -> dict:
     """
@@ -41,7 +41,7 @@ def update_faina(
     *,
     id: int,
     faina_update_in: FainaUpdate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ) -> dict:
     """

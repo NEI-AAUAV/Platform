@@ -5,9 +5,10 @@ from pydantic import BaseModel, ConfigDict
 
 
 class PartnerBase(BaseModel):
-    header: str
+    # Nullable in the DB and writable from the CMS.
+    header: Optional[str] = None
     company: str
-    description: str
+    description: Optional[str] = None
     content: Optional[str]
     link: Optional[str]
     banner_url: Optional[str]
@@ -21,9 +22,10 @@ class PartnerCreate(PartnerBase):
     pass
 
 
-class PartnerUpdate:
-    # Reject updates
-    pass
+class PartnerUpdate(BaseModel):
+    """Updates are not supported: any field is rejected."""
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class PartnerInDB(PartnerBase):

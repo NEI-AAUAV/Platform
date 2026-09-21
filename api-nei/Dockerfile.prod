@@ -32,6 +32,10 @@ COPY --from=requirements-stage /opt/dependencies /opt/dependencies
 ENV PYTHONPATH="${PYTHONPATH}:/opt/dependencies"
 
 COPY ./app ./app
+# Migrations run from this same image by the `api_nei_migrate` one-shot service
+# (compose.prod.yml) before api_nei starts.
+COPY ./alembic ./alembic
+COPY ./alembic.ini ./alembic.ini
 
 EXPOSE 8000
 CMD ["gunicorn", "app.main:app", "--bind", "0.0.0.0:8000", "-k", "uvicorn.workers.UvicornWorker", "--forwarded-allow-ips=*"]

@@ -46,7 +46,7 @@ async def get_token(
     oauth_verifier: str = None,
     oauth_token: str = None,
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     background_tasks: BackgroundTasks,
 ) -> Response:
     if oauth_token is None:

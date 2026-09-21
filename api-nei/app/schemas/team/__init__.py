@@ -3,12 +3,11 @@ from .team_member import (
     TeamMemberCreate,
     TeamMemberInDB,
     TeamMemberUpdate,
+)
+from .team_mandate import (
+    TeamMandateBase,
+    TeamMandateInDB,
     TeamMandates,
 )
-from .team_colaborator import (
-    TeamColaboratorBase,
-    TeamColaboratorCreate,
-    TeamColaboratorInDB,
-    TeamColaboratorUpdate,
-)
-from .team_role import TeamRoleBase, TeamRoleCreate, TeamRoleInDB, TeamRoleUpdate
+from .team_section import TeamSectionBase, TeamSectionInDB
+from .team_tree import TeamMandateTree, TeamSectionNode, TeamMemberNode

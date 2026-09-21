@@ -1,8 +1,9 @@
-from typing import Generator
+from typing import Annotated, Generator
 
-from fastapi import Response
-from sqlalchemy.exc import SQLAlchemyError
+from fastapi import Depends, Response
 from email_validator import caching_resolver
+
+from sqlalchemy.orm import Session
 
 from app.db.session import SessionLocal
 
@@ -17,7 +18,7 @@ def get_db():
     try:
         yield db
         db.commit()
-    except SQLAlchemyError:
+    except Exception:
         db.rollback()
         raise
     finally:
@@ -44,3 +45,10 @@ class CacheControlHeader:
 
 short_cache = CacheControlHeader(max_age=300)  # 5 minutes
 long_cache = CacheControlHeader(max_age=86400)  # 1 day
+# Content edited in Directus: keep it fresh so CMS changes show up quickly.
+cms_cache = CacheControlHeader(max_age=60)  # 1 minute
+
+
+# The session closes before the response is sent, so a failing commit can
+# still change the response. See get_db.
+DbSession = Annotated[Session, Depends(get_db, scope="function")]

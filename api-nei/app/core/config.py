@@ -2,6 +2,7 @@ import os
 import pathlib
 
 from datetime import timedelta
+from sqlalchemy.engine import URL
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List, Optional
@@ -23,6 +24,19 @@ class Settings(BaseSettings):
 
     HOST: str = "https://nei.web.ua.pt" if PRODUCTION else "http://localhost"
     STATIC_URL: str = HOST + STATIC_STR
+    # Base URL for assets uploaded through nei-directus (separate repo/
+    # service — see AUTHENTICATION.md "Directus SSO"). Models with a
+    # `*_asset` column resolve it to `{DIRECTUS_PUBLIC_URL}assets/{uuid}`
+    # when set, falling back to their legacy string column otherwise.
+    DIRECTUS_PUBLIC_URL: str = (
+        "https://nei.web.ua.pt/cms/" if PRODUCTION else "http://localhost/cms/"
+    )
+    @field_validator("DIRECTUS_PUBLIC_URL")
+    @classmethod
+    def _directus_url_trailing_slash(cls, v: str) -> str:
+        # Without it every asset URL silently becomes ".../cmsassets/<uuid>".
+        return v if v.endswith("/") else v + "/"
+
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     BACKEND_CORS_ORIGINS: List[str] = [HOST] + (
         []
@@ -50,24 +64,19 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
     POSTGRES_DB: str = "postgres"
+    POSTGRES_PORT: int = 5432
     POSTGRES_URI: str = ""
     TEST_POSTGRES_URI: str = ""
 
     @model_validator(mode="after")
     def populate_database_uris(self) -> "Settings":
+        # URL.create quotes the password: an f-string mangles a host when the
+        # password contains "@", silently connecting somewhere else.
         if self.POSTGRES_URI == "":
-            self.POSTGRES_URI = (
-                f"postgresql://{self.POSTGRES_USER}"
-                f":{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}"
-                f":5432/{self.POSTGRES_DB}"
-            )
+            self.POSTGRES_URI = self._postgres_url(self.POSTGRES_DB)
 
         if self.TEST_POSTGRES_URI == "":
-            self.TEST_POSTGRES_URI = (
-                f"postgresql://{self.POSTGRES_USER}"
-                f":{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}"
-                f":5432/{self.POSTGRES_DB}_test"
-            )
+            self.TEST_POSTGRES_URI = self._postgres_url(f"{self.POSTGRES_DB}_test")
 
         if not self.OIDC_REDIRECT_BASE_URL:
             self.OIDC_REDIRECT_BASE_URL = self.HOST
@@ -125,8 +134,8 @@ class Settings(BaseSettings):
     RECAPTCHA_REGISTER_THRESHOLD: float = 0.5
 
     # Arraial rate limiting (token bucket)
-    ARRAIAL_RATE_LIMIT_PER_MINUTE: int = int(os.getenv("ARRAIAL_RATE_LIMIT_PER_MINUTE", "180"))
-    ARRAIAL_RATE_LIMIT_BURST: int = int(os.getenv("ARRAIAL_RATE_LIMIT_BURST", "60"))
+    ARRAIAL_RATE_LIMIT_PER_MINUTE: int = 180
+    ARRAIAL_RATE_LIMIT_BURST: int = 60
 
     # OIDC/Authentik settings
     OIDC_ENABLED: bool = False  # Feature flag
@@ -144,6 +153,40 @@ class Settings(BaseSettings):
     # Authentik Admin API
     AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"
     AUTHENTIK_TOKEN: str = ""
+
+    def _postgres_url(self, database: str) -> str:
+        return URL.create(
+            "postgresql",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_SERVER,
+            port=self.POSTGRES_PORT,
+            database=database,
+        ).render_as_string(hide_password=False)
+
+    def _missing(self, flag: str, *names: str) -> List[str]:
+        return [f"{n} is required when {flag}" for n in names if not getattr(self, n)]
+
+    @model_validator(mode="after")
+    def validate_feature_configuration(self) -> "Settings":
+        """Fail at boot, not on the first request, when a feature is enabled
+        without what it needs."""
+        problems: List[str] = []
+
+        if self.PRODUCTION and not self.OIDC_VERIFY_SSL:
+            problems.append("OIDC_VERIFY_SSL cannot be disabled in production")
+        if self.PRODUCTION and self.OIDC_ENABLED:
+            problems += self._missing("OIDC_ENABLED", "OIDC_CLIENT_ID", "OIDC_CLIENT_SECRET")
+        if self.EMAIL_ENABLED:
+            problems += self._missing(
+                "EMAIL_ENABLED", "EMAIL_SMTP_HOST", "EMAIL_SENDER_ADDRESS"
+            )
+        if self.RECAPTCHA_ENABLED and not self.RECAPTCHA_SECRET_KEY:
+            problems.append("RECAPTCHA_SECRET_KEY is required when RECAPTCHA_ENABLED")
+
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
 
 
 settings = Settings()

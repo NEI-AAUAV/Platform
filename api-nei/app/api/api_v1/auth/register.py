@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
+from fastapi.concurrency import run_in_threadpool
 
 from typing import Optional, Annotated
 from datetime import datetime, timezone
@@ -8,6 +9,7 @@ from email_validator import validate_email, EmailNotValidError
 
 from app import crud
 from app.api import deps, email as emailUtils
+from app.api.deps import DbSession
 from app.api.recaptcha import verify_reCaptcha
 from app.schemas.user import UserBase, UserCreate
 from app.core.config import settings
@@ -80,7 +82,7 @@ class UserRegisterForm(UserBase):
 async def register(
     form_data: UserRegisterForm,
     background_tasks: BackgroundTasks,
-    db: Session = Depends(deps.get_db),
+    db: DbSession,
 ):
     score = await verify_reCaptcha(form_data.recaptcha_token)
 
@@ -106,7 +108,9 @@ async def register(
         )
 
     # Use for_update=True to prevent race conditions
-    maybe_user = crud.user.get_by_email(db, email, for_update=True)
+    maybe_user = await run_in_threadpool(
+        crud.user.get_by_email, db, email, for_update=True
+    )
     if maybe_user is not None and (
         # Check that the user is active or the account was created less than a day ago
         maybe_user[1].active
@@ -123,14 +127,14 @@ async def register(
         # If the user existed make sure it's properly deleted, this will also
         # make sure that other tables referencing this user are also scrubed
         # like for example the logins table.
-        crud.user.delete(db, id=maybe_user[0].id)
+        await run_in_threadpool(crud.user.delete, db, id=maybe_user[0].id)
 
     create_user = UserCreate(**form_data.model_dump())
-    user = crud.user.create(db, obj_in=create_user)
+    user = await run_in_threadpool(crud.user.create, db, obj_in=create_user)
 
     if settings.EMAIL_ENABLED:
         # Schedule to send the email with confirmation link
         background_tasks.add_task(
             _send_verification_token, email, form_data.name, user.id
         )
-    return generate_response(db, user)
+    return await run_in_threadpool(generate_response, db, user)

@@ -19,7 +19,7 @@ router = APIRouter()
 @router.get("/subject", status_code=200, response_model=List[SubjectInDB])
 def get_note_subjects(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.short_cache),
     year: Optional[int] = None,
     teacher: Optional[int] = None,
@@ -41,7 +41,7 @@ def get_note_subjects(
 @router.get("/teacher", status_code=200, response_model=List[TeacherInDB])
 def get_note_teachers(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.short_cache),
     year: Optional[int] = None,
     subject: Optional[int] = None,
@@ -65,7 +65,7 @@ def get_note_teachers(
 @router.get("/year", status_code=200)
 def get_note_years(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.short_cache),
     subject_id: Optional[int] = None,
     student_id: Optional[int] = None,
@@ -88,7 +88,7 @@ def get_note_years(
 @router.get("/student", status_code=200, response_model=List[AnonymousUserListing])
 def get_note_students(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.short_cache),
     year: Optional[int] = None,
     subject: Optional[int] = None,
@@ -111,7 +111,7 @@ def get_note_students(
 @router.get("/curricular-year", status_code=200)
 def get_note_curricular_years(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     year: Optional[int] = None,
     subject: Optional[int] = None,
     teacher: Optional[int] = None,
@@ -140,7 +140,7 @@ def get_notes(
     student: Optional[int] = None,
     teacher: Optional[int] = None,
     curricular_year: Optional[int] = None,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.short_cache),
 ) -> Any:
     if not note_categories.issuperset(categories):
@@ -167,22 +167,24 @@ def get_notes(
 def get_note_by_id(
     *,
     id: int,
-    db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    db: Session = Depends(deps.get_db, scope="function"),
+    _=Depends(deps.cms_cache),
 ) -> Any:
     note_obj = crud.note.get(db=db, id=id)
     if not note_obj:
         raise HTTPException(status_code=404, detail="Invalid Note id")
 
     note = NoteInDB.model_validate(note_obj)
-    file_path = f"static{note_obj._location}"
 
-    # Check if the file exists
-    if os.path.exists(file_path):
-        if file_path.endswith(".zip"):
-            note.contents = list_zip_contents(file_path)
-        note.size = os.path.getsize(file_path)
-    else:
-        logger.error(f"File '{file_path}' does not exist")
+    # Only the legacy string column maps to a local file; notes uploaded
+    # through the CMS carry a location_asset instead.
+    if note_obj._location:
+        file_path = f"static{note_obj._location}"
+        if os.path.exists(file_path):
+            if file_path.endswith(".zip"):
+                note.contents = list_zip_contents(file_path)
+            note.size = os.path.getsize(file_path)
+        else:
+            logger.error(f"File '{file_path}' does not exist")
 
     return note

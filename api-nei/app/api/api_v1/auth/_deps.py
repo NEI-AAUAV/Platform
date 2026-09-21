@@ -233,7 +233,8 @@ def generate_response(
         device_login.refreshed_at = iat
         device_login.refresh_jti = refresh_jti
 
-    # Flush all changes to the database to ensure consistency
+    # The session/rotation state must be durable before tokens referring to it
+    # are issued to the caller. A commit failure therefore prevents issuance.
     db.commit()
 
     access_token = create_token(

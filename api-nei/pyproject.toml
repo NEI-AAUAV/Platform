@@ -38,10 +38,14 @@ pytest = ">=7.4.4,<10.0.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.8.0"
-flake8 = "^7.0.0"
-sqlalchemy-stubs = "^0.4"
 uvicorn = { extras = ["standard"], version = "^0.27.0" }
 black = ">=24.1,<27.0"
+ruff = ">=0.8,<1.0"
+
+[tool.ruff.lint]
+# Start with correctness errors so the new gate is useful without turning this
+# focused refactor into a repository-wide formatting rewrite.
+select = ["E9", "F63", "F7", "F82"]
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,5 +1,5 @@
 from datetime import datetime
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from fastapi import HTTPException
@@ -121,21 +121,15 @@ def test_add_member_invalid_group_uuid(client: TestClient, user_with_sub: int):
 def test_add_member_success(client: TestClient, user_with_sub: int, monkeypatch):
     monkeypatch.setattr(settings, "AUTHENTIK_TOKEN", "test-token")
 
-    mock_get_resp = MagicMock()
-    mock_get_resp.raise_for_status = MagicMock()
-    mock_get_resp.json.return_value = {"results": [{"pk": 42}]}
-
-    mock_post_resp = MagicMock()
-    mock_post_resp.status_code = 204
-
-    mock_instance = AsyncMock()
-    mock_instance.get.return_value = mock_get_resp
-    mock_instance.post.return_value = mock_post_resp
-
-    with patch("app.api.api_v1.admin.httpx.AsyncClient") as mock_cls:
-        mock_cls.return_value.__aenter__ = AsyncMock(return_value=mock_instance)
-        mock_cls.return_value.__aexit__ = AsyncMock(return_value=False)
-
+    with patch.object(
+        __import__("app.api.api_v1.admin", fromlist=["authentik_client"]).authentik_client,
+        "find_user_pk",
+        AsyncMock(return_value=42),
+    ), patch.object(
+        __import__("app.api.api_v1.admin", fromlist=["authentik_client"]).authentik_client,
+        "set_group_membership",
+        AsyncMock(return_value=None),
+    ):
         r = client.post(
             f"{settings.API_V1_STR}/admin/authentik/groups/{_GROUP_UUID}/members/{user_with_sub}"
         )
@@ -166,21 +160,15 @@ def test_remove_member_no_authentik_sub(client: TestClient, user_no_sub: int):
 def test_remove_member_success(client: TestClient, user_with_sub: int, monkeypatch):
     monkeypatch.setattr(settings, "AUTHENTIK_TOKEN", "test-token")
 
-    mock_get_resp = MagicMock()
-    mock_get_resp.raise_for_status = MagicMock()
-    mock_get_resp.json.return_value = {"results": [{"pk": 42}]}
-
-    mock_post_resp = MagicMock()
-    mock_post_resp.status_code = 204
-
-    mock_instance = AsyncMock()
-    mock_instance.get.return_value = mock_get_resp
-    mock_instance.post.return_value = mock_post_resp
-
-    with patch("app.api.api_v1.admin.httpx.AsyncClient") as mock_cls:
-        mock_cls.return_value.__aenter__ = AsyncMock(return_value=mock_instance)
-        mock_cls.return_value.__aexit__ = AsyncMock(return_value=False)
-
+    with patch.object(
+        __import__("app.api.api_v1.admin", fromlist=["authentik_client"]).authentik_client,
+        "find_user_pk",
+        AsyncMock(return_value=42),
+    ), patch.object(
+        __import__("app.api.api_v1.admin", fromlist=["authentik_client"]).authentik_client,
+        "set_group_membership",
+        AsyncMock(return_value=None),
+    ):
         r = client.delete(
             f"{settings.API_V1_STR}/admin/authentik/groups/{_GROUP_UUID}/members/{user_with_sub}"
         )

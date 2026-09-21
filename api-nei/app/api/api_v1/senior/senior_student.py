@@ -14,7 +14,7 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=List[SeniorStudentInDB])
 def get_senior_students(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Depends(deps.long_cache),
 ) -> Any:
     """
@@ -27,7 +27,7 @@ def get_senior_students(
 def create_senior_student(
     *,
     senior_student_create_in: SeniorStudentCreate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ) -> dict:
     """
@@ -42,7 +42,7 @@ def update_senior_student(
     senior_id: int,
     user_id: int,
     senior_student_update_in: SeniorStudentUpdate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ) -> dict:
     """

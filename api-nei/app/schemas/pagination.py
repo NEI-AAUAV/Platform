@@ -1,5 +1,4 @@
 from __future__ import annotations
-from dataclasses import dataclass
 import math
 
 from pydantic import BaseModel
@@ -8,7 +7,6 @@ from fastapi import Query
 from typing import Generic, Optional, TypeVar, Sequence
 
 
-@dataclass
 class PageRawParams(BaseModel):
     limit: int
     offset: int

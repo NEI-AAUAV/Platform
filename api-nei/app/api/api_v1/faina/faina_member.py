@@ -16,8 +16,8 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=List[FainaMemberInDB])
 def get_faina_member(
     *,
-    db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    db: Session = Depends(deps.get_db, scope="function"),
+    _=Depends(deps.cms_cache),
 ):
     """
     Return faina information.
@@ -29,8 +29,8 @@ def get_faina_member(
 def get_faina_member_by_id(
     *,
     id: int,
-    db: Session = Depends(deps.get_db),
-    _=Depends(deps.long_cache),
+    db: Session = Depends(deps.get_db, scope="function"),
+    _=Depends(deps.cms_cache),
 ):
     """
     Return faina information.
@@ -45,7 +45,7 @@ def get_faina_member_by_id(
 def create_faina_member(
     *,
     faina_member_create_in: FainaMemberCreate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ):
     """
@@ -59,7 +59,7 @@ def update_faina_member(
     *,
     id: int,
     faina_member_update_in: FainaMemberUpdate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
 ):
     """

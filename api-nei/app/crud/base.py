@@ -20,7 +20,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, delete, update
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.sql import ColumnCollection, ColumnElement
-from psycopg2.errors import ForeignKeyViolation, UniqueViolation
+from psycopg2.errors import CheckViolation, ForeignKeyViolation, UniqueViolation
 
 from app.db.base_class import Base
 
@@ -67,7 +67,8 @@ def _primary_key(
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    _foreign_key_checks = {}
+    _foreign_key_checks: dict[str, str] = {}
+    _check_violation_msgs: dict[str, str] = {}
     _unique_violation_msg = "Already exists"
 
     def __init__(self, model: Type[ModelType]):
@@ -85,10 +86,31 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             msg = self._foreign_key_checks.get(e.orig.diag.constraint_name, None)
             if msg is not None:
                 raise HTTPException(status_code=400, detail=msg)
-            else:
-                logger.error("Unhandled foreign key violation")
+            logger.error(
+                "Unhandled foreign key violation on {}",
+                e.orig.diag.constraint_name,
+            )
+            raise HTTPException(
+                status_code=400, detail="Referenced resource does not exist"
+            )
         elif isinstance(e.orig, UniqueViolation):
             raise HTTPException(status_code=409, detail=self._unique_violation_msg)
+        elif isinstance(e.orig, CheckViolation):
+            msg = self._check_violation_msgs.get(e.orig.diag.constraint_name, None)
+            if msg is not None:
+                raise HTTPException(status_code=400, detail=msg)
+            logger.error(
+                "Unhandled check violation on {}",
+                e.orig.diag.constraint_name,
+            )
+            raise HTTPException(
+                status_code=400, detail="Value is not valid for this resource"
+            )
+        else:
+            logger.error("Unhandled integrity error: {}", type(e.orig).__name__)
+            raise HTTPException(
+                status_code=400, detail="Request could not be stored"
+            )
 
     def get(
         self, db: Session, id: _PrimaryKeyType, for_update: bool = False
@@ -107,14 +129,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if for_update:
             stmt = stmt.with_for_update()
 
-        return db.execute(stmt).scalars(stmt).all()
+        return db.scalars(stmt).all()
 
     def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)
         try:
             db.add(db_obj)
-            db.commit()
+            db.flush()
             db.refresh(db_obj)
             return db_obj
         except IntegrityError as e:
@@ -139,7 +161,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         try:
             db.add(db_obj)
-            db.commit()
+            db.flush()
             db.refresh(db_obj)
             return db_obj
         except IntegrityError as e:
@@ -157,7 +179,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if len(update_data) != 0:
             stmt = update(self.model).values(update_data).returning(self.model)
         else:
-            stmt = select(self.model)
+            stmt = select(self.model).with_for_update()
 
         stmt = stmt.where(*_primary_key(self.model.__name__, id, self.primary_key))
 
@@ -177,3 +199,16 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if res is None:
             return None
         return res[0]
+
+
+class ReadOnlyCRUDBase(Generic[ModelType]):
+    """Typed query helpers for resources whose writes are owned elsewhere."""
+
+    def __init__(self, model: Type[ModelType]):
+        self.model = model
+
+    def get(self, db: Session, id: _PrimaryKeyType) -> Optional[ModelType]:
+        return db.get(self.model, id)
+
+    def get_multi(self, db: Session) -> Sequence[ModelType]:
+        return db.scalars(select(self.model)).all()

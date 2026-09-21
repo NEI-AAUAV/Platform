@@ -120,3 +120,24 @@ The current model is the right trade for a set of first-party services. Revisit 
 - Sub-minute revocation becomes a hard requirement.
 
 In that case the alternative is to make Authentik's access token the API credential — services become resource servers validating via JWKS, and refresh tokens are held server-side (where `offline_access` would finally be meaningful). The cost is a hard runtime dependency on Authentik in every service, re-modelling scopes as Authentik property mappings, and rewriting the session layer. Do not do it piecemeal.
+
+## Directus SSO
+
+Directus is a content-admin UI for staff. It lives in the **Infrastructure** repository (`services/directus`), not in this monorepo, and connects directly to `db_pg`. Unlike api-nei, **Directus keeps Authentik's own tokens** — it validates OIDC sessions itself rather than minting platform JWTs, since it is not one of the first-party services covered by the model above.
+
+- **Login is Authentik-only** (`AUTH_DISABLE_DEFAULT=true`) — there is no local email/password form. A break-glass admin account exists for recovery if Authentik is unreachable; see Infrastructure's `services/directus/README.md` "Break-glass recovery".
+- **Dedicated Authentik application/client** — do not reuse the `nei-platform` OIDC client used by api-nei. A separate application (slug `nei-directus`) has its own client id/secret.
+- Redirect URI: `<DIRECTUS_PUBLIC_URL>auth/login/authentik/callback`.
+- Scopes: `openid profile email` — Directus has no use for `nei_scopes`/`nei_nmec`/`nei_iupi`.
+- **Onboarding (deliberately manual, fail-safe):** Directus public registration stays **off**. Access is granted by listing a person's email in Infrastructure's `CMS_EDITOR_EMAILS` / `CMS_MANAGER_EMAILS`; provisioning creates the Directus user with the matching fixed-ID role, and their first Authentik login links to it. Authentik must additionally restrict the `nei-directus` application to the staff group. Auto-provisioning on first login (`AUTH_AUTHENTIK_ALLOW_PUBLIC_REGISTRATION=true`) is supported but is only safe once that Authentik binding is verified, so it is not the default. Config lives in Infrastructure's `services/directus/.env`.
+
+### Ownership boundary (Platform vs Infrastructure)
+
+| Owner | Owns |
+|---|---|
+| **Platform / api-nei** | Every `nei.*` table, column, key, constraint, index and data migration — exclusively through `api-nei/alembic/`. Alembic contains **no** Directus role, schema or grant logic. |
+| **Infrastructure** | The Directus deployment, the `directus_svc` login role, the `directus` schema, the table grants Directus needs on `nei.*` (`managed-tables.txt`), and all Directus metadata/roles/policies/permissions/extensions. |
+
+Deployment order: (1) Platform runs `alembic upgrade head` (the `api_nei_migrate` one-shot in `compose.prod.yml`, which api-nei waits for) and starts api-nei; (2) Infrastructure verifies the Platform schema is new enough (it fails with a clear message otherwise — it never runs api-nei migrations), provisions the role/schema/grants, starts Directus and reconciles its metadata. Directus stores asset UUIDs in plain `*_asset` UUID columns; there are no foreign keys from `nei.*` to `directus.*`.
+
+Historic Alembic revisions `d3c7f0a1b2e4`, `f2b4d8e1a9c3`, `e8f0a2b4c6d8`, `f9a1b3c5d7e9` and `b5c7d9e1f3a5` were Directus-infrastructure changes; they are intentionally no-ops now (kept only so the revision graph stays linear).

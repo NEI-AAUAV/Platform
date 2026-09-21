@@ -58,10 +58,12 @@ export function Component() {
             setFainaImg(null);
           }
           for (var j = 0; j < response[i].members.length; j++) {
+            const { role, name, member } = response[i].members[j];
             members.push({
-              role: response[i].members[j].role.name,
-              name: response[i].members[j].member.name,
-              surname: response[i].members[j].member.surname,
+              role: role.name,
+              // `name` is the display identity; the linked account (if any)
+              // is only a fallback for rows created before it was required.
+              name: name || [member?.name, member?.surname].filter(Boolean).join(" "),
             });
           }
         }
@@ -155,7 +157,7 @@ export function Component() {
                     <span className="font-medium text-[#D7A019]">
                       {person.role}
                     </span>
-                    {` ${person.name} ${person.surname}`}
+                    {` ${person.name}`}
                   </span>
                 </Fragment>
               ))}

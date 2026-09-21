@@ -52,24 +52,16 @@ const NEIService = {
     return await client.get(`/partner/`);
   },
 
-  async getTeamMembers(params) {
-    return await client.get("/team/member/", { params });
+  async getTeamMandates() {
+    return await client.get("/team/mandate/");
   },
 
-  async getTeamMandates(params) {
-    return await client.get("/team/member/mandates");
-  },
-
-  async getTeamRoles(params) {
-    return await client.get("/team/role", { params });
+  async getTeamMandateTree(mandate) {
+    return await client.get(`/team/mandate/${mandate}`);
   },
 
   async getFainaMandates(params) {
     return await client.get("/faina/", { params });
-  },
-
-  async getTeamCollaborators(params) {
-    return await client.get("/team/colaborator/", { params });
   },
 
   async getNewsCategories(params) {

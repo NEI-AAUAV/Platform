@@ -24,6 +24,7 @@ const Timeline = (props) => {
             {props.events.map((event, i) => {
                 return(
                     <TimelineItem
+                        key={event.id ?? i}
                         moment={event.moment}
                         title={event.title}
                         body={event.body}

@@ -24,11 +24,13 @@ const CardMerch = ({ img, title, price, className }) => {
    
       className={`relative flex h-96 w-full flex-col items-center justify-center overflow-hidden rounded-3xl bg-base-200 pb-8 shadow-md ${className}`}
     >
-      <img
-        src={img}
-        className=" relative  my-auto block h-full w-full object-contain object-center p-12 transition duration-150 ease-in hover:z-10 hover:scale-110 "
-        alt="Imagem Disponível em Breve"
-      />
+      {img && (
+        <img
+          src={img}
+          className=" relative  my-auto block h-full w-full object-contain object-center p-12 transition duration-150 ease-in hover:z-10 hover:scale-110 "
+          alt="Imagem Disponível em Breve"
+        />
+      )}
       <div className="pointer-events-none absolute inset-0 flex w-full grow-0 flex-col justify-end opacity-70">
         <div className="overflow-hidden">
           <div className="h-0 w-[102.24%] origin-top-left rotate-12 bg-secondary p-[10.63%]" />

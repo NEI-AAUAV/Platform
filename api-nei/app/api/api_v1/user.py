@@ -8,6 +8,7 @@ from fastapi import (
     Form,
     Request,
 )
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 from typing import List, Optional, Set, Type, Union
 
@@ -49,9 +50,9 @@ def user_listing_type(
 
 
 @router.get("/", status_code=200, responses=auth.auth_responses)
-async def get_users(
+def get_users(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     auth_data: auth.AuthData = Security(
         auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]
     ),
@@ -81,9 +82,9 @@ async def get_users(
     response_model=AdminUserListing,
     responses=auth.auth_responses,
 )
-async def get_curr_user(
+def get_curr_user(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     payload: auth.AuthData = Security(auth.verify_token, scopes=[]),
 ):
     """ """
@@ -97,8 +98,8 @@ async def get_curr_user(
 
 
 @router.get("/{id}", status_code=200, responses=auth.auth_responses)
-async def get_user_by_id(
-    *, id: int, db: Session = Depends(deps.get_db), auth_data: auth.GetAuthData
+def get_user_by_id(
+    *, id: int, db: Session = Depends(deps.get_db, scope="function"), auth_data: auth.GetAuthData
 ) -> APIUserListing:
     """ """
     user = crud.user.get(db=db, id=id)
@@ -114,10 +115,10 @@ async def get_user_by_id(
 @router.post(
     "/", status_code=201, response_model=AdminUserListing, responses=auth.auth_responses
 )
-async def create_user(
+def create_user(
     *,
     user_in: UserCreate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
 ):
     """
@@ -154,7 +155,7 @@ async def update_curr_user(
     user: UserUpdate = Form(),
     image: UploadFile = File(None),
     curriculum: UploadFile = File(None),
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     auth_data: auth.AuthData = Security(auth.verify_token, scopes=[]),
 ) -> dict:
     """
@@ -162,26 +163,28 @@ async def update_curr_user(
     """
     check_update_fields(user, auth_data.scopes)
 
-    user = crud.user.update_locked(db, id=auth_data.sub, obj_in=user)
-    if not user:
+    db_user = await run_in_threadpool(
+        crud.user.update_locked, db, id=auth_data.sub, obj_in=user
+    )
+    if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
 
     form = await request.form()
     if "image" in form:
-        user = await crud.user.update_image(db=db, db_obj=user, image=image)
+        db_user = await crud.user.update_image(db=db, db_obj=db_user, image=image)
     if "curriculum" in form:
-        user = await crud.user.update_curriculum(
-            db=db, db_obj=user, curriculum=curriculum
+        db_user = await crud.user.update_curriculum(
+            db=db, db_obj=db_user, curriculum=curriculum
         )
 
-    return user
+    return db_user
 
 
 @router.put("/{id}", status_code=200, response_model=AdminUserListing)
-async def update_user(
+def update_user(
     *,
     user_in: UserUpdate,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
     id: int,
     auth_data: auth.AuthData = Security(
         auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]

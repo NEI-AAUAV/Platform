@@ -1,21 +1,17 @@
-from typing import Optional, List
+from typing import Optional
 
 from pydantic import BaseModel, AnyHttpUrl, ConfigDict
 
-from .team_role import TeamRoleInDB
-from app.schemas.types import MandateStr
+from app.schemas.types import ShortNameStr
 from app.schemas.user.user import AnonymousUserListing
 
 
 class TeamMemberBase(BaseModel):
-    # Validate mandate to only allow 2020 or 2020/21
-    mandate: MandateStr
-    user_id: int
-    role_id: int
-
-
-class TeamMandates(BaseModel):
-    data: List[str]
+    section_id: int
+    user_id: Optional[int] = None
+    name: ShortNameStr
+    role: ShortNameStr
+    weight: int = 0
 
 
 class TeamMemberCreate(TeamMemberBase):
@@ -24,12 +20,16 @@ class TeamMemberCreate(TeamMemberBase):
     pass
 
 
-class TeamMemberUpdate(TeamMemberBase):
-    """Properties to receive via API on creation."""
+class TeamMemberUpdate(BaseModel):
+    """Properties to receive via API on update."""
 
-    mandate: Optional[MandateStr] = None
+    model_config = ConfigDict(extra="forbid")
+
+    section_id: Optional[int] = None
     user_id: Optional[int] = None
-    role_id: Optional[int] = None
+    name: Optional[ShortNameStr] = None
+    role: Optional[ShortNameStr] = None
+    weight: Optional[int] = None
 
 
 class TeamMemberInDB(TeamMemberBase):
@@ -38,6 +38,5 @@ class TeamMemberInDB(TeamMemberBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    header: Optional[AnyHttpUrl]
-    user: AnonymousUserListing
-    role: TeamRoleInDB
+    header: Optional[AnyHttpUrl] = None
+    user: Optional[AnonymousUserListing] = None

@@ -19,6 +19,14 @@ note_categories = {
 }
 
 
+class NoteAuthorInDB(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    surname: str
+
+
 class NoteBase(BaseModel):
     author_id: Optional[int]
     subject_id: int
@@ -44,6 +52,7 @@ class NoteInDB(NoteBase):
 
     id: int
     author: Optional[AnonymousUserListing] = None
+    note_author: Optional[NoteAuthorInDB] = None
     subject: SubjectInDB
     teacher: Optional[TeacherInDB] = None
     contents: Optional[List[str]] = None

@@ -10,9 +10,6 @@ from app.core.config import settings
 # for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
 from .base import Base
 
-# Update me after finishing writing a migration
-last_known_good_revision = "3f1a2b4c5d6e"
-
 
 def init_db() -> None:
     if not settings.PRODUCTION:
@@ -20,7 +17,7 @@ def init_db() -> None:
             cfg = config.Config(f"{ROOT_DIR}/alembic.ini")
             cfg.attributes["connection"] = conn
             cfg.attributes["configure_logger"] = False
-            command.upgrade(cfg, last_known_good_revision)
+            command.upgrade(cfg, "head")
 
             # Create superuser for development with username 'dev' and password 'dev'
             stmts = text(

@@ -1,28 +1,36 @@
+# Defined once so the database, the migration one-shot and the app cannot
+# drift apart: alembic hardcodes no database name, and a POSTGRES_DB set on
+# only one of them would migrate a different database than the app reads.
+x-postgres-env: &postgres_env
+  POSTGRES_SERVER: db_pg
+  POSTGRES_USER: ${POSTGRES_USER:-postgres}
+  POSTGRES_DB: ${POSTGRES_DB:-postgres}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
 services:
   db_pg:
     image: postgres:15-alpine
     ports:
       - 5432:5432
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      <<: *postgres_env
     labels:
       ofelia.enabled: "true"
       # Run the job at 4h37 every day to minimize db load
       ofelia.job-exec.cleanup_logins.schedule: "0 37 4 * * *"
-      ofelia.job-exec.cleanup_logins.command: "psql -U postgres -d postgres -f /scripts/cleanup-logins.sql"
+      ofelia.job-exec.cleanup_logins.command: "psql -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres} -f /scripts/cleanup-logins.sql"
     volumes:
       - ./scripts/:/scripts/:ro
       # - ./api-nei/app/db/setup.sql:/docker-entrypoint-initdb.d/nei-0001.sql
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER:-postgres}", "-d", "${POSTGRES_DB:-postgres}" ]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - backend
+      - nei-shared
     restart: always
 
   db_mongo:
@@ -46,6 +54,26 @@ services:
       - backend
     restart: always
 
+  # One-shot: applies the api-nei Alembic chain (`nei.*` schema owner) before
+  # api_nei starts. Infrastructure's Directus deploy runs AFTER this and only
+  # verifies the schema; it never migrates it.
+  api_nei_migrate:
+    image: ghcr.io/nei-aauav/api-nei:${TAG:-latest}
+    build:
+      context: api-nei
+      dockerfile: Dockerfile.prod
+    command: ["python", "-m", "alembic", "upgrade", "head"]
+    working_dir: /api_nei
+    environment:
+      <<: *postgres_env
+      ENV: production
+    depends_on:
+      db_pg:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: "no"
+
   api_nei:
     image: ghcr.io/nei-aauav/api-nei:${TAG:-latest}
     build:
@@ -55,11 +83,10 @@ services:
       - 8000:8000
       - 587:587
     environment:
+      <<: *postgres_env
       ENV: production
       RECAPTCHA_ENABLED: "True"
       EMAIL_ENABLED: "True"
-      POSTGRES_SERVER: db_pg
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       JWT_SECRET_KEY_PATH: /jwt.key
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
       EMAIL_SENDER_ADDRESS: ${EMAIL_SENDER_ADDRESS}
@@ -73,6 +100,12 @@ services:
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       AUTHENTIK_URL: ${AUTHENTIK_URL:-https://nei.web.ua.pt/authentik}
       AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN}
+      # Must match Infrastructure's DIRECTUS_PUBLIC_URL: api-nei builds
+      # every CMS asset URL from it.
+      DIRECTUS_PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-https://nei.web.ua.pt/cms/}
+      # Public base of the R2 bucket incl. Directus's storage root (e.g.
+      # https://cdn.example.com/cms). Empty keeps every asset on the Directus
+      # proxy; set it to serve R2-stored files directly.
       RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY}
     volumes:
       - /deploy/api-nei/static:/api_nei/static
@@ -82,6 +115,8 @@ services:
     depends_on:
       db_pg:
         condition: service_healthy
+      api_nei_migrate:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs').read()"]
       interval: 10s
@@ -179,6 +214,11 @@ networks:
     driver: bridge
   frontend:
     driver: bridge
+  # Shared with the Directus service in the Infrastructure repository so it
+  # can reach db_pg without exposing Postgres's container port to that stack.
+  # Created by the deploy workflow if missing.
+  nei-shared:
+    external: true
 
 volumes:
   pg_data:

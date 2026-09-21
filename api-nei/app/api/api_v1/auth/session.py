@@ -67,6 +67,7 @@ def _validate_refresh_token(db, token):
         logger.warning(f"Token that should be expired was accepted")
         # Remove the device login from the database since it's no longer used
         db.delete(device_login)
+        # Persist revocation before rejecting the stale credential.
         db.commit()
 
         raise credentials_exception
@@ -88,6 +89,7 @@ def _validate_refresh_token(db, token):
         # Preemptively remove the device login in order to prevent the token
         # from being used by a malicious third party.
         db.delete(device_login)
+        # Persist replay containment before rejecting the reused credential.
         db.commit()
 
         raise credentials_exception
@@ -96,6 +98,7 @@ def _validate_refresh_token(db, token):
     if user is None:
         # The user no longer exists so the device login is no longer useful.
         db.delete(device_login)
+        # Persist session cleanup before rejecting the orphaned credential.
         db.commit()
 
         raise credentials_exception
@@ -108,8 +111,8 @@ def _validate_refresh_token(db, token):
     responses={401: {"description": "Invalid refresh token"}},
     response_model=Token,
 )
-async def refresh(
-    db: Session = Depends(deps.get_db), refresh: str | None = Cookie(default=None)
+def refresh(
+    db: Session = Depends(deps.get_db, scope="function"), refresh: str | None = Cookie(default=None)
 ):
     user, device_login = _validate_refresh_token(db, refresh)
     return generate_response(db, user, device_login)
@@ -120,9 +123,9 @@ async def refresh(
     responses={401: {"description": "Invalid confirmation token"}},
     response_model=OperationSuccessfulResponse,
 )
-async def verify(
+def verify(
     token: str,
-    db: Session = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db, scope="function"),
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -166,8 +169,8 @@ class LogoutResponse(BaseModel):
     responses={401: {"description": "Invalid refresh token"}},
     response_model=LogoutResponse,
 )
-async def logout(
-    db: Session = Depends(deps.get_db),
+def logout(
+    db: Session = Depends(deps.get_db, scope="function"),
     refresh: str | None = Cookie(default=None),
 ):
     try:
@@ -199,6 +202,7 @@ async def logout(
 
     # invalidate the user's token and clear it from the server-side
     db.delete(device_login)
+    # The session must be durably revoked before the logout response is issued.
     db.commit()
 
     response = JSONResponse(
