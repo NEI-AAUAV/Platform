@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy import func
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, contains_eager
 
 from app.crud.base import CRUDBase
 from app.models.rgm import Rgm
@@ -15,12 +15,18 @@ _MANDATE = func.coalesce(RgmMandate.label, Rgm._mandate)
 class CRUDRgm(CRUDBase[Rgm, RgmCreate, RgmUpdate]):
 
     def get_by(self, db: Session, category: str | None = None, mandate: str | None = None) -> List[Rgm]:
-        query = db.query(Rgm).outerjoin(RgmMandate, Rgm.mandate_id == RgmMandate.id)
+        # contains_eager reuses this join: RgmInDB.mandate reads mandate_ref,
+        # which would otherwise be one extra query per row.
+        query = (
+            db.query(Rgm)
+            .outerjoin(RgmMandate, Rgm.mandate_id == RgmMandate.id)
+            .options(contains_eager(Rgm.mandate_ref))
+        )
         if category:
             query = query.filter(Rgm.category == category)
         if mandate:
             query = query.filter(_MANDATE == mandate)
-        return query.all()
+        return query.order_by(Rgm.date.desc().nullslast(), Rgm.id).all()
 
     def get_mandates(self, db: Session) -> List[str]:
         rows = (
