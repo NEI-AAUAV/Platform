@@ -24,8 +24,18 @@ def _config(url: str) -> Config:
 
 
 @pytest.fixture
+def empty_url() -> str:
+    """A scratch database with nothing in it, thrown away afterwards."""
+    yield from _scratch_database(upgrade_to=None)
+
+
+@pytest.fixture
 def drift_url() -> str:
     """A scratch database at BASELINE, thrown away afterwards."""
+    yield from _scratch_database(upgrade_to=BASELINE)
+
+
+def _scratch_database(upgrade_to):
     base = sa.engine.make_url(settings.TEST_POSTGRES_URI)
     admin = sa.create_engine(
         base.set(database="postgres"), isolation_level="AUTOCOMMIT"
@@ -35,7 +45,8 @@ def drift_url() -> str:
         conn.execute(sa.text(f'CREATE DATABASE "{SCRATCH_DB}"'))
 
     url = base.set(database=SCRATCH_DB).render_as_string(hide_password=False)
-    command.upgrade(_config(url), BASELINE)
+    if upgrade_to is not None:
+        command.upgrade(_config(url), upgrade_to)
     yield url
 
     sa.create_engine(url).dispose()
@@ -126,3 +137,57 @@ def test_history_surrogate_id_survives_duplicate_moments(drift_url: str) -> None
         ).scalars().all()
     engine.dispose()
     assert len(rows) == len(set(rows)) == 2
+
+
+# The mandates production actually holds: the convention switched to AAAA/AA
+# after 2022, so both styles coexist and neither can be rewritten (2022 -> 2022/23
+# would collide with the real 2022/23 row).
+PRODUCTION_MANDATES = [
+    "2013", "2014", "2015", "2016", "2017", "2018", "2019",
+    "2020", "2021", "2022", "2022/23", "2023/24", "2024/25", "2025/26",
+]
+
+
+def test_team_mandate_accepts_the_formats_production_holds(drift_url: str) -> None:
+    schema = settings.SCHEMA_NAME
+    values = ", ".join(f"('{m}', 1, 1)" for m in PRODUCTION_MANDATES)
+    _execute(
+        drift_url,
+        f"""
+        INSERT INTO {schema}.team_role (id, name, weight) VALUES (1, 'Vogal', 0);
+        INSERT INTO {schema}."user" (id, name, surname, scopes, updated_at, created_at)
+        VALUES (1, 'Dev', 'Tester', ARRAY[]::text[], now(), now());
+        INSERT INTO {schema}.team_member (mandate, role_id, user_id) VALUES {values};
+        """,
+    )
+
+    command.upgrade(_config(drift_url), "head")
+
+    engine = sa.create_engine(drift_url)
+    with engine.connect() as conn:
+        migrated = conn.execute(
+            sa.text(f"SELECT mandate FROM {schema}.team_mandate ORDER BY 1")
+        ).scalars().all()
+    engine.dispose()
+    assert migrated == sorted(PRODUCTION_MANDATES)
+
+
+def test_create_all_builds_the_whole_schema(empty_url: str) -> None:
+    """A hardcoded nextval() default breaks create_all: the sequence never exists."""
+    from app.db.base import Base
+
+    engine = sa.create_engine(empty_url)
+    with engine.begin() as conn:
+        conn.execute(sa.schema.CreateSchema(settings.SCHEMA_NAME, if_not_exists=True))
+    Base.metadata.create_all(engine)
+
+    with engine.connect() as conn:
+        built = conn.execute(
+            sa.text(
+                "SELECT count(*) FROM information_schema.tables"
+                " WHERE table_schema = :s AND table_type = 'BASE TABLE'"
+            ),
+            {"s": settings.SCHEMA_NAME},
+        ).scalar_one()
+    engine.dispose()
+    assert built == len(Base.metadata.tables)

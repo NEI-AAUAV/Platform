@@ -3,12 +3,11 @@ from typing import List
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
-from app.crud.base import CRUDBase
+from app.crud.base import ReadOnlyCRUDBase
 from app.models.team import TeamMandate, TeamSection, TeamMember
-from app.schemas.team import TeamMandateCreate, TeamMandateInDB
 
 
-class CRUDTeamMandate(CRUDBase[TeamMandate, TeamMandateCreate, TeamMandateInDB]):
+class CRUDTeamMandate(ReadOnlyCRUDBase[TeamMandate]):
     def get_mandates(self, db: Session) -> List[str]:
         """Return every distinct mandate, most recent first."""
         stmt = select(TeamMandate.mandate).order_by(TeamMandate.mandate.desc())

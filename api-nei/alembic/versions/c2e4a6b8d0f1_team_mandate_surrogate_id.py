@@ -10,7 +10,8 @@ CMS editors to type and keep in sync a value that is really just a technical
 link. The link becomes an integer:
 
     team_mandate.id   (generated, primary key)
-    team_mandate.mandate  UNIQUE NOT NULL, format AAAA/AA, still the public identity
+    team_mandate.mandate  UNIQUE NOT NULL, format AAAA/AA or a bare AAAA for
+                          mandates recorded before 2022/23, still the public identity
     team_section.mandate_id -> team_mandate.id  ON DELETE CASCADE
 
 The public API keeps addressing mandates by string; the id is internal.
@@ -39,7 +40,7 @@ branch_labels = None
 depends_on = None
 
 S = "nei"
-FORMAT = "mandate ~ '^[0-9]{4}/[0-9]{2}$'"
+FORMAT = "mandate ~ '^[0-9]{4}(/[0-9]{2})?$'"
 
 
 def upgrade() -> None:
@@ -50,7 +51,7 @@ def upgrade() -> None:
     ).scalars().all()
     if bad:
         raise RuntimeError(
-            f"team_mandate rows whose mandate is not of the form AAAA/AA: {bad}. "
+            f"team_mandate rows whose mandate is not AAAA/AA or AAAA: {bad}. "
             "Fix them before migrating."
         )
 

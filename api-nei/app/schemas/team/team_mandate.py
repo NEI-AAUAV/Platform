@@ -9,10 +9,6 @@ class TeamMandateBase(BaseModel):
     mandate: MandateStr
 
 
-class TeamMandateCreate(TeamMandateBase):
-    pass
-
-
 class TeamMandateInDB(TeamMandateBase):
     model_config = ConfigDict(from_attributes=True)
 

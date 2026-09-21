@@ -22,7 +22,7 @@ class TeamMandate(Base):
     def __table_args__(cls):
         return (
             CheckConstraint(
-                "mandate ~ '^[0-9]{4}/[0-9]{2}$'", name="mandate_format"
+                "mandate ~ '^[0-9]{4}(/[0-9]{2})?$'", name="mandate_format"
             ),
             Base.__table_args__,
         )
@@ -30,5 +30,5 @@ class TeamMandate(Base):
     sections: Mapped[List["TeamSection"]] = relationship(
         "TeamSection",
         back_populates="mandate_ref",
-        order_by="TeamSection.weight",
+        order_by="TeamSection.weight, TeamSection.name",
     )

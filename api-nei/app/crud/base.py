@@ -20,7 +20,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, delete, update
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.sql import ColumnCollection, ColumnElement
-from psycopg2.errors import ForeignKeyViolation, UniqueViolation
+from psycopg2.errors import CheckViolation, ForeignKeyViolation, UniqueViolation
 
 from app.db.base_class import Base
 
@@ -68,6 +68,7 @@ def _primary_key(
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     _foreign_key_checks: dict[str, str] = {}
+    _check_violation_msgs: dict[str, str] = {}
     _unique_violation_msg = "Already exists"
 
     def __init__(self, model: Type[ModelType]):
@@ -94,6 +95,22 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             )
         elif isinstance(e.orig, UniqueViolation):
             raise HTTPException(status_code=409, detail=self._unique_violation_msg)
+        elif isinstance(e.orig, CheckViolation):
+            msg = self._check_violation_msgs.get(e.orig.diag.constraint_name, None)
+            if msg is not None:
+                raise HTTPException(status_code=400, detail=msg)
+            logger.error(
+                "Unhandled check violation on {}",
+                e.orig.diag.constraint_name,
+            )
+            raise HTTPException(
+                status_code=400, detail="Value is not valid for this resource"
+            )
+        else:
+            logger.error("Unhandled integrity error: {}", type(e.orig).__name__)
+            raise HTTPException(
+                status_code=400, detail="Request could not be stored"
+            )
 
     def get(
         self, db: Session, id: _PrimaryKeyType, for_update: bool = False

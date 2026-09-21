@@ -24,5 +24,5 @@ class TeamSection(Base):
     members: Mapped[List["TeamMember"]] = relationship(
         "TeamMember",
         back_populates="section",
-        order_by="TeamMember.weight",
+        order_by="TeamMember.weight, TeamMember.name",
     )

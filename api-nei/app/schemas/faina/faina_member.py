@@ -2,6 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from app.schemas.types import ShortNameStr
 from app.schemas.user.user import AnonymousUserListing
 from app.utils import optional
 from .faina_role import FainaRoleInDB
@@ -9,7 +10,7 @@ from .faina_role import FainaRoleInDB
 
 class FainaMemberBase(BaseModel):
     member_id: Optional[int] = None
-    name: Optional[str] = None
+    name: Optional[ShortNameStr] = None
     faina_id: int
     role_id: int
 

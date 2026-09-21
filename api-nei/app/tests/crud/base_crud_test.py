@@ -119,3 +119,98 @@ def test_failed_second_operation_rolls_back_first(connection) -> None:
         ) is None
     finally:
         session.close()
+
+
+class _TeamMemberIn(BaseModel):
+    section_id: int
+    name: str
+    role: str
+
+
+def _section_id(db: SessionTesting) -> int:
+    from app.models.team.team_mandate import TeamMandate
+    from app.models.team.team_section import TeamSection
+
+    mandate = TeamMandate(mandate="2099/00")
+    db.add(mandate)
+    db.flush()
+    section = TeamSection(mandate_id=mandate.id, name="Coordenação", weight=0)
+    db.add(section)
+    db.flush()
+    return section.id
+
+
+def test_check_violation_becomes_400_not_500(db: SessionTesting) -> None:
+    """Directus and the API both hit CHECK constraints; a 500 helps nobody."""
+    from app.models.team.team_member import TeamMember
+
+    members = CRUDBase[TeamMember, _TeamMemberIn, _TeamMemberIn](TeamMember)
+
+    with pytest.raises(HTTPException) as exc:
+        members.create(
+            db,
+            obj_in=_TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal"),
+        )
+
+    assert exc.value.status_code == 400
+
+
+def test_check_violation_uses_the_mapped_message(db: SessionTesting) -> None:
+    from app.models.team.team_member import TeamMember
+
+    class _Mapped(CRUDBase[TeamMember, _TeamMemberIn, _TeamMemberIn]):
+        _check_violation_msgs = {"ck_team_member_name_not_blank": "Name is required"}
+
+    with pytest.raises(HTTPException) as exc:
+        _Mapped(TeamMember).create(
+            db,
+            obj_in=_TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal"),
+        )
+
+    assert exc.value.detail == "Name is required"
+
+
+class _AliasWithoutTarget(BaseModel):
+    """Omits `redirect`, which is NOT NULL: a violation the handler must classify."""
+
+    alias: str
+
+
+def test_unclassified_integrity_error_is_not_a_500(db: SessionTesting) -> None:
+    with pytest.raises(HTTPException) as exc:
+        redirects.create(db, obj_in=_AliasWithoutTarget(alias="no-target"))
+
+    assert exc.value.status_code == 400
+
+
+def test_team_member_blank_name_reports_the_mapped_message(db: SessionTesting) -> None:
+    """Directus writes bypass Pydantic, so the CHECK is still the real guard."""
+    from app import crud
+
+    with pytest.raises(HTTPException) as exc:
+        crud.team_member.create(
+            db,
+            obj_in=_TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal"),
+        )
+
+    assert exc.value.detail == "Name cannot be blank!"
+
+
+class _PermissiveFainaMember(BaseModel):
+    faina_id: int
+    role_id: int
+
+
+def test_faina_member_identity_reports_the_mapped_message(db: SessionTesting) -> None:
+    from app import crud
+    from app.models.faina.faina import Faina
+    from app.models.faina.faina_role import FainaRole
+
+    db.add(Faina(id=1, mandate="2099"))
+    db.add(FainaRole(id=1, name="Vogal", weight=0))
+    db.flush()
+
+    with pytest.raises(HTTPException) as exc:
+        crud.faina_member.create(db, obj_in=_PermissiveFainaMember(faina_id=1, role_id=1))
+
+    assert "name" in exc.value.detail.lower()

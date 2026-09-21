@@ -12,10 +12,10 @@ class CRUDTeamMember(CRUDBase[TeamMember, TeamMemberCreate, TeamMemberUpdate]):
         "fk_team_member_section_id_team_section": "Team section not found!",
         "fk_team_member_user_id_user": "User not found!",
     }
+    _check_violation_msgs = {
+        "ck_team_member_name_not_blank": "Name cannot be blank!",
+    }
 
-    def get_by_section(self, db: Session, section_id: int) -> List[TeamMember]:
-        """Return team members for a given section."""
-        return db.query(TeamMember).filter(TeamMember.section_id == section_id).all()
 
 
 team_member = CRUDTeamMember(TeamMember)

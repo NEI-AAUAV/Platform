@@ -156,11 +156,17 @@ def test_team_mandate_string_is_unique(db: SessionTesting) -> None:
         db.flush()
 
 
-@pytest.mark.parametrize("bad", ["2090", "90/91", "2090-91", "2090/9", "abcd/ef"])
+@pytest.mark.parametrize("bad", ["90/91", "2090-91", "2090/9", "abcd/ef"])
 def test_team_mandate_format_is_enforced(db: SessionTesting, bad: str) -> None:
     db.add(TeamMandate(mandate=bad))
     with pytest.raises(IntegrityError):
         db.flush()
+
+
+def test_team_mandate_accepts_a_bare_year(db: SessionTesting) -> None:
+    """Mandates recorded before 2022/23 are bare years and cannot be rewritten."""
+    db.add(TeamMandate(mandate="2090"))
+    db.flush()
 
 
 def test_team_mandate_primary_key_is_id(db: SessionTesting) -> None:
@@ -191,3 +197,18 @@ def test_every_generated_id_is_database_generated(db: SessionTesting) -> None:
         if not (col.get("default") or col.get("identity") or col.get("autoincrement") is True):
             missing.append(table)
     assert not missing, missing
+
+
+def test_tree_ordering_is_deterministic_on_equal_weights(db: SessionTesting) -> None:
+    """Both weights default to 0, so name is the tiebreaker the API relies on."""
+    from app import crud
+
+    _mandate(db, "2098/99")
+    for name in ("Zulu", "Alfa", "Mike"):
+        _section(db, "2098/99", name=name)
+    db.flush()
+    db.expunge_all()
+
+    tree = crud.team_mandate.get_tree(db, "2098/99")
+
+    assert [s.name for s in tree.sections] == ["Alfa", "Mike", "Zulu"]

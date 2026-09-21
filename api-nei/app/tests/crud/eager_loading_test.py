@@ -66,3 +66,33 @@ def test_news_listing_does_not_query_per_author(db: SessionTesting) -> None:
             NewsInDB.model_validate(item)
 
     assert _count_statements(db, list_and_serialize) <= MAX_STATEMENTS
+
+
+def test_rgm_listing_does_not_query_per_mandate(db: SessionTesting) -> None:
+    """RgmInDB.mandate reads mandate_ref, so the join must be eager-loaded."""
+    from app.models.rgm import Rgm
+    from app.models.rgm_mandate import RgmMandate
+    from app.schemas.rgm import RgmInDB
+
+    for i in range(ROWS):
+        db.add(RgmMandate(id=200 + i, label=f"20{10 + i}/{11 + i}"))
+    db.flush()
+    for i in range(ROWS):
+        db.add(
+            Rgm(
+                category="ATA",
+                mandate_id=200 + i,
+                date=datetime(2024, 1, 1, 0, i),
+                title=f"doc{i}",
+            )
+        )
+    db.flush()
+    db.expunge_all()
+
+    def list_and_serialize() -> None:
+        items = crud.rgm.get_by(db)
+        assert len(items) == ROWS
+        for item in items:
+            RgmInDB.model_validate(item)
+
+    assert _count_statements(db, list_and_serialize) <= 2
