@@ -17,6 +17,7 @@ class RgmCategoryEnum(str, Enum):
     ATA = "ATA"
     PAO = "PAO"
     RAC = "RAC"
+    CON = "CON"  # convocatória, in use since 2025
 
 
 class RgmBase(BaseModel):

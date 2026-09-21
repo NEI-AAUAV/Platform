@@ -35,7 +35,9 @@ class Rgm(Base):
     @declared_attr.directive
     def __table_args__(cls):
         return (
-            CheckConstraint("category IN ('ATA', 'PAO', 'RAC')", name="category_valid"),
+            CheckConstraint(
+                "category IN ('ATA', 'PAO', 'RAC', 'CON')", name="category_valid"
+            ),
             Base.__table_args__,
         )
 
