@@ -1,5 +1,5 @@
 from .user_matriculation import (
-    UserMatriculationInBD,
+    UserMatriculationInDB,
     UserMatriculationCreate,
     UserMatriculationUpdate,
 )

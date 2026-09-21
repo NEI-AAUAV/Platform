@@ -31,7 +31,7 @@ def get_video(
 
 
 @router.get("/{id}", status_code=200, response_model=VideoInDB)
-def get_video(
+def get_video_by_id(
     *,
     id: int,
     db: Session = Depends(deps.get_db),

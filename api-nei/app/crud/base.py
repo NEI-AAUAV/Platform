@@ -85,8 +85,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             msg = self._foreign_key_checks.get(e.orig.diag.constraint_name, None)
             if msg is not None:
                 raise HTTPException(status_code=400, detail=msg)
-            else:
-                logger.error("Unhandled foreign key violation")
+            logger.error(
+                "Unhandled foreign key violation on {}",
+                e.orig.diag.constraint_name,
+            )
+            raise HTTPException(
+                status_code=400, detail="Referenced resource does not exist"
+            )
         elif isinstance(e.orig, UniqueViolation):
             raise HTTPException(status_code=409, detail=self._unique_violation_msg)
 
@@ -107,14 +112,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if for_update:
             stmt = stmt.with_for_update()
 
-        return db.execute(stmt).scalars(stmt).all()
+        return db.scalars(stmt).all()
 
     def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
         obj_in_data = jsonable_encoder(obj_in)
         db_obj = self.model(**obj_in_data)
         try:
             db.add(db_obj)
-            db.commit()
+            db.flush()
             db.refresh(db_obj)
             return db_obj
         except IntegrityError as e:
@@ -139,7 +144,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         try:
             db.add(db_obj)
-            db.commit()
+            db.flush()
             db.refresh(db_obj)
             return db_obj
         except IntegrityError as e:
@@ -157,7 +162,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if len(update_data) != 0:
             stmt = update(self.model).values(update_data).returning(self.model)
         else:
-            stmt = select(self.model)
+            stmt = select(self.model).with_for_update()
 
         stmt = stmt.where(*_primary_key(self.model.__name__, id, self.primary_key))
 

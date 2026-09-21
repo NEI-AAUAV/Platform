@@ -23,9 +23,10 @@ class RgmCreate(RgmBase):
     pass
 
 
-class RgmUpdate:
-    # Reject updates
-    pass
+class RgmUpdate(BaseModel):
+    """Updates are not supported: any field is rejected."""
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class RgmInDB(RgmBase):

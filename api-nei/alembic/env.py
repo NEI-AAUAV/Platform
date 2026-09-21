@@ -108,6 +108,7 @@ def run_migrations_online() -> None:
             target_metadata=target_metadata,
             include_schemas=True,
             include_name=include_name,
+            compare_type=True,
             version_table_schema=settings.SCHEMA_NAME,
         )
 
@@ -117,7 +118,7 @@ def run_migrations_online() -> None:
             context.run_migrations()
 
     finally:
-        if not connection_provided:
+        if not connection_provided and connection is not None:
             connection.__exit__(None, None, None)
 
 

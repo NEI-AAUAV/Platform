@@ -151,7 +151,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         db_obj.active = True
 
         db.add(db_obj)
-        db.commit()
+        db.flush()
         db.refresh(db_obj)
 
         return db_obj
@@ -213,7 +213,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
         setattr(db_obj, "image", img_path)
         db.add(db_obj)
-        db.commit()
+        db.flush()
         return db_obj
 
     async def update_curriculum(
@@ -249,7 +249,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
         setattr(db_obj, "curriculum", curriculum_path)
         db.add(db_obj)
-        db.commit()
+        db.flush()
         return db_obj
 
 

@@ -3,7 +3,9 @@ from fastapi import (
     BackgroundTasks,
     Depends,
     HTTPException,
+    Response,
     Security,
+    status,
 )
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -21,7 +23,7 @@ router = APIRouter()
 
 
 @router.get("/", status_code=200)
-async def get_events(
+def get_events(
     *,
     db: Session = Depends(deps.get_db),
 ) -> List[ListingEvent]:
@@ -32,7 +34,7 @@ async def get_events(
 
 
 @router.get("/{id}", status_code=200)
-async def get_event_by_id(
+def get_event_by_id(
     *,
     id: int,
     db: Session = Depends(deps.get_db),
@@ -47,7 +49,7 @@ async def get_event_by_id(
 
 
 @router.put("/{id}", status_code=200)
-async def update_event(
+def update_event(
     *,
     id: int,
     event_in: UpdateEvent,
@@ -64,7 +66,7 @@ async def update_event(
 
 
 @router.post("/", status_code=201)
-async def create_event(
+def create_event(
     *,
     event_in: CreateEvent,
     db: Session = Depends(deps.get_db),
@@ -82,7 +84,7 @@ class ImportUsersResult(BaseModel):
 
 
 @router.post("/{id}", status_code=201)
-async def import_users_for_event(
+def import_users_for_event(
     *,
     id: int,
     users: List[UserCreateForEvent],
@@ -110,17 +112,17 @@ async def import_users_for_event(
     return ImportUsersResult(users_created=len(result.created_users))
 
 
-@router.delete("/{id}", status_code=201)
-async def delete_event(
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_event(
     *,
     id: int,
     db: Session = Depends(deps.get_db),
     _=Security(auth.verify_token, scopes=[ScopeEnum.MANAGER_NEI]),
-) -> DetailedEvent:
+) -> Response:
     """
     Deletes an existing event.
     """
     event = crud.event.delete(db=db, id=id)
     if event is None:
         raise HTTPException(status_code=404, detail="Event not found")
-    return DetailedEvent.model_validate(event)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

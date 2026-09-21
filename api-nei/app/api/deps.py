@@ -1,7 +1,6 @@
 from typing import Generator
 
 from fastapi import Response
-from sqlalchemy.exc import SQLAlchemyError
 from email_validator import caching_resolver
 
 from app.db.session import SessionLocal
@@ -17,7 +16,7 @@ def get_db():
     try:
         yield db
         db.commit()
-    except SQLAlchemyError:
+    except Exception:
         db.rollback()
         raise
     finally:

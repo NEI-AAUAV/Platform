@@ -1,23 +1,41 @@
 from typing import List, Tuple, Optional
 
 from sqlalchemy import or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Query, Session, joinedload
 
 from app.crud.base import CRUDBase
 from app.models.note import Note
 from app.models import User
 from app.models.subject import Subject
 from app.models.teacher import Teacher
-from app.schemas.note import NoteInDB
 
 
 class CRUDNote(CRUDBase[Note, None, None]):
-
-    def get_note_categories(self, db: Session) -> List[str]:
-        """
-        Return every distinct category
-        """
-        return map(lambda x: x[0], db.query(Note.category).distinct().all())
+    @staticmethod
+    def _filtered(
+        db: Session,
+        *,
+        year: Optional[int] = None,
+        subject: Optional[int] = None,
+        student: Optional[int] = None,
+        teacher: Optional[int] = None,
+        curricular_year: Optional[int] = None,
+    ) -> Query:
+        """Notes matching every given (truthy) filter."""
+        query = db.query(Note)
+        if year:
+            query = query.filter(Note.year == year)
+        if subject:
+            query = query.filter(Note.subject_id == subject)
+        if student:
+            query = query.filter(Note.author_id == student)
+        if teacher:
+            query = query.filter(Note.teacher_id == teacher)
+        if curricular_year:
+            query = query.join(Note.subject).filter_by(
+                curricular_year=curricular_year
+            )
+        return query
 
     def get_note_by(
         self, *, db: Session, categories: List[str],
@@ -31,114 +49,67 @@ class CRUDNote(CRUDBase[Note, None, None]):
         """
         Return filtered/unfiltered note
         """
-        query = db.query(Note)
-        if year:
-            query = query.filter(Note.year == year)
-        if subject:
-            query = query.filter(Note.subject_id == subject)
-        if student:
-            query = query.filter(Note.author_id == student)
-        if teacher:
-            query = query.filter(Note.teacher_id == teacher)
-        if curricular_year:
-            query = query.join(Note.subject)\
-                .filter_by(curricular_year=curricular_year)
+        query = self._filtered(
+            db, year=year, subject=subject, student=student,
+            teacher=teacher, curricular_year=curricular_year,
+        )
         if categories:
             query = query.filter(
                 or_(getattr(Note, cat) == 1 for cat in categories))
         total = query.count()
-        return total, query.limit(size).offset((page - 1) * size).all()
+        page_query = query.options(
+            joinedload(Note.author),
+            joinedload(Note.note_author),
+            joinedload(Note.subject),
+            joinedload(Note.teacher),
+        )
+        return total, page_query.limit(size).offset((page - 1) * size).all()
 
     def get_note_students(self, db: Session, year: int, subject_code: int, teacher_id: int, curricular_year: int) -> List[User]:
-        query = db.query(Note)
-        if year:
-            query = query.filter(Note.year == year)
-        if subject_code:
-            query = query.filter(Note.subject_id == subject_code)
-        if teacher_id:
-            query = query.filter(Note.teacher_id == teacher_id)
-        if curricular_year:
-            query = query.join(Note.subject)\
-                .filter_by(curricular_year=curricular_year)
-
-        data = query.all()
-
-        data = set(e.author_id for e in data)
-
-        return db.query(User).filter(User.id.in_(data)).all()
+        notes = self._filtered(
+            db, year=year, subject=subject_code, teacher=teacher_id,
+            curricular_year=curricular_year,
+        ).all()
+        ids = set(e.author_id for e in notes)
+        return db.query(User).filter(User.id.in_(ids)).all()
 
     def get_note_teachers(self, db: Session, year: int, subject_code: int, student_id: int, curricular_year: int) -> List[User]:
-        query = db.query(Note)
-        if year:
-            query = query.filter(Note.year == year)
-        if subject_code:
-            query = query.filter(Note.subject_id == subject_code)
-        if student_id:
-            query = query.filter(Note.author_id == student_id)
-        if curricular_year:
-            query = query.join(Note.subject)\
-                .filter_by(curricular_year=curricular_year)
-
-        data = query.all()
-
-        data = set(e.teacher_id for e in data)
-
-        return db.query(Teacher).filter(Teacher.id.in_(data)).all()
+        notes = self._filtered(
+            db, year=year, subject=subject_code, student=student_id,
+            curricular_year=curricular_year,
+        ).all()
+        ids = set(e.teacher_id for e in notes)
+        return db.query(Teacher).filter(Teacher.id.in_(ids)).all()
 
     def get_note_subjects(self, db: Session, year: int, teacher_id: int, student_id: int, curricular_year: int) -> List[str]:
-        query = db.query(Note)
-        if year:
-            query = query.filter(Note.year == year)
-        if teacher_id:
-            query = query.filter(Note.teacher_id == teacher_id)
-        if student_id:
-            query = query.filter(Note.author_id == student_id)
-        if curricular_year:
-            query = query.join(Note.subject)\
-                .filter_by(curricular_year=curricular_year)
-
-        data = query.all()
-
-        data = set(e.subject_id for e in data)
-
-        return db.query(Subject).filter(Subject.code.in_(data)).all()
+        notes = self._filtered(
+            db, year=year, teacher=teacher_id, student=student_id,
+            curricular_year=curricular_year,
+        ).all()
+        codes = set(e.subject_id for e in notes)
+        return db.query(Subject).filter(Subject.code.in_(codes)).all()
 
     def get_note_years(self, db: Session, subject_code: int, student_id: int, teacher_id: int, curricular_year: int) -> List[int]:
-        query = db.query(Note)
-        if teacher_id:
-            query = query.filter(Note.teacher_id == teacher_id)
-        if subject_code:
-            query = query.filter(Note.subject_id == subject_code)
-        if student_id:
-            query = query.filter(Note.author_id == student_id)
-        if curricular_year:
-            query = query.join(Note.subject)\
-                .filter_by(curricular_year=curricular_year)
-
-        data = query.all()
-
-        data = set(e.year for e in data if e.year)
-        data.discard(None)
-
-        return list(data)
+        notes = self._filtered(
+            db, subject=subject_code, student=student_id, teacher=teacher_id,
+            curricular_year=curricular_year,
+        ).all()
+        years = set(e.year for e in notes if e.year)
+        years.discard(None)
+        return list(years)
 
     def get_note_curricular_year(self, db: Session, year: int, teacher_id: int, student_id: int, subject_code: int) -> List[str]:
-        query = db.query(Note)
-        if year:
-            query = query.filter(Note.year == year)
-        if teacher_id:
-            query = query.filter(Note.teacher_id == teacher_id)
-        if student_id:
-            query = query.filter(Note.author_id == student_id)
-        if subject_code:
-            query = query.filter(Note.subject_id == subject_code)
-
-        data = query.all()
-
-        data = set(e.subject.curricular_year for e in data)
-        data.discard(None)
-
-        return list(data)
+        notes = (
+            self._filtered(
+                db, year=year, teacher=teacher_id, student=student_id,
+                subject=subject_code,
+            )
+            .options(joinedload(Note.subject))
+            .all()
+        )
+        years = set(e.subject.curricular_year for e in notes)
+        years.discard(None)
+        return list(years)
 
 
 note = CRUDNote(Note)

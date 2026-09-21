@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.crud.base import CRUDBase
 from app.models.news import News
@@ -33,7 +33,8 @@ class CRUDNews(CRUDBase[News, NewsCreate, NewsUpdate]):
         if categories:
             query = query.filter(News.category.in_(categories))
         total = query.count()
-        return total, query.limit(size).offset((page - 1) * size).all()
+        page_query = query.options(joinedload(News.author))
+        return total, page_query.limit(size).offset((page - 1) * size).all()
 
 
 news = CRUDNews(News)

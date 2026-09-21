@@ -12,4 +12,4 @@ class Event(Base):
     start: Mapped[datetime]
     end: Mapped[datetime]
 
-    users: Mapped[User] = relationship(User)
+    users: Mapped[list[User]] = relationship(User)

@@ -49,7 +49,7 @@ def user_listing_type(
 
 
 @router.get("/", status_code=200, responses=auth.auth_responses)
-async def get_users(
+def get_users(
     *,
     db: Session = Depends(deps.get_db),
     auth_data: auth.AuthData = Security(
@@ -81,7 +81,7 @@ async def get_users(
     response_model=AdminUserListing,
     responses=auth.auth_responses,
 )
-async def get_curr_user(
+def get_curr_user(
     *,
     db: Session = Depends(deps.get_db),
     payload: auth.AuthData = Security(auth.verify_token, scopes=[]),
@@ -97,7 +97,7 @@ async def get_curr_user(
 
 
 @router.get("/{id}", status_code=200, responses=auth.auth_responses)
-async def get_user_by_id(
+def get_user_by_id(
     *, id: int, db: Session = Depends(deps.get_db), auth_data: auth.GetAuthData
 ) -> APIUserListing:
     """ """
@@ -114,7 +114,7 @@ async def get_user_by_id(
 @router.post(
     "/", status_code=201, response_model=AdminUserListing, responses=auth.auth_responses
 )
-async def create_user(
+def create_user(
     *,
     user_in: UserCreate,
     db: Session = Depends(deps.get_db),
@@ -178,7 +178,7 @@ async def update_curr_user(
 
 
 @router.put("/{id}", status_code=200, response_model=AdminUserListing)
-async def update_user(
+def update_user(
     *,
     user_in: UserUpdate,
     db: Session = Depends(deps.get_db),
