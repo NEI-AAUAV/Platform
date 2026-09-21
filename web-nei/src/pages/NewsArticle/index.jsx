@@ -29,7 +29,9 @@ const NewsArticle = () => {
         </Row>
 
         <Row>
-          <Image src={article.header} alt="header" className="w-100" rounded />
+          {article.header && (
+            <Image src={article.header} alt="header" className="w-100" rounded />
+          )}
         </Row>
 
         <Row className="mt-5">

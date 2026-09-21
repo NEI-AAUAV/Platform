@@ -63,7 +63,9 @@ function NewsCard(props) {
         <motion.figure className="h-3/5"
           layoutId={`card-${data.id}`}
         >
-          <img className="object-cover w-full h-full" src={data.header} alt={data.title} />
+          {data.header && (
+            <img className="object-cover w-full h-full" src={data.header} alt={data.title} />
+          )}
         </motion.figure>
         <div className="card-body">
           <h2 className="card-title">{data.title}</h2>
@@ -108,7 +110,9 @@ const PartnerCard = (props) => {
       >
         <motion.div className="card rounded-xl w-96 h-96 bg-base-200 shadow-xl hover:-translate-y-2 transition duration-200 ease-in-out">
           <figure className="h-3/5">
-            <img className="object-cover w-full" src={header} alt={title} />
+            {header && (
+              <img className="object-cover w-full" src={header} alt={title} />
+            )}
           </figure>
           <div className="card-body">
             <p className="text-sm text-left">{description}</p>
