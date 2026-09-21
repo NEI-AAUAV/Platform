@@ -74,10 +74,12 @@ SELECT c.conname,
           FROM unnest(c.conkey) WITH ORDINALITY AS k(attnum, ord)
           JOIN pg_attribute a
             ON a.attrelid = c.conrelid AND a.attnum = k.attnum) AS cols,
-       rt.relname AS ref_table
+       rt.relname AS ref_table,
+       rn.nspname AS ref_schema
 FROM pg_constraint c
 JOIN pg_class t          ON t.oid = c.conrelid
 LEFT JOIN pg_class rt    ON rt.oid = c.confrelid
+LEFT JOIN pg_namespace rn ON rn.oid = rt.relnamespace
 WHERE c.connamespace = to_regnamespace(:schema)
   AND t.relname <> 'alembic_version'
 ORDER BY t.relname, c.conname
@@ -136,6 +138,16 @@ def upgrade() -> None:
     for row in rows:
         if row.contype not in ("p", "u", "f"):
             continue
+        # A foreign key into another schema (Directus) cannot match a convention
+        # built from nei table names; a8c0e2f4b6d7 drops these later.
+        if row.contype == "f" and row.ref_schema not in (None, SCHEMA):
+            log.info(
+                "skipping %s.%s: references schema %s",
+                row.table_name,
+                row.conname,
+                row.ref_schema,
+            )
+            continue
         want = _expected(row.contype, row.table_name, row.cols, row.ref_table)
         if want == row.conname:
             continue
@@ -182,6 +194,7 @@ def upgrade() -> None:
         if r.contype in ("p", "u", "f")
         and r.conname != _expected(r.contype, r.table_name, r.cols, r.ref_table)
         and (r.table_name, r.conname) not in _EXPLICIT
+        and not (r.contype == "f" and r.ref_schema not in (None, SCHEMA))
     ]
     if leftovers:
         raise RuntimeError(

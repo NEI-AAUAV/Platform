@@ -41,17 +41,14 @@ ASSET_COLUMNS = [
 
 
 def upgrade():
+    # Infrastructure provisioning created these columns out of band on some deployments.
     for table, column in ASSET_COLUMNS:
-        op.add_column(
-            table,
-            sa.Column(column, sa.dialects.postgresql.UUID(as_uuid=True), nullable=True),
-            schema=SCHEMA,
+        op.execute(
+            f"ALTER TABLE {SCHEMA}.{table} ADD COLUMN IF NOT EXISTS {column} uuid"
         )
 
-    op.add_column(
-        "video__video_tags",
-        sa.Column("id", sa.BigInteger(), nullable=True),
-        schema=SCHEMA,
+    op.execute(
+        f"ALTER TABLE {SCHEMA}.video__video_tags ADD COLUMN IF NOT EXISTS id bigint"
     )
     op.execute(
         f"""
