@@ -24,7 +24,7 @@ async def lifespan(_: FastAPI):
     load_scopes_from_manifests()
     # Update OAuth2 scheme with extension scopes
     dynamic_oauth2_scheme.update_scopes()
-    await authentik_client.start()
+    authentik_client.start()
     try:
         yield
     finally:

@@ -24,7 +24,8 @@ class AuthentikClient:
         self._transport = transport
         self._client: httpx.AsyncClient | None = None
 
-    async def start(self) -> None:
+    def start(self) -> None:
+        """Build the client. Sync: constructing an AsyncClient does no I/O."""
         if self._client is None:
             self._client = httpx.AsyncClient(
                 verify=settings.OIDC_VERIFY_SSL,
@@ -44,7 +45,7 @@ class AuthentikClient:
 
     async def _request(self, method: str, url: str, **kwargs: Any) -> httpx.Response:
         try:
-            await self.start()
+            self.start()
             assert self._client is not None
             response = await self._client.request(
                 method, url, headers=self._headers(), **kwargs
