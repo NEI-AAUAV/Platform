@@ -126,3 +126,36 @@ def test_history_surrogate_id_survives_duplicate_moments(drift_url: str) -> None
         ).scalars().all()
     engine.dispose()
     assert len(rows) == len(set(rows)) == 2
+
+
+# The mandates production actually holds: the convention switched to AAAA/AA
+# after 2022, so both styles coexist and neither can be rewritten (2022 -> 2022/23
+# would collide with the real 2022/23 row).
+PRODUCTION_MANDATES = [
+    "2013", "2014", "2015", "2016", "2017", "2018", "2019",
+    "2020", "2021", "2022", "2022/23", "2023/24", "2024/25", "2025/26",
+]
+
+
+def test_team_mandate_accepts_the_formats_production_holds(drift_url: str) -> None:
+    schema = settings.SCHEMA_NAME
+    values = ", ".join(f"('{m}', 1, 1)" for m in PRODUCTION_MANDATES)
+    _execute(
+        drift_url,
+        f"""
+        INSERT INTO {schema}.team_role (id, name, weight) VALUES (1, 'Vogal', 0);
+        INSERT INTO {schema}."user" (id, name, surname, scopes, updated_at, created_at)
+        VALUES (1, 'Dev', 'Tester', ARRAY[]::text[], now(), now());
+        INSERT INTO {schema}.team_member (mandate, role_id, user_id) VALUES {values};
+        """,
+    )
+
+    command.upgrade(_config(drift_url), "head")
+
+    engine = sa.create_engine(drift_url)
+    with engine.connect() as conn:
+        migrated = conn.execute(
+            sa.text(f"SELECT mandate FROM {schema}.team_mandate ORDER BY 1")
+        ).scalars().all()
+    engine.dispose()
+    assert migrated == sorted(PRODUCTION_MANDATES)

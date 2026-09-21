@@ -22,7 +22,7 @@ class TeamMandate(Base):
     def __table_args__(cls):
         return (
             CheckConstraint(
-                "mandate ~ '^[0-9]{4}/[0-9]{2}$'", name="mandate_format"
+                "mandate ~ '^[0-9]{4}(/[0-9]{2})?$'", name="mandate_format"
             ),
             Base.__table_args__,
         )

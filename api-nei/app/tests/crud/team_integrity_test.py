@@ -156,11 +156,17 @@ def test_team_mandate_string_is_unique(db: SessionTesting) -> None:
         db.flush()
 
 
-@pytest.mark.parametrize("bad", ["2090", "90/91", "2090-91", "2090/9", "abcd/ef"])
+@pytest.mark.parametrize("bad", ["90/91", "2090-91", "2090/9", "abcd/ef"])
 def test_team_mandate_format_is_enforced(db: SessionTesting, bad: str) -> None:
     db.add(TeamMandate(mandate=bad))
     with pytest.raises(IntegrityError):
         db.flush()
+
+
+def test_team_mandate_accepts_a_bare_year(db: SessionTesting) -> None:
+    """Mandates recorded before 2022/23 are bare years and cannot be rewritten."""
+    db.add(TeamMandate(mandate="2090"))
+    db.flush()
 
 
 def test_team_mandate_primary_key_is_id(db: SessionTesting) -> None:
