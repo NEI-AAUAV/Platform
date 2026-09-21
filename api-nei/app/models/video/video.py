@@ -6,7 +6,6 @@ from sqlalchemy import (
     BigInteger,
     Column,
     UniqueConstraint,
-    text,
     SmallInteger,
     DateTime,
     ForeignKey,
@@ -30,12 +29,7 @@ from .video_tag import VideoTag
 video__video_tags_association_table = Table(
     "video__video_tags",
     Base.metadata,
-    Column(
-        "id",
-        BigInteger,
-        primary_key=True,
-        server_default=text(f"nextval('{settings.SCHEMA_NAME}.video__video_tags_id_seq'::regclass)"),
-    ),
+    Column("id", BigInteger, primary_key=True, autoincrement=True),
     Column("video_id", ForeignKey(f"{settings.SCHEMA_NAME}.video.id"), nullable=False),
     Column("video_tag_id", ForeignKey(VideoTag.id), nullable=False),
     UniqueConstraint("video_id", "video_tag_id", name="uq_video__video_tags_video_tag"),

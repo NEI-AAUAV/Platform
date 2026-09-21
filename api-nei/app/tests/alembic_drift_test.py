@@ -24,8 +24,18 @@ def _config(url: str) -> Config:
 
 
 @pytest.fixture
+def empty_url() -> str:
+    """A scratch database with nothing in it, thrown away afterwards."""
+    yield from _scratch_database(upgrade_to=None)
+
+
+@pytest.fixture
 def drift_url() -> str:
     """A scratch database at BASELINE, thrown away afterwards."""
+    yield from _scratch_database(upgrade_to=BASELINE)
+
+
+def _scratch_database(upgrade_to):
     base = sa.engine.make_url(settings.TEST_POSTGRES_URI)
     admin = sa.create_engine(
         base.set(database="postgres"), isolation_level="AUTOCOMMIT"
@@ -35,7 +45,8 @@ def drift_url() -> str:
         conn.execute(sa.text(f'CREATE DATABASE "{SCRATCH_DB}"'))
 
     url = base.set(database=SCRATCH_DB).render_as_string(hide_password=False)
-    command.upgrade(_config(url), BASELINE)
+    if upgrade_to is not None:
+        command.upgrade(_config(url), upgrade_to)
     yield url
 
     sa.create_engine(url).dispose()
@@ -159,3 +170,24 @@ def test_team_mandate_accepts_the_formats_production_holds(drift_url: str) -> No
         ).scalars().all()
     engine.dispose()
     assert migrated == sorted(PRODUCTION_MANDATES)
+
+
+def test_create_all_builds_the_whole_schema(empty_url: str) -> None:
+    """A hardcoded nextval() default breaks create_all: the sequence never exists."""
+    from app.db.base import Base
+
+    engine = sa.create_engine(empty_url)
+    with engine.begin() as conn:
+        conn.execute(sa.schema.CreateSchema(settings.SCHEMA_NAME, if_not_exists=True))
+    Base.metadata.create_all(engine)
+
+    with engine.connect() as conn:
+        built = conn.execute(
+            sa.text(
+                "SELECT count(*) FROM information_schema.tables"
+                " WHERE table_schema = :s AND table_type = 'BASE TABLE'"
+            ),
+            {"s": settings.SCHEMA_NAME},
+        ).scalar_one()
+    engine.dispose()
+    assert built == len(Base.metadata.tables)
