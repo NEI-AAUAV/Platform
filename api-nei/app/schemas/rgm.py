@@ -7,7 +7,12 @@ from .types import MandateStr
 
 
 class RgmCategoryEnum(str, Enum):
-    """Mirrors ck_rgm_category_valid; Directus offers the same three."""
+    """What a caller may filter by, and what ck_rgm_category_valid will allow.
+
+    Deliberately not the response type: rows predating that constraint carry
+    other values, and rejecting them at serialisation turns a stale row into
+    a 500 for the whole listing.
+    """
 
     ATA = "ATA"
     PAO = "PAO"
@@ -15,7 +20,7 @@ class RgmCategoryEnum(str, Enum):
 
 
 class RgmBase(BaseModel):
-    category: RgmCategoryEnum
+    category: Annotated[str, StringConstraints(max_length=3)]
     # Validate mandate to only allow 2020 or 2020/21
     mandate: Optional[MandateStr]
     # Real FK to RGM's own mandate calendar (rgm_mandate); `mandate` above
