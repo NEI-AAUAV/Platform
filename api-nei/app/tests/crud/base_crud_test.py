@@ -119,3 +119,52 @@ def test_failed_second_operation_rolls_back_first(connection) -> None:
         ) is None
     finally:
         session.close()
+
+
+class _TeamMemberIn(BaseModel):
+    section_id: int
+    name: str
+    role: str
+
+
+def _section_id(db: SessionTesting) -> int:
+    from app.models.team.team_mandate import TeamMandate
+    from app.models.team.team_section import TeamSection
+
+    mandate = TeamMandate(mandate="2099/00")
+    db.add(mandate)
+    db.flush()
+    section = TeamSection(mandate_id=mandate.id, name="Coordenação", weight=0)
+    db.add(section)
+    db.flush()
+    return section.id
+
+
+def test_check_violation_becomes_400_not_500(db: SessionTesting) -> None:
+    """Directus and the API both hit CHECK constraints; a 500 helps nobody."""
+    from app.models.team.team_member import TeamMember
+
+    members = CRUDBase[TeamMember, _TeamMemberIn, _TeamMemberIn](TeamMember)
+
+    with pytest.raises(HTTPException) as exc:
+        members.create(
+            db,
+            obj_in=_TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal"),
+        )
+
+    assert exc.value.status_code == 400
+
+
+def test_check_violation_uses_the_mapped_message(db: SessionTesting) -> None:
+    from app.models.team.team_member import TeamMember
+
+    class _Mapped(CRUDBase[TeamMember, _TeamMemberIn, _TeamMemberIn]):
+        _check_violation_msgs = {"ck_team_member_name_not_blank": "Name is required"}
+
+    with pytest.raises(HTTPException) as exc:
+        _Mapped(TeamMember).create(
+            db,
+            obj_in=_TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal"),
+        )
+
+    assert exc.value.detail == "Name is required"
