@@ -2,6 +2,7 @@ import os
 import pathlib
 
 from datetime import timedelta
+from sqlalchemy.engine import URL
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List, Optional
@@ -63,24 +64,19 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
     POSTGRES_DB: str = "postgres"
+    POSTGRES_PORT: int = 5432
     POSTGRES_URI: str = ""
     TEST_POSTGRES_URI: str = ""
 
     @model_validator(mode="after")
     def populate_database_uris(self) -> "Settings":
+        # URL.create quotes the password: an f-string mangles a host when the
+        # password contains "@", silently connecting somewhere else.
         if self.POSTGRES_URI == "":
-            self.POSTGRES_URI = (
-                f"postgresql://{self.POSTGRES_USER}"
-                f":{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}"
-                f":5432/{self.POSTGRES_DB}"
-            )
+            self.POSTGRES_URI = self._postgres_url(self.POSTGRES_DB)
 
         if self.TEST_POSTGRES_URI == "":
-            self.TEST_POSTGRES_URI = (
-                f"postgresql://{self.POSTGRES_USER}"
-                f":{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}"
-                f":5432/{self.POSTGRES_DB}_test"
-            )
+            self.TEST_POSTGRES_URI = self._postgres_url(f"{self.POSTGRES_DB}_test")
 
         if not self.OIDC_REDIRECT_BASE_URL:
             self.OIDC_REDIRECT_BASE_URL = self.HOST
@@ -157,6 +153,16 @@ class Settings(BaseSettings):
     # Authentik Admin API
     AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"
     AUTHENTIK_TOKEN: str = ""
+
+    def _postgres_url(self, database: str) -> str:
+        return URL.create(
+            "postgresql",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_SERVER,
+            port=self.POSTGRES_PORT,
+            database=database,
+        ).render_as_string(hide_password=False)
 
     def _missing(self, flag: str, *names: str) -> List[str]:
         return [f"{n} is required when {flag}" for n in names if not getattr(self, n)]
