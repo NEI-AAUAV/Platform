@@ -106,3 +106,40 @@ def test_constraint_names_follow_the_convention(db) -> None:
             offenders.append(f"{row.table_name}.{row.conname} (expected {want})")
 
     assert not offenders, offenders
+
+
+class _StubConnection:
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def execute(self, *args, **kwargs):
+        return None
+
+    def commit(self):
+        return None
+
+
+class _StubEngine:
+    def connect(self):
+        return _StubConnection()
+
+
+def test_init_db_upgrades_to_head(monkeypatch) -> None:
+    """A pinned revision leaves dev databases silently behind the models."""
+    from app.db import init_db as init_db_module
+
+    captured: dict = {}
+    monkeypatch.setattr(init_db_module.settings, "PRODUCTION", False, raising=False)
+    monkeypatch.setattr(init_db_module, "engine", _StubEngine())
+    monkeypatch.setattr(
+        init_db_module.command,
+        "upgrade",
+        lambda cfg, revision: captured.__setitem__("revision", revision),
+    )
+
+    init_db_module.init_db()
+
+    assert captured["revision"] == "head"
