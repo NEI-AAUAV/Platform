@@ -46,8 +46,10 @@ def test_upstream_server_error_is_safe_bad_gateway(monkeypatch, upstream_status:
 
 def test_missing_configuration_is_service_unavailable(monkeypatch) -> None:
     monkeypatch.setattr(settings, "AUTHENTIK_TOKEN", "")
+    client = AuthentikClient(httpx.MockTransport(lambda _: httpx.Response(200)))
+
     with pytest.raises(AuthentikError) as exc:
-        _run(AuthentikClient(httpx.MockTransport(lambda _: httpx.Response(200))))
+        _run(client)
     assert exc.value.status_code == 503
 
 
@@ -57,8 +59,10 @@ def test_timeout_is_gateway_timeout(monkeypatch) -> None:
     def timeout(request: httpx.Request) -> httpx.Response:
         raise httpx.ReadTimeout("slow", request=request)
 
+    client = AuthentikClient(httpx.MockTransport(timeout))
+
     with pytest.raises(AuthentikError) as exc:
-        _run(AuthentikClient(httpx.MockTransport(timeout)))
+        _run(client)
     assert exc.value.status_code == 504
 
 

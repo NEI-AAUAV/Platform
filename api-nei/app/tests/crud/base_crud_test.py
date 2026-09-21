@@ -46,7 +46,8 @@ def test_update_locked_updates_only_the_targeted_row(db: SessionTesting) -> None
 
     updated = redirects.update_locked(db, id=target.id, obj_in=_AliasOnly(alias="changed"))
 
-    assert updated is not None and updated.alias == "changed"
+    assert updated is not None
+    assert updated.alias == "changed"
     assert db.scalars(select(Redirect).where(Redirect.alias == "keep")).one()
 
 
@@ -56,7 +57,8 @@ def test_update_locked_without_changes_returns_the_row(db: SessionTesting) -> No
 
     same = redirects.update_locked(db, id=target.id, obj_in=_AliasOnly.model_construct())
 
-    assert same is not None and same.id == target.id
+    assert same is not None
+    assert same.id == target.id
 
 
 def test_update_locked_without_changes_locks_the_row(db: SessionTesting, monkeypatch) -> None:
@@ -78,11 +80,10 @@ def test_update_locked_without_changes_locks_the_row(db: SessionTesting, monkeyp
 
 def test_unmapped_foreign_key_violation_is_a_client_error(db: SessionTesting) -> None:
     students = CRUDBase[SeniorStudent, SeniorStudentCreate, BaseModel](SeniorStudent)
+    orphan = SeniorStudentCreate(user_id=-1, senior_id=-1, image="i.jpg")
 
     with pytest.raises(HTTPException) as exc:
-        students.create(
-            db, obj_in=SeniorStudentCreate(user_id=-1, senior_id=-1, image="i.jpg")
-        )
+        students.create(db, obj_in=orphan)
 
     assert exc.value.status_code == 400
 
@@ -108,11 +109,9 @@ def test_failed_second_operation_rolls_back_first(connection) -> None:
             session, obj_in=RedirectCreate(alias="atomic", redirect="/first")
         )
         students = CRUDBase[SeniorStudent, SeniorStudentCreate, BaseModel](SeniorStudent)
+        orphan = SeniorStudentCreate(user_id=-1, senior_id=-1, image="i.jpg")
         with pytest.raises(HTTPException):
-            students.create(
-                session,
-                obj_in=SeniorStudentCreate(user_id=-1, senior_id=-1, image="i.jpg"),
-            )
+            students.create(session, obj_in=orphan)
         session.rollback()
         assert session.scalar(
             select(Redirect).where(Redirect.alias == "atomic")
