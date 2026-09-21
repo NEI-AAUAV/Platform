@@ -12,6 +12,11 @@ class CRUDFainaMember(CRUDBase[FainaMember, FainaMemberCreate, FainaMemberUpdate
         "fk_faina_member_member_id_user": "User Not Found",
         "fk_faina_member_role_id_faina_role": "Faina Role Not Found",
     }
+    _check_violation_msgs = {
+        "ck_faina_member_identity_required": (
+            "A member needs either a linked user or a name."
+        ),
+    }
 
     def get_faina_member(
         self, db: Session, faina_id: int, member_id: int, role_id: int

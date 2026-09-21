@@ -106,6 +106,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             raise HTTPException(
                 status_code=400, detail="Value is not valid for this resource"
             )
+        else:
+            logger.error("Unhandled integrity error: {}", type(e.orig).__name__)
+            raise HTTPException(
+                status_code=400, detail="Request could not be stored"
+            )
 
     def get(
         self, db: Session, id: _PrimaryKeyType, for_update: bool = False

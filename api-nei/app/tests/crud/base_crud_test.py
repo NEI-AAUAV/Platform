@@ -168,3 +168,52 @@ def test_check_violation_uses_the_mapped_message(db: SessionTesting) -> None:
         )
 
     assert exc.value.detail == "Name is required"
+
+
+class _PermissiveRgm(BaseModel):
+    """Omits mandate_id, which is NOT NULL: mimics a write that bypasses the schema."""
+
+    category: str
+    title: str
+
+
+def test_unclassified_integrity_error_is_not_a_500(db: SessionTesting) -> None:
+    from app import crud
+
+    with pytest.raises(HTTPException) as exc:
+        crud.rgm.create(db, obj_in=_PermissiveRgm(category="ATA", title="x"))
+
+    assert exc.value.status_code == 400
+
+
+def test_team_member_blank_name_reports_the_mapped_message(db: SessionTesting) -> None:
+    """Directus writes bypass Pydantic, so the CHECK is still the real guard."""
+    from app import crud
+
+    with pytest.raises(HTTPException) as exc:
+        crud.team_member.create(
+            db,
+            obj_in=_TeamMemberIn(section_id=_section_id(db), name="   ", role="Vogal"),
+        )
+
+    assert exc.value.detail == "Name cannot be blank!"
+
+
+class _PermissiveFainaMember(BaseModel):
+    faina_id: int
+    role_id: int
+
+
+def test_faina_member_identity_reports_the_mapped_message(db: SessionTesting) -> None:
+    from app import crud
+    from app.models.faina.faina import Faina
+    from app.models.faina.faina_role import FainaRole
+
+    db.add(Faina(id=1, mandate="2099"))
+    db.add(FainaRole(id=1, name="Vogal", weight=0))
+    db.flush()
+
+    with pytest.raises(HTTPException) as exc:
+        crud.faina_member.create(db, obj_in=_PermissiveFainaMember(faina_id=1, role_id=1))
+
+    assert "name" in exc.value.detail.lower()
