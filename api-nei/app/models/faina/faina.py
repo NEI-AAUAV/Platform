@@ -21,7 +21,9 @@ class Faina(Base):
     # a4b6c8d0e2f4). Preferred over `_image` when set.
     image_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
 
-    members: Mapped[List[FainaMember]] = relationship(FainaMember)
+    members: Mapped[List[FainaMember]] = relationship(
+        FainaMember, cascade="all, delete-orphan"
+    )
 
     @declared_attr.directive
     def __table_args__(cls):
