@@ -237,7 +237,7 @@ const NEICalendar = () => {
       }
     }
     // Return NEI category by default
-    return categories.NEI;
+    return { ...categories.NEI, key: "NEI" };
   }
 
   return (
