@@ -3,6 +3,7 @@ export const categories = {
   "2A": { prefixes: ["[2A]"], name: "2º Ano", color: "187 99% 38%" },
   "3A": { prefixes: ["[3A]"], name: "3º Ano", color: "187 99% 30%" },
   MEI: { prefixes: ["[MEI]"], name: "MEI", color: "187 98% 20%" },
+  MDJD: { prefixes: ["[MDJD]"], name: "MDJD", color: "270 70% 45%" },
   TacaUA: { prefixes: ["[Taça UA]"], name: "Taça UA", color: "359 85% 45%" },
   CalendarioEscolar: {
     prefixes: [

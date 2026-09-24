@@ -21,6 +21,17 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const calendarEvents = { _all: {} };
 
+// Google Calendar returns all-day events as date-only strings (e.g. "2026-09-29"),
+// which `new Date()` parses as UTC midnight, shifting the day in timezones behind UTC.
+// Parse those as local midnight instead, to match dateKey()'s local-timezone formatting.
+function parseGoogleDate(dateStr, dateTimeStr) {
+  if (dateStr) {
+    const [year, month, day] = dateStr.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  }
+  return new Date(dateTimeStr);
+}
+
 const variants = {
   enter: (direction) => {
     return {
@@ -122,7 +133,12 @@ const NEICalendar = () => {
 
       for (let day = daySince; day <= dayTo; day++) {
         const dayKey = dateKey(year, month, day);
-        const events = [];
+        // Adjacent months' grids overlap on leading/trailing days (e.g. Oct's grid
+        // includes late Sept days). Reuse the existing array for that day if one was
+        // already created by another month's pass, instead of overwriting it — otherwise
+        // the two months end up with different array references for the same day and
+        // events only get attached to whichever month's array survives last [1].
+        const events = calendarEvents._all[dayKey] || [];
         // Both objects have the same `events` reference for convenience later on [1]
         calendarEvents._all[dayKey] = events;
         calendarEvents[monthKey][dayKey] = events;
@@ -174,8 +190,8 @@ const NEICalendar = () => {
     let events = [];
 
     for (const e of data.items) {
-      let start = new Date(e.start.date || e.start.dateTime);
-      let end = new Date(e.end.date || e.end.dateTime);
+      let start = parseGoogleDate(e.start.date, e.start.dateTime);
+      let end = parseGoogleDate(e.end.date, e.end.dateTime);
       if (e.end.date) {
         // Google API considers end date as the day after the event at midnight,
         // so one day is substracted
@@ -237,7 +253,7 @@ const NEICalendar = () => {
       }
     }
     // Return NEI category by default
-    return categories.NEI;
+    return { ...categories.NEI, key: "NEI" };
   }
 
   return (
