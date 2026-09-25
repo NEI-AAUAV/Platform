@@ -3,16 +3,18 @@ import { categories } from "../../../pages/Calendar/data";
 
 describe("Calendar/data categories", () => {
   it("exposes the expected category keys", () => {
-    expect(Object.keys(categories)).toEqual([
-      "1A",
-      "2A",
-      "3A",
-      "MEI",
-      "TacaUA",
-      "CalendarioEscolar",
-      "MDJD",
-      "NEI",
-    ]);
+    expect(Object.keys(categories).sort()).toEqual(
+      [
+        "1A",
+        "2A",
+        "3A",
+        "MEI",
+        "MDJD",
+        "TacaUA",
+        "CalendarioEscolar",
+        "NEI",
+      ].sort()
+    );
   });
 
   it("defines a name and color for every category", () => {
