@@ -40,7 +40,8 @@ class User(Base):
     )
 
     for_event: Mapped[Optional[int]] = mapped_column(
-        ForeignKey(f"{settings.SCHEMA_NAME}.event.id"), default=None
+        ForeignKey(f"{settings.SCHEMA_NAME}.event.id", ondelete="SET NULL"),
+        default=None,
     )
 
     @hybrid_property
