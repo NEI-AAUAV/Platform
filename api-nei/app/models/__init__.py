@@ -6,7 +6,7 @@ from .team import TeamMandate, TeamSection, TeamMember
 from .video import Video, VideoTag
 from .course import Course
 from .device_login import DeviceLogin
-from .history import History
+from .history import History, HistoryCategory, HistoryMedia
 from .merch import Merch
 from .news import News
 from .note_author import NoteAuthor

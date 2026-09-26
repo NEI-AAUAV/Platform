@@ -154,6 +154,12 @@ class Settings(BaseSettings):
     AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"
     AUTHENTIK_TOKEN: str = ""
 
+    # Google Drive API key (read-only, restricted to the Drive API in the
+    # Google Cloud console). Used only to list images inside a folder an
+    # editor linked from Directus (history.drive_folder_url). Blank means
+    # Drive-folder galleries are silently disabled, not an error.
+    GOOGLE_API_KEY: str = ""
+
     def _postgres_url(self, database: str) -> str:
         return URL.create(
             "postgresql",
