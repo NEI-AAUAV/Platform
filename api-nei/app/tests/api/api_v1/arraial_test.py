@@ -8,6 +8,7 @@ from typing import Any, Generator
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
 from app.api.api_v1 import arraial
 from app.core.config import settings
@@ -44,6 +45,11 @@ def _clean_state() -> Generator[None, Any, None]:
     _reset_state()
 
 
+@pytest.fixture
+def boosts_on(db: Session) -> None:
+    arraial._set_flag(db, arraial.CONFIG_FLAG_KEYS["boosts_enabled"], True)
+
+
 def _add(client: TestClient, nucleo: str, amount: int):
     return client.put(f"{BASE}/points", json={"nucleo": nucleo, "pointIncrement": amount})
 
@@ -63,6 +69,8 @@ def test_config_defaults_to_disabled_and_unpaused(client: TestClient) -> None:
     body = r.json()
     assert body["enabled"] is False
     assert body["paused"] is False
+    assert body["boosts_enabled"] is False
+    assert body["milestones_enabled"] is False
     assert set(body["boosts"]) == set(arraial.VALID_NUCLEOS)
     assert all(v is None for v in body["boosts"].values())
 
@@ -75,6 +83,33 @@ def test_admin_config_update_is_persisted(client: TestClient) -> None:
     cfg = client.get(f"{BASE}/config").json()
     assert cfg["enabled"] is True
     assert cfg["paused"] is True
+
+
+@as_admin
+def test_admin_can_enable_boosts_and_milestones(client: TestClient) -> None:
+    r = client.put(
+        f"{BASE}/config", json={"boosts_enabled": True, "milestones_enabled": True}
+    )
+
+    assert r.status_code == 200
+    cfg = client.get(f"{BASE}/config").json()
+    assert cfg["boosts_enabled"] is True
+    assert cfg["milestones_enabled"] is True
+
+
+@as_admin
+def test_config_update_only_changes_the_fields_sent(client: TestClient) -> None:
+    client.put(f"{BASE}/config", json={"boosts_enabled": True, "milestones_enabled": True})
+
+    r = client.put(f"{BASE}/config", json={"enabled": True, "paused": False})
+
+    assert r.json() == {
+        "enabled": True,
+        "paused": False,
+        "boosts_enabled": True,
+        "milestones_enabled": True,
+        "boosts": {n: None for n in arraial.VALID_NUCLEOS},
+    }
 
 
 @pytest.mark.parametrize(
@@ -161,6 +196,7 @@ def test_rate_limit_returns_429_after_burst(
 
 
 @as_manager
+@pytest.mark.usefixtures("boosts_on")
 def test_boost_multiplies_positive_increments_and_carries_the_remainder(
     client: TestClient,
 ) -> None:
@@ -173,6 +209,7 @@ def test_boost_multiplies_positive_increments_and_carries_the_remainder(
 
 
 @as_manager
+@pytest.mark.usefixtures("boosts_on")
 def test_boost_does_not_affect_negative_increments(client: TestClient) -> None:
     _add(client, "NEI", 10)
     client.post(f"{BASE}/boost/NEI")
@@ -183,6 +220,7 @@ def test_boost_does_not_affect_negative_increments(client: TestClient) -> None:
 
 
 @as_manager
+@pytest.mark.usefixtures("boosts_on")
 def test_boost_only_applies_to_its_own_nucleo(client: TestClient) -> None:
     client.post(f"{BASE}/boost/NEI")
 
@@ -192,6 +230,7 @@ def test_boost_only_applies_to_its_own_nucleo(client: TestClient) -> None:
 
 
 @as_manager
+@pytest.mark.usefixtures("boosts_on")
 def test_activating_a_boost_twice_extends_it(client: TestClient) -> None:
     client.post(f"{BASE}/boost/NEI")
     first = arraial._boost_ends["NEI"]
@@ -204,17 +243,47 @@ def test_activating_a_boost_twice_extends_it(client: TestClient) -> None:
 
 
 @as_manager
+@pytest.mark.usefixtures("boosts_on")
 def test_boost_rejects_unknown_nucleo(client: TestClient) -> None:
     assert client.post(f"{BASE}/boost/NOPE").status_code == 400
 
 
 @as_manager
+@pytest.mark.usefixtures("boosts_on")
 def test_expired_boost_no_longer_applies(client: TestClient) -> None:
     arraial._boost_ends["NEI"] = datetime.now(timezone.utc) - timedelta(seconds=1)
 
     _add(client, "NEI", 10)
 
     assert _points(client)["NEI"] == 10
+
+
+@as_manager
+def test_boost_is_refused_while_boosts_are_disabled(client: TestClient) -> None:
+    r = client.post(f"{BASE}/boost/NEI")
+
+    assert r.status_code == 409
+    assert arraial._boost_ends["NEI"] is None
+
+
+@as_manager
+def test_running_boost_is_ignored_while_boosts_are_disabled(client: TestClient) -> None:
+    arraial._boost_ends["NEI"] = datetime.now(timezone.utc) + timedelta(minutes=5)
+
+    _add(client, "NEI", 10)
+
+    assert _points(client)["NEI"] == 10
+
+
+@as_admin
+@pytest.mark.usefixtures("boosts_on")
+def test_disabling_boosts_cancels_running_boosts(client: TestClient) -> None:
+    client.post(f"{BASE}/boost/NEI")
+
+    r = client.put(f"{BASE}/config", json={"boosts_enabled": False})
+
+    assert r.json()["boosts"]["NEI"] is None
+    assert arraial._boost_ends["NEI"] is None
 
 
 # --- log & rollback ---------------------------------------------------------
@@ -299,6 +368,7 @@ def test_rollback_of_unknown_entry_is_404(client: TestClient) -> None:
 
 
 @as_manager
+@pytest.mark.usefixtures("boosts_on")
 def test_rollback_of_a_boost_cancels_it(client: TestClient) -> None:
     client.post(f"{BASE}/boost/NEI")
     entry_id = client.get(f"{BASE}/log").json()["items"][0]["id"]
@@ -321,6 +391,7 @@ def test_only_admin_can_reset(client: TestClient, status_code: int) -> None:
 
 
 @as_admin
+@pytest.mark.usefixtures("boosts_on")
 def test_reset_clears_points_boosts_and_log(client: TestClient) -> None:
     _add(client, "NEI", 5)
     client.post(f"{BASE}/boost/NEI")

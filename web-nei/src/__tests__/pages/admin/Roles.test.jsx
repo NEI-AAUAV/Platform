@@ -110,7 +110,7 @@ describe('Roles', () => {
 
   it('calls setArraialConfig when arraial toggle changes', async () => {
     service.getArraialConfig.mockResolvedValue({ enabled: false, paused: false })
-    service.setArraialConfig.mockResolvedValue({})
+    service.setArraialConfig.mockResolvedValue({ enabled: true, paused: false })
     setup()
     render(<Component />)
     await waitFor(() =>
@@ -123,8 +123,28 @@ describe('Roles', () => {
       .find((c) => c.className.includes('toggle') && !c.className.includes('checkbox-sm'))
     fireEvent.click(enableToggle)
     await waitFor(() =>
-      expect(service.setArraialConfig).toHaveBeenCalledWith(true, false)
+      expect(service.setArraialConfig).toHaveBeenCalledWith({ enabled: true })
     )
+  })
+
+  it.each([
+    ['Boosts (1.25x)', 'boosts_enabled'],
+    ['Shot Capacete milestones', 'milestones_enabled'],
+  ])('toggling "%s" saves only %s', async (label, field) => {
+    const cfg = { enabled: true, paused: false, boosts_enabled: false, milestones_enabled: false }
+    service.getArraialConfig.mockResolvedValue(cfg)
+    service.setArraialConfig.mockResolvedValue({ ...cfg, [field]: true })
+    setup()
+    render(<Component />)
+
+    const toggle = await screen.findByLabelText(label)
+    expect(toggle).not.toBeChecked()
+    fireEvent.click(toggle)
+
+    await waitFor(() =>
+      expect(service.setArraialConfig).toHaveBeenCalledWith({ [field]: true })
+    )
+    await waitFor(() => expect(screen.getByLabelText(label)).toBeChecked())
   })
 
   it('shows no-SSO badge for user without authentik_sub', async () => {
