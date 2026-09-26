@@ -1,0 +1,171 @@
+/* ---- Lightbox ----------------------------------------------------- */
+
+.history-lightbox {
+  max-width: 90vw !important;
+  width: min(900px, 90vw);
+  padding: 1rem !important;
+  background: hsl(var(--background) / 0.98) !important;
+}
+
+/* The dialog's own close button (components/ui/dialog.tsx) is a bare
+   16x16 icon with no padding — a real touch target on mobile, not just a
+   visual one, needs ~44px. Scoped here rather than widening it for every
+   dialog in the app. */
+.history-lightbox button.absolute {
+  top: 0.25rem;
+  right: 0.25rem;
+  padding: 0.85rem;
+}
+
+.history-lightbox__status {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.history-lightbox__image {
+  width: 100%;
+  /* A loading or broken image has no intrinsic size, so without a floor
+     the dialog collapses to a sliver — caption text ends up crammed next
+     to a tiny broken-image icon. min-height keeps the dialog's shape
+     stable through loading, success, and failure alike. */
+  min-height: 40vh;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  background: hsl(var(--muted) / 0.4);
+}
+
+.history-lightbox__caption {
+  margin-top: 0.75rem;
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+}
+
+.history-lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: hsl(var(--background) / 0.8);
+  border-radius: 50%;
+  padding: 0.65rem;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--foreground));
+}
+
+.history-lightbox__nav:hover {
+  background: hsl(var(--background));
+  transform: translateY(-50%) scale(1.08);
+}
+
+.history-lightbox__nav {
+  transition-property: background, transform;
+  transition-duration: var(--duration-fast, 150ms);
+}
+
+.history-lightbox__nav--prev {
+  left: 0.5rem;
+}
+
+.history-lightbox__nav--next {
+  right: 0.5rem;
+}
+
+.history-lightbox__counter {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 1rem;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Nav buttons and the counter sit over the photo, not the whole dialog
+   (which now also holds the caption and the thumbnail strip). */
+.history-lightbox__stage {
+  position: relative;
+  margin: 0;
+}
+
+.history-lightbox__broken {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 40vh;
+  border-radius: 0.5rem;
+  background: hsl(var(--muted) / 0.4);
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+}
+
+.history-lightbox__loading-more {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.history-lightbox__strip {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0.75rem 0 0;
+  padding: 0.25rem 0.1rem;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.history-lightbox__thumb {
+  display: block;
+  flex: none;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  opacity: 0.55;
+  scroll-snap-align: center;
+  background: hsl(var(--muted) / 0.4);
+  transition-property: opacity, border-color;
+  transition-duration: var(--duration-fast, 150ms);
+}
+
+.history-lightbox__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.history-lightbox__thumb:hover {
+  opacity: 0.85;
+}
+
+.history-lightbox__thumb[aria-current="true"] {
+  opacity: 1;
+  border-color: hsl(var(--primary));
+}
+
+.history-lightbox__thumb:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+@media (max-width: 639px) {
+  .history-lightbox__thumb {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+.history-card__gallery-count {
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+}

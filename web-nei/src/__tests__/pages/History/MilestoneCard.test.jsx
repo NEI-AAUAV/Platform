@@ -168,4 +168,34 @@ describe("MilestoneCard", () => {
     );
     expect(container.querySelector("img")).not.toBeInTheDocument();
   });
+
+  it("shows how many photos the gallery has when the API knows", () => {
+    render(
+      <MilestoneCard
+        milestone={makeMilestone({ has_drive_gallery: true, gallery_count: 12 })}
+        onOpenGallery={vi.fn()}
+      />
+    );
+    expect(screen.getByRole("button", { name: /ver galeria \(12 fotos\)/i })).toBeInTheDocument();
+  });
+
+  it("hides the gallery button when the Drive folder is known to be empty", () => {
+    render(
+      <MilestoneCard
+        milestone={makeMilestone({ has_drive_gallery: true, gallery_count: 0 })}
+        onOpenGallery={vi.fn()}
+      />
+    );
+    expect(screen.queryByRole("button", { name: /ver galeria/i })).not.toBeInTheDocument();
+  });
+
+  it("uses the API cover (e.g. a Drive folder photo) when given", () => {
+    const { container } = render(
+      <MilestoneCard
+        milestone={makeMilestone({ cover: "drive-cover.jpg" })}
+        onOpenGallery={vi.fn()}
+      />
+    );
+    expect(container.querySelector("img")).toHaveAttribute("src", "drive-cover.jpg");
+  });
 });

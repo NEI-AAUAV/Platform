@@ -24,6 +24,12 @@ HISTORY = [
 ]
 
 @pytest.fixture(autouse=True)
+def lh3_image_urls(monkeypatch):
+    """Pin the Drive image prefix: deployments override it (nginx proxy)."""
+    monkeypatch.setattr(settings, "DRIVE_IMAGE_BASE_URL", "https://lh3.googleusercontent.com/d/")
+
+
+@pytest.fixture(autouse=True)
 def setup_database(db: SessionTesting):
     """Setup the database before each test in this module."""
 
@@ -97,6 +103,7 @@ def test_editorial_fields_are_returned(client: TestClient, db: SessionTesting) -
         "slug": "categoria-teste",
         "label": "Categoria de teste",
         "color": "hsl(0 0% 50%)",
+        "weight": 0,
     }
     assert match["featured"] is True
     assert match["mandate"] == "2023/24"
@@ -275,3 +282,180 @@ def test_list_is_sorted_by_moment_then_id_descending(
     r = client.get(f"{settings.API_V1_STR}/history")
     titles = [el["title"] for el in r.json() if el["moment"] == same_day.isoformat()]
     assert titles == ["Marco B", "Marco A"]
+
+
+# --- Drive folder galleries -------------------------------------------------
+
+FOLDER_URL = "https://drive.google.com/drive/folders/1FolderIdAbC"
+
+
+def _fake_folder(monkeypatch, result) -> list[str]:
+    """Replace the Drive client's folder lookup; returns the ids asked for."""
+    from app.api.api_v1 import history as history_api
+
+    asked: list[str] = []
+
+    async def list_folder(folder_id: str):
+        asked.append(folder_id)
+        if isinstance(result, Exception):
+            raise result
+        return result
+
+    monkeypatch.setattr(history_api.drive_client, "list_folder", list_folder)
+    return asked
+
+
+def _folder(*file_ids: str, status: str = "ok"):
+    from app.integrations.google_drive import DriveFolderResult, DriveImage
+
+    return DriveFolderResult(
+        status=status,
+        images=tuple(DriveImage(file_id=f, width=800, height=600) for f in file_ids),
+    )
+
+
+def _milestone_with_folder(db: SessionTesting, title: str, **extra) -> History:
+    milestone = History(moment=date(2024, 11, 1), title=title, drive_folder_url=FOLDER_URL, **extra)
+    db.add(milestone)
+    db.commit()
+    return milestone
+
+
+def _listed(client: TestClient, title: str) -> dict:
+    r = client.get(f"{settings.API_V1_STR}/history")
+    assert r.status_code == 200
+    return next(el for el in r.json() if el["title"] == title)
+
+
+def test_media_ids_are_namespaced_by_source(client: TestClient, db: SessionTesting) -> None:
+    import uuid
+
+    milestone = History(moment=date(2024, 12, 1), title="Ids estáveis")
+    db.add(milestone)
+    db.flush()
+    upload = HistoryMedia(history_id=milestone.id, photo_asset=uuid.uuid4(), weight=0)
+    db.add_all([
+        upload,
+        HistoryMedia(history_id=milestone.id, drive_url="https://drive.google.com/file/d/1AbCdEfGhIjK/view", weight=1),
+    ])
+    db.commit()
+
+    ids = [m["id"] for m in _listed(client, "Ids estáveis")["media"]]
+    assert ids == [f"upload:{upload.id}", "drive:1AbCdEfGhIjK"]
+
+
+def test_list_counts_folder_photos_and_uses_one_as_cover(
+    client: TestClient, db: SessionTesting, monkeypatch
+) -> None:
+    asked = _fake_folder(monkeypatch, _folder("f1", "f2", "f3"))
+    _milestone_with_folder(db, "Pasta com fotos")
+
+    match = _listed(client, "Pasta com fotos")
+    assert asked == ["1FolderIdAbC"]
+    assert match["gallery_count"] == 3
+    assert match["cover"] == "https://lh3.googleusercontent.com/d/f1=w600"
+    assert match["media"] == []  # folder photos are only listed by /gallery
+
+
+def test_list_prefers_the_milestone_image_as_cover(
+    client: TestClient, db: SessionTesting, monkeypatch
+) -> None:
+    _fake_folder(monkeypatch, _folder("f1"))
+    _milestone_with_folder(db, "Capa própria", image="/capa.png")
+
+    assert _listed(client, "Capa própria")["cover"].endswith("/capa.png")
+
+
+def test_list_counts_an_unavailable_folder_as_empty(
+    client: TestClient, db: SessionTesting, monkeypatch
+) -> None:
+    _fake_folder(monkeypatch, _folder(status="unavailable"))
+    _milestone_with_folder(db, "Pasta privada")
+
+    match = _listed(client, "Pasta privada")
+    assert match["gallery_count"] == 0
+    assert match["cover"] is None
+
+
+@pytest.mark.parametrize("outcome", ["error", "timeout"])
+def test_list_leaves_the_count_unknown_when_drive_fails(
+    client: TestClient, db: SessionTesting, monkeypatch, outcome: str
+) -> None:
+    import asyncio
+
+    _fake_folder(
+        monkeypatch,
+        _folder(status="error") if outcome == "error" else asyncio.TimeoutError(),
+    )
+    _milestone_with_folder(db, "Drive em baixo")
+
+    match = _listed(client, "Drive em baixo")
+    assert match["gallery_count"] is None
+    assert match["has_drive_gallery"] is True
+
+
+def test_list_without_folder_counts_own_media(client: TestClient, db: SessionTesting) -> None:
+    milestone = History(moment=date(2024, 12, 2), title="Só fotos próprias")
+    db.add(milestone)
+    db.flush()
+    db.add(HistoryMedia(history_id=milestone.id, drive_url="https://drive.google.com/file/d/1AbCdEfGhIjK/view", weight=0))
+    db.commit()
+
+    match = _listed(client, "Só fotos próprias")
+    assert match["gallery_count"] == 1
+    assert match["cover"] == "https://lh3.googleusercontent.com/d/1AbCdEfGhIjK=w600"
+
+
+def test_gallery_appends_folder_photos_without_duplicates(
+    client: TestClient, db: SessionTesting, monkeypatch
+) -> None:
+    _fake_folder(monkeypatch, _folder("1AbCdEfGhIjK", "f2"))
+    milestone = _milestone_with_folder(db, "Galeria mista")
+    db.add(HistoryMedia(history_id=milestone.id, drive_url="https://drive.google.com/file/d/1AbCdEfGhIjK/view", caption="Destacada", weight=0))
+    db.commit()
+
+    data = client.get(f"{settings.API_V1_STR}/history/{milestone.id}/gallery").json()
+    assert data["drive_status"] == "ok"
+    assert [m["id"] for m in data["media"]] == ["drive:1AbCdEfGhIjK", "drive:f2"]
+    assert data["media"][0]["caption"] == "Destacada"
+    assert (data["media"][1]["width"], data["media"][1]["height"]) == (800, 600)
+
+
+def test_gallery_reports_an_unavailable_folder(
+    client: TestClient, db: SessionTesting, monkeypatch
+) -> None:
+    _fake_folder(monkeypatch, _folder(status="unavailable"))
+    milestone = _milestone_with_folder(db, "Galeria privada")
+
+    data = client.get(f"{settings.API_V1_STR}/history/{milestone.id}/gallery").json()
+    assert data["drive_status"] == "unavailable"
+    assert data["media"] == []
+
+
+def test_gallery_without_folder_has_no_drive_status(client: TestClient, db: SessionTesting) -> None:
+    milestone = History(moment=date(2024, 12, 3), title="Sem pasta")
+    db.add(milestone)
+    db.commit()
+
+    data = client.get(f"{settings.API_V1_STR}/history/{milestone.id}/gallery").json()
+    assert data["drive_status"] is None
+
+
+@pytest.mark.parametrize(
+    "url,expected",
+    [
+        ("https://example.com/a", "https://example.com/a"),
+        ("http://example.com/a", "http://example.com/a"),
+        ("javascript:alert(1)", None),
+        ("JaVaScRiPt:alert(1)", None),
+        ("data:text/html,<script>1</script>", None),
+        ("//evil.example.com", None),
+    ],
+)
+def test_external_url_only_allows_http_links(
+    client: TestClient, db: SessionTesting, url: str, expected: str | None
+) -> None:
+    db.add(History(moment=date(2024, 12, 4), title="Ligação", external_url=url))
+    db.commit()
+
+    assert _listed(client, "Ligação")["external_url"] == expected

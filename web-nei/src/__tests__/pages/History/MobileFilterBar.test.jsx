@@ -11,13 +11,13 @@ const MILESTONES = [
 ];
 
 describe("MobileFilterBar", () => {
-  it("renders nothing when there are no categories and no years", () => {
+  it("renders nothing when there are no categories and no mandates", () => {
     const { container } = render(
       <MobileFilterBar
         milestones={[]}
         activeCategory={null}
         onCategoryChange={vi.fn()}
-        years={[]}
+        mandates={[]}
       />
     );
     expect(container).toBeEmptyDOMElement();
@@ -31,7 +31,7 @@ describe("MobileFilterBar", () => {
         milestones={MILESTONES}
         activeCategory={null}
         onCategoryChange={onCategoryChange}
-        years={[2024]}
+        mandates={["2024/25"]}
       />
     );
 
@@ -43,10 +43,10 @@ describe("MobileFilterBar", () => {
     expect(onCategoryChange).toHaveBeenCalledWith("evento");
   });
 
-  it("scrolls to the chosen year and resets the select", async () => {
+  it("scrolls to the chosen mandate and resets the select", async () => {
     const scrollIntoView = vi.fn();
-    document.body.innerHTML = '<div id="history-year-2024"></div>';
-    document.getElementById("history-year-2024").scrollIntoView = scrollIntoView;
+    document.body.innerHTML = '<div id="history-mandato-2024-25"></div>';
+    document.getElementById("history-mandato-2024-25").scrollIntoView = scrollIntoView;
 
     const user = userEvent.setup();
     render(
@@ -54,14 +54,14 @@ describe("MobileFilterBar", () => {
         milestones={MILESTONES}
         activeCategory={null}
         onCategoryChange={vi.fn()}
-        years={[2024, 2018]}
+        mandates={["2024/25", "2017/18"]}
       />
     );
 
-    const yearSelect = screen.getByRole("combobox", { name: "Saltar para ano" });
-    await user.selectOptions(yearSelect, "2024");
+    const mandateSelect = screen.getByRole("combobox", { name: "Saltar para mandato" });
+    await user.selectOptions(mandateSelect, "2024/25");
 
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
-    expect(yearSelect).toHaveValue("");
+    expect(mandateSelect).toHaveValue("");
   });
 });

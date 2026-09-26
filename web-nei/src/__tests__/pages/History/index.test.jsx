@@ -2,7 +2,7 @@ import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 
 vi.mock("../../../services/NEIService", () => ({
   default: { getHistory: vi.fn(), getHistoryGallery: vi.fn() },
@@ -19,10 +19,17 @@ vi.mock("react-markdown", () => ({
 import service from "../../../services/NEIService";
 import { Component as HistoryPage } from "../../../pages/History";
 
+let location;
+function LocationSpy() {
+  location = useLocation();
+  return null;
+}
+
 function renderPage(initialEntries = ["/history"]) {
   return render(
     <MemoryRouter initialEntries={initialEntries}>
       <HistoryPage />
+      <LocationSpy />
     </MemoryRouter>
   );
 }
@@ -159,12 +166,76 @@ describe("History page", () => {
     await waitFor(() => expect(service.getHistoryGallery).toHaveBeenCalledWith(1));
   });
 
-  it("groups milestones into year sections", async () => {
+  it("groups milestones into mandate sections", async () => {
     service.getHistory.mockResolvedValue(MILESTONES);
     renderPage();
 
     await screen.findByText("Fundação do NEI");
-    expect(screen.getByRole("heading", { name: "1993" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "2018" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "1993/94" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "2017/18" })).toBeInTheDocument();
+  });
+
+  it("puts the open gallery in the URL and removes it on close", async () => {
+    service.getHistory.mockResolvedValue(MILESTONES);
+    service.getHistoryGallery.mockResolvedValue({ id: 1, title: "x", media: [] });
+    const user = userEvent.setup();
+    renderPage(["/history?categoria=fundacao"]);
+
+    await screen.findByText("Fundação do NEI");
+    await user.click(screen.getByRole("button", { name: /ver galeria/i }));
+    expect(new URLSearchParams(location.search).get("marco")).toBe("1");
+    expect(new URLSearchParams(location.search).get("categoria")).toBe("fundacao");
+
+    await user.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(new URLSearchParams(location.search).get("marco")).toBeNull()
+    );
+    expect(new URLSearchParams(location.search).get("categoria")).toBe("fundacao");
+  });
+
+  it("opens the gallery on the linked photo from a shared URL", async () => {
+    service.getHistory.mockResolvedValue(MILESTONES);
+    service.getHistoryGallery.mockResolvedValue({
+      id: 1,
+      title: "Fundação do NEI",
+      media: [
+        { id: "drive:a", url: "a.jpg", thumb: "a-t.jpg", caption: "Foto A", source: "drive" },
+        { id: "drive:b", url: "b.jpg", thumb: "b-t.jpg", caption: "Foto B", source: "drive" },
+      ],
+    });
+    renderPage(["/history?marco=1&foto=2"]);
+
+    expect(await screen.findByText("2 / 2")).toBeInTheDocument();
+    expect(screen.getByAltText("Foto B")).toBeInTheDocument();
+  });
+
+  it("records the current photo in the URL while browsing", async () => {
+    service.getHistory.mockResolvedValue(MILESTONES);
+    service.getHistoryGallery.mockResolvedValue({
+      id: 1,
+      title: "Fundação do NEI",
+      media: [
+        { id: "drive:a", url: "a.jpg", thumb: "a-t.jpg", source: "drive" },
+        { id: "drive:b", url: "b.jpg", thumb: "b-t.jpg", source: "drive" },
+      ],
+    });
+    const user = userEvent.setup();
+    renderPage(["/history?marco=1"]);
+
+    await screen.findByText("1 / 2");
+    await user.click(screen.getByLabelText("Foto seguinte"));
+    expect(new URLSearchParams(location.search).get("foto")).toBe("2");
+  });
+
+  it("retries loading after an error", async () => {
+    service.getHistory
+      .mockRejectedValueOnce(new Error("network down"))
+      .mockResolvedValueOnce(MILESTONES);
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.click(await screen.findByRole("button", { name: /tentar de novo/i }));
+    expect(await screen.findByText("Fundação do NEI")).toBeInTheDocument();
+    expect(service.getHistory).toHaveBeenCalledTimes(2);
   });
 });

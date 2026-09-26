@@ -1,8 +1,12 @@
 import { describe, it, expect } from "vitest";
 import {
   academicYear,
-  groupByYear,
+  groupByMandate,
+  mandateAnchorId,
   formatMilestoneDate,
+  galleryCount,
+  hasGallery,
+  milestoneCover,
   mandateLabel,
   usedCategories,
 } from "../../../pages/History/utils";
@@ -25,22 +29,68 @@ describe("academicYear", () => {
   });
 });
 
-describe("groupByYear", () => {
-  it("groups milestones by calendar year, newest year first", () => {
+describe("groupByMandate", () => {
+  it("groups milestones by mandate, newest mandate first, keeping input order", () => {
     const milestones = [
-      { id: 1, moment: "2022-01-01" },
-      { id: 2, moment: "2024-06-01" },
-      { id: 3, moment: "2022-12-01" },
+      { id: 1, moment: "2025-03-01", mandate: null }, // 2024/25
+      { id: 2, moment: "2025-10-01", mandate: null }, // 2025/26
+      { id: 3, moment: "2024-11-01", mandate: null }, // 2024/25
     ];
 
-    const groups = groupByYear(milestones);
+    const groups = groupByMandate(milestones);
 
-    expect(groups.map((g) => g.year)).toEqual([2024, 2022]);
+    expect(groups.map((g) => g.mandate)).toEqual(["2025/26", "2024/25"]);
     expect(groups[1].items.map((m) => m.id)).toEqual([1, 3]);
   });
 
+  it("honours an explicit editorial mandate over the date", () => {
+    const groups = groupByMandate([{ id: 1, moment: "2025-10-01", mandate: "2023/24" }]);
+    expect(groups[0].mandate).toBe("2023/24");
+  });
+
   it("returns an empty array for no milestones", () => {
-    expect(groupByYear([])).toEqual([]);
+    expect(groupByMandate([])).toEqual([]);
+  });
+});
+
+describe("mandateAnchorId", () => {
+  it("builds a URL-safe anchor id", () => {
+    expect(mandateAnchorId("2025/26")).toBe("history-mandato-2025-26");
+  });
+});
+
+describe("galleryCount / hasGallery", () => {
+  const base = { media: [], has_drive_gallery: false };
+
+  it("uses the API count when present", () => {
+    expect(galleryCount({ ...base, has_drive_gallery: true, gallery_count: 12 })).toBe(12);
+  });
+
+  it("is unknown (null) for an unresolved Drive folder, and still offers the gallery", () => {
+    const milestone = { ...base, has_drive_gallery: true, gallery_count: null };
+    expect(galleryCount(milestone)).toBeNull();
+    expect(hasGallery(milestone)).toBe(true);
+  });
+
+  it("hides the gallery for a Drive folder known to be empty", () => {
+    expect(hasGallery({ ...base, has_drive_gallery: true, gallery_count: 0 })).toBe(false);
+  });
+
+  it("falls back to the own media count without a Drive folder", () => {
+    expect(galleryCount({ ...base, media: [{ id: "upload:1" }] })).toBe(1);
+    expect(hasGallery(base)).toBe(false);
+  });
+});
+
+describe("milestoneCover", () => {
+  it("prefers the API cover", () => {
+    expect(milestoneCover({ cover: "c.jpg", image: "i.jpg", media: [] })).toBe("c.jpg");
+  });
+
+  it("falls back to image, then first media thumbnail, then null", () => {
+    expect(milestoneCover({ image: "i.jpg", media: [] })).toBe("i.jpg");
+    expect(milestoneCover({ image: null, media: [{ thumb: "t.jpg" }] })).toBe("t.jpg");
+    expect(milestoneCover({ image: null, media: [] })).toBeNull();
   });
 });
 
@@ -77,6 +127,14 @@ describe("usedCategories", () => {
       { slug: "evento", label: "Evento", color: "blue" },
       { slug: "fundacao", label: "Fundação", color: "green" },
     ]);
+  });
+
+  it("orders categories by their CMS weight before the label", () => {
+    const milestones = [
+      { category: { slug: "a", label: "Alfa", weight: 2 } },
+      { category: { slug: "z", label: "Zulu", weight: 1 } },
+    ];
+    expect(usedCategories(milestones).map((c) => c.slug)).toEqual(["z", "a"]);
   });
 
   it("returns an empty array when no milestone has a category", () => {

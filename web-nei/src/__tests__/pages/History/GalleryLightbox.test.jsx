@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../services/NEIService", () => ({
@@ -15,8 +15,8 @@ import service from "../../../services/NEIService";
 import GalleryLightbox from "../../../pages/History/GalleryLightbox";
 
 const uploadMedia = [
-  { id: 1, url: "a.jpg", thumb: "a-thumb.jpg", caption: "Foto A", source: "upload" },
-  { id: 2, url: "b.jpg", thumb: "b-thumb.jpg", caption: "Foto B", source: "upload" },
+  { id: "upload:1", url: "a.jpg", thumb: "a-thumb.jpg", caption: "Foto A", source: "upload" },
+  { id: "upload:2", url: "b.jpg", thumb: "b-thumb.jpg", caption: "Foto B", source: "upload" },
 ];
 
 function makeMilestone(overrides = {}) {
@@ -54,7 +54,7 @@ describe("GalleryLightbox", () => {
       title: "Fundação do NEI",
       media: [
         ...uploadMedia,
-        { id: 3, url: "c.jpg", thumb: "c-thumb.jpg", caption: "Foto C", source: "drive" },
+        { id: "drive:c", url: "c.jpg", thumb: "c-thumb.jpg", caption: "Foto C", source: "drive" },
       ],
     });
 
@@ -173,5 +173,74 @@ describe("GalleryLightbox", () => {
     await screen.findByText("1 / 2");
     await user.keyboard("{Escape}");
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it("opens on the requested photo", async () => {
+    render(<GalleryLightbox milestone={makeMilestone()} initialIndex={1} onClose={vi.fn()} />);
+    expect(await screen.findByText("2 / 2")).toBeInTheDocument();
+    expect(screen.getByAltText("Foto B")).toBeInTheDocument();
+  });
+
+  it("falls back to the first photo when the requested one does not exist", async () => {
+    render(<GalleryLightbox milestone={makeMilestone()} initialIndex={9} onClose={vi.fn()} />);
+    expect(await screen.findByText("1 / 2")).toBeInTheDocument();
+  });
+
+  it("reports every photo change", async () => {
+    const onIndexChange = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <GalleryLightbox milestone={makeMilestone()} onIndexChange={onIndexChange} onClose={vi.fn()} />
+    );
+
+    await screen.findByText("1 / 2");
+    await user.click(screen.getByLabelText("Foto seguinte"));
+    expect(onIndexChange).toHaveBeenLastCalledWith(1);
+  });
+
+  it("jumps to a photo from the thumbnail strip", async () => {
+    const user = userEvent.setup();
+    render(<GalleryLightbox milestone={makeMilestone()} onClose={vi.fn()} />);
+
+    await user.click(await screen.findByRole("button", { name: "Foto 2" }));
+    expect(screen.getByText("2 / 2")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Foto 2" })).toHaveAttribute("aria-current", "true");
+  });
+
+  it("shows a placeholder instead of a broken image when a photo fails to load", async () => {
+    render(<GalleryLightbox milestone={makeMilestone()} onClose={vi.fn()} />);
+
+    fireEvent.error(await screen.findByAltText("Foto A"));
+    expect(screen.getByRole("img", { name: "Foto indisponível" })).toBeInTheDocument();
+    // Navigation keeps working past the broken photo.
+    expect(screen.getByText("1 / 2")).toBeInTheDocument();
+  });
+
+  it("sizes the photo from its known dimensions", async () => {
+    render(
+      <GalleryLightbox
+        milestone={makeMilestone({
+          media: [{ id: "drive:x", url: "x.jpg", thumb: "x-t.jpg", caption: "X", source: "drive", width: 800, height: 600 }],
+        })}
+        onClose={vi.fn()}
+      />
+    );
+
+    const image = await screen.findByAltText("X");
+    expect(image).toHaveAttribute("width", "800");
+    expect(image).toHaveAttribute("height", "600");
+  });
+
+  it("says more photos are loading while the Drive folder is fetched on top of own media", async () => {
+    let resolveFetch;
+    service.getHistoryGallery.mockReturnValue(new Promise((resolve) => (resolveFetch = resolve)));
+
+    render(<GalleryLightbox milestone={makeMilestone({ has_drive_gallery: true })} onClose={vi.fn()} />);
+
+    expect(await screen.findByText("A carregar mais fotos…")).toBeInTheDocument();
+    resolveFetch({ id: 11, title: "x", media: uploadMedia });
+    await waitFor(() =>
+      expect(screen.queryByText("A carregar mais fotos…")).not.toBeInTheDocument()
+    );
   });
 });

@@ -591,92 +591,6 @@
   margin-bottom: 0.6rem;
 }
 
-/* ---- Lightbox ----------------------------------------------------- */
-
-.history-lightbox {
-  max-width: 90vw !important;
-  width: min(900px, 90vw);
-  padding: 1rem !important;
-  background: hsl(var(--background) / 0.98) !important;
-}
-
-/* The dialog's own close button (components/ui/dialog.tsx) is a bare
-   16x16 icon with no padding — a real touch target on mobile, not just a
-   visual one, needs ~44px. Scoped here rather than widening it for every
-   dialog in the app. */
-.history-lightbox button.absolute {
-  top: 0.25rem;
-  right: 0.25rem;
-  padding: 0.85rem;
-}
-
-.history-lightbox__status {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: hsl(var(--muted-foreground));
-}
-
-.history-lightbox__image {
-  width: 100%;
-  /* A loading or broken image has no intrinsic size, so without a floor
-     the dialog collapses to a sliver — caption text ends up crammed next
-     to a tiny broken-image icon. min-height keeps the dialog's shape
-     stable through loading, success, and failure alike. */
-  min-height: 40vh;
-  max-height: 70vh;
-  object-fit: contain;
-  border-radius: 0.5rem;
-  background: hsl(var(--muted) / 0.4);
-}
-
-.history-lightbox__caption {
-  margin-top: 0.75rem;
-  text-align: center;
-  color: hsl(var(--muted-foreground));
-  font-size: 0.9rem;
-}
-
-.history-lightbox__nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: hsl(var(--background) / 0.8);
-  border-radius: 50%;
-  padding: 0.65rem;
-  min-width: 44px;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: hsl(var(--foreground));
-}
-
-.history-lightbox__nav:hover {
-  background: hsl(var(--background));
-  transform: translateY(-50%) scale(1.08);
-}
-
-.history-lightbox__nav {
-  transition-property: background, transform;
-  transition-duration: var(--duration-fast, 150ms);
-}
-
-.history-lightbox__nav--prev {
-  left: 0.5rem;
-}
-
-.history-lightbox__nav--next {
-  right: 0.5rem;
-}
-
-.history-lightbox__counter {
-  position: absolute;
-  bottom: 0.75rem;
-  right: 1rem;
-  font-size: 0.75rem;
-  color: hsl(var(--muted-foreground));
-}
-
 /* ---- Empty / error states ------------------------------------------ */
 
 .history-empty {
@@ -693,6 +607,29 @@
   color: hsl(var(--foreground));
   font-size: 1.25rem;
   font-weight: 700;
+}
+
+.history-empty__retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  transition: transform var(--duration-fast, 150ms) var(--ease-out-expo, ease);
+}
+
+.history-empty__retry:hover {
+  transform: translateY(-1px);
+}
+
+.history-empty__retry:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
 }
 
 /* ---- Skeleton -------------------------------------------------------- */
