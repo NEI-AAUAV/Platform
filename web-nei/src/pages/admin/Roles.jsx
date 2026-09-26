@@ -93,7 +93,12 @@ export function Component() {
       try {
         const data = JSON.parse(event.data);
         if (data?.topic === "ARRAIAL_CONFIG" && typeof data.enabled === "boolean") {
-          setArraialConfig({ enabled: data.enabled, paused: !!data.paused });
+          setArraialConfig({
+            enabled: data.enabled,
+            paused: !!data.paused,
+            boosts_enabled: !!data.boosts_enabled,
+            milestones_enabled: !!data.milestones_enabled,
+          });
         }
       } catch {
         // Ignore non-JSON or unexpected messages
@@ -134,13 +139,13 @@ export function Component() {
     }
   };
 
-  const saveArraialConfig = async (enabled, paused) => {
-    const finalPaused = paused ?? arraialConfig?.paused ?? false;
+  const saveArraialConfig = async (changes, label) => {
     try {
       setCfgSaving(true);
-      await service.setArraialConfig(enabled, finalPaused);
-      setArraialConfig({ enabled, paused: finalPaused });
-      setSuccessMessage(`Arraial ${enabled ? "enabled" : "disabled"} successfully`);
+      const saved = await service.setArraialConfig(changes);
+      setArraialConfig(saved);
+      const [value] = Object.values(changes);
+      setSuccessMessage(`${label} ${value ? "enabled" : "disabled"} successfully`);
       const id = setTimeout(() => setSuccessMessage(null), SUCCESS_MESSAGE_TIMEOUT);
       timeoutsRef.current.push(id);
     } catch (e) {
@@ -188,7 +193,7 @@ export function Component() {
                   type="checkbox"
                   className="toggle"
                   checked={!!arraialConfig.enabled}
-                  onChange={(e) => saveArraialConfig(e.target.checked, arraialConfig.paused)}
+                  onChange={(e) => saveArraialConfig({ enabled: e.target.checked }, "Arraial")}
                   disabled={cfgSaving}
                 />
               </label>
@@ -198,7 +203,27 @@ export function Component() {
                   type="checkbox"
                   className="toggle toggle-warning"
                   checked={!!arraialConfig.paused}
-                  onChange={(e) => saveArraialConfig(arraialConfig.enabled, e.target.checked)}
+                  onChange={(e) => saveArraialConfig({ paused: e.target.checked }, "Pause")}
+                  disabled={cfgSaving}
+                />
+              </label>
+              <label className="label cursor-pointer gap-3">
+                <span className="label-text">Boosts (1.25x)</span>
+                <input
+                  type="checkbox"
+                  className="toggle"
+                  checked={!!arraialConfig.boosts_enabled}
+                  onChange={(e) => saveArraialConfig({ boosts_enabled: e.target.checked }, "Boosts")}
+                  disabled={cfgSaving}
+                />
+              </label>
+              <label className="label cursor-pointer gap-3">
+                <span className="label-text">Shot Capacete milestones</span>
+                <input
+                  type="checkbox"
+                  className="toggle"
+                  checked={!!arraialConfig.milestones_enabled}
+                  onChange={(e) => saveArraialConfig({ milestones_enabled: e.target.checked }, "Milestones")}
                   disabled={cfgSaving}
                 />
               </label>

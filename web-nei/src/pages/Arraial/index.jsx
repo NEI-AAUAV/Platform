@@ -36,6 +36,7 @@ export function Component() {
     const lastRecordedMapRef = React.useRef({});
     const lastRecordedAtRef = React.useRef(0);
     const hasBaselineRef = React.useRef(false);
+    const milestonesEnabledRef = React.useRef(false);
     const initParticles = React.useCallback(async (engine) => {
         const mod = await import('tsparticles');
         await mod.loadFull(engine);
@@ -106,7 +107,9 @@ export function Component() {
 
     const handlePointsUpdate = React.useCallback((data) => {
         if (hasBaselineRef.current) {
-            maybeTriggerConfetti(prevPointsRef.current, data);
+            if (milestonesEnabledRef.current) {
+                maybeTriggerConfetti(prevPointsRef.current, data);
+            }
         } else {
             hasBaselineRef.current = true;
         }
@@ -120,6 +123,7 @@ export function Component() {
         onPointsUpdate: handlePointsUpdate,
     });
     const history = useArraialHistory(auth);
+    milestonesEnabledRef.current = realtime.milestonesEnabled;
 
     
     const handleSubmit = () => {
@@ -256,7 +260,7 @@ export function Component() {
             key={index}
             pointsData={pointsData}
             pointsList={pointsList}
-            boosts={realtime.boosts}
+            boosts={realtime.boostsEnabled ? realtime.boosts : {}}
             calcHeight={calcHeight}
             BoostCountdown={BoostCountdown}
             animateFill={hasBaselineRef.current}
@@ -284,17 +288,21 @@ export function Component() {
                 <>
                     <AdminControls
                         paused={realtime.paused}
-                        boosts={realtime.boosts}
+                        boostsEnabled={realtime.boostsEnabled}
                         selectedValue={selectedValue}
                         number={number}
                         isLoading={isLoading}
                         onBoost={async (n)=>{
+                                setError(null);
                                 try {
                                     const resp = await service.activateArraialBoost(n);
                                     if (resp && resp.boosts) {
                                         realtime.setBoosts(resp.boosts);
                                     }
-                                } catch(e) { /* ignore */ }
+                                } catch (boostError) {
+                                    console.error('Failed to activate boost:', boostError);
+                                    setError(getErrorMessage(boostError, 'Failed to activate boost.'));
+                                }
                         }}
                         onChangeNucleo={(val)=> setSelectedValue(val)}
                         onChangePoints={(val)=> handleNumChange({ target: { value: val }})}
@@ -361,7 +369,7 @@ export function Component() {
                     )}
                 </>
             ) : null}
-            {confettiActive && (
+            {realtime.milestonesEnabled && confettiActive && (
                 <React.Suspense fallback={null}>
                 <LazyParticles
                     id="arraial-confetti"
@@ -395,7 +403,7 @@ export function Component() {
                 />
                 </React.Suspense>
             )}
-            {milestoneToasts.length > 0 && (
+            {realtime.milestonesEnabled && milestoneToasts.length > 0 && (
                 <div className="fixed inset-x-0 top-1/4 z-[1000] flex justify-center pointer-events-none">
                     <div className="flex flex-col gap-4">
                         {milestoneToasts.map((t) => (

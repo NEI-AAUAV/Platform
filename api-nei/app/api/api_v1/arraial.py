@@ -122,7 +122,16 @@ class ArraialLogResponse(BaseModel):
 class ArraialConfig(BaseModel):
     enabled: bool
     paused: bool = False
+    boosts_enabled: bool = False
+    milestones_enabled: bool = False
     boosts: Optional[dict] = None  # { nucleo: iso8601 or None }
+
+
+class ArraialConfigUpdate(BaseModel):
+    enabled: Optional[bool] = None
+    paused: Optional[bool] = None
+    boosts_enabled: Optional[bool] = None
+    milestones_enabled: Optional[bool] = None
 
 
 # Mock data for now - you can replace this with database calls later
@@ -149,54 +158,52 @@ CREATE TABLE IF NOT EXISTS app_setting (
 """
 
 
-def _get_config_enabled(db: Session) -> bool:
+# Config field name -> app_setting key. Every flag defaults to false.
+CONFIG_FLAG_KEYS = {
+    "enabled": "arraial_enabled",
+    "paused": "arraial_paused",
+    "boosts_enabled": "arraial_boosts_enabled",
+    "milestones_enabled": "arraial_milestones_enabled",
+}
+
+
+def _get_flag(db: Session, key: str) -> bool:
     db.execute(text(SETTING_TABLE_SQL))
-    row = db.execute(text("SELECT value FROM app_setting WHERE key = 'arraial_enabled'"))\
+    row = db.execute(text("SELECT value FROM app_setting WHERE key = :key"), {"key": key})\
         .first()
     if row is None:
-        db.execute(text("INSERT INTO app_setting(key, value) VALUES ('arraial_enabled', 'false') ON CONFLICT (key) DO NOTHING"))
+        db.execute(
+            text("INSERT INTO app_setting(key, value) VALUES (:key, 'false') ON CONFLICT (key) DO NOTHING"),
+            {"key": key},
+        )
         db.flush()
         return False
     return (row[0] or "").lower() == "true"
 
 
-def _set_config_enabled(db: Session, enabled: bool) -> None:
+def _set_flag(db: Session, key: str, value: bool) -> None:
     db.execute(text(SETTING_TABLE_SQL))
     db.execute(
         text(
             """
-            INSERT INTO app_setting(key, value) VALUES ('arraial_enabled', :val)
+            INSERT INTO app_setting(key, value) VALUES (:key, :val)
             ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
             """
         ),
-        {"val": "true" if enabled else "false"},
+        {"key": key, "val": "true" if value else "false"},
     )
     db.flush()
 
 
-def _get_config_paused(db: Session) -> bool:
-    db.execute(text(SETTING_TABLE_SQL))
-    row = db.execute(text("SELECT value FROM app_setting WHERE key = 'arraial_paused'"))\
-        .first()
-    if row is None:
-        db.execute(text("INSERT INTO app_setting(key, value) VALUES ('arraial_paused', 'false') ON CONFLICT (key) DO NOTHING"))
-        db.flush()
-        return False
-    return (row[0] or "").lower() == "true"
+def _get_config_flags(db: Session) -> dict:
+    return {field: _get_flag(db, key) for field, key in CONFIG_FLAG_KEYS.items()}
 
 
-def _set_config_paused(db: Session, paused: bool) -> None:
-    db.execute(text(SETTING_TABLE_SQL))
-    db.execute(
-        text(
-            """
-            INSERT INTO app_setting(key, value) VALUES ('arraial_paused', :val)
-            ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
-            """
-        ),
-        {"val": "true" if paused else "false"},
-    )
-    db.flush()
+def _clear_boosts() -> None:
+    for k in list(_boost_ends.keys()):
+        _boost_ends[k] = None
+    for k in list(_boost_fractional_remainders.keys()):
+        _boost_fractional_remainders[k] = 0.0
 
 
 def _get_boosts_response() -> dict:
@@ -225,24 +232,32 @@ def _find_points(nucleo: str) -> dict:
 
 @router.get("/config", status_code=200, response_model=ArraialConfig)
 def get_arraial_config(*, db: Session = Depends(deps.get_db, scope="function")) -> Any:
-    return {"enabled": _get_config_enabled(db), "paused": _get_config_paused(db), "boosts": _get_boosts_response()}
+    return {**_get_config_flags(db), "boosts": _get_boosts_response()}
 
 
 @router.put("/config", status_code=200, response_model=ArraialConfig)
 async def update_arraial_config(
     *,
-    cfg: ArraialConfig,
+    cfg: ArraialConfigUpdate,
     db: Session = Depends(deps.get_db, scope="function"),
     _=Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
 ) -> Any:
-    _set_config_enabled(db, cfg.enabled)
-    _set_config_paused(db, cfg.paused)
-    payload = {"topic": "ARRAIAL_CONFIG", "enabled": cfg.enabled, "paused": cfg.paused}
+    changes = cfg.model_dump(exclude_none=True)
+    for field, value in changes.items():
+        _set_flag(db, CONFIG_FLAG_KEYS[field], value)
+    flags = _get_config_flags(db)
+
     await arraial_ws_manager.broadcast(
         connection_type=ArraialConnectionType.GENERAL,
-        message=payload,
+        message={"topic": "ARRAIAL_CONFIG", **flags},
     )
-    return cfg
+    if changes.get("boosts_enabled") is False:
+        _clear_boosts()
+        await arraial_ws_manager.broadcast(
+            connection_type=ArraialConnectionType.GENERAL,
+            message={"topic": "ARRAIAL_BOOST", "boosts": _get_boosts_response()},
+        )
+    return {**flags, "boosts": _get_boosts_response()}
 
 
 @router.get("/points", status_code=200, response_model=List[ArraialPoints])
@@ -264,7 +279,7 @@ async def update_arraial_points(
     # Check rate limit
     _check_rate_limit(request, auth_data, "update_points")
     # Enforce paused config
-    if _get_config_paused(db):
+    if _get_flag(db, CONFIG_FLAG_KEYS["paused"]):
         raise HTTPException(status_code=423, detail="Point updates are paused by an administrator")
     
     points = _find_points(points_update.nucleo)
@@ -275,7 +290,8 @@ async def update_arraial_points(
     prev_value = points["value"]
     increment = points_update.pointIncrement
     # apply boost only to positive increments
-    if increment > 0 and _is_boost_active(points_update.nucleo):
+    boosts_enabled = _get_flag(db, CONFIG_FLAG_KEYS["boosts_enabled"])
+    if increment > 0 and boosts_enabled and _is_boost_active(points_update.nucleo):
         # fractional accumulation: carry remainder per núcleo
         raw_boost = increment * BOOST_MULTIPLIER
         raw_total = raw_boost + _boost_fractional_remainders.get(points_update.nucleo, 0.0)
@@ -324,6 +340,8 @@ async def activate_boost(
 ) -> Any:
     if nucleo not in VALID_NUCLEOS:
         raise HTTPException(status_code=400, detail="Invalid núcleo")
+    if not _get_flag(db, CONFIG_FLAG_KEYS["boosts_enabled"]):
+        raise HTTPException(status_code=409, detail="Boosts are disabled")
     now = datetime.now(timezone.utc)
     end = _boost_ends.get(nucleo)
     add_seconds = BOOST_DURATION_MINUTES * 60
@@ -450,12 +468,7 @@ async def reset_arraial(
     # Reset points to zero
     for p in _arraial_points:
         p["value"] = 0
-    # Clear boosts
-    for k in list(_boost_ends.keys()):
-        _boost_ends[k] = None
-    # Clear fractional remainders
-    for k in list(_boost_fractional_remainders.keys()):
-        _boost_fractional_remainders[k] = 0.0
+    _clear_boosts()
     # Clear rate limiter buckets
     _rate_limit_buckets.clear()
     # Clear log

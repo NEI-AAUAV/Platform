@@ -173,8 +173,8 @@ const NEIService = {
     return await client.get("/arraial/config");
   },
 
-  async setArraialConfig(enabled, paused = false) {
-    return await client.put("/arraial/config", { enabled, paused });
+  async setArraialConfig(changes) {
+    return await client.put("/arraial/config", changes);
   },
 
   async activateArraialBoost(nucleo) {
