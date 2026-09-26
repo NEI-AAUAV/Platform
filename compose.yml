@@ -142,6 +142,13 @@ services:
       context: web-nei
     ports:
       - 3000:3000
+    environment:
+      # Rally and Gamification are standalone external services (not
+      # embedded extensions) - set their URLs to show them in the navbar.
+      ENABLE_RALLY: ${ENABLE_RALLY:-False}
+      RALLY_URL: ${RALLY_URL:-}
+      ENABLE_GAMIFICATION: ${ENABLE_GAMIFICATION:-False}
+      GAMIFICATION_URL: ${GAMIFICATION_URL:-}
     volumes:
       - nei_modules:/web_nei/node_modules
       - ./web-nei:/web_nei
