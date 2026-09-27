@@ -52,10 +52,21 @@ export function mandateAnchorId(mandate) {
   return `history-mandato-${mandate.replace("/", "-")}`;
 }
 
+export function prefersReducedMotion() {
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+}
+
+/** `scrollTo`/`scrollIntoView` behaviour honouring the OS "reduce motion"
+ * setting: a long smooth scroll through the whole timeline is exactly the
+ * kind of motion that setting asks to skip. */
+export function scrollBehavior() {
+  return prefersReducedMotion() ? "auto" : "smooth";
+}
+
 export function scrollToMandate(mandate) {
   document
     .getElementById(mandateAnchorId(mandate))
-    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    ?.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
 }
 
 export function formatMilestoneDate(isoDate) {
@@ -67,11 +78,10 @@ export function formatMilestoneDate(isoDate) {
   });
 }
 
-/** Number of gallery photos, or null when unknown (the API couldn't reach
- * the milestone's Drive folder in time — the gallery endpoint retries). */
+/** Number of gallery photos, or null when unknown: a linked Drive folder is
+ * only listed when the gallery opens, so the timeline can't count it. */
 export function galleryCount(milestone) {
-  if (milestone.gallery_count != null) return milestone.gallery_count;
-  return milestone.has_drive_gallery ? null : milestone.media.length;
+  return milestone.has_drive_gallery ? null : milestone.gallery_count ?? 0;
 }
 
 export function hasGallery(milestone) {
@@ -80,5 +90,32 @@ export function hasGallery(milestone) {
 }
 
 export function milestoneCover(milestone) {
-  return milestone.cover ?? (milestone.image || milestone.media[0]?.thumb || null);
+  return milestone.cover || milestone.image || null;
+}
+
+/** Same rule the database enforces on `history_category.slug`: anything
+ * else in `?categoria=` can't name a category and is dropped from the URL. */
+export function isCategorySlug(value) {
+  return /^[a-z0-9-]+$/.test(value);
+}
+
+// Category colours are free CMS input rendered into inline styles. Only
+// plain colour syntaxes get through; anything else falls back to the theme.
+const CSS_COLOR_RE =
+  /^(#[0-9a-f]{3,4}|#[0-9a-f]{6}|#[0-9a-f]{8}|(rgb|rgba|hsl|hsla)\([\d\s.,%/+-]+\))$/i;
+
+export function safeCssColor(value) {
+  const color = value?.trim();
+  return color && CSS_COLOR_RE.test(color) ? color : null;
+}
+
+export function categoryStyle(category) {
+  const color = safeCssColor(category?.color);
+  return color ? { "--chip-color": color } : undefined;
+}
+
+/** Parses `?foto=` (1-based); null when absent or not a positive integer. */
+export function parsePhotoParam(value) {
+  if (value == null) return null;
+  return /^[1-9]\d*$/.test(value) ? Number(value) - 1 : null;
 }

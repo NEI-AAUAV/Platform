@@ -61,25 +61,29 @@ class HistoryInDB(HistoryBase):
 
 
 class HistoryOut(HistoryBase):
-    """Public shape for the timeline: editorial fields plus the milestone's
-    own `media` rows. Drive-folder photos are only listed by the gallery
-    endpoint, but the list resolves them (cached, time-boxed) to fill
-    `gallery_count` and `cover`. `gallery_count` is None when the Drive
-    folder could not be resolved in time — unknown, not zero."""
+    """Public shape for the timeline, built from the database alone — the
+    list never calls Google Drive. Photos are only listed by the gallery
+    endpoint; here a milestone just says whether it has any:
+    `gallery_count` counts its own `history_media` rows, and is None
+    (unknown, not zero) when a Drive folder is linked."""
 
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     category: Optional[HistoryCategoryOut] = None
     featured: bool
+    # AAAA/AA (DB check constraint); None means "derive it from `moment`".
     mandate: Optional[str] = None
     external_url: Optional[str] = None
     external_label: Optional[str] = None
-    media: list[HistoryMediaOut] = []
     has_drive_gallery: bool = False
     gallery_count: Optional[int] = None
-    # `image`, else the first gallery photo's thumbnail.
+    # `image`, else the first own gallery photo's thumbnail.
     cover: Optional[str] = None
+    # Editor-written description of `cover` (`image_alt`, or the photo's
+    # caption). None means none was written: the page then treats the cover
+    # as decorative next to the title rather than inventing a description.
+    cover_alt: Optional[str] = None
 
 
 class HistoryGalleryOut(BaseModel):
@@ -88,3 +92,6 @@ class HistoryGalleryOut(BaseModel):
     media: list[HistoryMediaOut]
     # None when the milestone links no Drive folder.
     drive_status: Optional[DriveStatus] = None
+    # The Drive folder holds more photos than listed (size cap, or Drive
+    # was too slow to list them all in time).
+    truncated: bool = False

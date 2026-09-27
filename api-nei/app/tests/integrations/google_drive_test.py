@@ -199,11 +199,102 @@ def test_listing_follows_pages(api_key) -> None:
     assert calls[-1].url.params["pageToken"] == "tok"
 
 
-def test_listing_stops_at_the_image_cap(api_key) -> None:
+def test_listing_stops_at_the_image_cap_and_says_so(api_key) -> None:
     endless = ({"files": [{"id": f"f{n}-{i}"} for i in range(200)], "nextPageToken": "more"} for n in range(100))
     client = _client(_drive(endless))
 
-    assert len(_run(client.list_folder(FOLDER)).images) == MAX_FOLDER_IMAGES
+    result = _run(client.list_folder(FOLDER))
+    assert len(result.images) == MAX_FOLDER_IMAGES
+    assert result.truncated is True
+
+
+def test_a_folder_exactly_at_the_cap_is_not_truncated(api_key) -> None:
+    pages = [
+        {"files": [{"id": f"a{i}"} for i in range(200)], "nextPageToken": "p2"},
+        {"files": [{"id": f"b{i}"} for i in range(200)], "nextPageToken": "p3"},
+        {"files": [{"id": f"c{i}"} for i in range(100)]},
+    ]
+    result = _run(_client(_drive(pages)).list_folder(FOLDER))
+    assert len(result.images) == MAX_FOLDER_IMAGES
+    assert result.truncated is False
+
+
+def test_a_complete_listing_is_not_truncated(api_key) -> None:
+    result = _run(_client(_drive([{"files": [{"id": "file1"}]}])).list_folder(FOLDER))
+    assert result.truncated is False
+
+
+def test_requests_opt_into_shared_drives(api_key) -> None:
+    """Folders inside a Shared Drive are invisible to the API unless each
+    request opts in; the flags are harmless for My Drive folders."""
+    calls: list[httpx.Request] = []
+    _run(_client(_drive([{"files": [{"id": "file1"}]}], calls=calls)).list_folder(FOLDER))
+
+    metadata, listing = calls
+    assert metadata.url.params["supportsAllDrives"] == "true"
+    assert listing.url.params["supportsAllDrives"] == "true"
+    assert listing.url.params["includeItemsFromAllDrives"] == "true"
+
+
+def _slow_pages(delay_after_first: float):
+    """Drive answering the first listing page at once, later ones slowly."""
+    served = 0
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal served
+        if request.url.path.endswith(f"/files/{FOLDER}"):
+            return httpx.Response(200, json=FOLDER_META)
+        served += 1
+        if served > 1:
+            await asyncio.sleep(delay_after_first)
+        return httpx.Response(200, json={"files": [{"id": f"p{served}"}], "nextPageToken": "more"})
+
+    return httpx.MockTransport(handler)
+
+
+def test_a_slow_drive_answers_with_the_photos_listed_before_the_budget(api_key) -> None:
+    client = GoogleDriveClient(_slow_pages(delay_after_first=5), budget_seconds=0.2)
+    client.start()
+
+    result = _run(client.list_folder(FOLDER))
+    assert result.status == "ok"
+    assert [i.file_id for i in result.images] == ["p1"]
+    assert result.truncated is True
+
+
+def test_a_drive_too_slow_to_list_anything_is_an_error(api_key) -> None:
+    async def hang(request: httpx.Request) -> httpx.Response:
+        await asyncio.sleep(5)
+        return httpx.Response(200, json=FOLDER_META)
+
+    client = GoogleDriveClient(httpx.MockTransport(hang), budget_seconds=0.2)
+    client.start()
+
+    result = _run(client.list_folder(FOLDER))
+    assert result.status == "error"
+    assert result.images == ()
+
+
+def test_the_fetch_budget_is_below_the_web_client_timeout() -> None:
+    from app.integrations import google_drive
+
+    web_nei_timeout_seconds = 5.0  # web-nei/src/services/client.jsx
+    assert google_drive.FOLDER_FETCH_BUDGET_SECONDS < web_nei_timeout_seconds
+    assert google_drive._REQUEST_TIMEOUT_SECONDS <= google_drive.FOLDER_FETCH_BUDGET_SECONDS
+
+
+def test_partial_listings_are_retried_sooner_than_complete_ones(api_key) -> None:
+    # Not a patched clock: asyncio's own timers (the budget) read it too.
+    import time
+
+    from app.integrations import google_drive
+
+    client = GoogleDriveClient(_slow_pages(delay_after_first=5), budget_seconds=0.2)
+    client.start()
+
+    _run(client.list_folder(FOLDER))
+    remaining = client._cache[FOLDER].expires_at - time.monotonic()
+    assert remaining <= google_drive._TTL_ERROR_SECONDS
 
 
 def test_success_is_cached(api_key) -> None:
@@ -294,9 +385,3 @@ def test_api_key_never_reaches_the_logs(api_key, failure: str) -> None:
 
     assert messages, "the failure should still be logged"
     assert all(api_key not in m for m in messages)
-
-
-def test_list_folder_images_returns_the_image_list(api_key) -> None:
-    client = _client(_drive([{"files": [{"id": "file1"}]}]))
-
-    assert [i.file_id for i in _run(client.list_folder_images(FOLDER))] == ["file1"]

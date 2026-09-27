@@ -38,7 +38,7 @@ export default function FeaturedMilestone({ milestone, onOpenGallery }) {
         <>
           <FeaturedBadge overlay />
           <div className="history-featured__cover">
-            <CoverImage src={cover} width={1200} height={600} />
+            <CoverImage src={cover} alt={milestone.cover_alt} width={1200} height={600} />
           </div>
         </>
       )}

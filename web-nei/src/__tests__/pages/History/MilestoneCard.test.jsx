@@ -32,7 +32,9 @@ function makeMilestone(overrides = {}) {
     body: "Corpo do marco",
     category: null,
     image: null,
-    media: [],
+    cover: null,
+    cover_alt: null,
+    gallery_count: 0,
     has_drive_gallery: false,
     external_url: null,
     external_label: null,
@@ -78,12 +80,10 @@ describe("MilestoneCard", () => {
     expect(screen.queryByRole("button", { name: /ver galeria/i })).not.toBeInTheDocument();
   });
 
-  it("shows the gallery button when there is uploaded media", () => {
+  it("shows the gallery button when the milestone has its own photos", () => {
     render(
       <MilestoneCard
-        milestone={makeMilestone({
-          media: [{ id: 1, url: "a.jpg", thumb: "a-thumb.jpg", source: "upload" }],
-        })}
+        milestone={makeMilestone({ gallery_count: 1 })}
         onOpenGallery={vi.fn()}
       />
     );
@@ -137,29 +137,31 @@ describe("MilestoneCard", () => {
     expect(screen.getByRole("link", { name: /saber mais/i })).toBeInTheDocument();
   });
 
-  it("prefers the cover image over the first media thumbnail", () => {
-    const { container } = render(
-      <MilestoneCard
-        milestone={makeMilestone({
-          image: "cover.jpg",
-          media: [{ id: 1, url: "a.jpg", thumb: "a-thumb.jpg", source: "upload" }],
-        })}
-        onOpenGallery={vi.fn()}
-      />
+  it("uses the API cover, falling back to the image", () => {
+    const { container, rerender } = render(
+      <MilestoneCard milestone={makeMilestone({ cover: "a-thumb.jpg" })} onOpenGallery={vi.fn()} />
     );
+    expect(container.querySelector("img")).toHaveAttribute("src", "a-thumb.jpg");
+
+    rerender(<MilestoneCard milestone={makeMilestone({ image: "cover.jpg" })} onOpenGallery={vi.fn()} />);
     expect(container.querySelector("img")).toHaveAttribute("src", "cover.jpg");
   });
 
-  it("falls back to the first media thumbnail when there is no cover image", () => {
-    const { container } = render(
+  it("describes the cover with the editor's alt text", () => {
+    render(
       <MilestoneCard
-        milestone={makeMilestone({
-          media: [{ id: 1, url: "a.jpg", thumb: "a-thumb.jpg", source: "upload" }],
-        })}
+        milestone={makeMilestone({ cover: "c.jpg", cover_alt: "Primeira direção do NEI" })}
         onOpenGallery={vi.fn()}
       />
     );
-    expect(container.querySelector("img")).toHaveAttribute("src", "a-thumb.jpg");
+    expect(screen.getByRole("img", { name: "Primeira direção do NEI" })).toHaveAttribute("src", "c.jpg");
+  });
+
+  it("treats a cover without written alt text as decorative", () => {
+    const { container } = render(
+      <MilestoneCard milestone={makeMilestone({ cover: "c.jpg" })} onOpenGallery={vi.fn()} />
+    );
+    expect(container.querySelector("img")).toHaveAttribute("alt", "");
   });
 
   it("renders no cover image element when there is none available", () => {
@@ -170,23 +172,18 @@ describe("MilestoneCard", () => {
   });
 
   it("shows how many photos the gallery has when the API knows", () => {
-    render(
-      <MilestoneCard
-        milestone={makeMilestone({ has_drive_gallery: true, gallery_count: 12 })}
-        onOpenGallery={vi.fn()}
-      />
-    );
+    render(<MilestoneCard milestone={makeMilestone({ gallery_count: 12 })} onOpenGallery={vi.fn()} />);
     expect(screen.getByRole("button", { name: /ver galeria \(12 fotos\)/i })).toBeInTheDocument();
   });
 
-  it("hides the gallery button when the Drive folder is known to be empty", () => {
+  it("offers a Drive gallery without claiming a photo count", () => {
     render(
       <MilestoneCard
-        milestone={makeMilestone({ has_drive_gallery: true, gallery_count: 0 })}
+        milestone={makeMilestone({ has_drive_gallery: true, gallery_count: null })}
         onOpenGallery={vi.fn()}
       />
     );
-    expect(screen.queryByRole("button", { name: /ver galeria/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ver galeria" })).toBeInTheDocument();
   });
 
   it("uses the API cover (e.g. a Drive folder photo) when given", () => {

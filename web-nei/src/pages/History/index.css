@@ -12,8 +12,20 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 2rem 1.25rem 6rem;
-  overflow-x: hidden;
   box-sizing: border-box;
+  /* No overflow-x here: `hidden` turns the page into a scroll container,
+     which silently pins every sticky descendant (the filter toolbar, the
+     mandate rail) to a box that never scrolls. Overflow is fixed at its
+     sources instead (min-width: 0 on grid/flex children, overflow-wrap on
+     CMS text, overflow-x: auto on markdown code blocks). */
+
+  /* The app navbar (layouts/Navbar) is fixed and h-20 (5rem) tall; the
+     layout pads the page by the same pt-20. Sticky bars sit below it. */
+  --history-navbar-height: 5rem;
+  --history-sticky-top: calc(var(--history-navbar-height) + 0.5rem);
+  /* Height of `.history-mobile-nav` (44px controls + its padding), so a
+     mandate scrolled into view isn't hidden under it. */
+  --history-mobile-nav-height: 3.75rem;
 }
 
 /* ---- Hero -------------------------------------------------------- */
@@ -28,6 +40,7 @@
 .history-hero::before {
   content: "";
   position: absolute;
+  /* Bleeds into the page padding only, never past the viewport. */
   inset: -2rem -1.25rem auto -1.25rem;
   height: 320px;
   background: radial-gradient(
@@ -111,10 +124,16 @@
 .history-mobile-nav {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin: 0 -0.5rem 1.5rem;
+  padding: 0.5rem;
   position: sticky;
-  top: 0.5rem;
+  top: var(--history-sticky-top);
+  /* Above the timeline cards, below the navbar (z-40) and its expanded
+     mobile menu, which should cover this bar while it's open. */
   z-index: 5;
+  border-radius: 999px;
+  background: hsl(var(--background) / 0.85);
+  backdrop-filter: blur(6px);
 }
 
 .history-mobile-nav__field {
@@ -201,10 +220,30 @@
   border-color: var(--chip-color, hsl(var(--primary)));
 }
 
+/* Category colours are arbitrary CMS input, so they are never a background
+   behind text: text stays in the theme's foreground colour (readable in
+   light and dark), and the colour shows as a dot, border and faint tint. */
+.history-filter-chip::before,
+.history-chip::before {
+  content: "";
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.45rem;
+  border-radius: 50%;
+  background: var(--chip-color, hsl(var(--muted-foreground)));
+}
+
+.history-filter-chip:first-child::before {
+  display: none;
+}
+
 .history-filter-chip.is-active {
-  background: var(--chip-color, hsl(var(--primary)));
   border-color: var(--chip-color, hsl(var(--primary)));
-  color: white;
+  background: hsl(var(--muted));
+  background: color-mix(in srgb, var(--chip-color, hsl(var(--primary))) 16%, hsl(var(--card)));
+  box-shadow: inset 0 0 0 1px var(--chip-color, hsl(var(--primary)));
+  font-weight: 700;
 }
 
 /* ---- Layout: sticky year rail + timeline -------------------------- */
@@ -258,7 +297,7 @@
   .history-year-rail {
     display: block;
     position: sticky;
-    top: 5rem;
+    top: var(--history-sticky-top);
     z-index: 5;
     margin-bottom: 1.5rem;
     padding: 0.5rem;
@@ -327,7 +366,14 @@
 
 .history-year-section {
   margin-bottom: 3rem;
-  scroll-margin-top: 5rem;
+  scroll-margin-top: calc(var(--history-sticky-top) + var(--history-mobile-nav-height));
+}
+
+@media (min-width: 992px) {
+  .history-year-section {
+    /* The mandate rail (~3.5rem) is the sticky bar here. */
+    scroll-margin-top: calc(var(--history-sticky-top) + 3.5rem);
+  }
 }
 
 .history-year-section__header {
@@ -430,8 +476,9 @@
 
 .history-card__meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem 0.75rem;
   margin-bottom: 0.5rem;
   font-size: 0.8rem;
   color: hsl(var(--muted-foreground));
@@ -448,8 +495,71 @@
   line-height: 1.6;
 }
 
-.history-card__text p:not(:last-child) {
+.history-card__text p:not(:last-child),
+.history-card__text ul:not(:last-child),
+.history-card__text ol:not(:last-child),
+.history-card__text blockquote:not(:last-child),
+.history-card__text pre:not(:last-child) {
   margin-bottom: 0.5rem;
+}
+
+/* Markdown from the CMS: Tailwind's preflight strips list and quote
+   styling, and headings are capped at card level (see MilestoneBody). */
+.history-card__text-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.history-card__text ul,
+.history-card__text ol {
+  padding-left: 1.25rem;
+}
+
+.history-card__text ul {
+  list-style: disc;
+}
+
+.history-card__text ol {
+  list-style: decimal;
+}
+
+.history-card__text blockquote {
+  padding-left: 0.75rem;
+  border-left: 3px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+}
+
+.history-card__text a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.history-card__text a:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.history-card__text code {
+  font-size: 0.85em;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  background: hsl(var(--muted));
+}
+
+.history-card__text pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: hsl(var(--muted));
+}
+
+.history-card__text pre code {
+  padding: 0;
+  background: none;
 }
 
 .history-card__actions {
@@ -498,8 +608,10 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: white;
-  background: var(--chip-color, hsl(var(--primary)));
+  color: hsl(var(--foreground));
+  border: 1px solid var(--chip-color, hsl(var(--border)));
+  background: hsl(var(--muted));
+  background: color-mix(in srgb, var(--chip-color, hsl(var(--muted-foreground))) 12%, hsl(var(--card)));
 }
 
 /* ---- Featured milestone ----------------------------------------------- */
@@ -591,6 +703,14 @@
 
 .history-featured__body {
   padding: 1.5rem 1.75rem 1.75rem;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 639px) {
+  .history-featured__body {
+    padding: 1.25rem 1.25rem 1.5rem;
+  }
 }
 
 .history-featured__body h3 {
@@ -617,7 +737,7 @@
   font-weight: 700;
 }
 
-.history-empty__retry {
+.history-empty__action {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -631,11 +751,11 @@
   transition: transform var(--duration-fast, 150ms) var(--ease-out-expo, ease);
 }
 
-.history-empty__retry:hover {
+.history-empty__action:hover {
   transform: translateY(-1px);
 }
 
-.history-empty__retry:focus-visible {
+.history-empty__action:focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
@@ -688,9 +808,32 @@
 
 .history-filter-chip:focus-visible,
 .history-year-rail__item:focus-visible,
+.history-mobile-nav__field select:focus-visible,
 .history-card__gallery-btn:focus-visible,
 .history-card__external-link:focus-visible,
 .history-lightbox__nav:focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
+}
+
+/* ---- Reduced motion -------------------------------------------------- */
+
+/* Hover lifts and zooms are decoration; with "reduce motion" the page keeps
+   its hover colours but nothing moves. */
+@media (prefers-reduced-motion: reduce) {
+  .history-card,
+  .history-featured,
+  .history-filter-chip,
+  .history-back-to-top,
+  .history-empty__action {
+    transition: none;
+  }
+
+  .history-card:hover,
+  .history-featured:hover,
+  .history-filter-chip:hover,
+  .history-back-to-top:hover,
+  .history-empty__action:hover {
+    transform: none;
+  }
 }

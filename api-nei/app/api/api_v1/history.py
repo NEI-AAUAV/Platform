@@ -1,8 +1,7 @@
-import asyncio
 from typing import Any, List, Optional
 from urllib.parse import urlparse
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 
@@ -24,10 +23,6 @@ from app.schemas.history import (
 )
 
 router = APIRouter()
-
-# The list waits at most this long for Drive before answering without
-# folder counts; the folder keeps resolving into the cache for next time.
-_LIST_DRIVE_BUDGET_SECONDS = 2.5
 
 
 def _media_out(media: HistoryMedia) -> HistoryMediaOut | None:
@@ -88,8 +83,20 @@ def _safe_external_url(url: Optional[str]) -> Optional[str]:
     return url if urlparse(url).scheme in ("http", "https") else None
 
 
+def _cover(milestone: History, own: list[HistoryMediaOut]) -> tuple[Optional[str], Optional[str]]:
+    """The cover and its alt text. Only the milestone's own rows count: the
+    list never waits on Drive, so a folder-only gallery has no cover unless
+    editors set `image`."""
+    if milestone.image:
+        return milestone.image, milestone.image_alt
+    if own:
+        return own[0].thumb, own[0].caption
+    return None, None
+
+
 def _to_out(milestone: History) -> HistoryOut:
-    media = _own_media(milestone)
+    own = _own_media(milestone)
+    cover, cover_alt = _cover(milestone, own)
     return HistoryOut(
         id=milestone.id,
         moment=milestone.moment,
@@ -103,62 +110,22 @@ def _to_out(milestone: History) -> HistoryOut:
         mandate=milestone.mandate,
         external_url=_safe_external_url(milestone.external_url),
         external_label=milestone.external_label,
-        media=media,
         has_drive_gallery=bool(milestone.drive_folder_url),
-        gallery_count=None if milestone.drive_folder_url else len(media),
-        cover=milestone.image or (media[0].thumb if media else None),
+        gallery_count=None if milestone.drive_folder_url else len(own),
+        cover=cover,
+        cover_alt=cover_alt,
     )
 
 
-def _load_list(db: Session) -> list[tuple[HistoryOut, Optional[str]]]:
-    return [
-        (_to_out(m), extract_folder_id(m.drive_folder_url or ""))
-        for m in crud.history.get_multi(db=db)
-    ]
-
-
-async def _resolve_folders(folder_ids: set[str]) -> dict[str, DriveFolderResult]:
-    async def resolve(folder_id: str) -> DriveFolderResult:
-        return await asyncio.wait_for(
-            drive_client.list_folder(folder_id), _LIST_DRIVE_BUDGET_SECONDS
-        )
-
-    ordered = list(folder_ids)
-    results = await asyncio.gather(
-        *(resolve(f) for f in ordered), return_exceptions=True
-    )
-    return {
-        folder_id: result
-        for folder_id, result in zip(ordered, results)
-        if isinstance(result, DriveFolderResult)
-    }
-
-
-def _with_folder(out: HistoryOut, result: Optional[DriveFolderResult]) -> HistoryOut:
-    if result is None or result.status == "error":
-        # Unknown: the page shows the gallery button and lets the gallery
-        # endpoint try again.
-        return out
-    folder = _folder_media(result, out.media)
-    return out.model_copy(
-        update={
-            "gallery_count": len(out.media) + len(folder),
-            "cover": out.cover or (folder[0].thumb if folder else None),
-        }
-    )
+def _load_list(db: Session) -> list[HistoryOut]:
+    return [_to_out(m) for m in crud.history.get_multi(db=db)]
 
 
 @router.get("/", status_code=200, response_model=List[HistoryOut])
-async def get(
-    *, db: Session = Depends(deps.get_db, scope="function"),
-    _ = Depends(deps.cms_cache)
-) -> Any:
-    rows = await run_in_threadpool(_load_list, db)
-    folders = await _resolve_folders({f for _, f in rows if f})
-    return [
-        _with_folder(out, folders.get(folder_id)) if folder_id else out
-        for out, folder_id in rows
-    ]
+async def get(*, db: deps.DbSession, _=Depends(deps.cms_cache)) -> Any:
+    # Database only: Drive-folder photos are resolved by /{id}/gallery, so the
+    # timeline never waits on (or breaks with) Google Drive.
+    return await run_in_threadpool(_load_list, db)
 
 
 def _load_gallery(db: Session, id: int) -> Optional[tuple[HistoryGalleryOut, Optional[str]]]:
@@ -171,6 +138,16 @@ def _load_gallery(db: Session, id: int) -> Optional[tuple[HistoryGalleryOut, Opt
     return gallery, milestone.drive_folder_url
 
 
+def _with_folder(gallery: HistoryGalleryOut, result: DriveFolderResult) -> HistoryGalleryOut:
+    return gallery.model_copy(
+        update={
+            "media": gallery.media + _folder_media(result, gallery.media),
+            "drive_status": result.status,
+            "truncated": result.truncated,
+        }
+    )
+
+
 @router.get(
     "/{id}/gallery",
     status_code=200,
@@ -178,8 +155,7 @@ def _load_gallery(db: Session, id: int) -> Optional[tuple[HistoryGalleryOut, Opt
     responses={404: {"description": "Milestone not found or not published"}},
 )
 async def get_gallery(
-    *, id: int, db: Session = Depends(deps.get_db, scope="function"),
-    _ = Depends(deps.cms_cache)
+    *, id: int, response: Response, db: deps.DbSession, _=Depends(deps.cms_cache)
 ) -> Any:
     loaded = await run_in_threadpool(_load_gallery, db, id)
     if loaded is None:
@@ -192,10 +168,9 @@ async def get_gallery(
     if not folder_id:
         return gallery.model_copy(update={"drive_status": "unavailable"})
 
+    # Bounded by the client's fetch budget, below web-nei's request timeout.
     result = await drive_client.list_folder(folder_id)
-    return gallery.model_copy(
-        update={
-            "media": gallery.media + _folder_media(result, gallery.media),
-            "drive_status": result.status,
-        }
-    )
+    if result.status == "error" or result.truncated:
+        # Don't let the browser keep a degraded gallery for cms_cache's minute.
+        response.headers["Cache-Control"] = "no-store"
+    return _with_folder(gallery, result)

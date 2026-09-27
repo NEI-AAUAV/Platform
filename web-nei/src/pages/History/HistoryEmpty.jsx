@@ -12,19 +12,30 @@ const COPY = {
     title: "Não foi possível carregar a história",
     text: "Verifica a ligação e tenta outra vez.",
   },
+  filtered: {
+    icon: "filter_alt_off",
+    title: "Sem marcos nesta categoria",
+    text: "A categoria escolhida não tem marcos publicados ou já não existe.",
+  },
 };
 
-export default function HistoryEmpty({ variant, onRetry }) {
+export default function HistoryEmpty({ variant, categoryLabel, onRetry, onReset }) {
   const { icon, title, text } = COPY[variant];
   return (
-    <div className="history-empty">
+    <div className="history-empty" role={variant === "error" ? "alert" : "status"}>
       <MaterialSymbol icon={icon} size={40} />
-      <h2>{title}</h2>
+      <h2>{categoryLabel ? `Sem marcos em «${categoryLabel}»` : title}</h2>
       <p>{text}</p>
       {onRetry && (
-        <button type="button" className="history-empty__retry" onClick={onRetry}>
+        <button type="button" className="history-empty__action" onClick={onRetry}>
           <MaterialSymbol icon="refresh" size={18} />
           Tentar de novo
+        </button>
+      )}
+      {onReset && (
+        <button type="button" className="history-empty__action" onClick={onReset}>
+          <MaterialSymbol icon="close" size={18} />
+          Ver todos os marcos
         </button>
       )}
     </div>

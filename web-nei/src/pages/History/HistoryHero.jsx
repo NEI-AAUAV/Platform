@@ -2,13 +2,16 @@ import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
 
+const TITLE = "História do NEI";
+
+/** Only facts the data states: the year of the earliest published
+ * milestone and how many there are. (No "N anos de história": the earliest
+ * milestone isn't necessarily the founding, and a year difference isn't an
+ * age.) */
 export default function HistoryHero({ milestones }) {
   const reducedMotion = useReducedMotion();
   const years = milestones.map((m) => new Date(m.moment).getUTCFullYear());
   const firstYear = years.length ? Math.min(...years) : null;
-  const yearsOfHistory = firstYear
-    ? new Date().getUTCFullYear() - firstYear
-    : null;
 
   return (
     <section className="history-hero" aria-labelledby="history-heading">
@@ -19,7 +22,18 @@ export default function HistoryHero({ milestones }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Typewriter words={["História do NEI"]} loop={1} />
+        {reducedMotion ? (
+          TITLE
+        ) : (
+          <>
+            {/* The typed text is visual only: screen readers get the title
+                once, not every intermediate keystroke. */}
+            <span className="sr-only">{TITLE}</span>
+            <span aria-hidden="true">
+              <Typewriter words={[TITLE]} loop={1} />
+            </span>
+          </>
+        )}
       </motion.h1>
 
       <p className="history-hero__intro">
@@ -31,10 +45,6 @@ export default function HistoryHero({ milestones }) {
           <div className="history-hero__stat">
             <dt>Desde</dt>
             <dd>{firstYear}</dd>
-          </div>
-          <div className="history-hero__stat">
-            <dt>Anos de história</dt>
-            <dd>{yearsOfHistory}</dd>
           </div>
           <div className="history-hero__stat">
             <dt>Marcos</dt>

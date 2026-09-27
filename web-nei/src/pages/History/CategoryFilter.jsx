@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 
-import { usedCategories as deriveUsedCategories } from "./utils";
+import { categoryStyle, usedCategories as deriveUsedCategories } from "./utils";
 
 export default function CategoryFilter({ milestones, active, onChange }) {
   const categories = useMemo(() => deriveUsedCategories(milestones), [milestones]);
@@ -13,6 +13,7 @@ export default function CategoryFilter({ milestones, active, onChange }) {
       <button
         type="button"
         className={classNames("history-filter-chip", { "is-active": !active })}
+        aria-pressed={!active}
         onClick={() => onChange(null)}
       >
         Todos
@@ -24,7 +25,8 @@ export default function CategoryFilter({ milestones, active, onChange }) {
           className={classNames("history-filter-chip", {
             "is-active": active === category.slug,
           })}
-          style={{ "--chip-color": category.color || "hsl(var(--muted-foreground))" }}
+          style={categoryStyle(category)}
+          aria-pressed={active === category.slug}
           onClick={() => onChange(active === category.slug ? null : category.slug)}
         >
           {category.label}

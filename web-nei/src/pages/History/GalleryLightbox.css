@@ -82,10 +82,13 @@
 }
 
 /* Nav buttons and the counter sit over the photo, not the whole dialog
-   (which now also holds the caption and the thumbnail strip). */
+   (which now also holds the caption and the thumbnail strip). Swipes are
+   read here only: the browser keeps vertical panning, and the thumbnail
+   strip keeps its own native horizontal scroll. */
 .history-lightbox__stage {
   position: relative;
   margin: 0;
+  touch-action: pan-y pinch-zoom;
 }
 
 .history-lightbox__broken {
@@ -101,12 +104,29 @@
   font-size: 0.9rem;
 }
 
-.history-lightbox__loading-more {
-  display: block;
+.history-lightbox__notice {
   margin-top: 0.5rem;
   text-align: center;
   font-size: 0.75rem;
   color: hsl(var(--muted-foreground));
+}
+
+.history-lightbox__retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+}
+
+.history-lightbox__retry:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
 }
 
 .history-lightbox__strip {
@@ -166,4 +186,15 @@
 .history-card__gallery-count {
   font-weight: 500;
   color: hsl(var(--muted-foreground));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .history-lightbox__nav,
+  .history-lightbox__thumb {
+    transition: none;
+  }
+
+  .history-lightbox__nav:hover {
+    transform: translateY(-50%);
+  }
 }

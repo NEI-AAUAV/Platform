@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import {
   academicYear,
   groupByMandate,
@@ -6,7 +6,12 @@ import {
   formatMilestoneDate,
   galleryCount,
   hasGallery,
+  isCategorySlug,
   milestoneCover,
+  parsePhotoParam,
+  safeCssColor,
+  categoryStyle,
+  scrollBehavior,
   mandateLabel,
   usedCategories,
 } from "../../../pages/History/utils";
@@ -60,37 +65,93 @@ describe("mandateAnchorId", () => {
 });
 
 describe("galleryCount / hasGallery", () => {
-  const base = { media: [], has_drive_gallery: false };
+  const base = { has_drive_gallery: false, gallery_count: 0 };
 
-  it("uses the API count when present", () => {
-    expect(galleryCount({ ...base, has_drive_gallery: true, gallery_count: 12 })).toBe(12);
+  it("uses the API count of the milestone's own photos", () => {
+    expect(galleryCount({ ...base, gallery_count: 3 })).toBe(3);
+    expect(hasGallery({ ...base, gallery_count: 3 })).toBe(true);
   });
 
-  it("is unknown (null) for an unresolved Drive folder, and still offers the gallery", () => {
+  it("is unknown (null) with a Drive folder, and still offers the gallery", () => {
     const milestone = { ...base, has_drive_gallery: true, gallery_count: null };
     expect(galleryCount(milestone)).toBeNull();
     expect(hasGallery(milestone)).toBe(true);
   });
 
-  it("hides the gallery for a Drive folder known to be empty", () => {
-    expect(hasGallery({ ...base, has_drive_gallery: true, gallery_count: 0 })).toBe(false);
-  });
-
-  it("falls back to the own media count without a Drive folder", () => {
-    expect(galleryCount({ ...base, media: [{ id: "upload:1" }] })).toBe(1);
+  it("hides the gallery without photos or a Drive folder", () => {
     expect(hasGallery(base)).toBe(false);
+    expect(hasGallery({ has_drive_gallery: false })).toBe(false);
   });
 });
 
 describe("milestoneCover", () => {
-  it("prefers the API cover", () => {
-    expect(milestoneCover({ cover: "c.jpg", image: "i.jpg", media: [] })).toBe("c.jpg");
+  it("prefers the API cover, then image, then null", () => {
+    expect(milestoneCover({ cover: "c.jpg", image: "i.jpg" })).toBe("c.jpg");
+    expect(milestoneCover({ cover: null, image: "i.jpg" })).toBe("i.jpg");
+    expect(milestoneCover({ cover: null, image: null })).toBeNull();
+  });
+});
+
+describe("isCategorySlug", () => {
+  it.each(["evento", "vida-academica", "a1"])("accepts %s", (slug) => {
+    expect(isCategorySlug(slug)).toBe(true);
   });
 
-  it("falls back to image, then first media thumbnail, then null", () => {
-    expect(milestoneCover({ image: "i.jpg", media: [] })).toBe("i.jpg");
-    expect(milestoneCover({ image: null, media: [{ thumb: "t.jpg" }] })).toBe("t.jpg");
-    expect(milestoneCover({ image: null, media: [] })).toBeNull();
+  it.each(["Evento", "com espaço", "ação", "", "a_b", "<script>"])("rejects %j", (slug) => {
+    expect(isCategorySlug(slug)).toBe(false);
+  });
+});
+
+describe("safeCssColor / categoryStyle", () => {
+  it.each(["#fff", "#1a2b3c", "#1a2b3c80", "hsl(210 90% 55%)", "rgb(10, 20, 30)", "hsla(1,2%,3%,.5)"])(
+    "keeps the colour %s",
+    (color) => {
+      expect(safeCssColor(color)).toBe(color);
+    }
+  );
+
+  it.each([
+    "red; background: url(x)",
+    "url(https://evil.example/x.png)",
+    "var(--primary)",
+    "expression(alert(1))",
+    "",
+    null,
+  ])("drops %j", (color) => {
+    expect(safeCssColor(color)).toBeNull();
+  });
+
+  it("only sets the chip colour for a usable value", () => {
+    expect(categoryStyle({ color: "#123456" })).toEqual({ "--chip-color": "#123456" });
+    expect(categoryStyle({ color: "nope" })).toBeUndefined();
+    expect(categoryStyle(null)).toBeUndefined();
+  });
+});
+
+describe("parsePhotoParam", () => {
+  it("turns a 1-based photo number into a 0-based index", () => {
+    expect(parsePhotoParam("1")).toBe(0);
+    expect(parsePhotoParam("12")).toBe(11);
+  });
+
+  it.each([null, "0", "-1", "abc", "1.5", "01", ""])("is null for %j", (value) => {
+    expect(parsePhotoParam(value)).toBeNull();
+  });
+});
+
+describe("scrollBehavior", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("scrolls instantly when the user prefers reduced motion", () => {
+    vi.stubGlobal("matchMedia", (query) => ({ matches: query.includes("reduce") }));
+    expect(scrollBehavior()).toBe("auto");
+  });
+
+  it("scrolls smoothly otherwise", () => {
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    expect(scrollBehavior()).toBe("smooth");
   });
 });
 

@@ -46,7 +46,7 @@ const MILESTONES = [
     mandate: "1993/94",
     external_url: null,
     external_label: null,
-    media: [],
+    gallery_count: null,
     has_drive_gallery: true,
   },
   {
@@ -60,7 +60,7 @@ const MILESTONES = [
     mandate: "2017/18",
     external_url: null,
     external_label: null,
-    media: [],
+    gallery_count: 0,
     has_drive_gallery: false,
   },
 ];
@@ -161,7 +161,9 @@ describe("History page", () => {
     await screen.findByText("Fundação do NEI");
     await user.click(screen.getAllByRole("button", { name: /ver galeria/i })[0]);
 
-    await waitFor(() => expect(service.getHistoryGallery).toHaveBeenCalledWith(1));
+    await waitFor(() =>
+      expect(service.getHistoryGallery).toHaveBeenCalledWith(1, expect.anything())
+    );
   });
 
   it("groups milestones into mandate sections", async () => {
@@ -235,5 +237,94 @@ describe("History page", () => {
     await user.click(await screen.findByRole("button", { name: /tentar de novo/i }));
     expect(await screen.findByText("Fundação do NEI")).toBeInTheDocument();
     expect(service.getHistory).toHaveBeenCalledTimes(2);
+  });
+
+  describe("URL state", () => {
+    const params = () => new URLSearchParams(location.search);
+
+    it("drops a malformed category slug from the URL and shows everything", async () => {
+      service.getHistory.mockResolvedValue(MILESTONES);
+      renderPage(["/history?categoria=N%C3%A3o%20existe"]);
+
+      expect(await screen.findByText("Fundação do NEI")).toBeInTheDocument();
+      await waitFor(() => expect(params().get("categoria")).toBeNull());
+    });
+
+    it("explains a category with no milestones and offers to reset the filter", async () => {
+      service.getHistory.mockResolvedValue(MILESTONES);
+      const user = userEvent.setup();
+      renderPage(["/history?categoria=renomeada"]);
+
+      expect(await screen.findByText("Sem marcos nesta categoria")).toBeInTheDocument();
+      expect(screen.queryByText("Fundação do NEI")).not.toBeInTheDocument();
+      // A well-formed slug may still exist in the CMS: kept until the user resets.
+      expect(params().get("categoria")).toBe("renomeada");
+      expect(
+        screen.getByRole("combobox", { name: "Filtrar por categoria" })
+      ).toHaveValue("renomeada");
+
+      await user.click(screen.getByRole("button", { name: /ver todos os marcos/i }));
+      expect(params().get("categoria")).toBeNull();
+      expect(screen.getByText("Fundação do NEI")).toBeInTheDocument();
+      expect(screen.getByText("Lançamento da TacaUA")).toBeInTheDocument();
+    });
+
+    it("keeps a working filter untouched", async () => {
+      service.getHistory.mockResolvedValue(MILESTONES);
+      renderPage(["/history?categoria=evento"]);
+
+      expect(await screen.findByText("Lançamento da TacaUA")).toBeInTheDocument();
+      expect(screen.queryByText("Sem marcos nesta categoria")).not.toBeInTheDocument();
+      expect(params().get("categoria")).toBe("evento");
+    });
+
+    it.each([
+      ["a milestone that doesn't exist", "/history?marco=999&foto=2"],
+      ["a milestone without a gallery", "/history?marco=2&foto=2"],
+      ["a non-numeric id", "/history?marco=abc"],
+    ])("clears a gallery link to %s", async (_case, url) => {
+      service.getHistory.mockResolvedValue(MILESTONES);
+      renderPage([url]);
+
+      await screen.findByText("Fundação do NEI");
+      await waitFor(() => expect(params().get("marco")).toBeNull());
+      expect(params().get("foto")).toBeNull();
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(service.getHistoryGallery).not.toHaveBeenCalled();
+    });
+
+    it("drops a photo number that isn't one", async () => {
+      service.getHistory.mockResolvedValue(MILESTONES);
+      service.getHistoryGallery.mockResolvedValue({ id: 1, title: "x", media: [] });
+      renderPage(["/history?marco=1&foto=abc"]);
+
+      await waitFor(() => expect(params().get("foto")).toBeNull());
+      expect(params().get("marco")).toBe("1");
+    });
+
+    it("drops a photo number without a gallery", async () => {
+      service.getHistory.mockResolvedValue(MILESTONES);
+      renderPage(["/history?foto=3"]);
+
+      await screen.findByText("Fundação do NEI");
+      await waitFor(() => expect(params().get("foto")).toBeNull());
+    });
+
+    it("rewrites a photo number past the end to the photo actually shown", async () => {
+      service.getHistory.mockResolvedValue(MILESTONES);
+      service.getHistoryGallery.mockResolvedValue({
+        id: 1,
+        title: "Fundação do NEI",
+        media: [
+          { id: "drive:a", url: "a.jpg", thumb: "a-t.jpg", caption: "Foto A", source: "drive" },
+          { id: "drive:b", url: "b.jpg", thumb: "b-t.jpg", caption: "Foto B", source: "drive" },
+        ],
+      });
+      renderPage(["/history?marco=1&foto=999"]);
+
+      expect(await screen.findByText("1 / 2")).toBeInTheDocument();
+      await waitFor(() => expect(params().get("foto")).toBeNull());
+      expect(params().get("marco")).toBe("1");
+    });
   });
 });

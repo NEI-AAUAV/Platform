@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import service from "services/NEIService";
 import MaterialSymbol from "components/MaterialSymbol";
 import {
   Dialog,
@@ -9,67 +8,91 @@ import {
   DialogDescription,
 } from "components/ui/dialog";
 
-import "./GalleryLightbox.css";
+import useGallery from "./useGallery";
+import useSwipe from "./useSwipe";
 
-const SWIPE_THRESHOLD_PX = 50;
+import "./GalleryLightbox.css";
 
 function preload(url) {
   const image = new Image();
   image.src = url;
 }
 
-/** `initialIndex` is only read when a milestone opens (deep links land on
- * a given photo); after that the lightbox owns the index and reports every
- * change through `onIndexChange`. */
+/** A requested photo that the loaded gallery doesn't have lands on the
+ * first one instead. */
+function resolveIndex(requested, length) {
+  return requested != null && requested >= 0 && requested < length ? requested : 0;
+}
+
+function GalleryStatus({ gallery }) {
+  if (gallery.status === "loading") {
+    return <p className="history-lightbox__status">A carregar fotos…</p>;
+  }
+  if (gallery.status === "error") {
+    return (
+      <div className="history-lightbox__status" role="alert">
+        <p>Não foi possível carregar a galeria.</p>
+        <button type="button" className="history-lightbox__retry" onClick={gallery.retry}>
+          <MaterialSymbol icon="refresh" size={18} />
+          Tentar de novo
+        </button>
+      </div>
+    );
+  }
+  return <p className="history-lightbox__status">Sem fotos disponíveis para este marco.</p>;
+}
+
+function GalleryNotice({ gallery }) {
+  if (gallery.truncated) {
+    return (
+      <p className="history-lightbox__notice">
+        A mostrar as primeiras {gallery.media.length} fotos desta galeria.
+      </p>
+    );
+  }
+  if (gallery.driveStatus === "error") {
+    return (
+      <p className="history-lightbox__notice">
+        Algumas fotos não puderam ser carregadas agora.
+      </p>
+    );
+  }
+  return null;
+}
+
+/** `initialIndex` (0-based, or null) is only read when a gallery finishes
+ * loading — deep links land on a given photo; after that the lightbox owns
+ * the index and reports every change, including falling back from a photo
+ * that doesn't exist, through `onIndexChange`. */
 export default function GalleryLightbox({
   milestone,
-  initialIndex = 0,
+  initialIndex = null,
   onIndexChange,
   onClose,
 }) {
-  const [media, setMedia] = useState(milestone?.media ?? []);
-  const [loading, setLoading] = useState(false);
-  const [index, setIndex] = useState(initialIndex);
-  const [failed, setFailed] = useState(() => new Set());
-  const touchStartX = useRef(null);
-  const stripRef = useRef(null);
+  const milestoneId = milestone?.id ?? null;
   const initialIndexRef = useRef(initialIndex);
   initialIndexRef.current = initialIndex;
+  const onIndexChangeRef = useRef(onIndexChange);
+  onIndexChangeRef.current = onIndexChange;
 
-  useEffect(() => {
-    if (!milestone) return undefined;
+  // Tagged with its milestone, like the gallery itself: a new milestone
+  // starts on its first photo with nothing marked as broken.
+  const [view, setView] = useState({ milestoneId: null, index: 0, failed: new Set() });
+  const own = view.milestoneId === milestoneId;
+  const index = own ? view.index : 0;
+  const failed = own ? view.failed : new Set();
 
-    setIndex(initialIndexRef.current);
-    setMedia(milestone.media);
-    setFailed(new Set());
-
-    if (!milestone.has_drive_gallery) return undefined;
-
-    let cancelled = false;
-    setLoading(true);
-    service
-      .getHistoryGallery(milestone.id)
-      .then((gallery) => {
-        if (!cancelled) setMedia(gallery.media);
-      })
-      .catch(() => {
-        // Keep whatever media we already had; the gallery just won't
-        // include the Drive-folder photos this time.
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [milestone]);
-
-  // A deep link can point past the photos known before the Drive folder
-  // loads; once everything is in, fall back to the first photo.
-  useEffect(() => {
-    if (!loading && media.length > 0 && index >= media.length) setIndex(0);
-  }, [loading, media.length, index]);
+  const gallery = useGallery(milestoneId, {
+    onLoaded(media) {
+      const requested = initialIndexRef.current;
+      const resolved = resolveIndex(requested, media.length);
+      setView({ milestoneId, index: resolved, failed: new Set() });
+      if (requested != null && requested !== resolved) onIndexChangeRef.current?.(resolved);
+    },
+  });
+  const media = gallery.status === "ready" ? gallery.media : [];
+  const current = media[index];
 
   useEffect(() => {
     if (media.length < 2) return;
@@ -77,6 +100,7 @@ export default function GalleryLightbox({
     preload(media[(index - 1 + media.length) % media.length].url);
   }, [index, media]);
 
+  const stripRef = useRef(null);
   useEffect(() => {
     stripRef.current
       ?.querySelector('[aria-current="true"]')
@@ -84,65 +108,41 @@ export default function GalleryLightbox({
   }, [index]);
 
   function show(next) {
-    setIndex(next);
+    setView({ milestoneId, index: next, failed });
     onIndexChange?.(next);
   }
 
   function goTo(delta) {
-    if (media.length === 0) return;
+    if (media.length < 2) return;
     show((index + delta + media.length) % media.length);
   }
 
   function markFailed(id) {
-    setFailed((current) => new Set(current).add(id));
+    setView((previous) => ({ ...previous, failed: new Set(previous.failed).add(id) }));
   }
+
+  const swipe = useSwipe(goTo);
 
   function handleKeyDown(event) {
     if (event.key === "ArrowRight") goTo(1);
     if (event.key === "ArrowLeft") goTo(-1);
   }
 
-  function handleTouchStart(event) {
-    touchStartX.current = event.touches[0].clientX;
-  }
-
-  function handleTouchEnd(event) {
-    if (touchStartX.current === null) return;
-    const delta = event.changedTouches[0].clientX - touchStartX.current;
-    if (Math.abs(delta) > SWIPE_THRESHOLD_PX) goTo(delta < 0 ? 1 : -1);
-    touchStartX.current = null;
-  }
-
-  const current = media[index];
-
   return (
     <Dialog open={!!milestone} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent
-        className="history-lightbox"
-        onKeyDown={handleKeyDown}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
+      <DialogContent className="history-lightbox" onKeyDown={handleKeyDown}>
         <DialogTitle className="sr-only">
           {milestone ? `Galeria — ${milestone.title}` : "Galeria"}
         </DialogTitle>
         <DialogDescription className="sr-only">
-          Use as setas do teclado ou os botões para navegar entre fotos.
+          Use as setas do teclado, deslize na foto ou use os botões para navegar entre fotos.
         </DialogDescription>
 
-        {loading && !current && (
-          <p className="history-lightbox__status">A carregar fotos…</p>
-        )}
-
-        {!loading && media.length === 0 && (
-          <p className="history-lightbox__status">
-            Sem fotos disponíveis para este marco.
-          </p>
-        )}
+        {!current && <GalleryStatus gallery={gallery} />}
 
         {current && (
           <>
-            <figure className="history-lightbox__stage">
+            <figure className="history-lightbox__stage" {...swipe}>
               {failed.has(current.id) ? (
                 <div className="history-lightbox__broken" role="img" aria-label="Foto indisponível">
                   <MaterialSymbol icon="broken_image" size={40} />
@@ -153,7 +153,9 @@ export default function GalleryLightbox({
                   key={current.id}
                   className="history-lightbox__image"
                   src={current.url}
-                  alt={current.caption || ""}
+                  // The caption is the only description editors write; it is
+                  // also shown below, so screen readers get it once here.
+                  alt={current.caption || `Foto ${index + 1} de ${media.length}`}
                   width={current.width || undefined}
                   height={current.height || undefined}
                   style={
@@ -183,7 +185,7 @@ export default function GalleryLightbox({
                   >
                     <MaterialSymbol icon="chevron_right" size={28} />
                   </button>
-                  <span className="history-lightbox__counter">
+                  <span className="history-lightbox__counter" aria-live="polite">
                     {index + 1} / {media.length}
                   </span>
                 </>
@@ -191,14 +193,12 @@ export default function GalleryLightbox({
             </figure>
 
             {current.caption && (
-              <p className="history-lightbox__caption">{current.caption}</p>
+              <p className="history-lightbox__caption" aria-hidden="true">
+                {current.caption}
+              </p>
             )}
 
-            {loading && (
-              <output className="history-lightbox__loading-more">
-                A carregar mais fotos…
-              </output>
-            )}
+            <GalleryNotice gallery={gallery} />
 
             {media.length > 1 && (
               <ol className="history-lightbox__strip" ref={stripRef}>

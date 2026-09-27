@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import MaterialSymbol from "components/MaterialSymbol";
 
+import { scrollBehavior } from "./utils";
+
 const SHOW_AFTER_PX = 600;
 
 export default function BackToTop() {
@@ -22,7 +24,7 @@ export default function BackToTop() {
       type="button"
       className="history-back-to-top"
       aria-label="Voltar ao topo"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick={() => window.scrollTo({ top: 0, behavior: scrollBehavior() })}
     >
       <MaterialSymbol icon="arrow_upward" size={20} />
     </button>

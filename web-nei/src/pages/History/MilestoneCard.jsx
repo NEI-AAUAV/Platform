@@ -19,7 +19,7 @@ export default function MilestoneCard({ milestone, onOpenGallery }) {
     >
       {cover && (
         <div className="history-card__cover">
-          <CoverImage src={cover} width={480} height={270} />
+          <CoverImage src={cover} alt={milestone.cover_alt} width={480} height={270} />
         </div>
       )}
 

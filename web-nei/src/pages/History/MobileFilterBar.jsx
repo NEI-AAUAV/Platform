@@ -26,6 +26,13 @@ export default function MobileFilterBar({
             onChange={(e) => onCategoryChange(e.target.value || null)}
           >
             <option value="">Todas as categorias</option>
+            {activeCategory && !categories.some((c) => c.slug === activeCategory) && (
+              // Keeps the select honest about a shared link's filter that
+              // matches nothing, instead of silently showing "Todas".
+              <option value={activeCategory} disabled>
+                Categoria sem marcos
+              </option>
+            )}
             {categories.map((category) => (
               <option key={category.slug} value={category.slug}>
                 {category.label}

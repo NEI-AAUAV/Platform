@@ -1,5 +1,5 @@
 import React from "react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { afterEach, describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -39,5 +39,24 @@ describe("BackToTop", () => {
     await user.click(screen.getByRole("button", { name: "Voltar ao topo" }));
 
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
+  });
+
+  describe("with reduced motion", () => {
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it("jumps to the top instead of animating the scroll", async () => {
+      vi.stubGlobal("matchMedia", (query) => ({ matches: query.includes("reduce") }));
+      const scrollTo = vi.fn();
+      window.scrollTo = scrollTo;
+      const user = userEvent.setup();
+      render(<BackToTop />);
+
+      fireScroll(700);
+      await user.click(screen.getByRole("button", { name: "Voltar ao topo" }));
+
+      expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "auto" });
+    });
   });
 });

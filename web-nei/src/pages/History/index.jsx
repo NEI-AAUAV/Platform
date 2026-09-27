@@ -12,9 +12,35 @@ import GalleryLightbox from "./GalleryLightbox";
 import HistorySkeleton from "./HistorySkeleton";
 import HistoryEmpty from "./HistoryEmpty";
 import BackToTop from "./BackToTop";
-import { groupByMandate } from "./utils";
+import {
+  groupByMandate,
+  hasGallery,
+  isCategorySlug,
+  parsePhotoParam,
+  usedCategories,
+} from "./utils";
 
 import "./index.css";
+
+/** Params that can't mean anything — a malformed category slug, a gallery
+ * that doesn't exist (or has no photos), a photo number that isn't one —
+ * mapped to their removal, so the URL never claims a state the page isn't
+ * showing. A well-formed slug with no milestones is kept: the page explains
+ * the empty result instead. */
+function staleParams(searchParams, milestones) {
+  const stale = {};
+  const category = searchParams.get("categoria");
+  if (category !== null && !isCategorySlug(category)) stale.categoria = null;
+
+  const marco = searchParams.get("marco");
+  const gallery = milestones.find((m) => String(m.id) === marco);
+  if (marco !== null && !(gallery && hasGallery(gallery))) stale.marco = null;
+
+  const foto = searchParams.get("foto");
+  const noGallery = marco === null || "marco" in stale;
+  if (foto !== null && (noGallery || parsePhotoParam(foto) === null)) stale.foto = null;
+  return stale;
+}
 
 /** URL state: `categoria` (filter), `marco` (open gallery), `foto`
  * (1-based photo in that gallery) — so a filtered view or a single photo
@@ -26,9 +52,10 @@ export function Component() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeMandate, setActiveMandate] = useState(null);
 
-  const category = searchParams.get("categoria");
-  const galleryId = Number(searchParams.get("marco")) || null;
-  const initialPhoto = Math.max(0, (Number(searchParams.get("foto")) || 1) - 1);
+  const rawCategory = searchParams.get("categoria");
+  const category = rawCategory && isCategorySlug(rawCategory) ? rawCategory : null;
+  const galleryId = searchParams.get("marco");
+  const initialPhoto = parsePhotoParam(searchParams.get("foto"));
 
   useEffect(() => {
     let cancelled = false;
@@ -46,24 +73,6 @@ export function Component() {
     };
   }, [attempt]);
 
-  const filtered = useMemo(() => {
-    if (!milestones) return [];
-    return category
-      ? milestones.filter((m) => m.category?.slug === category)
-      : milestones;
-  }, [milestones, category]);
-
-  const groups = useMemo(() => groupByMandate(filtered), [filtered]);
-  const mandates = useMemo(() => groups.map((g) => g.mandate), [groups]);
-  const featuredIds = useMemo(
-    () => new Set(category ? [] : filtered.filter((m) => m.featured).map((m) => m.id)),
-    [filtered, category]
-  );
-  const galleryFor = useMemo(
-    () => milestones?.find((m) => m.id === galleryId) ?? null,
-    [milestones, galleryId]
-  );
-
   const updateParams = useCallback(
     (changes, options) => {
       setSearchParams((previous) => {
@@ -78,8 +87,44 @@ export function Component() {
     [setSearchParams]
   );
 
+  useEffect(() => {
+    if (!milestones) return;
+    const stale = staleParams(searchParams, milestones);
+    if (Object.keys(stale).length > 0) updateParams(stale, { replace: true });
+  }, [milestones, searchParams, updateParams]);
+
+  const filtered = useMemo(() => {
+    if (!milestones) return [];
+    return category
+      ? milestones.filter((m) => m.category?.slug === category)
+      : milestones;
+  }, [milestones, category]);
+
+  const categoryLabel = useMemo(
+    () =>
+      milestones &&
+      category &&
+      usedCategories(milestones).find((c) => c.slug === category)?.label,
+    [milestones, category]
+  );
+
+  const groups = useMemo(() => groupByMandate(filtered), [filtered]);
+  const mandates = useMemo(() => groups.map((g) => g.mandate), [groups]);
+  const featuredIds = useMemo(
+    () => new Set(category ? [] : filtered.filter((m) => m.featured).map((m) => m.id)),
+    [filtered, category]
+  );
+  const galleryFor = useMemo(() => {
+    const milestone = milestones?.find((m) => String(m.id) === galleryId);
+    return milestone && hasGallery(milestone) ? milestone : null;
+  }, [milestones, galleryId]);
+
   const openGallery = useCallback(
     (milestone) => updateParams({ marco: milestone.id, foto: null }),
+    [updateParams]
+  );
+  const setCategory = useCallback(
+    (next) => updateParams({ categoria: next }),
     [updateParams]
   );
 
@@ -99,42 +144,51 @@ export function Component() {
     return <HistorySkeleton />;
   }
 
+  let timeline;
+  if (milestones.length === 0) {
+    timeline = <HistoryEmpty variant="empty" />;
+  } else if (groups.length === 0) {
+    timeline = (
+      <HistoryEmpty
+        variant="filtered"
+        categoryLabel={categoryLabel}
+        onReset={() => setCategory(null)}
+      />
+    );
+  } else {
+    timeline = (
+      <div className="history-layout">
+        <MandateRail mandates={mandates} activeMandate={activeMandate} />
+
+        <div className="history-timeline">
+          {groups.map(({ mandate, items }) => (
+            <MandateSection
+              key={mandate}
+              mandate={mandate}
+              milestones={items}
+              featuredIds={featuredIds}
+              onMandateVisible={setActiveMandate}
+              onOpenGallery={openGallery}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="history-page">
       <HistoryHero milestones={milestones} />
 
-      <CategoryFilter
-        milestones={milestones}
-        active={category}
-        onChange={(next) => updateParams({ categoria: next })}
-      />
+      <CategoryFilter milestones={milestones} active={category} onChange={setCategory} />
       <MobileFilterBar
         milestones={milestones}
         activeCategory={category}
-        onCategoryChange={(next) => updateParams({ categoria: next })}
+        onCategoryChange={setCategory}
         mandates={mandates}
       />
 
-      {milestones.length === 0 ? (
-        <HistoryEmpty variant="empty" />
-      ) : (
-        <div className="history-layout">
-          <MandateRail mandates={mandates} activeMandate={activeMandate} />
-
-          <div className="history-timeline">
-            {groups.map(({ mandate, items }) => (
-              <MandateSection
-                key={mandate}
-                mandate={mandate}
-                milestones={items}
-                featuredIds={featuredIds}
-                onMandateVisible={setActiveMandate}
-                onOpenGallery={openGallery}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      {timeline}
 
       <GalleryLightbox
         milestone={galleryFor}

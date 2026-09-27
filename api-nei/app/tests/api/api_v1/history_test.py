@@ -109,8 +109,15 @@ def test_editorial_fields_are_returned(client: TestClient, db: SessionTesting) -
     assert match["mandate"] == "2023/24"
     assert match["external_url"] == "https://example.com/noticia"
     assert match["external_label"] == "Ler notícia"
-    assert match["media"] == []
+    assert "media" not in match  # photos are only listed by /gallery
     assert match["has_drive_gallery"] is False
+    assert match["gallery_count"] == 0
+
+
+def _gallery(client: TestClient, milestone_id: int) -> dict:
+    r = client.get(f"{settings.API_V1_STR}/history/{milestone_id}/gallery")
+    assert r.status_code == 200
+    return r.json()
 
 
 def test_media_gallery_items_are_shaped(client: TestClient, db: SessionTesting) -> None:
@@ -127,13 +134,12 @@ def test_media_gallery_items_are_shaped(client: TestClient, db: SessionTesting) 
     )
     db.commit()
 
-    r = client.get(f"{settings.API_V1_STR}/history")
-    match = next(el for el in r.json() if el["title"] == "Com galeria")
-    assert len(match["media"]) == 1
-    assert match["media"][0]["source"] == "drive"
-    assert match["media"][0]["caption"] == "Foto 1"
-    assert match["media"][0]["url"] == "https://lh3.googleusercontent.com/d/1AbCdEfGhIjK=w2000"
-    assert match["media"][0]["thumb"] == "https://lh3.googleusercontent.com/d/1AbCdEfGhIjK=w600"
+    media = _gallery(client, milestone.id)["media"]
+    assert len(media) == 1
+    assert media[0]["source"] == "drive"
+    assert media[0]["caption"] == "Foto 1"
+    assert media[0]["url"] == "https://lh3.googleusercontent.com/d/1AbCdEfGhIjK=w2000"
+    assert media[0]["thumb"] == "https://lh3.googleusercontent.com/d/1AbCdEfGhIjK=w600"
 
 
 def test_gallery_endpoint_returns_media(client: TestClient, db: SessionTesting) -> None:
@@ -217,11 +223,10 @@ def test_uploaded_media_thumb_requests_a_resized_variant(
     db.add(HistoryMedia(history_id=milestone.id, photo_asset=asset_id, weight=0))
     db.commit()
 
-    r = client.get(f"{settings.API_V1_STR}/history")
-    match = next(el for el in r.json() if el["title"] == "Com upload")
-    assert match["media"][0]["source"] == "upload"
-    assert match["media"][0]["url"].endswith(str(asset_id))
-    assert match["media"][0]["thumb"] == match["media"][0]["url"] + "?width=600"
+    media = _gallery(client, milestone.id)["media"]
+    assert media[0]["source"] == "upload"
+    assert media[0]["url"].endswith(str(asset_id))
+    assert media[0]["thumb"] == media[0]["url"] + "?width=600"
 
 
 def test_media_with_an_unparseable_drive_link_is_silently_dropped(
@@ -239,9 +244,10 @@ def test_media_with_an_unparseable_drive_link_is_silently_dropped(
     )
     db.commit()
 
+    assert _gallery(client, milestone.id)["media"] == []
     r = client.get(f"{settings.API_V1_STR}/history")
     match = next(el for el in r.json() if el["title"] == "Link Drive inválido")
-    assert match["media"] == []
+    assert match["gallery_count"] == 0
 
 
 def test_media_ordering_follows_weight(client: TestClient, db: SessionTesting) -> None:
@@ -266,9 +272,8 @@ def test_media_ordering_follows_weight(client: TestClient, db: SessionTesting) -
     )
     db.commit()
 
-    r = client.get(f"{settings.API_V1_STR}/history")
-    match = next(el for el in r.json() if el["title"] == "Ordem da galeria")
-    assert [m["caption"] for m in match["media"]] == ["Primeira", "Segunda"]
+    media = _gallery(client, milestone.id)["media"]
+    assert [m["caption"] for m in media] == ["Primeira", "Segunda"]
 
 
 def test_list_is_sorted_by_moment_then_id_descending(
@@ -340,58 +345,62 @@ def test_media_ids_are_namespaced_by_source(client: TestClient, db: SessionTesti
     ])
     db.commit()
 
-    ids = [m["id"] for m in _listed(client, "Ids estáveis")["media"]]
+    ids = [m["id"] for m in _gallery(client, milestone.id)["media"]]
     assert ids == [f"upload:{upload.id}", "drive:1AbCdEfGhIjK"]
 
 
-def test_list_counts_folder_photos_and_uses_one_as_cover(
-    client: TestClient, db: SessionTesting, monkeypatch
-) -> None:
-    asked = _fake_folder(monkeypatch, _folder("f1", "f2", "f3"))
+def test_list_never_calls_drive(client: TestClient, db: SessionTesting, monkeypatch) -> None:
+    asked = _fake_folder(monkeypatch, _folder("f1", "f2"))
     _milestone_with_folder(db, "Pasta com fotos")
 
     match = _listed(client, "Pasta com fotos")
-    assert asked == ["1FolderIdAbC"]
-    assert match["gallery_count"] == 3
-    assert match["cover"] == "https://lh3.googleusercontent.com/d/f1=w600"
-    assert match["media"] == []  # folder photos are only listed by /gallery
-
-
-def test_list_prefers_the_milestone_image_as_cover(
-    client: TestClient, db: SessionTesting, monkeypatch
-) -> None:
-    _fake_folder(monkeypatch, _folder("f1"))
-    _milestone_with_folder(db, "Capa própria", image="/capa.png")
-
-    assert _listed(client, "Capa própria")["cover"].endswith("/capa.png")
-
-
-def test_list_counts_an_unavailable_folder_as_empty(
-    client: TestClient, db: SessionTesting, monkeypatch
-) -> None:
-    _fake_folder(monkeypatch, _folder(status="unavailable"))
-    _milestone_with_folder(db, "Pasta privada")
-
-    match = _listed(client, "Pasta privada")
-    assert match["gallery_count"] == 0
+    assert asked == []
+    assert match["has_drive_gallery"] is True
+    assert match["gallery_count"] is None  # unknown until the gallery opens
     assert match["cover"] is None
 
 
-@pytest.mark.parametrize("outcome", ["error", "timeout"])
-def test_list_leaves_the_count_unknown_when_drive_fails(
-    client: TestClient, db: SessionTesting, monkeypatch, outcome: str
+def test_list_answers_even_when_drive_would_hang(
+    client: TestClient, db: SessionTesting, monkeypatch
 ) -> None:
-    import asyncio
+    from app.api.api_v1 import history as history_api
 
-    _fake_folder(
-        monkeypatch,
-        _folder(status="error") if outcome == "error" else asyncio.TimeoutError(),
-    )
-    _milestone_with_folder(db, "Drive em baixo")
+    async def hang(_folder_id: str):
+        raise AssertionError("the list must not touch Drive")
 
-    match = _listed(client, "Drive em baixo")
-    assert match["gallery_count"] is None
-    assert match["has_drive_gallery"] is True
+    monkeypatch.setattr(history_api.drive_client, "list_folder", hang)
+    _milestone_with_folder(db, "Drive lento")
+
+    assert _listed(client, "Drive lento")["has_drive_gallery"] is True
+
+
+def test_list_prefers_the_milestone_image_as_cover(client: TestClient, db: SessionTesting) -> None:
+    _milestone_with_folder(db, "Capa própria", image="/capa.png", image_alt="Fachada do DETI")
+
+    match = _listed(client, "Capa própria")
+    assert match["cover"].endswith("/capa.png")
+    assert match["cover_alt"] == "Fachada do DETI"
+
+
+def test_cover_from_a_gallery_photo_uses_its_caption_as_alt(
+    client: TestClient, db: SessionTesting
+) -> None:
+    milestone = History(moment=date(2024, 12, 5), title="Capa da galeria")
+    db.add(milestone)
+    db.flush()
+    db.add(HistoryMedia(history_id=milestone.id, drive_url="https://drive.google.com/file/d/1AbCdEfGhIjK/view", caption="Equipa na receção", weight=0))
+    db.commit()
+
+    match = _listed(client, "Capa da galeria")
+    assert match["cover"] == "https://lh3.googleusercontent.com/d/1AbCdEfGhIjK=w600"
+    assert match["cover_alt"] == "Equipa na receção"
+
+
+def test_cover_without_written_alt_is_null(client: TestClient, db: SessionTesting) -> None:
+    db.add(History(moment=date(2024, 12, 6), title="Sem alt", image="/x.png"))
+    db.commit()
+
+    assert _listed(client, "Sem alt")["cover_alt"] is None
 
 
 def test_list_without_folder_counts_own_media(client: TestClient, db: SessionTesting) -> None:
@@ -416,6 +425,7 @@ def test_gallery_appends_folder_photos_without_duplicates(
 
     data = client.get(f"{settings.API_V1_STR}/history/{milestone.id}/gallery").json()
     assert data["drive_status"] == "ok"
+    assert data["truncated"] is False
     assert [m["id"] for m in data["media"]] == ["drive:1AbCdEfGhIjK", "drive:f2"]
     assert data["media"][0]["caption"] == "Destacada"
     assert (data["media"][1]["width"], data["media"][1]["height"]) == (800, 600)
@@ -459,3 +469,125 @@ def test_external_url_only_allows_http_links(
     db.commit()
 
     assert _listed(client, "Ligação")["external_url"] == expected
+
+
+def test_gallery_without_folder_never_calls_drive(
+    client: TestClient, db: SessionTesting, monkeypatch
+) -> None:
+    asked = _fake_folder(monkeypatch, _folder("f1"))
+    milestone = History(moment=date(2024, 12, 7), title="Só uploads")
+    db.add(milestone)
+    db.commit()
+
+    _gallery(client, milestone.id)
+    assert asked == []
+
+
+def test_gallery_with_an_unparseable_folder_link_is_unavailable_without_calling_drive(
+    client: TestClient, db: SessionTesting, monkeypatch
+) -> None:
+    asked = _fake_folder(monkeypatch, _folder("f1"))
+    milestone = History(
+        moment=date(2024, 12, 8),
+        title="Pasta inválida",
+        drive_folder_url="https://example.com/drive/folders/1FolderIdAbC",
+    )
+    db.add(milestone)
+    db.commit()
+
+    data = _gallery(client, milestone.id)
+    assert asked == []
+    assert data["drive_status"] == "unavailable"
+
+
+@pytest.mark.parametrize("status", ["error", "disabled"])
+def test_gallery_soft_fails_to_own_media_when_drive_is_down_or_disabled(
+    client: TestClient, db: SessionTesting, monkeypatch, status: str
+) -> None:
+    _fake_folder(monkeypatch, _folder(status=status))
+    milestone = _milestone_with_folder(db, f"Drive {status}")
+    db.add(HistoryMedia(history_id=milestone.id, drive_url="https://drive.google.com/file/d/1AbCdEfGhIjK/view", weight=0))
+    db.commit()
+
+    r = client.get(f"{settings.API_V1_STR}/history/{milestone.id}/gallery")
+    assert r.status_code == 200
+    assert r.json()["drive_status"] == status
+    assert [m["id"] for m in r.json()["media"]] == ["drive:1AbCdEfGhIjK"]
+
+
+def test_degraded_gallery_is_not_cached_by_the_browser(
+    client: TestClient, db: SessionTesting, monkeypatch
+) -> None:
+    _fake_folder(monkeypatch, _folder(status="error"))
+    milestone = _milestone_with_folder(db, "Drive falhou")
+
+    r = client.get(f"{settings.API_V1_STR}/history/{milestone.id}/gallery")
+    assert r.headers["Cache-Control"] == "no-store"
+
+
+def test_healthy_gallery_keeps_the_cms_cache_header(
+    client: TestClient, db: SessionTesting, monkeypatch
+) -> None:
+    _fake_folder(monkeypatch, _folder("f1"))
+    milestone = _milestone_with_folder(db, "Drive bem")
+
+    r = client.get(f"{settings.API_V1_STR}/history/{milestone.id}/gallery")
+    assert r.headers["Cache-Control"].startswith("private, max-age=60")
+
+
+def test_gallery_reports_a_truncated_folder(
+    client: TestClient, db: SessionTesting, monkeypatch
+) -> None:
+    from dataclasses import replace
+
+    _fake_folder(monkeypatch, replace(_folder("f1", "f2"), truncated=True))
+    milestone = _milestone_with_folder(db, "Pasta enorme")
+
+    data = _gallery(client, milestone.id)
+    assert data["truncated"] is True
+    assert len(data["media"]) == 2
+
+
+# --- Domain constraints (Directus writes straight to the DB) ---------------
+
+@pytest.mark.parametrize("mandate", ["2025/26", "1993/94", None])
+def test_valid_mandates_are_accepted(db: SessionTesting, mandate) -> None:
+    db.add(History(moment=date(2024, 1, 1), title="Mandato", mandate=mandate))
+    db.flush()
+
+
+@pytest.mark.parametrize("mandate", ["2025", "2025/6", "25/26", "2025-26", "2025/ab", "abc", ""])
+def test_malformed_mandates_are_rejected(db: SessionTesting, mandate: str) -> None:
+    from sqlalchemy.exc import IntegrityError
+
+    db.add(History(moment=date(2024, 1, 1), title="Mandato", mandate=mandate))
+    with pytest.raises(IntegrityError, match="ck_history_mandate_format"):
+        db.flush()
+    db.rollback()
+
+
+@pytest.mark.parametrize("slug", ["Evento", "com espaço", "acentuação", "", "a_b"])
+def test_malformed_category_slugs_are_rejected(db: SessionTesting, slug: str) -> None:
+    from sqlalchemy.exc import IntegrityError
+
+    db.add(HistoryCategory(slug=slug, label="X"))
+    with pytest.raises(IntegrityError, match="ck_history_category_slug_format"):
+        db.flush()
+    db.rollback()
+
+
+def test_category_slug_cannot_change_but_label_can(db: SessionTesting) -> None:
+    """Shared `?categoria=<slug>` links must survive CMS edits."""
+    from sqlalchemy.exc import IntegrityError
+
+    category = HistoryCategory(slug="estavel", label="Estável")
+    db.add(category)
+    db.flush()
+
+    category.label = "Novo nome"
+    db.flush()
+
+    category.slug = "outro-slug"
+    with pytest.raises(IntegrityError, match="slug cannot change"):
+        db.flush()
+    db.rollback()

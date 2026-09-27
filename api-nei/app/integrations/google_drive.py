@@ -14,6 +14,15 @@ API error all resolve to an empty image list rather than raising, because a
 photo gallery must never break the milestone it belongs to. The result
 carries a `status` so callers can still tell "empty" from "broken".
 
+Every fetch runs under a total time budget (`FOLDER_FETCH_BUDGET_SECONDS`)
+that is shorter than web-nei's request timeout: a slow Drive answers with
+the photos listed so far (`truncated`) instead of paging on after the
+browser has already given up.
+
+Folders inside Shared Drives are only visible to the API when the request
+opts in (`supportsAllDrives` / `includeItemsFromAllDrives`); both flags are
+no-ops for ordinary My Drive folders.
+
 The API key travels in the `X-Goog-Api-Key` header, never the query string,
 and errors are logged by status code only — an httpx error's message
 includes the request URL, which must never reach the logs.
@@ -23,7 +32,7 @@ from __future__ import annotations
 import asyncio
 import re
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal, Optional
 from urllib.parse import ParseResult, parse_qs, urlparse
 
@@ -41,9 +50,16 @@ _DRIVE_FILES_ENDPOINT = "https://www.googleapis.com/drive/v3/files"
 _FOLDER_MIME_TYPE = "application/vnd.google-apps.folder"
 _THUMB_WIDTH = 600
 _FULL_WIDTH = 2000
-# Hard cap on photos per folder: Drive pages are followed until this many.
+# Hard cap on photos per folder: Drive pages are followed until this many,
+# and a larger folder is reported as `truncated`.
 MAX_FOLDER_IMAGES = 500
 _PAGE_SIZE = 200
+# web-nei gives up on a request after 5s: the whole folder fetch (metadata +
+# every listing page) must answer before that, and no single request may eat
+# the whole budget.
+FOLDER_FETCH_BUDGET_SECONDS = 4.0
+_REQUEST_TIMEOUT_SECONDS = 3.0
+_SHARED_DRIVE_PARAMS = {"supportsAllDrives": "true"}
 
 # A working folder is stable; a broken one is usually fixed by an editor
 # re-sharing it, so it is retried sooner; a transient error sooner still.
@@ -82,6 +98,9 @@ class DriveImage:
 class DriveFolderResult:
     status: DriveStatus
     images: tuple[DriveImage, ...] = ()
+    # More photos exist than `images` holds: the folder is over
+    # MAX_FOLDER_IMAGES, or Drive was too slow to list all of it in time.
+    truncated: bool = False
 
 
 def extract_folder_id(url: str) -> Optional[str]:
@@ -154,6 +173,19 @@ class _DriveHTTPError(Exception):
         self.status_code = status_code
 
 
+class _NotAFolder(Exception):
+    pass
+
+
+@dataclass
+class _Listing:
+    """Filled page by page, so a fetch cut short by the time budget still
+    has whatever it listed before the deadline."""
+
+    items: list[dict] = field(default_factory=list)
+    has_more: bool = False
+
+
 @dataclass
 class _CacheEntry:
     result: DriveFolderResult
@@ -166,8 +198,13 @@ class GoogleDriveClient:
     repeatedly, or the list endpoint counting every gallery, doesn't hammer
     the Drive API."""
 
-    def __init__(self, transport: httpx.AsyncBaseTransport | None = None) -> None:
+    def __init__(
+        self,
+        transport: httpx.AsyncBaseTransport | None = None,
+        budget_seconds: float = FOLDER_FETCH_BUDGET_SECONDS,
+    ) -> None:
         self._transport = transport
+        self._budget_seconds = budget_seconds
         self._client: httpx.AsyncClient | None = None
         self._cache: dict[str, _CacheEntry] = {}
         self._inflight: dict[str, asyncio.Task[DriveFolderResult]] = {}
@@ -175,7 +212,8 @@ class GoogleDriveClient:
     def start(self) -> None:
         if self._client is None:
             self._client = httpx.AsyncClient(
-                timeout=httpx.Timeout(8.0), transport=self._transport
+                timeout=httpx.Timeout(_REQUEST_TIMEOUT_SECONDS),
+                transport=self._transport,
             )
 
     async def close(self) -> None:
@@ -191,9 +229,9 @@ class GoogleDriveClient:
         if cached is not None and cached.expires_at > time.monotonic():
             return cached.result
 
-        # One fetch per folder at a time; shielded so a caller that gives up
-        # (the list endpoint's time budget) doesn't cancel it — it still
-        # lands in the cache for the next request.
+        # One fetch per folder at a time; shielded so a caller that goes away
+        # (client disconnect) doesn't cancel it — it is bounded by the fetch
+        # budget anyway, and still lands in the cache for the next request.
         task = self._inflight.get(folder_id)
         if task is None:
             task = asyncio.create_task(self._fetch_and_store(folder_id))
@@ -206,14 +244,14 @@ class GoogleDriveClient:
         self._store(folder_id, result, time.monotonic())
         return result
 
-    async def list_folder_images(self, folder_id: str) -> list[DriveImage]:
-        return list((await self.list_folder(folder_id)).images)
-
     def _store(self, folder_id: str, result: DriveFolderResult, now: float) -> None:
-        ttl = {
-            "ok": _TTL_OK_SECONDS,
-            "unavailable": _TTL_UNAVAILABLE_SECONDS,
-        }.get(result.status, _TTL_ERROR_SECONDS)
+        if result.status == "ok" and not result.truncated:
+            ttl = _TTL_OK_SECONDS
+        elif result.status == "unavailable":
+            ttl = _TTL_UNAVAILABLE_SECONDS
+        else:
+            # Errors and partial listings: Drive may answer in full next time.
+            ttl = _TTL_ERROR_SECONDS
         self._cache.pop(folder_id, None)
         while len(self._cache) >= _CACHE_MAX_ENTRIES:
             # dicts keep insertion order: drop the oldest entry.
@@ -221,13 +259,23 @@ class GoogleDriveClient:
         self._cache[folder_id] = _CacheEntry(result=result, expires_at=now + ttl)
 
     async def _fetch_folder(self, folder_id: str) -> DriveFolderResult:
+        listing = _Listing()
         try:
-            folder = await self._get(
-                f"{_DRIVE_FILES_ENDPOINT}/{folder_id}", {"fields": "id,mimeType"}
+            await asyncio.wait_for(
+                self._list_folder_into(folder_id, listing), self._budget_seconds
             )
-            if folder.get("mimeType") != _FOLDER_MIME_TYPE:
-                return DriveFolderResult(status="unavailable")
-            items = await self._list_image_items(folder_id)
+        except asyncio.TimeoutError:
+            logger.warning(
+                "Google Drive listing for folder {} exceeded {}s; {} photos listed",
+                folder_id,
+                self._budget_seconds,
+                len(listing.items),
+            )
+            if not listing.items:
+                return DriveFolderResult(status="error")
+            return _folder_result(listing.items, truncated=True)
+        except _NotAFolder:
+            return DriveFolderResult(status="unavailable")
         except _DriveHTTPError as exc:
             if exc.status_code == 404:
                 return DriveFolderResult(status="unavailable")
@@ -245,29 +293,37 @@ class GoogleDriveClient:
             )
             return DriveFolderResult(status="error")
 
-        items.sort(key=_sort_key)
-        return DriveFolderResult(
-            status="ok", images=tuple(_image_from_item(item) for item in items)
-        )
+        return _folder_result(listing.items, truncated=listing.has_more)
 
-    async def _list_image_items(self, folder_id: str) -> list[dict]:
-        items: list[dict] = []
+    async def _list_folder_into(self, folder_id: str, listing: _Listing) -> None:
+        folder = await self._get(
+            f"{_DRIVE_FILES_ENDPOINT}/{folder_id}",
+            {"fields": "id,mimeType", **_SHARED_DRIVE_PARAMS},
+        )
+        if folder.get("mimeType") != _FOLDER_MIME_TYPE:
+            raise _NotAFolder()
+
         page_token: Optional[str] = None
-        while len(items) < MAX_FOLDER_IMAGES:
+        while True:
             params = {
                 "q": f"'{folder_id}' in parents and mimeType contains 'image/' and trashed=false",
                 "fields": "nextPageToken,files(id,name,description,"
                 "imageMediaMetadata(width,height,rotation,time))",
                 "pageSize": str(_PAGE_SIZE),
+                "includeItemsFromAllDrives": "true",
+                **_SHARED_DRIVE_PARAMS,
             }
             if page_token:
                 params["pageToken"] = page_token
             data = await self._get(_DRIVE_FILES_ENDPOINT, params)
-            items.extend(item for item in data.get("files", []) if item.get("id"))
+            listing.items.extend(item for item in data.get("files", []) if item.get("id"))
             page_token = data.get("nextPageToken")
+            if len(listing.items) >= MAX_FOLDER_IMAGES:
+                listing.has_more = bool(page_token) or len(listing.items) > MAX_FOLDER_IMAGES
+                del listing.items[MAX_FOLDER_IMAGES:]
+                return
             if not page_token:
-                break
-        return items[:MAX_FOLDER_IMAGES]
+                return
 
     async def _get(self, url: str, params: dict[str, str]) -> dict:
         assert self._client is not None
@@ -277,6 +333,15 @@ class GoogleDriveClient:
         if response.status_code >= 400:
             raise _DriveHTTPError(response.status_code)
         return response.json()
+
+
+def _folder_result(items: list[dict], truncated: bool) -> DriveFolderResult:
+    ordered = sorted(items, key=_sort_key)
+    return DriveFolderResult(
+        status="ok",
+        images=tuple(_image_from_item(item) for item in ordered),
+        truncated=truncated,
+    )
 
 
 drive_client = GoogleDriveClient()

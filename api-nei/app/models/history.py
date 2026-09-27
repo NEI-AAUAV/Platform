@@ -2,9 +2,18 @@ import uuid
 from datetime import date
 from typing import Optional
 
-from sqlalchemy import BigInteger, Boolean, Date, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    CheckConstraint,
+    Date,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
 from app.core.assets import asset_url
@@ -13,6 +22,14 @@ from app.db.base_class import Base
 
 
 class History(Base):
+    @declared_attr.directive
+    def __table_args__(cls):
+        return (
+            # The page sorts, labels and anchors by mandate: AAAA/AA only.
+            CheckConstraint("mandate ~ '^[0-9]{4}/[0-9]{2}$'", name="mandate_format"),
+            Base.__table_args__,
+        )
+
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     moment: Mapped[date] = mapped_column(Date, index=True)
     title: Mapped[str] = mapped_column(String(120))
@@ -20,6 +37,9 @@ class History(Base):
     _image: Mapped[Optional[str]] = mapped_column("image", String(2048))
     # Uploaded via nei-directus; additive, nullable.
     image_asset: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))
+    # Editor-written description of `image` for screen readers. Blank means
+    # the image is treated as decorative (it sits right next to the title).
+    image_alt: Mapped[Optional[str]] = mapped_column(String(200))
 
     # Editorial fields, added for the public timeline redesign.
     category_id: Mapped[Optional[int]] = mapped_column(
@@ -31,9 +51,9 @@ class History(Base):
     published: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     external_url: Mapped[Optional[str]] = mapped_column(String(2048))
     external_label: Mapped[Optional[str]] = mapped_column(String(60))
-    # Academic year the milestone belongs to, e.g. "2025/26". Free text
-    # because it is editorial (not derived), but the UI falls back to
-    # deriving it from `moment` when this is blank.
+    # Academic year the milestone belongs to, e.g. "2025/26". Editorial (not
+    # derived), but the UI falls back to deriving it from `moment` when this
+    # is blank.
     mandate: Mapped[Optional[str]] = mapped_column(String(7))
     # Directus validates this is a drive.google.com folder link; api-nei
     # only ever treats it as an opaque URL to resolve at read time.
@@ -61,7 +81,18 @@ class History(Base):
 class HistoryCategory(Base):
     """CMS-managed lookup table: the timeline's category filter is built
     from these rows, so adding/renaming/recoloring a category is a
-    Directus-only change (no deploy, unlike the old hardcoded enum)."""
+    Directus-only change (no deploy, unlike the old hardcoded enum).
+
+    `slug` is the stable identifier shared links use (`?categoria=<slug>`):
+    the database refuses to change it once created (see migration
+    b7d9f1a3c5e8). Renaming a category means editing `label`."""
+
+    @declared_attr.directive
+    def __table_args__(cls):
+        return (
+            CheckConstraint("slug ~ '^[a-z0-9-]+$'", name="slug_format"),
+            Base.__table_args__,
+        )
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     slug: Mapped[str] = mapped_column(String(30), unique=True)
