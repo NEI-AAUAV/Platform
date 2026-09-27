@@ -195,9 +195,9 @@ export default function GalleryLightbox({
             )}
 
             {loading && (
-              <p className="history-lightbox__loading-more" role="status">
+              <output className="history-lightbox__loading-more">
                 A carregar mais fotos…
-              </p>
+              </output>
             )}
 
             {media.length > 1 && (

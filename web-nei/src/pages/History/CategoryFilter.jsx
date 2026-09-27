@@ -9,7 +9,7 @@ export default function CategoryFilter({ milestones, active, onChange }) {
   if (categories.length === 0) return null;
 
   return (
-    <div className="history-filters" role="group" aria-label="Filtrar por categoria">
+    <fieldset className="history-filters" aria-label="Filtrar por categoria">
       <button
         type="button"
         className={classNames("history-filter-chip", { "is-active": !active })}
@@ -30,6 +30,6 @@ export default function CategoryFilter({ milestones, active, onChange }) {
           {category.label}
         </button>
       ))}
-    </div>
+    </fieldset>
   );
 }

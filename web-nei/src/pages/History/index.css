@@ -84,6 +84,14 @@
    `.history-mobile-nav`'s two selects instead — two differently-shaped
    scroll widgets (a chip row here, a rail below) stacked before any
    content was confusing and cost real width on narrow phones. */
+.history-filters,
+.history-mobile-nav {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
 .history-filters {
   display: none;
 }

@@ -56,16 +56,13 @@
   align-items: center;
   justify-content: center;
   color: hsl(var(--foreground));
+  transition-property: background, transform;
+  transition-duration: var(--duration-fast, 150ms);
 }
 
 .history-lightbox__nav:hover {
   background: hsl(var(--background));
   transform: translateY(-50%) scale(1.08);
-}
-
-.history-lightbox__nav {
-  transition-property: background, transform;
-  transition-duration: var(--duration-fast, 150ms);
 }
 
 .history-lightbox__nav--prev {
@@ -105,6 +102,7 @@
 }
 
 .history-lightbox__loading-more {
+  display: block;
   margin-top: 0.5rem;
   text-align: center;
   font-size: 0.75rem;

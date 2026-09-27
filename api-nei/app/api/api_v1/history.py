@@ -171,7 +171,12 @@ def _load_gallery(db: Session, id: int) -> Optional[tuple[HistoryGalleryOut, Opt
     return gallery, milestone.drive_folder_url
 
 
-@router.get("/{id}/gallery", status_code=200, response_model=HistoryGalleryOut)
+@router.get(
+    "/{id}/gallery",
+    status_code=200,
+    response_model=HistoryGalleryOut,
+    responses={404: {"description": "Milestone not found or not published"}},
+)
 async def get_gallery(
     *, id: int, db: Session = Depends(deps.get_db, scope="function"),
     _ = Depends(deps.cms_cache)

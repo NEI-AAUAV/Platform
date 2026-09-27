@@ -17,7 +17,7 @@ export default function MobileFilterBar({
   if (categories.length === 0 && mandates.length === 0) return null;
 
   return (
-    <div className="history-mobile-nav" role="group" aria-label="Filtrar e navegar">
+    <fieldset className="history-mobile-nav" aria-label="Filtrar e navegar">
       {categories.length > 0 && (
         <label className="history-mobile-nav__field">
           <span className="sr-only">Filtrar por categoria</span>
@@ -55,6 +55,6 @@ export default function MobileFilterBar({
           </select>
         </label>
       )}
-    </div>
+    </fieldset>
   );
 }

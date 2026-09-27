@@ -124,9 +124,7 @@ describe("History page", () => {
     service.getHistory.mockResolvedValue(MILESTONES);
     renderPage(["/history?categoria=evento"]);
 
-    await waitFor(() =>
-      expect(screen.getByText("Lançamento da TacaUA")).toBeInTheDocument()
-    );
+    expect(await screen.findByText("Lançamento da TacaUA")).toBeInTheDocument();
     expect(screen.queryByText("Fundação do NEI")).not.toBeInTheDocument();
     expect(
       screen.getByRole("combobox", { name: "Filtrar por categoria" })

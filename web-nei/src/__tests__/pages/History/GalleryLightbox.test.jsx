@@ -66,7 +66,7 @@ describe("GalleryLightbox", () => {
     );
 
     expect(service.getHistoryGallery).toHaveBeenCalledWith(11);
-    await waitFor(() => expect(screen.getByText("1 / 3")).toBeInTheDocument());
+    expect(await screen.findByText("1 / 3")).toBeInTheDocument();
   });
 
   it("shows a loading message while the Drive gallery is being fetched", async () => {
@@ -108,7 +108,7 @@ describe("GalleryLightbox", () => {
       />
     );
 
-    await waitFor(() => expect(screen.getByText("1 / 2")).toBeInTheDocument());
+    expect(await screen.findByText("1 / 2")).toBeInTheDocument();
   });
 
   it("navigates to the next photo with the arrow button and wraps around", async () => {
