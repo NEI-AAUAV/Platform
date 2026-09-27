@@ -202,7 +202,16 @@ const NEIService = {
     return await client.get("/extensions/manifest");
   },
 
+  // Admin: CMS
+  async getCmsInfo() {
+    return await client.get("/admin/cms");
+  },
+
   // Admin: Authentik groups
+  async getAuthentikStatus() {
+    return await client.get("/admin/authentik/status");
+  },
+
   async getAuthentikGroups() {
     return await client.get("/admin/authentik/groups");
   },
