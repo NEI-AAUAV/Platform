@@ -35,12 +35,13 @@ export default function Content() {
 
   return (
     <div className="flex flex-col gap-4">
-      {error ? (
+      {error && (
         <div className="alert alert-error" role="alert">
           <span>{error}</span>
         </div>
-      ) : (
-        <div className="alert" role="status">
+      )}
+      {cms?.app_url && (
+        <div className="alert">
           <div className="flex-1">
             <p className="font-semibold">Site content is edited in the CMS</p>
             <p className="text-sm opacity-80">

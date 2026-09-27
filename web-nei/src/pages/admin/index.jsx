@@ -38,7 +38,7 @@ export function Component() {
     <div className="mx-auto w-full max-w-5xl p-4">
       <h1>Admin</h1>
 
-      <div role="tablist" aria-label="Admin sections" className="tabs tabs-boxed my-4 inline-flex flex-wrap" onKeyDown={onKeyDown}>
+      <div role="tablist" aria-label="Admin sections" className="tabs tabs-boxed my-4 inline-flex flex-wrap">
         {TABS.map((tab) => {
           const selected = tab.id === active.id;
           return (
@@ -55,6 +55,7 @@ export function Component() {
               tabIndex={selected ? 0 : -1}
               className={`tab ${selected ? "tab-active" : ""}`}
               onClick={() => select(tab.id)}
+              onKeyDown={onKeyDown}
             >
               {tab.label}
             </button>

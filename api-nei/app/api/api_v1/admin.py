@@ -77,6 +77,8 @@ def _validate_uuid(value: str, name: str) -> str:
 
 router = APIRouter()
 
+USER_NOT_FOUND = "User not found"
+
 
 # Groups this page may change: every platform role except the implicit
 # "default", plus the CMS editor role (see Infrastructure's Directus role mapping).
@@ -117,7 +119,7 @@ class CmsInfo(BaseModel):
     app_url: str
 
 
-@router.get("/cms", response_model=CmsInfo)
+@router.get("/cms")
 def cms_info(_: AdminAuth) -> CmsInfo:
     """Link to the Directus app, which owns editing of CMS-managed content."""
     return CmsInfo(app_url=f"{settings.DIRECTUS_PUBLIC_URL}admin/")
@@ -129,7 +131,7 @@ class AuthentikStatus(BaseModel):
     admin_url: str
 
 
-@router.get("/authentik/status", response_model=AuthentikStatus)
+@router.get("/authentik/status")
 def authentik_status(_: AdminAuth) -> AuthentikStatus:
     """Report how Authentik is wired up, without exposing its token."""
     return AuthentikStatus(
@@ -168,7 +170,7 @@ async def add_group_member(
     """
     user = await run_in_threadpool(db.scalar, select(User).where(User.id == user_id))
     if not user:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, USER_NOT_FOUND)
     if not user.authentik_sub:
         raise HTTPException(
             status.HTTP_400_BAD_REQUEST,
@@ -204,7 +206,7 @@ async def remove_group_member(
     """
     user = await run_in_threadpool(db.scalar, select(User).where(User.id == user_id))
     if not user:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, USER_NOT_FOUND)
     if not user.authentik_sub:
         raise HTTPException(
             status.HTTP_400_BAD_REQUEST,
@@ -238,7 +240,7 @@ def sign_out_everywhere(user_id: int, db: DbSession, admin: AdminAuth) -> dict[s
     """
     user = db.scalar(select(User).where(User.id == user_id))
     if not user:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, USER_NOT_FOUND)
     ended = db.execute(delete(DeviceLogin).where(DeviceLogin.user_id == user_id)).rowcount
     crud.admin_activity.record(
         db, actor=admin, action="sessions.revoke", target=user, detail={"sessions": ended}
@@ -252,11 +254,11 @@ class ActivityEntry(BaseModel):
     id: int
     created_at: datetime
     action: str
-    actor_id: Optional[int]
-    actor_name: Optional[str]
-    target_user_id: Optional[int]
-    target_name: Optional[str]
-    detail: Optional[dict[str, Any]]
+    actor_id: Optional[int] = None
+    actor_name: Optional[str] = None
+    target_user_id: Optional[int] = None
+    target_name: Optional[str] = None
+    detail: Optional[dict[str, Any]] = None
 
 
 class ActivityPage(BaseModel):
@@ -264,12 +266,12 @@ class ActivityPage(BaseModel):
     total: int
 
 
-@router.get("/activity", response_model=ActivityPage)
+@router.get("/activity")
 def list_activity(
     db: DbSession,
     _: AdminAuth,
-    offset: int = Query(0, ge=0),
-    limit: int = Query(50, ge=1, le=200),
+    offset: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=200)] = 50,
 ) -> ActivityPage:
     """What admins changed, newest first."""
     items, total = crud.admin_activity.list_recent(db, offset=offset, limit=limit)
@@ -279,8 +281,8 @@ def list_activity(
 
 
 class DatabaseStatus(BaseModel):
-    current: Optional[str]
-    expected: Optional[str]
+    current: Optional[str] = None
+    expected: Optional[str] = None
 
 
 class Integrations(BaseModel):
@@ -291,10 +293,10 @@ class Integrations(BaseModel):
 
 
 class SystemStatus(BaseModel):
-    commit: Optional[str]
+    commit: Optional[str] = None
     production: bool
     database: DatabaseStatus
-    extensions: Optional[list[str]]
+    extensions: Optional[list[str]] = None
     integrations: Integrations
 
 
@@ -318,7 +320,7 @@ def _current_migration(db: Any) -> Optional[str]:
     return ", ".join(sorted(rows)) or None
 
 
-@router.get("/system", response_model=SystemStatus)
+@router.get("/system")
 def system_status(db: DbSession, _: AdminAuth) -> SystemStatus:
     """What is deployed and which optional integrations are switched on."""
     enabled = _get_enabled_extensions()

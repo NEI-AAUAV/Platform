@@ -37,12 +37,12 @@ export default function StatusMessages({ error, onDismissError, success, onDismi
       )}
       {success && (
         <div className="toast toast-bottom toast-end z-50">
-          <div className="alert alert-success" role="status">
+          <output className="alert alert-success">
             <span>{success}</span>
             <button className="btn btn-sm btn-circle btn-ghost" onClick={onDismissSuccess} aria-label="Dismiss message">
               ✕
             </button>
-          </div>
+          </output>
         </div>
       )}
     </>

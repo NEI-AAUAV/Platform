@@ -104,7 +104,8 @@ def test_get_group_name(monkeypatch) -> None:
 def test_get_group_name_without_a_name_is_bad_gateway(monkeypatch) -> None:
     monkeypatch.setattr(settings, "AUTHENTIK_TOKEN", "secret")
     client = AuthentikClient(httpx.MockTransport(lambda _: httpx.Response(200, json={"pk": "abc"})))
+    lookup = client.get_group_name("abc")
 
     with pytest.raises(AuthentikError) as exc:
-        asyncio.run(client.get_group_name("abc"))
+        asyncio.run(lookup)
     assert exc.value.status_code == 502

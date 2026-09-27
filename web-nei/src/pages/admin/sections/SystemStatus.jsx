@@ -46,10 +46,10 @@ export default function SystemStatus() {
   }, []);
 
   if (loading) return <div className="text-sm opacity-70">Loading system status…</div>;
-  if (error) {
+  if (error || !system) {
     return (
       <div className="alert alert-error" role="alert">
-        <span>{error}</span>
+        <span>{error ?? "System status is unavailable."}</span>
       </div>
     );
   }
@@ -72,7 +72,7 @@ export default function SystemStatus() {
         </div>
       )}
       {offInProduction.length > 0 && (
-        <div className="alert alert-warning" role="status">
+        <div className="alert alert-warning">
           <span>
             Switched off in production: {offInProduction.map(({ label }) => label).join(", ")}.
           </span>

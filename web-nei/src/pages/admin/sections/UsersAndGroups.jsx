@@ -20,7 +20,7 @@ OpenAuthentikLink.propTypes = {
 function AuthentikBanner({ status }) {
   if (!status.groups_managed) {
     return (
-      <div className="alert alert-warning mb-3" role="status">
+      <div className="alert alert-warning mb-3">
         <div className="flex-1">
           <p className="font-semibold">Role management is unavailable</p>
           <p className="text-sm">
@@ -33,7 +33,7 @@ function AuthentikBanner({ status }) {
     );
   }
   return (
-    <div className="alert mb-3" role="status">
+    <div className="alert mb-3">
       <div className="flex-1">
         <p className="font-semibold">
           {status.oidc_enabled
@@ -67,7 +67,7 @@ export default function UsersAndGroups() {
   const [users, setUsers] = useState([]);
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [pending, setPending] = useState(null); // "{groupPk}:{userId}" or "signout:{userId}"
+  const [pending, setPending] = useState(""); // "{groupPk}:{userId}" or "signout:{userId}"
   const [emailFilter, setEmailFilter] = useState("");
   const [groupFilter, setGroupFilter] = useState("");
   const [neverSignedIn, setNeverSignedIn] = useState(false);
@@ -139,7 +139,7 @@ export default function UsersAndGroups() {
     } catch (e) {
       setError(`Failed to change the ${group.role} role: ${e?.message || "Unknown error"}`);
     } finally {
-      setPending(null);
+      setPending("");
     }
   };
 
@@ -158,7 +158,7 @@ export default function UsersAndGroups() {
     } catch (e) {
       setError(`Failed to sign ${displayName(user)} out: ${e?.message || "Unknown error"}`);
     } finally {
-      setPending(null);
+      setPending("");
     }
   };
 
