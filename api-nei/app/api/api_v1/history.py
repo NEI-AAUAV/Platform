@@ -32,10 +32,13 @@ _LIST_DRIVE_BUDGET_SECONDS = 2.5
 
 def _media_out(media: HistoryMedia) -> HistoryMediaOut | None:
     if media.photo_asset:
+        url = media.url
+        if not url:
+            return None
         return HistoryMediaOut(
             id=f"upload:{media.id}",
-            url=media.url,
-            thumb=f"{media.url}?width=600",
+            url=url,
+            thumb=f"{url}?width=600",
             caption=media.caption,
             source="upload",
         )
@@ -153,7 +156,7 @@ async def get(
     rows = await run_in_threadpool(_load_list, db)
     folders = await _resolve_folders({f for _, f in rows if f})
     return [
-        _with_folder(out, folders.get(folder_id)) if out.has_drive_gallery else out
+        _with_folder(out, folders.get(folder_id)) if folder_id else out
         for out, folder_id in rows
     ]
 
