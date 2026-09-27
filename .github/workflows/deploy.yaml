@@ -139,6 +139,7 @@ jobs:
       OIDC_ENABLED: ${{ vars.OIDC_ENABLED || 'true' }}
       OIDC_CLIENT_ID: ${{ vars.OIDC_CLIENT_ID }}
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
+      GIT_COMMIT: ${{ github.sha }}
     steps:
     - name: Fix permissions before checkout
       run: |

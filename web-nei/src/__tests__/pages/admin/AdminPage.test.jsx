@@ -9,6 +9,9 @@ vi.mock('../../../services/NEIService', () => ({
     getUsers: vi.fn(),
     getAuthentikStatus: vi.fn(),
     getCmsInfo: vi.fn(),
+    signOutEverywhere: vi.fn(),
+    getAdminActivity: vi.fn(),
+    getSystemStatus: vi.fn(),
     getAuthentikGroups: vi.fn(),
     getArraialConfig: vi.fn(),
     addUserToAuthentikGroup: vi.fn(),
@@ -27,10 +30,12 @@ vi.mock('../../../services/SocketService', () => ({
 
 import service from '../../../services/NEIService'
 const { Component } = await import('../../../pages/admin')
+const { describeActivity } = await import('../../../pages/admin/sections/Activity')
+const { formatDateTime } = await import('../../../pages/admin/formatDate')
 
 const ADMIN_USER = {
   id: 1, name: 'Admin', surname: 'User', email: 'admin@test.com',
-  scopes: ['admin'], authentik_sub: 'sub-admin',
+  scopes: ['admin'], authentik_sub: 'sub-admin', last_login_at: '2026-09-20T14:05:00Z',
 }
 const PLAIN_USER = {
   id: 2, name: 'Bob', surname: 'Smith', email: 'bob@test.com',
@@ -44,6 +49,14 @@ const STATUS = {
 }
 const ARRAIAL_CFG = {
   enabled: true, paused: false, boosts_enabled: false, milestones_enabled: false,
+}
+
+const SYSTEM = {
+  commit: '0123456789abcdef',
+  production: false,
+  database: { current: 'd6f8b0c2e4a7', expected: 'd6f8b0c2e4a7' },
+  extensions: ['gala'],
+  integrations: { oidc: true, authentik_api: true, email: false, recaptcha: false },
 }
 
 function renderAt(path = '/admin') {
@@ -63,6 +76,8 @@ describe('Admin page', () => {
     service.getAuthentikGroups.mockResolvedValue([GROUP])
     service.getArraialConfig.mockResolvedValue(ARRAIAL_CFG)
     service.getCmsInfo.mockResolvedValue({ app_url: 'https://nei.example.org/cms/admin/' })
+    service.getAdminActivity.mockResolvedValue({ items: [], total: 0 })
+    service.getSystemStatus.mockResolvedValue(SYSTEM)
   })
 
   describe('tabs', () => {
@@ -117,15 +132,15 @@ describe('Admin page', () => {
       expect(screen.queryByText('Sign-in and roles are managed by Authentik')).not.toBeInTheDocument()
     })
 
-    it('explains why groups are unavailable instead of showing an empty table', async () => {
+    it('explains why roles are unavailable and still lists users without role columns', async () => {
       service.getAuthentikStatus.mockResolvedValue({ ...STATUS, groups_managed: false })
       renderAt()
 
-      expect(await screen.findByText('Group management is unavailable')).toBeInTheDocument()
+      expect(await screen.findByText('Role management is unavailable')).toBeInTheDocument()
       expect(screen.getByRole('link', { name: 'Open Authentik' })).toHaveAttribute('href', STATUS.admin_url)
-      expect(screen.queryByRole('table')).not.toBeInTheDocument()
+      expect(await screen.findByText('admin@test.com')).toBeInTheDocument()
+      expect(screen.queryByRole('columnheader', { name: 'admin' })).not.toBeInTheDocument()
       expect(service.getAuthentikGroups).not.toHaveBeenCalled()
-      expect(service.getUsers).not.toHaveBeenCalled()
     })
 
     it('shows an error when the Authentik status cannot be loaded', async () => {
@@ -168,7 +183,7 @@ describe('Admin page', () => {
       await waitFor(() =>
         expect(service.addUserToAuthentikGroup).toHaveBeenCalledWith('grp-uuid-1', ADMIN_USER.id)
       )
-      expect(await screen.findByText('Added Admin to nei-admin')).toBeInTheDocument()
+      expect(await screen.findByText('Gave Admin User the admin role')).toBeInTheDocument()
     })
 
     it('removes a user from a group', async () => {
@@ -180,6 +195,48 @@ describe('Admin page', () => {
       await waitFor(() =>
         expect(service.removeUserFromAuthentikGroup).toHaveBeenCalledWith('grp-uuid-1', ADMIN_USER.id)
       )
+      expect(await screen.findByText('Removed the admin role from Admin User')).toBeInTheDocument()
+    })
+
+    it('shows when each user last signed in', async () => {
+      renderAt()
+
+      expect(await screen.findByText(formatDateTime(ADMIN_USER.last_login_at))).toBeInTheDocument()
+      expect(screen.getByText('never')).toBeInTheDocument()
+    })
+
+    it('filters to accounts that never signed in with Authentik', async () => {
+      renderAt()
+      await screen.findByText('admin@test.com')
+      fireEvent.click(screen.getByLabelText('Only accounts that never signed in with Authentik'))
+
+      expect(await screen.findByText(/Showing 1 of 2 users/)).toBeInTheDocument()
+      expect(screen.queryByText('admin@test.com')).not.toBeInTheDocument()
+      expect(screen.getByText('bob@test.com')).toBeInTheDocument()
+    })
+
+    it('signs a user out everywhere after confirmation', async () => {
+      service.signOutEverywhere.mockResolvedValue({ sessions_ended: 2 })
+      const confirm = vi.spyOn(globalThis, 'confirm').mockReturnValue(true)
+      renderAt()
+
+      fireEvent.click(await screen.findByRole('button', { name: 'Sign Bob out everywhere' }))
+
+      await waitFor(() => expect(service.signOutEverywhere).toHaveBeenCalledWith(PLAIN_USER.id))
+      expect(
+        await screen.findByText('Signed Bob Smith out everywhere (2 sessions ended)')
+      ).toBeInTheDocument()
+      confirm.mockRestore()
+    })
+
+    it('does not sign anyone out when the confirmation is cancelled', async () => {
+      const confirm = vi.spyOn(globalThis, 'confirm').mockReturnValue(false)
+      renderAt()
+
+      fireEvent.click(await screen.findByRole('button', { name: 'Sign Bob out everywhere' }))
+
+      expect(service.signOutEverywhere).not.toHaveBeenCalled()
+      confirm.mockRestore()
     })
   })
 
@@ -248,12 +305,81 @@ describe('Admin page', () => {
     })
   })
 
+  describe('Activity', () => {
+    it.each([
+      [{ action: 'role.add', target_name: 'Bob Smith', detail: { role: 'admin' } }, 'gave Bob Smith the admin role'],
+      [{ action: 'role.remove', target_name: 'Bob Smith', detail: { role: 'admin' } }, 'removed the admin role from Bob Smith'],
+      [{ action: 'sessions.revoke', target_name: 'Bob Smith', detail: { sessions: 1 } }, 'signed Bob Smith out everywhere (1 session ended)'],
+      [{ action: 'arraial.config', detail: { boosts_enabled: true, paused: false } }, 'changed Arraial settings: boosts on, pause off'],
+      [{ action: 'arraial.reset', detail: null }, 'reset Arraial'],
+      [{ action: 'role.add', target_name: null, detail: { role: 'admin' } }, 'gave a deleted account the admin role'],
+    ])('describes %o', (entry, text) => {
+      expect(describeActivity(entry)).toBe(text)
+    })
+
+    it('lists entries and loads older ones', async () => {
+      const entry = (id, action) => ({
+        id, action, created_at: '2026-09-27T10:00:00Z', actor_name: 'Ana Admin',
+        target_name: null, detail: null,
+      })
+      service.getAdminActivity
+        .mockResolvedValueOnce({ items: [entry(2, 'arraial.reset')], total: 2 })
+        .mockResolvedValueOnce({ items: [entry(1, 'arraial.reset')], total: 2 })
+      renderAt('/admin?tab=activity')
+
+      expect(await screen.findAllByText('Ana Admin')).toHaveLength(1)
+      fireEvent.click(screen.getByRole('button', { name: 'Load older entries' }))
+
+      await waitFor(() => expect(screen.getAllByText('Ana Admin')).toHaveLength(2))
+      expect(service.getAdminActivity).toHaveBeenLastCalledWith(1, 50)
+      expect(screen.queryByRole('button', { name: 'Load older entries' })).not.toBeInTheDocument()
+    })
+
+    it('says when nothing has been recorded', async () => {
+      renderAt('/admin?tab=activity')
+
+      expect(await screen.findByText('Nothing recorded yet.')).toBeInTheDocument()
+    })
+  })
+
+  describe('System', () => {
+    it('shows the deployment and integrations', async () => {
+      renderAt('/admin?tab=system')
+
+      expect(await screen.findByText('0123456')).toBeInTheDocument()
+      expect(screen.getByText('up to date')).toBeInTheDocument()
+      expect(screen.getByText('gala')).toBeInTheDocument()
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    })
+
+    it('warns when the database is behind the code', async () => {
+      service.getSystemStatus.mockResolvedValue({
+        ...SYSTEM, database: { current: 'c5e7a9b1d3f6', expected: 'd6f8b0c2e4a7' },
+      })
+      renderAt('/admin?tab=system')
+
+      expect(await screen.findByText('out of date')).toBeInTheDocument()
+      expect(screen.getByRole('alert')).toHaveTextContent('Run the migrations')
+    })
+
+    it('warns about integrations that are off in production only', async () => {
+      service.getSystemStatus.mockResolvedValue({ ...SYSTEM, production: true, commit: null })
+      renderAt('/admin?tab=system')
+
+      expect(
+        await screen.findByText('Switched off in production: Email sending, reCAPTCHA on sign-up.')
+      ).toBeInTheDocument()
+      expect(screen.getByText('Not recorded (local build)')).toBeInTheDocument()
+    })
+  })
+
   describe('Your account', () => {
     it('shows the signed-in user and their scopes', async () => {
       renderAt('/admin?tab=account')
 
       expect(await screen.findByText('Admin User')).toBeInTheDocument()
       expect(screen.getByText('admin')).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Family manager' })).toHaveAttribute('href', '/settings/family')
     })
 
     it('explains how to recover when the profile fails to load', async () => {

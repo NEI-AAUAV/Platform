@@ -3,12 +3,16 @@ import { useSearchParams } from "react-router-dom";
 import UsersAndGroups from "./sections/UsersAndGroups";
 import Content from "./sections/Content";
 import ArraialSettings from "./sections/ArraialSettings";
+import Activity from "./sections/Activity";
+import SystemStatus from "./sections/SystemStatus";
 import AccountInfo from "./sections/AccountInfo";
 
 const TABS = [
   { id: "users", label: "Users & roles", Section: UsersAndGroups },
   { id: "content", label: "Content", Section: Content },
   { id: "arraial", label: "Arraial", Section: ArraialSettings },
+  { id: "activity", label: "Activity", Section: Activity },
+  { id: "system", label: "System", Section: SystemStatus },
   { id: "account", label: "Your account", Section: AccountInfo },
 ];
 
@@ -34,7 +38,7 @@ export function Component() {
     <div className="mx-auto w-full max-w-5xl p-4">
       <h1>Admin</h1>
 
-      <div role="tablist" aria-label="Admin sections" className="tabs tabs-boxed my-4 inline-flex" onKeyDown={onKeyDown}>
+      <div role="tablist" aria-label="Admin sections" className="tabs tabs-boxed my-4 inline-flex flex-wrap" onKeyDown={onKeyDown}>
         {TABS.map((tab) => {
           const selected = tab.id === active.id;
           return (

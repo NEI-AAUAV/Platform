@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import service from "services/NEIService";
 
 export default function AccountInfo() {
@@ -46,6 +47,20 @@ export default function AccountInfo() {
       <p className="mt-3 opacity-70">
         Recently given a new role? Sign out and back in for it to apply.
       </p>
+
+      <h2 className="mt-4 mb-1 text-base font-semibold">Other admin pages</h2>
+      <ul className="flex flex-col gap-1">
+        <li>
+          <Link to="/settings/family" className="link">
+            Family manager
+          </Link>
+        </li>
+        <li>
+          <Link to="/arraial" className="link">
+            Arraial scoreboard
+          </Link>
+        </li>
+      </ul>
     </div>
   );
 }

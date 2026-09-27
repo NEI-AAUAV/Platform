@@ -84,6 +84,7 @@ class AdminUserListing(ManagerUserListing):
     scopes: List[str] = []
     email: Optional[str] = None
     authentik_sub: Optional[str] = None
+    last_login_at: Optional[datetime] = None
 
 
 class UserCreateBase(UserBase):
