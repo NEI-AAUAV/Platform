@@ -62,7 +62,9 @@ class History(Base):
     category: Mapped[Optional["HistoryCategory"]] = relationship("HistoryCategory")
     media: Mapped[list["HistoryMedia"]] = relationship(
         "HistoryMedia",
-        order_by="HistoryMedia.weight",
+        # `id` breaks weight ties (editors may leave several at 0), so the
+        # gallery order never depends on the query plan.
+        order_by="[HistoryMedia.weight, HistoryMedia.id]",
         cascade="all, delete-orphan",
         passive_deletes=True,
     )
@@ -103,8 +105,18 @@ class HistoryCategory(Base):
 
 class HistoryMedia(Base):
     """One gallery photo for a milestone: either a Directus upload or a
-    single Google Drive file link. Exactly one of the two is set (enforced
-    by a DB check constraint, see the migration)."""
+    single Google Drive file link. Exactly one of the two is set: Directus
+    writes straight to PostgreSQL, so the check lives in the schema."""
+
+    @declared_attr.directive
+    def __table_args__(cls):
+        return (
+            # Created by migration a3f5c7e9b1d4 as ck_history_media_single_source.
+            CheckConstraint(
+                "(photo_asset IS NULL) <> (drive_url IS NULL)", name="single_source"
+            ),
+            Base.__table_args__,
+        )
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     history_id: Mapped[int] = mapped_column(

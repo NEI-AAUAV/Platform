@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 vi.mock("../../../services/NEIService", () => ({
@@ -115,6 +115,52 @@ describe("GalleryLightbox", () => {
 
     expect(await screen.findByText("1 / 2")).toBeInTheDocument();
     expect(screen.getByText("Algumas fotos não puderam ser carregadas agora.")).toBeInTheDocument();
+  });
+
+  it("offers a retry when Drive failed and there is nothing else to show", async () => {
+    service.getHistoryGallery
+      .mockResolvedValueOnce(gallery([], { drive_status: "error" }))
+      .mockResolvedValueOnce(gallery());
+    const user = userEvent.setup();
+    renderLightbox({ milestone: makeMilestone({ has_drive_gallery: true }) });
+
+    expect(
+      await screen.findByText("As fotos deste marco não puderam ser carregadas agora.")
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /tentar de novo/i }));
+    expect(await screen.findByText("1 / 2")).toBeInTheDocument();
+  });
+
+  it.each(["unavailable", "disabled"])(
+    "calls an empty %s folder unavailable, without technical detail",
+    async (driveStatus) => {
+      service.getHistoryGallery.mockResolvedValue(gallery([], { drive_status: driveStatus }));
+      renderLightbox({ milestone: makeMilestone({ has_drive_gallery: true }) });
+
+      expect(
+        await screen.findByText("A galeria deste marco não está disponível de momento.")
+      ).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /tentar de novo/i })).not.toBeInTheDocument();
+      expect(screen.queryByText(/drive|api|403/i)).not.toBeInTheDocument();
+    }
+  );
+
+  it("notes missing folder photos next to the milestone's own", async () => {
+    service.getHistoryGallery.mockResolvedValue(gallery(PHOTOS, { drive_status: "unavailable" }));
+    renderLightbox({ milestone: makeMilestone({ has_drive_gallery: true }) });
+
+    expect(await screen.findByText("1 / 2")).toBeInTheDocument();
+    expect(
+      screen.getByText("Algumas fotos desta galeria não estão disponíveis.")
+    ).toBeInTheDocument();
+  });
+
+  it("shows no notice for a complete Drive gallery", async () => {
+    service.getHistoryGallery.mockResolvedValue(gallery(PHOTOS, { drive_status: "ok" }));
+    renderLightbox({ milestone: makeMilestone({ has_drive_gallery: true }) });
+
+    expect(await screen.findByText("1 / 2")).toBeInTheDocument();
+    expect(document.querySelector(".history-lightbox__notice")).toBeNull();
   });
 
   it("doesn't pretend a truncated gallery is complete", async () => {
@@ -339,7 +385,7 @@ describe("GalleryLightbox", () => {
     await act(async () => second.resolve(gallery()));
     await act(async () => first.reject(new Error("aborted")));
 
-    await waitFor(() => expect(screen.getByText("1 / 2")).toBeInTheDocument());
+    expect(await screen.findByText("1 / 2")).toBeInTheDocument();
     expect(screen.queryByText("Não foi possível carregar a galeria.")).not.toBeInTheDocument();
   });
 });

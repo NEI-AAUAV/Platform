@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app import crud
 from app.api import deps
+from app.crud.crud_history import GallerySummary
 from app.integrations.google_drive import (
     DriveFolderResult,
     drive_client,
@@ -83,20 +84,23 @@ def _safe_external_url(url: Optional[str]) -> Optional[str]:
     return url if urlparse(url).scheme in ("http", "https") else None
 
 
-def _cover(milestone: History, own: list[HistoryMediaOut]) -> tuple[Optional[str], Optional[str]]:
+def _cover(
+    milestone: History, first: Optional[HistoryMediaOut]
+) -> tuple[Optional[str], Optional[str]]:
     """The cover and its alt text. Only the milestone's own rows count: the
     list never waits on Drive, so a folder-only gallery has no cover unless
     editors set `image`."""
     if milestone.image:
         return milestone.image, milestone.image_alt
-    if own:
-        return own[0].thumb, own[0].caption
+    if first:
+        return first.thumb, first.caption
     return None, None
 
 
-def _to_out(milestone: History) -> HistoryOut:
-    own = _own_media(milestone)
-    cover, cover_alt = _cover(milestone, own)
+def _to_out(milestone: History, summary: Optional[GallerySummary]) -> HistoryOut:
+    first = _media_out(summary.first) if summary else None
+    cover, cover_alt = _cover(milestone, first)
+    own_count = summary.total if summary else 0
     return HistoryOut(
         id=milestone.id,
         moment=milestone.moment,
@@ -111,18 +115,26 @@ def _to_out(milestone: History) -> HistoryOut:
         external_url=_safe_external_url(milestone.external_url),
         external_label=milestone.external_label,
         has_drive_gallery=bool(milestone.drive_folder_url),
-        gallery_count=None if milestone.drive_folder_url else len(own),
+        gallery_count=None if milestone.drive_folder_url else own_count,
         cover=cover,
         cover_alt=cover_alt,
     )
 
 
 def _load_list(db: Session) -> list[HistoryOut]:
-    return [_to_out(m) for m in crud.history.get_multi(db=db)]
+    # Two queries whatever the gallery sizes: milestones, then one summary
+    # row per milestone. Full photo lists are only loaded by /{id}/gallery.
+    summaries = crud.history.gallery_summaries(db=db)
+    return [_to_out(m, summaries.get(m.id)) for m in crud.history.get_multi(db=db)]
 
 
-@router.get("/", status_code=200, response_model=List[HistoryOut])
-async def get(*, db: deps.DbSession, _=Depends(deps.cms_cache)) -> Any:
+@router.get(
+    "/",
+    status_code=200,
+    response_model=List[HistoryOut],
+    dependencies=[Depends(deps.cms_cache)],
+)
+async def get(*, db: deps.DbSession) -> Any:
     # Database only: Drive-folder photos are resolved by /{id}/gallery, so the
     # timeline never waits on (or breaks with) Google Drive.
     return await run_in_threadpool(_load_list, db)
@@ -153,10 +165,9 @@ def _with_folder(gallery: HistoryGalleryOut, result: DriveFolderResult) -> Histo
     status_code=200,
     response_model=HistoryGalleryOut,
     responses={404: {"description": "Milestone not found or not published"}},
+    dependencies=[Depends(deps.cms_cache)],
 )
-async def get_gallery(
-    *, id: int, response: Response, db: deps.DbSession, _=Depends(deps.cms_cache)
-) -> Any:
+async def get_gallery(*, id: int, response: Response, db: deps.DbSession) -> Any:
     loaded = await run_in_threadpool(_load_gallery, db, id)
     if loaded is None:
         raise HTTPException(status_code=404, detail="Marco não encontrado")

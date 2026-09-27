@@ -1,8 +1,17 @@
 /* ---- Lightbox ----------------------------------------------------- */
 
+/* The dialog is centred with a transform, so anything taller than the
+   viewport is cut off at both ends — close button included. Cap it to the
+   visible viewport (dvh: excludes mobile browser bars) and let it scroll as
+   a last resort; the photo below is sized so that normally nothing has to. */
 .history-lightbox {
+  --lightbox-gutter: 1rem;
   max-width: 90vw !important;
   width: min(900px, 90vw);
+  max-height: calc(100vh - var(--lightbox-gutter));
+  max-height: calc(100dvh - var(--lightbox-gutter));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 1rem !important;
   background: hsl(var(--background) / 0.98) !important;
 }
@@ -31,6 +40,8 @@
      stable through loading, success, and failure alike. */
   min-height: 40vh;
   max-height: 70vh;
+  /* Leaves room for the caption, a notice and the thumbnail strip. */
+  max-height: min(70vh, calc(100dvh - 14rem));
   object-fit: contain;
   border-radius: 0.5rem;
   background: hsl(var(--muted) / 0.4);
@@ -39,6 +50,7 @@
 .history-lightbox__caption {
   margin-top: 0.75rem;
   text-align: center;
+  overflow-wrap: anywhere;
   color: hsl(var(--muted-foreground));
   font-size: 0.9rem;
 }
@@ -180,6 +192,48 @@
   .history-lightbox__thumb {
     width: 56px;
     height: 56px;
+  }
+}
+
+/* Phones in landscape, short browser windows: every rem counts. The photo
+   gives way first; caption and thumbnails stay, only tighter. */
+@media (max-height: 500px) {
+  .history-lightbox {
+    --lightbox-gutter: 0.5rem;
+    gap: 0.5rem !important;
+    padding: 0.5rem !important;
+  }
+
+  .history-lightbox__image,
+  .history-lightbox__broken {
+    min-height: min(40vh, 8rem);
+  }
+
+  .history-lightbox__image {
+    max-height: calc(100vh - 9.5rem);
+    max-height: calc(100dvh - 9.5rem);
+  }
+
+  .history-lightbox__caption {
+    margin-top: 0;
+    font-size: 0.8rem;
+  }
+
+  .history-lightbox__notice {
+    margin-top: 0;
+  }
+
+  .history-lightbox__strip {
+    margin-top: 0;
+  }
+
+  .history-lightbox__thumb {
+    width: 48px;
+    height: 48px;
+  }
+
+  .history-lightbox__status {
+    padding: 1.5rem 1rem;
   }
 }
 

@@ -276,6 +276,29 @@ def test_media_ordering_follows_weight(client: TestClient, db: SessionTesting) -
     assert [m["caption"] for m in media] == ["Primeira", "Segunda"]
 
 
+def test_media_with_the_same_weight_keep_insertion_order(
+    client: TestClient, db: SessionTesting
+) -> None:
+    """Editors often leave every weight at 0: `id` breaks the tie."""
+    milestone = History(moment=date(2024, 10, 2), title="Pesos iguais")
+    db.add(milestone)
+    db.flush()
+    for caption, file_id in [("A", "3AbCdEfGhIjK"), ("B", "1AbCdEfGhIjK"), ("C", "2AbCdEfGhIjK")]:
+        db.add(
+            HistoryMedia(
+                history_id=milestone.id,
+                drive_url=f"https://drive.google.com/file/d/{file_id}/view",
+                caption=caption,
+                weight=0,
+            )
+        )
+        db.flush()
+    db.commit()
+
+    media = _gallery(client, milestone.id)["media"]
+    assert [m["caption"] for m in media] == ["A", "B", "C"]
+
+
 def test_list_is_sorted_by_moment_then_id_descending(
     client: TestClient, db: SessionTesting
 ) -> None:

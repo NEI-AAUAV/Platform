@@ -22,7 +22,9 @@ const COPY = {
 export default function HistoryEmpty({ variant, categoryLabel, onRetry, onReset }) {
   const { icon, title, text } = COPY[variant];
   return (
-    <div className="history-empty" role={variant === "error" ? "alert" : "status"}>
+    // Only a failure interrupts: the other variants are the page's content,
+    // read in order like the timeline they replace.
+    <div className="history-empty" role={variant === "error" ? "alert" : undefined}>
       <MaterialSymbol icon={icon} size={40} />
       <h2>{categoryLabel ? `Sem marcos em «${categoryLabel}»` : title}</h2>
       <p>{text}</p>

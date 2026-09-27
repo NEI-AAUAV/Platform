@@ -26,8 +26,12 @@ export function MilestoneMeta({ milestone, children }) {
 /** The card's title is an h3, so body headings — whatever level the editor
  * typed — become one smaller card-level heading instead of competing with
  * the page's h1/h2 outline. */
-function BodyHeading({ node: _node, ...props }) {
-  return <h4 className="history-card__text-heading" {...props} />;
+function BodyHeading({ node: _node, children, ...props }) {
+  return (
+    <h4 {...props} className="history-card__text-heading">
+      {children}
+    </h4>
+  );
 }
 
 function BodyLink({ node: _node, href, children, ...props }) {

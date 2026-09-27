@@ -34,7 +34,7 @@ import re
 import time
 from dataclasses import dataclass, field
 from typing import Literal, Optional
-from urllib.parse import ParseResult, parse_qs, urlparse
+from urllib.parse import ParseResult, urlparse
 
 import httpx
 from loguru import logger
@@ -42,9 +42,18 @@ from loguru import logger
 from app.core.config import settings
 
 _DRIVE_HOSTS = {"drive.google.com", "docs.google.com"}
-_ID_RE = re.compile(r"[A-Za-z0-9_-]{10,}")
 _FOLDER_PATH_RE = re.compile(r"/folders/([A-Za-z0-9_-]{10,})")
-_FILE_PATH_RE = re.compile(r"/file/d/([A-Za-z0-9_-]{10,})")
+# A single-file link: `/file/d/<id>` in the path, or `?id=<id>` (open/uc
+# links). One pattern serves Python *and* PostgreSQL (`~`): the timeline
+# counts usable `history_media` rows in SQL, and that count must agree with
+# what `extract_file_id` later accepts. Only syntax both engines read alike:
+# no named groups, and `\Z` (Python's `$` also matches before a final "\n").
+DRIVE_FILE_URL_PATTERN = (
+    r"^https?://(?:drive|docs)\.google\.com"
+    r"(?:(?:/[^?#]*)?/file/d/([A-Za-z0-9_-]{10,})"
+    r"|(?:/[^?#]*)?\?(?:[^#]*&)?id=([A-Za-z0-9_-]{10,})(?:[&#]|\Z))"
+)
+_FILE_URL_RE = re.compile(DRIVE_FILE_URL_PATTERN)
 
 _DRIVE_FILES_ENDPOINT = "https://www.googleapis.com/drive/v3/files"
 _FOLDER_MIME_TYPE = "application/vnd.google-apps.folder"
@@ -110,18 +119,10 @@ def extract_folder_id(url: str) -> Optional[str]:
 
 def extract_file_id(url: str) -> Optional[str]:
     """Return the file id from a drive.google.com single-file link, or None."""
-    file_id = _extract_id(url, _FILE_PATH_RE)
-    if file_id:
-        return file_id
-    # `open?id=...` / `uc?id=...` style links.
-    parsed = _parse_drive_url(url)
-    if parsed is None:
+    match = _FILE_URL_RE.match(url or "")
+    if match is None:
         return None
-    query = parse_qs(parsed.query)
-    candidate = query.get("id", [None])[0]
-    if candidate and _ID_RE.fullmatch(candidate):
-        return candidate
-    return None
+    return match.group(1) or match.group(2)
 
 
 def _extract_id(url: str, path_re: re.Pattern[str]) -> Optional[str]:

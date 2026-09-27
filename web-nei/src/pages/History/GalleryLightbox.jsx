@@ -24,24 +24,48 @@ function resolveIndex(requested, length) {
   return requested != null && requested >= 0 && requested < length ? requested : 0;
 }
 
+function RetryableStatus({ message, onRetry }) {
+  return (
+    <div className="history-lightbox__status" role="alert">
+      <p>{message}</p>
+      <button type="button" className="history-lightbox__retry" onClick={onRetry}>
+        <MaterialSymbol icon="refresh" size={18} />
+        Tentar de novo
+      </button>
+    </div>
+  );
+}
+
+/** Shown instead of a photo. Drive's failure modes stay out of the copy:
+ * a passing failure can be retried, anything else just isn't there yet. */
 function GalleryStatus({ gallery }) {
   if (gallery.status === "loading") {
     return <p className="history-lightbox__status">A carregar fotos…</p>;
   }
   if (gallery.status === "error") {
     return (
-      <div className="history-lightbox__status" role="alert">
-        <p>Não foi possível carregar a galeria.</p>
-        <button type="button" className="history-lightbox__retry" onClick={gallery.retry}>
-          <MaterialSymbol icon="refresh" size={18} />
-          Tentar de novo
-        </button>
-      </div>
+      <RetryableStatus message="Não foi possível carregar a galeria." onRetry={gallery.retry} />
+    );
+  }
+  if (gallery.driveStatus === "error") {
+    return (
+      <RetryableStatus
+        message="As fotos deste marco não puderam ser carregadas agora."
+        onRetry={gallery.retry}
+      />
+    );
+  }
+  if (gallery.driveStatus === "unavailable" || gallery.driveStatus === "disabled") {
+    return (
+      <p className="history-lightbox__status">
+        A galeria deste marco não está disponível de momento.
+      </p>
     );
   }
   return <p className="history-lightbox__status">Sem fotos disponíveis para este marco.</p>;
 }
 
+/** Shown under the photos when the gallery is only partly there. */
 function GalleryNotice({ gallery }) {
   if (gallery.truncated) {
     return (
@@ -55,6 +79,11 @@ function GalleryNotice({ gallery }) {
       <p className="history-lightbox__notice">
         Algumas fotos não puderam ser carregadas agora.
       </p>
+    );
+  }
+  if (gallery.driveStatus === "unavailable" || gallery.driveStatus === "disabled") {
+    return (
+      <p className="history-lightbox__notice">Algumas fotos desta galeria não estão disponíveis.</p>
     );
   }
   return null;

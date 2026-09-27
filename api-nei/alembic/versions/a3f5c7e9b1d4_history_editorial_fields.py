@@ -71,7 +71,7 @@ def upgrade():
         ),
         sa.CheckConstraint(
             "(photo_asset IS NULL) <> (drive_url IS NULL)",
-            name="ck_history_media_single_source",
+            name=op.f("ck_history_media_single_source"),
         ),
         schema=SCHEMA,
     )
