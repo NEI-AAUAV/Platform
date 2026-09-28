@@ -15,7 +15,7 @@ class FainaMember(Base):
     # Commission members without a platform account are recorded by name.
     name: Mapped[Optional[str]] = mapped_column(String(120))
     faina_id: Mapped[int] = mapped_column(
-        ForeignKey(f"{settings.SCHEMA_NAME}.faina.id"), index=True
+        ForeignKey(f"{settings.SCHEMA_NAME}.faina.id", ondelete="CASCADE"), index=True
     )
     role_id: Mapped[int] = mapped_column(ForeignKey(FainaRole.id), index=True)
 

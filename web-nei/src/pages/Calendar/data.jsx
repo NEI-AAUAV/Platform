@@ -17,6 +17,7 @@ export const categories = {
     name: "Calendário escolar",
     color: "38 100% 50%",
   },
+  MDJD: { prefixes: ["[MDJD]"], name: "MDJD", color: "270 70% 45%" },
   // Expected default category
   NEI: { prefixes: ["[NEI]"], name: "NEI", color: "131 72% 28%" },
 };

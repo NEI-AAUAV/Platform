@@ -30,8 +30,16 @@ video__video_tags_association_table = Table(
     "video__video_tags",
     Base.metadata,
     Column("id", BigInteger, primary_key=True, autoincrement=True),
-    Column("video_id", ForeignKey(f"{settings.SCHEMA_NAME}.video.id"), nullable=False),
-    Column("video_tag_id", ForeignKey(VideoTag.id), nullable=False),
+    Column(
+        "video_id",
+        ForeignKey(f"{settings.SCHEMA_NAME}.video.id", ondelete="CASCADE"),
+        nullable=False,
+    ),
+    Column(
+        "video_tag_id",
+        ForeignKey(VideoTag.id, ondelete="CASCADE"),
+        nullable=False,
+    ),
     UniqueConstraint("video_id", "video_tag_id", name="uq_video__video_tags_video_tag"),
     schema=settings.SCHEMA_NAME,
 )
