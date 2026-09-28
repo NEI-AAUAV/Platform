@@ -49,6 +49,7 @@ from app import crud
 from app.api import deps
 from app.api.deps import DbSession
 from app.core.config import settings
+from app.integrations.authentik import group_role_name
 from app.models.user import User
 from app.models.user.user_email import UserEmail
 from app.schemas.user import ScopeEnum, UserCreate
@@ -281,13 +282,7 @@ def _candidates_from_scopes_claim(raw) -> list[str]:
 
 
 def _candidates_from_groups(userinfo: dict) -> list[str]:
-    candidates = []
-    for group in userinfo.get("groups", []):
-        name = group.strip().lower()
-        if name.startswith("nei-"):
-            name = name[4:]
-        candidates.append(name)
-    return candidates
+    return [group_role_name(group) for group in userinfo.get("groups", [])]
 
 
 def _parse_scopes(userinfo: dict) -> list[str]:

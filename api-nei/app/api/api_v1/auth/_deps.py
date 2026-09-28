@@ -228,6 +228,7 @@ def generate_response(
             refresh_jti=refresh_jti,
         )
         db.add(device_login)
+        user.last_login_at = iat
     else:
         # Update the last time the token was refreshed if the session already exists
         device_login.refreshed_at = iat

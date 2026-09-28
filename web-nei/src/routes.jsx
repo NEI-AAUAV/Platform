@@ -145,8 +145,12 @@ const routes = [
     ),
     children: [
       {
+        path: "/admin",
+        lazy: () => import("./pages/admin"),
+      },
+      {
         path: "/admin/roles",
-        lazy: () => import("./pages/admin/Roles"),
+        element: <Navigate to="/admin" replace />,
       },
     ],
   },
@@ -169,13 +173,6 @@ const routes = [
     element: <FullLayout />,
     children: [{ path: "/family", lazy: () => import("./pages/Family") }],
   },
-  // {
-  //   path: "/",
-  //   element: <CleanLayout />,
-  //   children: [
-  //     { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
-  //   ],
-  // },
 ];
 
 export default routes;

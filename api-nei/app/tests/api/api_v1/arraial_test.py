@@ -401,3 +401,22 @@ def test_reset_clears_points_boosts_and_log(client: TestClient) -> None:
     assert _points(client) == {"NEEETA": 0, "NEECT": 0, "NEI": 0}
     assert all(v is None for v in arraial._get_boosts_response().values())
     assert arraial._arraial_log == []
+
+
+# --- activity log -----------------------------------------------------------
+
+
+@as_admin
+def test_config_changes_and_reset_are_recorded(client: TestClient, db: Session) -> None:
+    from app.models.admin_activity import AdminActivity
+
+    client.put(f"{BASE}/config", json={"boosts_enabled": True})
+    client.put(f"{BASE}/config", json={})
+    client.post(f"{BASE}/reset")
+
+    db.flush()
+    entries = db.query(AdminActivity).order_by(AdminActivity.id).all()
+    assert [(e.action, e.detail) for e in entries] == [
+        ("arraial.config", {"boosts_enabled": True}),
+        ("arraial.reset", None),
+    ]

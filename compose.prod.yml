@@ -91,6 +91,7 @@ services:
       JWT_PUBLIC_KEY_PATH: /jwt.key.pub
       EMAIL_SENDER_ADDRESS: ${EMAIL_SENDER_ADDRESS}
       ENABLED_EXTENSIONS: ${ENABLED_EXTENSIONS:-}
+      GIT_COMMIT: ${GIT_COMMIT:-}
       EMAIL_SMTP_HOST: ${EMAIL_SMTP_HOST}
       EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
       EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
@@ -197,6 +198,11 @@ services:
     build:
       context: web-nei
       dockerfile: Dockerfile.prod
+      args:
+        ENABLE_RALLY: ${ENABLE_RALLY:-False}
+        RALLY_URL: ${RALLY_URL:-}
+        ENABLE_GAMIFICATION: ${ENABLE_GAMIFICATION:-False}
+        GAMIFICATION_URL: ${GAMIFICATION_URL:-}
     ports:
       - 3000:3000
     networks:

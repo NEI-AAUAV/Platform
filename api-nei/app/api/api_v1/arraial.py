@@ -240,11 +240,13 @@ async def update_arraial_config(
     *,
     cfg: ArraialConfigUpdate,
     db: Session = Depends(deps.get_db, scope="function"),
-    _=Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
+    auth_data: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
 ) -> Any:
     changes = cfg.model_dump(exclude_none=True)
     for field, value in changes.items():
         _set_flag(db, CONFIG_FLAG_KEYS[field], value)
+    if changes:
+        crud.admin_activity.record(db, actor=auth_data, action="arraial.config", detail=changes)
     flags = _get_config_flags(db)
 
     await arraial_ws_manager.broadcast(
@@ -463,8 +465,9 @@ async def rollback_log(
 async def reset_arraial(
     *,
     db: Session = Depends(deps.get_db, scope="function"),
-    _=Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
+    auth_data: auth.AuthData = Security(auth.verify_token, scopes=[ScopeEnum.ADMIN]),
 ) -> Any:
+    crud.admin_activity.record(db, actor=auth_data, action="arraial.reset")
     # Reset points to zero
     for p in _arraial_points:
         p["value"] = 0

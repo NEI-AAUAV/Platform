@@ -42,6 +42,12 @@ jobs:
       OIDC_ENABLED: ${{ vars.OIDC_ENABLED || 'true' }}
       OIDC_CLIENT_ID: ${{ vars.OIDC_CLIENT_ID }}
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
+      # Public URLs of the standalone services linked from the navbar. Baked
+      # into the web-nei image at build time; set them as repository variables.
+      ENABLE_RALLY: ${{ vars.ENABLE_RALLY || 'False' }}
+      RALLY_URL: ${{ vars.RALLY_URL }}
+      ENABLE_GAMIFICATION: ${{ vars.ENABLE_GAMIFICATION || 'False' }}
+      GAMIFICATION_URL: ${{ vars.GAMIFICATION_URL }}
 
     steps:
     - name: Fix permissions before checkout
@@ -143,6 +149,7 @@ jobs:
       OIDC_ENABLED: ${{ vars.OIDC_ENABLED || 'true' }}
       OIDC_CLIENT_ID: ${{ vars.OIDC_CLIENT_ID }}
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
+      GIT_COMMIT: ${{ github.sha }}
     steps:
     - name: Fix permissions before checkout
       run: |
