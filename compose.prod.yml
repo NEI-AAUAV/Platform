@@ -157,6 +157,11 @@ services:
     build:
       context: web-nei
       dockerfile: Dockerfile.prod
+      args:
+        ENABLE_RALLY: ${ENABLE_RALLY:-False}
+        RALLY_URL: ${RALLY_URL:-}
+        ENABLE_GAMIFICATION: ${ENABLE_GAMIFICATION:-False}
+        GAMIFICATION_URL: ${GAMIFICATION_URL:-}
     ports:
       - 3000:3000
     networks:
