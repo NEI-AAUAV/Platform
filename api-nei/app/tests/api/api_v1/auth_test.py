@@ -497,3 +497,24 @@ def _legacy_refresh_token(claims: dict) -> str:
             "sid": claims["sid"],
         }
     )
+
+
+def test_login_records_last_login_and_refresh_does_not(
+    db: SessionTesting, app: FastAPI, client: TestClient
+) -> None:
+    account, _ = get_by_email(db, userEmail)
+    assert account.last_login_at is None
+
+    r1 = client.post(
+        f"{settings.API_V1_STR}/auth/login/",
+        data={"username": userEmail, "password": user_password},
+        follow_redirects=True,
+    )
+    db.refresh(account)
+    signed_in_at = account.last_login_at
+    assert signed_in_at is not None
+
+    authed_client = TestClient(app, cookies={"refresh": r1.cookies["refresh"]})
+    assert authed_client.post(f"{settings.API_V1_STR}/auth/refresh/").status_code == 200
+    db.refresh(account)
+    assert account.last_login_at == signed_in_at

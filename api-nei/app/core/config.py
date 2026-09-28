@@ -150,6 +150,9 @@ class Settings(BaseSettings):
     ## local Authentik with a self-signed certificate.
     OIDC_VERIFY_SSL: bool = True
 
+    # Commit the running image was built from; set by the deploy workflow.
+    GIT_COMMIT: str = ""
+
     # Authentik Admin API
     AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"
     AUTHENTIK_TOKEN: str = ""

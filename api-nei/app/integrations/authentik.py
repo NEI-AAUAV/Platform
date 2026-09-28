@@ -19,6 +19,12 @@ class AuthentikError(Exception):
 _INVALID_RESPONSE = "Authentik returned an invalid response"
 
 
+def group_role_name(group_name: str) -> str:
+    """The role a group stands for: lower-cased, with an optional "nei-" prefix dropped."""
+    name = group_name.strip().lower()
+    return name[4:] if name.startswith("nei-") else name
+
+
 class AuthentikClient:
     def __init__(self, transport: httpx.AsyncBaseTransport | None = None) -> None:
         self._transport = transport
@@ -85,6 +91,15 @@ class AuthentikClient:
             return int(results[0]["pk"])
         except (KeyError, TypeError, ValueError) as exc:
             raise AuthentikError(502, _INVALID_RESPONSE) from exc
+
+    async def get_group_name(self, group_pk: str) -> str:
+        response = await self._request(
+            "GET", f"{settings.AUTHENTIK_URL}/api/v3/core/groups/{group_pk}/"
+        )
+        name = self._json(response).get("name")
+        if not isinstance(name, str):
+            raise AuthentikError(502, _INVALID_RESPONSE)
+        return name
 
     async def list_groups(self) -> list[dict[str, Any]]:
         url: str | None = f"{settings.AUTHENTIK_URL}/api/v3/core/groups/"

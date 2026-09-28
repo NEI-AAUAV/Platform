@@ -145,8 +145,12 @@ const routes = [
     ),
     children: [
       {
+        path: "/admin",
+        lazy: () => import("./pages/admin"),
+      },
+      {
         path: "/admin/roles",
-        lazy: () => import("./pages/admin/Roles"),
+        element: <Navigate to="/admin" replace />,
       },
     ],
   },

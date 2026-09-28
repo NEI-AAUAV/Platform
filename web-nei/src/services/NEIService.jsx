@@ -202,7 +202,29 @@ const NEIService = {
     return await client.get("/extensions/manifest");
   },
 
+  // Admin: sessions, activity and system status
+  async signOutEverywhere(userId) {
+    return await client.post(`/admin/users/${userId}/sign-out`);
+  },
+
+  async getAdminActivity(offset = 0, limit = 50) {
+    return await client.get("/admin/activity", { params: { offset, limit } });
+  },
+
+  async getSystemStatus() {
+    return await client.get("/admin/system");
+  },
+
+  // Admin: CMS
+  async getCmsInfo() {
+    return await client.get("/admin/cms");
+  },
+
   // Admin: Authentik groups
+  async getAuthentikStatus() {
+    return await client.get("/admin/authentik/status");
+  },
+
   async getAuthentikGroups() {
     return await client.get("/admin/authentik/groups");
   },

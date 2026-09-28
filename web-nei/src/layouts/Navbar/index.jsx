@@ -463,7 +463,7 @@ const Navbar = () => {
                     </li>
                     {!!scopes?.includes("admin") && (
                       <li>
-                        <Link to="/admin/roles">
+                        <Link to="/admin">
                           <SettingsIcon /> Admin
                         </Link>
                       </li>
