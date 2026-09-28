@@ -117,18 +117,19 @@ describe("GalleryLightbox", () => {
     expect(screen.getByText("Algumas fotos não puderam ser carregadas agora.")).toBeInTheDocument();
   });
 
-  it("offers a retry when Drive failed and there is nothing else to show", async () => {
-    service.getHistoryGallery
-      .mockResolvedValueOnce(gallery([], { drive_status: "error" }))
-      .mockResolvedValueOnce(gallery());
-    const user = userEvent.setup();
+  it("shows a transient-error message without a misleading retry when Drive failed and there is nothing else to show", async () => {
+    // The backend caches a Drive error for 60s (google_drive.py _TTL_ERROR_SECONDS),
+    // so an immediate retry would just replay the same cached failure. No retry
+    // button should be offered here — see api-nei/app/integrations/google_drive.py.
+    service.getHistoryGallery.mockResolvedValue(gallery([], { drive_status: "error" }));
     renderLightbox({ milestone: makeMilestone({ has_drive_gallery: true }) });
 
     expect(
-      await screen.findByText("As fotos deste marco não puderam ser carregadas agora.")
+      await screen.findByText(
+        "As fotos deste marco não puderam ser carregadas agora. Tente novamente dentro de momentos."
+      )
     ).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /tentar de novo/i }));
-    expect(await screen.findByText("1 / 2")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /tentar de novo/i })).not.toBeInTheDocument();
   });
 
   it.each(["unavailable", "disabled"])(

@@ -49,10 +49,10 @@ function GalleryStatus({ gallery }) {
   }
   if (gallery.driveStatus === "error") {
     return (
-      <RetryableStatus
-        message="As fotos deste marco não puderam ser carregadas agora."
-        onRetry={gallery.retry}
-      />
+      <p className="history-lightbox__status">
+        As fotos deste marco não puderam ser carregadas agora. Tente novamente dentro de
+        momentos.
+      </p>
     );
   }
   if (gallery.driveStatus === "unavailable" || gallery.driveStatus === "disabled") {

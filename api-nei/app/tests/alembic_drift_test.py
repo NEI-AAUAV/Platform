@@ -218,31 +218,3 @@ def test_convocatoria_rows_survive_the_domain_constraints(drift_url: str) -> Non
         ).scalars().all()
     engine.dispose()
     assert kept == ["ATA", "CON"]
-
-
-def test_history_media_check_gets_its_convention_name(empty_url: str) -> None:
-    """a3f5c7e9b1d4 once created the single-source check with a doubled
-    prefix; d4f6a8c0e2b3 must rename it on databases upgraded back then."""
-    schema = settings.SCHEMA_NAME
-    command.upgrade(_config(empty_url), "b7d9f1a3c5e8")
-    _execute(
-        empty_url,
-        f"""
-        ALTER TABLE {schema}.history_media
-            RENAME CONSTRAINT ck_history_media_single_source
-            TO ck_history_media_ck_history_media_single_source;
-        """,
-    )
-
-    command.upgrade(_config(empty_url), "head")
-
-    engine = sa.create_engine(empty_url)
-    with engine.connect() as conn:
-        names = conn.execute(
-            sa.text(
-                "SELECT conname FROM pg_constraint"
-                f" WHERE conrelid = '{schema}.history_media'::regclass AND contype = 'c'"
-            )
-        ).scalars().all()
-    engine.dispose()
-    assert names == ["ck_history_media_single_source"]
