@@ -10,6 +10,7 @@ import { GalaLogo } from "assets/icons/extensions";
 import service from "services/NEIService";
 import { getArraialSocket, destroyArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
+import { useServiceHealth } from "hooks/useServiceHealth";
 
 import {
   ExpandLessIcon,
@@ -46,6 +47,39 @@ const Navbar = () => {
 
   // Optimistic hide until known from API/WS
   const [arraialEnabled, setArraialEnabled] = useState(null);
+
+  // Rally and Gamification are standalone external services (own domain,
+  // own auth) - not embedded platform extensions, so they're not part of
+  // the extNav manifest mechanism below.
+  const rallyHealth = useServiceHealth(
+    config.ENABLE_RALLY && config.WEB_RALLY_URL ? [config.WEB_RALLY_URL] : [],
+  );
+  const gamificationHealth = useServiceHealth(
+    config.ENABLE_GAMIFICATION && config.WEB_GAMIFICATION_URL
+      ? [
+          config.WEB_GAMIFICATION_URL,
+          `${config.WEB_GAMIFICATION_URL}/api-game/health`,
+          `${config.WEB_GAMIFICATION_URL}/api-shop/health`,
+          `${config.WEB_GAMIFICATION_URL}/api-chat/health`,
+        ]
+      : [],
+  );
+  const externalServices = [
+    config.ENABLE_RALLY &&
+      config.WEB_RALLY_URL && {
+        key: "rally",
+        label: "Rally Tascas",
+        href: config.WEB_RALLY_URL,
+        disabled: rallyHealth === "down",
+      },
+    config.ENABLE_GAMIFICATION &&
+      config.WEB_GAMIFICATION_URL && {
+        key: "gamification",
+        label: "Quests",
+        href: config.WEB_GAMIFICATION_URL,
+        disabled: gamificationHealth === "down",
+      },
+  ].filter(Boolean);
 
 
   useEffect(() => {
@@ -380,6 +414,16 @@ const Navbar = () => {
                     </LinkAdapter>
                   </li>
                 ))}
+              {externalServices.map((e) => (
+                <li
+                  key={e.key}
+                  className={classNames({
+                    "pointer-events-none opacity-50": e.disabled,
+                  })}
+                >
+                  <a href={e.href}>{e.label}</a>
+                </li>
+              ))}
             </ul>
           </div>
           {extNav
@@ -559,6 +603,16 @@ const Navbar = () => {
                 ))}
               </>
             )}
+            {externalServices.map((e) => (
+              <li
+                key={`ext-service-mobile-${e.key}`}
+                className={classNames({
+                  "pointer-events-none opacity-50": e.disabled,
+                })}
+              >
+                <a href={e.href}>{e.label}</a>
+              </li>
+            ))}
           </ul>
         </div>
       </nav>

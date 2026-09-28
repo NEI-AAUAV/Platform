@@ -149,8 +149,11 @@ dmypy.json
 !**/.gitkeep
 
 # Rally was extracted into its own standalone repo (Platform-rally-extension)
-# and is no longer a submodule. A local clone may still sit here; ignore it.
+# and is no longer a submodule. A local clone (or a leftover worktree of the
+# old submodule, e.g. extensions/rally-worktree-session-*/) may still sit
+# here; ignore it.
 extensions/rally/
+extensions/rally-worktree-session-*/
 
 # Extension build artifacts (submodules handle their own .gitignore)
 extensions/*/web-*/node_modules/

@@ -14,11 +14,8 @@ The NEI Platform supports extensions that can be enabled or disabled without mod
 # Start with no extensions
 ./start-platform.sh
 
-# Start with Rally extension
-ENABLED_EXTENSIONS="rally" ./start-platform.sh
-
-# Start with multiple extensions
-ENABLED_EXTENSIONS="rally,gala" ./start-platform.sh
+# Start with Gala extension
+ENABLED_EXTENSIONS="gala" ./start-platform.sh
 ```
 
 ### Manual Extension Control
@@ -27,17 +24,15 @@ ENABLED_EXTENSIONS="rally,gala" ./start-platform.sh
 # Disable all extensions
 ENABLED_EXTENSIONS="" ./scripts/manage-extensions.sh
 
-# Enable Rally only
-ENABLED_EXTENSIONS="rally" ./scripts/manage-extensions.sh
-
-# Enable multiple extensions
-ENABLED_EXTENSIONS="rally,gala" ./scripts/manage-extensions.sh
+# Enable Gala only
+ENABLED_EXTENSIONS="gala" ./scripts/manage-extensions.sh
 ```
 
 ## Available Extensions
 
-- **rally**: Rally Tascas extension (team management, checkpoints, scoring)
 - **gala**: Gala extension (event management)
+
+> Rally Tascas is no longer an embedded extension — it now runs as an independent, self-contained project (`Platform-rally-extension`) with its own database, auth, and reverse proxy. It is linked from the navbar as an external service, not managed through this system.
 
 ## Generic Extension Management System
 
@@ -104,7 +99,7 @@ The generic extension management system can be adapted for external nginx server
 
 ```bash
 # Generate extension nginx configs
-ENABLED_EXTENSIONS="rally" ./scripts/manage-extensions.sh
+ENABLED_EXTENSIONS="gala" ./scripts/manage-extensions.sh
 
 # Copy configs to external nginx server
 scp proxy/locations.*.conf user@nginx-server:/etc/nginx/conf.d/
@@ -128,11 +123,8 @@ The system works seamlessly with the existing GitHub Actions deploy workflow:
 Create a `.env` file in the Platform root directory:
 
 ```bash
-# Enable only Rally extension
-ENABLED_EXTENSIONS=rally
-
-# Enable multiple extensions
-ENABLED_EXTENSIONS=rally,gala
+# Enable only Gala extension
+ENABLED_EXTENSIONS=gala
 
 # Disable all extensions
 ENABLED_EXTENSIONS=
@@ -150,14 +142,8 @@ docker-compose up -d --build api_nei
 Override the environment variable directly in the command:
 
 ```bash
-# Enable Rally
-ENABLED_EXTENSIONS=rally docker-compose up -d --build api_nei
-
 # Enable Gala
 ENABLED_EXTENSIONS=gala docker-compose up -d --build api_nei
-
-# Enable both
-ENABLED_EXTENSIONS=rally,gala docker-compose up -d --build api_nei
 
 # Disable all
 ENABLED_EXTENSIONS= docker-compose up -d --build api_nei
@@ -169,21 +155,21 @@ You can directly modify the `compose.yml` file, but this is not recommended as i
 
 ```yaml
 environment:
-  ENABLED_EXTENSIONS: "rally"  # or "rally,gala" or ""
+  ENABLED_EXTENSIONS: "gala"  # or ""
 ```
 
 ## Quick Start Examples
 
-### Run with Rally Extension
+### Run with Gala Extension
 
 ```bash
 # Create .env file
-echo "ENABLED_EXTENSIONS=rally" > .env
+echo "ENABLED_EXTENSIONS=gala" > .env
 
 # Start platform
 docker-compose up -d --build api_nei
 
-# Verify Rally is loaded
+# Verify Gala is loaded
 curl http://localhost:8000/api/nei/v1/extensions/manifest
 ```
 
@@ -200,16 +186,6 @@ docker-compose up -d --build api_nei
 curl http://localhost:8000/api/nei/v1/extensions/manifest
 ```
 
-### Run with Multiple Extensions
-
-```bash
-# Enable both Rally and Gala
-echo "ENABLED_EXTENSIONS=rally,gala" > .env
-
-# Start platform
-docker-compose up -d --build api_nei
-```
-
 ## Verification
 
 ### Check Extensions API
@@ -218,8 +194,8 @@ docker-compose up -d --build api_nei
 # Check which extensions are loaded
 curl http://localhost:8000/api/nei/v1/extensions/manifest
 
-# Expected output with Rally enabled:
-# {"nav":[{"label":"Rally Tascas","href":"/rally","requiresScopes":["manager-rally","admin"],"extension":"rally"}]}
+# Expected output with Gala enabled:
+# {"nav":[{"label":"Jantar Gala","href":"/gala","requiresScopes":["manager-gala","admin"],"extension":"gala"}]}
 
 # Expected output with no extensions:
 # {"nav":[]}
@@ -231,14 +207,12 @@ curl http://localhost:8000/api/nei/v1/extensions/manifest
 # Check available OAuth2 scopes
 curl http://localhost:8000/api/nei/v1/auth/scopes
 
-# Rally extension adds: manager-rally, rally-staff
 # Gala extension adds: manager-gala
 ```
 
 ### Check Frontend Navigation
 
 Visit http://localhost:3000 and check if extension navigation items appear:
-- **Rally**: "Rally Tascas" navtab
 - **Gala**: Gala-related navigation items
 
 ## Extension Development

@@ -10,6 +10,13 @@ RUN yarn install
 
 COPY . .
 
+# Vite inlines these at build time (web-nei/.env maps them to VITE_*), so the
+# navbar links to the standalone Rally/Gamification services are fixed per image.
+ARG ENABLE_RALLY=False
+ARG RALLY_URL=
+ARG ENABLE_GAMIFICATION=False
+ARG GAMIFICATION_URL=
+
 RUN GENERATE_SOURCEMAP=false yarn build
 
 FROM nginx:1.20-alpine

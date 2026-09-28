@@ -1,16 +1,5 @@
 import config from "config";
 
-const specialData = [
-  config.ENABLE_GALA && {
-    name: "Jantar de Gala",
-    link: config.WEB_GALA_URL,
-  },
-  config.ENABLE_RALLY && {
-    name: "Rally Tascas",
-    link: config.WEB_RALLY_URL,
-  },
-];
-
 const data = [
   {
     name: "Estudo",
@@ -99,10 +88,6 @@ const data = [
     name: "Taça UA",
     link: "/taca-ua",
   },
-  // {
-  //   name: "Rally Tascas",
-  //   link: "/breakthebars",
-  // },
   {
     name: "Finalistas",
     link: "/seniors",
