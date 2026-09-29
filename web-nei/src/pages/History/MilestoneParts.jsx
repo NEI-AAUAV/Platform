@@ -121,7 +121,7 @@ export function MilestoneActions({ milestone, onOpenGallery }) {
 /** `alt` is what an editor wrote for the image (`cover_alt`); without one
  * the cover is treated as decorative: it sits right beside the milestone's
  * title, and a made-up description would be worse than none. */
-export function CoverImage({ src, alt, width, height }) {
+export function CoverImage({ src, alt, width, height, fallbackSrc }) {
   return (
     <img
       src={src}
@@ -131,7 +131,14 @@ export function CoverImage({ src, alt, width, height }) {
       loading="lazy"
       decoding="async"
       onError={(e) => {
-        e.currentTarget.style.display = "none";
+        const img = e.currentTarget;
+        // Dev-only: a cover that 404s (seed data points at fake Drive ids)
+        // gets the placeholder instead of an empty box.
+        if (fallbackSrc && img.src !== fallbackSrc) {
+          img.src = fallbackSrc;
+          return;
+        }
+        img.style.display = "none";
       }}
     />
   );

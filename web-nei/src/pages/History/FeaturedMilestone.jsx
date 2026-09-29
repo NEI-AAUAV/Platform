@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import MaterialSymbol from "components/MaterialSymbol";
 
 import { CoverImage, MilestoneActions, MilestoneMeta, MilestoneText } from "./MilestoneParts";
-import { coverOrPlaceholder } from "./utils";
+import { coverOrPlaceholder, placeholderCover } from "./utils";
 
 function FeaturedBadge({ overlay }) {
   return (
@@ -38,7 +38,11 @@ export default function FeaturedMilestone({ milestone, onOpenGallery }) {
         <>
           <FeaturedBadge overlay />
           <div className="history-featured__cover">
-            <CoverImage src={cover} alt={milestone.cover_alt} width={1200} height={600} />
+            <CoverImage src={cover} alt={milestone.cover_alt}
+            width={1200}
+            height={600}
+            fallbackSrc={placeholderCover(milestone, 1200, 600)}
+          />
           </div>
         </>
       )}

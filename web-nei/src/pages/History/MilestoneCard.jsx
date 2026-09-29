@@ -2,7 +2,7 @@ import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { CoverImage, MilestoneActions, MilestoneMeta, MilestoneText } from "./MilestoneParts";
-import { coverOrPlaceholder } from "./utils";
+import { coverOrPlaceholder, placeholderCover } from "./utils";
 
 export default function MilestoneCard({ milestone, onOpenGallery }) {
   const reducedMotion = useReducedMotion();
@@ -19,7 +19,11 @@ export default function MilestoneCard({ milestone, onOpenGallery }) {
     >
       {cover && (
         <div className="history-card__cover">
-          <CoverImage src={cover} alt={milestone.cover_alt} width={480} height={270} />
+          <CoverImage src={cover} alt={milestone.cover_alt}
+            width={480}
+            height={270}
+            fallbackSrc={placeholderCover(milestone, 480, 270)}
+          />
         </div>
       )}
 
