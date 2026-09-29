@@ -67,6 +67,10 @@ services:
       OIDC_VERIFY_SSL: ${OIDC_VERIFY_SSL:-true}
       AUTHENTIK_URL: ${AUTHENTIK_URL:-https://nei.web.ua.pt/authentik}
       AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN:-}
+      # Drive API key for history galleries linked as Drive folders; blank disables them.
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      # Served through the dev proxy's /drive-img/ (dev/proxy/locations.conf).
+      DRIVE_IMAGE_BASE_URL: ${DRIVE_IMAGE_BASE_URL:-http://localhost/drive-img/}
       # Public base of Directus assets; locally Directus is only reachable through the proxy at /cms/
       # Must match Infrastructure's DIRECTUS_PUBLIC_URL.
       DIRECTUS_PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-http://localhost/cms/}

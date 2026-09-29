@@ -157,6 +157,17 @@ class Settings(BaseSettings):
     AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"
     AUTHENTIK_TOKEN: str = ""
 
+    # Google Drive API key (read-only, restricted to the Drive API in the
+    # Google Cloud console). Used only to list images inside a folder an
+    # editor linked from Directus (history.drive_folder_url). Blank means
+    # Drive-folder galleries are silently disabled, not an error.
+    GOOGLE_API_KEY: str = ""
+    # Prefix for Drive photo URLs (`<prefix><file_id>=w<width>`). Deployments
+    # must point it at the nginx `/drive-img/` proxy: Chrome blocks <img>
+    # loads straight from Google's image host (ERR_BLOCKED_BY_ORB). The
+    # default is only for tests and scripts.
+    DRIVE_IMAGE_BASE_URL: str = "https://lh3.googleusercontent.com/d/"
+
     def _postgres_url(self, database: str) -> str:
         return URL.create(
             "postgresql",

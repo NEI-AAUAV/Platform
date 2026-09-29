@@ -101,6 +101,11 @@ services:
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       AUTHENTIK_URL: ${AUTHENTIK_URL:-https://nei.web.ua.pt/authentik}
       AUTHENTIK_TOKEN: ${AUTHENTIK_TOKEN}
+      # Drive API key for history galleries linked as Drive folders; blank
+      # disables them. Photos are served through Infrastructure's nginx
+      # cache (/drive-img/), not hotlinked from Google.
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      DRIVE_IMAGE_BASE_URL: ${DRIVE_IMAGE_BASE_URL:-https://nei.web.ua.pt/drive-img/}
       # Must match Infrastructure's DIRECTUS_PUBLIC_URL: api-nei builds
       # every CMS asset URL from it.
       DIRECTUS_PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:-https://nei.web.ua.pt/cms/}

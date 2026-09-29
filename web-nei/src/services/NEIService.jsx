@@ -40,6 +40,10 @@ const NEIService = {
     return await client.get("/history/");
   },
 
+  async getHistoryGallery(id, { signal } = {}) {
+    return await client.get(`/history/${id}/gallery`, { signal });
+  },
+
   async getRGMMandates() {
     return await client.get(`/rgm/mandates/`);
   },

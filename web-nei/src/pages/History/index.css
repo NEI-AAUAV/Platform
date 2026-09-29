@@ -1,0 +1,878 @@
+.history-page {
+  /* This page is a flex item of the app shell (flex flex-col). `margin: 0
+     auto` on a flex item's cross axis disables stretch — per the flexbox
+     spec, an item with auto cross-margins sizes itself to its own content
+     (min/max-content) instead of the container, ignoring `min-width` and
+     the available space entirely. So on a narrow viewport, one unbreakable
+     descendant (a long word, a fixed-size image) silently widened this
+     whole page — and everything below it — past the viewport. `width:
+     100%` restores normal sizing: fill the container, then center via
+     `max-width` + auto margins as usual. */
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 6rem;
+  box-sizing: border-box;
+  /* No overflow-x here: `hidden` turns the page into a scroll container,
+     which silently pins every sticky descendant (the filter toolbar, the
+     mandate rail) to a box that never scrolls. Overflow is fixed at its
+     sources instead (min-width: 0 on grid/flex children, overflow-wrap on
+     CMS text, overflow-x: auto on markdown code blocks). */
+
+  /* The app navbar (layouts/Navbar) is fixed and h-20 (5rem) tall; the
+     layout pads the page by the same pt-20. Sticky bars sit below it. */
+  --history-navbar-height: 5rem;
+  --history-sticky-top: calc(var(--history-navbar-height) + 0.5rem);
+  /* Height of `.history-mobile-nav` (44px controls + its padding), so a
+     mandate scrolled into view isn't hidden under it. */
+  --history-mobile-nav-height: 3.75rem;
+}
+
+/* ---- Hero -------------------------------------------------------- */
+
+.history-hero {
+  position: relative;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding: 1rem 0 0.5rem;
+}
+
+.history-hero::before {
+  content: "";
+  position: absolute;
+  /* Bleeds into the page padding only, never past the viewport. */
+  inset: -2rem -1.25rem auto -1.25rem;
+  height: 320px;
+  background: radial-gradient(
+    ellipse 60% 100% at 50% 0%,
+    hsl(var(--primary) / 0.12),
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.history-hero__title {
+  font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.history-hero__intro {
+  color: hsl(var(--muted-foreground));
+  max-width: 42ch;
+  margin: 0 auto;
+}
+
+.history-hero__stats {
+  display: flex;
+  justify-content: center;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  margin-top: 2rem;
+}
+
+.history-hero__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.history-hero__stat dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: hsl(var(--muted-foreground));
+}
+
+.history-hero__stat dd {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: hsl(var(--primary));
+  margin: 0;
+}
+
+/* ---- Category filter ---------------------------------------------- */
+
+/* Below 992px, category filtering and year navigation collapse into
+   `.history-mobile-nav`'s two selects instead — two differently-shaped
+   scroll widgets (a chip row here, a rail below) stacked before any
+   content was confusing and cost real width on narrow phones. */
+.history-filters,
+.history-mobile-nav {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.history-filters {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .history-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+}
+
+/* ---- Mobile/tablet filter + year toolbar --------------------------- */
+
+.history-mobile-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 -0.5rem 1.5rem;
+  padding: 0.5rem;
+  position: sticky;
+  top: var(--history-sticky-top);
+  /* Above the timeline cards, below the navbar (z-40) and its expanded
+     mobile menu, which should cover this bar while it's open. */
+  z-index: 5;
+  border-radius: 999px;
+  background: hsl(var(--background) / 0.85);
+  backdrop-filter: blur(6px);
+}
+
+.history-mobile-nav__field {
+  flex: 1;
+  min-width: 0;
+}
+
+.history-mobile-nav__field select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 1px 3px hsl(var(--foreground) / 0.06);
+}
+
+.history-mobile-nav__field select:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+@media (min-width: 992px) {
+  .history-mobile-nav {
+    display: none;
+  }
+}
+
+/* ---- Back to top ---------------------------------------------------- */
+
+.history-back-to-top {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 20;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  box-shadow: 0 4px 12px hsl(var(--foreground) / 0.2);
+  transition: transform var(--duration-fast, 150ms) var(--ease-out-expo, ease);
+}
+
+.history-back-to-top:hover {
+  transform: translateY(-2px);
+}
+
+.history-back-to-top:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+@media (min-width: 992px) {
+  .history-back-to-top {
+    display: none;
+  }
+}
+
+.history-filter-chip {
+  flex: 0 0 auto;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition-property: background, border-color, color, transform;
+  transition-duration: var(--duration-fast, 150ms);
+}
+
+.history-filter-chip:hover {
+  transform: translateY(-1px);
+  border-color: var(--chip-color, hsl(var(--primary)));
+}
+
+/* Category colours are arbitrary CMS input, so they are never a background
+   behind text: text stays in the theme's foreground colour (readable in
+   light and dark), and the colour shows as a dot, border and faint tint. */
+.history-filter-chip::before,
+.history-chip::before {
+  content: "";
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.45rem;
+  border-radius: 50%;
+  background: var(--chip-color, hsl(var(--muted-foreground)));
+}
+
+.history-filter-chip:first-child::before {
+  display: none;
+}
+
+.history-filter-chip.is-active {
+  border-color: var(--chip-color, hsl(var(--primary)));
+  background: hsl(var(--muted));
+  background: color-mix(in srgb, var(--chip-color, hsl(var(--primary))) 16%, hsl(var(--card)));
+  box-shadow: inset 0 0 0 1px var(--chip-color, hsl(var(--primary)));
+  font-weight: 700;
+}
+
+/* ---- Layout: sticky year rail + timeline -------------------------- */
+
+.history-layout {
+  display: grid;
+  /* minmax(0, 1fr), not bare 1fr: a bare `1fr` track still lets its item's
+     default min-width:auto win, so the grid — like the flex bug above —
+     refused to shrink the timeline column below its widest card's
+     intrinsic content width. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+/* Below 992px, `.history-mobile-nav` (a sticky select toolbar) owns year
+   navigation instead — a fixed-width rail wastes horizontal space it
+   can't spare on narrow phones, and gives them a second, independently
+   scrolling widget to fight with while reading the timeline. */
+.history-year-rail {
+  display: none;
+}
+
+.history-year-rail__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.4rem 0.2rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  color: hsl(var(--muted-foreground));
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-align: center;
+  transition-property: color, border-color, background;
+  transition-duration: var(--duration-fast, 150ms);
+}
+
+.history-year-rail__item.is-active {
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+}
+
+.history-year-rail__item:hover {
+  color: hsl(var(--foreground));
+}
+
+@media (min-width: 992px) {
+  .history-year-rail {
+    display: block;
+    position: sticky;
+    top: var(--history-sticky-top);
+    z-index: 5;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem;
+    background: hsl(var(--background) / 0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 999px;
+    border: 1px solid hsl(var(--border));
+  }
+
+  .history-year-rail ul {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overflow-y: visible;
+    max-height: none;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, black calc(100% - 28px), transparent);
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - 28px), transparent);
+  }
+
+  .history-year-rail ul::-webkit-scrollbar {
+    display: none;
+  }
+
+  .history-year-rail__item {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 0;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.875rem;
+  }
+}
+
+.history-timeline {
+  position: relative;
+  min-width: 0;
+  padding-left: 1.25rem;
+  border-left: none;
+}
+
+.history-timeline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 3px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    hsl(var(--primary) / 0.5) 6%,
+    hsl(var(--primary) / 0.5) 94%,
+    transparent
+  );
+}
+
+@media (min-width: 992px) {
+  .history-timeline {
+    padding-left: 2rem;
+  }
+}
+
+/* ---- Year sections -------------------------------------------------- */
+
+.history-year-section {
+  margin-bottom: 3rem;
+  scroll-margin-top: calc(var(--history-sticky-top) + var(--history-mobile-nav-height));
+}
+
+@media (min-width: 992px) {
+  .history-year-section {
+    /* The mandate rail (~3.5rem) is the sticky bar here. */
+    scroll-margin-top: calc(var(--history-sticky-top) + 3.5rem);
+  }
+}
+
+.history-year-section__header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.history-year-section__header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: hsl(var(--primary));
+}
+
+.history-year-section__mandate {
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.history-year-section__items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ---- Milestone card -------------------------------------------------- */
+
+.history-card {
+  position: relative;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition-property: transform, box-shadow;
+  transition-duration: var(--duration-normal, 300ms);
+}
+
+.history-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.history-card::before {
+  content: "";
+  position: absolute;
+  left: -1.65rem;
+  top: 1.5rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  border: 3px solid hsl(var(--background));
+}
+
+@media (min-width: 992px) {
+  .history-card::before {
+    left: -2.4rem;
+  }
+}
+
+.history-card__cover {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  /* Falls back to this when the <img> fails to load (broken Drive link,
+     revoked share) and JS hides it on `error` — otherwise a broken-image
+     glyph sits in the card instead of a clean empty surface. */
+  background: hsl(var(--muted) / 0.4);
+}
+
+.history-card__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-normal, 300ms) var(--ease-out-expo, ease);
+}
+
+.history-card:hover .history-card__cover img {
+  transform: scale(1.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .history-card__cover img {
+    transition: none;
+  }
+  .history-card:hover .history-card__cover img {
+    transform: none;
+  }
+}
+
+.history-card__body {
+  padding: 1.25rem 1.5rem 1.5rem;
+  /* Editorial content (title, markdown body) is free text from Directus —
+     one long URL or unbroken word pasted in there is what tipped the
+     grid/flex min-width:auto bugs above into an actual page overflow. */
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.history-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.history-card__body h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.history-card__text {
+  color: hsl(var(--foreground) / 0.9);
+  line-height: 1.6;
+}
+
+.history-card__text p:not(:last-child),
+.history-card__text ul:not(:last-child),
+.history-card__text ol:not(:last-child),
+.history-card__text blockquote:not(:last-child),
+.history-card__text pre:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+/* Markdown from the CMS: Tailwind's preflight strips list and quote
+   styling, and headings are capped at card level (see MilestoneBody). */
+.history-card__text-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.history-card__text ul,
+.history-card__text ol {
+  padding-left: 1.25rem;
+}
+
+.history-card__text ul {
+  list-style: disc;
+}
+
+.history-card__text ol {
+  list-style: decimal;
+}
+
+.history-card__text blockquote {
+  padding-left: 0.75rem;
+  border-left: 3px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+}
+
+.history-card__text a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.history-card__text a:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.history-card__text code {
+  font-size: 0.85em;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  background: hsl(var(--muted));
+}
+
+.history-card__text pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: hsl(var(--muted));
+}
+
+.history-card__text pre code {
+  padding: 0;
+  background: none;
+}
+
+.history-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.history-card__gallery-btn,
+.history-card__external-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: hsl(var(--primary));
+  padding: 0.3rem 0.6rem;
+  margin: -0.3rem -0.6rem;
+  border-radius: 999px;
+  transition: background var(--duration-fast, 150ms);
+}
+
+/* 0.3rem padding + text line-height reads fine on desktop but the actual
+   tap target lands well under the 44px floor phones expect. */
+@media (max-width: 639px) {
+  .history-card__gallery-btn,
+  .history-card__external-link {
+    padding: 0.65rem 0.75rem;
+    margin: -0.65rem -0.75rem;
+  }
+}
+
+.history-card__gallery-btn:hover,
+.history-card__external-link:hover {
+  background: hsl(var(--primary) / 0.1);
+}
+
+.history-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: hsl(var(--foreground));
+  border: 1px solid var(--chip-color, hsl(var(--border)));
+  background: hsl(var(--muted));
+  background: color-mix(in srgb, var(--chip-color, hsl(var(--muted-foreground))) 12%, hsl(var(--card)));
+}
+
+/* ---- Featured milestone ----------------------------------------------- */
+
+.history-featured {
+  position: relative;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  transition-property: transform, box-shadow;
+  transition-duration: var(--duration-normal, 300ms);
+}
+
+.history-featured:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.14);
+}
+
+.history-featured .history-card__cover,
+.history-featured .history-featured__cover {
+  overflow: hidden;
+}
+
+.history-featured .history-featured__cover img {
+  transition: transform var(--duration-normal, 300ms) var(--ease-out-expo, ease);
+}
+
+.history-featured:hover .history-featured__cover img {
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .history-featured:hover .history-featured__cover img {
+    transform: none;
+  }
+}
+
+.history-featured::before {
+  content: "";
+  position: absolute;
+  left: -1.65rem;
+  top: 1.5rem;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  border: 3px solid hsl(var(--background));
+}
+
+@media (min-width: 992px) {
+  .history-featured::before {
+    left: -2.4rem;
+  }
+}
+
+.history-featured__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: hsl(var(--primary));
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+}
+
+.history-featured__badge--overlay {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.history-featured__cover {
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+  background: hsl(var(--muted) / 0.4);
+}
+
+.history-featured__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.history-featured__body {
+  padding: 1.5rem 1.75rem 1.75rem;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 639px) {
+  .history-featured__body {
+    padding: 1.25rem 1.25rem 1.5rem;
+  }
+}
+
+.history-featured__body h3 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 0.6rem;
+}
+
+/* ---- Empty / error states ------------------------------------------ */
+
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 4rem 1rem;
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+}
+
+.history-empty h2 {
+  color: hsl(var(--foreground));
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.history-empty__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  transition: transform var(--duration-fast, 150ms) var(--ease-out-expo, ease);
+}
+
+.history-empty__action:hover {
+  transform: translateY(-1px);
+}
+
+.history-empty__action:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* ---- Skeleton -------------------------------------------------------- */
+
+.history-skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--muted) / 0.6) 37%,
+    hsl(var(--muted)) 63%
+  );
+  background-size: 400% 100%;
+  animation: history-skeleton-shimmer 1.4s ease infinite;
+  border-radius: 0.75rem;
+}
+
+.history-skeleton--hero {
+  height: 180px;
+  margin-bottom: 2rem;
+}
+
+.history-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.history-skeleton--card {
+  height: 220px;
+}
+
+@keyframes history-skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .history-skeleton {
+    animation: none;
+  }
+}
+
+/* ---- Focus states (keyboard navigation) ---------------------------- */
+
+.history-filter-chip:focus-visible,
+.history-year-rail__item:focus-visible,
+.history-mobile-nav__field select:focus-visible,
+.history-card__gallery-btn:focus-visible,
+.history-card__external-link:focus-visible,
+.history-lightbox__nav:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* ---- Reduced motion -------------------------------------------------- */
+
+/* Hover lifts and zooms are decoration; with "reduce motion" the page keeps
+   its hover colours but nothing moves. */
+@media (prefers-reduced-motion: reduce) {
+  .history-card,
+  .history-featured,
+  .history-filter-chip,
+  .history-back-to-top,
+  .history-empty__action {
+    transition: none;
+  }
+
+  .history-card:hover,
+  .history-featured:hover,
+  .history-filter-chip:hover,
+  .history-back-to-top:hover,
+  .history-empty__action:hover {
+    transform: none;
+  }
+}
+
+/* ---- Desktop: more compact cards ---------------------------------------
+   Full-width 16:9 covers made each card ~600px tall on a wide timeline
+   column. Cap the width and flatten covers so more milestones fit on
+   screen. */
+@media (min-width: 992px) {
+  .history-card,
+  .history-featured {
+    max-width: 760px;
+  }
+
+  .history-card__cover {
+    aspect-ratio: 3 / 1;
+  }
+
+  .history-featured__cover {
+    aspect-ratio: 5 / 2;
+  }
+
+  .history-card__body {
+    padding: 1rem 1.25rem 1.25rem;
+  }
+
+  .history-card__body h3 {
+    font-size: 1.1rem;
+  }
+
+  .history-featured__body {
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  .history-featured__body h3 {
+    font-size: 1.4rem;
+  }
+
+  .history-year-section__items {
+    gap: 1.25rem;
+  }
+}
