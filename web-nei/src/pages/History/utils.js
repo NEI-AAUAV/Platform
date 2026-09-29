@@ -93,6 +93,24 @@ export function milestoneCover(milestone) {
   return milestone.cover || milestone.image || null;
 }
 
+const isLocalDev = () =>
+  typeof window !== "undefined" &&
+  ["localhost", "127.0.0.1"].includes(window.location.hostname);
+
+/** Dev-only stand-in (random photo from picsum.photos, stable per
+ * milestone) so timeline layouts can be judged before real covers exist.
+ * Never used off localhost. */
+export function placeholderCover(milestone, width, height) {
+  return isLocalDev()
+    ? `https://picsum.photos/seed/nei-${milestone.id}/${width}/${height}`
+    : null;
+}
+
+/** The real cover, else the dev placeholder. */
+export function coverOrPlaceholder(milestone, width, height) {
+  return milestoneCover(milestone) ?? placeholderCover(milestone, width, height);
+}
+
 /** Same rule the database enforces on `history_category.slug`: anything
  * else in `?categoria=` can't name a category and is dropped from the URL. */
 export function isCategorySlug(value) {

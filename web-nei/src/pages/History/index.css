@@ -837,3 +837,42 @@
     transform: none;
   }
 }
+
+/* ---- Desktop: more compact cards ---------------------------------------
+   Full-width 16:9 covers made each card ~600px tall on a wide timeline
+   column. Cap the width and flatten covers so more milestones fit on
+   screen. */
+@media (min-width: 992px) {
+  .history-card,
+  .history-featured {
+    max-width: 760px;
+  }
+
+  .history-card__cover {
+    aspect-ratio: 3 / 1;
+  }
+
+  .history-featured__cover {
+    aspect-ratio: 5 / 2;
+  }
+
+  .history-card__body {
+    padding: 1rem 1.25rem 1.25rem;
+  }
+
+  .history-card__body h3 {
+    font-size: 1.1rem;
+  }
+
+  .history-featured__body {
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  .history-featured__body h3 {
+    font-size: 1.4rem;
+  }
+
+  .history-year-section__items {
+    gap: 1.25rem;
+  }
+}

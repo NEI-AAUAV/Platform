@@ -2,6 +2,12 @@ import React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
+// Placeholder covers are a localhost-only dev aid; tests assert real covers.
+vi.mock("../../../pages/History/utils", async (importOriginal) => {
+  const actual = await importOriginal();
+  return { ...actual, coverOrPlaceholder: (m) => actual.milestoneCover(m) };
+});
+
 vi.mock("framer-motion", () => ({
   motion: {
     article: ({ children, className, id }) => (

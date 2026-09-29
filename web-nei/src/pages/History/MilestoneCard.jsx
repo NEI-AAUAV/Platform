@@ -2,11 +2,11 @@ import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { CoverImage, MilestoneActions, MilestoneMeta, MilestoneText } from "./MilestoneParts";
-import { milestoneCover } from "./utils";
+import { coverOrPlaceholder } from "./utils";
 
 export default function MilestoneCard({ milestone, onOpenGallery }) {
   const reducedMotion = useReducedMotion();
-  const cover = milestoneCover(milestone);
+  const cover = coverOrPlaceholder(milestone, 480, 270);
 
   return (
     <motion.article
