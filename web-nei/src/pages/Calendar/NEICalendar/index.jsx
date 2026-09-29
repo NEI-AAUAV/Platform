@@ -1,9 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-} from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 
 import { useWindowSize, useLoading } from "utils/hooks";
 import { ArrowForwardIcon, ArrowBackIcon } from "assets/icons/google";
@@ -13,8 +8,7 @@ import service from "services/GoogleCalendarService";
 import { locales } from "./data";
 import { categories } from "../data";
 
-import { dateKey, getWeeklyIntervals } from "./utils";
-
+import { dateKey, getCategory, getWeeklyIntervals } from "./utils";
 
 import CalendarMonth from "./CalendarMonth";
 import { motion, AnimatePresence } from "framer-motion";
@@ -64,7 +58,7 @@ const swipePower = (offset, velocity) => {
   return Math.abs(offset) * velocity;
 };
 
-const NEICalendar = () => {
+const NEICalendar = ({ hiddenCategories }) => {
   const today = new Date();
   const windowSize = useWindowSize();
   const [[year, month], setDate] = useState([
@@ -79,7 +73,6 @@ const NEICalendar = () => {
   const [height, setHeight] = useState(0);
   const elementRef = useRef(null);
 
-
   useLayoutEffect(() => {
     if (elementRef.current?.firstChild) {
       setHeight(elementRef.current.firstChild.offsetHeight);
@@ -92,7 +85,6 @@ const NEICalendar = () => {
     fetchEvents();
   }, [year, month]);
 
-  
   function handleMonthChange(month) {
     const lapsedYears = Math.floor(month / 12);
     const lapsedMonths = month % 12;
@@ -190,6 +182,11 @@ const NEICalendar = () => {
     let events = [];
 
     for (const e of data.items) {
+      const category = getCategory(e["summary"] ?? "", categories);
+      if (!category) {
+        // Event organized only by other entities
+        continue;
+      }
       let start = parseGoogleDate(e.start.date, e.start.dateTime);
       let end = parseGoogleDate(e.end.date, e.end.dateTime);
       if (e.end.date) {
@@ -203,7 +200,7 @@ const NEICalendar = () => {
             id: e["id"],
             title: e["summary"],
             allDay: "date" in e["start"],
-            category: getCategory(e["summary"]),
+            category,
             weekStart,
             start,
             end,
@@ -214,8 +211,8 @@ const NEICalendar = () => {
               ) + 1,
           })
         )
-        );
-      }
+      );
+    }
 
     // Assign events to a day slot in a way that they don't overlap
     // and fit the free slots efficiently
@@ -242,20 +239,6 @@ const NEICalendar = () => {
     setLoading(false);
   };
 
-  function getCategory(title) {
-    for (const [key, c] of Object.entries(categories)) {
-      if (c.prefixes) {
-        for (const p of c.prefixes) {
-          if (title.startsWith(p)) {
-            return { ...c, key };
-          }
-        }
-      }
-    }
-    // Return NEI category by default
-    return { ...categories.NEI, key: "NEI" };
-  }
-
   return (
     <div>
       <div className="container mx-auto mt-4">
@@ -275,7 +258,7 @@ const NEICalendar = () => {
             <div className="flex gap-2 px-1">
               <button
                 type="button"
-                className="btn-ghost btn-sm btn-circle btn"
+                className="btn btn-circle btn-ghost btn-sm"
                 onClick={() =>
                   setTimeout(() => handleMonthChange(month - 1), 300)
                 }
@@ -284,7 +267,7 @@ const NEICalendar = () => {
               </button>
               <button
                 type="button"
-                className="btn-ghost btn-sm btn-circle btn"
+                className="btn btn-circle btn-ghost btn-sm"
                 onClick={() =>
                   setTimeout(() => handleMonthChange(month + 1), 300)
                 }
@@ -346,6 +329,7 @@ const NEICalendar = () => {
                     monthEvents={calendarEvents[dateKey(year, month)]}
                     selEvent={selEvent}
                     setSelEvent={setSelEvent}
+                    hiddenCategories={hiddenCategories}
                   />
                 </motion.div>
               </AnimatePresence>

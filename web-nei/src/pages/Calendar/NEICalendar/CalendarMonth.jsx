@@ -4,8 +4,13 @@ import { Fragment } from "react";
 import { EventDialog } from "components/Dialog";
 import { dateKey } from "./utils";
 
-
-const CalendarMonth = ({ month, monthEvents, selEvent, setSelEvent }) => {
+const CalendarMonth = ({
+  month,
+  monthEvents,
+  selEvent,
+  setSelEvent,
+  hiddenCategories,
+}) => {
   function isToday(date) {
     return dateKey(new Date()) === date;
   }
@@ -35,40 +40,49 @@ const CalendarMonth = ({ month, monthEvents, selEvent, setSelEvent }) => {
                 const selected = !!event && event.id === selEvent?.id;
                 const dialogbadge = (
                   <div
-                        className={classNames(
-                          "relative left-0 z-10 mb-2 cursor-pointer rounded font-medium text-white hover:shadow-md ",
-                          { invisible: !event },
-                          {
-                            "shadow-md": selected,
-                          }
-                        )}
-                        style={{
-                          width: `calc(${event?.duration * 100}% + ${
-                            event?.duration - 1
-                          }px - 0.4rem)`,
-                          marginLeft: "0.2rem",
-                          background: `hsl(${event?.category?.color} / ${
-                            selected ? 1 : 0.7
-                          })`,
-                        }}
-                        onClick={() => setSelEvent(event)}
-                      >
-                        <p className="h-[24px] overflow-hidden truncate text-clip px-1 text-xs !leading-[24px] sm:text-sm">
-                          {event?.title}
-                        </p>
-                      </div>
-                )
+                    className={classNames(
+                      "relative left-0 z-10 mb-2 cursor-pointer rounded font-medium text-white hover:shadow-md ",
+                      { invisible: !event },
+                      {
+                        "shadow-md": selected,
+                      }
+                    )}
+                    style={{
+                      width: `calc(${event?.duration * 100}% + ${
+                        event?.duration - 1
+                      }px - 0.4rem)`,
+                      marginLeft: "0.2rem",
+                      background: `hsl(${event?.category?.color} / ${
+                        selected ? 1 : 0.7
+                      })`,
+                    }}
+                    onClick={() => setSelEvent(event)}
+                  >
+                    <p className="h-[24px] overflow-hidden truncate text-clip px-1 text-xs !leading-[24px] sm:text-sm">
+                      {event?.title}
+                    </p>
+                  </div>
+                );
                 return (
-                  <div key={index} datatype={event?.category.key} >
-                    { event !== null ? 
-                    <EventDialog
-                      event={event}
-                      className="w-full"
-                      onShowChange={(show) => !show && setSelEvent(null)}
-                    >
-                      {dialogbadge}
-                    </EventDialog>
-                    : dialogbadge}
+                  <div
+                    key={index}
+                    datatype={event?.category.key}
+                    className={classNames({
+                      "pointer-events-none opacity-20":
+                        event && hiddenCategories.has(event.category.key),
+                    })}
+                  >
+                    {event !== null ? (
+                      <EventDialog
+                        event={event}
+                        className="w-full"
+                        onShowChange={(show) => !show && setSelEvent(null)}
+                      >
+                        {dialogbadge}
+                      </EventDialog>
+                    ) : (
+                      dialogbadge
+                    )}
                   </div>
                 );
               })}
