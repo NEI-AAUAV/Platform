@@ -74,7 +74,7 @@ export function getWeeklyIntervals(startDate, endDate, sinceDate, toDate) {
 // Leading "[...]" group of an event title, e.g. "[NEI/NEECT] Palestra" -> "NEI/NEECT"
 const ENTITIES_REGEX = /^\[([^\]]*)\]/;
 // Entities in a group can be separated by "/", "," or " e " (e.g. "[NEECT E NEEETA]")
-const ENTITY_SEPARATOR_REGEX = /\s*(?:[/,]|\s+e\s+)\s*/i;
+const ENTITY_SEPARATOR_REGEX = /\s*[/,]\s*|\s+e\s+/i;
 
 /**
  * Parse the entities (student groups) that organize an event from its title.
@@ -87,7 +87,7 @@ const ENTITY_SEPARATOR_REGEX = /\s*(?:[/,]|\s+e\s+)\s*/i;
  * @returns {string[]} The uppercased entities, or an empty array if none
  */
 export function getEntities(title) {
-  const match = title.match(ENTITIES_REGEX);
+  const match = ENTITIES_REGEX.exec(title);
   if (!match) return [];
   return match[1]
     .split(ENTITY_SEPARATOR_REGEX)

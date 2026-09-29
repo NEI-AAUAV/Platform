@@ -36,7 +36,7 @@ const CalendarMonth = ({
               {new Date(day).getDate()}
             </div>
             <div className="">
-              {[...events].map((event, index) => {
+              {[...events].map((event, slotIndex) => {
                 const selected = !!event && event.id === selEvent?.id;
                 const dialogbadge = (
                   <div
@@ -65,8 +65,8 @@ const CalendarMonth = ({
                 );
                 return (
                   <div
-                    key={index}
-                    datatype={event?.category.key}
+                    key={event?.id ?? `empty-${day}-${slotIndex}`}
+                    data-category={event?.category.key}
                     className={classNames({
                       "pointer-events-none opacity-20":
                         event && hiddenCategories.has(event.category.key),

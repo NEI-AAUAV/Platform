@@ -82,7 +82,9 @@ const NEICalendar = ({ hiddenCategories }) => {
   // const [openEventModal, setOpenEventModal] = useState(false);
 
   useEffect(() => {
-    fetchEvents();
+    fetchEvents().catch((error) => {
+      console.error("Failed to fetch calendar events:", error);
+    });
   }, [year, month]);
 
   function handleMonthChange(month) {
