@@ -9,6 +9,7 @@ from fastapi import (
 
 from jose import JWTError
 from datetime import datetime
+from typing import Annotated
 from loguru import logger
 from pydantic import SecretStr
 from sqlalchemy.orm import Session
@@ -87,8 +88,8 @@ def send_magic_link(
 def activate_magic_link(
     background_tasks: BackgroundTasks,
     token: str,
-    password: SecretStr = Form(),
-    db: Session = Depends(deps.get_db, scope="function"),
+    password: Annotated[SecretStr, Form()],
+    db: Annotated[Session, Depends(deps.get_db, scope="function")],
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

@@ -71,7 +71,7 @@ def connection():
         cleanup.commit()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def db(connection: Connection) -> Generator[Session, Any, None]:
     """Reset/rollback the changes in the database tables.
 
@@ -86,15 +86,15 @@ def db(connection: Connection) -> Generator[Session, Any, None]:
 
 
 @pytest.fixture(scope="session")
-def app() -> Generator[FastAPI, Any, None]:
+def app() -> FastAPI:
     """Create a new application for the test session."""
 
     _app = FastAPI(default_response_class=ORJSONResponse)
     _app.include_router(api_v1_router, prefix=settings.API_V1_STR)
-    yield _app
+    return _app
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def client(
     request: pytest.FixtureRequest, app: FastAPI, db: Session
 ) -> Generator[TestClient, Any, None]:

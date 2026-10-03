@@ -29,7 +29,7 @@ class RgmBase(BaseModel):
     mandate_id: int
     file: Optional[str] = None
     date: Optional[datetime] = None
-    title: Annotated[Optional[str], StringConstraints(max_length=264)]
+    title: Annotated[Optional[str], StringConstraints(max_length=264)] = None
 
 
 class RgmInDB(RgmBase):

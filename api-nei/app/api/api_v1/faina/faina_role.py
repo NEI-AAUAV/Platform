@@ -23,7 +23,7 @@ def get_faina_role(
     return crud.faina_role.get_multi(db=db)
 
 
-@router.get("/{id}", status_code=200, response_model=FainaRoleInDB)
+@router.get("/{id}", status_code=200, response_model=FainaRoleInDB, responses={404: {"description": "Faina Role Not Found"}})
 def get_faina_role_by_id(
     *,
     db: Session = Depends(deps.get_db, scope="function"),
@@ -52,7 +52,7 @@ def create_faina_role(
     return crud.faina_role.create(db=db, obj_in=faina_role_create_in)
 
 
-@router.put("/{id}", status_code=200, response_model=FainaRoleInDB)
+@router.put("/{id}", status_code=200, response_model=FainaRoleInDB, responses={404: {"description": "Faina Role Not Found"}})
 def update_faina_role(
     *,
     id: int,

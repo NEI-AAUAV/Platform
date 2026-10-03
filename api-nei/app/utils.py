@@ -18,7 +18,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 class EnumList(Enum):
     @classmethod
     def list(cls):
-        return list(map(lambda c: c.value, cls))
+        return [c.value for c in cls]
 
 
 def include(fields: list[str]):
@@ -63,8 +63,18 @@ class ValidateFromJson:
         return json.loads(data)
 
 
+def _decode_filename(raw: bytes) -> "str | bytes":
+    """Decode a zip entry name trying several encodings, returns raw bytes on failure."""
+    for encoding in ("utf-8", "cp1252", "cp437"):
+        try:
+            return raw.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+    return raw
+
+
 class CustomZipFile(zipfile.ZipFile):
-    # FIXME: this is a temporary solution that overrides the method _RealGetContents
+    # NOTE: this is a temporary solution that overrides the method _RealGetContents
     # to fix a bug about insuficient encoding types in the original ZipFile class.
     def _RealGetContents(self):
         """Read in the table of contents for the ZIP file."""
@@ -102,12 +112,7 @@ class CustomZipFile(zipfile.ZipFile):
                 raise zipfile.BadZipFile("Bad magic number for central directory")
             filename = fp.read(centdir[zipfile._CD_FILENAME_LENGTH])
 
-            for encoding in ("utf-8", "cp1252", "cp437"):
-                try:
-                    filename = filename.decode(encoding)
-                    break
-                except UnicodeDecodeError:
-                    continue
+            filename = _decode_filename(filename)
 
             # Create ZipInfo instance to store file information
             x = zipfile.ZipInfo(filename)
@@ -161,8 +166,7 @@ class CustomZipFile(zipfile.ZipFile):
 def list_zip_contents(zip_file):
     contents = []
     with CustomZipFile(zip_file, "r") as zip_obj:
-        for file in zip_obj.namelist():
-            contents.append(file)
+        contents.extend(zip_obj.namelist())
     return contents
 
 

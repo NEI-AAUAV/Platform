@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import Any, List
+from typing import Annotated, Any, List
 
 from app import crud
 from app.api import deps
@@ -15,7 +15,7 @@ router = APIRouter()
     response_model=RedirectInDB,
     responses={404: {"description": "No redirect was found"}},
 )
-def get_redirect(*, alias: str, db: Session = Depends(deps.get_db, scope="function")) -> Any:
+def get_redirect(*, alias: str, db: Annotated[Session, Depends(deps.get_db, scope="function")]) -> Any:
     resp = crud.redirect.get_redirect(db=db, alias=alias)
     if resp == None:
         raise HTTPException(status_code=404, detail="Not found.")

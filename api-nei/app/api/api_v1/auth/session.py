@@ -64,7 +64,7 @@ def _validate_refresh_token(db, token):
     # Safety check that the session hasn't expired, the token should already
     # encode this.
     if device_login.expires_at < datetime.now(timezone.utc):
-        logger.warning(f"Token that should be expired was accepted")
+        logger.warning("Token that should be expired was accepted")
         # Remove the device login from the database since it's no longer used
         db.delete(device_login)
         # Persist revocation before rejecting the stale credential.
@@ -85,7 +85,7 @@ def _validate_refresh_token(db, token):
         replayed = token_jti != device_login.refresh_jti
 
     if replayed:
-        logger.warning(f"A refresh token was resubmitted")
+        logger.warning("A refresh token was resubmitted")
         # Preemptively remove the device login in order to prevent the token
         # from being used by a malicious third party.
         db.delete(device_login)

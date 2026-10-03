@@ -25,10 +25,10 @@ def render_email_registration_templates(
     A tuple with the rendered html email and the text email
     """
     endpoint = settings.HOST + settings.EMAIL_ACCOUNT_VERIFY_ENDPOINT
-    renderData = {"email": email, "name": name, "token": token, "endpoint": endpoint}
+    render_data = {"email": email, "name": name, "token": token, "endpoint": endpoint}
     return (
-        _emailRegistrationTemplateHtml.render(renderData),
-        _emailRegistrationTemplateText.render(renderData),
+        _emailRegistrationTemplateHtml.render(render_data),
+        _emailRegistrationTemplateText.render(render_data),
     )
 
 
@@ -50,10 +50,10 @@ def render_password_reset_templates(
     A tuple with the rendered html email and the text email
     """
     endpoint = settings.HOST + settings.PASSWORD_RESET_ENDPOINT
-    renderData = {"email": email, "name": name, "token": token, "endpoint": endpoint}
+    render_data = {"email": email, "name": name, "token": token, "endpoint": endpoint}
     return (
-        _passwordResetTemplateHtml.render(renderData),
-        _passwordResetTemplateText.render(renderData),
+        _passwordResetTemplateHtml.render(render_data),
+        _passwordResetTemplateText.render(render_data),
     )
 
 
@@ -71,10 +71,10 @@ def render_password_changed_templates(email: str, name: str) -> tuple[str, str]:
     **Returns**
     A tuple with the rendered html email and the text email
     """
-    renderData = {"email": email, "name": name}
+    render_data = {"email": email, "name": name}
     return (
-        _passwordChangedTemplateHtml.render(renderData),
-        _passwordChangedTemplateText.render(renderData),
+        _passwordChangedTemplateHtml.render(render_data),
+        _passwordChangedTemplateText.render(render_data),
     )
 
 
@@ -97,7 +97,7 @@ def render_magic_link_templates(
     A tuple with the rendered html email and the text email
     """
     endpoint = settings.HOST + settings.MAGIC_LINK_ENDPOINT
-    renderData = {
+    render_data = {
         "email": email,
         "name": name,
         "token": token,
@@ -105,6 +105,6 @@ def render_magic_link_templates(
         "reason": reason,
     }
     return (
-        _magicLinkTemplateHtml.render(renderData),
-        _magicLinkTemplateText.render(renderData),
+        _magicLinkTemplateHtml.render(render_data),
+        _magicLinkTemplateText.render(render_data),
     )

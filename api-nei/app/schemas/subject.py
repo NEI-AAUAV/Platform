@@ -6,10 +6,10 @@ from pydantic import BaseModel, Field, ConfigDict
 class SubjectBase(BaseModel):
     code: int
     curricular_year: Optional[int] = None
-    name: Annotated[Optional[str], Field(max_length=60)]
-    short: Annotated[Optional[str], Field(max_length=5)]
+    name: Annotated[Optional[str], Field(max_length=60)] = None
+    short: Annotated[Optional[str], Field(max_length=5)] = None
     public: Optional[bool] = None
-    link: Annotated[Optional[str], Field(max_length=2048)]
+    link: Annotated[Optional[str], Field(max_length=2048)] = None
 
 
 class SubjectCreate(SubjectBase):

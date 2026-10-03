@@ -1,5 +1,5 @@
 from fastapi import Body, WebSocket, APIRouter, WebSocketDisconnect
-from typing import Any, Dict, List
+from typing import Annotated, Any, Dict, List
 from enum import Enum
 import json
 from loguru import logger
@@ -101,7 +101,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 @router.post("/ws/broadcast", status_code=200)
-async def websocket_broadcast(*, data_in: dict = Body()):
+async def websocket_broadcast(*, data_in: Annotated[dict, Body()]):
     logger.info(data_in)
     await manager.broadcast(connection_type=ConnectionType.GENERAL, message=data_in)
     return {"status": "success", "message": "All websockets were notified."}

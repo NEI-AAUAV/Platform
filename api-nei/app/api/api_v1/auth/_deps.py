@@ -37,7 +37,7 @@ with open(settings.JWT_SECRET_KEY_PATH, "r") as file:
 with open(settings.JWT_PUBLIC_KEY_PATH, "r") as file:
     public_key = file.read()
 
-auth_responses: Dict[Union[int, str], Dict[str, Any]] = {
+auth_responses: Dict[int | str, Dict[str, Any]] = {
     401: {"description": "Not authenticated"},
     403: {"description": "Not enough permissions"},
 }
@@ -206,7 +206,7 @@ def generate_response(
     access token in the body
     """
 
-    # FIXME: refactor this to have a clean way of setting primary emails
+    # NOTE: a cleaner way of setting primary emails is still to be designed
     user_email = db.query(UserEmail).filter(user.id == UserEmail.user_id).first()
 
     # Measure once the current time, the same value must be passed to the

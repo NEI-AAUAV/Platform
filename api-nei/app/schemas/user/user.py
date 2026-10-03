@@ -47,7 +47,7 @@ class AnonymousUserBase(BaseModel):
     github: Optional[AnyHttpUrl] = None  # Optional[constr(max_length=39)]
 
     @field_serializer("linkedin", "github")
-    def serialize_url(value: Optional[AnyHttpUrl]):
+    def serialize_url(self, value: Optional[AnyHttpUrl]):
         if value is None:
             return None
         else:

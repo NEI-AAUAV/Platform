@@ -120,7 +120,24 @@ def _get_enabled_extensions() -> set[str] | None:
         return None  # Not set - backward compatibility, load all
     if not enabled_extensions.strip():
         return set()  # Set but empty - load no extensions
-    return set(ext.strip() for ext in enabled_extensions.split(",") if ext.strip())
+    return {ext.strip() for ext in enabled_extensions.split(",") if ext.strip()}
+
+
+def _manifests_in_dir(base: str, enabled_extensions: set[str] | None) -> List[str]:
+    """Find manifest.json files of enabled extensions directly under `base`."""
+    manifests: List[str] = []
+    for entry in os.listdir(base):
+        # Only include extensions that are explicitly enabled
+        # If ENABLED_EXTENSIONS is set but empty, no extensions should be loaded
+        # If ENABLED_EXTENSIONS is not set, load all extensions (backward compatibility)
+        if enabled_extensions is not None and entry not in enabled_extensions:
+            logger.info(f"Skipping {entry} extension - not in ENABLED_EXTENSIONS")
+            continue
+
+        manifest_path = os.path.join(base, entry, "manifest.json")
+        if os.path.isfile(manifest_path):
+            manifests.append(manifest_path)
+    return manifests
 
 
 def _iter_extension_manifests(base_dirs: List[str]) -> List[str]:
@@ -130,21 +147,8 @@ def _iter_extension_manifests(base_dirs: List[str]) -> List[str]:
     
     for base in base_dirs:
         try:
-            if not base:
-                continue
-            if not os.path.isdir(base):
-                continue
-            for entry in os.listdir(base):
-                # Only include extensions that are explicitly enabled
-                # If ENABLED_EXTENSIONS is set but empty, no extensions should be loaded
-                # If ENABLED_EXTENSIONS is not set, load all extensions (backward compatibility)
-                if enabled_extensions is not None and entry not in enabled_extensions:
-                    logger.info(f"Skipping {entry} extension - not in ENABLED_EXTENSIONS")
-                    continue
-                    
-                manifest_path = os.path.join(base, entry, "manifest.json")
-                if os.path.isfile(manifest_path):
-                    manifests.append(manifest_path)
+            if base and os.path.isdir(base):
+                manifests.extend(_manifests_in_dir(base, enabled_extensions))
         except Exception as exc:
             logger.warning(f"Error scanning manifests in {base}: {exc}")
     return manifests

@@ -144,10 +144,10 @@ _arraial_points = [
 # In-memory change log (newest first)
 _arraial_log: List[ArraialLogEntry] = []
 _next_log_id: int = 1
-_boost_ends: dict = {nucleo: None for nucleo in VALID_NUCLEOS}
+_boost_ends: dict = dict.fromkeys(VALID_NUCLEOS)
 
 # Fractional accumulation for boost per núcleo
-_boost_fractional_remainders: dict = {nucleo: 0.0 for nucleo in VALID_NUCLEOS}
+_boost_fractional_remainders: dict = dict.fromkeys(VALID_NUCLEOS, 0.0)
 
 
 SETTING_TABLE_SQL = """
@@ -200,9 +200,9 @@ def _get_config_flags(db: Session) -> dict:
 
 
 def _clear_boosts() -> None:
-    for k in list(_boost_ends.keys()):
+    for k in _boost_ends:
         _boost_ends[k] = None
-    for k in list(_boost_fractional_remainders.keys()):
+    for k in _boost_fractional_remainders:
         _boost_fractional_remainders[k] = 0.0
 
 
@@ -223,7 +223,7 @@ def _is_boost_active(nucleo: str) -> bool:
     return bool(end and end > datetime.now(timezone.utc))
 
 
-def _find_points(nucleo: str) -> dict:
+def _find_points(nucleo: str) -> Optional[dict]:
     for points in _arraial_points:
         if points["nucleo"] == nucleo:
             return points
@@ -270,7 +270,17 @@ def get_arraial_points(
     return _arraial_points
 
 
-@router.put("/points", status_code=200, response_model=List[ArraialPoints])
+@router.put(
+    "/points",
+    status_code=200,
+    response_model=List[ArraialPoints],
+    responses={
+        400: {"description": "Cannot reduce points below zero"},
+        404: {"description": "Núcleo not found"},
+        423: {"description": "Point updates are paused by an administrator"},
+        429: {"description": "Rate limit exceeded"},
+    },
+)
 async def update_arraial_points(
     *,
     request: Request,
@@ -333,7 +343,14 @@ async def update_arraial_points(
     return _arraial_points
 
 
-@router.post("/boost/{nucleo}", status_code=200)
+@router.post(
+    "/boost/{nucleo}",
+    status_code=200,
+    responses={
+        400: {"description": "Invalid núcleo"},
+        409: {"description": "Boosts are disabled"},
+    },
+)
 async def activate_boost(
     *,
     nucleo: str,
@@ -408,7 +425,12 @@ async def get_arraial_log(
     return {"items": slice_, "next_offset": next_offset}
 
 
-@router.post("/rollback/{log_id}", status_code=200, response_model=List[ArraialPoints])
+@router.post(
+    "/rollback/{log_id}",
+    status_code=200,
+    response_model=List[ArraialPoints],
+    responses={404: {"description": "Log entry or núcleo not found"}},
+)
 async def rollback_log(
     *,
     log_id: int,

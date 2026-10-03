@@ -1,4 +1,5 @@
 import os
+from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status, Response, BackgroundTasks
 from fastapi.responses import JSONResponse, RedirectResponse
 from app.core.config import settings
@@ -40,13 +41,16 @@ tokens = {}
 
 @router.get(
     "/token",
-    responses={503: {"description": "Service Unavailable"}},
+    responses={
+        404: {"description": "Token not found"},
+        503: {"description": "Service Unavailable"},
+    },
 )
 async def get_token(
     oauth_verifier: str = None,
     oauth_token: str = None,
     *,
-    db: Session = Depends(deps.get_db, scope="function"),
+    db: Annotated[Session, Depends(deps.get_db, scope="function")],
     background_tasks: BackgroundTasks,
 ) -> Response:
     if oauth_token is None:
@@ -103,7 +107,7 @@ async def get_token(
             user = crud.user.create(db, obj_in=user_in, email=uu["email"], active=True)
         else:
             # update user
-            user, user_email = maybe_user
+            user, _ = maybe_user
             user_up = UserUpdate(
                 id=maybe_user[0].id,
                 iupi=uu["iupi"],

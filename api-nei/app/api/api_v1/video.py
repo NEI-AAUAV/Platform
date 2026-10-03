@@ -11,7 +11,7 @@ from app.schemas import VideoInDB, VideoUpdate, VideoCreate, VideoTagInDB
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=Page[VideoInDB])
+@router.get("/", status_code=200, response_model=Page[VideoInDB], responses={400: {"description": "Invalid tag"}})
 def get_video(
     *,
     page_params: PageParams = Depends(PageParams),
@@ -19,7 +19,7 @@ def get_video(
     tags: List[int] = Query(default=[], alias="tag[]", description="List of Tags"),
     db: Session = Depends(deps.get_db, scope="function"),
 ) -> Any:
-    all_cat = set(e.id for e in crud.videotag.get_multi(db=db))
+    all_cat = {e.id for e in crud.videotag.get_multi(db=db)}
 
     if not all_cat.issuperset(tags):
         raise HTTPException(status_code=400, detail="Invalid tag")

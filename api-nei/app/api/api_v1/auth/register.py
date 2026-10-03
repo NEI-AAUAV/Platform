@@ -10,7 +10,7 @@ from email_validator import validate_email, EmailNotValidError
 from app import crud
 from app.api import deps, email as emailUtils
 from app.api.deps import DbSession
-from app.api.recaptcha import verify_reCaptcha
+from app.api.recaptcha import verify_recaptcha
 from app.schemas.user import UserBase, UserCreate
 from app.core.config import settings
 
@@ -84,7 +84,7 @@ async def register(
     background_tasks: BackgroundTasks,
     db: DbSession,
 ):
-    score = await verify_reCaptcha(form_data.recaptcha_token)
+    score = await verify_recaptcha(form_data.recaptcha_token)
 
     if score < settings.RECAPTCHA_REGISTER_THRESHOLD:
         raise HTTPException(
