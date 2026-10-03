@@ -12,7 +12,6 @@ from authlib.integrations.httpx_client import AsyncOAuth1Client
 
 from io import BytesIO
 from app.api import deps
-from sqlalchemy.orm import Session
 
 from loguru import logger
 from app import crud
@@ -50,7 +49,7 @@ async def get_token(
     oauth_verifier: str = None,
     oauth_token: str = None,
     *,
-    db: Annotated[Session, Depends(deps.get_db, scope="function")],
+    db: deps.DbSession,
     background_tasks: BackgroundTasks,
 ) -> Response:
     if oauth_token is None:

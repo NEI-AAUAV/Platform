@@ -182,9 +182,9 @@ export function Component() {
             className="modalidade"
             role="button"
             tabIndex={0}
-            onClick={() => navigate("/taca-ua/1")}
+            onClick={() => void navigate("/taca-ua/1")}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") navigate("/taca-ua/1");
+              if (e.key === "Enter" || e.key === " ") void navigate("/taca-ua/1");
             }}
           >
             <Image
@@ -208,9 +208,9 @@ export function Component() {
             className="modalidade"
             role="button"
             tabIndex={0}
-            onClick={() => navigate("/taca-ua/1")}
+            onClick={() => void navigate("/taca-ua/1")}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") navigate("/taca-ua/1");
+              if (e.key === "Enter" || e.key === " ") void navigate("/taca-ua/1");
             }}
           >
             <Image
@@ -234,9 +234,9 @@ export function Component() {
             className="modalidade"
             role="button"
             tabIndex={0}
-            onClick={() => navigate("/taca-ua/1")}
+            onClick={() => void navigate("/taca-ua/1")}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") navigate("/taca-ua/1");
+              if (e.key === "Enter" || e.key === " ") void navigate("/taca-ua/1");
             }}
           >
             <Image
@@ -260,9 +260,9 @@ export function Component() {
             className="modalidade"
             role="button"
             tabIndex={0}
-            onClick={() => navigate("/taca-ua/1")}
+            onClick={() => void navigate("/taca-ua/1")}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") navigate("/taca-ua/1");
+              if (e.key === "Enter" || e.key === " ") void navigate("/taca-ua/1");
             }}
           >
             <Image
@@ -286,9 +286,9 @@ export function Component() {
             className="modalidade"
             role="button"
             tabIndex={0}
-            onClick={() => navigate("/taca-ua/1")}
+            onClick={() => void navigate("/taca-ua/1")}
             onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") navigate("/taca-ua/1");
+              if (e.key === "Enter" || e.key === " ") void navigate("/taca-ua/1");
             }}
           >
             <Image

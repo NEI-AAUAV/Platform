@@ -1,7 +1,6 @@
 from typing import Annotated, Any, List
 
 from fastapi import APIRouter, Depends, Response
-from sqlalchemy.orm import Session
 
 from app import crud
 from app.api import deps
@@ -13,7 +12,7 @@ router = APIRouter()
 @router.get("/", status_code=200, response_model=List[PartnerInDB])
 def get_partners(
     *,
-    db: Annotated[Session, Depends(deps.get_db, scope="function")],
+    db: deps.DbSession,
     _: Annotated[Any, Depends(deps.short_cache)],
 ) -> Any:
     return crud.partner.get_multi(db=db)
