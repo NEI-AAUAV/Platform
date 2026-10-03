@@ -907,9 +907,8 @@ export function Component() {
                 Card Component
                 <div className="dropdown dropdown-top dropdown-end">
                   <div>
-                    <div
-                      role="button"
-                      tabIndex="0"
+                    <button
+                      type="button"
                       className="btn btn-ghost text-info btn-xs btn-circle mx-1 inline-block"
                     >
                       <svg
@@ -927,7 +926,7 @@ export function Component() {
                           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
                       </svg>
-                    </div>
+                    </button>
                   </div>
                 </div>
               </div>{" "}
@@ -953,7 +952,7 @@ export function Component() {
           </div>{" "}
           <div className="col-span-3 row-span-3 mx-2 flex w-72 flex-shrink-0 flex-col xl:mx-0 xl:w-full svelte-1n6ue57">
             <div className="dropdown">
-              <div role="button" tabIndex="0" className="bg-opacity-100">
+              <div className="bg-opacity-100">
                 <div className="tabs w-full flex-grow-0">
                   <button className="tab tab-lifted tab-active tab-border-none tab-lg flex-1">
                     Stats
