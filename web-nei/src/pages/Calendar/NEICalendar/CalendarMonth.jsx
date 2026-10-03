@@ -38,10 +38,15 @@ const CalendarMonth = ({
             <div className="">
               {[...events].map((event, slotIndex) => {
                 const selected = !!event && event.id === selEvent?.id;
+                const Badge = event ? "button" : "div";
+                const badgeProps = event
+                  ? { type: "button", onClick: () => setSelEvent(event) }
+                  : { "aria-hidden": true };
                 const dialogbadge = (
-                  <div
+                  <Badge
+                    {...badgeProps}
                     className={classNames(
-                      "relative left-0 z-10 mb-2 cursor-pointer rounded font-medium text-white hover:shadow-md ",
+                      "relative left-0 block w-full text-left z-10 mb-2 cursor-pointer rounded font-medium text-white hover:shadow-md ",
                       { invisible: !event },
                       {
                         "shadow-md": selected,
@@ -56,19 +61,11 @@ const CalendarMonth = ({
                         selected ? 1 : 0.7
                       })`,
                     }}
-                    role={event ? "button" : undefined}
-                    tabIndex={event ? 0 : undefined}
-                    onClick={() => setSelEvent(event)}
-                    onKeyDown={(e) => {
-                      if (event && (e.key === "Enter" || e.key === " ")) {
-                        setSelEvent(event);
-                      }
-                    }}
                   >
                     <p className="h-[24px] overflow-hidden truncate text-clip px-1 text-xs !leading-[24px] sm:text-sm">
                       {event?.title}
                     </p>
-                  </div>
+                  </Badge>
                 );
                 return (
                   <div

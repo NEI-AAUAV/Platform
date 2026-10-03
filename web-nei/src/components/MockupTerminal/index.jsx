@@ -22,6 +22,7 @@ const MockupTerminal = () => {
   const { name, surname } = useUserStore((state) => state);
 
   const inputRef = useRef(null);
+  const containerRef = useRef(null);
   const terminalRef = useRef(null);
   const [input, setInput] = useState(terminalInput);
   const [suggestion, setSuggestion] = useState("");
@@ -92,6 +93,12 @@ const MockupTerminal = () => {
     e.preventDefault();
     inputRef.current?.focus();
   };
+
+  useEffect(() => {
+    const container = containerRef.current;
+    container?.addEventListener("click", setInputFocus);
+    return () => container?.removeEventListener("click", setInputFocus);
+  });
 
   const handleFocus = () => {
     findSuggestions();
@@ -196,9 +203,8 @@ const MockupTerminal = () => {
 
   return (
     <div
-      role="presentation"
+      ref={containerRef}
       className="mockup-terminal mockup-code bg-base-300 font-mono leading-[22px] text-base-content shadow-lg"
-      onClick={setInputFocus}
     >
       <div
         ref={terminalRef}

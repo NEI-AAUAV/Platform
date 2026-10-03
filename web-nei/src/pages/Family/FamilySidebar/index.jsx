@@ -155,27 +155,20 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
 
   const BulletYear = useCallback(
     ({ color, index }) => (
-      <div
+      <button
+        type="button"
         className={classNames(
-          "cursor-pointer py-0.5",
+          "block w-full cursor-pointer py-0.5 text-left",
           index > year ? "font-normal opacity-70" : "font-medium"
         )}
-        role="button"
-        tabIndex={0}
         onClick={() => setYear(index)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            setYear(index);
-          }
-        }}
       >
         <div
           className="ml-1.5 mr-2 inline-block h-3 w-3 rounded-full p-1"
           style={{ backgroundColor: color }}
         ></div>
         {2000 + index}
-      </div>
+      </button>
     ),
     [year]
   );
@@ -338,29 +331,22 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
       <h5 className="px-3 pt-3 opacity-80">Insígnias</h5>
       <div className="px-5 py-3">
         {[...dynamicOrgs.entries()].map(([key, org]) => (
-          <div
+          <button
+            type="button"
             key={key}
             className={classNames(
-              "mb-1 flex cursor-pointer items-center gap-3 font-medium",
+              "mb-1 flex w-full cursor-pointer items-center gap-3 text-left font-medium",
               {
                 "!font-normal opacity-70":
                   insignias.length !== 0 && !insignias.includes(key),
               }
             )}
-            role="button"
-            tabIndex={0}
             onClick={() => toggleInsignias(key)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                toggleInsignias(key);
-              }
-            }}
           >
             {/* Render icon: API icon takes priority over hardcoded insignia */}
             {renderOrgIcon(org)}
             <div>{org.name}</div>
-          </div>
+          </button>
         ))}
       </div>
     </>

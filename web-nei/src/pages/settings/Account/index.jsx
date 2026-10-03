@@ -13,7 +13,6 @@ const Status = {
 
 export function Component() {
   // Define state variables for form inputs
-  const [, setErrors] = useState({});
   const [response, setResponse] = useLoading({ status: null });
   const { name, surname } = useUserStore((state) => state);
   let form = {
@@ -34,9 +33,6 @@ export function Component() {
 
   function clearForm() {
     setValues(form);
-    setErrors(
-      Object.keys(form).reduce((acc, key) => ({ ...acc, [key]: null }), {})
-    );
     setResponse({ status: null });
   }
 

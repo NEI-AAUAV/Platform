@@ -479,10 +479,9 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <div className="dropdown-end dropdown">
-                  <label
-                    tabIndex={0}
-                    role="button"
+                <div className="group dropdown-end dropdown">
+                  <button
+                    type="button"
                     className="btn-outline btn-sm btn flex-nowrap !px-0.5 align-middle md:gap-2"
                   >
                     <div className="avatar md:mr-1">
@@ -493,12 +492,9 @@ const Navbar = () => {
                     <span className="hidden md:block">
                       {name} {surname}
                     </span>
-                    <label className="swap-rotate swap ">
-                      <input type="checkbox" />
-                      <ExpandMoreIcon className="swap-on" />
-                      <ExpandLessIcon className="swap-off" />
-                    </label>
-                  </label>
+                    <ExpandMoreIcon className="group-focus-within:hidden" />
+                    <ExpandLessIcon className="hidden group-focus-within:block" />
+                  </button>
                   <ul
                     tabIndex={0}
                     role="menu"
@@ -571,7 +567,7 @@ const Navbar = () => {
                   <LinkAdapter to={link}>{name}</LinkAdapter>
                 </li>
               ) : (
-                <li key={name} tabIndex={0}>
+                <li key={name}>
                   <button
                     type="button"
                     className="justify-between"
