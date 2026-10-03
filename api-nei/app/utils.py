@@ -1,7 +1,9 @@
+import inspect
 import io
 import json
 import struct
 import zipfile
+import zlib
 from enum import Enum
 from pathlib import Path
 from typing import Callable, Set, Type, TypeVar, Optional, Any
@@ -73,6 +75,11 @@ def _decode_filename(raw: bytes) -> "str | bytes":
     return raw
 
 
+_DECODE_EXTRA_TAKES_CRC = (
+    len(inspect.signature(zipfile.ZipInfo._decodeExtra).parameters) > 1
+)
+
+
 class CustomZipFile(zipfile.ZipFile):
     # NOTE: this is a temporary solution that overrides the method _RealGetContents
     # to fix a bug about insuficient encoding types in the original ZipFile class.
@@ -112,6 +119,7 @@ class CustomZipFile(zipfile.ZipFile):
                 raise zipfile.BadZipFile("Bad magic number for central directory")
             filename = fp.read(centdir[zipfile._CD_FILENAME_LENGTH])
 
+            filename_crc = zlib.crc32(filename)
             filename = _decode_filename(filename)
 
             # Create ZipInfo instance to store file information
@@ -148,7 +156,11 @@ class CustomZipFile(zipfile.ZipFile):
                 (t & 0x1F) * 2,
             )
 
-            x._decodeExtra()
+            # Newer CPython versions require the crc of the raw filename.
+            if _DECODE_EXTRA_TAKES_CRC:
+                x._decodeExtra(filename_crc)
+            else:
+                x._decodeExtra()
             x.header_offset = x.header_offset + concat
             self.filelist.append(x)
             self.NameToInfo[x.filename] = x
