@@ -52,7 +52,7 @@ export function Component() {
 		}
 
 		NEIService.verifyEmail({ token })
-			.then(data => setState("success"))
+			.then(() => setState("success"))
 			.catch(() => setState("failed"));
 	}, [searchParams]);
 

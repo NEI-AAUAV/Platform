@@ -55,7 +55,7 @@ const GameCard = ({ props, refe }) => {
                 ></div>
             </div>
             <div className="rounded-b-[20px] grid grid-cols-3 bg-base-200 pt-4">
-                <div onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)} className="flex flex-col justify-center">
+                <div onPointerEnter={() => setIsShown(true)} onPointerLeave={() => setIsShown(false)} className="flex flex-col justify-center">
                     <img className={classNames('max-h-[110px] transition ', { '-translate-y-4 max-h-[80px]': isShown })} src={props.img1} alt={props.team1} />
                     {isShown && (
                         <div className="text-center transition -translate-y-8 font-bold text-lg">{props.team1}</div>
@@ -65,7 +65,7 @@ const GameCard = ({ props, refe }) => {
                     <p className="text-center text-3xl lg:text-4xl font-bold">{props.score1} - {props.score2}</p>
                     <p className="text-center text-2xl font-bold">({props.penalti1}) - ({props.penalti2})</p>
                 </div>
-                <div onMouseEnter={() => setIsShown2(true)} onMouseLeave={() => setIsShown2(false)} className="flex flex-col justify-center">
+                <div onPointerEnter={() => setIsShown2(true)} onPointerLeave={() => setIsShown2(false)} className="flex flex-col justify-center">
                     <img className={classNames('max-h-[110px] transition ', { '-translate-y-4 max-h-[80px]': isShown2 })} src={props.img2} alt={props.team2} />
                     {isShown2 && (
                         <div className="text-center transition -translate-y-8 font-bold text-lg">{props.team2}</div>

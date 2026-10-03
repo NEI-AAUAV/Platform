@@ -147,7 +147,7 @@ export default function SportsSidebarDialog({
           value={modalModality.id.toString()}
           onValueChange={(value) => {
             const changed = modalCurrent.find(
-              (modality) => modality.id === parseInt(value)
+              (modality) => modality.id === Number.parseInt(value, 10)
             );
             setModalModality(changed!!);
           }}

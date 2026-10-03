@@ -35,7 +35,7 @@ export default function DCard(props) {
         />
       );
     default:
-      return <></>;
+      return null;
   }
 }
 
@@ -98,10 +98,7 @@ function NewsCard(props) {
 const PartnerCard = (props) => {
   const { title, description, header } = props.data;
   return (
-      <label
-        className="w-96 h-96 m-4"
-        htmlFor={title}
-      >
+      <div className="w-96 h-96 m-4">
         <motion.div className="card rounded-xl w-96 h-96 bg-base-200 shadow-xl hover:-translate-y-2 transition duration-200 ease-in-out">
           <figure className="h-3/5">
             {header && (
@@ -113,6 +110,6 @@ const PartnerCard = (props) => {
             <div className="card-actions justify-end"></div>
           </div>
         </motion.div>
-      </label>
+      </div>
   );
 };

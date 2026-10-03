@@ -25,59 +25,6 @@ import LinkAdapter from "utils/LinkAdapter";
  * @param {ReactElement} Icon optional
  * @returns
  */
-const Document = ({
-  name,
-  description,
-  link,
-  className,
-  Icon,
-  onClick,
-  title,
-  tags,
-  style,
-  iconColor,
-}) => {
-  return (
-    <LinkAdapter
-      to={link}
-      onClick={onClick}
-      title={title || ""}
-      style={style}
-      className={"no-underline " + className}
-    >
-      <div className="h-full rounded-md transition-hover duration-300 hover:-translate-y-1.5 hover:shadow-md hover:brightness-125">
-        <div className="flex p-3 text-left">
-          {!!Icon && <Icon className="min-h-[40px] min-w-[40px]" />}
-          <div className="flex w-[calc(100%-40px)] flex-col pl-4">
-            <h5 className="w-full overflow-hidden text-ellipsis break-keep">
-              {name}
-            </h5>
-            <p className="overflow-hidden text-ellipsis text-sm text-base-content/50">
-              {description}
-            </p>
-            <div className="">
-              {tags?.map((tag) => (
-                  <span
-                    key={tag.name}
-                    className={"badge my-1 ml-0 mr-2 " + tag.className}
-                    style={tag.color ? { backgroundColor: tag.color } : {}}
-                  >
-                    {tag.name}
-                  </span>
-                ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </LinkAdapter>
-  );
-};
-
-/**
- *
- * @param {ReactElement} Icon optional
- * @returns
- */
 const Document2 = ({
   name,
   description,

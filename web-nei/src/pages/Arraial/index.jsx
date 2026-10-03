@@ -69,7 +69,9 @@ export function Component() {
                 points: pointsData.map(p => ({ nucleo: p.nucleo, value: p.value }))
             };
             setPointHistory(prev => [...prev.slice(-20), entry]);
-        } catch (_) { /* ignore */ }
+        } catch (error) {
+            console.debug("Failed to record the points history entry", error);
+        }
     }, []);
 
     useEffect(() => {
@@ -81,13 +83,11 @@ export function Component() {
                 crypto.getRandomValues(array);
                 const id = `${Date.now()}-${array[0].toString(36)}${array[1].toString(36)}`;
                 const toast = { id, nucleo: e.detail.nucleo, milestone: e.detail.milestone };
-                setMilestoneToasts((prev) => [...prev, toast]);
-                const tId = setTimeout(() => {
-                    setMilestoneToasts((prev) => prev.filter((t) => t.id !== id));
-                }, 6000);
+                setMilestoneToasts(withToast(toast));
+                const tId = setTimeout(setMilestoneToasts, 6000, withoutToast(id));
                 timeoutsRef.current.push(tId);
             }
-            const cId = setTimeout(() => setConfettiActive(false), 1700);
+            const cId = setTimeout(setConfettiActive, 1700, false);
             timeoutsRef.current.push(cId);
         };
         window.addEventListener('arraial:confetti', onConfetti);
@@ -464,6 +464,12 @@ function BoostCountdown({ untilIso, asBadge = false, nucleo, onExpire }) {
         </div>
     );
 }
+
+/** State updater that appends a toast. */
+const withToast = (toast) => (toasts) => [...toasts, toast];
+
+/** State updater that drops the toast with the given id. */
+const withoutToast = (id) => (toasts) => toasts.filter((t) => t.id !== id);
 
 function maybeTriggerConfetti(prevMap, nextList) {
     try {

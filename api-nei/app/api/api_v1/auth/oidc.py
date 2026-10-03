@@ -645,6 +645,7 @@ async def oidc_callback(
         400: {"description": "Account already linked"},
         401: {"description": "Not authenticated"},
         503: {"description": "OIDC authentication is disabled"},
+        404: {"description": "Not found"}, 502: {"description": "Bad gateway"},
     },
 )
 async def start_oidc_link(
@@ -690,6 +691,7 @@ async def start_oidc_link(
         401: {"description": "Invalid or expired state"},
         409: {"description": "Authentik account already linked to another user"},
         503: {"description": "OIDC authentication is disabled"},
+        400: {"description": "Bad request"}, 403: {"description": "Forbidden"}, 404: {"description": "Not found"}, 500: {"description": "Internal server error"}, 502: {"description": "Bad gateway"},
     },
 )
 async def oidc_link_callback(

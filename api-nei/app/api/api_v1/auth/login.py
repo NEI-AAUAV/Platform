@@ -44,7 +44,7 @@ def _authenticate_user(db: Session, email: str, password: str) -> User | Literal
 @router.post(
     "/login",
     response_model=Token,
-    responses={401: {"description": "Incorrect username or password"}},
+    responses={401: {"description": "Incorrect username or password"}, 400: {"description": "Bad request"}},
 )
 def login(
     db: Annotated[Session, Depends(deps.get_db, scope="function")],

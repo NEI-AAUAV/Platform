@@ -31,8 +31,7 @@ const MockupTerminal = () => {
   const [state, setState] = useState(initialState);
 
   const currMutated = input.commands[input.curr].mutated;
-  const currCmdLine =
-    currMutated != null ? currMutated : input.commands[input.curr].original;
+  const currCmdLine = currMutated ?? input.commands[input.curr].original;
 
   useEffect(() => {
     if (name) {

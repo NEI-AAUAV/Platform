@@ -106,4 +106,5 @@ const MainFooter = () => {
   );
 };
 
-export { Footer as default, MainFooter };
+export { MainFooter };
+export default Footer;

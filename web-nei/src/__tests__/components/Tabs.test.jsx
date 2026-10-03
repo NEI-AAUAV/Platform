@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Tabs from "../../components/Tabs";
 
 const tabs = ["Um", "Dois", "Três"];
@@ -16,15 +17,16 @@ describe("Tabs", () => {
     expect(screen.getByRole("tab", { name: "Um" })).toHaveAttribute("aria-selected", "true");
   });
 
-  it("calls onChange on click and on Enter only", () => {
+  it("calls onChange on click and on Enter only", async () => {
     const onChange = vi.fn();
     render(<Tabs tabs={tabs} value="Um" onChange={onChange} />);
     const tab = screen.getByRole("tab", { name: "Três" });
     fireEvent.click(tab);
     expect(onChange).toHaveBeenLastCalledWith("Três");
-    fireEvent.keyDown(tab, { key: "Enter" });
+    tab.focus();
+    await userEvent.keyboard("{Enter}");
     expect(onChange).toHaveBeenCalledTimes(2);
-    fireEvent.keyDown(tab, { key: "a" });
+    await userEvent.keyboard("a");
     expect(onChange).toHaveBeenCalledTimes(2);
   });
 

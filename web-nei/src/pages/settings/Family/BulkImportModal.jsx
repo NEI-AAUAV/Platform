@@ -28,6 +28,7 @@ import { colors } from "pages/Family/data";
 import Avatar from "components/Avatar";
 import { getErrorMessage } from "utils/error";
 import { runInChunks, focusOnMount } from "utils/concurrency";
+import { keyedByContent } from "utils/keys";
 import { useToast } from "components/ui/use-toast";
 
 // CSV Headers
@@ -94,9 +95,9 @@ const CreatedUserRow = ({ user, userIdx, roles = [], onRemoveRole, onAddRole }) 
             <p className="text-xs text-base-content/50">Ano {user.start_year}</p>
 
             <div className="flex flex-wrap gap-1 mt-2">
-                {roles.map((r, roleIdx) => (
+                {keyedByContent(roles, (r) => `${r.role?.id || r.role?.name || "role"}-${r.year}`).map(({ item: r, key }) => (
                     <RoleChip
-                        key={`${r.role?.id || r.role?.name || "role"}-${r.year}-${roleIdx}`}
+                        key={key}
                         roleName={r.role?.name}
                         year={r.year}
                         onRemove={makeRemoveRoleHandler(onRemoveRole, userIdx, roleIdx)}
@@ -1375,8 +1376,8 @@ const BulkImportModal = ({
                     </div>
                     <div className="collapse-content">
                         <div className="max-h-32 overflow-y-auto space-y-1 pr-2">
-                            {warnings.map((w, i) => (
-                                <div key={`${i}-${w.substring(0, 10)}`} className="text-sm p-2 rounded bg-warning/10 border border-warning/10">
+                            {keyedByContent(warnings, (w) => w.substring(0, 10)).map(({ item: w, key }) => (
+                                <div key={key} className="text-sm p-2 rounded bg-warning/10 border border-warning/10">
                                     {w}
                                 </div>
                             ))}
@@ -1461,8 +1462,8 @@ const BulkImportModal = ({
                         </button>
                     </div>
                     <div className="max-h-32 overflow-y-auto space-y-1 border border-error/20 rounded-lg p-2 bg-error/5">
-                        {results?.errors?.map((err, i) => (
-                            <div key={`${err.row}-${i}`} className="text-sm p-2 rounded hover:bg-white/50 flex gap-2">
+                        {keyedByContent(results?.errors, (err) => String(err.row)).map(({ item: err, key }) => (
+                            <div key={key} className="text-sm p-2 rounded hover:bg-white/50 flex gap-2">
                                 <span className="font-mono text-xs font-bold opacity-50 shrink-0">L{err.row + 1}</span>
                                 <span>{getErrorMessage(err, "Erro desconhecido")}</span>
                             </div>

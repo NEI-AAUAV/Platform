@@ -157,7 +157,7 @@ async def list_authentik_groups(
     ]
 
 
-@router.post("/authentik/groups/{group_pk}/members/{user_id}", status_code=204)
+@router.post("/authentik/groups/{group_pk}/members/{user_id}", status_code=204, responses={400: {"description": "Bad request"}, 404: {"description": "Not found"}})
 async def add_group_member(
     group_pk: str,
     user_id: int,
@@ -192,7 +192,7 @@ async def add_group_member(
     )
 
 
-@router.delete("/authentik/groups/{group_pk}/members/{user_id}", status_code=204)
+@router.delete("/authentik/groups/{group_pk}/members/{user_id}", status_code=204, responses={400: {"description": "Bad request"}, 404: {"description": "Not found"}})
 async def remove_group_member(
     group_pk: str,
     user_id: int,
@@ -231,7 +231,7 @@ async def remove_group_member(
     )
 
 
-@router.post("/users/{user_id}/sign-out")
+@router.post("/users/{user_id}/sign-out", responses={404: {"description": "Not found"}})
 def sign_out_everywhere(user_id: int, db: DbSession, admin: AdminAuth) -> dict[str, int]:
     """End every session of a user.
 

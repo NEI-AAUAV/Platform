@@ -16,7 +16,6 @@
 
 .image-card img {
     height: 200px;
-    /* object-fit: contain;  not sure which is better, cover is as it is in current site */
     object-fit: cover;
     background-color: white;
 }

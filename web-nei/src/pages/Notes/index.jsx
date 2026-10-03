@@ -105,7 +105,7 @@ export function Component() {
       categories.filter((c) => c.checked).map((c) => c.name)
     );
     const selCategoriesKeys = Object.entries(data.categories)
-      .filter(([k, v]) => selCategories.has(v.name))
+      .filter(([, v]) => selCategories.has(v.name))
       .map(([k]) => k);
 
     const params = {

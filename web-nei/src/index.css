@@ -124,6 +124,10 @@
     @apply !px-3 !py-2;
   }
 
+  .menu > li.nav-dropdown-item:focus-within > ul {
+    display: flex;
+  }
+
   .badge-outline {
     @apply !bg-transparent;
   }

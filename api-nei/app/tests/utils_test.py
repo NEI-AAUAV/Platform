@@ -121,6 +121,35 @@ def test_list_zip_contents_decodes_legacy_encoded_names() -> None:
     assert names[0].startswith("açao")
 
 
+def test_custom_zip_reads_entries_comment_and_prefixed_archive() -> None:
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("a.txt", "1")
+        z.writestr("dir/b.txt", "22")
+        z.comment = b"hello"
+    # A zip concatenated to other data must still be readable
+    prefixed = io.BytesIO(b"PREFIX" * 5 + buf.getvalue())
+
+    with CustomZipFile(prefixed) as z:
+        assert z.namelist() == ["a.txt", "dir/b.txt"]
+        assert z.comment == b"hello"
+        assert z.read("a.txt") == b"1"
+        assert z.read("dir/b.txt") == b"22"
+
+
+def test_custom_zip_rejects_truncated_central_directory() -> None:
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("a.txt", "1")
+    data = bytearray(buf.getvalue())
+    # Corrupt the central directory signature
+    start = data.index(b"PK\x01\x02")
+    data[start : start + 4] = b"XXXX"
+
+    with pytest.raises(zipfile.BadZipFile):
+        CustomZipFile(io.BytesIO(bytes(data)))
+
+
 def test_custom_zip_rejects_non_zip_data() -> None:
     data = io.BytesIO(b"definitely not a zip file")
 

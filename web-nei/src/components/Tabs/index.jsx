@@ -71,35 +71,33 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
         ref={tabsRef}
         className="scrollbar-hide w-fit max-w-3xl overflow-y-scroll scroll-smooth"
       >
-        <ul
+        <div
           role="tablist"
           className="my-1 flex w-fit list-none items-center bg-base-200/80 px-4 py-1"
           onMouseLeave={() => setFocused(null)}
         >
           {tabs?.map((item) => (
-            <li
-              className="relative flex cursor-pointer items-center"
-              key={item}
-              role="tab"
-              aria-selected={selected === item}
-              onClick={() => onChange(item)}
-              onKeyDown={(event) =>
-                event.key === "Enter" ? onChange(item) : null
-              }
-              onFocus={() => setFocused(item)}
-              onMouseEnter={() => setFocused(item)}
-              tabIndex={0}
-            >
-              <span
-                className={classNames(
-                  "relative z-10 select-none px-6 py-2 font-bold",
-                  {
-                    "opacity-75": selected !== item,
-                  }
-                )}
+            <div className="relative flex items-center" key={item}>
+              <button
+                type="button"
+                role="tab"
+                className="relative z-10 flex cursor-pointer items-center"
+                aria-selected={selected === item}
+                onClick={() => onChange(item)}
+                onFocus={() => setFocused(item)}
+                onMouseEnter={() => setFocused(item)}
               >
-                {renderTab?.(item) || item}
-              </span>
+                <span
+                  className={classNames(
+                    "relative select-none px-6 py-2 font-bold",
+                    {
+                      "opacity-75": selected !== item,
+                    }
+                  )}
+                >
+                  {renderTab?.(item) || item}
+                </span>
+              </button>
 
               {selected === item ? (
                 <div className="absolute left-0 right-0 top-0 bottom-0 z-0 rounded-lg bg-base-300/80 shadow" />
@@ -127,9 +125,9 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
                   layoutId="underline"
                 />
               ) : null}
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
       <div className="rounded-r-box my-1 flex items-center justify-center bg-base-200/80 px-2">
         <button

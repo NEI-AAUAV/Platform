@@ -15,7 +15,7 @@ const News = () => {
     const [currPage, setCurrPage] = useState(1);            // current page
     const [totalPages, setTotalPages] = useState(1);        // total number of pages
 
-    const getNews = async (p_num, newsTypes) => {
+    const getNews = (p_num, newsTypes) => {
         service.getNews({ page: p_num, category: newsTypes, size: 9 })
             .then((data) => {
                 setIsLoading(false);

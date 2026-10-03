@@ -46,9 +46,7 @@ const NewsList = (props) => {
               <AnimatePresence>
                 {isSelected === index ? (
                   <NewsModal data={article} />
-                ) : (
-                  <></>
-                )}
+                ) : null}
               </AnimatePresence>
             </div>
           );

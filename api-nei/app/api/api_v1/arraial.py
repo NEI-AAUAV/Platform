@@ -400,7 +400,7 @@ async def activate_boost(
 
 
 @router.get("/log", status_code=200, response_model=ArraialLogResponse)
-async def get_arraial_log(
+def get_arraial_log(
     *,
     offset: int = Query(0, ge=0),
     limit: int = Query(25, ge=1, le=100),

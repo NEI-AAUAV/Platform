@@ -242,11 +242,7 @@ const Navbar = () => {
                       </LinkAdapter>
                     </li>
                   ) : (
-                    <li
-                      key={name}
-                      tabIndex={0}
-                      onMouseDown={(e) => e.preventDefault()}
-                    >
+                    <li key={name} className="nav-dropdown-item">
                       <button type="button" className="gap-2">
                         {name}
                         <ExpandMoreIcon />
@@ -374,8 +370,6 @@ const Navbar = () => {
                     <ExpandLessIcon className="hidden group-focus-within:block" />
                   </button>
                   <ul
-                    tabIndex={0}
-                    role="menu"
                     className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-200 p-2 shadow"
                   >
                     <li>

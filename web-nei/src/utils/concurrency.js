@@ -1,31 +1,34 @@
 /**
- * Run `worker(item, index)` over `items` with bounded concurrency.
- * Items are processed in chunks of `limit`; chunks run sequentially.
+ * Run `worker(item, index)` over `items` with bounded concurrency:
+ * at most `limit` workers are in flight at any time.
  * Never rejects: resolves with Promise.allSettled-style results in input order.
  * `onSettled(result, index)` is called as each item finishes.
  */
 export async function runInChunks(items, worker, { limit = 5, onSettled } = {}) {
-    const results = new Array(items.length);
-    for (let start = 0; start < items.length; start += limit) {
-        const chunk = items.slice(start, start + limit);
-        await Promise.allSettled(
-            chunk.map(async (item, offset) => {
-                const index = start + offset;
-                try {
-                    const value = await worker(item, index);
-                    const result = { status: "fulfilled", value };
-                    results[index] = result;
-                    onSettled?.(result, index);
-                    return value;
-                } catch (reason) {
-                    const result = { status: "rejected", reason };
-                    results[index] = result;
-                    onSettled?.(result, index);
-                    throw reason;
-                }
-            })
-        );
-    }
+    const results = Array.from({ length: items.length });
+    let next = 0;
+
+    const settle = (index, result) => {
+        results[index] = result;
+        onSettled?.(result, index);
+    };
+
+    const runOne = (index) =>
+        Promise.resolve()
+            .then(() => worker(items[index], index))
+            .then(
+                (value) => settle(index, { status: "fulfilled", value }),
+                (reason) => settle(index, { status: "rejected", reason })
+            );
+
+    // Each lane pulls the next pending index as soon as its previous item settles.
+    const runLane = () => {
+        if (next >= items.length) return Promise.resolve();
+        return runOne(next++).then(runLane);
+    };
+
+    const lanes = Math.max(1, Math.min(limit, items.length));
+    await Promise.all(Array.from({ length: lanes }, runLane));
     return results;
 }
 

@@ -12,10 +12,6 @@ import {
 import { CalendarViewMonthIcon, ViewAgendaIcon } from "assets/icons/google";
 
 
-const props = {
-  'place':1
-}
-
 export function Component() {
   const [btnActive, setBtnActive] = useState(true);
   return (

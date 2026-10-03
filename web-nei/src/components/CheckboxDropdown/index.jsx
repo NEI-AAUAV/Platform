@@ -22,8 +22,6 @@ const CheckboxDropdown = ({ values, onChange, children, className }) => {
         {children}
       </button>
       <ul
-        tabIndex={0}
-        role="menu"
         className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-200 p-2 font-medium shadow"
       >
         {options?.map(

@@ -82,7 +82,7 @@ export default function TrendsGraph({ pointHistory }) {
           {["NEEETA", "NEECT", "NEI"].map((nucleo) => {
             const points = pointHistory.map((entry) => {
               const nucleoData = entry.points.find((p) => p.nucleo === nucleo);
-              return nucleoData ? nucleoData.value : 0;
+              return nucleoData?.value ?? 0;
             });
             const pathData = points
               .map((value, index) => {

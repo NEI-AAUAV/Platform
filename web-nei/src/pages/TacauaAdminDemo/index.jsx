@@ -1,6 +1,6 @@
 import { getSocket, wsend } from "services/SocketService";
 
-const ws = getSocket();
+getSocket();
 
 function sendMessage() {
     wsend({ topic: "LIVE_GAME", value: document.getElementById("fname").value }).catch((error) => {

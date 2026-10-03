@@ -29,6 +29,14 @@ const formSchema = z
 
 type FormType = z.infer<typeof formSchema>;
 
+/** Extract a positive HTTP status code from an unknown request error. */
+function getHttpStatus(error: unknown): number | undefined {
+  const response = (error as { response?: { status?: unknown } } | null)
+    ?.response;
+  const status = response?.status;
+  return typeof status === "number" && status > 0 ? status : undefined;
+}
+
 export function Component() {
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
@@ -44,6 +52,7 @@ export function Component() {
     mutationKey: ["magic", token],
     mutationFn: NEIService.magicLink,
   });
+  const status = getHttpStatus(error);
   const onSubmit = (data: FormType) => {
     mutate({ password: data.password, token });
   };
@@ -111,29 +120,18 @@ export function Component() {
           {isError && (
             <p className="mt-5 text-center text-red-600">
               Algo correu mal!
-              {typeof error === "object" &&
-                error &&
-                "response" in error &&
-                typeof error.response === "object" &&
-                error.response &&
-                "status" in error.response &&
-                typeof error.response.status === "number" &&
-                error.response.status > 0 &&
-                (400 <= error.response.status &&
-                error.response.status < 500 ? (
-                  <>
-                    <br />
-                    Contacte um administrador
-                  </>
-                ) : (
-                  500 <= error.response.status &&
-                  error.response.status < 600 && (
-                    <>
-                      <br />
-                      Erro de servidor
-                    </>
-                  )
-                ))}
+              {status !== undefined && status >= 400 && status < 500 && (
+                <>
+                  <br />
+                  Contacte um administrador
+                </>
+              )}
+              {status !== undefined && status >= 500 && status < 600 && (
+                <>
+                  <br />
+                  Erro de servidor
+                </>
+              )}
             </p>
           )}
         </form>

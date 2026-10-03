@@ -7,7 +7,7 @@ import { getSocket } from "services/SocketService";
 import { refreshToken } from "services/client";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-let ws = getSocket();
+getSocket();
 const queryClient = new QueryClient();
 
 /**

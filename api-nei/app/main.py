@@ -59,7 +59,7 @@ def health_live() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.get("/health/ready", include_in_schema=False)
+@app.get("/health/ready", include_in_schema=False, responses={503: {"description": "Service unavailable"}})
 def health_ready() -> dict[str, str]:
     try:
         with engine.connect() as connection:

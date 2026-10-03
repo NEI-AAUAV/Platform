@@ -27,7 +27,6 @@ export { colors, organizations } from "./config";
 import { colors } from "./config";
 
 // Dynamic year bounds - set via buildTree options
-let currentMinYear = 8;
 let currentMaxYear = 25;
 
 
@@ -66,7 +65,6 @@ let isEditMode = false;
  */
 export function buildTree(users, options = {}) {
   // Update dynamic year bounds from API
-  if (options.minYear !== undefined) currentMinYear = options.minYear;
   if (options.maxYear !== undefined) currentMaxYear = options.maxYear;
 
   // Store callbacks

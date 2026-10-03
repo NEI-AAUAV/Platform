@@ -78,7 +78,7 @@ class UserRegisterForm(UserBase):
 @router.post(
     "/register",
     response_model=Token,
-    responses={409: {"description": "Email already exists"}},
+    responses={409: {"description": "Email already exists"}, 400: {"description": "Bad request"}, 429: {"description": "Too many requests"}},
 )
 async def register(
     form_data: UserRegisterForm,

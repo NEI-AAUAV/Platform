@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import config from "config";
 
 export const useWindowSize = () => {
@@ -85,7 +85,7 @@ export const useReCaptcha = () => {
       window.grecaptcha.ready(() => {
         window.grecaptcha
           .execute(config.GOOGLE_RECAPTCHA_KEY, { action })
-          .then(resolve);
+          .then(resolve, reject);
       });
     });
   };
@@ -127,37 +127,3 @@ export const useLoading = (value) => {
 
   return [deferLoading, setLoadingWithDelay];
 };
-
-function useDebouncedState(initialState, delay) {
-  const [state, setState] = useState(initialState);
-  const [timerId, setTimerId] = useState(null);
-
-  const debounce = useCallback(
-    (callback, delay) => {
-      return (...args) => {
-        if (timerId) {
-          clearTimeout(timerId);
-        }
-        setTimerId(
-          setTimeout(() => {
-            callback(...args);
-            setTimerId(null);
-          }, delay)
-        );
-      };
-    },
-    [timerId]
-  );
-
-  const debouncedSetState = debounce(setState, delay);
-
-  useEffect(() => {
-    return () => {
-      if (timerId) {
-        clearTimeout(timerId);
-      }
-    };
-  }, [timerId]);
-
-  return [state, debouncedSetState];
-}

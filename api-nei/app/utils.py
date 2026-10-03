@@ -83,99 +83,130 @@ _DECODE_EXTRA_TAKES_CRC = (
 )
 
 
+def _read_end_record(fp) -> list:
+    """Return the zip end-of-central-directory record or raise BadZipFile."""
+    try:
+        endrec = zipfile._EndRecData(fp)
+    except OSError:
+        raise zipfile.BadZipFile("File is not a zip file")
+    if not endrec:
+        raise zipfile.BadZipFile("File is not a zip file")
+    return endrec
+
+
+def _concat_offset(endrec: list) -> int:
+    """Bytes prepended to the zip (zero, unless it was concatenated to a file)."""
+    size_cd = endrec[zipfile._ECD_SIZE]  # bytes in central directory
+    offset_cd = endrec[zipfile._ECD_OFFSET]  # offset of central directory
+    concat = endrec[zipfile._ECD_LOCATION] - size_cd - offset_cd
+    if endrec[zipfile._ECD_SIGNATURE] == zipfile.stringEndArchive64:
+        # If Zip64 extension structures are present, account for them
+        concat -= zipfile.sizeEndCentDir64 + zipfile.sizeEndCentDir64Locator
+    return concat
+
+
+def _read_central_dir_header(fp) -> tuple:
+    """Read and validate one central directory file header."""
+    centdir = fp.read(zipfile.sizeCentralDir)
+    if len(centdir) != zipfile.sizeCentralDir:
+        raise zipfile.BadZipFile("Truncated central directory")
+    centdir = struct.unpack(zipfile.structCentralDir, centdir)
+    if centdir[zipfile._CD_SIGNATURE] != zipfile.stringCentralDir:
+        raise zipfile.BadZipFile("Bad magic number for central directory")
+    return centdir
+
+
+def _fill_zip_info(x: zipfile.ZipInfo, centdir: tuple) -> None:
+    """Copy the fixed-size central directory fields into a ZipInfo."""
+    x.header_offset = centdir[zipfile._CD_LOCAL_HEADER_OFFSET]
+    (
+        x.create_version,
+        x.create_system,
+        x.extract_version,
+        x.reserved,
+        x.flag_bits,
+        x.compress_type,
+        t,
+        d,
+        x.CRC,
+        x.compress_size,
+        x.file_size,
+    ) = centdir[1:12]
+    if x.extract_version > zipfile.MAX_EXTRACT_VERSION:
+        raise NotImplementedError("zip file version %.1f" % (x.extract_version / 10))
+    x.volume, x.internal_attr, x.external_attr = centdir[15:18]
+    # Convert date/time code to (year, month, day, hour, min, sec)
+    x._raw_time = t
+    x.date_time = (
+        (d >> 9) + 1980,
+        (d >> 5) & 0xF,
+        d & 0x1F,
+        t >> 11,
+        (t >> 5) & 0x3F,
+        (t & 0x1F) * 2,
+    )
+
+
+def _decode_extra(x: zipfile.ZipInfo, filename_crc: int) -> None:
+    # Newer CPython versions require the crc of the raw filename.
+    if _DECODE_EXTRA_TAKES_CRC:
+        x._decodeExtra(filename_crc)
+    else:
+        x._decodeExtra()
+
+
+def _read_zip_info(fp, concat: int) -> tuple[zipfile.ZipInfo, int]:
+    """Read the next central directory entry.
+
+    Returns the ZipInfo and the number of central directory bytes consumed.
+    """
+    centdir = _read_central_dir_header(fp)
+    filename_length = centdir[zipfile._CD_FILENAME_LENGTH]
+    extra_length = centdir[zipfile._CD_EXTRA_FIELD_LENGTH]
+    comment_length = centdir[zipfile._CD_COMMENT_LENGTH]
+
+    raw_filename = fp.read(filename_length)
+    filename_crc = zlib.crc32(raw_filename)
+
+    # Create ZipInfo instance to store file information
+    x = zipfile.ZipInfo(_decode_filename(raw_filename))
+    x.extra = fp.read(extra_length)
+    x.comment = fp.read(comment_length)
+    _fill_zip_info(x, centdir)
+    _decode_extra(x, filename_crc)
+    x.header_offset = x.header_offset + concat
+
+    consumed = zipfile.sizeCentralDir + filename_length + extra_length + comment_length
+    return x, consumed
+
+
 class CustomZipFile(zipfile.ZipFile):
     # NOTE: this is a temporary solution that overrides the method _RealGetContents
     # to fix a bug about insuficient encoding types in the original ZipFile class.
     def _RealGetContents(self):
         """Read in the table of contents for the ZIP file."""
         fp = self.fp
-        try:
-            endrec = zipfile._EndRecData(fp)
-        except OSError:
-            raise zipfile.BadZipFile("File is not a zip file")
-        if not endrec:
-            raise zipfile.BadZipFile("File is not a zip file")
+        endrec = _read_end_record(fp)
         size_cd = endrec[zipfile._ECD_SIZE]  # bytes in central directory
         offset_cd = endrec[zipfile._ECD_OFFSET]  # offset of central directory
         self._comment = endrec[zipfile._ECD_COMMENT]  # archive comment
 
-        # "concat" is zero, unless zip was concatenated to another file
-        concat = endrec[zipfile._ECD_LOCATION] - size_cd - offset_cd
-        if endrec[zipfile._ECD_SIGNATURE] == zipfile.stringEndArchive64:
-            # If Zip64 extension structures are present, account for them
-            concat -= zipfile.sizeEndCentDir64 + zipfile.sizeEndCentDir64Locator
+        concat = _concat_offset(endrec)
 
         # self.start_dir:  Position of start of central directory
         self.start_dir = offset_cd + concat
         if self.start_dir < 0:
             raise zipfile.BadZipFile("Bad offset for central directory")
         fp.seek(self.start_dir, 0)
-        data = fp.read(size_cd)
-        fp = io.BytesIO(data)
+        directory = io.BytesIO(fp.read(size_cd))
         total = 0
         while total < size_cd:
-            centdir = fp.read(zipfile.sizeCentralDir)
-            if len(centdir) != zipfile.sizeCentralDir:
-                raise zipfile.BadZipFile("Truncated central directory")
-            centdir = struct.unpack(zipfile.structCentralDir, centdir)
-            if centdir[zipfile._CD_SIGNATURE] != zipfile.stringCentralDir:
-                raise zipfile.BadZipFile("Bad magic number for central directory")
-            filename = fp.read(centdir[zipfile._CD_FILENAME_LENGTH])
-
-            filename_crc = zlib.crc32(filename)
-            filename = _decode_filename(filename)
-
-            # Create ZipInfo instance to store file information
-            x = zipfile.ZipInfo(filename)
-            x.extra = fp.read(centdir[zipfile._CD_EXTRA_FIELD_LENGTH])
-            x.comment = fp.read(centdir[zipfile._CD_COMMENT_LENGTH])
-            x.header_offset = centdir[zipfile._CD_LOCAL_HEADER_OFFSET]
-            (
-                x.create_version,
-                x.create_system,
-                x.extract_version,
-                x.reserved,
-                x.flag_bits,
-                x.compress_type,
-                t,
-                d,
-                x.CRC,
-                x.compress_size,
-                x.file_size,
-            ) = centdir[1:12]
-            if x.extract_version > zipfile.MAX_EXTRACT_VERSION:
-                raise NotImplementedError(
-                    "zip file version %.1f" % (x.extract_version / 10)
-                )
-            x.volume, x.internal_attr, x.external_attr = centdir[15:18]
-            # Convert date/time code to (year, month, day, hour, min, sec)
-            x._raw_time = t
-            x.date_time = (
-                (d >> 9) + 1980,
-                (d >> 5) & 0xF,
-                d & 0x1F,
-                t >> 11,
-                (t >> 5) & 0x3F,
-                (t & 0x1F) * 2,
-            )
-
-            # Newer CPython versions require the crc of the raw filename.
-            if _DECODE_EXTRA_TAKES_CRC:
-                x._decodeExtra(filename_crc)
-            else:
-                x._decodeExtra()
-            x.header_offset = x.header_offset + concat
+            x, consumed = _read_zip_info(directory, concat)
             self.filelist.append(x)
             self.NameToInfo[x.filename] = x
 
             # update total bytes read from central directory
-            total = (
-                total
-                + zipfile.sizeCentralDir
-                + centdir[zipfile._CD_FILENAME_LENGTH]
-                + centdir[zipfile._CD_EXTRA_FIELD_LENGTH]
-                + centdir[zipfile._CD_COMMENT_LENGTH]
-            )
+            total += consumed
 
 
 def list_zip_contents(zip_file):

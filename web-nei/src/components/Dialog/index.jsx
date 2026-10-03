@@ -42,8 +42,11 @@ function isInsideBoundingBox(event, element) {
   );
 }
 
-export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
-  // NOTE: calling setVisible will result in a loop, call handleVisible instead
+/**
+ * Visible state that can optionally be controlled by the parent.
+ * NOTE: calling setVisible will result in a loop, call handleVisible instead
+ */
+function useControllableVisible(show, onShowChange) {
   const [visible, setVisible] = useState(show || false);
   const controlled = show !== undefined && onShowChange !== undefined;
 
@@ -54,11 +57,6 @@ export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
     }
   }, [show]);
 
-  useEffect(() => {
-    // Update parent state from child
-    onShowChange?.(visible);
-  }, [visible]);
-
   function handleVisible(value) {
     // Useful to avoid state update loops
     if (controlled) {
@@ -67,6 +65,17 @@ export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
       setVisible(value);
     }
   }
+
+  return [visible, handleVisible];
+}
+
+export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
+  const [visible, handleVisible] = useControllableVisible(show, onShowChange);
+
+  useEffect(() => {
+    // Update parent state from child
+    onShowChange?.(visible);
+  }, [visible]);
 
   const eventDialog = useMemo(() => {
     if (!event) return null;
@@ -128,9 +137,7 @@ const Dialog = ({
   show,
   onShowChange,
 }) => {
-  // NOTE: calling setVisible will result in a loop, call handleVisible instead
-  const [visible, setVisible] = useState(show || false);
-  const controlled = show !== undefined && onShowChange !== undefined;
+  const [visible, handleVisible] = useControllableVisible(show, onShowChange);
 
   // This helps avoiding multiple listeners to be set up
   const [listenToClick, setListenToClick] = useState(false);
@@ -156,13 +163,6 @@ const Dialog = ({
   }, [listenToClick]);
 
   useEffect(() => {
-    // Update child state from parent
-    if (controlled) {
-      setVisible(show);
-    }
-  }, [show]);
-
-  useEffect(() => {
     // Update parent state from child
     onShowChange?.(visible);
 
@@ -176,15 +176,6 @@ const Dialog = ({
     // Add click outside listener
     setListenToClick(true);
   }, [visible]);
-
-  function handleVisible(value) {
-    // Useful to avoid state update loops
-    if (controlled) {
-      onShowChange(value);
-    } else {
-      setVisible(value);
-    }
-  }
 
   function findBestDialogPosition() {
     if (!childrenRef.current) return "top-right";
@@ -211,20 +202,14 @@ const Dialog = ({
 
   return (
     <div className={`relative w-fit ${className}`}>
-      <div
+      <button
         ref={childrenRef}
-        tabIndex="0"
-        role="button"
+        type="button"
+        className="block w-full bg-transparent p-0 text-left"
         onClick={() => handleVisible(true)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            handleVisible(true);
-          }
-        }}
       >
         {children}
-      </div>
+      </button>
       <AnimatePresence>
         {visible && (
           <motion.dialog

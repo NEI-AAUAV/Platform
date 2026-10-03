@@ -17,6 +17,7 @@ import BulkImportModal from "./BulkImportModal";
 import OrphanModal from "./OrphanModal";
 import { organizations, colors } from "pages/Family/config";
 import { getErrorMessage } from "utils/error";
+import { keyedByContent } from "utils/keys";
 import { useUserStore } from "stores/useUserStore";
 import Avatar from "components/Avatar";
 
@@ -334,7 +335,7 @@ export function Component() {
     newMissingIds.forEach(id => fetchedPatraoIdsRef.current.add(id));
 
     let cancelled = false;
-    (async () => {
+    void (async () => {
       try {
         // Fetch each missing ID individually (not optimal but ensures correctness)
         // In production, backend should support keys list.
@@ -658,7 +659,10 @@ export function Component() {
     try {
       const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
-    } catch { }
+    } catch (error) {
+      // The cache refresh is best-effort: the visible page was already refreshed
+      console.warn("Failed to refresh the users cache", error);
+    }
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -1041,9 +1045,9 @@ export function Component() {
                             <td>
                               <div className="flex flex-wrap gap-1">
                                 {userRoles.every(r => r.hidden) && <span className="text-xs text-base-content/30">-</span>}
-                                {userRoles.filter(role => !role.hidden).map((role, idx) => (
+                                {keyedByContent(userRoles.filter(role => !role.hidden), (role) => role.role_id).map(({ item: role, key }) => (
                                   <RoleIcon
-                                    key={`${role.role_id}_${idx}`}
+                                    key={key}
                                     role={role}
                                     organizations={organizations}
                                     formatYear={formatYear}

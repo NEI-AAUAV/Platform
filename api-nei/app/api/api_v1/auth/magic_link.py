@@ -81,7 +81,7 @@ def send_magic_link(
 
 @router.post(
     "/magic",
-    responses={401: {"description": "Invalid token"}},
+    responses={401: {"description": "Invalid token"}, 400: {"description": "Bad request"}},
     response_model=OperationSuccessfulResponse,
 )
 def activate_magic_link(

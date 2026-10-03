@@ -56,7 +56,7 @@ const terminalstate = EmulatorState.create(
                             root.style.fontFamily = "monospace";
 
                             return {
-                                output: OutputFactory.makeTextOutput("oops, site is dead (TODO)")
+                                output: OutputFactory.makeTextOutput("oops, site is dead")
                             };
                         }
                         else

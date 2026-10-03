@@ -131,22 +131,20 @@ const Popover = ({ popover, children, className }) => {
   return (
     <div
       className={`relative w-fit ${className}`}
-      onMouseOver={() => debouncedSetVisible(true)}
-      onFocus={() => debouncedSetVisible(true)}
-      onMouseOut={() => {
+      onPointerOver={() => debouncedSetVisible(true)}
+      onPointerOut={() => {
         debouncedSetVisible(false);
       }}
-      onBlur={() => debouncedSetVisible(false)}
     >
-      <div
+      <button
         ref={childrenRef}
-        tabIndex="0"
-        role="link"
-        className="sm:cursor-default"
-        // className="sm:cursor-pointer"
+        type="button"
+        onFocus={() => debouncedSetVisible(true)}
+        onBlur={() => debouncedSetVisible(false)}
+        className="block bg-transparent p-0 text-left sm:cursor-default"
       >
         {children}
-      </div>
+      </button>
       <AnimatePresence>
         {visible && (
           <motion.div
@@ -154,7 +152,7 @@ const Popover = ({ popover, children, className }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            role="popover"
+            role="tooltip"
             className={classNames(
               "invisible absolute z-50 min-w-[320px] rounded-lg border border-base-content/10 bg-base-300 p-4 sm:visible",
               windowSize.width >= 640

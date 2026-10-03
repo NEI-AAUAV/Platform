@@ -44,9 +44,12 @@ export function Component() {
     service
       .getRGMMandates()
       .then(({ data }) => {
-        data.sort().reverse();
-        setMandates(data);
-        setTab(data[0]);
+        const sorted = data.toSorted((a, b) => {
+          if (a === b) return 0;
+          return a < b ? 1 : -1;
+        });
+        setMandates(sorted);
+        setTab(sorted[0]);
         setLoading(false);
       })
       .catch(() => {
