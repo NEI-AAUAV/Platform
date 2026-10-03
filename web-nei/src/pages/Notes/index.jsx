@@ -84,8 +84,8 @@ export function Component() {
     if (urlParams.get("teacher")) setSelTeacher(+urlParams.get("teacher"));
     let active = [];
     urlParams.getAll("category").forEach((categoryParam) => {
-      let find = categories.find((f) => f.db == categoryParam);
-      if (find) active.push(find.name);
+      const name = data.categories[categoryParam]?.name;
+      if (name) active.push(name);
     });
     if (active.length > 0) {
       setActiveFilters(active);
@@ -310,11 +310,11 @@ export function Component() {
     if (selTeacher != "") url += `teacher=${selTeacher}&`;
     // Only include filters tags if not all selected (because if missing from url, all will be selected by default)
     if (activeFilters.length !== filters.length) {
-      for (let activeFilter of activeFilters) {
-        url +=
-          "category=" +
-          filters.name((f) => f["filter"] == activeFilter)[0]["db"] +
-          "&";
+      for (const activeFilter of activeFilters) {
+        const key = Object.keys(data.categories).find(
+          (k) => data.categories[k].name === activeFilter
+        );
+        if (key) url += `category=${key}&`;
       }
     }
     // Copy to user's clipboard
@@ -450,7 +450,10 @@ export function Component() {
         <div className="flex grow flex-col gap-5">
           <div className="flex justify-between">
             <TabsButton
-              tabs={[<GridViewIcon key="grid" />] + !config.PRODUCTION ? [<ViewListIcon key="list" />] : []}
+              tabs={[
+                <GridViewIcon key="grid" />,
+                ...(config.PRODUCTION ? [] : [<ViewListIcon key="list" />]),
+              ]}
               selected={view}
               setSelected={setView}
             />

@@ -13,10 +13,11 @@ vi.mock("../../../services/NEIService", () => ({
     getNotesCurricularYears: vi.fn(),
   },
 }));
-vi.mock("config", () => ({ default: { PRODUCTION: true } }));
+const config = vi.hoisted(() => ({ PRODUCTION: true }));
+vi.mock("../../../config", () => ({ default: config }));
 vi.mock("lodash", () => ({ debounce: (fn) => fn }));
 vi.mock("react-simple-typewriter", () => ({ Typewriter: ({ words }) => <>{words[0]}</> }));
-vi.mock("../../../components", () => ({ TabsButton: () => <div data-testid="tabs-button" /> }));
+vi.mock("../../../components", () => ({ TabsButton: ({ tabs }) => <div data-testid="tabs-button">{tabs.length}</div> }));
 vi.mock("../../../components/Alert", () => ({
   default: ({ alert }) => (alert.text ? <div role="alert">{alert.text}</div> : null),
 }));
@@ -173,5 +174,30 @@ describe("Notes page", () => {
     await waitFor(() =>
       expect(console.error).toHaveBeenCalledWith("Failed to copy URL to clipboard", expect.any(Error))
     );
+  });
+
+  it("shares only the active categories as keys", async () => {
+    mockAll();
+    const writeText = vi.fn().mockResolvedValue();
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    window.history.pushState({}, "", "/notes?category=slides&category=bogus");
+    render(<Notes />);
+    fireEvent.click(await screen.findByText("ac:Autor:1"));
+    fireEvent.click(await screen.findByTitle("Copiar link com filtros"));
+    await waitFor(() => expect(writeText).toHaveBeenCalled());
+    const url = writeText.mock.calls[0][0];
+    expect(url).toContain("category=slides");
+    expect(url).not.toContain("bogus");
+  });
+
+  it("only offers the list view outside production", async () => {
+    mockAll();
+    const { unmount } = render(<Notes />);
+    expect(screen.getByTestId("tabs-button")).toHaveTextContent("1");
+    unmount();
+    config.PRODUCTION = false;
+    render(<Notes />);
+    expect(screen.getByTestId("tabs-button")).toHaveTextContent("2");
+    config.PRODUCTION = true;
   });
 });
