@@ -15,7 +15,6 @@ import Futsal from "../../assets/icons/tacaua/high_contrast/voleibol.svg?react";
 import { Typewriter } from "react-simple-typewriter";
 
 import "./index.css";
-/* import SportTable from "./SportTable"; */
 import DetiHall from "./DetiHall";
 
 const animationBase = Number.parseFloat(import.meta.env.VITE_ANIMATION_BASE);

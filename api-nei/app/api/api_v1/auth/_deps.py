@@ -126,7 +126,7 @@ class AuthData(BaseModel):
     scopes: Set[str]
 
 
-async def get_auth_data(
+def get_auth_data(
     token: Optional[str] = Depends(oauth2_scheme),
 ) -> Optional[AuthData]:
     if token is None:
@@ -154,7 +154,7 @@ async def get_auth_data(
 GetAuthData = Annotated[Optional[AuthData], Depends(get_auth_data)]
 
 
-async def verify_token(
+def verify_token(
     security_scopes: SecurityScopes, auth_data: GetAuthData
 ) -> AuthData:
     """Dependency for user authentication"""

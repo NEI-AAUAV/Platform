@@ -41,7 +41,7 @@ class ConnectionManager:
         for websocket in self.active_connections[connection_type]:
             await websocket.send_json(message)
 
-    async def change_connection_type(
+    def change_connection_type(
         self, websocket: WebSocket, new_type: ConnectionType
     ):
         for key in self.active_connections:
