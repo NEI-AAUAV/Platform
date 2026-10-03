@@ -49,7 +49,8 @@ def test_get_event_by_id_is_public(client: TestClient, event: Event) -> None:
     r = client.get(f"{URL}/{event.id}")
 
     assert r.status_code == 200
-    assert r.json()["name"] == "Existing" and r.json()["id"] == event.id
+    assert r.json()["name"] == "Existing"
+    assert r.json()["id"] == event.id
 
 
 def test_get_missing_event_is_404(client: TestClient) -> None:
@@ -135,7 +136,8 @@ def test_import_creates_participants_and_sends_one_magic_link_each(
 
     r = client.post(f"{URL}/{event.id}", json=people)
 
-    assert r.status_code == 201 and r.json() == {"users_created": 2}
+    assert r.status_code == 201
+    assert r.json() == {"users_created": 2}
     assert magic_link.call_count == 2
     user, email = crud.user.get_by_email(db, "a@ua.pt")
     assert user.for_event == event.id

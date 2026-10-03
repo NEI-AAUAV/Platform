@@ -77,7 +77,7 @@ const Carousel = ({ children,width,buttons,className }) => {
                 {children.map((s,i) =>{
                     return(
                         <button
-                        key={i}
+                        key={s?.key ?? `slide-${i}`}
                         type="button"
                         onClick={() => {
                             setCurrent(i);

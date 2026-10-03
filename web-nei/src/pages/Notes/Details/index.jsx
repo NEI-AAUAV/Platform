@@ -26,23 +26,17 @@ const Folder = ({ name, icon, iconOpened, children }) => {
 
   return (
     <div className="file-folder">
-      <div
+      <button
+        type="button"
+        disabled={!children}
         className={classNames(
-          "flex gap-2 rounded px-1",
+          "flex w-full gap-2 rounded px-1 text-left",
           children
             ? "cursor-pointer hover:bg-base-content/10"
             : "cursor-default"
         )}
-        role="button"
-        tabIndex={children ? 0 : -1}
         aria-expanded={children ? isOpened : undefined}
         onClick={() => children && setIsOpened(!isOpened)}
-        onKeyDown={(e) => {
-          if (children && (e.key === "Enter" || e.key === " ")) {
-            e.preventDefault();
-            setIsOpened(!isOpened);
-          }
-        }}
       >
         <Icon
           className={classNames(
@@ -53,7 +47,7 @@ const Folder = ({ name, icon, iconOpened, children }) => {
         <span className="truncate" title={name}>
           {name}
         </span>
-      </div>
+      </button>
       {isOpened && children && (
         <div className="ml-1.5 border-l border-base-content/20 pl-1 group-hover:border-base-content">
           {Object.entries(children).map(([name, props]) => (

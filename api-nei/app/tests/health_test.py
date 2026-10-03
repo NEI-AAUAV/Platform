@@ -20,7 +20,8 @@ def test_live_does_not_depend_on_the_database(
 
     r = probe.get("/health/live")
 
-    assert r.status_code == 200 and r.json() == {"status": "ok"}
+    assert r.status_code == 200
+    assert r.json() == {"status": "ok"}
 
 
 def test_ready_is_ok_when_database_answers(
@@ -31,7 +32,8 @@ def test_ready_is_ok_when_database_answers(
 
     r = probe.get("/health/ready")
 
-    assert r.status_code == 200 and r.json() == {"status": "ok"}
+    assert r.status_code == 200
+    assert r.json() == {"status": "ok"}
     engine.connect.assert_called_once()
 
 
@@ -51,4 +53,5 @@ def test_ready_is_503_without_leaking_the_error_when_database_is_down(
 def test_probes_are_hidden_from_the_openapi_schema() -> None:
     paths = main.app.openapi()["paths"]
 
-    assert "/health/live" not in paths and "/health/ready" not in paths
+    assert "/health/live" not in paths
+    assert "/health/ready" not in paths

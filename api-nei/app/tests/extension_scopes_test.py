@@ -67,7 +67,8 @@ def test_clear_resets_scopes_and_initialized_flag() -> None:
 
     Registry.clear()
 
-    assert Registry.get_all_scopes() == {} and not Registry.is_initialized()
+    assert Registry.get_all_scopes() == {}
+    assert not Registry.is_initialized()
 
 
 # --- ENABLED_EXTENSIONS -----------------------------------------------------
@@ -129,7 +130,8 @@ def test_empty_enabled_list_loads_nothing(ext_dir: Path, monkeypatch) -> None:
 
     es.load_scopes_from_manifests()
 
-    assert es.load_extension_scopes() == {} and not Registry.is_initialized()
+    assert es.load_extension_scopes() == {}
+    assert not Registry.is_initialized()
 
 
 @pytest.mark.parametrize(
@@ -162,7 +164,8 @@ def test_null_scopes_field_is_treated_as_empty(ext_dir: Path) -> None:
 
     es.load_scopes_from_manifests()
 
-    assert es.load_extension_scopes() == {} and not Registry.is_initialized()
+    assert es.load_extension_scopes() == {}
+    assert not Registry.is_initialized()
 
 
 def test_directories_without_manifest_are_ignored(ext_dir: Path) -> None:

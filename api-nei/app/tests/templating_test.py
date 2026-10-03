@@ -9,17 +9,22 @@ def test_registration_links_to_verify_endpoint_with_token() -> None:
     html, text = t.render_email_registration_templates("a@b.pt", "Ana", "tok123")
 
     link = f"{settings.HOST}{settings.EMAIL_ACCOUNT_VERIFY_ENDPOINT}"
-    assert link in html and "tok123" in html
-    assert link in text and "tok123" in text
-    assert "Ana" in html and "Ana" in text
+    assert link in html
+    assert "tok123" in html
+    assert link in text
+    assert "tok123" in text
+    assert "Ana" in html
+    assert "Ana" in text
 
 
 def test_password_reset_links_to_reset_endpoint_with_token() -> None:
     html, text = t.render_password_reset_templates("a@b.pt", "Ana", "tok456")
 
     link = f"{settings.HOST}{settings.PASSWORD_RESET_ENDPOINT}"
-    assert link in html and "tok456" in html
-    assert link in text and "tok456" in text
+    assert link in html
+    assert "tok456" in html
+    assert link in text
+    assert "tok456" in text
 
 
 def test_magic_link_includes_reason_and_magic_endpoint() -> None:
@@ -29,15 +34,18 @@ def test_magic_link_includes_reason_and_magic_endpoint() -> None:
 
     link = f"{settings.HOST}{settings.MAGIC_LINK_ENDPOINT}"
     for body in (html, text):
-        assert link in body and "tok789" in body
+        assert link in body
+        assert "tok789" in body
         assert "Foste inscrito no evento X" in body
 
 
 def test_password_changed_greets_user_and_carries_no_token() -> None:
     html, text = t.render_password_changed_templates("a@b.pt", "Ana")
 
-    assert "Ana" in html and "Ana" in text
-    assert "token=" not in html and "token=" not in text
+    assert "Ana" in html
+    assert "Ana" in text
+    assert "token=" not in html
+    assert "token=" not in text
 
 
 @pytest.mark.parametrize(

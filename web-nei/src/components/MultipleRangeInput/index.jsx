@@ -91,7 +91,7 @@ const MultipleRangeInput = ({ min = 0, max = 150, step = 25, defaultValues = [[0
             </div>
         </div>
         <div className="select-none w-full flex justify-between text-xs p-2">
-            {[...new Array(ticks)].map((i) => <span key={i}>|</span>)}
+            {Array.from({ length: ticks }, (_, i) => <span key={`tick-${i}`}>|</span>)}
         </div>
     </>;
 }

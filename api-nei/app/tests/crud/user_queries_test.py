@@ -13,7 +13,8 @@ def test_create_stores_user_with_its_email_inactive_by_default(db: SessionTestin
 
     assert found is not None
     user, email = found
-    assert user.id == created.id and email.active is False
+    assert user.id == created.id
+    assert email.active is False
 
 
 def test_create_can_mark_email_active(db: SessionTesting) -> None:
@@ -33,7 +34,8 @@ def test_create_hashes_the_password(db: SessionTesting) -> None:
         active=True,
     )
 
-    assert created.hashed_password and "s3cret-pass" not in created.hashed_password
+    assert created.hashed_password
+    assert "s3cret-pass" not in created.hashed_password
 
 
 def test_create_without_password_leaves_hash_empty(db: SessionTesting) -> None:
@@ -45,7 +47,8 @@ def test_create_without_password_leaves_hash_empty(db: SessionTesting) -> None:
 def test_create_sets_timestamps(db: SessionTesting) -> None:
     created = crud_user.create(db, obj_in=UserCreate(name="Ana", surname="Silva", email="ana@ua.pt"), active=True)
 
-    assert created.created_at is not None and created.updated_at is not None
+    assert created.created_at is not None
+    assert created.updated_at is not None
 
 
 def test_get_by_email_returns_none_for_unknown_address(db: SessionTesting) -> None:
@@ -82,7 +85,8 @@ def test_get_multi_with_emails_only_joins_active_emails(db: SessionTesting) -> N
 
     rows = {u.name: e for u, e in crud_user.get_multi_with_emails(db)}
 
-    assert rows["Act"] is not None and rows["Act"].email == "act@ua.pt"
+    assert rows["Act"] is not None
+    assert rows["Act"].email == "act@ua.pt"
     assert rows["Pen"] is None  # user still listed, pending email not exposed
 
 

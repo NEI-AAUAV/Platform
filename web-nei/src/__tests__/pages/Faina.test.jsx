@@ -75,6 +75,6 @@ describe("Faina page", () => {
   it("handles empty mandate list", async () => {
     service.getFainaMandates.mockResolvedValue([]);
     render(<Faina />);
-    await waitFor(() => expect(screen.getByText(/Comissão de Faina/, { selector: "h4" })).toBeInTheDocument());
+    expect(await screen.findByText(/Comissão de Faina/, { selector: "h4" })).toBeInTheDocument();
   });
 });

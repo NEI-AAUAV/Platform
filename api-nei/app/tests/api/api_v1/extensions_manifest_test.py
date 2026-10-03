@@ -70,7 +70,8 @@ def test_only_whitelisted_fields_leak_to_clients(client: TestClient, ext_dir: Pa
 
     entry = _nav(client)[0]
 
-    assert "apiKey" not in entry and "secret" not in entry
+    assert "apiKey" not in entry
+    assert "secret" not in entry
 
 
 def test_duplicate_entries_are_listed_once(client: TestClient, ext_dir: Path) -> None:

@@ -624,8 +624,10 @@ const Navbar = () => {
           </ul>
         </div>
       </nav>
-      <div
-        role="presentation"
+      <button
+        type="button"
+        aria-label="Fechar menu"
+        tabIndex={-1}
         className={classNames("modal", { "modal-open": openMobile })}
         onClick={() => setOpenMobile(false)}
       />

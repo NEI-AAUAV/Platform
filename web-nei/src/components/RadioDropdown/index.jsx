@@ -15,9 +15,9 @@ const RadioDropdown = ({ name, value, onChange, children, className, ...props })
 
   return (
     <div className={classNames("dropdown", className?.dropdown)}>
-      <label tabIndex={0} role="button" className={classNames("btn", className?.label)}>
+      <button type="button" className={classNames("btn", className?.label)}>
         {children}
-      </label>
+      </button>
       <ul
         tabIndex={0}
         role="menu"

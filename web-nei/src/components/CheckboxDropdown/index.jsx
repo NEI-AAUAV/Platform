@@ -18,9 +18,9 @@ const CheckboxDropdown = ({ values, onChange, children, className }) => {
 
   return (
     <div className="dropdown-end dropdown">
-      <label tabIndex={0} role="button" className={`btn ${className}`}>
+      <button type="button" className={`btn ${className}`}>
         {children}
-      </label>
+      </button>
       <ul
         tabIndex={0}
         role="menu"

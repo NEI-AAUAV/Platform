@@ -245,7 +245,7 @@ describe('Details contents tree', () => {
 
   it('expands and collapses a folder on click', async () => {
     await loadTree({ contents })
-    const folder = screen.getByText('docs').closest('[role="button"]')
+    const folder = screen.getByText('docs').closest('button')
 
     await userEvent.click(folder)
     expect(folder).toHaveAttribute('aria-expanded', 'true')
@@ -258,7 +258,7 @@ describe('Details contents tree', () => {
 
   it('expands with the keyboard', async () => {
     await loadTree({ contents })
-    screen.getByText('docs').closest('[role="button"]').focus()
+    screen.getByText('docs').closest('button').focus()
 
     await userEvent.keyboard('{Enter}')
 
@@ -267,18 +267,18 @@ describe('Details contents tree', () => {
 
   it('files are not expandable', async () => {
     await loadTree({ contents })
-    const file = screen.getByText('readme.txt').closest('[role="button"]')
+    const file = screen.getByText('readme.txt').closest('button')
 
     await userEvent.click(file)
 
     expect(file).not.toHaveAttribute('aria-expanded')
-    expect(file).toHaveAttribute('tabindex', '-1')
+    expect(file).toBeDisabled()
   })
 
   it('nests deeper folders', async () => {
     await loadTree({ contents })
-    await userEvent.click(screen.getByText('docs').closest('[role="button"]'))
-    await userEvent.click(screen.getByText('sub').closest('[role="button"]'))
+    await userEvent.click(screen.getByText('docs').closest('button'))
+    await userEvent.click(screen.getByText('sub').closest('button'))
 
     expect(screen.getByText('b.pdf')).toBeInTheDocument()
   })

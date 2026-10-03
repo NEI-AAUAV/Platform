@@ -143,7 +143,8 @@ def test_me_returns_the_authenticated_user(
 
     r = client.get(f"{URL}/me")
 
-    assert r.status_code == 200 and r.json()["id"] == me.id
+    assert r.status_code == 200
+    assert r.json()["id"] == me.id
 
 
 @pytest.mark.parametrize("client", [auth_data(sub=424242)], indirect=True)
@@ -159,7 +160,8 @@ def test_update_me_changes_own_profile(app, db: SessionTesting, client: TestClie
 
     r = client.put(f"{URL}/me", data=_form(name="Ana Maria"))
 
-    assert r.status_code == 200 and r.json()["name"] == "Ana Maria"
+    assert r.status_code == 200
+    assert r.json()["name"] == "Ana Maria"
     assert r.json()["surname"] == "Silva"  # untouched fields stay
 
 

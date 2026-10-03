@@ -21,7 +21,7 @@ const App = () => {
 
   useEffect(() => {
     refreshToken().catch((error) => {
-      console.error("Failed to refresh token", error);
+      console.error("Failed to refresh token", String(error?.message ?? "unknown").replaceAll(/[\r\n]/g, " "));
     });
   }, []);
 

@@ -81,7 +81,8 @@ def test_optional_makes_fields_optional_with_none_default() -> None:
 
     m = Model()
 
-    assert m.a is None and m.b is None
+    assert m.a is None
+    assert m.b is None
 
 
 def test_optional_keeps_excluded_fields_required() -> None:
@@ -121,8 +122,10 @@ def test_list_zip_contents_decodes_legacy_encoded_names() -> None:
 
 
 def test_custom_zip_rejects_non_zip_data() -> None:
+    data = io.BytesIO(b"definitely not a zip file")
+
     with pytest.raises(zipfile.BadZipFile):
-        CustomZipFile(io.BytesIO(b"definitely not a zip file"))
+        CustomZipFile(data)
 
 
 def test_decode_filename_never_returns_raw_bytes() -> None:

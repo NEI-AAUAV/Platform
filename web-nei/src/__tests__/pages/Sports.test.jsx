@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { Component as Sports } from "../../pages/Sports";
 
@@ -18,15 +19,15 @@ describe("Sports page", () => {
     expect(screen.getAllByText("Futsal Masculino").length).toBeGreaterThan(0);
   });
 
-  it("navigates on click and on Enter/Space, ignoring other keys", () => {
+  it("navigates on click and on Enter/Space, ignoring other keys", async () => {
     render(<Sports />);
     const first = document.querySelector(".modalidade");
-    fireEvent.click(first);
-    fireEvent.keyDown(first, { key: "Enter" });
-    fireEvent.keyDown(first, { key: " " });
+    await userEvent.click(first);
+    await userEvent.keyboard("{Enter}");
+    await userEvent.keyboard(" ");
     expect(navigate).toHaveBeenCalledTimes(3);
     expect(navigate).toHaveBeenCalledWith("/taca-ua/1");
-    fireEvent.keyDown(first, { key: "a" });
+    await userEvent.keyboard("a");
     expect(navigate).toHaveBeenCalledTimes(3);
   });
 });

@@ -348,6 +348,7 @@ async def update_arraial_points(
     status_code=200,
     responses={
         400: {"description": "Invalid núcleo"},
+        404: {"description": "Núcleo points not found"},
         409: {"description": "Boosts are disabled"},
     },
 )

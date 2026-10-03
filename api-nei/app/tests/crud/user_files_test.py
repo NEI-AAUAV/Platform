@@ -52,7 +52,8 @@ async def test_image_is_stored_as_jpeg_named_after_its_hash(static_cwd, db) -> N
 
     await crud_user.update_image(db, db_obj=u, image=_image_bytes("PNG"))
 
-    assert u.image.startswith("/users/7/") and u.image.endswith(".jpg")
+    assert u.image.startswith("/users/7/")
+    assert u.image.endswith(".jpg")
     stored = static_cwd / "static" / u.image.lstrip("/")
     with Image.open(stored) as img:
         assert img.format == "JPEG"
@@ -102,7 +103,8 @@ async def test_none_removes_image_and_clears_field(static_cwd, db) -> None:
 
     await crud_user.update_image(db, db_obj=u, image=None)
 
-    assert u.image is None and not path.exists()
+    assert u.image is None
+    assert not path.exists()
 
 
 async def test_removing_nonexistent_image_does_not_raise(db) -> None:
@@ -114,16 +116,19 @@ async def test_removing_nonexistent_image_does_not_raise(db) -> None:
 
 
 async def test_non_image_bytes_are_rejected(db) -> None:
+    db_obj = _db_user()
+
     with pytest.raises(FileFormatException):
-        await crud_user.update_image(db, db_obj=_db_user(), image=b"not an image")
+        await crud_user.update_image(db, db_obj=db_obj, image=b"not an image")
     db.add.assert_not_called()
 
 
 async def test_unsupported_image_format_is_rejected(db) -> None:
+    db_obj = _db_user()
+    image = _image_bytes("GIF", "P")
+
     with pytest.raises(FileFormatException, match="JPEG or PNG"):
-        await crud_user.update_image(
-            db, db_obj=_db_user(), image=_image_bytes("GIF", "P")
-        )
+        await crud_user.update_image(db, db_obj=db_obj, image=image)
 
 
 # --- update_curriculum ------------------------------------------------------
@@ -146,10 +151,10 @@ async def test_pdf_curriculum_is_stored(static_cwd, db) -> None:
 async def test_non_pdf_curriculum_is_rejected_and_not_stored(static_cwd, db) -> None:
     u = _db_user()
 
+    curriculum = _upload(b"plain text, not a pdf")
+
     with pytest.raises(FileFormatException, match="PDF"):
-        await crud_user.update_curriculum(
-            db, db_obj=u, curriculum=_upload(b"plain text, not a pdf")
-        )
+        await crud_user.update_curriculum(db, db_obj=u, curriculum=curriculum)
 
     assert not (static_cwd / "static/users/7/cv.pdf").exists()
     assert u.curriculum is None

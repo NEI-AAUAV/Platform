@@ -197,7 +197,7 @@ export default function SportsSidebarDialog({
             className="bg-base-300"
             value={modalModality.year !== 0 ? modalModality.year : undefined}
             onChange={(event) => {
-              const year = parseInt(event.target.value);
+              const year = Number.parseInt(event.target.value);
               setModalModality((modality) => ({ ...modality, year }));
             }}
             placeholder="Ano"

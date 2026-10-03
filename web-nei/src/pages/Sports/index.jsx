@@ -178,14 +178,10 @@ export function Component() {
 
       <div className="d-flex flex-column flex-wrap team-wrapper" y>
         <Row className="modalidades">
-          <div
+          <button
+            type="button"
             className="modalidade"
-            role="button"
-            tabIndex={0}
             onClick={() => void navigate("/taca-ua/1")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") void navigate("/taca-ua/1");
-            }}
           >
             <Image
               src={equipa}
@@ -203,15 +199,11 @@ export function Component() {
               <p className="modalidadeText">Futsal Masculino</p>
               <Futsal className="icon" />
             </div>
-          </div>
-          <div
+          </button>
+          <button
+            type="button"
             className="modalidade"
-            role="button"
-            tabIndex={0}
             onClick={() => void navigate("/taca-ua/1")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") void navigate("/taca-ua/1");
-            }}
           >
             <Image
               src={equipa}
@@ -229,15 +221,11 @@ export function Component() {
               <p className="modalidadeText">Futsal Masculino</p>
               <Futsal className="icon" />
             </div>
-          </div>
-          <div
+          </button>
+          <button
+            type="button"
             className="modalidade"
-            role="button"
-            tabIndex={0}
             onClick={() => void navigate("/taca-ua/1")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") void navigate("/taca-ua/1");
-            }}
           >
             <Image
               src={equipa}
@@ -255,15 +243,11 @@ export function Component() {
               <p className="modalidadeText">Futsal Masculino</p>
               <Futsal className="icon" />
             </div>
-          </div>
-          <div
+          </button>
+          <button
+            type="button"
             className="modalidade"
-            role="button"
-            tabIndex={0}
             onClick={() => void navigate("/taca-ua/1")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") void navigate("/taca-ua/1");
-            }}
           >
             <Image
               src={equipa}
@@ -281,15 +265,11 @@ export function Component() {
               <p className="modalidadeText">Futsal Masculino</p>
               <Futsal className="icon" />
             </div>
-          </div>
-          <div
+          </button>
+          <button
+            type="button"
             className="modalidade"
-            role="button"
-            tabIndex={0}
             onClick={() => void navigate("/taca-ua/1")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") void navigate("/taca-ua/1");
-            }}
           >
             <Image
               src={equipa}
@@ -307,7 +287,7 @@ export function Component() {
               <p className="modalidadeText">Futsal Masculino</p>
               <Futsal className="icon" />
             </div>
-          </div>
+          </button>
         </Row>
 
         <Row className="games-section">

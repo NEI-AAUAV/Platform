@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { cloneElement, createContext, isValidElement, useContext } from "react";
 
 const SelectCtx = createContext(() => {});
 
@@ -38,7 +38,10 @@ export const alertDialogMock = {
   AlertDialogCancel: ({ children, onClick }) => (
     <button type="button" onClick={onClick}>{children}</button>
   ),
-  AlertDialogAction: ({ children, onClick }) => (
-    <div onClick={onClick}>{children}</div>
-  ),
+  AlertDialogAction: ({ children, onClick }) =>
+    isValidElement(children) ? (
+      cloneElement(children, { onClick })
+    ) : (
+      <button type="button" onClick={onClick}>{children}</button>
+    ),
 };
