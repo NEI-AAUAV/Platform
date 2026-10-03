@@ -4,7 +4,7 @@ Matches the new flat MongoDB structure.
 """
 
 from typing import Optional, Literal, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from app.schemas.tree import UserRole
 
 
@@ -43,15 +43,13 @@ class UserInDB(UserBase):
     id: int = Field(..., alias='_id', description="User ID (MongoDB _id)")
     user_roles: List[UserRole] = Field(default_factory=list, description="User's roles/organizations")
 
-    def dict(self, **kwargs):
-        """Override dict() to always use field names (not aliases) for serialization."""
+    def model_dump(self, **kwargs):
+        """Override model_dump() to always use field names (not aliases) for serialization."""
         # Force by_alias=False to serialize as 'id' instead of '_id'
         kwargs['by_alias'] = False
-        return super().dict(**kwargs)
+        return super().model_dump(**kwargs)
 
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class UserList(BaseModel):

@@ -73,7 +73,7 @@ class CRUDCourse:
         Returns: Created course document
         Raises: DuplicateKeyError if short code already exists
         """
-        doc = obj_in.dict()
+        doc = obj_in.model_dump()
         doc["_id"] = self._get_next_id()
         
         # Convert enum to string for MongoDB
@@ -90,7 +90,7 @@ class CRUDCourse:
         Returns: Updated course or None if not found
         Raises: DuplicateKeyError if new short code already exists
         """
-        update_data = obj_in.dict(exclude_unset=True)
+        update_data = obj_in.model_dump(exclude_unset=True)
         
         if not update_data:
             return self.get(id)

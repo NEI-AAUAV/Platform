@@ -248,7 +248,7 @@ def create_users_bulk(
             seen_nmecs
         )
         
-        data_dict = user_data.dict()
+        data_dict = user_data.model_dump()
         if error_msg:
             errors.append(BulkCreateError(row=idx, data=data_dict, message=error_msg))
         else:

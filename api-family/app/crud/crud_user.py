@@ -702,7 +702,7 @@ class CRUDUser:
         next_id = (max_doc["_id"] + 1) if max_doc else 1
         
         # Prepare document
-        doc = obj_in.dict()
+        doc = obj_in.model_dump()
         doc["_id"] = next_id
         
         # Auto-generate faina_name if not provided
@@ -714,7 +714,7 @@ class CRUDUser:
     
     def update(self, *, id: int, obj_in: UserUpdate) -> Optional[dict]:
         """Update user by ID."""
-        update_data = obj_in.dict(exclude_unset=True)
+        update_data = obj_in.model_dump(exclude_unset=True)
         
         if not update_data:
             return self.get(id)

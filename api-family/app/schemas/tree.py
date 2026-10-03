@@ -4,7 +4,7 @@ Hierarchical tree structures for users and roles.
 """
 
 from typing import Optional, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class UserRole(BaseModel):
@@ -23,11 +23,11 @@ class UserTreeNode(BaseModel):
     """A node in the user family tree."""
     id: int = Field(..., alias='_id', description="User ID (MongoDB _id)")
     
-    def dict(self, **kwargs):
-        """Override dict() to always use field names (not aliases) for serialization."""
+    def model_dump(self, **kwargs):
+        """Override model_dump() to always use field names (not aliases) for serialization."""
         # Force by_alias=False to serialize as 'id' instead of '_id'
         kwargs['by_alias'] = False
-        return super().dict(**kwargs)
+        return super().model_dump(**kwargs)
     name: Optional[str] = None
     faina_name: Optional[str] = None
     image: Optional[str] = None
@@ -44,9 +44,7 @@ class UserTreeNode(BaseModel):
         description="Indicates additional children exist but were not included due to depth limit"
     )
     
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class FamilyTree(BaseModel):
@@ -56,8 +54,7 @@ class FamilyTree(BaseModel):
     min_year: int = Field(..., description="Minimum start_year in the dataset")
     max_year: int = Field(..., description="Maximum start_year in the dataset")
     
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Required for self-referencing model

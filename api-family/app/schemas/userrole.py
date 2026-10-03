@@ -4,7 +4,7 @@ Associates users with roles for specific years.
 """
 
 from typing import Optional, List
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 import re
 
 
@@ -18,7 +18,8 @@ class UserRoleBase(BaseModel):
     role_id: str = Field(..., description="Role ID (path format, e.g. '.1.5.')")
     year: int = Field(..., ge=0, le=99, description="Year of the role (0-99)")
 
-    @validator('role_id')
+    @field_validator('role_id')
+    @classmethod
     def validate_role_id_format(cls, v):
         """Validate that role_id follows the path format (.X.Y.Z.)."""
         if not ROLE_ID_PATTERN.match(v):
@@ -40,15 +41,13 @@ class UserRoleInDB(UserRoleBase):
     """Schema for user-role response from database."""
     id: str = Field(..., alias='_id', description="User-role ID (MongoDB _id)")
 
-    def dict(self, **kwargs):
-        """Override dict() to always use field names (not aliases) for serialization."""
+    def model_dump(self, **kwargs):
+        """Override model_dump() to always use field names (not aliases) for serialization."""
         # Force by_alias=False to serialize as 'id' instead of '_id'
         kwargs['by_alias'] = False
-        return super().dict(**kwargs)
+        return super().model_dump(**kwargs)
 
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class UserDetailsNested(BaseModel):
@@ -59,11 +58,11 @@ class UserDetailsNested(BaseModel):
     sex: Optional[str] = None
     start_year: Optional[int] = None
 
-    def dict(self, **kwargs):
-        """Override dict() to always use field names (not aliases) for serialization."""
+    def model_dump(self, **kwargs):
+        """Override model_dump() to always use field names (not aliases) for serialization."""
         # Force by_alias=False to serialize as 'id' instead of '_id'
         kwargs['by_alias'] = False
-        return super().dict(**kwargs)
+        return super().model_dump(**kwargs)
 
 
 class UserRoleWithDetails(UserRoleBase):
@@ -75,15 +74,13 @@ class UserRoleWithDetails(UserRoleBase):
     role_short: Optional[str] = None
     year_display_format: Optional[str] = None
 
-    def dict(self, **kwargs):
-        """Override dict() to always use field names (not aliases) for serialization."""
+    def model_dump(self, **kwargs):
+        """Override model_dump() to always use field names (not aliases) for serialization."""
         # Force by_alias=False to serialize as 'id' instead of '_id'
         kwargs['by_alias'] = False
-        return super().dict(**kwargs)
+        return super().model_dump(**kwargs)
 
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class UserRoleList(BaseModel):
