@@ -102,7 +102,7 @@ describe('Details tags', () => {
   ])('shows "%s" as "%s" only when flagged with "1"', async (flag, label) => {
     await load({ [flag]: '1' })
 
-    expect(screen.getByText(label)).toBeInTheDocument()
+    expect(await screen.findByText(label)).toBeInTheDocument()
   })
 })
 
@@ -124,7 +124,7 @@ describe('Details link', () => {
     ['https://drive.google.com/file/d/1', 'Google Drive'],
   ])('labels %s as "%s" instead of a download', async (location, caption) => {
     await load({ location })
-    expect(within(link()).getByText(caption)).toBeInTheDocument()
+    expect(await within(link()).findByText(caption)).toBeInTheDocument()
   })
 
   it('opens in a new tab safely', async () => {
