@@ -101,7 +101,7 @@ export function Component() {
         </h2>
       </div>
       <Tabs
-        tabs={mandates.sort().reverse()}
+        tabs={[...mandates].sort((a, b) => String(a).localeCompare(String(b))).reverse()}
         value={tab}
         onChange={changeTab}
         renderTab={customRender}

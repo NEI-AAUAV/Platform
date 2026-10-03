@@ -9,11 +9,11 @@ class PartnerBase(BaseModel):
     header: Optional[str] = None
     company: str
     description: Optional[str] = None
-    content: Optional[str]
-    link: Optional[str]
-    banner_url: Optional[str]
-    banner_image: Optional[str]
-    banner_until: Optional[datetime]
+    content: Optional[str] = None
+    link: Optional[str] = None
+    banner_url: Optional[str] = None
+    banner_image: Optional[str] = None
+    banner_until: Optional[datetime] = None
 
 
 class PartnerCreate(PartnerBase):

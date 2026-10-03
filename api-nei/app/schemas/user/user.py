@@ -80,7 +80,7 @@ class ManagerUserListing(UserListing):
 
 
 class AdminUserListing(ManagerUserListing):
-    iupi: Optional[Annotated[str, StringConstraints(max_length=36)]]
+    iupi: Optional[Annotated[str, StringConstraints(max_length=36)]] = None
     scopes: List[str] = []
     email: Optional[str] = None
     authentik_sub: Optional[str] = None

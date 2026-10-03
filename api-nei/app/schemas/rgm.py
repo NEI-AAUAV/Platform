@@ -23,12 +23,12 @@ class RgmCategoryEnum(str, Enum):
 class RgmBase(BaseModel):
     category: Annotated[str, StringConstraints(max_length=3)]
     # Validate mandate to only allow 2020 or 2020/21
-    mandate: Optional[MandateStr]
+    mandate: Optional[MandateStr] = None
     # Real FK to RGM's own mandate calendar (rgm_mandate); `mandate` above
     # is the legacy free-text column, kept for compat. NOT NULL in the database.
     mandate_id: int
-    file: Optional[str]
-    date: Optional[datetime]
+    file: Optional[str] = None
+    date: Optional[datetime] = None
     title: Annotated[Optional[str], StringConstraints(max_length=264)]
 
 

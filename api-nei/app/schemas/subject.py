@@ -5,10 +5,10 @@ from pydantic import BaseModel, Field, ConfigDict
 
 class SubjectBase(BaseModel):
     code: int
-    curricular_year: Optional[int]
+    curricular_year: Optional[int] = None
     name: Annotated[Optional[str], Field(max_length=60)]
     short: Annotated[Optional[str], Field(max_length=5)]
-    public: Optional[bool]
+    public: Optional[bool] = None
     link: Annotated[Optional[str], Field(max_length=2048)]
 
 

@@ -28,21 +28,21 @@ class NoteAuthorInDB(BaseModel):
 
 
 class NoteBase(BaseModel):
-    author_id: Optional[int]
+    author_id: Optional[int] = None
     subject_id: int
-    teacher_id: Optional[int]
+    teacher_id: Optional[int] = None
 
     name: Annotated[str, StringConstraints(max_length=256)]
     location: str  ##AnyHttpUrl
-    year: Optional[int]
+    year: Optional[int] = None
 
-    summary: Optional[int]
-    tests: Optional[int]
-    bibliography: Optional[int]
-    slides: Optional[int]
-    exercises: Optional[int]
-    projects: Optional[int]
-    notebook: Optional[int]
+    summary: Optional[int] = None
+    tests: Optional[int] = None
+    bibliography: Optional[int] = None
+    slides: Optional[int] = None
+    exercises: Optional[int] = None
+    projects: Optional[int] = None
+    notebook: Optional[int] = None
 
     created_at: datetime
 

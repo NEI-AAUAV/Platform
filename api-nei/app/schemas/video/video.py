@@ -11,9 +11,9 @@ class VideoBase(BaseModel):
     youtube_id: Annotated[str, Field(max_length=256)]
     title: Annotated[str, Field(max_length=256)]
     subtitle: Annotated[Optional[str], Field(max_length=256)]
-    image: Optional[str]
+    image: Optional[str] = None
     created_at: datetime
-    playlist: Optional[int]
+    playlist: Optional[int] = None
 
 
 class VideoInDB(VideoBase):
