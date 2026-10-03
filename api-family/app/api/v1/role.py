@@ -51,7 +51,7 @@ def get_roles_tree(
     return crud_role.get_tree()
 
 
-@router.get("/{id}", status_code=200, response_model=RoleInDB)
+@router.get("/{id}", status_code=200, response_model=RoleInDB, responses={404: {"description": "Resource not found"}})
 def get_role(
     id: str,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
@@ -67,7 +67,7 @@ def get_role(
     return role
 
 
-@router.get("/{id}/children", status_code=200, response_model=List[RoleInDB])
+@router.get("/{id}/children", status_code=200, response_model=List[RoleInDB], responses={404: {"description": "Resource not found"}})
 def get_role_children(
     id: str,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
@@ -82,7 +82,7 @@ def get_role_children(
     return children
 
 
-@router.post("/", status_code=201, response_model=RoleInDB)
+@router.post("/", status_code=201, response_model=RoleInDB, responses={400: {"description": "Bad request"}})
 def create_role(
     obj_in: RoleCreate,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
@@ -103,7 +103,7 @@ def create_role(
     return role
 
 
-@router.put("/{id}", status_code=200, response_model=RoleInDB)
+@router.put("/{id}", status_code=200, response_model=RoleInDB, responses={400: {"description": "Bad request"}, 404: {"description": "Resource not found"}})
 def update_role(
     id: str,
     obj_in: RoleUpdate,
@@ -127,7 +127,7 @@ def update_role(
     return role
 
 
-@router.delete("/{id}", status_code=204)
+@router.delete("/{id}", status_code=204, responses={400: {"description": "Bad request"}, 404: {"description": "Resource not found"}})
 def delete_role(
     id: str,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),

@@ -22,6 +22,8 @@ logger = logging.getLogger(__name__)
 
 MONGO_REGEX = "$regex"
 MONGO_LOOKUP = "$lookup"
+MONGO_IF_NULL = "$ifNull"
+START_YEAR_FIELD = "$start_year"
 
 
 class CRUDUser:
@@ -249,8 +251,8 @@ class CRUDUser:
             {"$match": {"start_year": {"$ne": None}}},
             {"$group": {
                 "_id": None,
-                "min_year": {"$min": "$start_year"},
-                "max_year": {"$max": "$start_year"}
+                "min_year": {"$min": START_YEAR_FIELD},
+                "max_year": {"$max": START_YEAR_FIELD}
             }}
         ]
         result = list(self.collection.aggregate(pipeline))
@@ -500,7 +502,7 @@ class CRUDUser:
         # Use $addFields + $ifNull to ensure nulls sort to end (consistent with Python)
         pipeline = [
             {"$addFields": {
-                "_sort_year": {"$ifNull": ["$start_year", INFINITY_SORT_VALUE]}
+                "_sort_year": {MONGO_IF_NULL: [START_YEAR_FIELD, INFINITY_SORT_VALUE]}
             }},
             {"$sort": {"_sort_year": 1}},
             # Lookup user roles with nested lookup to get role details including hidden
@@ -519,11 +521,11 @@ class CRUDUser:
                     }},
                     {"$unwind": {"path": "$role_details", "preserveNullAndEmptyArrays": True}},
                     {"$addFields": {
-                        "hidden": {"$ifNull": ["$role_details.hidden", False]},
+                        "hidden": {MONGO_IF_NULL: ["$role_details.hidden", False]},
                         "role_name": "$role_details.name",
                         "icon": "$role_details.icon",
-                        "year_display_format": {"$ifNull": ["$role_details.year_display_format", "civil"]},
-                        "org_name": {"$ifNull": ["$org_name", "$role_details.short"]}
+                        "year_display_format": {MONGO_IF_NULL: ["$role_details.year_display_format", "civil"]},
+                        "org_name": {MONGO_IF_NULL: ["$org_name", "$role_details.short"]}
                     }},
                     {"$project": {
                         "role_id": 1,

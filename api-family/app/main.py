@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# from app.db.init_db import init_db
 from app.api.v1 import api_v1_router
 from app.core.logging import init_logging
 from app.core.config import settings
@@ -17,7 +16,6 @@ app.add_middleware(
 
 
 app.add_event_handler("startup", init_logging)
-# app.add_event_handler("startup", init_db)
 app.include_router(api_v1_router, prefix=settings.API_V1_STR)
 
 

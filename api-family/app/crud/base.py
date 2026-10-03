@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
@@ -55,7 +55,7 @@ class CRUDBase(Generic[CollectionType, CreateSchemaType, UpdateSchemaType, Model
         return doc
 
     def update(
-        self, *, id: int, obj_in: Union[UpdateSchemaType, Dict[str, Any]]
+        self, *, id: int, obj_in: UpdateSchemaType | Dict[str, Any]
     ) -> CollectionType:
         if isinstance(obj_in, dict):
             update_data = obj_in

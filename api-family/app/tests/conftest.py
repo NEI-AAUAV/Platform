@@ -19,15 +19,15 @@ MOCK_AUTH_PAYLOAD = {
 
 
 @pytest.fixture(scope="session")
-def app() -> Generator[FastAPI, Any, None]:
+def app() -> FastAPI:
     """Create a new application for the test session."""
 
     _app = FastAPI(default_response_class=JSONResponse)
     _app.include_router(api_v1_router, prefix=settings.API_V1_STR)
-    yield _app
+    return _app
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def client(
     app: FastAPI,
 ) -> Generator[TestClient, Any, None]:
@@ -38,7 +38,7 @@ def client(
     app.dependency_overrides.clear()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def auth_client(app: FastAPI) -> Generator[TestClient, Any, None]:
     """Create a new TestClient with authentication (manager-family scope).
     
