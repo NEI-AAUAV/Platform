@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useUserStore } from "stores/useUserStore";
+import { keyedByContent } from "utils/keys";
 
 import * as Emulator from "./emulator";
 import "./index.css";
@@ -56,6 +57,10 @@ const MockupTerminal = () => {
       }));
     }
   }, [name, surname]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     const elem = inputRef.current;
@@ -210,11 +215,14 @@ const MockupTerminal = () => {
         ref={terminalRef}
         className="mockup-terminal-body h-96 overflow-hidden overflow-y-scroll px-[1.5rem]"
       >
-        {output.slice(state.outputOffset).map(({ type, ...data }, i) => {
+        {keyedByContent(
+          output.slice(state.outputOffset),
+          (entry) => `${entry.type}:${entry.cmdline ?? entry.output}`
+        ).map(({ item: { type, ...data }, key }) => {
           switch (type) {
             case "prompt":
               return (
-                <div key={i} className="relative text-success">
+                <div key={key} className="relative text-success">
                   <span className="absolute font-bold opacity-70">
                     {prompt(data.user, data.hostname, data.cwd)}
                   </span>
@@ -232,7 +240,7 @@ const MockupTerminal = () => {
               );
             case "output":
               return (
-                <div key={i} className="w-full whitespace-pre-wrap break-all">
+                <div key={key} className="w-full whitespace-pre-wrap break-all">
                   {data.output}
                 </div>
               );
@@ -260,7 +268,6 @@ const MockupTerminal = () => {
               textIndent:
                 identationChars(state.user, state.hostname, state.cwd) + "ch",
             }}
-            autoFocus={true}
             autoComplete="false"
             autoCorrect="false"
             spellCheck={false}

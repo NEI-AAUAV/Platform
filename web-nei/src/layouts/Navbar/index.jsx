@@ -31,6 +31,7 @@ import {
 import otherPic from "assets/default_profile/other.svg";
 
 import { data, dataCompacted } from "./data";
+import { loadExtensionNavItems } from "./extensionNav";
 import config from "config";
 
 const Navbar = () => {
@@ -129,135 +130,12 @@ const Navbar = () => {
 
   // Load extension nav from manifest endpoint
   useEffect(() => {
-    const normalizeLink = (href) => {
-      if (!href || typeof href !== "string") return href;
-      try {
-        // Convert absolute URLs to pathnames for comparison
-        if (href.startsWith("http://") || href.startsWith("https://")) {
-          return new URL(href, window.location.origin).pathname || "/";
-        }
-      } catch (_) {
-        // Ignore errors: fall back to the original value
-      }
-      return href;
-    };
-
-    const loadExtensionNav = async () => {
-      try {
-        // Add timeout to the main extensions manifest call
-        const payload = await Promise.race([
-          service.getExtensionsManifest(),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Extensions manifest timeout')), 5000)
-          )
-        ]);
-        const items = Array.isArray(payload?.nav) ? payload.nav : [];
-        const myScopes = Array.isArray(scopes) ? scopes : [];
-        const reqOk = (e) => {
-          const req = Array.isArray(e?.requiresScopes) ? e.requiresScopes : [];
-          return req.length === 0 || req.some((s) => myScopes.includes(s));
-        };
-        // Avoid duplicates with existing static nav items
-        const existingLinks = new Set(
-          (Array.isArray(navItems) ? navItems : [])
-            .flatMap((i) => (i?.dropdown ? i.dropdown : [i]))
-            .map((i) => normalizeLink(i?.link))
-            .filter(Boolean)
-        );
-
-        const filtered = items
-          .filter(reqOk)
-          .map((e) => ({ label: e.label, href: e.href, key: normalizeLink(e.href), dynamicVisibility: e.dynamicVisibility, branded: e.branded ?? false }))
-          .filter((e) => !existingLinks.has(e.key));
-
-        // Check dynamic visibility for items that have it
-        const checkDynamicVisibility = async (item) => {
-          if (!item.dynamicVisibility) return item;
-
-          try {
-            // Create AbortController for timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
-
-            const response = await fetch(item.dynamicVisibility.endpoint, {
-              signal: controller.signal,
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              }
-            });
-
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-              console.warn(`Dynamic visibility endpoint returned ${response.status} for ${item.label}`);
-              // Fall back to scope-based visibility
-              if (item.dynamicVisibility.fallbackScopes) {
-                const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope =>
-                  myScopes.includes(scope)
-                );
-                if (hasFallbackScope) {
-                  return { label: item.label, href: item.href };
-                }
-              }
-              return null;
-            }
-
-            const data = await response.json();
-            const fieldValue = data[item.dynamicVisibility.field];
-
-            // If the dynamic condition is met, show the item
-            if (fieldValue === item.dynamicVisibility.value) {
-              return { label: item.label, href: item.href };
-            }
-
-            // If dynamic condition is not met, check fallback scopes
-            if (item.dynamicVisibility.fallbackScopes) {
-              const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope =>
-                myScopes.includes(scope)
-              );
-              if (hasFallbackScope) {
-                return { label: item.label, href: item.href };
-              }
-            }
-
-            // Neither condition met, hide the item
-            return null;
-          } catch (error) {
-            if (error.name === 'AbortError') {
-              console.warn(`Dynamic visibility check timed out for ${item.label}`);
-            } else {
-              console.warn(`Failed to check dynamic visibility for ${item.label}:`, error);
-            }
-
-            // On error, fall back to scope-based visibility if available
-            if (item.dynamicVisibility.fallbackScopes) {
-              const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope =>
-                myScopes.includes(scope)
-              );
-              if (hasFallbackScope) {
-                return { label: item.label, href: item.href };
-              }
-            }
-
-            return null;
-          }
-        };
-
-        // Process all items with dynamic visibility checks
-        const processedItems = await Promise.all(
-          filtered.map(checkDynamicVisibility)
-        );
-
-        const finalItems = processedItems.filter(Boolean);
-        setExtNav(finalItems);
-      } catch (err) {
+    loadExtensionNavItems(scopes, navItems)
+      .then(setExtNav)
+      .catch((err) => {
         console.error("Failed to load extension navigation:", err);
         setExtNav([]);
-      }
-    };
-
-    loadExtensionNav().catch(console.error);
+      });
   }, [scopes, navItems]);
 
   useEffect(() => {

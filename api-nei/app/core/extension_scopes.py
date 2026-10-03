@@ -154,6 +154,27 @@ def _iter_extension_manifests(base_dirs: List[str]) -> List[str]:
     return manifests
 
 
+def _register_manifest_scopes(manifest_path: str) -> int:
+    """Register the scopes declared by one manifest; return how many were registered."""
+    with open(manifest_path, "r", encoding="utf-8") as fh:
+        data = json.load(fh)
+    extension_name = data.get("name")
+    if not extension_name:
+        logger.warning(f"Manifest missing name: {manifest_path}")
+        return 0
+
+    registered = 0
+    for scope_def in data.get("scopes", []) or []:
+        scope_name = scope_def.get("name")
+        if not scope_name:
+            logger.warning(f"Manifest scope missing name in {manifest_path}")
+            continue
+        description = scope_def.get("description", scope_name)
+        ExtensionScopeRegistry.register_scope(extension_name, scope_name, description)
+        registered += 1
+    return registered
+
+
 def load_scopes_from_manifests() -> None:
     """Load extension scopes from extensions/*/manifest.json without importing extensions.
 
@@ -182,21 +203,7 @@ def load_scopes_from_manifests() -> None:
     registered = 0
     for manifest_path in manifests:
         try:
-            with open(manifest_path, "r", encoding="utf-8") as fh:
-                data = json.load(fh)
-            extension_name = data.get("name")
-            scopes = data.get("scopes", []) or []
-            if not extension_name:
-                logger.warning(f"Manifest missing name: {manifest_path}")
-                continue
-            for scope_def in scopes:
-                scope_name = scope_def.get("name")
-                description = scope_def.get("description", scope_name or "")
-                if not scope_name:
-                    logger.warning(f"Manifest scope missing name in {manifest_path}")
-                    continue
-                ExtensionScopeRegistry.register_scope(extension_name, scope_name, description)
-                registered += 1
+            registered += _register_manifest_scopes(manifest_path)
         except Exception as exc:
             logger.error(f"Failed loading manifest {manifest_path}: {exc}")
 

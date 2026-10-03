@@ -24,6 +24,7 @@
     "cross-spawn": "^7.0.5",
     "d3": "^7.4.4",
     "daisyui": "^2.45.0",
+    "dompurify": "^3.4.16",
     "flowbite-datepicker": "^1.2.2",
     "form-data": "^4.0.6",
     "framer-motion": "^10.16.4",

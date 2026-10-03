@@ -95,7 +95,7 @@ export function Component() {
         <Typewriter words={["Vídeos"]} loop={1} />
       </h2>
 
-      {/* TODO: filter videos */}
+      {/* NOTE: filter videos */}
       {/* <div className="flex w-full justify-end">
         <CheckboxDropdown
           className="btn-sm m-1"

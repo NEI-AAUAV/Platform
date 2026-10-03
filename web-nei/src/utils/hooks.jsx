@@ -97,7 +97,7 @@ export const useReCaptcha = () => {
  * Set loading to false only after 1 second has elapsed since
  * the last time loading was set to true.
  *
- * TODO: this should be useDebouncedUpdateState
+ * NOTE: this should be useDebouncedUpdateState
  */
 export const useLoading = (value) => {
   let startTime = Date.now();

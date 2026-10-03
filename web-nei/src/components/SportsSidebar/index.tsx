@@ -24,7 +24,6 @@ type SportsSidebarProps = {
   admin: boolean;
   modalitiesByYearAndFrame: ModalitiesByYearAndFrame;
   currentYear: number;
-  modalityId: string | undefined;
   tab: string | undefined;
   competitionId: string | undefined;
   setIsSidebarOpen: any;

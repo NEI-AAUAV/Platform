@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import DOMPurify from "dompurify";
 import { useParams, Link } from "react-router-dom";
 import { Row, Col, Image } from "react-bootstrap";
 import service from "services/NEIService";
@@ -9,6 +10,11 @@ const NewsArticle = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [article, setArticle] = useState([]);
+
+  const sanitizedContent = useMemo(
+    () => DOMPurify.sanitize(article?.content ?? ""),
+    [article?.content]
+  );
 
   // fetch article from API
   useEffect(() => {
@@ -76,9 +82,8 @@ const NewsArticle = () => {
           className="mt-4 text-justify"
           style={{ color: "var(--text-primary)" }}
         >
-          {/* TODO: This has the name implies is incredibly unsafe, pass the
-                    content first through https://github.com/cure53/DOMPurify */}
-          <p dangerouslySetInnerHTML={{ __html: article.content }}></p>
+          {/* Content is HTML from the API: sanitized with DOMPurify first */}
+          <p dangerouslySetInnerHTML={{ __html: sanitizedContent }}></p>
         </div>
 
         {/* idea: a button to go back to news page, with previous filters? */}

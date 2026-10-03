@@ -27,6 +27,7 @@ import readXlsxFile from "read-excel-file";
 import { colors } from "pages/Family/data";
 import Avatar from "components/Avatar";
 import { getErrorMessage } from "utils/error";
+import { runInChunks, focusOnMount } from "utils/concurrency";
 import { useToast } from "components/ui/use-toast";
 
 // CSV Headers
@@ -528,7 +529,7 @@ const BulkImportModal = ({
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
                         onBlur={saveEdit}
-                        autoFocus
+                        ref={focusOnMount}
                     >
                         <option value="M">M</option>
                         <option value="F">F</option>
@@ -544,7 +545,7 @@ const BulkImportModal = ({
                     onBlur={saveEdit}
                     onKeyDown={(e) => e.key === "Enter" && saveEdit()}
                     {...options.inputProps}
-                    autoFocus
+                    ref={focusOnMount}
                 />
             );
         }
@@ -754,26 +755,30 @@ const BulkImportModal = ({
         let successCount = 0;
 
         try {
-            for (let i = 0; i < (results?.created?.length || 0); i++) {
-                const user = results?.created?.[i];
-                if (!user) continue;
-                const roles = userRoles[i] || [];
+            const assignments = (results?.created || []).flatMap((user, i) =>
+                user
+                    ? (userRoles[i] || [])
+                        .filter(roleInfo => roleInfo?.role)
+                        .map(roleInfo => ({ user, roleInfo }))
+                    : []
+            );
 
-                for (const roleInfo of roles) {
-                    if (roleInfo?.role) {
-                        try {
-                            await FamilyService.assignRole({
-                                user_id: user.id,
-                                role_id: roleInfo.role.id,
-                                year: roleInfo.year || new Date().getFullYear() - 2000
-                            });
-                            successCount++;
-                        } catch (err) {
-                            console.error(`Failed to assign role ${roleInfo.role.name} to ${user.name}`, err);
-                        }
-                    }
+            const outcomes = await runInChunks(assignments, ({ user, roleInfo }) =>
+                FamilyService.assignRole({
+                    user_id: user.id,
+                    role_id: roleInfo.role.id,
+                    year: roleInfo.year || new Date().getFullYear() - 2000
+                })
+            );
+
+            outcomes.forEach((outcome, i) => {
+                if (outcome.status === "fulfilled") {
+                    successCount++;
+                } else {
+                    const { user, roleInfo } = assignments[i];
+                    console.error(`Failed to assign role ${roleInfo.role.name} to ${user.name}`, outcome.reason);
                 }
-            }
+            });
             setResults(prev => ({ ...prev, rolesAssigned: successCount }));
         } finally {
             setAssigningRoles(false);

@@ -192,7 +192,7 @@ const Dialog = ({
     const { top, bottom, left, right } =
       childrenRef.current.getBoundingClientRect();
 
-    // TODO: good for now, but should be improved
+    // NOTE: good for now, but should be improved
     // (overflow-hidden in parent hides dialog in some positions)
     // try using a custom parent container to calculate position
     // ( childrenRef.current.closest("[data-dialog-container]") )

@@ -114,7 +114,7 @@ const Autocomplete = ({
               <li className="px-3 py-2 text-sm opacity-60">Sem resultados</li>
             )}
             {options?.map((item, index) => (
-              <li key={index} tabIndex={index + 1}>
+              <li key={item.key} tabIndex={index + 1}>
                 <span
                   // Hack to prevent calling blur on input
                   onMouseDown={(e) => e.preventDefault()}

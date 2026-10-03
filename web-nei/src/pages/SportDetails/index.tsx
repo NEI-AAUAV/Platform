@@ -131,7 +131,6 @@ export function Component() {
                   admin={isAdminMode}
                   modalitiesByYearAndFrame={modalitiesByYearAndFrame}
                   currentYear={currentModality.year}
-                  modalityId={modalityId}
                   tab={tab}
                   competitionId={competitionId}
                   setIsSidebarOpen={setIsSidebarOpen}

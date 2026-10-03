@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import classNames from 'classnames';
+import { keyedByContent } from 'utils/keys';
 import './index.css';
 
 
@@ -80,18 +81,18 @@ const MultipleRangeInput = ({ min = 0, max = 150, step = 25, defaultValues = [[0
                 onInput={handleInput} onPointerDown={() => { pointerDown.current = true }} />
             <div className='mulrange-slider'></div>
             <div className='mulrange-ranges'>
-                {values.map(([v1, v2], i) =>
-                    <div key={i} style={{ left: `${v1 / range * 100}%`, width: `${(v2 - v1) / range * 100}%` }}></div>
+                {keyedByContent(values, ([v1, v2]) => `${v1}-${v2}`).map(({ item: [v1, v2], key }) =>
+                    <div key={key} style={{ left: `${v1 / range * 100}%`, width: `${(v2 - v1) / range * 100}%` }}></div>
                 )}
             </div>
             <div className='mulrange-handles'>
-                {values.flat().map((v, i) =>
-                    <div key={i} style={{ left: `${v / range * 100}%` }}></div>
+                {keyedByContent(values.flat()).map(({ item: v, key }) =>
+                    <div key={key} style={{ left: `${v / range * 100}%` }}></div>
                 )}
             </div>
         </div>
         <div className="select-none w-full flex justify-between text-xs p-2">
-            {Array.from({ length: ticks }, (_, i) => <span key={`tick-${i}`}>|</span>)}
+            {Array.from({ length: ticks }, (_, i) => <span key={`tick-${min + i * step}`}>|</span>)}
         </div>
     </>;
 }

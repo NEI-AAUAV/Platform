@@ -483,7 +483,7 @@ export function Component() {
             )}
             {
               view === Views.LIST && "Uhh ainda não temos isto feito"
-              // TODO: meter isto em tailwind
+              // NOTE: meter isto em tailwind
               // (
               //   <div className="flex flex-col">
               //     {!!loading ? (

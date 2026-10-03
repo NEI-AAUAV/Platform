@@ -10,6 +10,61 @@ import { PersonPinIcon } from "assets/icons/google";
 
 import "./index.css";
 
+const PopoverUser = ({ user, loading, onFindInFamily }) => (
+  <div className="flex items-start gap-4">
+    <div className="mask mask-circle w-16 shrink-0">
+      <img
+        src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png"
+        alt="Bonnie Avatar"
+      />
+    </div>
+    <div className="w-full">
+      <span className="">
+        {user.name} {user.surname}
+      </span>
+      <p className="mt-1 text-sm font-light leading-5 text-base-content/75">
+        Mestrado em Engenharia Informática{" "}
+        <span className="whitespace-nowrap font-light">• 3º ano</span>
+      </p>
+      <div className="mt-2 flex justify-between">
+        <ul className="flex space-x-1 sm:mt-0">
+          {!!user.github && (
+            <li>
+              <a
+                href={user.github}
+                target="_blank"
+                className="btn-ghost btn-xs btn-circle btn"
+              >
+                <GithubIcon />
+              </a>
+            </li>
+          )}
+          {!!user.linkedin && (
+            <li>
+              <a
+                href={user.linkedin}
+                target="_blank"
+                className="btn-ghost btn-xs btn-circle btn"
+              >
+                <LinkedinIcon />
+              </a>
+            </li>
+          )}
+        </ul>
+        <button
+          className={classNames(
+            "btn-xs btn gap-2",
+            loading && "loading disabled before:!mx-1"
+          )}
+          onClick={onFindInFamily}
+        >
+          {!loading && <PersonPinIcon />}Ver na Família
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
 export const UserPopover = ({ user, ...popoverProps }) => {
   const [loading, setLoading] = useState(false);
 
@@ -27,62 +82,7 @@ export const UserPopover = ({ user, ...popoverProps }) => {
     setTimeout(() => setLoading(false), 3000);
   }
 
-  const User = () => (
-    <div className="flex items-start gap-4">
-      <div className="mask mask-circle w-16 shrink-0">
-        <img
-          src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png"
-          alt="Bonnie Avatar"
-        />
-      </div>
-      <div className="w-full">
-        <span className="">
-          {user.name} {user.surname}
-        </span>
-        <p className="mt-1 text-sm font-light leading-5 text-base-content/75">
-          Mestrado em Engenharia Informática{" "}
-          <span className="whitespace-nowrap font-light">• 3º ano</span>
-        </p>
-        <div className="mt-2 flex justify-between">
-          <ul className="flex space-x-1 sm:mt-0">
-            {!!user.github && (
-              <li>
-                <a
-                  href={user.github}
-                  target="_blank"
-                  className="btn-ghost btn-xs btn-circle btn"
-                >
-                  <GithubIcon />
-                </a>
-              </li>
-            )}
-            {!!user.linkedin && (
-              <li>
-                <a
-                  href={user.linkedin}
-                  target="_blank"
-                  className="btn-ghost btn-xs btn-circle btn"
-                >
-                  <LinkedinIcon />
-                </a>
-              </li>
-            )}
-          </ul>
-          <button
-            className={classNames(
-              "btn-xs btn gap-2",
-              loading && "loading disabled before:!mx-1"
-            )}
-            onClick={findInFamily}
-          >
-            {!loading && <PersonPinIcon />}Ver na Família
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  return <Popover {...popoverProps} popover={<User user={user} />} />;
+  return <Popover {...popoverProps} popover={<PopoverUser user={user} loading={loading} onFindInFamily={findInFamily} />} />;
 };
 
 /**

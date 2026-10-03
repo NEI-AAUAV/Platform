@@ -175,7 +175,7 @@ const Details = ({
       note.notebook == "1" &&
         note_tags.push({ name: "Caderno", className: "tag-notebook" });
 
-      // TODO: refactor this so that it does not repeat the same code in Notes/index.js
+      // NOTE: refactor this so that it does not repeat the same code in Notes/index.js
       if (note.location.endsWith(".pdf")) {
         note.type = {
           caption: "Descarregar",

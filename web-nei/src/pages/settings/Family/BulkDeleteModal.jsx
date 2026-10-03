@@ -14,6 +14,7 @@ import { getErrorMessage } from "utils/error";
 import { BaseModal, ProgressBar } from "components/Modal";
 import { UserListDisplay } from "components/Family";
 import { useToast } from "components/ui/use-toast";
+import { runInChunks, focusOnMount } from "utils/concurrency";
 
 const BulkDeleteModal = ({
     isOpen,
@@ -49,22 +50,26 @@ const BulkDeleteModal = ({
     }, [isOpen, selectedUsers]);
 
     const checkForOrphans = async () => {
-        const warnings = [];
-        for (const user of selectedUsers.slice(0, 10)) { // Check first 10
-            try {
-                const children = await FamilyService.getUserChildren(user.id);
-                if (children && children.length > 0) {
-                    warnings.push({
-                        user,
-                        childrenCount: children.length,
-                        childrenNames: children.slice(0, 3).map(c => c.name)
-                    });
+        const results = await runInChunks(
+            selectedUsers.slice(0, 10), // Check first 10
+            async (user) => {
+                try {
+                    const children = await FamilyService.getUserChildren(user.id);
+                    if (children && children.length > 0) {
+                        return {
+                            user,
+                            childrenCount: children.length,
+                            childrenNames: children.slice(0, 3).map(c => c.name)
+                        };
+                    }
+                } catch (err) {
+                    // Ignore errors in check (orphan detection is best-effort)
+                    console.debug("Failed to check orphans for user " + user.id, err);
                 }
-            } catch (err) {
-                // Ignore errors in check (orphan detection is best-effort)
-                console.debug("Failed to check orphans for user " + user.id, err);
+                return null;
             }
-        }
+        );
+        const warnings = results.flatMap(r => (r.status === "fulfilled" && r.value ? [r.value] : []));
         setOrphanWarnings(warnings);
         setCheckedOrphans(true);
     };
@@ -79,20 +84,25 @@ const BulkDeleteModal = ({
         setProgress({ current: 0, total: selectedUsers.length });
         setErrors([]);
 
-        const newErrors = [];
-
-        for (let i = 0; i < selectedUsers.length; i++) {
-            const user = selectedUsers[i];
-            try {
-                await FamilyService.deleteUser(user.id);
-                setProgress(prev => ({ ...prev, current: i + 1 }));
-            } catch (err) {
-                newErrors.push({
-                    user,
-                    error: getErrorMessage(err, "Erro desconhecido")
-                });
+        let completed = 0;
+        const results = await runInChunks(
+            selectedUsers,
+            (user) => FamilyService.deleteUser(user.id),
+            {
+                onSettled: (result) => {
+                    if (result.status === "fulfilled") {
+                        completed += 1;
+                        setProgress(prev => ({ ...prev, current: completed }));
+                    }
+                },
             }
-        }
+        );
+
+        const newErrors = results.flatMap((result, i) =>
+            result.status === "rejected"
+                ? [{ user: selectedUsers[i], error: getErrorMessage(result.reason, "Erro desconhecido") }]
+                : []
+        );
 
         setErrors(newErrors);
         setLoading(false);
@@ -214,7 +224,7 @@ const BulkDeleteModal = ({
                             value={confirmText}
                             onChange={(e) => setConfirmText(e.target.value)}
                             placeholder={confirmPhrase}
-                            autoFocus
+                            ref={focusOnMount}
                         />
                     </div>
                 )}

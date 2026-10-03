@@ -176,7 +176,7 @@ export function buildTree(users, options = {}) {
   // sort like a normal distribution
   dataStructure.children = dataStructure.children
     .slice()
-    .filter((a) => a.children || a.data.start_year > 14) // TODO: do something
+    .filter((a) => a.children || a.data.start_year > 14) // NOTE: do something
     .sort(
       (a, b) =>
         a.family_depth - b.family_depth || a.family_count - b.family_count
@@ -828,7 +828,7 @@ export const patterns = [
 
 export const handleSearchChange = (value) => {
   if (!value) return;
-  // TODO: join transitions
+  // NOTE: join transitions
   d3.select("svg.treeei").call(zoom.scaleTo, 2.5);
   d3.select("svg.treeei").transition().call(zoom.translateTo, value.x, value.y);
 };

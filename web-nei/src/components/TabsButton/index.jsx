@@ -1,9 +1,11 @@
+import { keyedByContent } from "utils/keys";
+
 import Tab from "./Tab";
 
 const TabsButton = ({ className, tabs, selected, setSelected, ...props }) => {
-  const tabsNode = tabs.map((tab, index) => (
+  const tabsNode = keyedByContent(tabs).map(({ item: tab, key }, index) => (
     <Tab
-      key={index}
+      key={key}
       selected={selected === index}
       onClick={() => setSelected(index)}
     >
