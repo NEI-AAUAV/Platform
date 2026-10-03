@@ -123,3 +123,8 @@ def test_list_zip_contents_decodes_legacy_encoded_names() -> None:
 def test_custom_zip_rejects_non_zip_data() -> None:
     with pytest.raises(zipfile.BadZipFile):
         CustomZipFile(io.BytesIO(b"definitely not a zip file"))
+
+
+def test_decode_filename_never_returns_raw_bytes() -> None:
+    # 0x81 is undefined in cp1252, so it must fall through to cp437
+    assert _decode_filename(b"\x81") == "ü"

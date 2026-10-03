@@ -89,6 +89,8 @@ class AdminUserListing(ManagerUserListing):
 
 class UserCreateBase(UserBase):
     name: Annotated[str, StringConstraints(max_length=20)]
+    # The `user.surname` column is NOT NULL, so reject a missing one up front.
+    surname: Annotated[str, StringConstraints(max_length=20)]
     email: Annotated[str, Field(json_schema_extra={"format": "email"})]
 
     @field_validator("email")

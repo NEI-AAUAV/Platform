@@ -63,6 +63,7 @@ class UserRegisterForm(UserBase):
     """Properties to receive via API on register."""
 
     name: Annotated[str, StringConstraints(max_length=20)]
+    surname: Annotated[str, StringConstraints(max_length=20)]
     email: Annotated[str, Field(json_schema_extra={"format": "email"})]
     password: Annotated[SecretStr, StringConstraints(min_length=8)]
     recaptcha_token: Optional[str] = None

@@ -65,14 +65,17 @@ class ValidateFromJson:
         return json.loads(data)
 
 
-def _decode_filename(raw: bytes) -> "str | bytes":
-    """Decode a zip entry name trying several encodings, returns raw bytes on failure."""
-    for encoding in ("utf-8", "cp1252", "cp437"):
+def _decode_filename(raw: bytes) -> str:
+    """Decode a zip entry name trying several encodings.
+
+    cp437 maps every possible byte, so the last attempt never fails.
+    """
+    for encoding in ("utf-8", "cp1252"):
         try:
             return raw.decode(encoding)
         except UnicodeDecodeError:
             continue
-    return raw
+    return raw.decode("cp437")
 
 
 _DECODE_EXTRA_TAKES_CRC = (
