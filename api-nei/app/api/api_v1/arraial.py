@@ -371,12 +371,15 @@ async def activate_boost(
 
     # Log boost activation
     global _next_log_id
+    points = _find_points(nucleo)
+    if points is None:
+        raise HTTPException(status_code=404, detail="Núcleo points not found")
     entry = ArraialLogEntry(
         id=_next_log_id,
         nucleo=nucleo,
         delta=0,
-        prev_value=_find_points(nucleo)["value"],
-        new_value=_find_points(nucleo)["value"],
+        prev_value=points["value"],
+        new_value=points["value"],
         user_id=int(auth_data.sub) if getattr(auth_data, "sub", None) else None,
         user_email=getattr(auth_data, "email", None),
         rolled_back=False,
