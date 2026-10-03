@@ -122,3 +122,18 @@ def client(
         yield client
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def hide_container_extensions(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Make manifest discovery ignore the real `/extensions` mount.
+
+    Discovery always falls back to `/extensions`; when tests run inside the
+    dev container that finds the real extensions and breaks isolation.
+    """
+    import os
+
+    real_isdir = os.path.isdir
+    monkeypatch.setattr(
+        os.path, "isdir", lambda p: False if p == "/extensions" else real_isdir(p)
+    )

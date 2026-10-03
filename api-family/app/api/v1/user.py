@@ -412,6 +412,11 @@ def update_user(
                 status_code=400, 
                 detail=f"Patrão with id {obj_in.patrao_id} not found"
             )
+        if crud_user.check_cycle(id, obj_in.patrao_id):
+            raise HTTPException(
+                status_code=400,
+                detail="Patrão would create a cycle in the family tree"
+            )
     
     # Validate course_id if being updated
     if obj_in.course_id is not None and not crud_course.exists(obj_in.course_id):

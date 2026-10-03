@@ -4,7 +4,7 @@ Associates users with roles for specific years.
 """
 
 from typing import Optional, List
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 import re
 
 
@@ -39,7 +39,11 @@ class UserRoleUpdate(BaseModel):
 
 class UserRoleInDB(UserRoleBase):
     """Schema for user-role response from database."""
-    id: str = Field(..., alias='_id', description="User-role ID (MongoDB _id)")
+    id: str = Field(
+        ...,
+        validation_alias=AliasChoices('_id', 'id'), serialization_alias='id',
+        description="User-role ID (MongoDB _id)",
+    )
 
     def model_dump(self, **kwargs):
         """Override model_dump() to always use field names (not aliases) for serialization."""
@@ -52,7 +56,11 @@ class UserRoleInDB(UserRoleBase):
 
 class UserDetailsNested(BaseModel):
     """Nested user details for UserRoleWithDetails."""
-    id: Optional[int] = Field(None, alias='_id', description="User ID (MongoDB _id)")
+    id: Optional[int] = Field(
+        None,
+        validation_alias=AliasChoices('_id', 'id'), serialization_alias='id',
+        description="User ID (MongoDB _id)",
+    )
     name: Optional[str] = None
     image: Optional[str] = None
     sex: Optional[str] = None
@@ -67,7 +75,11 @@ class UserDetailsNested(BaseModel):
 
 class UserRoleWithDetails(UserRoleBase):
     """User-role with expanded user and role info."""
-    id: str = Field(..., alias='_id', description="User-role ID (MongoDB _id)")
+    id: str = Field(
+        ...,
+        validation_alias=AliasChoices('_id', 'id'), serialization_alias='id',
+        description="User-role ID (MongoDB _id)",
+    )
     user_name: Optional[str] = None  # Keep for backward compatibility
     user: Optional[UserDetailsNested] = None  # Full user details for frontend
     role_name: Optional[str] = None

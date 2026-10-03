@@ -91,6 +91,7 @@ if settings.OIDC_ENABLED:
 
 _STATE_COOKIE = "oauth_state"
 _STATE_MAX_AGE = 600  # 10 minutes
+_IUPI_MAX_LEN = 36  # matches the `user.iupi` column and `UserUpdate`
 
 
 def _signer() -> URLSafeTimedSerializer:
@@ -431,7 +432,7 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
 
     _raw_iupi = userinfo.get("iupi")
     iupi: Optional[str] = (
-        _raw_iupi[:64] if isinstance(_raw_iupi, str) and _raw_iupi else None
+        _raw_iupi[:_IUPI_MAX_LEN] if isinstance(_raw_iupi, str) and _raw_iupi else None
     )
     scopes = _parse_scopes(userinfo)
 
@@ -455,12 +456,14 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
                 email=email,
                 password=None,
                 scopes=scopes,
-                nmec=nmec,
-                iupi=iupi,
             ),
             active=True,
         )
+        # `UserCreate` does not carry these identity fields, so set them here
+        # in the same transaction as the external identity link.
         user.authentik_sub = authentik_sub
+        user.nmec = nmec
+        user.iupi = iupi
         # Persist the external identity link before issuing local credentials.
         db.commit()
         db.refresh(user)

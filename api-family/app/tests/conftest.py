@@ -1,3 +1,14 @@
+import os
+
+# Tests must never touch the configured (dev/prod) database: point the app at a
+# dedicated `*_test` database *before* any `app` module reads its settings.
+# The auth source keeps pointing at the original database so the same
+# credentials continue to work.
+_configured_db = os.getenv("MONGO_DB", "mongo")
+os.environ.setdefault("MONGO_AUTH_SOURCE", _configured_db)
+if not _configured_db.endswith("_test"):
+    os.environ["MONGO_DB"] = f"{_configured_db}_test"
+
 import pytest
 from typing import Generator, Any
 from unittest.mock import patch
@@ -56,3 +67,30 @@ def auth_client(app: FastAPI) -> Generator[TestClient, Any, None]:
                 yield client
     
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(autouse=True)
+def clean_database() -> Generator[None, Any, None]:
+    """Give every test an empty database.
+
+    Refuses to run against anything that is not a `*_test` database, because it
+    deletes every document.
+    """
+    from app.db import db as database
+
+    assert database.db.name.endswith("_test"), (
+        f"refusing to wipe non-test database {database.db.name!r}"
+    )
+    collections = (
+        database.Counter,
+        database.User,
+        database.Course,
+        database.Organization,
+        database.Role,
+        database.UserRole,
+    )
+    for collection in collections:
+        collection.delete_many({})
+    yield
+    for collection in collections:
+        collection.delete_many({})

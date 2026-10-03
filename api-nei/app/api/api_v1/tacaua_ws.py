@@ -38,8 +38,15 @@ class ConnectionManager:
         await websocket.send_text(message)
 
     async def broadcast(self, connection_type: ConnectionType, message: dict):
+        # A dead socket must not prevent the others from being notified.
+        stale: List[WebSocket] = []
         for websocket in self.active_connections[connection_type]:
-            await websocket.send_json(message)
+            try:
+                await websocket.send_json(message)
+            except Exception:
+                stale.append(websocket)
+        for websocket in stale:
+            self.disconnect(websocket)
 
     def change_connection_type(
         self, websocket: WebSocket, new_type: ConnectionType

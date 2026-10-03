@@ -23,7 +23,9 @@ def _write_manifest(base: Path, ext: str, content) -> None:
 
 
 @pytest.fixture
-def ext_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+def ext_dir(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, hide_container_extensions
+) -> Path:
     monkeypatch.setenv("EXTENSIONS_DIR", str(tmp_path))
     monkeypatch.delenv("ENABLED_EXTENSIONS", raising=False)
     return tmp_path

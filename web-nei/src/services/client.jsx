@@ -38,6 +38,18 @@ export async function refreshToken() {
     });
 }
 
+/**
+ * Replay a request that failed with 401 using the refreshed token.
+ *
+ * It goes through the same client (not the global axios) so that the response
+ * interceptor still unwraps `response.data` for the caller.
+ */
+function retryRequest(client, config, token) {
+  config.retry = true;
+  config.headers.Authorization = `Bearer ${token}`;
+  return client.request(config);
+}
+
 export const createClient = (baseURL) => {
   const client = axios.create({
     baseURL,
@@ -78,16 +90,18 @@ export const createClient = (baseURL) => {
           isRefreshing = false;
 
           if (token) {
-            config.retry = true;
-            return axios.request(config);
+            return retryRequest(client, config, token);
           } else {
             throw new Error("Session Expired");
           }
         } else {
-          return new Promise((resolve) => {
+          return new Promise((resolve, reject) => {
             subscribeTokenRefresh((token) => {
-              config.headers.Authorization = `Bearer ${token}`;
-              resolve(axios.request(config));
+              if (token) {
+                resolve(retryRequest(client, config, token));
+              } else {
+                reject(new Error("Session Expired"));
+              }
             });
           });
         }

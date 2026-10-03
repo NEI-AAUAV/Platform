@@ -4,7 +4,7 @@ Hierarchical tree structures for users and roles.
 """
 
 from typing import Optional, List
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class UserRole(BaseModel):
@@ -21,7 +21,11 @@ class UserRole(BaseModel):
 
 class UserTreeNode(BaseModel):
     """A node in the user family tree."""
-    id: int = Field(..., alias='_id', description="User ID (MongoDB _id)")
+    id: int = Field(
+        ...,
+        validation_alias=AliasChoices('_id', 'id'), serialization_alias='id',
+        description="User ID (MongoDB _id)",
+    )
     
     def model_dump(self, **kwargs):
         """Override model_dump() to always use field names (not aliases) for serialization."""

@@ -36,10 +36,10 @@ class DynamicOAuth2PasswordBearer(OAuth2PasswordBearer):
         current_scopes = self.get_scopes()
         self.scopes = current_scopes
         
-        # Update the flows model for OpenAPI
-        if hasattr(self, 'flows') and self.flows:
-            if hasattr(self.flows, 'password') and self.flows.password:
-                self.flows.password.scopes = current_scopes
+        # Update the flows model for OpenAPI (FastAPI keeps it on `self.model`)
+        password_flow = self.model.flows.password
+        if password_flow:
+            password_flow.scopes = current_scopes
         
         logger.info(f"Updated OAuth2 scopes: {list(current_scopes.keys())}")
     

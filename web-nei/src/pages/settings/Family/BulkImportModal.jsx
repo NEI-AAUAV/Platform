@@ -95,7 +95,7 @@ const CreatedUserRow = ({ user, userIdx, roles = [], onRemoveRole, onAddRole }) 
             <p className="text-xs text-base-content/50">Ano {user.start_year}</p>
 
             <div className="flex flex-wrap gap-1 mt-2">
-                {keyedByContent(roles, (r) => `${r.role?.id || r.role?.name || "role"}-${r.year}`).map(({ item: r, key }) => (
+                {keyedByContent(roles, (r) => `${r.role?.id || r.role?.name || "role"}-${r.year}`).map(({ item: r, key }, roleIdx) => (
                     <RoleChip
                         key={key}
                         roleName={r.role?.name}
@@ -688,10 +688,8 @@ const BulkImportModal = ({
             return { message: row.patrao_ambiguous ? "Patrao ambiguo" : "Patrao nao encontrado" };
         }
 
-        // Check base errors from parsing
-        const baseError = errors.find(e => e.row === row._rowIndex);
-        if (baseError) return baseError;
-
+        // Parse-time errors are deliberately not re-checked here: the rules above are
+        // the same ones, evaluated against the *current* (possibly edited) values.
         return null;
     };
 

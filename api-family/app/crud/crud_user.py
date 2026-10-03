@@ -56,7 +56,8 @@ class CRUDUser:
     def _add_search_filter(self, q: dict, search: str) -> None:
         """Add search filters to query."""
         search = search.strip()
-        or_conditions = [{"name": {MONGO_REGEX: search, "$options": "i"}}]
+        # Plain substring search: user input must never be interpreted as a regex.
+        or_conditions = [{"name": {MONGO_REGEX: re.escape(search), "$options": "i"}}]
         
         if search.isdigit():
             search_int = int(search)
