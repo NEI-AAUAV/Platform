@@ -54,7 +54,9 @@ export function Component() {
     TacaUAService.getModalities()
       .then((response) => {
         setData(response as unknown as ModalitiesDataProps);
-        currentModality.id === -1 && navigate("/taca-ua/1/games/0");
+        if (currentModality.id === -1) {
+          void navigate("/taca-ua/1/games/0");
+        }
       })
       .catch((e) => {
         toast({
@@ -79,7 +81,7 @@ export function Component() {
         .map((filteredTab) => filteredTab.url)
         .includes(tab ?? "")
     ) {
-      navigate(`/taca-ua/${modalityId}/games/${competitionId}`);
+      void navigate(`/taca-ua/${modalityId}/games/${competitionId}`);
     }
   }, [isAdminMode]);
 

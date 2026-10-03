@@ -6,7 +6,6 @@ import {
   organizations,
   colors,
   searchData,
-  changeLabels,
 } from "../data";
 
 import { useUserStore } from "stores/useUserStore";
@@ -161,7 +160,15 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
           "cursor-pointer py-0.5",
           index > year ? "font-normal opacity-70" : "font-medium"
         )}
+        role="button"
+        tabIndex={0}
         onClick={() => setYear(index)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setYear(index);
+          }
+        }}
       >
         <div
           className="ml-1.5 mr-2 inline-block h-3 w-3 rounded-full p-1"
@@ -296,7 +303,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
           >
             <ExpandLessIcon />
           </button>
-          {[...Array(5).keys()]
+          {[...new Array(5).keys()]
             .map((i) => endYear - 9 + i)
             .map((i) => (
               <Fragment key={i}>
@@ -305,7 +312,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
             ))}
         </div>
         <div>
-          {[...Array(5).keys()]
+          {[...new Array(5).keys()]
             .map((i) => endYear - 4 + i)
             .map((i) => (
               <Fragment key={i}>
@@ -340,7 +347,15 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
                   insignias.length !== 0 && !insignias.includes(key),
               }
             )}
+            role="button"
+            tabIndex={0}
             onClick={() => toggleInsignias(key)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggleInsignias(key);
+              }
+            }}
           >
             {/* Render icon: API icon takes priority over hardcoded insignia */}
             {renderOrgIcon(org)}

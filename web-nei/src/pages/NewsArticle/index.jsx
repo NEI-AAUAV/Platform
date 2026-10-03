@@ -14,10 +14,15 @@ const NewsArticle = () => {
   useEffect(() => {
     if (!id.match("[0-9]+")) window.location.href = "/404";
 
-    service.getNewsById(id).then((data) => {
-      setArticle(data);
-      setIsLoading(false);
-    });
+    service
+      .getNewsById(id)
+      .then((data) => {
+        setArticle(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to load news article:", error);
+      });
   }, []);
 
   return (

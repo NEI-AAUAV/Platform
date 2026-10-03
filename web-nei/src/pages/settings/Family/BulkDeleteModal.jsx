@@ -34,7 +34,9 @@ const BulkDeleteModal = ({
     // Check for orphans on open
     React.useEffect(() => {
         if (isOpen && selectedUsers.length > 0 && !checkedOrphans) {
-            checkForOrphans();
+            checkForOrphans().catch((err) => {
+                console.error("Failed to check for orphans:", err);
+            });
         }
         if (!isOpen) {
             // Reset state when closing

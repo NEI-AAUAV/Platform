@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ImageCard from "../../../components/ImageCard";
 import { Col, Row } from "react-bootstrap";
 import DCard from "components/Cards/DCard";
 import { AnimatePresence } from "framer-motion";
@@ -14,7 +13,6 @@ import { NewsModal } from "components/NewsModal/NewsModal";
 const NewsList = (props) => {
   const [isSelected, setSelected] = useState(null);
   return (
-    <>
       <Row>
         {props.news.length == 0 && (
           <Col sm={12}>
@@ -36,7 +34,7 @@ const NewsList = (props) => {
               animKey={animKey++}
             ></ImageCard>
           </Col>*/
-            <div key={index} className="w-fit">
+            <div key={article.id ?? article.title} className="w-fit">
               <DCard
                 type="news"
                 data={article}
@@ -56,7 +54,6 @@ const NewsList = (props) => {
           );
         })}
       </Row>
-    </>
   );
 };
 

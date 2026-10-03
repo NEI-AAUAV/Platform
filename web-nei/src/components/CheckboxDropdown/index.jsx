@@ -18,16 +18,17 @@ const CheckboxDropdown = ({ values, onChange, children, className }) => {
 
   return (
     <div className="dropdown-end dropdown">
-      <label tabIndex={0} className={`btn ${className}`}>
+      <label tabIndex={0} role="button" className={`btn ${className}`}>
         {children}
       </label>
       <ul
         tabIndex={0}
+        role="menu"
         className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-200 p-2 font-medium shadow"
       >
         {options?.map(
           ({ name, checked, color = "var(--p)"}, index) => (
-            <li key={index}>
+            <li key={name}>
               <label>
                 <input
                   type="checkbox"

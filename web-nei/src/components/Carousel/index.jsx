@@ -1,5 +1,5 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 
 const Carousel = ({ children,width,buttons,className }) => {
@@ -77,6 +77,8 @@ const Carousel = ({ children,width,buttons,className }) => {
                 {children.map((s,i) =>{
                     return(
                         <button
+                        key={i}
+                        type="button"
                         onClick={() => {
                             setCurrent(i);
                         }}

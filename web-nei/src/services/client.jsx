@@ -81,7 +81,7 @@ export const createClient = (baseURL) => {
             config.retry = true;
             return axios.request(config);
           } else {
-            return Promise.reject("Session Expired");
+            throw new Error("Session Expired");
           }
         } else {
           return new Promise((resolve) => {
@@ -92,7 +92,7 @@ export const createClient = (baseURL) => {
           });
         }
       }
-      return Promise.reject(error instanceof Error ? error : new Error(error));
+      throw error instanceof Error ? error : new Error(error);
     }
   );
   return client;

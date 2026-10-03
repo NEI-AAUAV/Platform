@@ -17,7 +17,7 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
   const tabsRef = useRef(null);
   const [scrollPos, setScrollPos] = React.useState(0);
   const [focused, setFocused] = React.useState(null);
-  const [selected, setSelected] = React.useState(value || tabs?.[0]);
+  const [selected] = React.useState(value || tabs?.[0]);
 
   // useEffect(() => {
   //   setSelected(value);
@@ -35,7 +35,7 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
     const setScrollPercentage = () => {
       const pos = ele.scrollLeft / (ele.scrollWidth - ele.clientWidth);
       
-      if (isNaN(pos)) return;
+      if (Number.isNaN(pos)) return;
       
       setScrollPos(pos);
     };
@@ -57,20 +57,22 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
   return (
     <div className={`flex justify-center ${className}`}>
       <div className="rounded-l-box my-1 flex items-center justify-center bg-base-200/80 px-2">
-        <div
+        <button
+          type="button"
           className={classNames("btn-ghost btn-sm btn-circle btn", {
-            "btn-disabled bg-transparent": isNaN(scrollPos) || scrollPos < 0.01,
+            "btn-disabled bg-transparent": Number.isNaN(scrollPos) || scrollPos < 0.01,
           })}
           onClick={() => scroll(-300)}
         >
           <ArrowBackIcon />
-        </div>
+        </button>
       </div>
       <div
         ref={tabsRef}
         className="scrollbar-hide w-fit max-w-3xl overflow-y-scroll scroll-smooth"
       >
         <ul
+          role="tablist"
           className="my-1 flex w-fit list-none items-center bg-base-200/80 px-4 py-1"
           onMouseLeave={() => setFocused(null)}
         >
@@ -78,6 +80,8 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
             <li
               className="relative flex cursor-pointer items-center"
               key={item}
+              role="tab"
+              aria-selected={selected === item}
               onClick={() => onChange(item)}
               onKeyDown={(event) =>
                 event.key === "Enter" ? onChange(item) : null
@@ -118,7 +122,7 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
                 <motion.div
                   className={classNames(
                     "absolute bottom-[-6px] left-1/4 z-0 h-1 w-1/2 rounded-lg",
-                    underlineColor ? underlineColor : "!bg-accent"
+                    underlineColor || "!bg-accent"
                   )}
                   layoutId="underline"
                 />
@@ -128,15 +132,16 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
         </ul>
       </div>
       <div className="rounded-r-box my-1 flex items-center justify-center bg-base-200/80 px-2">
-        <div
+        <button
+          type="button"
           className={classNames("btn-ghost btn-sm btn-circle btn", {
-            "btn-disabled bg-transparent": isNaN(scrollPos) || scrollPos > 0.99,
+            "btn-disabled bg-transparent": Number.isNaN(scrollPos) || scrollPos > 0.99,
           })}
           name="forward"
           onClick={() => scroll(300)}
         >
           <ArrowForwardIcon />
-        </div>
+        </button>
       </div>
     </div>
   );

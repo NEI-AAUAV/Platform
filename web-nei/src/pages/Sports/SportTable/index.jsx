@@ -18,7 +18,7 @@ const SportTable = (props) => {
         return (
           <tr key={index}>
             {row.map((col) => (
-              <td>{col}</td>
+              <td key={col}>{col}</td>
             ))}
           </tr>
         );

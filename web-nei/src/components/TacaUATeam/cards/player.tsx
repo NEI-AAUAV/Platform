@@ -31,6 +31,7 @@ export function ParticipantCard({
           <img
             className="mx-auto h-48 w-40 rounded-xl object-cover"
             src={image}
+            alt={name}
             onError={() => setNoImage(true)}
           />
         )}

@@ -8,6 +8,40 @@ import { EventIcon, CloseIcon } from "assets/icons/google";
 
 import "./index.css";
 
+function formatDateRange(start, end) {
+  if (!start || !end) return;
+  const startMonthYear = start.toLocaleString("pt-PT", {
+    month: "long",
+    year: "numeric",
+  });
+  const endMonthYear = end.toLocaleString("pt-PT", {
+    month: "long",
+    year: "numeric",
+  });
+  const startDay = start.getDate();
+  const endDay = end.getDate();
+
+  if (startMonthYear !== endMonthYear) {
+    return `${startDay} de ${startMonthYear} – ${endDay} de ${endMonthYear}`;
+  }
+  if (startDay !== endDay) {
+    return `${startDay} – ${endDay} de ${startMonthYear}`;
+  }
+  return `${startDay} de ${startMonthYear}`;
+}
+
+function isInsideBoundingBox(event, element) {
+  if (!element) return false;
+
+  const rect = element.getBoundingClientRect();
+  return (
+    event.clientX >= rect.left &&
+    event.clientX <= rect.right &&
+    event.clientY >= rect.top &&
+    event.clientY <= rect.bottom
+  );
+}
+
 export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
   // NOTE: calling setVisible will result in a loop, call handleVisible instead
   const [visible, setVisible] = useState(show || false);
@@ -34,26 +68,6 @@ export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
     }
   }
 
-  function formatDateRange(start, end) {
-    if (!start || !end) return;
-    const startMonthYear = start.toLocaleString("pt-PT", {
-      month: "long",
-      year: "numeric",
-    });
-    const endMonthYear = end.toLocaleString("pt-PT", {
-      month: "long",
-      year: "numeric",
-    });
-    const startDay = start.getDate();
-    const endDay = end.getDate();
-
-    return startMonthYear !== endMonthYear
-      ? `${startDay} de ${startMonthYear} – ${endDay} de ${endMonthYear}`
-      : startDay !== endDay
-        ? `${startDay} – ${endDay} de ${startMonthYear}`
-        : `${startDay} de ${startMonthYear}`;
-  }
-
   const eventDialog = useMemo(() => {
     if (!event) return null;
     return (
@@ -68,12 +82,13 @@ export const EventDialog = ({ event, show, onShowChange, ...dialogProps }) => {
           <h5 className="font-medium">{event.category?.name}</h5>
 
           <div className="ml-auto gap-3">
-            <div
+            <button
+              type="button"
               className="btn-ghost btn-sm btn-circle btn"
               onClick={() => handleVisible(false)}
             >
               <CloseIcon />
-            </div>
+            </button>
           </div>
         </div>
         <h4 className="mt-2 font-semibold">{event.title}</h4>
@@ -130,17 +145,6 @@ const Dialog = ({
 
     // show dialog on outside click
     function handleClickOutside(event) {
-      function isInsideBoundingBox(event, element) {
-        if (!element) return false;
-
-        const rect = element.getBoundingClientRect();
-        return (
-          event.clientX >= rect.left &&
-          event.clientX <= rect.right &&
-          event.clientY >= rect.top &&
-          event.clientY <= rect.bottom
-        );
-      }
       if (!isInsideBoundingBox(event, dialogRef.current)) {
         handleVisible(false);
       }
@@ -212,6 +216,12 @@ const Dialog = ({
         tabIndex="0"
         role="button"
         onClick={() => handleVisible(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleVisible(true);
+          }
+        }}
       >
         {children}
       </div>

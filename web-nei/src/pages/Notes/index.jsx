@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Spinner } from "react-bootstrap";
 import { motion, AnimatePresence } from "framer-motion";
 
-import ListView from "./ListView";
 import GridView from "./GridView";
 import PageNav from "../../components/PageNav";
 import Alert from "../../components/Alert";
@@ -92,7 +91,7 @@ export function Component() {
       setActiveFilters(active);
     }
     // Remove data from URL
-    var url = document.location.href;
+    const url = document.location.href;
     window.history.pushState({}, "", url.split("?")[0]);
   }, []);
 
@@ -102,11 +101,11 @@ export function Component() {
     // Every time a new call is made to the API, close details
     setSelNote(null);
 
-    const selCategories = categories
-      .filter((c) => c.checked)
-      .map((c) => c.name);
+    const selCategories = new Set(
+      categories.filter((c) => c.checked).map((c) => c.name)
+    );
     const selCategoriesKeys = Object.entries(data.categories)
-      .filter(([k, v]) => selCategories.includes(v.name))
+      .filter(([k, v]) => selCategories.has(v.name))
       .map(([k]) => k);
 
     const params = {
@@ -119,7 +118,7 @@ export function Component() {
     };
 
     for (let activeFilter of activeFilters) {
-      const cat = filters.filter((f) => f["name"] == activeFilter)[0]["db"];
+      const cat = filters.find((f) => f["name"] == activeFilter)["db"];
       params.category.push(cat);
     }
 
@@ -319,11 +318,18 @@ export function Component() {
       }
     }
     // Copy to user's clipboard
-    navigator.clipboard.writeText(url.slice(0, -1)); // Remove last char (? if no filters or extra &)
-    setAlert({
-      type: "info",
-      text: "O URL foi copiado para a área de transferência! :)",
-    });
+    // Remove last char (? if no filters or extra &)
+    navigator.clipboard
+      .writeText(url.slice(0, -1))
+      .then(() => {
+        setAlert({
+          type: "info",
+          text: "O URL foi copiado para a área de transferência! :)",
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to copy URL to clipboard", error);
+      });
   }
 
   function resetFilters() {
@@ -332,6 +338,16 @@ export function Component() {
     setSelTeacher("");
     setSelYear("");
   }
+
+  const gridContent =
+    notes.length == 0 ? (
+      <div>
+        <h3 className="mt-3 text-center">Nenhum apontamento encontrado</h3>
+        <h4 className="text-center">Tente definir filtros menos restritivos</h4>
+      </div>
+    ) : (
+      <GridView data={notes} setSelected={setSelNote}></GridView>
+    );
 
   return (
     <div id="notes">
@@ -402,7 +418,7 @@ export function Component() {
             </div>
 
             <AnimatePresence initial={false}>
-              {selNote && selNote.id && (
+              {selNote?.id && (
                 <motion.div
                   key={selNote.id}
                   initial={{ opacity: 0 }}
@@ -434,7 +450,7 @@ export function Component() {
         <div className="flex grow flex-col gap-5">
           <div className="flex justify-between">
             <TabsButton
-              tabs={[<GridViewIcon />] + !config.PRODUCTION ? [<ViewListIcon />] : []}
+              tabs={[<GridViewIcon key="grid" />] + !config.PRODUCTION ? [<ViewListIcon key="list" />] : []}
               selected={view}
               setSelected={setView}
             />
@@ -457,17 +473,8 @@ export function Component() {
                     className="mx-auto mt-3"
                     title="A carregar..."
                   />
-                ) : notes.length == 0 ? (
-                  <div>
-                    <h3 className="mt-3 text-center">
-                      Nenhum apontamento encontrado
-                    </h3>
-                    <h4 className="text-center">
-                      Tente definir filtros menos restritivos
-                    </h4>
-                  </div>
                 ) : (
-                  <GridView data={notes} setSelected={setSelNote}></GridView>
+                  gridContent
                 )}
               </div>
             )}

@@ -11,7 +11,9 @@ export function Component() {
     //     console.log(event.data);
     // };
     useEffect(() => {
-        ws.getLiveGames();
+        Promise.resolve(ws.getLiveGames()).catch((error) => {
+            console.error("Failed to get live games:", error);
+        });
     }, [])
 
     return (<div>olá</div>);

@@ -35,7 +35,7 @@ let currentMaxYear = 25;
 const zoomThreshold = 1;
 let lastTransform = d3.zoomIdentity.scale(0.5);
 let svg, zoom, groups, labels, fainaLabels;
-export let searchData = [];
+export const searchData = [];
 
 // Export root node for breadcrumbs and external access (use getTreeRoot() to access)
 let _treeRoot = null;
@@ -84,19 +84,10 @@ export function buildTree(users, options = {}) {
 
   const userData = users;
 
-  const assignInsignias = () => {
-    const insignias = ["nei", "aettua"];
-    // Use crypto.getRandomValues for cryptographically secure random number
-    const array = new Uint32Array(1);
-    crypto.getRandomValues(array);
-    const i = array[0] % (insignias.length * 2);
-    return insignias.slice(i);
-  };
-
   for (const elem of userData) {
     // Create faina names
     elem.names = separateName(elem.name);
-    if (elem.faina && elem.faina[0]?.name) {
+    if (elem.faina?.[0]?.name) {
       elem.fainaNames = separateName(
         getFainaHierarchy(elem, currentMaxYear) +
         " " +
@@ -199,7 +190,8 @@ export function buildTree(users, options = {}) {
     // .size(view)
     .nodeSize([100, 150])
     .separation(function (a, b) {
-      return a.family !== b.family ? 4 : a.parent !== b.parent ? 1.25 : 1;
+      if (a.family !== b.family) return 4;
+      return a.parent === b.parent ? 1 : 1.25;
     });
 
   const root = treeStructure(dataStructure);
@@ -256,7 +248,7 @@ export function buildTree(users, options = {}) {
         hy = 0.5 * (ty - sy),
         off = 5;
 
-      let dir = sx - tx > 0 ? -1 : sx - tx < 0 ? 1 : 0;
+      const dir = Math.sign(tx - sx);
 
       const p =
         `M${sx},${sy}` +
@@ -307,9 +299,11 @@ export function buildTree(users, options = {}) {
 
   // Async validation and pattern creation
   (async () => {
-    for (const d of nodesWithImages) {
-      const url = resolveNodeImage(d.data.image);
-      const ok = await validateImage(url);
+    const urls = nodesWithImages.map((d) => resolveNodeImage(d.data.image));
+    const results = await Promise.all(urls.map(validateImage));
+    for (const [index, d] of nodesWithImages.entries()) {
+      const url = urls[index];
+      const ok = results[index];
       if (ok) {
         const pattern = defs.append("pattern")
           .attr("class", "image")
@@ -327,7 +321,9 @@ export function buildTree(users, options = {}) {
         d.data.image = null;
       }
     }
-  })();
+  })().catch((error) => {
+    console.error("Failed to validate node images", error);
+  });
 
   const getNodeImageId = (d) => {
     if (d.data.image) return d.data.id;
@@ -541,8 +537,6 @@ export function buildTree(users, options = {}) {
   // Add hover handlers to nodes to show/hide profile button AND insignias
   nodes
     .on("mouseenter", function (event, d) {
-      const parent = this;
-
       // Show profile button
       d3.select(this).select(".profile-btn")
         .transition()
@@ -550,11 +544,11 @@ export function buildTree(users, options = {}) {
         .style("opacity", 1);
 
       // Show insignias automatically on hover
-      if (!parent.classList.contains("active")) {
+      if (!this.classList.contains("active")) {
         const x = (i) => Math.cos(((-i + 1) / 5) * Math.PI) * 30 - 5;
         const y = (i) => Math.sin(((-i + 1) / 5) * Math.PI) * 30 - 5;
 
-        d3.select(parent)
+        d3.select(this)
           .select("g.insignias")
           .selectAll("rect.insignia")
           .transition()
@@ -571,8 +565,6 @@ export function buildTree(users, options = {}) {
       }
     })
     .on("mouseleave", function (event, d) {
-      const parent = this;
-
       // Hide profile button
       d3.select(this).select(".profile-btn")
         .transition()
@@ -580,8 +572,8 @@ export function buildTree(users, options = {}) {
         .style("opacity", 0);
 
       // Hide insignias if not clicked/active
-      if (!parent.classList.contains("active")) {
-        d3.select(parent)
+      if (!this.classList.contains("active")) {
+        d3.select(this)
           .select("g.insignias")
           .selectAll("rect.insignia")
           .transition()
@@ -681,7 +673,7 @@ export function buildTree(users, options = {}) {
     });
 
   // Populate searchData
-  searchData = [];
+  searchData.length = 0;
   groups.each((node) =>
     searchData.push({
       id: node.id,
@@ -701,7 +693,10 @@ export function buildTree(users, options = {}) {
       .attr("r", close ? 18 : 10);
 
     nodesProfileGrad
-      .attr("opacity", (d) => (close ? (d.data.image ? 0 : 0.4) : 1))
+      .attr("opacity", (d) => {
+        if (!close) return 1;
+        return d.data.image ? 0 : 0.4;
+      })
       .transition()
       .duration(300)
       .attr("r", close ? 18 : 10);
@@ -760,7 +755,7 @@ export function buildTree(users, options = {}) {
 
 export function centerTree() {
   const rect = d3.select("svg.treeei").node().getBoundingClientRect();
-  const { x, y, width, height } = svg.node().getBBox();
+  const { x, width } = svg.node().getBBox();
 
   // let offsetY =
   //   (rect.height - height * lastTransform.k) / 2 - y * lastTransform.k;

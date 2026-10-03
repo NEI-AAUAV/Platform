@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
@@ -93,6 +93,10 @@ export function Component() {
     ?.filter((d) => d.category === "ATA")
     .reduce((o, d, i) => ({ ...o, [d.id]: i + 1 }), {});
 
+  const sortedMandates = [...mandates].sort((a, b) =>
+    String(b).localeCompare(String(a))
+  );
+
   return (
     <div className="d-flex flex-column flex-wrap">
       <div style={{ whiteSpace: "pre", overflowWrap: "break-word" }}>
@@ -101,7 +105,7 @@ export function Component() {
         </h2>
       </div>
       <Tabs
-        tabs={[...mandates].sort((a, b) => String(a).localeCompare(String(b))).reverse()}
+        tabs={sortedMandates}
         value={tab}
         onChange={changeTab}
         renderTab={customRender}
@@ -131,12 +135,12 @@ export function Component() {
               initial="hidden"
               animate="visible"
             >
-              {docs.map((doc, index) => (
-                <motion.tr key={index} variants={item}>
+              {docs.map((doc) => (
+                <motion.tr key={doc.id} variants={item}>
                   <td>
                     <p className="font-bold">
                       {doc?.category}{" "}
-                      {!!ataNumber[doc?.id]
+                      {ataNumber[doc?.id]
                         ? `Número ${ataNumber[doc?.id]}`
                         : doc.mandate}
                     </p>

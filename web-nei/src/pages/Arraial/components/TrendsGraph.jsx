@@ -116,7 +116,7 @@ export default function TrendsGraph({ pointHistory }) {
                         className="cursor-pointer"
                         onMouseEnter={() => setHoveredPoint({ nucleo, index, value, time })}
                         onMouseLeave={() => setHoveredPoint(null)}
-                        onClick={() => setHoveredPoint((prev) => prev && prev.nucleo === nucleo && prev.index === index ? null : { nucleo, index, value, time })}
+                        onClick={() => setHoveredPoint((prev) => prev?.nucleo === nucleo && prev.index === index ? null : { nucleo, index, value, time })}
                       />
                       {isHovered && (
                         <g>

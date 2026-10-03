@@ -40,8 +40,8 @@ export const UserPopover = ({ user, ...popoverProps }) => {
           {user.name} {user.surname}
         </span>
         <p className="mt-1 text-sm font-light leading-5 text-base-content/75">
-          Mestrado em Engenharia Informática
-          <span className="whitespace-nowrap font-light"> • 3º ano</span>
+          Mestrado em Engenharia Informática{" "}
+          <span className="whitespace-nowrap font-light">• 3º ano</span>
         </p>
         <div className="mt-2 flex justify-between">
           <ul className="flex space-x-1 sm:mt-0">
@@ -132,9 +132,11 @@ const Popover = ({ popover, children, className }) => {
     <div
       className={`relative w-fit ${className}`}
       onMouseOver={() => debouncedSetVisible(true)}
+      onFocus={() => debouncedSetVisible(true)}
       onMouseOut={() => {
         debouncedSetVisible(false);
       }}
+      onBlur={() => debouncedSetVisible(false)}
     >
       <div
         ref={childrenRef}

@@ -82,7 +82,7 @@ const BulkEditModal = ({
         if (action === "set_course" && selectedCourse) {
             await FamilyService.updateUser(user.id, {
                 ...user,
-                course_id: parseInt(selectedCourse)
+                course_id: Number.parseInt(selectedCourse)
             });
             return true;
         }
@@ -288,7 +288,7 @@ const BulkEditModal = ({
                                                     type="number"
                                                     className="input input-bordered w-24"
                                                     value={roleYear}
-                                                    onChange={(e) => setRoleYear(parseInt(e.target.value) || 0)}
+                                                    onChange={(e) => setRoleYear(Number.parseInt(e.target.value) || 0)}
                                                     min={0}
                                                     max={99}
                                                 />
@@ -332,7 +332,7 @@ const BulkEditModal = ({
                                                 type="number"
                                                 className="input input-bordered w-24"
                                                 value={newYear}
-                                                onChange={(e) => setNewYear(parseInt(e.target.value) || 0)}
+                                                onChange={(e) => setNewYear(Number.parseInt(e.target.value) || 0)}
                                                 min={0}
                                                 max={99}
                                             />

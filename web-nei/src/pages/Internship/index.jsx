@@ -3,18 +3,15 @@ import Card from "./components/InternshipCard/index";
 import { Col, Row } from "react-bootstrap";
 import { Typewriter } from "react-simple-typewriter";
 
-const animationBase = parseFloat(import.meta.env.VITE_ANIMATION_BASE);
-const animationIncrement = parseFloat(
+const animationBase = Number.parseFloat(import.meta.env.VITE_ANIMATION_BASE);
+const animationIncrement = Number.parseFloat(
   import.meta.env.VITE_ANIMATION_INCREMENT
 );
 
 const Internship = () => {
   return (
     <div
-      d-flex
-      flex-column
-      flex-wrap
-      className="slideUpFade"
+      className="d-flex flex-column flex-wrap slideUpFade"
       style={{ animationDelay: animationBase + animationIncrement }}
     >
       <h2 className="mb-5 text-center">
@@ -26,8 +23,7 @@ const Internship = () => {
           portfolio de projetos para{" "}
           <a href="mailto:eder.alves@olisipo.pt">eder.alves@olisipo.pt</a>, e
           indica a referência das oportunidades que gostavas de integrar. Caso
-          tenhas alguma dúvida, contacta-nos pelo email (
-          <a href="mailto:nei@aauav.pt">nei@aauav.pt</a>) ou pelas redes sociais
+          tenhas alguma dúvida, contacta-nos pelo email (<a href="mailto:nei@aauav.pt">nei@aauav.pt</a>) ou pelas redes sociais
           para te podermos ajudar.
         </p>
       </div>

@@ -31,10 +31,10 @@ export default function SportModalitySelect({
   setModalModality,
   setModalType,
   tab,
-}: SelectProps) {
+}: Readonly<SelectProps>) {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate(`/taca-ua/${modalityId}/${tab}/${competitionId}`);
+    void navigate(`/taca-ua/${modalityId}/${tab}/${competitionId}`);
   };
 
   return (
@@ -45,7 +45,16 @@ export default function SportModalitySelect({
           ? "bg-primary/20 font-medium hover:bg-primary/30"
           : "hover:bg-base-100 dark:hover:bg-base-200"
       )}
+      role="button"
+      tabIndex={0}
       onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.target !== e.currentTarget) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
     >
       <p>{name}</p>
       {admin && (

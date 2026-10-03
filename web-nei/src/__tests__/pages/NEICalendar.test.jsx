@@ -111,11 +111,11 @@ describe("NEICalendar", () => {
     const [prev, next] = screen.getAllByRole("button");
 
     fireEvent.click(prev);
-    await waitFor(() => expect(screen.getByText("Dezembro")).toBeInTheDocument());
+    expect(await screen.findByText("Dezembro")).toBeInTheDocument();
     expect(screen.getByText("2032")).toBeInTheDocument();
 
     fireEvent.click(next);
-    await waitFor(() => expect(screen.getByText("Janeiro")).toBeInTheDocument());
+    expect(await screen.findByText("Janeiro")).toBeInTheDocument();
     expect(screen.getByText("2033")).toBeInTheDocument();
     expect(service.getEvents).toHaveBeenCalledTimes(1);
   });
@@ -129,7 +129,7 @@ describe("NEICalendar", () => {
 
     for (const name of ["Julho", "Agosto", "Setembro"]) {
       fireEvent.click(next);
-      await waitFor(() => expect(screen.getByText(name)).toBeInTheDocument());
+      expect(await screen.findByText(name)).toBeInTheDocument();
     }
 
     await waitFor(() => expect(service.getEvents).toHaveBeenCalledTimes(2));
@@ -143,7 +143,7 @@ describe("NEICalendar", () => {
 
     fireEvent.click(screen.getAllByRole("button")[1]);
 
-    await waitFor(() => expect(screen.getByText("Janeiro")).toBeInTheDocument());
+    expect(await screen.findByText("Janeiro")).toBeInTheDocument();
     expect(screen.getByText("2036")).toBeInTheDocument();
   });
 

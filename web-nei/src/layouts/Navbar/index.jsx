@@ -98,7 +98,9 @@ const Navbar = () => {
         if (data?.topic === "ARRAIAL_CONFIG" && typeof data.enabled === "boolean") {
           setArraialEnabled(!!data.enabled);
         }
-      } catch (_) { }
+      } catch (_) {
+        // Ignore malformed socket messages
+      }
     };
     socket.addEventListener("message", onMessage);
     return () => {
@@ -134,7 +136,9 @@ const Navbar = () => {
         if (href.startsWith("http://") || href.startsWith("https://")) {
           return new URL(href, window.location.origin).pathname || "/";
         }
-      } catch (_) { }
+      } catch (_) {
+        // Ignore errors: fall back to the original value
+      }
       return href;
     };
 
@@ -253,7 +257,7 @@ const Navbar = () => {
       }
     };
 
-    loadExtensionNav();
+    loadExtensionNav().catch(console.error);
   }, [scopes, navItems]);
 
   useEffect(() => {
@@ -311,12 +315,12 @@ const Navbar = () => {
           window.location.href = data.end_session_url;
           return;
         }
-        navigate("/");
+        void navigate("/");
       })
       .catch((err) => {
         console.error(err);
         useUserStore.getState().logout();
-        navigate("/");
+        void navigate("/");
       });
   }
 
@@ -337,7 +341,6 @@ const Navbar = () => {
           <div className="navbar-start !w-fit basis-[80px]">
             <Link to="/">
               <img
-                role="button"
                 src={logo}
                 width="60"
                 height="60"
@@ -348,10 +351,10 @@ const Navbar = () => {
           <div className="navbar-center hidden md:flex">
             <ul className="menu menu-horizontal px-1">
               {navItems.map(
-                ({ name, link, disabled, dropdown, reload }, index) =>
+                ({ name, link, disabled, dropdown, reload }) =>
                   !dropdown ? (
                     <li
-                      key={index}
+                      key={name}
                       className={classNames({
                         "pointer-events-none opacity-50": disabled,
                       })}
@@ -362,22 +365,21 @@ const Navbar = () => {
                     </li>
                   ) : (
                     <li
-                      key={index}
+                      key={name}
                       tabIndex={0}
                       onMouseDown={(e) => e.preventDefault()}
                     >
-                      <a className="gap-2">
+                      <button type="button" className="gap-2">
                         {name}
                         <ExpandMoreIcon />
-                      </a>
+                      </button>
                       <ul className="!rounded-box w-52 border border-base-300 bg-base-200 p-2 shadow">
                         {dropdown.map(
                           (
                             { name, link, disabled, external, reload },
-                            index,
                           ) => (
                             <li
-                              key={index}
+                              key={link}
                               className={classNames({
                                 "pointer-events-none opacity-50": disabled,
                               })}
@@ -407,8 +409,8 @@ const Navbar = () => {
               )}
               {extNav
                 .filter((e) => !e.branded)
-                .map((e, idx) => (
-                  <li key={`ext-${idx}`}>
+                .map((e) => (
+                  <li key={`ext-${e.href}`}>
                     <LinkAdapter to={e.href} reloadDocument>
                       {e.label}
                     </LinkAdapter>
@@ -428,9 +430,9 @@ const Navbar = () => {
           </div>
           {extNav
             .filter((e) => e.branded)
-            .map((e, idx) => (
+            .map((e) => (
               <Link
-                key={`ext-branded-${idx}`}
+                key={`ext-branded-${e.href}`}
                 to={e.href}
                 reloadDocument
                 className="btn-ghost btn-sm btn-circle btn
@@ -480,6 +482,7 @@ const Navbar = () => {
                 <div className="dropdown-end dropdown">
                   <label
                     tabIndex={0}
+                    role="button"
                     className="btn-outline btn-sm btn flex-nowrap !px-0.5 align-middle md:gap-2"
                   >
                     <div className="avatar md:mr-1">
@@ -498,6 +501,7 @@ const Navbar = () => {
                   </label>
                   <ul
                     tabIndex={0}
+                    role="menu"
                     className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-200 p-2 shadow"
                   >
                     <li>
@@ -526,10 +530,10 @@ const Navbar = () => {
                         </Link>
                       </li>
                     )}
-                    <li onClick={logout}>
-                      <a>
+                    <li>
+                      <button type="button" onClick={logout}>
                         <LogoutIcon /> Log out
-                      </a>
+                      </button>
                     </li>
                   </ul>
                 </div>
@@ -556,10 +560,10 @@ const Navbar = () => {
                 <LinkAdapter to="/arraial">Arraial do DETI</LinkAdapter>
               </li>
             )}
-            {data.map(({ name, link, disabled, dropdown }, index) =>
+            {data.map(({ name, link, disabled, dropdown }) =>
               !dropdown ? (
                 <li
-                  key={index}
+                  key={name}
                   className={classNames({
                     "pointer-events-none opacity-50": disabled,
                   })}
@@ -567,16 +571,20 @@ const Navbar = () => {
                   <LinkAdapter to={link}>{name}</LinkAdapter>
                 </li>
               ) : (
-                <li key={index} tabIndex={0}>
-                  <a className="justify-between" onClick={toggleMobileDropdown}>
+                <li key={name} tabIndex={0}>
+                  <button
+                    type="button"
+                    className="justify-between"
+                    onClick={toggleMobileDropdown}
+                  >
                     {name}
                     <ExpandMoreIcon />
-                  </a>
+                  </button>
                   <ul className="relative left-0 ml-4 flex max-h-0 overflow-hidden !rounded-none border-l-2 border-base-content/50 pl-2 transition-all ease-out">
                     {dropdown.map(
-                      ({ name, link, disabled, external }, index) => (
+                      ({ name, link, disabled, external }) => (
                         <li
-                          key={index}
+                          key={link}
                           className={classNames({
                             "pointer-events-none opacity-50": disabled,
                           })}
@@ -594,8 +602,8 @@ const Navbar = () => {
             )}
             {extNav && extNav.length > 0 && (
               <>
-                {extNav.map((e, idx) => (
-                  <li key={`ext-mobile-${idx}`}>
+                {extNav.map((e) => (
+                  <li key={`ext-mobile-${e.href}`}>
                     <LinkAdapter to={e.href} reloadDocument>
                       {e.label}
                     </LinkAdapter>
@@ -617,6 +625,7 @@ const Navbar = () => {
         </div>
       </nav>
       <div
+        role="presentation"
         className={classNames("modal", { "modal-open": openMobile })}
         onClick={() => setOpenMobile(false)}
       />

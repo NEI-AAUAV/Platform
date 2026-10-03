@@ -1,4 +1,4 @@
-import { CommandMapping, EmulatorState, FileSystem, OutputFactory, defaultCommandMapping, Outputs, hasFile } from "javascript-terminal";
+import { CommandMapping, EmulatorState, FileSystem, OutputFactory, defaultCommandMapping, Outputs } from "javascript-terminal";
 // TODO: update prompt with current working directory,
 //       more easter eggs
 
@@ -48,7 +48,7 @@ const terminalstate = EmulatorState.create(
                     'function': (state, inpt) => {
                         if (inpt.length == 2 && inpt.includes("-r") && inpt.includes("/")) {
 
-                            var root = document.getElementById("root");
+                            const root = document.getElementById("root");
                             root.innerHTML = "Uh oh!<br/>What have you done!?";
                             root.style.height = "100vw";
                             root.style.backgroundColor = "black";
@@ -76,7 +76,7 @@ const terminalstate = EmulatorState.create(
                         let out = "";
 
                         if (hasFile(state.getFileSystem(), "./pimpneiwebsite.bin")) {
-                            var root = document.getElementById("root");
+                            const root = document.getElementById("root");
                             root.style.fontFamily = "'Comic Sans MS', fantasy";
                             root.style.color = "deeppink";
                             out ="cool mode activated B)";
@@ -90,7 +90,7 @@ const terminalstate = EmulatorState.create(
                         };
                         */
 
-                        var root = document.getElementById("root");
+                        const root = document.getElementById("root");
                         root.style.fontFamily = "'Comic Sans MS', fantasy";
                         root.style.color = "deeppink";
 

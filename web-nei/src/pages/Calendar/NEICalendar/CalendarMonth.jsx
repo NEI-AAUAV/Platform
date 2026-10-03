@@ -4,6 +4,10 @@ import { Fragment } from "react";
 import { EventDialog } from "components/Dialog";
 import { dateKey } from "./utils";
 
+function isToday(date) {
+  return dateKey(new Date()) === date;
+}
+
 const CalendarMonth = ({
   month,
   monthEvents,
@@ -11,16 +15,12 @@ const CalendarMonth = ({
   setSelEvent,
   hiddenCategories,
 }) => {
-  function isToday(date) {
-    return dateKey(new Date()) === date;
-  }
-
   if (!monthEvents) return null;
 
   return (
     <div className="grid grid-cols-7 border-l border-t border-base-content/10">
-      {Object.entries(monthEvents).map(([day, events], index) => (
-        <Fragment key={index}>
+      {Object.entries(monthEvents).map(([day, events]) => (
+        <Fragment key={day}>
           <div className="min-h-[120px] border-b border-r border-base-content/10">
             <div
               // onClick={() => showEventModal(day)}
@@ -56,7 +56,14 @@ const CalendarMonth = ({
                         selected ? 1 : 0.7
                       })`,
                     }}
+                    role={event ? "button" : undefined}
+                    tabIndex={event ? 0 : undefined}
                     onClick={() => setSelEvent(event)}
+                    onKeyDown={(e) => {
+                      if (event && (e.key === "Enter" || e.key === " ")) {
+                        setSelEvent(event);
+                      }
+                    }}
                   >
                     <p className="h-[24px] overflow-hidden truncate text-clip px-1 text-xs !leading-[24px] sm:text-sm">
                       {event?.title}

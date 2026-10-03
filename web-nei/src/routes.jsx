@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 
 import config from "config";
 
-import Layout, { FullLayout, CleanLayout } from "./layouts/Layout";
+import Layout, { FullLayout } from "./layouts/Layout";
 import { useUserStore } from "stores/useUserStore";
 
 const isProd = config.PRODUCTION;
@@ -23,7 +23,7 @@ function ProtectedRoute({
 
   if (!!token !== loggedIn) return <Navigate to={redirect} />;
 
-  if (adminOnly && (!scopes || !scopes.includes("admin"))) {
+  if (adminOnly && (!scopes?.includes("admin"))) {
     return <Navigate to="/forbidden" />;
   }
 

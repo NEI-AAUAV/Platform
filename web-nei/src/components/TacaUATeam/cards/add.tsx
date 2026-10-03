@@ -6,7 +6,7 @@ export type Props = {
   index: number;
 };
 
-export function AddParticipantCard({ index }: Props): JSX.Element {
+export function AddParticipantCard({ index }: Readonly<Props>): JSX.Element {
   return (
     <BaseCard
       as={motion.button}

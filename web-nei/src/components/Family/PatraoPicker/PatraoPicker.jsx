@@ -80,13 +80,13 @@ const PatraoPicker = ({
     }, [debouncedSearch, stableExcludeIds, page]);
 
     useEffect(() => {
-        loadPatraoList();
+        loadPatraoList().catch(console.error);
     }, [loadPatraoList]);
 
     // Ensure selected patrão is in the list
     useEffect(() => {
         if (selectedPatrao && patraoList.length > 0) {
-            const exists = patraoList.find(p => p.id === selectedPatrao.id);
+            const exists = patraoList.some(p => p.id === selectedPatrao.id);
             if (!exists) {
                 setPatraoList(prev => [selectedPatrao, ...prev]);
             }

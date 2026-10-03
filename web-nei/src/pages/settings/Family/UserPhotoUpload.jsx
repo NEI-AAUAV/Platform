@@ -32,7 +32,9 @@ export default function UserPhotoUpload({ user, isEdit, watch, register, onSave,
                 }
             }
         };
-        check();
+        check().catch((err) => {
+            console.error("Failed to check image upload availability:", err);
+        });
     }, []);
 
     // Reset state when user changes

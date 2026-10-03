@@ -12,6 +12,9 @@ export function Component() {
         service.getHistory()
             .then((data) => {
                 setData(data);
+            })
+            .catch((error) => {
+                console.error("Failed to load history", error);
             });
     }, []);
 

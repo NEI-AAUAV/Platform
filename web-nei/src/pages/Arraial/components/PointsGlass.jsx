@@ -12,12 +12,8 @@ export default function PointsGlass({
   animateFill = false,
   isLcp = false,
 }) {
-  const logoSrc =
-    pointsData.nucleo === "NEECT"
-      ? neectLogo
-      : pointsData.nucleo === "NEEETA"
-      ? neeetaLogo
-      : neiLogo;
+  const logoByNucleo = { NEECT: neectLogo, NEEETA: neeetaLogo };
+  const logoSrc = logoByNucleo[pointsData.nucleo] ?? neiLogo;
 
   return (
     <div className="flex flex-col justify-center items-center space-y-2">

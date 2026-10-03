@@ -20,7 +20,9 @@ const App = () => {
   const router = createBrowserRouter(routes);
 
   useEffect(() => {
-    refreshToken();
+    refreshToken().catch((error) => {
+      console.error("Failed to refresh token", error);
+    });
   }, []);
 
   return (

@@ -53,7 +53,7 @@ export default function RolePickerModal({
             }
         }
         if (isOpen && roleTree.length === 0) {
-            loadRoleTree();
+            loadRoleTree().catch(console.error);
         }
     }, [isOpen, roleTree.length]);
 
@@ -263,7 +263,7 @@ export default function RolePickerModal({
                                         value={roleYear !== null ? roleYear : ""}
                                         placeholder={requireYear ? "Ex: 24" : "-"}
                                         onChange={(e) =>
-                                            setRoleYear(e.target.value ? parseInt(e.target.value) : null)
+                                            setRoleYear(e.target.value ? Number.parseInt(e.target.value) : null)
                                         }
                                         min={0}
                                         max={99}

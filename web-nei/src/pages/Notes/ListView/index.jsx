@@ -26,45 +26,45 @@ function titleCase(str) {
         The string "0" or "1", representing if the notes belong in the category 
  */
 const ListView = (props) => {
-  var animKey = 0;
+  let animKey = 0;
 
   return (
     <div className="mx-3">
       <div className="list-view-header">
-        <div md="4" className="list-view-name">
+        <div className="list-view-name">
           Ficheiro
         </div>
-        <div md="4" className="list-view-subject-name">
+        <div className="list-view-subject-name">
           Cadeira
         </div>
-        <div md="1" className="list-view-subject-short">
+        <div className="list-view-subject-short">
           Sigla
         </div>
-        <div md="3" className="list-view-subject-name">
+        <div className="list-view-subject-name">
           Autor
         </div>
       </div>
 
       <div>
-        {props.data.map((item, index) => {
+        {props.data.map((item) => {
           return (
-            <React.Fragment key={index}>
+            <React.Fragment key={item.id}>
               <div
                 className="list-view-item mx-n3 slideUpFade px-3"
                 style={{ animationDelay: animKey++ * 0.1 + "s" }}
               >
                 <div>
                   <div>
-                    <div md="4" className="list-view-name">
+                    <div className="list-view-name">
                       {item.name}
                     </div>
-                    <div md="4" className="list-view-subject-name">
+                    <div className="list-view-subject-name">
                       {item.subject?.name}
                     </div>
-                    <div md="1" className="list-view-subject-short">
+                    <div className="list-view-subject-short">
                       {item.subject?.short}
                     </div>
-                    <div md="3" className="list-view-subject-name">
+                    <div className="list-view-subject-name">
                       {item.author?.name}
                     </div>
                   </div>
@@ -114,7 +114,7 @@ const ListView = (props) => {
                 <div>
                   <div>
                     <div>
-                      <div sm="12" lg="8">
+                      <div>
                         <dl className="mb-2">
                           {!!item.school_year?.year_begin &&
                             !!item.school_year?.year_end && (
@@ -189,7 +189,7 @@ const ListView = (props) => {
                           )}
                         </dl>
                       </div>
-                      <div sm="12" lg="4">
+                      <div>
                         <a
                           href={item.location}
                           target="_blank"

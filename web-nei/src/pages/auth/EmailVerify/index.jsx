@@ -29,6 +29,14 @@ function FailedVerification() {
 	);
 }
 
+function CurrentState({ state }) {
+	switch (state) {
+		case "loading": return <Spinner className="flex-grow max-w-lg" />;
+		case "success": return <SuccessfulVerification />;
+		case "failed": return <FailedVerification />;
+	}
+}
+
 export function Component() {
 	const [searchParams] = useSearchParams();
 	const [state, setState] = useState("loading");
@@ -48,17 +56,9 @@ export function Component() {
 			.catch(() => setState("failed"));
 	}, [searchParams]);
 
-	const Current = () => {
-		switch (state) {
-			case "loading": return <Spinner className="flex-grow max-w-lg" />;
-			case "success": return <SuccessfulVerification />;
-			case "failed": return <FailedVerification />;
-		}
-	}
-
 	return (
 		<div className="flex justify-center">
-			<Current />
+			<CurrentState state={state} />
 		</div>
 	);
 }

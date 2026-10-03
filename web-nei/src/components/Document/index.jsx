@@ -1,7 +1,5 @@
 import LinkAdapter from "utils/LinkAdapter";
 
-import { motion } from "framer-motion";
-
 /**
  * Component for document
  *
@@ -43,7 +41,7 @@ const Document = ({
     <LinkAdapter
       to={link}
       onClick={onClick}
-      title={title ? title : ""}
+      title={title || ""}
       style={style}
       className={"no-underline " + className}
     >
@@ -58,10 +56,9 @@ const Document = ({
               {description}
             </p>
             <div className="">
-              {tags &&
-                tags.map((tag, index) => (
+              {tags?.map((tag) => (
                   <span
-                    key={index}
+                    key={tag.name}
                     className={"badge my-1 ml-0 mr-2 " + tag.className}
                     style={tag.color ? { backgroundColor: tag.color } : {}}
                   >
@@ -98,7 +95,7 @@ const Document2 = ({
     <LinkAdapter
       to={link}
       onClick={onClick}
-      title={title ? title : ""}
+      title={title || ""}
       style={style}
       className={"p-1 no-underline " + className}
     >
@@ -115,7 +112,7 @@ const Document2 = ({
             }`}
           >
             <div className="mask mask-circle w-6">
-              <img src="https://placeimg.com/192/192/people" />
+              <img src="https://placeimg.com/192/192/people" alt="" />
             </div>
           </div>
         </div>
@@ -125,10 +122,9 @@ const Document2 = ({
           </h5>
 
           <div className="mt-2 flex flex-wrap gap-2">
-            {tags &&
-              tags.map((tag, index) => (
+            {tags?.map((tag) => (
                 <span
-                  key={index}
+                  key={tag.name}
                   className="badge badge-sm"
                   style={tag.color ? { backgroundColor: tag.color } : {}}
                 >

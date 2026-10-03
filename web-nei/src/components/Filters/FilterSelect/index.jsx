@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Accordion, Button, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
+import React from "react";
+import { Accordion, Button } from "react-bootstrap";
 import Filters from "../";
 
 /**

@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { useLoading } from "utils/hooks";
 import { useUserStore } from "stores/useUserStore";
 
-import service from "services/NEIService";
-
 import { BaseSettings } from "../base";
 
 const Status = {
@@ -15,7 +13,7 @@ const Status = {
 
 export function Component() {
   // Define state variables for form inputs
-  const [errors, setErrors] = useState({});
+  const [, setErrors] = useState({});
   const [response, setResponse] = useLoading({ status: null });
   const { name, surname } = useUserStore((state) => state);
   let form = {
@@ -52,10 +50,7 @@ export function Component() {
     console.log(values)
     const formData = new FormData(event.target);
     console.log(formData)
-    if (
-      [values.github, values.linkedin].every((v) => v.match(/^https?:\/\/.+/))
-    ) {
-    }
+    // Submitting the form to the API is not implemented yet.
   };
 
   return (

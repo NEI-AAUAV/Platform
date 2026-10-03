@@ -204,14 +204,14 @@ const BulkImportModal = ({
     const patraoSearchResults = useMemo(() => {
         if (!patraoSearch.trim()) return allUsers.slice(0, 8);
         const query = patraoSearch.toLowerCase().trim();
-        const queryNum = parseInt(query);
+        const queryNum = Number.parseInt(query);
 
         return allUsers
             .filter(u => {
                 if (u.name?.toLowerCase().includes(query)) return true;
                 if (u.faina_name?.toLowerCase().includes(query)) return true;
-                if (!isNaN(queryNum) && u.nmec?.toString().includes(query)) return true;
-                if (!isNaN(queryNum) && u.id === queryNum) return true;
+                if (!Number.isNaN(queryNum) && u.nmec?.toString().includes(query)) return true;
+                if (!Number.isNaN(queryNum) && u.id === queryNum) return true;
                 return false;
             })
             .slice(0, 12);
@@ -247,8 +247,8 @@ const BulkImportModal = ({
 
 
         // Try as nmec or ID first
-        const asNum = parseInt(trimmed);
-        if (!isNaN(asNum)) {
+        const asNum = Number.parseInt(trimmed);
+        if (!Number.isNaN(asNum)) {
             if (userMap.byNmec[asNum]) {
 
                 return { id: userMap.byNmec[asNum].id, resolved: true, user: userMap.byNmec[asNum] };
@@ -323,9 +323,9 @@ const BulkImportModal = ({
         // Normalize headers (keys) to handle case sensitivity
         // Check missing headers
         const firstRow = rawRows[0];
-        const headers = Object.keys(firstRow).map(h => h.trim().toLowerCase());
+        const headers = new Set(Object.keys(firstRow).map(h => h.trim().toLowerCase()));
         const requiredHeaders = ["name", "sex", "start_year"];
-        const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
+        const missingHeaders = requiredHeaders.filter(h => !headers.has(h));
 
         if (missingHeaders.length > 0) {
             return { data: [], errors: [{ row: 0, message: `Colunas obrigatorias em falta: ${missingHeaders.join(", ")}` }] };
@@ -350,7 +350,7 @@ const BulkImportModal = ({
             const rowErrors = [];
             if (!row.name) rowErrors.push("nome em falta");
             if (!row.sex || !["M", "F"].includes(row.sex.toUpperCase())) rowErrors.push("sexo invalido (M/F)");
-            if (!row.start_year || isNaN(parseInt(row.start_year))) rowErrors.push("ano invalido");
+            if (!row.start_year || Number.isNaN(Number.parseInt(row.start_year))) rowErrors.push("ano invalido");
 
             // Check duplicate names (frontend side)
             const nameLower = (row.name || "").toLowerCase();
@@ -367,8 +367,8 @@ const BulkImportModal = ({
             const parsed = {
                 name: row.name || "",
                 sex: (row.sex || "").toUpperCase(),
-                start_year: parseInt(row.start_year) || 0,
-                nmec: row.nmec ? parseInt(row.nmec) : null,
+                start_year: Number.parseInt(row.start_year) || 0,
+                nmec: row.nmec ? Number.parseInt(row.nmec) : null,
                 faina_name: row.faina_name || null,
                 patrao_id: patraoResult.id,
                 patrao_input: patraoValue,
@@ -376,7 +376,7 @@ const BulkImportModal = ({
                 patrao_user: patraoResult.user,
                 patrao_ambiguous: patraoResult.ambiguous,
                 patrao_matches: patraoResult.matches,
-                course_id: row.course_id ? parseInt(row.course_id) : null,
+                course_id: row.course_id ? Number.parseInt(row.course_id) : null,
                 _rowIndex: i,
                 _key: `row-${i}-${Date.now()}`,
             };
@@ -498,7 +498,7 @@ const BulkImportModal = ({
                 row.patrao_ambiguous = result.ambiguous;
                 row.patrao_matches = result.matches;
             } else if (field === "start_year" || field === "nmec") {
-                row[field] = value ? parseInt(value) : null;
+                row[field] = value ? Number.parseInt(value) : null;
             } else if (field === "sex") {
                 row[field] = value.toUpperCase();
             } else {
@@ -909,7 +909,9 @@ const BulkImportModal = ({
                                                 <button
                                                     className="badge badge-primary badge-outline font-mono font-bold hover:bg-primary hover:text-primary-content cursor-pointer transition-colors"
                                                     onClick={() => {
-                                                        navigator.clipboard.writeText(u.id);
+                                                        navigator.clipboard.writeText(u.id).catch((err) => {
+                                                            console.error("Failed to copy ID:", err);
+                                                        });
                                                         // Optional: show toast
                                                     }}
                                                     title="Copiar ID"
@@ -1116,7 +1118,7 @@ const BulkImportModal = ({
             // But we need to update updatedUsers by index.
 
             const promises = Object.entries(userPhotos).map(async ([idxStr, file]) => {
-                const idx = parseInt(idxStr);
+                const idx = Number.parseInt(idxStr);
                 const user = results?.created?.[idx];
                 if (!user) return; // Should not happen
 

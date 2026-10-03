@@ -5,7 +5,6 @@ import {
   MockupTerminal,
   MultipleRangeInput,
   CardMerch,
-  GameCard,
   SportsCard,
   CardHall,
 } from "components";
@@ -760,7 +759,7 @@ export function Component() {
         >
           <div className="bg-base-100 rounded-box col-span-3 row-span-3 mx-2 grid w-72 flex-shrink-0 place-items-center items-center gap-4 p-4 py-8 shadow-xl xl:mx-0 xl:w-full svelte-1n6ue57">
             <div className="dropdown">
-              <div tabIndex="0">
+              <div role="button" tabIndex="0">
                 <div className="online avatar">
                   <div className="mask mask-squircle bg-base-content h-24 w-24 bg-opacity-10 p-px">
                     <img
@@ -776,7 +775,7 @@ export function Component() {
             </div>{" "}
             <div>
               <div className="dropdown w-full">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="text-center">
                     <div className="text-lg font-extrabold">Betsy Braddock</div>
                     <div className="text-base-content/70 my-3 text-sm">
@@ -790,7 +789,7 @@ export function Component() {
                 </div>
               </div>{" "}
               <div className="dropdown w-full">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="mt-2 text-center">
                     <div className="badge badge-ghost">Design</div>{" "}
                     <div className="badge badge-ghost">Art</div>{" "}
@@ -800,7 +799,7 @@ export function Component() {
               </div>
             </div>{" "}
             <div className="dropdown dropdown-top">
-              <div tabIndex="0">
+              <div role="button" tabIndex="0">
                 <div className="btn-group">
                   <button className="btn btn-accent btn-sm">Follow</button>{" "}
                   <button
@@ -832,7 +831,7 @@ export function Component() {
                 Enable your favorite superpowers. Terms and conditions apply
               </div>{" "}
               <div className="dropdown w-full flex-1">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="form-control">
                     <label className="label cursor-pointer">
                       <span className="label-text">Enable teleportation</span>{" "}
@@ -868,7 +867,7 @@ export function Component() {
             </div>{" "}
             <div className="form-control">
               <div className="dropdown dropdown-top dropdown-end">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <button className="btn btn-secondary btn-block space-x-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -891,7 +890,7 @@ export function Component() {
           </div>{" "}
           <div className="card card-compact xl:card-normal bg-base-100 col-span-3 row-span-4 mx-2 w-72 flex-shrink-0 overflow-visible shadow-xl xl:mx-0 xl:w-auto svelte-1n6ue57">
             <div className="dropdown">
-              <div tabIndex="0">
+              <div role="button" tabIndex="0">
                 <figure>
                   <img
                     src="/tailwind-css-component-card-1.jpg"
@@ -907,8 +906,9 @@ export function Component() {
               <div className="card-title flex items-center font-extrabold">
                 Card Component
                 <div className="dropdown dropdown-top dropdown-end">
-                  <div tabIndex="0">
+                  <div role="button" tabIndex="0">
                     <div
+                      role="button"
                       tabIndex="0"
                       className="btn btn-ghost text-info btn-xs btn-circle mx-1 inline-block"
                     >
@@ -932,7 +932,7 @@ export function Component() {
                 </div>
               </div>{" "}
               <div className="dropdown w-full">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="mb-2">
                     <div className="badge badge-ghost">May 14th</div>
                   </div>
@@ -944,7 +944,7 @@ export function Component() {
               </p>{" "}
               <div className="card-actions justify-end">
                 <div className="dropdown dropdown-top dropdown-end">
-                  <div tabIndex="0">
+                  <div role="button" tabIndex="0">
                     <button className="btn btn-primary">Get Started</button>
                   </div>
                 </div>
@@ -953,7 +953,7 @@ export function Component() {
           </div>{" "}
           <div className="col-span-3 row-span-3 mx-2 flex w-72 flex-shrink-0 flex-col xl:mx-0 xl:w-full svelte-1n6ue57">
             <div className="dropdown">
-              <div tabIndex="0" className="bg-opacity-100">
+              <div role="button" tabIndex="0" className="bg-opacity-100">
                 <div className="tabs w-full flex-grow-0">
                   <button className="tab tab-lifted tab-active tab-border-none tab-lg flex-1">
                     Stats
@@ -970,7 +970,7 @@ export function Component() {
             <div className="bg-base-100 grid w-full flex-grow gap-3 rounded-xl rounded-tl-none p-6 shadow-xl">
               <div className="flex items-center space-x-2">
                 <div className="dropdown">
-                  <div tabIndex="0">
+                  <div role="button" tabIndex="0">
                     <div className="online avatar">
                       <div className="mask mask-hexagon bg-base-content h-16 w-16 bg-opacity-10 p-px">
                         <img
@@ -990,7 +990,7 @@ export function Component() {
                 </div>
               </div>{" "}
               <div className="dropdown">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="divider text-base-content/60 m-0">
                     Reports
                   </div>
@@ -999,7 +999,7 @@ export function Component() {
               <div className="text-lg font-extrabold">Audience Report</div>{" "}
               <div className="grid gap-3">
                 <div className="dropdown dropdown-top">
-                  <div tabIndex="0">
+                  <div role="button" tabIndex="0">
                     <div className="flex items-center p-1">
                       <span className="text-base-content/70 w-48 text-xs">
                         Search Engines
@@ -1057,7 +1057,7 @@ export function Component() {
           </div>{" "}
           <div className="col-span-3 row-span-1 mx-2 flex w-72 flex-shrink-0 flex-col justify-center xl:mx-0 xl:w-auto svelte-1n6ue57">
             <div className="dropdown dropdown-end w-full">
-              <div tabIndex="0">
+              <div role="button" tabIndex="0">
                 <div className="flex items-center justify-between">
                   <div className="online avatar">
                     <div className="mask mask-squircle bg-base-100 h-16 w-16 p-1">
@@ -1102,7 +1102,7 @@ export function Component() {
           <div className="bg-base-100 text-base-content rounded-box col-span-3 row-span-4 mx-2 grid w-72 flex-shrink-0 shadow-xl xl:mx-0 xl:w-auto xl:place-self-stretch svelte-1n6ue57">
             <div className="grid w-full grid-cols-1 gap-4 p-4">
               <div className="dropdown">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="grid w-full grid-cols-2 gap-4">
                     <button className="btn btn-block">Neutral</button>{" "}
                     <button className="btn btn-primary btn-block">
@@ -1120,7 +1120,7 @@ export function Component() {
                 </div>
               </div>{" "}
               <div className="dropdown dropdown-top">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="grid w-full grid-cols-2 gap-4">
                     <button className="btn btn-warning btn-block">
                       warning
@@ -1147,7 +1147,7 @@ export function Component() {
           </div>{" "}
           <div className="col-span-3 row-span-2 mx-2 grid w-72 flex-shrink-0 gap-4 xl:mx-0 xl:w-auto svelte-1n6ue57">
             <div className="dropdown dropdown-end dropdown-top">
-              <div tabIndex="0">
+              <div role="button" tabIndex="0">
                 <div className="grid gap-4">
                   <div className="btn-group flex">
                     <button className="btn flex-1">1</button>{" "}
@@ -1167,7 +1167,7 @@ export function Component() {
               </div>
             </div>{" "}
             <div className="dropdown dropdown-end dropdown-top">
-              <div tabIndex="0">
+              <div role="button" tabIndex="0">
                 <div className="tabs tabs-boxed items-center">
                   <button className="tab flex-1">Tab 1</button>{" "}
                   <button className="tab tab-active flex-1">Tab 2</button>{" "}
@@ -1179,7 +1179,7 @@ export function Component() {
           <div className="bg-base-100 text-base-content rounded-box col-span-3 row-span-3 mx-2 grid w-72 flex-shrink-0 items-stretch shadow-xl xl:mx-0 xl:w-auto xl:place-self-stretch svelte-1n6ue57">
             <div className="grid place-content-center gap-4 p-4">
               <div className="dropdown dropdown-end">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="alert flex-col space-y-2">
                     <div className="flex-1">
                       <span className="mx-3 text-sm">
@@ -1196,7 +1196,7 @@ export function Component() {
                 </div>
               </div>{" "}
               <div className="dropdown dropdown-end dropdown-top">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="alert alert-info">
                     <div className="flex-1">
                       <svg
@@ -1222,7 +1222,7 @@ export function Component() {
                 </div>
               </div>{" "}
               <div className="dropdown dropdown-end dropdown-top">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="alert alert-success">
                     <div className="flex-1">
                       <svg
@@ -1252,7 +1252,7 @@ export function Component() {
           <div className="col-span-3 row-span-2 mx-2 grid w-72 flex-shrink-0 gap-4 xl:mx-0 xl:w-auto xl:place-self-stretch svelte-1n6ue57">
             <div className="bg-base-100 text-base-content rounded-box shadow-xl">
               <div className="dropdown dropdown-end w-full">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <ul className="menu overflow-visible p-3">
                     <li className="menu-title">
                       <span>Menu Title</span>
@@ -1326,7 +1326,7 @@ export function Component() {
           <div className="col-span-3 row-span-1 mx-2 grid w-72 flex-shrink-0 gap-4 xl:mx-0 xl:w-auto svelte-1n6ue57">
             <div className="bg-base-100 text-base-content rounded-box shadow-xl">
               <div className="dropdown dropdown-end dropdown-top w-full">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="flex justify-center gap-8 p-4">
                     <label aria-label="checkbox CSS component">
                       <input type="checkbox" className="checkbox" />
@@ -1353,7 +1353,7 @@ export function Component() {
                 </div>
               </div>{" "}
               <div className="dropdown dropdown-end w-full">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="rating rating-lg rating-half w-full justify-center px-4 pb-4">
                     <input
                       type="radio"
@@ -1433,7 +1433,7 @@ export function Component() {
           <div className="col-span-3 row-span-1 mx-2 grid w-72 flex-shrink-0 gap-4 xl:mx-0 xl:w-auto svelte-1n6ue57">
             <div className="bg-neutral text-neutral-content rounded-box flex items-center shadow-xl">
               <div className="dropdown dropdown-top">
-                <div tabIndex="0">
+                <div role="button" tabIndex="0">
                   <div className="breadcrumbs px-4 text-sm">
                     <ul>
                       <li>
@@ -1488,7 +1488,7 @@ export function Component() {
               </div>{" "}
               <div className="flex-0">
                 <div className="dropdown dropdown-top dropdown-end">
-                  <div tabIndex="0">
+                  <div role="button" tabIndex="0">
                     <div className="flex space-x-1">
                       <button
                         aria-label="button component"
@@ -1543,7 +1543,7 @@ export function Component() {
               <div className="flex-1">
                 <h2 className="card-title mb-0 flex">
                   <div className="dropdown dropdown-top">
-                    <div tabIndex="0">
+                    <div role="button" tabIndex="0">
                       <button
                         aria-label="loading button"
                         className="btn btn-ghost loading btn-sm btn-circle"
@@ -1553,7 +1553,7 @@ export function Component() {
                   Downloading...
                 </h2>{" "}
                 <div className="dropdown dropdown-top w-full">
-                  <div tabIndex="0">
+                  <div role="button" tabIndex="0">
                     <progress
                       value="70"
                       max="100"
@@ -1564,7 +1564,7 @@ export function Component() {
               </div>{" "}
               <div className="flex-0">
                 <div className="dropdown dropdown-top dropdown-end">
-                  <div tabIndex="0">
+                  <div role="button" tabIndex="0">
                     <button
                       aria-label="circle button component"
                       className="btn btn-circle"

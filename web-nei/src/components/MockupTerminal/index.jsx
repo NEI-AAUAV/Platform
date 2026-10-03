@@ -86,11 +86,11 @@ const MockupTerminal = () => {
     // Focus textarea input if no text is being selected
     const isTextSelected = () => {
       const selection = window.getSelection();
-      return selection && selection.type === "Range";
+      return selection?.type === "Range";
     };
     if (isTextSelected()) return;
     e.preventDefault();
-    inputRef.current && inputRef.current.focus();
+    inputRef.current?.focus();
   };
 
   const handleFocus = () => {
@@ -196,6 +196,7 @@ const MockupTerminal = () => {
 
   return (
     <div
+      role="presentation"
       className="mockup-terminal mockup-code bg-base-300 font-mono leading-[22px] text-base-content shadow-lg"
       onClick={setInputFocus}
     >

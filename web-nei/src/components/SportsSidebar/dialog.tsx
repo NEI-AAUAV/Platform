@@ -49,7 +49,7 @@ export default function SportsSidebarDialog({
   setModalModality,
   sportsList,
   toast,
-}: SportsSidebarDialogProps) {
+}: Readonly<SportsSidebarDialogProps>) {
   const navigate = useNavigate();
 
   const typeOptions: Option[] = [
@@ -85,48 +85,48 @@ export default function SportsSidebarDialog({
     },
   ];
 
-  const handleCreateOrEdit = () => {
+  const handleCreateOrEdit = async () => {
     const apiFn = {
       add: TacaUAService.createModality,
       edit: TacaUAService.updateModality,
     }[modalType];
-    apiFn({
-      id: modalModality.id,
-      data: {
-        year: modalModality.year,
-        type: modalModality.type,
-        frame: modalModality.frame,
-        sport: modalModality.sport,
-      },
-    })
-      .then(async (data: any) => {
-        setAddDialogOpen(false);
-        toast({
-          description:
-            "Modalidade " +
-            { add: "adicionada", edit: "editada" }[modalType] +
-            " com sucesso.",
-        });
-        TacaUAService.getModalities()
-          .then((response) => {
-            setData(response as unknown as ModalitiesDataProps);
-            navigate(`/taca-ua/${data.id}/games/0`);
-          })
-          .catch((e) => {
-            toast({
-              title: "Erro a obter dados.",
-              description: e.message,
-              variant: "destructive",
-            });
-          });
-      })
-      .catch((e) => {
-        toast({
-          title: "Oops, algo correu mal.",
-          description: e.message,
-          variant: "destructive",
-        });
+    let data: any;
+    try {
+      data = await apiFn({
+        id: modalModality.id,
+        data: {
+          year: modalModality.year,
+          type: modalModality.type,
+          frame: modalModality.frame,
+          sport: modalModality.sport,
+        },
       });
+    } catch (e: any) {
+      toast({
+        title: "Oops, algo correu mal.",
+        description: e.message,
+        variant: "destructive",
+      });
+      return;
+    }
+    setAddDialogOpen(false);
+    toast({
+      description:
+        "Modalidade " +
+        { add: "adicionada", edit: "editada" }[modalType] +
+        " com sucesso.",
+    });
+    try {
+      const response = await TacaUAService.getModalities();
+      setData(response as unknown as ModalitiesDataProps);
+      void navigate(`/taca-ua/${data.id}/games/0`);
+    } catch (e: any) {
+      toast({
+        title: "Erro a obter dados.",
+        description: e.message,
+        variant: "destructive",
+      });
+    }
   };
 
   return (

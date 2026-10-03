@@ -4,8 +4,8 @@ import "./index.css";
 
 
 // Animation
-const animationBase = parseFloat(import.meta.env.VITE_ANIMATION_BASE);
-const animationIncrement = parseFloat(import.meta.env.VITE_ANIMATION_INCREMENT);
+const animationBase = Number.parseFloat(import.meta.env.VITE_ANIMATION_BASE);
+const animationIncrement = Number.parseFloat(import.meta.env.VITE_ANIMATION_INCREMENT);
 
 
 /** A vertical timeline that renders alternating windows

@@ -135,7 +135,7 @@ const UserForm = ({ user, isOpen, onClose, onSave, onDelete, initialPatrao, onAd
                 patrao_id: selectedPatrao?.id || null,
                 faina_name: data.faina_name || null,
                 nmec: data.nmec || null,
-                course_id: data.course_id ? parseInt(data.course_id) : null,
+                course_id: data.course_id ? Number.parseInt(data.course_id, 10) : null,
             };
 
             const uid = user?.id;
