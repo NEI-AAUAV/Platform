@@ -89,7 +89,8 @@ def test_state_cookie_roundtrip_carries_all_fields() -> None:
     payload = oidc._verify_and_pop_state_cookie(_request_with_cookie(value), Response(), "st")
 
     assert payload == {"s": "st", "n": "n1", "r": "/x", "u": 4, "v": "cv"}
-    assert "HttpOnly" in cookie and "samesite=lax" in cookie.lower()
+    assert "HttpOnly" in cookie
+    assert "samesite=lax" in cookie.lower()
 
 
 def test_state_cookie_omits_empty_optional_fields() -> None:
@@ -110,8 +111,9 @@ def test_user_id_zero_is_preserved_in_state() -> None:
 
 def _raises_401(cookie: str | None, state: str = "st") -> str:
     response = Response()
+    request = _request_with_cookie(cookie)
     with pytest.raises(HTTPException) as exc:
-        oidc._verify_and_pop_state_cookie(_request_with_cookie(cookie), response, state)
+        oidc._verify_and_pop_state_cookie(request, response, state)
     assert exc.value.status_code == 401
     # The cookie is always cleared, even when verification fails.
     assert oidc._STATE_COOKIE in response.headers["set-cookie"]
@@ -237,9 +239,11 @@ async def test_invalid_id_token_claims_are_rejected(
 async def test_id_token_signed_by_unknown_key_is_rejected(idp, jwks) -> None:
     attacker = JsonWebKey.generate_key("RSA", 2048, {"kid": "k1"}, is_private=True)
 
+    forged_token = _id_token(attacker)
+
     with pytest.raises(HTTPException) as exc:
         await oidc._validate_id_token(
-            _id_token(attacker), expected_nonce="nonce-1", expected_sub="sub-1"
+            forged_token, expected_nonce="nonce-1", expected_sub="sub-1"
         )
 
     assert exc.value.detail == "Invalid ID token"
@@ -478,9 +482,12 @@ def test_login_redirects_to_idp_with_signed_state_cookie(client: TestClient, idp
     payload = _state_cookie_payload(r)
     assert payload["r"] == "/events"
     assert payload["v"] == "ver"
-    assert payload["s"] and payload["n"] and payload["s"] != payload["n"]
+    assert payload["s"]
+    assert payload["n"]
+    assert payload["s"] != payload["n"]
     kwargs = idp.create_authorization_url.await_args.kwargs
-    assert kwargs["state"] == payload["s"] and kwargs["nonce"] == payload["n"]
+    assert kwargs["state"] == payload["s"]
+    assert kwargs["nonce"] == payload["n"]
     assert idp.create_authorization_url.await_args.args[0].endswith("/auth/oidc/callback")
 
 
@@ -561,7 +568,8 @@ def test_callback_success_creates_user_and_hands_token_in_url_fragment(
     assert f"{location.scheme}://{location.netloc}{location.path}" == f"{FRONTEND}/auth/oidc/return"
     # token is in the fragment (never the query string) and redirect is preserved
     fragment = parse_qs(location.fragment)
-    assert fragment["token"][0] and fragment["redirect_to"] == ["/events"]
+    assert fragment["token"][0]
+    assert fragment["redirect_to"] == ["/events"]
     assert location.query == ""
     assert "refresh" in r.cookies
     assert db.query(User).filter(User.authentik_sub == "sub-cb").one()

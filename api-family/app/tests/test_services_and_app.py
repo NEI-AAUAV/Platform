@@ -45,7 +45,8 @@ def test_storage_is_disabled_unless_every_setting_is_present(monkeypatch) -> Non
 
         client = storage_mod.StorageClient()
 
-        assert client.enabled is False and client.client is None, missing
+        assert client.enabled is False, missing
+        assert client.client is None, missing
 
 
 def test_disabled_storage_never_uploads_or_fails_on_delete(monkeypatch) -> None:
@@ -112,7 +113,8 @@ def test_api_exception_defaults_to_class_attributes() -> None:
 def test_api_exception_allows_overrides() -> None:
     exc = exception.NotFoundException(detail="Gone", headers={"X": "1"})
 
-    assert exc.detail == "Gone" and exc.headers == {"X": "1"}
+    assert exc.detail == "Gone"
+    assert exc.headers == {"X": "1"}
     assert exc.status_code == 404
 
 
@@ -137,7 +139,8 @@ def test_format_record_adds_payload_section_only_when_present() -> None:
     with_payload = app_logging.format_record(record)
 
     assert "extra[payload]" not in plain
-    assert "extra[payload]" in with_payload and "'a': 1" in record["extra"]["payload"]
+    assert "extra[payload]" in with_payload
+    assert "'a': 1" in record["extra"]["payload"]
 
 
 def test_stdlib_records_are_forwarded_to_loguru(loguru_records) -> None:

@@ -49,7 +49,8 @@ def test_get_and_get_by_nmec_and_exists() -> None:
     assert crud.get(1)["name"] == "A"
     assert crud.get_by_nmec(123)["_id"] == 1
     assert crud.get_by_nmec(999) is None
-    assert crud.exists(1) is True and crud.exists(2) is False
+    assert crud.exists(1) is True
+    assert crud.exists(2) is False
 
 
 def test_update_changes_only_given_fields() -> None:
@@ -118,7 +119,8 @@ def test_sort_keys_are_mapped_and_unknown_ones_fall_back(
         # users without nmec sort first ascending; only assert relative order
         assert got.index(1) < got.index(2)
     elif sort_by == "year":
-        assert got[-1] == 1 and set(got[:2]) == {3, 4}
+        assert got[-1] == 1
+        assert set(got[:2]) == {3, 4}
     else:
         assert got == expected
 
@@ -311,7 +313,8 @@ def test_assignment_pointing_to_unknown_role_does_not_break_listing() -> None:
 
     assert role["role_id"] == ".9.9."
     assert role["org_name"] is None
-    assert role["hidden"] is False and role["icon"] is None
+    assert role["hidden"] is False
+    assert role["icon"] is None
 
 
 def test_role_id_without_trailing_dot_is_normalised() -> None:
@@ -331,7 +334,8 @@ def test_enrich_role_with_empty_role_id_uses_defaults() -> None:
     crud._enrich_role(role, {}, "M")
 
     assert role["year_display_format"] == "civil"
-    assert role["icon"] is None and role["hidden"] is False
+    assert role["icon"] is None
+    assert role["hidden"] is False
     assert role["parent_org_name"] is None
 
 
@@ -454,7 +458,8 @@ def test_depth_zero_returns_roots_flagged_as_having_more_children(family) -> Non
 
     by_id = {n["_id"]: n for n in roots}
     assert total == 2
-    assert by_id[1]["children"] == [] and by_id[1]["has_more_children"] is True
+    assert by_id[1]["children"] == []
+    assert by_id[1]["has_more_children"] is True
     assert by_id[5]["has_more_children"] is False
 
 
@@ -465,7 +470,8 @@ def test_depth_one_includes_direct_children_only(family) -> None:
     assert total == 4  # 5, 1, 2, 3
     assert [c["_id"] for c in root["children"]] == [2, 3]
     child_two = root["children"][0]
-    assert child_two["children"] == [] and child_two["has_more_children"] is True
+    assert child_two["children"] == []
+    assert child_two["has_more_children"] is True
     assert root["children"][1]["has_more_children"] is False
 
 
@@ -543,7 +549,8 @@ def test_upload_converts_to_jpeg_stores_url_and_returns_updated_user(storage) ->
 
     assert updated["image"] == "https://cdn.test/family/users/1/x.jpg"
     key, data, content_type = storage.upload_image.call_args.args
-    assert key.startswith("family/users/1/") and key.endswith(".jpg")
+    assert key.startswith("family/users/1/")
+    assert key.endswith(".jpg")
     assert content_type == "image/jpeg"
     assert Image.open(BytesIO(data)).format == "JPEG"
 
@@ -603,8 +610,10 @@ def test_storage_failure_is_reported_and_user_unchanged(storage) -> None:
     make_user(1, "A", image="https://cdn.test/old.jpg")
     storage.upload_image.return_value = None
 
+    image = _png()
+
     with pytest.raises(ValueError, match="Failed to upload"):
-        crud.update_image(1, _png())
+        crud.update_image(1, image)
 
     assert crud.get(1)["image"] == "https://cdn.test/old.jpg"
     storage.delete_image.assert_not_called()

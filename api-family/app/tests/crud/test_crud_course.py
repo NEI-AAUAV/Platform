@@ -17,15 +17,18 @@ def test_create_assigns_sequential_ids_and_stores_degree_as_plain_string() -> No
     second = crud.create(obj_in=_new("MEI", DegreeType.MESTRADO))
 
     assert (first["_id"], second["_id"]) == (1, 2)
-    assert first["degree"] == "Licenciatura" and type(first["degree"]) is str
+    assert first["degree"] == "Licenciatura"
+    assert type(first["degree"]) is str
     assert first["show"] is False
 
 
 def test_short_code_is_unique_at_database_level() -> None:
     crud.create(obj_in=_new("LEI"))
 
+    duplicate = _new("LEI")
+
     with pytest.raises(DuplicateKeyError):
-        crud.create(obj_in=_new("LEI"))
+        crud.create(obj_in=duplicate)
 
 
 def test_get_and_get_by_short() -> None:
@@ -76,7 +79,8 @@ def test_update_changes_only_given_fields_and_converts_enum() -> None:
 
     updated = crud.update(id=created["_id"], obj_in=CourseUpdate(degree=DegreeType.MESTRADO))
 
-    assert updated["degree"] == "Mestrado" and type(updated["degree"]) is str
+    assert updated["degree"] == "Mestrado"
+    assert type(updated["degree"]) is str
     assert (updated["short"], updated["name"]) == ("LEI", "Name LEI")
 
 
@@ -94,8 +98,10 @@ def test_update_to_taken_short_raises_duplicate() -> None:
     crud.create(obj_in=_new("LEI"))
     other = crud.create(obj_in=_new("MEI"))
 
+    clashing_update = CourseUpdate(short="LEI")
+
     with pytest.raises(DuplicateKeyError):
-        crud.update(id=other["_id"], obj_in=CourseUpdate(short="LEI"))
+        crud.update(id=other["_id"], obj_in=clashing_update)
 
 
 def test_delete_reports_whether_something_was_removed() -> None:

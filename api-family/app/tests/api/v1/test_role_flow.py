@@ -13,15 +13,18 @@ def test_create_root_and_child_generate_path_ids(auth_client: TestClient) -> Non
     root = auth_client.post(f"{BASE}/", json={"name": "Faina"})
     child = auth_client.post(f"{BASE}/", json={"name": "CF", "super_roles": ".1."})
 
-    assert root.status_code == 201 and root.json()["id"] == ".1."
-    assert child.status_code == 201 and child.json()["id"] == ".1.1."
+    assert root.status_code == 201
+    assert root.json()["id"] == ".1."
+    assert child.status_code == 201
+    assert child.json()["id"] == ".1.1."
     assert child.json()["super_roles"] == ".1."
 
 
 def test_create_under_missing_parent_is_400(auth_client: TestClient) -> None:
     r = auth_client.post(f"{BASE}/", json={"name": "X", "super_roles": ".9."})
 
-    assert r.status_code == 400 and ".9." in r.json()["detail"]
+    assert r.status_code == 400
+    assert ".9." in r.json()["detail"]
 
 
 def test_create_validates_field_lengths(auth_client: TestClient) -> None:
@@ -36,7 +39,8 @@ def test_get_role_with_dots_in_the_path_and_404(auth_client: TestClient) -> None
     ok = auth_client.get(f"{BASE}/.1.")
     missing = auth_client.get(f"{BASE}/.9.")
 
-    assert ok.status_code == 200 and ok.json()["id"] == ".1."
+    assert ok.status_code == 200
+    assert ok.json()["id"] == ".1."
     assert missing.status_code == 404
 
 
@@ -59,7 +63,8 @@ def test_tree_endpoint_nests_roles(auth_client: TestClient) -> None:
 
     tree = auth_client.get(f"{BASE}/tree").json()
 
-    assert tree[0]["id"] == ".1." and tree[0]["children"][0]["id"] == ".1.1."
+    assert tree[0]["id"] == ".1."
+    assert tree[0]["children"][0]["id"] == ".1.1."
 
 
 def test_children_endpoint(auth_client: TestClient) -> None:
@@ -111,7 +116,8 @@ def test_cannot_delete_role_with_children(auth_client: TestClient) -> None:
 
     r = auth_client.delete(f"{BASE}/.1.")
 
-    assert r.status_code == 400 and "1 child" in r.json()["detail"]
+    assert r.status_code == 400
+    assert "1 child" in r.json()["detail"]
     assert auth_client.get(f"{BASE}/.1.").status_code == 200
 
 

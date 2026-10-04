@@ -134,8 +134,10 @@ async def test_extracts_bearer_token(scheme) -> None:
 @pytest.mark.anyio
 @pytest.mark.parametrize("header", [None, "", "Basic abc", "Token abc"])
 async def test_missing_or_non_bearer_credentials_are_401_when_auto_error(scheme, header) -> None:
+    request = _request(header)
+
     with pytest.raises(HTTPException) as exc:
-        await scheme(_request(header))
+        await scheme(request)
 
     assert exc.value.status_code == 401
     assert exc.value.headers == {"WWW-Authenticate": "Bearer"}
@@ -166,7 +168,8 @@ def test_liveness_probe_does_not_touch_the_database(monkeypatch) -> None:
 
     r = TestClient(main_mod.app).get("/health/live")
 
-    assert r.status_code == 200 and r.json() == {"status": "ok"}
+    assert r.status_code == 200
+    assert r.json() == {"status": "ok"}
 
 
 def test_readiness_probe_ok_when_database_answers(monkeypatch) -> None:
@@ -180,7 +183,8 @@ def test_readiness_probe_ok_when_database_answers(monkeypatch) -> None:
 
     r = TestClient(main_mod.app).get("/health/ready")
 
-    assert r.status_code == 200 and r.json() == {"status": "ok"}
+    assert r.status_code == 200
+    assert r.json() == {"status": "ok"}
     assert str(conn.execute.call_args.args[0]) == "SELECT 1"
 
 
@@ -226,8 +230,11 @@ async def test_lifespan_closes_client_even_if_app_crashes(monkeypatch) -> None:
     client = MagicMock(start=lambda: None, close=AsyncMock())
     monkeypatch.setattr(main_mod, "authentik_client", client)
 
+    lifespan = main_mod.lifespan(main_mod.app)
+    crash = RuntimeError("crash")
+
     with pytest.raises(RuntimeError):
-        async with main_mod.lifespan(main_mod.app):
-            raise RuntimeError("crash")
+        async with lifespan:
+            raise crash
 
     client.close.assert_awaited_once()

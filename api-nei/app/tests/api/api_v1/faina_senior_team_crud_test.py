@@ -71,7 +71,8 @@ def test_faina_role_by_id_and_404(client: TestClient, db: SessionTesting) -> Non
     ok = client.get(f"{API}/faina/role/{role.id}")
     missing = client.get(f"{API}/faina/role/{MISSING}")
 
-    assert ok.status_code == 200 and ok.json()["id"] == role.id
+    assert ok.status_code == 200
+    assert ok.json()["id"] == role.id
     assert missing.status_code == 404
     assert missing.json()["detail"] == "Faina Role Not Found"
 

@@ -48,7 +48,8 @@ def test_get_by_id_and_404(auth_client: TestClient) -> None:
 
     assert auth_client.get(f"{BASE}/5").json()["short"] == "LEI"
     r = auth_client.get(f"{BASE}/99")
-    assert r.status_code == 404 and "99" in r.json()["detail"]
+    assert r.status_code == 404
+    assert "99" in r.json()["detail"]
 
 
 def test_listing_filters_and_total_follow_the_filter(auth_client: TestClient) -> None:
@@ -62,9 +63,12 @@ def test_listing_filters_and_total_follow_the_filter(auth_client: TestClient) ->
     page = auth_client.get(f"{BASE}/", params={"skip": 1, "limit": 1}).json()
 
     assert everything["total"] == 3
-    assert [c["short"] for c in masters["items"]] == ["MEI"] and masters["total"] == 1
-    assert {c["short"] for c in visible["items"]} == {"LEI", "MEI"} and visible["total"] == 2
-    assert len(page["items"]) == 1 and page["total"] == 3
+    assert [c["short"] for c in masters["items"]] == ["MEI"]
+    assert masters["total"] == 1
+    assert {c["short"] for c in visible["items"]} == {"LEI", "MEI"}
+    assert visible["total"] == 2
+    assert len(page["items"]) == 1
+    assert page["total"] == 3
     assert (page["skip"], page["limit"]) == (1, 1)
 
 
@@ -105,7 +109,8 @@ def test_delete_then_404(auth_client: TestClient) -> None:
     first = auth_client.delete(f"{BASE}/1")
     second = auth_client.delete(f"{BASE}/1")
 
-    assert first.status_code == 204 and first.content == b""
+    assert first.status_code == 204
+    assert first.content == b""
     assert second.status_code == 404
 
 

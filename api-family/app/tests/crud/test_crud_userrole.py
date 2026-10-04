@@ -15,15 +15,18 @@ def _new(user_id=1, role_id=".1.", year=20) -> UserRoleCreate:
 def test_create_returns_document_with_string_id() -> None:
     created = crud.create(obj_in=_new())
 
-    assert isinstance(created["_id"], str) and len(created["_id"]) == 24
+    assert isinstance(created["_id"], str)
+    assert len(created["_id"]) == 24
     assert (created["user_id"], created["role_id"], created["year"]) == (1, ".1.", 20)
 
 
 def test_same_user_role_year_cannot_be_stored_twice() -> None:
     crud.create(obj_in=_new())
 
+    duplicate = _new()
+
     with pytest.raises(DuplicateKeyError):
-        crud.create(obj_in=_new())
+        crud.create(obj_in=duplicate)
 
 
 def test_same_user_and_role_in_another_year_is_allowed() -> None:
@@ -143,4 +146,5 @@ def test_details_paginate_but_report_full_total() -> None:
 
     items, total = crud.get_with_details(skip=1, limit=1)
 
-    assert total == 3 and len(items) == 1
+    assert total == 3
+    assert len(items) == 1

@@ -105,7 +105,8 @@ def test_pagination_reports_full_total_but_slices_rows(db, world) -> None:
     _, second = _page(db, page=2, size=3)
 
     assert total == 4
-    assert len(first) == 3 and len(second) == 1
+    assert len(first) == 3
+    assert len(second) == 1
     assert _names(first).isdisjoint(_names(second))
 
 

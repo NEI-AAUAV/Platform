@@ -73,6 +73,7 @@ const Tabs = ({ tabs, value, onChange, renderTab, underlineColor, className }) =
       >
         <div
           role="tablist"
+          tabIndex={-1}
           className="my-1 flex w-fit list-none items-center bg-base-200/80 px-4 py-1"
           onMouseLeave={() => setFocused(null)}
         >

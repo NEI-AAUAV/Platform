@@ -26,7 +26,8 @@ def test_create_returns_201_with_string_id(auth_client: TestClient) -> None:
 
     assert r.status_code == 201
     body = r.json()
-    assert isinstance(body["id"], str) and len(body["id"]) == 24
+    assert isinstance(body["id"], str)
+    assert len(body["id"]) == 24
     assert (body["user_id"], body["role_id"], body["year"]) == (1, ".1.", 20)
 
 
@@ -66,9 +67,11 @@ def test_listing_filters_and_reports_filtered_total(auth_client: TestClient) -> 
     by_year_zero = auth_client.get(f"{BASE}/", params={"year": 21, "role_id": ".1."}).json()
     paged = auth_client.get(f"{BASE}/", params={"limit": 1, "skip": 1}).json()
 
-    assert by_user["total"] == 2 and len(by_user["items"]) == 2
+    assert by_user["total"] == 2
+    assert len(by_user["items"]) == 2
     assert by_year_zero["total"] == 1
-    assert len(paged["items"]) == 1 and paged["total"] == 3
+    assert len(paged["items"]) == 1
+    assert paged["total"] == 3
 
 
 def test_listing_validates_filters(auth_client: TestClient) -> None:
@@ -84,7 +87,8 @@ def test_details_expose_user_and_role_info(auth_client: TestClient) -> None:
     assert r.status_code == 200
     item = r.json()["items"][0]
     assert item["user_name"] == "Ana Silva"
-    assert item["user"]["id"] == 1 and item["user"]["name"] == "Ana Silva"
+    assert item["user"]["id"] == 1
+    assert item["user"]["name"] == "Ana Silva"
     assert item["role_name"] == "Mestre"
 
 
@@ -95,7 +99,8 @@ def test_roles_for_user(auth_client: TestClient) -> None:
     ok = auth_client.get(f"{BASE}/user/1")
     missing = auth_client.get(f"{BASE}/user/99")
 
-    assert ok.json()["total"] == 1 and ok.json()["items"][0]["user_id"] == 1
+    assert ok.json()["total"] == 1
+    assert ok.json()["items"][0]["user_id"] == 1
     assert missing.status_code == 404
 
 

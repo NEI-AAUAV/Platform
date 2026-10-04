@@ -77,7 +77,8 @@ def test_valid_token_with_required_scope_is_accepted(client, keys) -> None:
 def test_payload_is_handed_to_the_endpoint(client, keys) -> None:
     r = _get(client, "/any", _token(keys, ["default"]))
 
-    assert r.json()["scopes"] == ["default"] and r.json()["sub"] == "1"
+    assert r.json()["scopes"] == ["default"]
+    assert r.json()["sub"] == "1"
 
 
 def test_endpoint_without_required_scopes_accepts_any_valid_token(client, keys) -> None:

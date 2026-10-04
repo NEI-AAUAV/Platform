@@ -232,7 +232,7 @@ const Navbar = () => {
                 ({ name, link, disabled, dropdown, reload }) =>
                   !dropdown ? (
                     <li
-                      key={name}
+                      key={`${name}-${link}`}
                       className={classNames({
                         "pointer-events-none opacity-50": disabled,
                       })}
@@ -242,7 +242,7 @@ const Navbar = () => {
                       </LinkAdapter>
                     </li>
                   ) : (
-                    <li key={name} className="nav-dropdown-item">
+                    <li key={`${name}-dropdown`} className="nav-dropdown-item">
                       <button type="button" className="gap-2">
                         {name}
                         <ExpandMoreIcon />
@@ -431,7 +431,7 @@ const Navbar = () => {
             {data.map(({ name, link, disabled, dropdown }) =>
               !dropdown ? (
                 <li
-                  key={name}
+                  key={`${name}-${link}`}
                   className={classNames({
                     "pointer-events-none opacity-50": disabled,
                   })}
@@ -439,7 +439,7 @@ const Navbar = () => {
                   <LinkAdapter to={link}>{name}</LinkAdapter>
                 </li>
               ) : (
-                <li key={name}>
+                <li key={`${name}-dropdown`}>
                   <button
                     type="button"
                     className="justify-between"

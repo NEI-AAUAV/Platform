@@ -146,8 +146,10 @@ def test_custom_zip_rejects_truncated_central_directory() -> None:
     start = data.index(b"PK\x01\x02")
     data[start : start + 4] = b"XXXX"
 
+    corrupted = io.BytesIO(bytes(data))
+
     with pytest.raises(zipfile.BadZipFile):
-        CustomZipFile(io.BytesIO(bytes(data)))
+        CustomZipFile(corrupted)
 
 
 def test_custom_zip_rejects_non_zip_data() -> None:

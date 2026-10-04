@@ -24,7 +24,9 @@ def test_create_returns_201_and_defaults_faina_name(auth_client: TestClient) -> 
 
     assert r.status_code == 201
     body = r.json()
-    assert body["id"] == 1 and body["faina_name"] == "Silva" and body["user_roles"] == []
+    assert body["id"] == 1
+    assert body["faina_name"] == "Silva"
+    assert body["user_roles"] == []
 
 
 @pytest.mark.parametrize(
@@ -48,7 +50,8 @@ def test_create_requires_name_and_sex(auth_client: TestClient) -> None:
 def test_create_with_missing_patrao_is_400(auth_client: TestClient) -> None:
     r = auth_client.post(f"{BASE}/", json={**BODY, "patrao_id": 99})
 
-    assert r.status_code == 400 and "99" in r.json()["detail"]
+    assert r.status_code == 400
+    assert "99" in r.json()["detail"]
 
 
 def test_create_with_missing_course_is_400(auth_client: TestClient) -> None:
@@ -61,7 +64,8 @@ def test_create_with_existing_patrao_and_course(auth_client: TestClient) -> None
 
     r = auth_client.post(f"{BASE}/", json={**BODY, "patrao_id": 1, "course_id": 7})
 
-    assert r.status_code == 201 and r.json()["patrao_id"] == 1
+    assert r.status_code == 201
+    assert r.json()["patrao_id"] == 1
 
 
 def test_nmec_must_be_unique(auth_client: TestClient) -> None:
@@ -69,7 +73,8 @@ def test_nmec_must_be_unique(auth_client: TestClient) -> None:
 
     r = auth_client.post(f"{BASE}/", json={**BODY, "name": "Other Person", "nmec": 1234})
 
-    assert r.status_code == 400 and "1234" in r.json()["detail"]
+    assert r.status_code == 400
+    assert "1234" in r.json()["detail"]
 
 
 # ------------------------------------------------------------------------- read
@@ -80,7 +85,8 @@ def test_get_user_with_roles_and_404(auth_client: TestClient) -> None:
 
     ok = auth_client.get(f"{BASE}/1")
 
-    assert ok.status_code == 200 and ok.json()["name"] == "Ana Silva"
+    assert ok.status_code == 200
+    assert ok.json()["name"] == "Ana Silva"
     assert auth_client.get(f"{BASE}/99").status_code == 404
 
 
@@ -94,10 +100,12 @@ def test_listing_filters_search_and_total(auth_client: TestClient) -> None:
     kids = auth_client.get(f"{BASE}/", params={"patrao_id": 1}).json()
     page = auth_client.get(f"{BASE}/", params={"limit": 1, "skip": 1, "sort_by": "id"}).json()
 
-    assert {u["id"] for u in silva["items"]} == {1, 2} and silva["total"] == 2
+    assert {u["id"] for u in silva["items"]} == {1, 2}
+    assert silva["total"] == 2
     assert {u["id"] for u in from_19["items"]} == {2, 3}
     assert [u["id"] for u in kids["items"]] == [2]
-    assert [u["id"] for u in page["items"]] == [2] and page["total"] == 3
+    assert [u["id"] for u in page["items"]] == [2]
+    assert page["total"] == 3
 
 
 def test_listing_filters_by_role(auth_client: TestClient) -> None:
@@ -108,7 +116,8 @@ def test_listing_filters_by_role(auth_client: TestClient) -> None:
 
     r = auth_client.get(f"{BASE}/", params={"role_id": ".1.", "role_year": 20}).json()
 
-    assert [u["id"] for u in r["items"]] == [1] and r["total"] == 1
+    assert [u["id"] for u in r["items"]] == [1]
+    assert r["total"] == 1
     assert r["items"][0]["user_roles"][0]["org_name"] == "F"
 
 
@@ -124,7 +133,8 @@ def test_years_endpoint_is_not_shadowed_by_the_id_route(auth_client: TestClient)
 
     r = auth_client.get(f"{BASE}/years")
 
-    assert r.status_code == 200 and r.json() == [20, 18]
+    assert r.status_code == 200
+    assert r.json() == [20, 18]
 
 
 def test_children_endpoint(auth_client: TestClient) -> None:
@@ -157,7 +167,8 @@ def test_user_cannot_be_own_patrao(auth_client: TestClient) -> None:
 
     r = auth_client.put(f"{BASE}/1", json={"patrao_id": 1})
 
-    assert r.status_code == 400 and "own patrão" in r.json()["detail"]
+    assert r.status_code == 400
+    assert "own patrão" in r.json()["detail"]
 
 
 def test_update_with_missing_patrao_or_course_is_400(auth_client: TestClient) -> None:
@@ -174,7 +185,8 @@ def test_update_cannot_create_a_cycle_in_the_family_tree(auth_client: TestClient
 
     r = auth_client.put(f"{BASE}/1", json={"patrao_id": 3})
 
-    assert r.status_code == 400 and "cycle" in r.json()["detail"]
+    assert r.status_code == 400
+    assert "cycle" in r.json()["detail"]
     assert auth_client.get(f"{BASE}/1").json()["patrao_id"] is None
 
 
@@ -185,7 +197,8 @@ def test_update_may_move_user_to_another_branch(auth_client: TestClient) -> None
 
     r = auth_client.put(f"{BASE}/3", json={"patrao_id": 2})
 
-    assert r.status_code == 200 and r.json()["patrao_id"] == 2
+    assert r.status_code == 200
+    assert r.json()["patrao_id"] == 2
 
 
 def test_nmec_uniqueness_on_update_ignores_the_user_itself(auth_client: TestClient) -> None:
@@ -226,7 +239,8 @@ def test_cannot_delete_user_that_still_has_children(auth_client: TestClient) -> 
 
     r = auth_client.delete(f"{BASE}/1")
 
-    assert r.status_code == 400 and "1 children" in r.json()["detail"]
+    assert r.status_code == 400
+    assert "1 children" in r.json()["detail"]
     assert auth_client.get(f"{BASE}/1").status_code == 200
 
 
@@ -268,11 +282,13 @@ def test_bulk_reports_row_level_errors_and_keeps_valid_rows(auth_client: TestCli
 
     body = auth_client.post(f"{BASE}/bulk", json=rows).json()
 
-    assert body["total_created"] == 1 and body["total_errors"] == 3
+    assert body["total_created"] == 1
+    assert body["total_errors"] == 3
     errors = {e["row"]: e for e in body["errors"]}
     assert set(errors) == {1, 2, 3}
     assert "futuro" in errors[1]["message"]
-    assert "404" in errors[2]["message"] and "404" in errors[3]["message"]
+    assert "404" in errors[2]["message"]
+    assert "404" in errors[3]["message"]
     assert errors[2]["data"]["name"] == "No Patrao"
 
 
@@ -302,7 +318,8 @@ def test_bulk_dry_run_changes_nothing(auth_client: TestClient) -> None:
         f"{BASE}/bulk", params={"dry_run": True}, json=[_row("Ana Silva")]
     ).json()
 
-    assert body["dry_run"] is True and body["total_created"] == 1
+    assert body["dry_run"] is True
+    assert body["total_created"] == 1
     assert body["created"][0]["id"] == -1
     assert auth_client.get(f"{BASE}/").json()["total"] == 0
 
@@ -312,7 +329,8 @@ def test_bulk_atomic_aborts_everything_when_any_row_fails(auth_client: TestClien
 
     body = auth_client.post(f"{BASE}/bulk", params={"atomic": True}, json=rows).json()
 
-    assert body["total_created"] == 0 and body["total_errors"] == 1
+    assert body["total_created"] == 0
+    assert body["total_errors"] == 1
     assert auth_client.get(f"{BASE}/").json()["total"] == 0
 
 
@@ -325,7 +343,8 @@ def test_bulk_atomic_without_errors_creates_all(auth_client: TestClient) -> None
 def test_bulk_rejects_more_than_100_rows(auth_client: TestClient) -> None:
     r = auth_client.post(f"{BASE}/bulk", json=[_row(f"Person {i}") for i in range(101)])
 
-    assert r.status_code == 400 and "100" in r.json()["detail"]
+    assert r.status_code == 400
+    assert "100" in r.json()["detail"]
 
 
 def test_bulk_requires_start_year(auth_client: TestClient) -> None:
@@ -382,7 +401,8 @@ def test_image_upload_stores_the_new_url(auth_client: TestClient, storage) -> No
 
     r = auth_client.put(f"{BASE}/1/image", files={"image": ("a.png", _png(), "image/png")})
 
-    assert r.status_code == 200 and r.json()["image"] == "https://cdn.test/u.jpg"
+    assert r.status_code == 200
+    assert r.json()["image"] == "https://cdn.test/u.jpg"
 
 
 def test_image_remove_clears_it(auth_client: TestClient, storage) -> None:
@@ -390,7 +410,8 @@ def test_image_remove_clears_it(auth_client: TestClient, storage) -> None:
 
     r = auth_client.put(f"{BASE}/1/image", data={"remove": "true"})
 
-    assert r.status_code == 200 and r.json()["image"] is None
+    assert r.status_code == 200
+    assert r.json()["image"] is None
     storage.delete_image.assert_called_once_with("https://cdn.test/old.jpg")
 
 
@@ -424,9 +445,11 @@ def test_tree_endpoint_full_subtree_and_depth(auth_client: TestClient) -> None:
     sub = auth_client.get(f"{TREE}/", params={"root_id": 2}).json()
     shallow = auth_client.get(f"{TREE}/", params={"depth": 0}).json()
 
-    assert full["total_users"] == 3 and (full["min_year"], full["max_year"]) == (18, 20)
+    assert full["total_users"] == 3
+    assert (full["min_year"], full["max_year"]) == (18, 20)
     assert full["roots"][0]["children"][0]["children"][0]["id"] == 3
-    assert sub["total_users"] == 2 and sub["roots"][0]["id"] == 2
+    assert sub["total_users"] == 2
+    assert sub["roots"][0]["id"] == 2
     assert shallow["roots"][0]["has_more_children"] is True
 
 

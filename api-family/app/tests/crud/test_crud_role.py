@@ -52,8 +52,10 @@ def test_created_role_keeps_all_fields() -> None:
 
     assert created["name"] == "Presidente"
     assert created["female_name"] == "Presidenta"
-    assert created["show"] is True and created["icon"] == "i.png"
-    assert created["year_display_format"] == "civil" and created["hidden"] is False
+    assert created["show"] is True
+    assert created["icon"] == "i.png"
+    assert created["year_display_format"] == "civil"
+    assert created["hidden"] is False
 
 
 # --------------------------------------------------------------------- queries
@@ -64,7 +66,8 @@ def test_get_and_exists() -> None:
 
     assert crud.get(".1.")["name"] == "A"
     assert crud.get(".9.") is None
-    assert crud.exists(".1.") is True and crud.exists(".9.") is False
+    assert crud.exists(".1.") is True
+    assert crud.exists(".9.") is False
 
 
 def test_listing_filters_by_visibility_and_parent_and_paginates() -> None:
@@ -107,7 +110,8 @@ def test_tree_nests_children_under_parents() -> None:
 
     assert [r["id"] for r in roots] == [".1.", ".2."]
     cf = roots[0]["children"][0]
-    assert cf["id"] == ".1.1." and cf["children"][0]["id"] == ".1.1.1."
+    assert cf["id"] == ".1.1."
+    assert cf["children"][0]["id"] == ".1.1.1."
     assert roots[1]["children"] == []
 
 
