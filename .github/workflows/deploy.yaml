@@ -29,6 +29,7 @@ jobs:
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       OIDC_CLIENT_SECRET: ${{ secrets.OIDC_CLIENT_SECRET }}
       AUTHENTIK_TOKEN: ${{ secrets.AUTHENTIK_TOKEN }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       # Variables (public / non-sensitive config)
       EMAIL_SENDER_ADDRESS: ${{ vars.EMAIL_SENDER_ADDRESS }}
       EMAIL_SMTP_HOST: ${{ vars.EMAIL_SMTP_HOST }}
@@ -36,6 +37,7 @@ jobs:
       R2_ENDPOINT_URL: ${{ vars.R2_ENDPOINT_URL }}
       R2_BUCKET: ${{ vars.R2_BUCKET }}
       R2_PUBLIC_BASE_URL: ${{ vars.R2_PUBLIC_BASE_URL }}
+      DRIVE_IMAGE_BASE_URL: ${{ vars.DRIVE_IMAGE_BASE_URL }}
       OIDC_ENABLED: ${{ vars.OIDC_ENABLED || 'true' }}
       OIDC_CLIENT_ID: ${{ vars.OIDC_CLIENT_ID }}
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}
@@ -135,6 +137,7 @@ jobs:
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       OIDC_CLIENT_SECRET: ${{ secrets.OIDC_CLIENT_SECRET }}
       AUTHENTIK_TOKEN: ${{ secrets.AUTHENTIK_TOKEN }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       # Variables (public / non-sensitive config)
       EMAIL_SENDER_ADDRESS: ${{ vars.EMAIL_SENDER_ADDRESS }}
       EMAIL_SMTP_HOST: ${{ vars.EMAIL_SMTP_HOST }}
@@ -142,6 +145,7 @@ jobs:
       R2_ENDPOINT_URL: ${{ vars.R2_ENDPOINT_URL }}
       R2_BUCKET: ${{ vars.R2_BUCKET }}
       R2_PUBLIC_BASE_URL: ${{ vars.R2_PUBLIC_BASE_URL }}
+      DRIVE_IMAGE_BASE_URL: ${{ vars.DRIVE_IMAGE_BASE_URL }}
       OIDC_ENABLED: ${{ vars.OIDC_ENABLED || 'true' }}
       OIDC_CLIENT_ID: ${{ vars.OIDC_CLIENT_ID }}
       ENABLED_EXTENSIONS: ${{ github.event.inputs.extension }}

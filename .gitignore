@@ -80,6 +80,8 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
+# pytest --junitxml output (api-*/pytest.ini), read by Sonar in CI
+**/xunit-reports/
 *.cover
 *.py,cover
 .hypothesis/
