@@ -30,7 +30,7 @@ oauth2_scheme = OAuth2PasswordBearer(
 )
 
 
-async def verify_scopes(
+def verify_scopes(
     security_scopes: SecurityScopes,
     token: str = Depends(oauth2_scheme),
 ):

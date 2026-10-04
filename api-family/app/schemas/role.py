@@ -4,7 +4,7 @@ Roles represent positions in organizations (Faina, NEI, AETTUA, AAUAv).
 """
 
 from typing import Optional, List
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class RoleBase(BaseModel):
@@ -38,18 +38,20 @@ class RoleUpdate(BaseModel):
 
 class RoleInDB(RoleBase):
     """Schema for role response from database."""
-    id: str = Field(..., alias='_id', description="Role ID in path format (e.g., '.1.5.') - MongoDB _id")
+    id: str = Field(
+        ...,
+        validation_alias=AliasChoices('_id', 'id'), serialization_alias='id',
+        description="Role ID in path format (e.g., '.1.5.') - MongoDB _id",
+    )
 
-    def dict(self, **kwargs):
-        """Override dict() to always use field names (not aliases) for serialization."""
+    def model_dump(self, **kwargs):
+        """Override model_dump() to always use field names (not aliases) for serialization."""
         # Force by_alias=False to serialize as 'id' instead of '_id'
         # Important: this ensures frontend gets 'id' consistently
         kwargs['by_alias'] = False
-        return super().dict(**kwargs)
+        return super().model_dump(**kwargs)
 
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class RoleTreeNode(RoleInDB):

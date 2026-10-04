@@ -280,8 +280,14 @@ def test_parse_scopes_accepts_manager_gamification():
 
 
 # ---------------------------------------------------------------------------
-# OIDC disabled endpoints (OIDC_ENABLED=False is the default in test config)
+# OIDC disabled endpoints
 # ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def _oidc_disabled(monkeypatch):
+    """Force the disabled state regardless of the host's OIDC_* environment."""
+    monkeypatch.setattr(settings, "OIDC_ENABLED", False)
 
 
 def test_oidc_login_disabled(client: TestClient):

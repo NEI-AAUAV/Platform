@@ -17,8 +17,9 @@ export const categories = {
     name: "Calendário escolar",
     color: "38 100% 50%",
   },
-  // Expected default category
-  NEI: { prefixes: ["[NEI]"], name: "NEI", color: "131 72% 28%" },
+  // Expected default category, also matches NEI events shared with other
+  // entities (e.g. "[NEI/NEECT]"), see getCategory()
+  NEI: { name: "NEI", color: "131 72% 28%" },
 };
 
 export default { categories };

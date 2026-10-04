@@ -167,3 +167,5 @@ extensions/*/api-*/.venv/
 extensions/*/api-*/.pytest_cache/
 extensions/*/api-*/coverage/
 extensions/*/api-*/*.db
+
+xunit-reports/

@@ -30,8 +30,8 @@ const GridView = ({ data, setSelected }) => {
       initial="hidden"
       animate="visible"
     >
-      {data.map((note, i) => (
-        <motion.div key={i} variants={item} className="w-full max-w-[32rem]">
+      {data.map((note) => (
+        <motion.div key={note.id} variants={item} className="w-full max-w-[32rem]">
           <NoteCard
             note={note}
             Icon={note.type?.Icon}

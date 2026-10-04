@@ -43,7 +43,7 @@ export default function SportsSidebarAlertDialog({
   setData,
   setModalModality,
   toast,
-}: SportsSidebarDialogProps) {
+}: Readonly<SportsSidebarDialogProps>) {
   const [deleteModalConfirmation, setDeleteModalConfirmation] =
     useState<string>("");
 
@@ -57,7 +57,7 @@ export default function SportsSidebarAlertDialog({
             value={modalModality.id.toString()}
             onValueChange={(value) => {
               const changed = modalCurrent.find(
-                (modality) => modality.id === parseInt(value)
+                (modality) => modality.id === Number.parseInt(value)
               );
               setModalModality(changed!!);
             }}
@@ -104,32 +104,31 @@ export default function SportsSidebarAlertDialog({
         </AlertDialogCancel>
         <AlertDialogAction
           asChild
-          onClick={() => {
-            TacaUAService.removeModality(modalModality.id)
-              .then(() => {
-                setDeleteModalConfirmation("");
-                toast({
-                  description: "Modalidade removida com sucesso.",
-                });
-                TacaUAService.getModalities()
-                  .then((response) => {
-                    setData(response as unknown as ModalitiesDataProps);
-                  })
-                  .catch((e) => {
-                    toast({
-                      title: "Erro a obter dados.",
-                      description: e.message,
-                      variant: "destructive",
-                    });
-                  });
-              })
-              .catch((e) => {
-                toast({
-                  title: "Oops, algo correu mal.",
-                  description: e.message,
-                  variant: "destructive",
-                });
+          onClick={async () => {
+            try {
+              await TacaUAService.removeModality(modalModality.id);
+            } catch (e: any) {
+              toast({
+                title: "Oops, algo correu mal.",
+                description: e.message,
+                variant: "destructive",
               });
+              return;
+            }
+            setDeleteModalConfirmation("");
+            toast({
+              description: "Modalidade removida com sucesso.",
+            });
+            try {
+              const response = await TacaUAService.getModalities();
+              setData(response as unknown as ModalitiesDataProps);
+            } catch (e: any) {
+              toast({
+                title: "Erro a obter dados.",
+                description: e.message,
+                variant: "destructive",
+              });
+            }
           }}
         >
           <Button

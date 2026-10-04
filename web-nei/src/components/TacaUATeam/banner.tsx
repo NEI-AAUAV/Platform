@@ -25,7 +25,7 @@ function AddBanner(): JSX.Element {
   );
 }
 
-export function Banner({ image, admin }: Props): JSX.Element | false {
+export function Banner({ image, admin }: Readonly<Props>): JSX.Element | false {
   const [hasImage, setHasImage] = useState(image !== undefined);
 
   useEffect(() => {
@@ -37,6 +37,7 @@ export function Banner({ image, admin }: Props): JSX.Element | false {
       <img
         className="w-full rounded-2xl object-cover"
         src={image}
+        alt="Foto de equipa"
         onError={() => setHasImage(true)}
       />
       {admin && (

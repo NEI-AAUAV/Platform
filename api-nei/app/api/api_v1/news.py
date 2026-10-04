@@ -11,7 +11,7 @@ from app.schemas.news import CategoryEnum
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=Page[NewsInDB])
+@router.get("/", status_code=200, response_model=Page[NewsInDB], responses={400: {"description": "Invalid category"}})
 def get_news_list(
     *, page_params: PageParams = Depends(PageParams),
     _ = Depends(deps.short_cache),
@@ -46,7 +46,7 @@ def get_news_categories(
     return {"data": data}
 
 
-@router.get("/{id}", status_code=200, response_model=NewsInDB)
+@router.get("/{id}", status_code=200, response_model=NewsInDB, responses={404: {"description": "Item not found"}})
 def get_news(
     *, id: int, db: Session = Depends(deps.get_db, scope="function"),
     _ = Depends(deps.cms_cache),

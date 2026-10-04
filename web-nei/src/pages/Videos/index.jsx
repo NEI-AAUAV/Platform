@@ -1,18 +1,11 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Typewriter } from "react-simple-typewriter";
 import { motion } from "framer-motion";
-import { debounce } from "lodash";
 
 import PageNav from "../../components/PageNav";
 import service from "services/NEIService";
 import CardVideo from "components/CardVideo";
-
-import CheckboxDropdown from "components/CheckboxDropdown";
-
-import data from "./data";
-
-import { FilterIcon } from "assets/icons/google";
 
 const container = {
   hidden: { opacity: 1, scale: 0 },
@@ -37,11 +30,6 @@ const item = {
 export function Component() {
   // Filters
   const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState(
-    // TODO: change active state according to user information
-    Object.values(data.tags).map((c) => ({ ...c, checked: true }))
-  );
-  const [filters, setFilters] = useState([]);
   const [selection, setSelection] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
@@ -53,24 +41,13 @@ export function Component() {
   const [pages, setPages] = useState(1);
   const [selPage, setSelPage] = useState(1);
 
-  const debouncedSetTags = useCallback(
-    debounce(setTags, 300)
-    , []);
-
   // Get categories from API
   useEffect(() => {
     service
       .getVideosCategories()
       .then((response) => {
         setCategories(response);
-        var cats = [];
-        var catsObjs = [];
-        response.forEach((c) => {
-          cats.push(c.name);
-          catsObjs.push({ filter: c.name, color: c.color });
-        });
-        setSelection(cats);
-        setFilters(catsObjs);
+        setSelection(response.map((c) => c.name));
         setLoadingCategories(false);
       })
       .catch(() => {
@@ -100,6 +77,9 @@ export function Component() {
         setPages(response.last);
         setSelPage(response.page);
         setLoading(false);
+      }).catch((error) => {
+        console.error("Failed to load videos", error);
+        setLoading(false);
       });
     } else {
       setLoading(false);
@@ -115,7 +95,7 @@ export function Component() {
         <Typewriter words={["Vídeos"]} loop={1} />
       </h2>
 
-      {/* TODO: filter videos */}
+      {/* NOTE: filter videos */}
       {/* <div className="flex w-full justify-end">
         <CheckboxDropdown
           className="btn-sm m-1"

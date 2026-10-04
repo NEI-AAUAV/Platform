@@ -2,7 +2,7 @@ import { tabs } from "pages/SportDetails/data";
 import SportTabSelect from "../SportTabSelect";
 import { Switch } from "components/ui/switch";
 import { Dispatch, SetStateAction } from "react";
-import { Modality } from "pages/SportDetails/types";
+import { Modality, ModalityFrames } from "pages/SportDetails/types";
 import {
   Select,
   SelectContent,
@@ -12,7 +12,6 @@ import {
 } from "components/ui/select";
 import { AnimatePresence, motion } from "framer-motion";
 import { ModalitiesDataProps } from "pages/SportDetails";
-import { ModalityFrames } from "pages/SportDetails/types";
 import { useNavigate } from "react-router-dom";
 
 type SportMainContentProps = {
@@ -35,7 +34,7 @@ export default function SportMainContent({
   isAdminMode,
   setIsAdminMode,
   data,
-}: SportMainContentProps) {
+}: Readonly<SportMainContentProps>) {
   const navigate = useNavigate();
 
   return (

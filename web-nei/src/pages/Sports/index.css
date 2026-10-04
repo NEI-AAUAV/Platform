@@ -32,6 +32,9 @@
 }
 
 .modalidade {
+    background: none;
+    border: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -53,7 +56,6 @@
     left: 0;
     width: 100%;
     height: 30%;
-    background-color: black;
     background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
     border-radius: 5px;
     display: flex;

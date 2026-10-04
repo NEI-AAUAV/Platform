@@ -1,9 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-} from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 
 import { useWindowSize, useLoading } from "utils/hooks";
 import { ArrowForwardIcon, ArrowBackIcon } from "assets/icons/google";
@@ -13,8 +8,7 @@ import service from "services/GoogleCalendarService";
 import { locales } from "./data";
 import { categories } from "../data";
 
-import { dateKey, getWeeklyIntervals } from "./utils";
-
+import { dateKey, getCategory, getWeeklyIntervals } from "./utils";
 
 import CalendarMonth from "./CalendarMonth";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,6 +24,121 @@ function parseGoogleDate(dateStr, dateTimeStr) {
     return new Date(year, month - 1, day);
   }
   return new Date(dateTimeStr);
+}
+
+function addMonthEvents(year, month) {
+  const monthKey = dateKey(year, month);
+
+  if (monthKey in calendarEvents) {
+    // Month events already in memory
+    return;
+  }
+  calendarEvents[monthKey] = {};
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate(),
+    firstMonthDay = new Date(year, month, 1).getDay(),
+    lastMonthDay = new Date(year, month + 1, 0).getDay(),
+    daySince = 1 - firstMonthDay,
+    dayTo = daysInMonth + 6 - lastMonthDay;
+
+  for (let day = daySince; day <= dayTo; day++) {
+    const dayKey = dateKey(year, month, day);
+    // Adjacent months' grids overlap on leading/trailing days (e.g. Oct's grid
+    // includes late Sept days). Reuse the existing array for that day if one was
+    // already created by another month's pass, instead of overwriting it — otherwise
+    // the two months end up with different array references for the same day and
+    // events only get attached to whichever month's array survives last [1].
+    const events = calendarEvents._all[dayKey] || [];
+    // Both objects have the same `events` reference for convenience later on [1]
+    calendarEvents._all[dayKey] = events;
+    calendarEvents[monthKey][dayKey] = events;
+  }
+  return [new Date(year, month, daySince), new Date(year, month, dayTo)];
+}
+
+// Calculate required range while creating respective empty calendarEvents
+//
+// The range is always the next or previous 2 months,
+// when on the edge of the current fetched month
+function computeFetchRange(year, month) {
+  let calendarSince, calendarTo;
+  const current = addMonthEvents(year, month);
+  if (current) {
+    [calendarSince, calendarTo] = current;
+  }
+  for (let i = 1; i <= 2; i++) {
+    const range = addMonthEvents(year, month - i);
+    if (!range) break; // Still has data for the previous month
+    calendarSince = range[0];
+    calendarTo = calendarTo || range[1];
+  }
+  for (let i = 1; i <= 2; i++) {
+    const range = addMonthEvents(year, month + i);
+    if (!range) break; // Still has data for the next month
+    calendarSince = calendarSince || range[0];
+    calendarTo = range[1];
+  }
+  return [calendarSince, calendarTo];
+}
+
+function toWeeklyEvents(items, calendarSince, calendarTo) {
+  let events = [];
+
+  for (const e of items) {
+    const category = getCategory(e["summary"] ?? "", categories);
+    if (!category) {
+      // Event organized only by other entities
+      continue;
+    }
+    const start = parseGoogleDate(e.start.date, e.start.dateTime);
+    const end = parseGoogleDate(e.end.date, e.end.dateTime);
+    if (e.end.date) {
+      // Google API considers end date as the day after the event at midnight,
+      // so one day is substracted
+      end.setDate(end.getDate() - 1);
+    }
+    events = events.concat(
+      getWeeklyIntervals(start, end, calendarSince, calendarTo).map(
+        ({ weekStart, weekEnd }) => ({
+          id: e["id"],
+          title: e["summary"],
+          allDay: "date" in e["start"],
+          category,
+          weekStart,
+          start,
+          end,
+          duration:
+            Math.ceil(
+              (weekEnd.getTime() - weekStart.getTime()) / (1000 * 60 * 60 * 24)
+            ) + 1,
+        })
+      )
+    );
+  }
+  return events;
+}
+
+// Assign events to a day slot in a way that they don't overlap
+// and fit the free slots efficiently
+function assignEventSlots(events) {
+  for (const e of events) {
+    const dateEvents = calendarEvents._all[dateKey(e.weekStart)];
+    if (!dateEvents) {
+      // Event is out of the calendar range
+      continue;
+    }
+    // Find first free slot
+    // Free slots are marked with `undefined`
+    const index = [...dateEvents, undefined].indexOf(undefined);
+    dateEvents[index] = e;
+    for (let i = 1; i < e.duration; i++) {
+      const date = new Date(e.weekStart);
+      date.setDate(date.getDate() + i);
+      // Occupy the next slots adjacent with `null` mark
+      // [1] this will modify the other `events` reference as well
+      calendarEvents._all[dateKey(date)][index] = null;
+    }
+  }
 }
 
 const variants = {
@@ -64,7 +173,7 @@ const swipePower = (offset, velocity) => {
   return Math.abs(offset) * velocity;
 };
 
-const NEICalendar = () => {
+const NEICalendar = ({ hiddenCategories }) => {
   const today = new Date();
   const windowSize = useWindowSize();
   const [[year, month], setDate] = useState([
@@ -74,11 +183,10 @@ const NEICalendar = () => {
   const [direction, setDirection] = useState(0);
 
   const [selEvent, setSelEvent] = useState(null);
-  const [loading, setLoading] = useLoading(false);
+  const [, setLoading] = useLoading(false);
 
   const [height, setHeight] = useState(0);
   const elementRef = useRef(null);
-
 
   useLayoutEffect(() => {
     if (elementRef.current?.firstChild) {
@@ -89,10 +197,11 @@ const NEICalendar = () => {
   // const [openEventModal, setOpenEventModal] = useState(false);
 
   useEffect(() => {
-    fetchEvents();
+    fetchEvents().catch((error) => {
+      console.error("Failed to fetch calendar events:", error);
+    });
   }, [year, month]);
 
-  
   function handleMonthChange(month) {
     const lapsedYears = Math.floor(month / 12);
     const lapsedMonths = month % 12;
@@ -116,60 +225,7 @@ const NEICalendar = () => {
   //   setOpenEventModal(false);
   // }
   const fetchEvents = async () => {
-    function addMonthEvents(year, month) {
-      const monthKey = dateKey(year, month);
-
-      if (monthKey in calendarEvents) {
-        // Month events already in memory
-        return;
-      }
-      calendarEvents[monthKey] = {};
-
-      const daysInMonth = new Date(year, month + 1, 0).getDate(),
-        firstMonthDay = new Date(year, month, 1).getDay(),
-        lastMonthDay = new Date(year, month + 1, 0).getDay(),
-        daySince = 1 - firstMonthDay,
-        dayTo = daysInMonth + 6 - lastMonthDay;
-
-      for (let day = daySince; day <= dayTo; day++) {
-        const dayKey = dateKey(year, month, day);
-        // Adjacent months' grids overlap on leading/trailing days (e.g. Oct's grid
-        // includes late Sept days). Reuse the existing array for that day if one was
-        // already created by another month's pass, instead of overwriting it — otherwise
-        // the two months end up with different array references for the same day and
-        // events only get attached to whichever month's array survives last [1].
-        const events = calendarEvents._all[dayKey] || [];
-        // Both objects have the same `events` reference for convenience later on [1]
-        calendarEvents._all[dayKey] = events;
-        calendarEvents[monthKey][dayKey] = events;
-      }
-      return [new Date(year, month, daySince), new Date(year, month, dayTo)];
-    }
-
-    // Calculate required range while creating respective empty calendarEvents
-    //
-    // The range is always the next or previous 2 months,
-    // when on the edge of the current fetched month
-    let calendarSince, calendarTo, range;
-    if ((range = addMonthEvents(year, month))) {
-      [calendarSince, calendarTo] = range;
-    }
-    for (let i = 1; i <= 2; i++) {
-      if ((range = addMonthEvents(year, month - i))) {
-        calendarSince = range[0];
-        calendarTo = calendarTo || range[1];
-      } else {
-        break; // Still has data for the previous month
-      }
-    }
-    for (let i = 1; i <= 2; i++) {
-      if ((range = addMonthEvents(year, month + i))) {
-        calendarSince = calendarSince || range[0];
-        calendarTo = range[1];
-      } else {
-        break; // Still has data for the next month
-      }
-    }
+    const [calendarSince, calendarTo] = computeFetchRange(year, month);
 
     if (!calendarSince || !calendarTo) {
       // Data already fetched
@@ -187,74 +243,9 @@ const NEICalendar = () => {
       `${calendarTo.getDate()}T00:00:00+01:00`;
 
     const { data } = await service.getEvents({ timeMin, timeMax });
-    let events = [];
-
-    for (const e of data.items) {
-      let start = parseGoogleDate(e.start.date, e.start.dateTime);
-      let end = parseGoogleDate(e.end.date, e.end.dateTime);
-      if (e.end.date) {
-        // Google API considers end date as the day after the event at midnight,
-        // so one day is substracted
-        end.setDate(end.getDate() - 1);
-      }
-      events = events.concat(
-        getWeeklyIntervals(start, end, calendarSince, calendarTo).map(
-          ({ weekStart, weekEnd }) => ({
-            id: e["id"],
-            title: e["summary"],
-            allDay: "date" in e["start"],
-            category: getCategory(e["summary"]),
-            weekStart,
-            start,
-            end,
-            duration:
-              Math.ceil(
-                (weekEnd.getTime() - weekStart.getTime()) /
-                  (1000 * 60 * 60 * 24)
-              ) + 1,
-          })
-        )
-        );
-      }
-
-    // Assign events to a day slot in a way that they don't overlap
-    // and fit the free slots efficiently
-    for (const e of events) {
-      const dateEvents = calendarEvents._all[dateKey(e.weekStart)];
-      if (!dateEvents) {
-        // Event is out of the calendar range
-        continue;
-      }
-      // Find first free slot
-      // Free slots are marked with `undefined`
-      const index = [...dateEvents, undefined].findIndex(
-        (e) => e === undefined
-      );
-      dateEvents[index] = e;
-      for (let i = 1; i < e.duration; i++) {
-        const date = new Date(e.weekStart);
-        date.setDate(date.getDate() + i);
-        // Occupy the next slots adjacent with `null` mark
-        // [1] this will modify the other `events` reference as well
-        calendarEvents._all[dateKey(date)][index] = null;
-      }
-    }
+    assignEventSlots(toWeeklyEvents(data.items, calendarSince, calendarTo));
     setLoading(false);
   };
-
-  function getCategory(title) {
-    for (const [key, c] of Object.entries(categories)) {
-      if (c.prefixes) {
-        for (const p of c.prefixes) {
-          if (title.startsWith(p)) {
-            return { ...c, key };
-          }
-        }
-      }
-    }
-    // Return NEI category by default
-    return { ...categories.NEI, key: "NEI" };
-  }
 
   return (
     <div>
@@ -275,7 +266,7 @@ const NEICalendar = () => {
             <div className="flex gap-2 px-1">
               <button
                 type="button"
-                className="btn-ghost btn-sm btn-circle btn"
+                className="btn btn-circle btn-ghost btn-sm"
                 onClick={() =>
                   setTimeout(() => handleMonthChange(month - 1), 300)
                 }
@@ -284,7 +275,7 @@ const NEICalendar = () => {
               </button>
               <button
                 type="button"
-                className="btn-ghost btn-sm btn-circle btn"
+                className="btn btn-circle btn-ghost btn-sm"
                 onClick={() =>
                   setTimeout(() => handleMonthChange(month + 1), 300)
                 }
@@ -300,7 +291,7 @@ const NEICalendar = () => {
                 ? locales.pt.daysMin
                 : locales.pt.daysShort
               ).map((day, index) => (
-                <div className="py-2" key={index}>
+                <div className="py-2" key={locales.pt.days[index]}>
                   <div className="text-center text-sm font-bold uppercase tracking-wide text-gray-600">
                     {day}
                   </div>
@@ -346,6 +337,7 @@ const NEICalendar = () => {
                     monthEvents={calendarEvents[dateKey(year, month)]}
                     selEvent={selEvent}
                     setSelEvent={setSelEvent}
+                    hiddenCategories={hiddenCategories}
                   />
                 </motion.div>
               </AnimatePresence>

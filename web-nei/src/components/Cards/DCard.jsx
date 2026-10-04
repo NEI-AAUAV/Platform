@@ -1,6 +1,5 @@
-import { NewsModal } from "components/NewsModal/NewsModal";
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React from "react";
 /*
     Props:
         - type (string): "partner" or "news"
@@ -36,7 +35,7 @@ export default function DCard(props) {
         />
       );
     default:
-      return <></>;
+      return null;
   }
 }
 
@@ -97,17 +96,9 @@ function NewsCard(props) {
 }
 
 const PartnerCard = (props) => {
-  const [isSelected, setIsSelected] = useState(false);
-  let { title, description, link, header, date, category } = props.data;
+  const { title, description, header } = props.data;
   return (
-    <>
-      <label
-        className="w-96 h-96 m-4"
-        htmlFor={title}
-        onClick={() => {
-          setIsSelected(true);
-        }}
-      >
+      <div className="w-96 h-96 m-4">
         <motion.div className="card rounded-xl w-96 h-96 bg-base-200 shadow-xl hover:-translate-y-2 transition duration-200 ease-in-out">
           <figure className="h-3/5">
             {header && (
@@ -119,7 +110,6 @@ const PartnerCard = (props) => {
             <div className="card-actions justify-end"></div>
           </div>
         </motion.div>
-      </label>
-    </>
+      </div>
   );
 };

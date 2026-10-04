@@ -13,6 +13,9 @@ on:
       - 'api-family/**/*'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   api-family:
     runs-on: ubuntu-latest

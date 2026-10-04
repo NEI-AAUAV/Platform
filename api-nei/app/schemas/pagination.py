@@ -43,13 +43,13 @@ class Page(BaseModel, Generic[T]):
         items: Sequence[T],
         params: PageParams,
     ) -> Page[T]:
-        first = last = prev = next = None
+        first = last = prev = next_page = None
 
         if total:
             first = 1
             last = math.ceil(total / params.size)
             prev = params.page - 1 if first < params.page <= last else None
-            next = params.page + 1 if first <= params.page < last else None
+            next_page = params.page + 1 if first <= params.page < last else None
 
         return cls(
             items=items,
@@ -59,5 +59,5 @@ class Page(BaseModel, Generic[T]):
             first=first,
             last=last,
             prev=prev,
-            next=next,
+            next=next_page,
         )

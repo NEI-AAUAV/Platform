@@ -1,7 +1,6 @@
 export default function Spinner({ className }) {
   return (
-    <div
-      role="status"
+    <output
       className={`absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 transform flex-col items-center gap-3 text-center font-medium ${className}`}
     >
       <svg
@@ -25,6 +24,6 @@ export default function Spinner({ className }) {
         ></path>
       </svg>
       A carregar...
-    </div>
+    </output>
   );
 }

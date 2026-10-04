@@ -48,8 +48,8 @@ const Filters = ({ activeFilters, setActiveFilters, filterList, className, btnCl
             }
 
             {
-                filterList.map((f, index) =>
-                    <React.Fragment key={index}>
+                filterList.map((f) =>
+                    <React.Fragment key={f.filter}>
                         <FilterButton
                             filter={f}
                             setActiveFilters={setActiveFilters}

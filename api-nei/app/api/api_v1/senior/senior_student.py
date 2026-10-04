@@ -36,7 +36,7 @@ def create_senior_student(
     return crud.senior_student.create(db=db, obj_in=senior_student_create_in)
 
 
-@router.put("/{senior_id}/{user_id}", status_code=200, response_model=SeniorStudentInDB)
+@router.put("/{senior_id}/{user_id}", status_code=200, response_model=SeniorStudentInDB, responses={404: {"description": "Senior student not found"}})
 def update_senior_student(
     *,
     senior_id: int,

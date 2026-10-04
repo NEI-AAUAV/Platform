@@ -35,9 +35,9 @@ def _generate_email_message(
     message["Subject"] = subject
     message["Message-Id"] = make_msgid(domain=settings.EMAIL_DOMAIN)
 
-    (htmlContent, textContent) = bodies
-    message.attach(MIMEText(textContent))
-    message.attach(MIMEText(htmlContent, "html"))
+    (html_content, text_content) = bodies
+    message.attach(MIMEText(text_content))
+    message.attach(MIMEText(html_content, "html"))
 
     return message
 

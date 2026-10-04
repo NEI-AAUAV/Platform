@@ -120,16 +120,6 @@ const NEIService = {
     return await client.post("/auth/login/", data);
   },
 
-  async loginIdP() {
-    return await client.get("/auth/token");
-  },
-
-  async redirectIdP({ oauthToken, oauthVerifier }) {
-    return await client.get("/auth/token/", {
-      params: { oauth_token: oauthToken, oauth_verifier: oauthVerifier },
-    });
-  },
-
   async register(data) {
     // Increase timeout because the reCaptcha takes a while
     return await client.post("/auth/register/", data, { timeout: 15000 });

@@ -54,6 +54,7 @@ const FilterButton = ({filter, setActiveFilters, activeFilters, btnClass}) => {
             <ToggleButton 
                 variant="outline-primary pill" 
                 className="rounded-pill" 
+                id={`filter-${filter['filter']}`}
                 value={filter['filter']}
                 style={style}
             >

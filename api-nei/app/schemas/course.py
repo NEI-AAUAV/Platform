@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 class CourseBase(BaseModel):
     name: str
     code: str
-    short: Optional[str]
+    short: Optional[str] = None
 
 
 class CourseCreate(CourseBase):

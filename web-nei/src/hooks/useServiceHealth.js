@@ -23,6 +23,7 @@ async function probe(url) {
     });
     return true;
   } catch (_) {
+    // Network failure or timeout: the target is considered unreachable.
     return false;
   } finally {
     clearTimeout(timeoutId);
@@ -61,8 +62,14 @@ export function useServiceHealth(targets, { intervalMs = DEFAULT_INTERVAL_MS } =
       else setStatus("degraded");
     };
 
-    check();
-    const intervalId = setInterval(check, intervalMs);
+    check().catch(() => {
+      if (!cancelled) setStatus("down");
+    });
+    const intervalId = setInterval(() => {
+      check().catch(() => {
+        if (!cancelled) setStatus("down");
+      });
+    }, intervalMs);
     return () => {
       cancelled = true;
       clearInterval(intervalId);

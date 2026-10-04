@@ -17,6 +17,7 @@ Object.defineProperty(document, 'body', {
   value: {
     setAttribute: vi.fn(),
     getAttribute: vi.fn(),
+    dataset: {},
   },
   writable: true,
 })

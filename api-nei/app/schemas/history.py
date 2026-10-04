@@ -39,7 +39,7 @@ class HistoryBase(BaseModel):
     title: str
     # Nullable in the DB and writable from the CMS.
     body: Optional[str] = None
-    image: Optional[str]
+    image: Optional[str] = None
 
 
 class HistoryCreate(HistoryBase):

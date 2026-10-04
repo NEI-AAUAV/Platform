@@ -8,6 +8,7 @@ const CardVideo = ({ video, className }) => {
       <img
         className="aspect-{640/420} w-full cursor-pointer rounded-t-xl object-cover object-center"
         src={video.image}
+        alt={video.title}
       />
       <div className="m-4">
         <h2 className="font-bold">{video.title}</h2>

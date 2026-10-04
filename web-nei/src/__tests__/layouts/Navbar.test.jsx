@@ -69,13 +69,13 @@ describe('Navbar', () => {
       </MemoryRouter>,
     )
 
-    await waitFor(async () => {
-      const rallyLinks = await screen.findAllByText('Rally Tascas')
-      expect(rallyLinks.length).toBeGreaterThan(0)
+    const rallyLinks = await screen.findAllByText('Rally Tascas')
+    expect(rallyLinks.length).toBeGreaterThan(0)
+    await waitFor(() =>
       rallyLinks.forEach((link) =>
         expect(link.closest('li')).toHaveClass('pointer-events-none'),
-      )
-    })
+      ),
+    )
   })
 
   it('shows login/register links when logged out', async () => {
@@ -126,7 +126,7 @@ describe('Navbar', () => {
 
     await screen.findByText('John Doe')
     const logoutItem = screen.getByText('Log out')
-    logoutItem.closest('li').click()
+    logoutItem.click()
 
     await waitFor(() => expect(service.logout).toHaveBeenCalled())
   })

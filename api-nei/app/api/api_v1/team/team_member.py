@@ -20,7 +20,7 @@ def create_team_member(
     return crud.team_member.create(db=db, obj_in=team_create_in)
 
 
-@router.put("/{id}", status_code=200, response_model=TeamMemberInDB)
+@router.put("/{id}", status_code=200, response_model=TeamMemberInDB, responses={404: {"description": "Team member not found"}})
 def update_team_member(
     *,
     team_update_in: TeamMemberUpdate,

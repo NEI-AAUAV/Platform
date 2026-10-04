@@ -32,6 +32,7 @@ Object.defineProperty(document, 'body', {
   value: {
     setAttribute: vi.fn(),
     getAttribute: vi.fn(),
+    dataset: {},
   },
   writable: true,
 })
@@ -71,7 +72,7 @@ describe('useUserStore - Theme Management', () => {
     setTheme('dark')
     
     expect(document.body.setAttribute).toHaveBeenCalledWith('class', 'dark')
-    expect(document.body.setAttribute).toHaveBeenCalledWith('data-theme', 'dark')
+    expect(document.body.dataset.theme).toBe('dark')
   })
 
   it('sets theme from system preference when no localStorage', () => {
@@ -93,7 +94,7 @@ describe('useUserStore - Theme Management', () => {
     
     expect(localStorageMock.setItem).toHaveBeenCalledWith('th', 'dark')
     expect(document.body.setAttribute).toHaveBeenCalledWith('class', 'dark')
-    expect(document.body.setAttribute).toHaveBeenCalledWith('data-theme', 'dark')
+    expect(document.body.dataset.theme).toBe('dark')
     expect(document.documentElement.className).toBe('dark')
     
     const state = useUserStore.getState()

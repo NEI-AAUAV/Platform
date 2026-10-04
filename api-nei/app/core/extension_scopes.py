@@ -120,7 +120,24 @@ def _get_enabled_extensions() -> set[str] | None:
         return None  # Not set - backward compatibility, load all
     if not enabled_extensions.strip():
         return set()  # Set but empty - load no extensions
-    return set(ext.strip() for ext in enabled_extensions.split(",") if ext.strip())
+    return {ext.strip() for ext in enabled_extensions.split(",") if ext.strip()}
+
+
+def _manifests_in_dir(base: str, enabled_extensions: set[str] | None) -> List[str]:
+    """Find manifest.json files of enabled extensions directly under `base`."""
+    manifests: List[str] = []
+    for entry in os.listdir(base):
+        # Only include extensions that are explicitly enabled
+        # If ENABLED_EXTENSIONS is set but empty, no extensions should be loaded
+        # If ENABLED_EXTENSIONS is not set, load all extensions (backward compatibility)
+        if enabled_extensions is not None and entry not in enabled_extensions:
+            logger.info(f"Skipping {entry} extension - not in ENABLED_EXTENSIONS")
+            continue
+
+        manifest_path = os.path.join(base, entry, "manifest.json")
+        if os.path.isfile(manifest_path):
+            manifests.append(manifest_path)
+    return manifests
 
 
 def _iter_extension_manifests(base_dirs: List[str]) -> List[str]:
@@ -130,24 +147,32 @@ def _iter_extension_manifests(base_dirs: List[str]) -> List[str]:
     
     for base in base_dirs:
         try:
-            if not base:
-                continue
-            if not os.path.isdir(base):
-                continue
-            for entry in os.listdir(base):
-                # Only include extensions that are explicitly enabled
-                # If ENABLED_EXTENSIONS is set but empty, no extensions should be loaded
-                # If ENABLED_EXTENSIONS is not set, load all extensions (backward compatibility)
-                if enabled_extensions is not None and entry not in enabled_extensions:
-                    logger.info(f"Skipping {entry} extension - not in ENABLED_EXTENSIONS")
-                    continue
-                    
-                manifest_path = os.path.join(base, entry, "manifest.json")
-                if os.path.isfile(manifest_path):
-                    manifests.append(manifest_path)
+            if base and os.path.isdir(base):
+                manifests.extend(_manifests_in_dir(base, enabled_extensions))
         except Exception as exc:
             logger.warning(f"Error scanning manifests in {base}: {exc}")
     return manifests
+
+
+def _register_manifest_scopes(manifest_path: str) -> int:
+    """Register the scopes declared by one manifest; return how many were registered."""
+    with open(manifest_path, "r", encoding="utf-8") as fh:
+        data = json.load(fh)
+    extension_name = data.get("name")
+    if not extension_name:
+        logger.warning(f"Manifest missing name: {manifest_path}")
+        return 0
+
+    registered = 0
+    for scope_def in data.get("scopes", []) or []:
+        scope_name = scope_def.get("name")
+        if not scope_name:
+            logger.warning(f"Manifest scope missing name in {manifest_path}")
+            continue
+        description = scope_def.get("description", scope_name)
+        ExtensionScopeRegistry.register_scope(extension_name, scope_name, description)
+        registered += 1
+    return registered
 
 
 def load_scopes_from_manifests() -> None:
@@ -178,21 +203,7 @@ def load_scopes_from_manifests() -> None:
     registered = 0
     for manifest_path in manifests:
         try:
-            with open(manifest_path, "r", encoding="utf-8") as fh:
-                data = json.load(fh)
-            extension_name = data.get("name")
-            scopes = data.get("scopes", []) or []
-            if not extension_name:
-                logger.warning(f"Manifest missing name: {manifest_path}")
-                continue
-            for scope_def in scopes:
-                scope_name = scope_def.get("name")
-                description = scope_def.get("description", scope_name or "")
-                if not scope_name:
-                    logger.warning(f"Manifest scope missing name in {manifest_path}")
-                    continue
-                ExtensionScopeRegistry.register_scope(extension_name, scope_name, description)
-                registered += 1
+            registered += _register_manifest_scopes(manifest_path)
         except Exception as exc:
             logger.error(f"Failed loading manifest {manifest_path}: {exc}")
 

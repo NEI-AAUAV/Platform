@@ -25,9 +25,10 @@
   -webkit-transition: font-size 0.3s;
   -moz-transition: font-size 0.3s;
   -o-transition: font-size 0.3s;
-  transition: font-size 0.3s;
+  transition: opacity 0.3s;
   fill: hsl(var(--bc) / 0.9);
   font-weight: medium;
+  opacity: 1;
 }
 
 #treeei svg.treeei g.label.label-small text {
@@ -36,11 +37,6 @@
   -moz-transition: font-size 0.3s;
   -o-transition: font-size 0.3s;
   transition: font-size 0.3s;
-}
-
-#treeei svg.treeei g.label text {
-  opacity: 1;
-  transition: opacity 0.3s;
 }
 
 #treeei svg.treeei g.label text.text-faina {

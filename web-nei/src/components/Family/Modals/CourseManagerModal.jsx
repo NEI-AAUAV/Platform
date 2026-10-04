@@ -44,7 +44,7 @@ export default function CourseManagerModal({ isOpen, onClose }) {
 
     useEffect(() => {
         if (isOpen) {
-            loadCourses();
+            loadCourses().catch(console.error);
             setSelectedCourse(null);
             setFormData({ name: "", short: "", degree: "Licenciatura", show: true });
             setIsNew(false);

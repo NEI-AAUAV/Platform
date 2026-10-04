@@ -6,7 +6,6 @@ import {
   organizations,
   colors,
   searchData,
-  changeLabels,
 } from "../data";
 
 import { useUserStore } from "stores/useUserStore";
@@ -156,9 +155,10 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
 
   const BulletYear = useCallback(
     ({ color, index }) => (
-      <div
+      <button
+        type="button"
         className={classNames(
-          "cursor-pointer py-0.5",
+          "block w-full cursor-pointer py-0.5 text-left",
           index > year ? "font-normal opacity-70" : "font-medium"
         )}
         onClick={() => setYear(index)}
@@ -168,7 +168,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
           style={{ backgroundColor: color }}
         ></div>
         {2000 + index}
-      </div>
+      </button>
     ),
     [year]
   );
@@ -296,7 +296,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
           >
             <ExpandLessIcon />
           </button>
-          {[...Array(5).keys()]
+          {[...new Array(5).keys()]
             .map((i) => endYear - 9 + i)
             .map((i) => (
               <Fragment key={i}>
@@ -305,7 +305,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
             ))}
         </div>
         <div>
-          {[...Array(5).keys()]
+          {[...new Array(5).keys()]
             .map((i) => endYear - 4 + i)
             .map((i) => (
               <Fragment key={i}>
@@ -331,10 +331,11 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
       <h5 className="px-3 pt-3 opacity-80">Insígnias</h5>
       <div className="px-5 py-3">
         {[...dynamicOrgs.entries()].map(([key, org]) => (
-          <div
+          <button
+            type="button"
             key={key}
             className={classNames(
-              "mb-1 flex cursor-pointer items-center gap-3 font-medium",
+              "mb-1 flex w-full cursor-pointer items-center gap-3 text-left font-medium",
               {
                 "!font-normal opacity-70":
                   insignias.length !== 0 && !insignias.includes(key),
@@ -345,7 +346,7 @@ const FamilySidebar = ({ insignias, year, setInsignias, setYear, minYear, maxYea
             {/* Render icon: API icon takes priority over hardcoded insignia */}
             {renderOrgIcon(org)}
             <div>{org.name}</div>
-          </div>
+          </button>
         ))}
       </div>
     </>

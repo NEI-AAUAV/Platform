@@ -20,7 +20,7 @@ export function TacaUATeam({
   image,
   participants,
   admin = false,
-}: Props): JSX.Element {
+}: Readonly<Props>): JSX.Element {
   return (
     <div>
       <Banner admin={admin} image={image} />

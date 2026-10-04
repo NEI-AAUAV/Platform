@@ -1,267 +1,103 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import FamilyService from '../../services/FamilyService';
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock the entire FamilyService module
-vi.mock('../../services/FamilyService', () => ({
-    default: {
-        getTree: vi.fn(),
-        getUsers: vi.fn(),
-        getYears: vi.fn(),
-        getUserById: vi.fn(),
-        getUserChildren: vi.fn(),
-        createUser: vi.fn(),
-        updateUser: vi.fn(),
-        deleteUser: vi.fn(),
-        bulkCreateUsers: vi.fn(),
-        getCourses: vi.fn(),
-        getCourseById: vi.fn(),
-        createCourse: vi.fn(),
-        updateCourse: vi.fn(),
-        deleteCourse: vi.fn(),
-        getRoles: vi.fn(),
-        getRoleTree: vi.fn(),
-        createRole: vi.fn(),
-        updateRole: vi.fn(),
-        deleteRole: vi.fn(),
-        getUserRolesWithDetails: vi.fn(),
-        getRolesForUser: vi.fn(),
-        assignRole: vi.fn(),
-        removeRole: vi.fn(),
-    },
+const http = vi.hoisted(() => ({
+  get: vi.fn(),
+  post: vi.fn(),
+  put: vi.fn(),
+  delete: vi.fn(),
 }));
+vi.mock("../../services/client", () => ({ createClient: () => http }));
 
-describe('FamilyService', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
+import config from "../../config";
+import FamilyService from "../../services/FamilyService";
+
+beforeEach(() => {
+  Object.values(http).forEach((fn) => fn.mockReset().mockResolvedValue("payload"));
+});
+
+describe("FamilyService request contract", () => {
+  const cases = [
+    // [method, args, http verb, url, trailing args]
+    ["getTree", [{ depth: 2 }], "get", "/tree/", [{ params: { depth: 2 } }]],
+    ["getTree", [], "get", "/tree/", [{ params: {} }]],
+    ["getUsers", [{ skip: 5, limit: 10 }], "get", "/user/", [{ params: { skip: 5, limit: 10 } }]],
+    ["getYears", [], "get", "/user/years", []],
+    ["getUserById", [7], "get", "/user/7", []],
+    ["getUserChildren", [7], "get", "/user/7/children", []],
+    ["createUser", [{ name: "A" }], "post", "/user/", [{ name: "A" }]],
+    ["updateUser", [7, { name: "B" }], "put", "/user/7", [{ name: "B" }]],
+    ["deleteUser", [7], "delete", "/user/7", []],
+    ["getCourses", [{ degree: "Mestrado" }], "get", "/course/", [{ params: { degree: "Mestrado" } }]],
+    ["getCourseById", [3], "get", "/course/3", []],
+    ["createCourse", [{ short: "LEI" }], "post", "/course/", [{ short: "LEI" }]],
+    ["updateCourse", [3, { name: "x" }], "put", "/course/3", [{ name: "x" }]],
+    ["deleteCourse", [3], "delete", "/course/3", []],
+    ["getRoles", [], "get", "/role/", []],
+    ["getRoleTree", [], "get", "/role/tree", []],
+    ["createRole", [{ name: "R" }], "post", "/role/", [{ name: "R" }]],
+    ["updateRole", [".1.2.", { name: "R" }], "put", "/role/.1.2.", [{ name: "R" }]],
+    ["deleteRole", [".1.2."], "delete", "/role/.1.2.", []],
+    ["getUserRolesWithDetails", [{ user_id: 1 }], "get", "/userrole/details", [{ params: { user_id: 1 } }]],
+    ["getRolesForUser", [9], "get", "/userrole/user/9", []],
+    ["assignRole", [{ user_id: 1, role_id: ".1.", year: 20 }], "post", "/userrole/", [{ user_id: 1, role_id: ".1.", year: 20 }]],
+    ["removeRole", ["abc"], "delete", "/userrole/abc", []],
+  ];
+
+  it.each(cases)("%s -> %s %s", async (method, args, verb, url, trailing) => {
+    const result = await FamilyService[method](...args);
+
+    expect(http[verb]).toHaveBeenCalledTimes(1);
+    expect(http[verb]).toHaveBeenCalledWith(url, ...trailing);
+    expect(result).toBe("payload");
+    const others = Object.keys(http).filter((v) => v !== verb);
+    others.forEach((v) => expect(http[v]).not.toHaveBeenCalled());
+  });
+
+  it("targets the family API", async () => {
+    expect(config.API_FAMILY_URL).toMatch(/\/api\/family\/v1$/);
+  });
+
+  it("bulkCreateUsers defaults to a real, non-atomic import", async () => {
+    await FamilyService.bulkCreateUsers([{ name: "A" }]);
+
+    expect(http.post).toHaveBeenCalledWith("/user/bulk", [{ name: "A" }], {
+      params: { dry_run: false, atomic: false },
+    });
+  });
+
+  it("bulkCreateUsers forwards dry_run and atomic", async () => {
+    await FamilyService.bulkCreateUsers([], { dry_run: true, atomic: true });
+
+    expect(http.post.mock.calls[0][2]).toEqual({ params: { dry_run: true, atomic: true } });
+  });
+
+  it("propagates API errors to the caller", async () => {
+    http.get.mockRejectedValueOnce(new Error("boom"));
+
+    await expect(FamilyService.getYears()).rejects.toThrow("boom");
+  });
+
+  describe("updateUserImage", () => {
+    it("uploads the file as multipart form data with a long timeout", async () => {
+      const file = new File(["x"], "a.png", { type: "image/png" });
+
+      await FamilyService.updateUserImage(4, file);
+
+      const [url, form, opts] = http.put.mock.calls[0];
+      expect(url).toBe("/user/4/image");
+      expect(form).toBeInstanceOf(FormData);
+      expect(form.get("image")).toBe(file);
+      expect(form.get("remove")).toBe("false");
+      expect(opts).toMatchObject({ timeout: 30000, maxBodyLength: Infinity });
+      expect(opts.headers).toBeUndefined(); // the browser must set the multipart boundary
     });
 
-    describe('Tree Endpoints', () => {
-        it('getTree is callable', async () => {
-            FamilyService.getTree.mockResolvedValue({ roots: [], total_users: 0 });
+    it("sends only the remove flag when removing", async () => {
+      await FamilyService.updateUserImage(4, null, { remove: true });
 
-            const result = await FamilyService.getTree();
-
-            expect(FamilyService.getTree).toHaveBeenCalled();
-            expect(result).toEqual({ roots: [], total_users: 0 });
-        });
-
-        it('getTree passes parameters', async () => {
-            FamilyService.getTree.mockResolvedValue({ roots: [] });
-
-            await FamilyService.getTree({ depth: 5 });
-
-            expect(FamilyService.getTree).toHaveBeenCalledWith({ depth: 5 });
-        });
+      const form = http.put.mock.calls[0][1];
+      expect(form.has("image")).toBe(false);
+      expect(form.get("remove")).toBe("true");
     });
-
-    describe('User Endpoints', () => {
-        it('getUsers is callable', async () => {
-            FamilyService.getUsers.mockResolvedValue({ items: [] });
-
-            const result = await FamilyService.getUsers();
-
-            expect(FamilyService.getUsers).toHaveBeenCalled();
-            expect(result).toEqual({ items: [] });
-        });
-
-        it('getUsers passes filter parameters', async () => {
-            FamilyService.getUsers.mockResolvedValue({ items: [] });
-
-            await FamilyService.getUsers({ skip: 10, limit: 50, from_year: 2020 });
-
-            expect(FamilyService.getUsers).toHaveBeenCalledWith({ skip: 10, limit: 50, from_year: 2020 });
-        });
-
-        it('getYears is callable', async () => {
-            FamilyService.getYears.mockResolvedValue([2020, 2021, 2022]);
-
-            const result = await FamilyService.getYears();
-
-            expect(FamilyService.getYears).toHaveBeenCalled();
-            expect(result).toEqual([2020, 2021, 2022]);
-        });
-
-        it('getUserById is callable', async () => {
-            FamilyService.getUserById.mockResolvedValue({ id: 1, name: 'Test' });
-
-            const result = await FamilyService.getUserById(1);
-
-            expect(FamilyService.getUserById).toHaveBeenCalledWith(1);
-            expect(result).toEqual({ id: 1, name: 'Test' });
-        });
-
-        it('getUserChildren is callable', async () => {
-            FamilyService.getUserChildren.mockResolvedValue([]);
-
-            await FamilyService.getUserChildren(1);
-
-            expect(FamilyService.getUserChildren).toHaveBeenCalledWith(1);
-        });
-
-        it('createUser is callable', async () => {
-            const userData = { name: 'Test User', sex: 'M', start_year: 2020 };
-            FamilyService.createUser.mockResolvedValue({ id: 1, ...userData });
-
-            await FamilyService.createUser(userData);
-
-            expect(FamilyService.createUser).toHaveBeenCalledWith(userData);
-        });
-
-        it('updateUser is callable', async () => {
-            const userData = { name: 'Updated Name' };
-            FamilyService.updateUser.mockResolvedValue({ id: 1, ...userData });
-
-            await FamilyService.updateUser(1, userData);
-
-            expect(FamilyService.updateUser).toHaveBeenCalledWith(1, userData);
-        });
-
-        it('deleteUser is callable', async () => {
-            FamilyService.deleteUser.mockResolvedValue(null);
-
-            await FamilyService.deleteUser(1);
-
-            expect(FamilyService.deleteUser).toHaveBeenCalledWith(1);
-        });
-
-        it('bulkCreateUsers is callable with options', async () => {
-            const users = [{ name: 'User1' }, { name: 'User2' }];
-            FamilyService.bulkCreateUsers.mockResolvedValue({ created: 2 });
-
-            await FamilyService.bulkCreateUsers(users, { dry_run: true, atomic: true });
-
-            expect(FamilyService.bulkCreateUsers).toHaveBeenCalledWith(users, { dry_run: true, atomic: true });
-        });
-    });
-
-    describe('Course Endpoints', () => {
-        it('getCourses is callable', async () => {
-            FamilyService.getCourses.mockResolvedValue({ items: [] });
-
-            await FamilyService.getCourses();
-
-            expect(FamilyService.getCourses).toHaveBeenCalled();
-        });
-
-        it('getCourseById is callable', async () => {
-            FamilyService.getCourseById.mockResolvedValue({ id: 1 });
-
-            await FamilyService.getCourseById(1);
-
-            expect(FamilyService.getCourseById).toHaveBeenCalledWith(1);
-        });
-
-        it('createCourse is callable', async () => {
-            const courseData = { name: 'Test Course', degree: 'BSc' };
-            FamilyService.createCourse.mockResolvedValue({ id: 1, ...courseData });
-
-            await FamilyService.createCourse(courseData);
-
-            expect(FamilyService.createCourse).toHaveBeenCalledWith(courseData);
-        });
-
-        it('updateCourse is callable', async () => {
-            const courseData = { name: 'Updated Course' };
-            FamilyService.updateCourse.mockResolvedValue({ id: 1, ...courseData });
-
-            await FamilyService.updateCourse(1, courseData);
-
-            expect(FamilyService.updateCourse).toHaveBeenCalledWith(1, courseData);
-        });
-
-        it('deleteCourse is callable', async () => {
-            FamilyService.deleteCourse.mockResolvedValue(null);
-
-            await FamilyService.deleteCourse(1);
-
-            expect(FamilyService.deleteCourse).toHaveBeenCalledWith(1);
-        });
-    });
-
-    describe('Role Endpoints', () => {
-        it('getRoles is callable', async () => {
-            FamilyService.getRoles.mockResolvedValue([]);
-
-            await FamilyService.getRoles();
-
-            expect(FamilyService.getRoles).toHaveBeenCalled();
-        });
-
-        it('getRoleTree is callable', async () => {
-            FamilyService.getRoleTree.mockResolvedValue({ children: [] });
-
-            await FamilyService.getRoleTree();
-
-            expect(FamilyService.getRoleTree).toHaveBeenCalled();
-        });
-
-        it('createRole is callable', async () => {
-            const roleData = { id: 'CF.new', name: 'New Role' };
-            FamilyService.createRole.mockResolvedValue(roleData);
-
-            await FamilyService.createRole(roleData);
-
-            expect(FamilyService.createRole).toHaveBeenCalledWith(roleData);
-        });
-
-        it('updateRole is callable', async () => {
-            const roleData = { name: 'Updated Role' };
-            FamilyService.updateRole.mockResolvedValue({ id: 'CF', ...roleData });
-
-            await FamilyService.updateRole('CF', roleData);
-
-            expect(FamilyService.updateRole).toHaveBeenCalledWith('CF', roleData);
-        });
-
-        it('deleteRole is callable', async () => {
-            FamilyService.deleteRole.mockResolvedValue(null);
-
-            await FamilyService.deleteRole('CF.old');
-
-            expect(FamilyService.deleteRole).toHaveBeenCalledWith('CF.old');
-        });
-    });
-
-    describe('UserRole Endpoints', () => {
-        it('getUserRolesWithDetails is callable', async () => {
-            FamilyService.getUserRolesWithDetails.mockResolvedValue([]);
-
-            await FamilyService.getUserRolesWithDetails();
-
-            expect(FamilyService.getUserRolesWithDetails).toHaveBeenCalled();
-        });
-
-        it('getUserRolesWithDetails passes filter parameters', async () => {
-            FamilyService.getUserRolesWithDetails.mockResolvedValue([]);
-
-            await FamilyService.getUserRolesWithDetails({ user_id: 1, year: 2024 });
-
-            expect(FamilyService.getUserRolesWithDetails).toHaveBeenCalledWith({ user_id: 1, year: 2024 });
-        });
-
-        it('getRolesForUser is callable', async () => {
-            FamilyService.getRolesForUser.mockResolvedValue({ items: [] });
-
-            await FamilyService.getRolesForUser(1);
-
-            expect(FamilyService.getRolesForUser).toHaveBeenCalledWith(1);
-        });
-
-        it('assignRole is callable', async () => {
-            const data = { user_id: 1, role_id: 'CF', year: 2024 };
-            FamilyService.assignRole.mockResolvedValue({ id: 'abc123', ...data });
-
-            await FamilyService.assignRole(data);
-
-            expect(FamilyService.assignRole).toHaveBeenCalledWith(data);
-        });
-
-        it('removeRole is callable', async () => {
-            FamilyService.removeRole.mockResolvedValue(null);
-
-            await FamilyService.removeRole('abc123');
-
-            expect(FamilyService.removeRole).toHaveBeenCalledWith('abc123');
-        });
-    });
+  });
 });

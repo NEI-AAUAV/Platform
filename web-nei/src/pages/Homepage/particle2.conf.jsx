@@ -1,5 +1,3 @@
-import bg from 'assets/images/nei-outline.svg';
-
 export default {
     autoPlay: true,
     // background: {

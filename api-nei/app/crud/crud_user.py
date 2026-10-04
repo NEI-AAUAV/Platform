@@ -2,7 +2,7 @@ import os
 from io import BytesIO
 from hashlib import md5
 from datetime import datetime
-from typing import Optional, Union, Any, Dict, List
+from typing import Optional, Any, Dict, List
 
 import aiofiles
 import aiofiles.os
@@ -125,7 +125,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         db: Session,
         *,
         db_obj: User,
-        obj_in: Union[UserUpdate, Dict[str, Any]],
+        obj_in: UserUpdate | Dict[str, Any],
     ) -> User:
         if isinstance(obj_in, dict):
             update_data = obj_in
@@ -173,13 +173,13 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
                 img_bytes = BytesIO(image)
                 md5sum = md5(img_bytes.getbuffer())
                 img = Image.open(img_bytes)
-            except:
+            except Exception:
                 raise FileFormatException()
             ext = img.format
-            if not ext in ("JPEG", "PNG", "BMP"):
+            if ext not in ("JPEG", "PNG", "BMP"):
                 raise FileFormatException(detail="Image format must be JPEG or PNG.")
 
-            # TODO: rescale if necessary
+            # NOTE: images are not rescaled yet
 
             # Handle EXIF orientation tag
             img = ImageOps.exif_transpose(img)
@@ -228,7 +228,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             try:
                 curriculum_data = await curriculum.read()
                 file_type = mime.from_buffer(curriculum_data)
-            except:
+            except Exception:
                 raise FileFormatException(detail="Failed to detect file type.")
             curriculum_path = f"/users/{db_obj.id}/cv.pdf"
 
@@ -244,7 +244,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             # Delete curriculum
             try:
                 await aiofiles.os.remove(f"static{db_obj._curriculum}")
-            except:
+            except Exception:
                 pass  # ignore errors
 
         setattr(db_obj, "curriculum", curriculum_path)

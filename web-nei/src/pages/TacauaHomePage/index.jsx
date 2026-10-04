@@ -1,6 +1,4 @@
-import React from "react";
-import { useState, useEffect, useRef, useLayoutEffect} from 'react';
-import { useUserStore } from "stores/useUserStore";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import backgroundImg from "../Sports/img/unknown2.png";
 import nei from "../Sports/img/nei.png";
 import { SportsCard,CardHall,GameCard,Carousel } from "components";
@@ -51,15 +49,15 @@ export function Component() {
                     <span className="text-2xl">2022/23</span>
                 </div>
                     <div className="relative bg-gradient-to-b rounded-[20px] from-[#7a7876] to-[#000000]">
-                        <img className="object-cover rounded-[20px] mix-blend-overlay" src={backgroundImg}/>
+                        <img className="object-cover rounded-[20px] mix-blend-overlay" src={backgroundImg} alt=""/>
                         <div className="grid absolute m-8 top-0 backdrop-blur-md backdrop-brightness-50 w-1/3 h-1/3 bg-transparent rounded-[20px] p-8">
-                            <div className="text-2xl font-bold place-self-center"><p>Junta-te ao <t className="text-primary">mágico EI</t></p></div>
+                            <div className="text-2xl font-bold place-self-center"><p>Junta-te ao <span className="text-primary">mágico EI</span></p></div>
                             <div className="grid gap-1 py-8">
                                 <p className="font-bold">A Taça UA está de volta!</p>
                                 <p>Inscreve-te neste formulário e vem defender o teu curso numa das modalidades existentes.</p>
                                 <p>Esperamos ver te brilhar por EI.</p>
                             </div>
-                            <button class="btn btn-primary place-self-center">Instcrever</button>
+                            <button type="button" className="btn btn-primary place-self-center">Instcrever</button>
                         </div>
                         <div className="absolute flex top-1/2 flex-wrap gap-8 [&>*]:grow [&>*]:shrink [&>*]:basis-96 [&>*]:flex [&>*]:justify-center [&>*>*]:grow [&>*>*]:shrink p-4">
                             <div>
@@ -180,9 +178,9 @@ export function Component() {
                         </div>
                     </div>
                     <div className="grid gap-8 w-full p-8 bg-base-200 rounded-[20px] place-content-center place-items-center">
-                        <div class="flex gap-3 bg-base-100 rounded-full p-3">
-                            <button class="btn btn-primary place-self-center">Últimos Jogos</button>
-                            <button class="btn btn-neutral place-self-center">Próximos Jogos</button>
+                        <div className="flex gap-3 bg-base-100 rounded-full p-3">
+                            <button type="button" className="btn btn-primary place-self-center">Últimos Jogos</button>
+                            <button type="button" className="btn btn-neutral place-self-center">Próximos Jogos</button>
                         </div>
                         <Carousel width={cardGamewidth} buttons={true}>
                             <GameCard refe={cardGameRef} props={{
@@ -383,15 +381,15 @@ export function Component() {
         return(
             <div className="grid gap-6 place-content-center place-items-center space-y-3 w-full">
                 <div className="relative bg-gradient-to-b rounded-[20px] from-[#7a7876] to-[#000000] w-full h-[650px]">
-                        <img className="object-cover rounded-[20px] mix-blend-overlay h-96 h-[650px]" src={backgroundImg}/>
+                        <img className="object-cover rounded-[20px] mix-blend-overlay h-96 h-[650px]" src={backgroundImg} alt=""/>
                         <div className="grid absolute m-5 top-0 backdrop-blur-md backdrop-brightness-50 w-100% bg-transparent rounded-[20px] p-8">
-                            <div className="text-2xl font-bold place-self-center"><p>Junta-te ao <t className="text-primary">mágico EI</t></p></div>
+                            <div className="text-2xl font-bold place-self-center"><p>Junta-te ao <span className="text-primary">mágico EI</span></p></div>
                             <div className="grid gap-1 py-8">
                                 <p className="font-bold">A Taça UA está de volta!</p>
                                 <p>Inscreve-te neste formulário e vem defender o teu curso numa das modalidades existentes.</p>
                                 <p>Esperamos ver te brilhar por EI.</p>
                             </div>
-                            <button class="btn btn-primary place-self-center">Instcrever</button>
+                            <button type="button" className="btn btn-primary place-self-center">Instcrever</button>
                         </div>
                         <div className="absolute top-[55%] w-full p-8">
                         <Carousel width={cardSportwidth} buttons={false}>
@@ -441,9 +439,9 @@ export function Component() {
                         </div>
                 </div>
                 <div className="grid gap-8 w-full p-4 bg-base-200 rounded-[20px] place-content-center place-items-center">
-                        <div class="flex gap-3 bg-base-100 rounded-full p-3">
-                            <button class="btn btn-primary place-self-center">Últimos Jogos</button>
-                            <button class="btn btn-neutral place-self-center">Próximos Jogos</button>
+                        <div className="flex gap-3 bg-base-100 rounded-full p-3">
+                            <button type="button" className="btn btn-primary place-self-center">Últimos Jogos</button>
+                            <button type="button" className="btn btn-neutral place-self-center">Próximos Jogos</button>
                         </div>
                         <div className="grid gap-2">
                             <GameCard refe={cardGameRef} props={{

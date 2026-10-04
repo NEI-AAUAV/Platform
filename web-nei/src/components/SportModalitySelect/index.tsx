@@ -31,23 +31,28 @@ export default function SportModalitySelect({
   setModalModality,
   setModalType,
   tab,
-}: SelectProps) {
+}: Readonly<SelectProps>) {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate(`/taca-ua/${modalityId}/${tab}/${competitionId}`);
+    void navigate(`/taca-ua/${modalityId}/${tab}/${competitionId}`);
   };
 
   return (
     <div
       className={cn(
-        "group flex cursor-pointer flex-row items-center justify-between gap-1 rounded-lg py-2 pe-2 ps-4 text-start transition-colors first:mt-2",
+        "group flex flex-row items-center justify-between gap-1 rounded-lg pe-2 transition-colors first:mt-2",
         isSelected
           ? "bg-primary/20 font-medium hover:bg-primary/30"
           : "hover:bg-base-100 dark:hover:bg-base-200"
       )}
-      onClick={handleClick}
     >
-      <p>{name}</p>
+      <button
+        type="button"
+        className="flex-1 cursor-pointer py-2 ps-4 text-start"
+        onClick={handleClick}
+      >
+        <p>{name}</p>
+      </button>
       {admin && (
         <div className="flex flex-row items-center gap-1">
           <DialogTrigger

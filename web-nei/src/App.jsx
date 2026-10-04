@@ -7,8 +7,9 @@ import { getSocket } from "services/SocketService";
 import { refreshToken } from "services/client";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-let ws = getSocket();
+getSocket();
 const queryClient = new QueryClient();
+const router = createBrowserRouter(routes);
 
 /**
  * Render the pages with protected routes, after knowing if a session exists.
@@ -17,10 +18,10 @@ const queryClient = new QueryClient();
  * while it is waiting for the server response.
  */
 const App = () => {
-  const router = createBrowserRouter(routes);
-
   useEffect(() => {
-    refreshToken();
+    refreshToken().catch((error) => {
+      console.error("Failed to refresh token", String(error?.message ?? "unknown").replaceAll(/[\r\n]/g, " "));
+    });
   }, []);
 
   return (

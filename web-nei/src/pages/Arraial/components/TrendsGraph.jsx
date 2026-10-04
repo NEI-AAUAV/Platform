@@ -1,5 +1,7 @@
 import React from "react";
 
+import { keyedByContent } from "utils/keys";
+
 export default function TrendsGraph({ pointHistory }) {
   if (pointHistory.length < 2) {
     return (
@@ -22,6 +24,7 @@ export default function TrendsGraph({ pointHistory }) {
     ...pointHistory.flatMap((entry) => entry.points.map((p) => p.value)),
     1
   );
+  const historyKeys = keyedByContent(pointHistory, (entry) => entry.timestamp);
   const colors = { NEEETA: "#3B82F6", NEECT: "#10B981", NEI: "#F59E0B" };
 
   const getX = (index) => padding + (index / (pointHistory.length - 1)) * chartWidth;
@@ -79,7 +82,7 @@ export default function TrendsGraph({ pointHistory }) {
           {["NEEETA", "NEECT", "NEI"].map((nucleo) => {
             const points = pointHistory.map((entry) => {
               const nucleoData = entry.points.find((p) => p.nucleo === nucleo);
-              return nucleoData ? nucleoData.value : 0;
+              return nucleoData?.value ?? 0;
             });
             const pathData = points
               .map((value, index) => {
@@ -105,7 +108,7 @@ export default function TrendsGraph({ pointHistory }) {
                   const y = getY(value);
                   const isHovered = hoveredPoint?.nucleo === nucleo && hoveredPoint?.index === index;
                   return (
-                    <g key={index}>
+                    <g key={historyKeys[index].key}>
                       <circle
                         cx={x}
                         cy={y}
@@ -116,7 +119,7 @@ export default function TrendsGraph({ pointHistory }) {
                         className="cursor-pointer"
                         onMouseEnter={() => setHoveredPoint({ nucleo, index, value, time })}
                         onMouseLeave={() => setHoveredPoint(null)}
-                        onClick={() => setHoveredPoint((prev) => prev && prev.nucleo === nucleo && prev.index === index ? null : { nucleo, index, value, time })}
+                        onClick={() => setHoveredPoint((prev) => prev?.nucleo === nucleo && prev.index === index ? null : { nucleo, index, value, time })}
                       />
                       {isHovered && (
                         <g>
