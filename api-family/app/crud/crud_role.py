@@ -112,7 +112,7 @@ class CRUDRole:
                 next_num = 1
             new_id = f".{next_num}."
         
-        doc = obj_in.dict()
+        doc = obj_in.model_dump()
         doc["_id"] = new_id
         
         self.collection.insert_one(doc)
@@ -120,7 +120,7 @@ class CRUDRole:
     
     def update(self, *, id: str, obj_in: RoleUpdate) -> Optional[dict]:
         """Update role by ID."""
-        update_data = obj_in.dict(exclude_unset=True)
+        update_data = obj_in.model_dump(exclude_unset=True)
         
         if not update_data:
             return self.get(id)

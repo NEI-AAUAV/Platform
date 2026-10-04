@@ -38,6 +38,51 @@ function springTo(value, from, to) {
 
 const debouncedSpringTo = debounce(springTo, 100);
 
+function mix(min, max, progress) {
+  return min + (max - min) * progress;
+}
+
+/**
+ * Springs `y` back to `limit` once the wheel delta passes the threshold in the
+ * direction of `limit`, otherwise schedules a debounced spring back.
+ * Returns true if an immediate animation was started.
+ */
+function springBackOrDebounce(y, newY, limit, isImmediate) {
+  if (isImmediate) {
+    springTo(y, newY, limit);
+    return true;
+  }
+  debouncedSpringTo(y, newY, limit);
+  return false;
+}
+
+/**
+ * Applies elastic resistance beyond the constraints and triggers spring-back.
+ * Returns the position to apply and whether an animation was started.
+ */
+function resolveOverscroll(y, currentY, newY, deltaY, constraints) {
+  const elasticY = mix(currentY, newY, elasticFactor);
+  let startedAnimation = false;
+
+  if (elasticY < constraints.top) {
+    startedAnimation =
+      springBackOrDebounce(y, elasticY, constraints.top, deltaY <= deltaThreshold) ||
+      startedAnimation;
+  }
+
+  if (elasticY > constraints.bottom) {
+    startedAnimation =
+      springBackOrDebounce(y, elasticY, constraints.bottom, deltaY >= -deltaThreshold) ||
+      startedAnimation;
+  }
+
+  return { newY: elasticY, startedAnimation };
+}
+
+function isWithinConstraints(value, constraints) {
+  return value >= constraints.top && value <= constraints.bottom;
+}
+
 /**
  * Re-implements wheel scroll for overlflow: hidden elements.
  *
@@ -50,7 +95,7 @@ const debouncedSpringTo = debounce(springTo, 100);
  * feels pretty good during direct input but it'd be better to increase
  * the deltaY threshold during momentum scroll.
  *
- * TODOs before inclusion in Framer Motion:
+ * NOTE: open items before inclusion in Framer Motion:
  * - Detect momentum scroll and increase delta threshold before spring
  * - Remove padding hack
  * - Handle x-axis
@@ -74,32 +119,15 @@ export function useWheelScroll(
     const currentY = y.get();
     let newY = currentY - event.deltaY;
     let startedAnimation = false;
-    const isWithinBounds =
-      constraints && newY >= constraints.top && newY <= constraints.bottom;
 
-    if (constraints && !isWithinBounds) {
-      function mix(min, max, progress) {
-        return min + (max - min) * progress;
-      }
-      newY = mix(currentY, newY, elasticFactor);
-
-      if (newY < constraints.top) {
-        if (event.deltaY <= deltaThreshold) {
-          springTo(y, newY, constraints.top);
-          startedAnimation = true;
-        } else {
-          debouncedSpringTo(y, newY, constraints.top);
-        }
-      }
-
-      if (newY > constraints.bottom) {
-        if (event.deltaY >= -deltaThreshold) {
-          springTo(y, newY, constraints.bottom);
-          startedAnimation = true;
-        } else {
-          debouncedSpringTo(y, newY, constraints.bottom);
-        }
-      }
+    if (constraints && !isWithinConstraints(newY, constraints)) {
+      ({ newY, startedAnimation } = resolveOverscroll(
+        y,
+        currentY,
+        newY,
+        event.deltaY,
+        constraints
+      ));
     }
 
     if (!startedAnimation) {

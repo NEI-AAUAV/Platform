@@ -1,23 +1,14 @@
 import { motion } from "framer-motion";
 
-const backdrop = {
-  visible: { opacity: 1 },
-  hidden: { opacity: 0 },
-};
 const Badges = {
   event: ["badge badge-primary"],
   partner: ["badge badge-secondary"],
   news: ["badge badge-accent"],
 };
 
-const openSpring = { type: "spring", stiffness: 200, damping: 30 };
-const closeSpring = { type: "spring", stiffness: 300, damping: 35 };
-
 export const NewsModal = (props) => {
-  let { title, description, link, header, date, category } = props.data;
-  const mid = props.newsKey;
+  const { title, description, header, date, category } = props.data;
   return (
-    <>
       <div className="fixed inset-0 bg-black/50 z-50 cursor-pointer overflow-y-scroll ">
 
         <motion.div className="modal-box left-1/2 top-1/2 absolute -translate-y-1/2 -translate-x-1/2 "
@@ -62,13 +53,10 @@ export const NewsModal = (props) => {
                 >
                   {category}
                 </div>
-              ) : (
-                <></>
-              )}
+              ) : null}
             </div>
           </div>
         </motion.div>
       </div>
-    </>
   );
 };

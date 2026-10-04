@@ -29,7 +29,9 @@ export default function UserRolesManager({ user, isEdit, pendingRoles, setPendin
             }
         }
         if (isEdit) {
-            loadUserRoles();
+            loadUserRoles().catch((err) => {
+                console.error("Failed to load user roles:", err);
+            });
         } else {
             setUserRoles([]);
         }

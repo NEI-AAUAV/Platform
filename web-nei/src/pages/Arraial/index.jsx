@@ -36,6 +36,7 @@ export function Component() {
     const lastRecordedMapRef = React.useRef({});
     const lastRecordedAtRef = React.useRef(0);
     const hasBaselineRef = React.useRef(false);
+    const milestonesEnabledRef = React.useRef(false);
     const initParticles = React.useCallback(async (engine) => {
         const mod = await import('tsparticles');
         await mod.loadFull(engine);
@@ -68,25 +69,25 @@ export function Component() {
                 points: pointsData.map(p => ({ nucleo: p.nucleo, value: p.value }))
             };
             setPointHistory(prev => [...prev.slice(-20), entry]);
-        } catch (_) { /* ignore */ }
+        } catch (error) {
+            console.debug("Failed to record the points history entry", error);
+        }
     }, []);
 
     useEffect(() => {
         const onConfetti = (e) => {
             setConfettiActive(true);
-            if (e?.detail && e.detail.nucleo && e.detail.milestone) {
+            if (e?.detail?.nucleo && e.detail.milestone) {
                 // Generate cryptographically secure unique ID
                 const array = new Uint32Array(2);
                 crypto.getRandomValues(array);
                 const id = `${Date.now()}-${array[0].toString(36)}${array[1].toString(36)}`;
                 const toast = { id, nucleo: e.detail.nucleo, milestone: e.detail.milestone };
-                setMilestoneToasts((prev) => [...prev, toast]);
-                const tId = setTimeout(() => {
-                    setMilestoneToasts((prev) => prev.filter((t) => t.id !== id));
-                }, 6000);
+                setMilestoneToasts(withToast(toast));
+                const tId = setTimeout(setMilestoneToasts, 6000, withoutToast(id));
                 timeoutsRef.current.push(tId);
             }
-            const cId = setTimeout(() => setConfettiActive(false), 1700);
+            const cId = setTimeout(setConfettiActive, 1700, false);
             timeoutsRef.current.push(cId);
         };
         window.addEventListener('arraial:confetti', onConfetti);
@@ -106,7 +107,9 @@ export function Component() {
 
     const handlePointsUpdate = React.useCallback((data) => {
         if (hasBaselineRef.current) {
-            maybeTriggerConfetti(prevPointsRef.current, data);
+            if (milestonesEnabledRef.current) {
+                maybeTriggerConfetti(prevPointsRef.current, data);
+            }
         } else {
             hasBaselineRef.current = true;
         }
@@ -120,6 +123,7 @@ export function Component() {
         onPointsUpdate: handlePointsUpdate,
     });
     const history = useArraialHistory(auth);
+    milestonesEnabledRef.current = realtime.milestonesEnabled;
 
     
     const handleSubmit = () => {
@@ -132,7 +136,7 @@ export function Component() {
         
         const formdata = {
             "nucleo": selectedValue,
-            "pointIncrement": parseInt(number) || 0
+            "pointIncrement": Number.parseInt(number) || 0
         };
         
         service.updateArraialPoints(formdata)
@@ -168,7 +172,7 @@ export function Component() {
 
         // Check if the value is empty or a valid whole number within limits
         if (value === '' || /^-?\d+$/.test(value)) {
-            const num = parseInt(value, 10);
+            const num = Number.parseInt(value, 10);
             if (value === '' || (num >= -1000 && num <= 1000)) {
                 setNumber(value);
             }
@@ -178,7 +182,7 @@ export function Component() {
     const quickAdjust = (delta) => {
         setError(null);
         // If empty, start from 0; else parse current number
-        const base = number === '' ? 0 : parseInt(number, 10) || 0;
+        const base = number === '' ? 0 : Number.parseInt(number, 10) || 0;
         const next = base + delta;
         setNumber(String(next));
     };
@@ -225,9 +229,9 @@ export function Component() {
                     <ConnectionIndicator wsConnected={false} />
                 </div>
                 <div className="flex flex-col md:flex-row items-center md:items-start justify-center space-y-6 md:space-y-0 md:space-x-16 min-h-[55vh]">
-                    {skeletonPoints.map((p, i) => (
+                    {skeletonPoints.map((p) => (
                         <PointsGlass
-                            key={i}
+                            key={p.nucleo}
                             pointsData={p}
                             pointsList={skeletonPoints}
                             boosts={{}}
@@ -256,7 +260,7 @@ export function Component() {
             key={index}
             pointsData={pointsData}
             pointsList={pointsList}
-            boosts={realtime.boosts}
+            boosts={realtime.boostsEnabled ? realtime.boosts : {}}
             calcHeight={calcHeight}
             BoostCountdown={BoostCountdown}
             animateFill={hasBaselineRef.current}
@@ -284,17 +288,21 @@ export function Component() {
                 <>
                     <AdminControls
                         paused={realtime.paused}
-                        boosts={realtime.boosts}
+                        boostsEnabled={realtime.boostsEnabled}
                         selectedValue={selectedValue}
                         number={number}
                         isLoading={isLoading}
                         onBoost={async (n)=>{
+                                setError(null);
                                 try {
                                     const resp = await service.activateArraialBoost(n);
-                                    if (resp && resp.boosts) {
+                                    if (resp?.boosts) {
                                         realtime.setBoosts(resp.boosts);
                                     }
-                                } catch(e) { /* ignore */ }
+                                } catch (boostError) {
+                                    console.error('Failed to activate boost:', boostError);
+                                    setError(getErrorMessage(boostError, 'Failed to activate boost.'));
+                                }
                         }}
                         onChangeNucleo={(val)=> setSelectedValue(val)}
                         onChangePoints={(val)=> handleNumChange({ target: { value: val }})}
@@ -361,7 +369,7 @@ export function Component() {
                     )}
                 </>
             ) : null}
-            {confettiActive && (
+            {realtime.milestonesEnabled && confettiActive && (
                 <React.Suspense fallback={null}>
                 <LazyParticles
                     id="arraial-confetti"
@@ -395,7 +403,7 @@ export function Component() {
                 />
                 </React.Suspense>
             )}
-            {milestoneToasts.length > 0 && (
+            {realtime.milestonesEnabled && milestoneToasts.length > 0 && (
                 <div className="fixed inset-x-0 top-1/4 z-[1000] flex justify-center pointer-events-none">
                     <div className="flex flex-col gap-4">
                         {milestoneToasts.map((t) => (
@@ -431,7 +439,8 @@ function BoostCountdown({ untilIso, asBadge = false, nucleo, onExpire }) {
                 const m = Math.floor(diff / 60);
                 const s = diff % 60;
                 setRemaining(`${m}:${String(s).padStart(2, '0')}`);
-            } catch (_) {
+            } catch (error) {
+                console.debug('Failed to parse boost expiry (non-critical):', error);
                 setRemaining('');
             }
         };
@@ -449,12 +458,18 @@ function BoostCountdown({ untilIso, asBadge = false, nucleo, onExpire }) {
     return (
         <div className="mt-2 flex justify-center">
             <span className="badge badge-primary badge-lg gap-2 px-4">
-                1.25x
+                1.25x{' '}
                 <span className="opacity-90">{remaining}</span>
             </span>
         </div>
     );
 }
+
+/** State updater that appends a toast. */
+const withToast = (toast) => (toasts) => [...toasts, toast];
+
+/** State updater that drops the toast with the given id. */
+const withoutToast = (id) => (toasts) => toasts.filter((t) => t.id !== id);
 
 function maybeTriggerConfetti(prevMap, nextList) {
     try {

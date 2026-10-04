@@ -1,3 +1,4 @@
+from datetime import datetime
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
@@ -42,15 +43,25 @@ class CRUDEvent(CRUDBase[Event, CreateEvent, UpdateEvent]):
 
             participant_scope = f"participant:{id}"
 
+            seen_emails: set[str] = set()
+
             for user in users:
+                # The same address may be listed twice in one import
+                if user.email in seen_emails:
+                    continue
+                seen_emails.add(user.email)
+
                 maybe_user_model = crud_user.get_by_email(
                     db, user.email, for_update=True
                 )
 
                 if maybe_user_model is None:
+                    now = datetime.now()
                     user_model = User(
                         for_event=event.id,
                         scopes=[participant_scope],
+                        created_at=now,
+                        updated_at=now,
                         **user.dict(exclude={"email"}, exclude_unset=True),
                     )
                     db.add(user_model)

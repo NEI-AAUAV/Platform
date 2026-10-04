@@ -15,7 +15,7 @@ else:
 _timeout = httpx.Timeout(10.0, connect=30.0)
 
 
-async def verify_reCaptcha(token: str | None) -> float:
+async def verify_recaptcha(token: str | None) -> float:
     """Validates that the reCaptcha token is valid and returns the response score
 
     **Parameters**

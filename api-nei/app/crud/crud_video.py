@@ -14,17 +14,8 @@ class CRUDVideo(CRUDBase[Video, VideoCreate, VideoUpdate]):
         """
         Return list of videos by categories.
         """
-        # if tags:
-
-        #     allvids = db.query(Video).all()
-        #     filtVids = [vid for vid in allvids if {tag.id for tag in vid.tags}.intersection(tags)]
-        #     return filtVids
-
         query = db.query(Video)
         if tags:
-            # query = [vid for vid in query.all(
-            # ) if {tag.id for tag in vid.tags}.intersection(tags)]
-
             query = (
                 query.join(video__video_tags_association_table)
                 .join(VideoTag)

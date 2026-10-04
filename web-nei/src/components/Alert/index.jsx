@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react";
  * @returns
  */
 const Alert = ({ alert, setAlert }) => {
-  const [cssclass, setCssClass] = useState("primary");
+  const [cssClass, setCssClass] = useState("primary");
 
   useEffect(() => {
     switch (alert.type) {
@@ -23,7 +23,7 @@ const Alert = ({ alert, setAlert }) => {
 
   return (
     <div
-      className={`d-flex flex-row text-${cssclass} bg-outline-${cssclass} font-weight-bold animation mx-auto p-2`}
+      className={`d-flex flex-row text-${cssClass} bg-outline-${cssClass} font-weight-bold animation mx-auto p-2`}
     >
       <p className="col mb-0">{alert.text}</p>
     </div>

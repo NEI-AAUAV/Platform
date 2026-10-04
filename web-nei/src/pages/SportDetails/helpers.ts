@@ -1,6 +1,5 @@
 import { ModalitiesDataProps } from ".";
-import { ModalityFrames, ModalitiesByYearAndFrame } from "./types";
-import { Modality } from "./types";
+import { ModalityFrames, ModalitiesByYearAndFrame, Modality } from "./types";
 
 export const organizeModalitiesByYearAndFrame = (
   data: ModalitiesDataProps
@@ -18,7 +17,7 @@ export const getCurrentModality = (
   modalityId: string,
   data: ModalitiesDataProps
 ): Modality => {
-  const modalityId_int = parseInt(modalityId);
+  const modalityId_int = Number.parseInt(modalityId, 10);
   return (
     data.modalities.find((modality) => modality.id === modalityId_int) ?? {
       year: 0,

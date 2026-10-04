@@ -15,7 +15,7 @@ from app.core.logging import logger
 
 class CRUDCourse(CRUDBase[Course, CourseCreate, CourseUpdate]):
 
-    SVG_R = r'(?:<\?xml\b[^>]*>[^<]*)?(?:<!--.*?-->[^<]*)*(?:<svg|<!DOCTYPE svg)\b'
+    SVG_R = r'(?:<\?xml\b[^>]*>[^<]*)?(?:<!--(?:[^-]|-(?!->))*-->[^<]*)*(?:<svg|<!DOCTYPE svg)\b'
     SVG_RE = re.compile(SVG_R, re.DOTALL)
 
     async def update_image(

@@ -3,6 +3,7 @@ export const categories = {
   "2A": { prefixes: ["[2A]"], name: "2º Ano", color: "187 99% 38%" },
   "3A": { prefixes: ["[3A]"], name: "3º Ano", color: "187 99% 30%" },
   MEI: { prefixes: ["[MEI]"], name: "MEI", color: "187 98% 20%" },
+  MDJD: { prefixes: ["[MDJD]"], name: "MDJD", color: "270 70% 45%" },
   TacaUA: { prefixes: ["[Taça UA]"], name: "Taça UA", color: "359 85% 45%" },
   CalendarioEscolar: {
     prefixes: [
@@ -16,9 +17,9 @@ export const categories = {
     name: "Calendário escolar",
     color: "38 100% 50%",
   },
-  MDJD: { prefixes: ["[MDJD]"], name: "MDJD", color: "270 70% 45%" },
-  // Expected default category
-  NEI: { prefixes: ["[NEI]"], name: "NEI", color: "131 72% 28%" },
+  // Expected default category, also matches NEI events shared with other
+  // entities (e.g. "[NEI/NEECT]"), see getCategory()
+  NEI: { name: "NEI", color: "131 72% 28%" },
 };
 
 export default { categories };

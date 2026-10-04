@@ -21,7 +21,7 @@ def _get_enabled_extensions() -> set[str] | None:
         return None  # Not set - backward compatibility, load all
     if not enabled_extensions.strip():
         return set()  # Set but empty - load no extensions
-    return set(ext.strip() for ext in enabled_extensions.split(",") if ext.strip())
+    return {ext.strip() for ext in enabled_extensions.split(",") if ext.strip()}
 
 
 def _iter_extension_manifests() -> List[str]:

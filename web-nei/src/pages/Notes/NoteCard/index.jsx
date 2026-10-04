@@ -16,7 +16,7 @@ import otherPic from "assets/default_profile/other.svg";
 const NoteCard = ({ note, link, className, Icon, onClick, title, style }) => {
   const { author, subject } = note;
   function getTags(tag) {
-    var tags = [];
+    const tags = [];
     if (monthsPassed(new Date(note?.created_at)) < 3) {
       tags.push({
         name: "Novo",
@@ -35,7 +35,7 @@ const NoteCard = ({ note, link, className, Icon, onClick, title, style }) => {
     <LinkAdapter
       to={link}
       onClick={onClick}
-      title={title ? title : ""}
+      title={title || ""}
       style={style}
       className={"cursor-pointer no-underline " + className}
     >
@@ -73,9 +73,9 @@ const NoteCard = ({ note, link, className, Icon, onClick, title, style }) => {
           <h5 className="mt-2 w-full break-words">{note?.name}</h5>
 
           <div className="mt-2 flex flex-wrap gap-2">
-            {getTags().map((tag, index) => (
+            {getTags().map((tag) => (
               <span
-                key={index}
+                key={tag.name}
                 className="badge badge-sm justify-start truncate border-0 font-bold text-white"
                 style={{ backgroundColor: `hsl(${tag.color})` }}
               >

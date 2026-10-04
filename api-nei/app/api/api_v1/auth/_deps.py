@@ -37,7 +37,7 @@ with open(settings.JWT_SECRET_KEY_PATH, "r") as file:
 with open(settings.JWT_PUBLIC_KEY_PATH, "r") as file:
     public_key = file.read()
 
-auth_responses: Dict[Union[int, str], Dict[str, Any]] = {
+auth_responses: Dict[int | str, Dict[str, Any]] = {
     401: {"description": "Not authenticated"},
     403: {"description": "Not enough permissions"},
 }
@@ -126,7 +126,7 @@ class AuthData(BaseModel):
     scopes: Set[str]
 
 
-async def get_auth_data(
+def get_auth_data(
     token: Optional[str] = Depends(oauth2_scheme),
 ) -> Optional[AuthData]:
     if token is None:
@@ -154,7 +154,7 @@ async def get_auth_data(
 GetAuthData = Annotated[Optional[AuthData], Depends(get_auth_data)]
 
 
-async def verify_token(
+def verify_token(
     security_scopes: SecurityScopes, auth_data: GetAuthData
 ) -> AuthData:
     """Dependency for user authentication"""
@@ -206,7 +206,7 @@ def generate_response(
     access token in the body
     """
 
-    # FIXME: refactor this to have a clean way of setting primary emails
+    # NOTE: a cleaner way of setting primary emails is still to be designed
     user_email = db.query(UserEmail).filter(user.id == UserEmail.user_id).first()
 
     # Measure once the current time, the same value must be passed to the
@@ -228,6 +228,7 @@ def generate_response(
             refresh_jti=refresh_jti,
         )
         db.add(device_login)
+        user.last_login_at = iat
     else:
         # Update the last time the token was refreshed if the session already exists
         device_login.refreshed_at = iat

@@ -3,18 +3,15 @@ import Card from "./components/InternshipCard/index";
 import { Col, Row } from "react-bootstrap";
 import { Typewriter } from "react-simple-typewriter";
 
-const animationBase = parseFloat(import.meta.env.VITE_ANIMATION_BASE);
-const animationIncrement = parseFloat(
+const animationBase = Number.parseFloat(import.meta.env.VITE_ANIMATION_BASE);
+const animationIncrement = Number.parseFloat(
   import.meta.env.VITE_ANIMATION_INCREMENT
 );
 
 const Internship = () => {
   return (
     <div
-      d-flex
-      flex-column
-      flex-wrap
-      className="slideUpFade"
+      className="d-flex flex-column flex-wrap slideUpFade"
       style={{ animationDelay: animationBase + animationIncrement }}
     >
       <h2 className="mb-5 text-center">
@@ -26,15 +23,14 @@ const Internship = () => {
           portfolio de projetos para{" "}
           <a href="mailto:eder.alves@olisipo.pt">eder.alves@olisipo.pt</a>, e
           indica a referência das oportunidades que gostavas de integrar. Caso
-          tenhas alguma dúvida, contacta-nos pelo email (
-          <a href="mailto:nei@aauav.pt">nei@aauav.pt</a>) ou pelas redes sociais
+          tenhas alguma dúvida, contacta-nos pelo email (<a href="mailto:nei@aauav.pt">nei@aauav.pt</a>) ou pelas redes sociais
           para te podermos ajudar.
         </p>
       </div>
       <Row>
         <Col>
           <Card
-            class="resize-4"
+            className="resize-4"
             title="TecmaFoods"
             position="Gestão de Sistemas Informáticos & IoT"
             duration="Estágio de verão (remoto)"
@@ -48,7 +44,7 @@ const Internship = () => {
         </Col>
         <Col>
           <Card
-            class="resize-4"
+            className="resize-4"
             title="EatTasty"
             duration="Contrato Full Time"
             position="Full Stack Developer (Lisboa)"
@@ -66,7 +62,7 @@ const Internship = () => {
       <Row>
         <Col>
           <Card
-            class="resize-3"
+            className="resize-3"
             title="CheckFirst app"
             position="IT Internships"
             duration="Estágio de 3 ou 6 meses (remoto ou presencial, em Lisboa, com oportunidade para integrar equipa no final)"
@@ -79,7 +75,7 @@ const Internship = () => {
         </Col>
         <Col>
           <Card
-            class="resize-3"
+            className="resize-3"
             title="Decision Eyes"
             duration="Estágio de Verão (com oportunidade para integrar equipa no final)"
             position="Developer (2º ou 3º ano da licenciatura)"
@@ -95,7 +91,7 @@ const Internship = () => {
       <Row>
         <Col>
           <Card
-            class="resize-3"
+            className="resize-3"
             title="Sensefinity"
             position="Developers"
             duration="Estágio profissional (Lisboa, com oportunidade de integrar equipa no final)"
@@ -108,7 +104,7 @@ const Internship = () => {
         </Col>
         <Col>
           <Card
-            class="resize-3"
+            className="resize-3"
             title="Sensefinity"
             position="Developers"
             duration="Estágio de verão (remoto ou presencial, em Lisboa, com oportunidade de integrar equipa no final)"
@@ -123,7 +119,7 @@ const Internship = () => {
       <Row>
         <Col>
           <Card
-            class="resize-2"
+            className="resize-2"
             title="Olisipo"
             position="Fullstack Developer"
             duration="Contrato Full Time (Leiria e Híbrido)"
@@ -135,7 +131,7 @@ const Internship = () => {
         </Col>
         <Col>
           <Card
-            class="resize-2"
+            className="resize-2"
             title="Olisipo"
             duration="Contrato Full Time (Leiria e Híbrido)"
             position="Fullstack Developer"
@@ -149,7 +145,7 @@ const Internship = () => {
       <Row>
         <Col>
           <Card
-            class="resize-2"
+            className="resize-2"
             title="Olisipo"
             position="Backend Developer"
             duration="Contrato Full Time (Aveiro e Híbrido)"
@@ -161,7 +157,7 @@ const Internship = () => {
         </Col>
         <Col>
           <Card
-            class="resize-2"
+            className="resize-2"
             title="Track on Performance"
             duration="Estágio de Verão (remoto com oportunidade para integrar equipa no final)"
             position="WebDeveloper"
@@ -175,7 +171,7 @@ const Internship = () => {
       <Row>
         <Col>
           <Card
-            class="resize-2"
+            className="resize-2"
             title="hApi"
             position="Developer"
             duration="Fullstack Developer (Lisboa)"
@@ -186,7 +182,7 @@ const Internship = () => {
         </Col>
         <Col>
           <Card
-            class="resize-2"
+            className="resize-2"
             title="Olisipo"
             duration="Contrato Full Time (Aveiro e Híbrido)"
             position="Embedded Developer"
@@ -199,7 +195,7 @@ const Internship = () => {
       <Row>
         <Col>
           <Card
-            class="resize-1"
+            className="resize-1"
             title="Olisipo"
             position="Frontend Developer"
             duration="Contrato Full Time (Leiria e Híbrido)"
@@ -209,7 +205,7 @@ const Internship = () => {
         </Col>
         <Col>
           <Card
-            class="resize-1"
+            className="resize-1"
             title="Reatia"
             duration="Estágio de Verão (remoto)"
             position="Data Collection"

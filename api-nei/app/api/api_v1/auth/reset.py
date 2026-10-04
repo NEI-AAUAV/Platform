@@ -68,6 +68,7 @@ async def _send_password_reset_token(email: str, name: str, uid: int):
     responses={
         404: {"description": "The provided email is not associated with an user"},
         503: {"description": "Password resets are not enabled"},
+        400: {"description": "Bad request"},
     },
     response_model=OperationSuccessfulResponse,
 )

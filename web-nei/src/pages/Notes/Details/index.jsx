@@ -19,6 +19,58 @@ import { GithubIcon, GoogleDriveIcon } from "assets/icons/social";
 import service from "services/NEIService";
 import classNames from "classnames";
 
+const Folder = ({ name, icon, iconOpened, children }) => {
+  const [isOpened, setIsOpened] = useState(false);
+
+  const Icon = isOpened && iconOpened ? iconOpened : icon;
+
+  return (
+    <div className="file-folder">
+      <button
+        type="button"
+        disabled={!children}
+        className={classNames(
+          "flex w-full gap-2 rounded px-1 text-left",
+          children
+            ? "cursor-pointer hover:bg-base-content/10"
+            : "cursor-default"
+        )}
+        aria-expanded={children ? isOpened : undefined}
+        onClick={() => children && setIsOpened(!isOpened)}
+      >
+        <Icon
+          className={classNames(
+            "shrink-0",
+            children ? "fill-base-content" : "fill-base-content/70"
+          )}
+        />
+        <span className="truncate" title={name}>
+          {name}
+        </span>
+      </button>
+      {isOpened && children && (
+        <div className="ml-1.5 border-l border-base-content/20 pl-1 group-hover:border-base-content">
+          {Object.entries(children).map(([name, props]) => (
+            <Folder key={name} name={name} {...props} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+function convertSize(sizeInBytes) {
+  const units = ["bytes", "KB", "MB", "GB", "TB"];
+  let index = 0;
+
+  while (sizeInBytes >= 1000 && index < units.length - 1) {
+    sizeInBytes /= 1000;
+    index++;
+  }
+
+  return sizeInBytes.toFixed(1) + " " + units[index];
+}
+
 const DetailsContents = ({ contents }) => {
   const [contentsTree, setContentsTree] = useState({});
 
@@ -40,7 +92,7 @@ const DetailsContents = ({ contents }) => {
       for (const part of parts) {
         contentsNode[part] = {
           children: {},
-          ...(contentsNode[part] || {}),
+          ...contentsNode[part],
           icon: FolderIcon,
           iconOpened: FolderOpenIcon,
         };
@@ -58,43 +110,6 @@ const DetailsContents = ({ contents }) => {
   if (!contents) {
     return null;
   }
-
-  const Folder = ({ name, icon, iconOpened, children }) => {
-    const [isOpened, setIsOpened] = useState(false);
-
-    const Icon = isOpened && iconOpened ? iconOpened : icon;
-
-    return (
-      <div className="file-folder">
-        <div
-          className={classNames(
-            "flex gap-2 rounded px-1",
-            children
-              ? "cursor-pointer hover:bg-base-content/10"
-              : "cursor-default"
-          )}
-          onClick={() => children && setIsOpened(!isOpened)}
-        >
-          <Icon
-            className={classNames(
-              "shrink-0",
-              children ? "fill-base-content" : "fill-base-content/70"
-            )}
-          />
-          <span className="truncate" title={name}>
-            {name}
-          </span>
-        </div>
-        {isOpened && children && (
-          <div className="ml-1.5 border-l border-base-content/20 pl-1 group-hover:border-base-content">
-            {Object.entries(children).map(([name, props]) => (
-              <Folder key={name} name={name} {...props} />
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
 
   return (
     <>
@@ -143,7 +158,7 @@ const Details = ({
   }, [note_id]);
 
   useEffect(() => {
-    var note_tags = [];
+    const note_tags = [];
     if (note) {
       note.summary == "1" &&
         note_tags.push({ name: "Resumos", className: "tag-summary" });
@@ -160,7 +175,7 @@ const Details = ({
       note.notebook == "1" &&
         note_tags.push({ name: "Caderno", className: "tag-notebook" });
 
-      // TODO: refactor this so that it does not repeat the same code in Notes/index.js
+      // NOTE: refactor this so that it does not repeat the same code in Notes/index.js
       if (note.location.endsWith(".pdf")) {
         note.type = {
           caption: "Descarregar",
@@ -195,21 +210,13 @@ const Details = ({
     }
   }, [note]);
 
-  function convertSize(sizeInBytes) {
-    const units = ["bytes", "KB", "MB", "GB", "TB"];
-    let index = 0;
-
-    while (sizeInBytes >= 1000 && index < units.length - 1) {
-      sizeInBytes /= 1000;
-      index++;
-    }
-
-    return sizeInBytes.toFixed(1) + " " + units[index];
+  if (!loading && !note) {
+    return null;
   }
 
   return (
     <div className={`flex flex-col ${className}`}>
-      {!!loading ? (
+      {loading ? (
         <Spinner
           animation="grow"
           variant="primary"
@@ -225,9 +232,9 @@ const Details = ({
             </button>
           </div>
           <div className="mx-0 my-3 flex-row">
-            {tags.map((tag, index) => (
+            {tags.map((tag) => (
               <span
-                key={index}
+                key={tag.name}
                 className={"badge-pill badge mb-1 ml-0 mr-1 " + tag.className}
               >
                 {tag.name}

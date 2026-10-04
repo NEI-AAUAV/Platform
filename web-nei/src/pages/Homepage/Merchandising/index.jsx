@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import {motion} from "framer-motion";
 import service from "services/NEIService";
@@ -30,6 +30,8 @@ const Merchandising = () => {
   useEffect(() => {
     service.getMerch().then((data) => {
       setMerchs(data);
+    }).catch((error) => {
+      console.error("Failed to load merchandising", error);
     });
   }, []);
 

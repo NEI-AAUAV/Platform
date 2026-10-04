@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 
 from pydantic import AnyHttpUrl
-from sqlalchemy import String, Enum, Text, Date, ForeignKey
+from sqlalchemy import String, Enum, Text, Date, DateTime, ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.mutable import MutableList
@@ -32,6 +32,7 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(index=True)
     created_at: Mapped[datetime] = mapped_column(index=True)
     birthday: Mapped[Optional[datetime]] = mapped_column(Date)
+    last_login_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
 
     matriculation: Mapped[List[UserMatriculation]] = relationship(UserMatriculation)
 

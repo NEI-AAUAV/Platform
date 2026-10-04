@@ -1,6 +1,23 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 
+// Mock localStorage (jsdom's own is not always available at module-eval time)
+if (!window.localStorage || typeof window.localStorage.getItem !== 'function') {
+  const store = new Map<string, string>()
+  Object.defineProperty(window, 'localStorage', {
+    writable: true,
+    value: {
+      getItem: (key: string) => (store.has(key) ? store.get(key) : null),
+      setItem: (key: string, value: string) => store.set(key, String(value)),
+      removeItem: (key: string) => store.delete(key),
+      clear: () => store.clear(),
+    },
+  })
+}
+
+// jsdom does not implement scrolling
+window.scrollTo = vi.fn() as unknown as typeof window.scrollTo
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

@@ -10,6 +10,7 @@ import { GalaLogo } from "assets/icons/extensions";
 import service from "services/NEIService";
 import { getArraialSocket, destroyArraialSocket } from "services/SocketService";
 import { useUserStore } from "stores/useUserStore";
+import { useServiceHealth } from "hooks/useServiceHealth";
 
 import {
   ExpandLessIcon,
@@ -30,6 +31,7 @@ import {
 import otherPic from "assets/default_profile/other.svg";
 
 import { data, dataCompacted } from "./data";
+import { loadExtensionNavItems } from "./extensionNav";
 import config from "config";
 
 const Navbar = () => {
@@ -46,6 +48,39 @@ const Navbar = () => {
 
   // Optimistic hide until known from API/WS
   const [arraialEnabled, setArraialEnabled] = useState(null);
+
+  // Rally and Gamification are standalone external services (own domain,
+  // own auth) - not embedded platform extensions, so they're not part of
+  // the extNav manifest mechanism below.
+  const rallyHealth = useServiceHealth(
+    config.ENABLE_RALLY && config.WEB_RALLY_URL ? [config.WEB_RALLY_URL] : [],
+  );
+  const gamificationHealth = useServiceHealth(
+    config.ENABLE_GAMIFICATION && config.WEB_GAMIFICATION_URL
+      ? [
+          config.WEB_GAMIFICATION_URL,
+          `${config.WEB_GAMIFICATION_URL}/api-game/health`,
+          `${config.WEB_GAMIFICATION_URL}/api-shop/health`,
+          `${config.WEB_GAMIFICATION_URL}/api-chat/health`,
+        ]
+      : [],
+  );
+  const externalServices = [
+    config.ENABLE_RALLY &&
+      config.WEB_RALLY_URL && {
+        key: "rally",
+        label: "Rally Tascas",
+        href: config.WEB_RALLY_URL,
+        disabled: rallyHealth === "down",
+      },
+    config.ENABLE_GAMIFICATION &&
+      config.WEB_GAMIFICATION_URL && {
+        key: "gamification",
+        label: "Quests",
+        href: config.WEB_GAMIFICATION_URL,
+        disabled: gamificationHealth === "down",
+      },
+  ].filter(Boolean);
 
 
   useEffect(() => {
@@ -64,7 +99,9 @@ const Navbar = () => {
         if (data?.topic === "ARRAIAL_CONFIG" && typeof data.enabled === "boolean") {
           setArraialEnabled(!!data.enabled);
         }
-      } catch (_) { }
+      } catch (_) {
+        // Ignore malformed socket messages
+      }
     };
     socket.addEventListener("message", onMessage);
     return () => {
@@ -93,133 +130,12 @@ const Navbar = () => {
 
   // Load extension nav from manifest endpoint
   useEffect(() => {
-    const normalizeLink = (href) => {
-      if (!href || typeof href !== "string") return href;
-      try {
-        // Convert absolute URLs to pathnames for comparison
-        if (href.startsWith("http://") || href.startsWith("https://")) {
-          return new URL(href, window.location.origin).pathname || "/";
-        }
-      } catch (_) { }
-      return href;
-    };
-
-    const loadExtensionNav = async () => {
-      try {
-        // Add timeout to the main extensions manifest call
-        const payload = await Promise.race([
-          service.getExtensionsManifest(),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Extensions manifest timeout')), 5000)
-          )
-        ]);
-        const items = Array.isArray(payload?.nav) ? payload.nav : [];
-        const myScopes = Array.isArray(scopes) ? scopes : [];
-        const reqOk = (e) => {
-          const req = Array.isArray(e?.requiresScopes) ? e.requiresScopes : [];
-          return req.length === 0 || req.some((s) => myScopes.includes(s));
-        };
-        // Avoid duplicates with existing static nav items
-        const existingLinks = new Set(
-          (Array.isArray(navItems) ? navItems : [])
-            .flatMap((i) => (i?.dropdown ? i.dropdown : [i]))
-            .map((i) => normalizeLink(i?.link))
-            .filter(Boolean)
-        );
-
-        const filtered = items
-          .filter(reqOk)
-          .map((e) => ({ label: e.label, href: e.href, key: normalizeLink(e.href), dynamicVisibility: e.dynamicVisibility, branded: e.branded ?? false }))
-          .filter((e) => !existingLinks.has(e.key));
-
-        // Check dynamic visibility for items that have it
-        const checkDynamicVisibility = async (item) => {
-          if (!item.dynamicVisibility) return item;
-
-          try {
-            // Create AbortController for timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
-
-            const response = await fetch(item.dynamicVisibility.endpoint, {
-              signal: controller.signal,
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              }
-            });
-
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-              console.warn(`Dynamic visibility endpoint returned ${response.status} for ${item.label}`);
-              // Fall back to scope-based visibility
-              if (item.dynamicVisibility.fallbackScopes) {
-                const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope =>
-                  myScopes.includes(scope)
-                );
-                if (hasFallbackScope) {
-                  return { label: item.label, href: item.href };
-                }
-              }
-              return null;
-            }
-
-            const data = await response.json();
-            const fieldValue = data[item.dynamicVisibility.field];
-
-            // If the dynamic condition is met, show the item
-            if (fieldValue === item.dynamicVisibility.value) {
-              return { label: item.label, href: item.href };
-            }
-
-            // If dynamic condition is not met, check fallback scopes
-            if (item.dynamicVisibility.fallbackScopes) {
-              const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope =>
-                myScopes.includes(scope)
-              );
-              if (hasFallbackScope) {
-                return { label: item.label, href: item.href };
-              }
-            }
-
-            // Neither condition met, hide the item
-            return null;
-          } catch (error) {
-            if (error.name === 'AbortError') {
-              console.warn(`Dynamic visibility check timed out for ${item.label}`);
-            } else {
-              console.warn(`Failed to check dynamic visibility for ${item.label}:`, error);
-            }
-
-            // On error, fall back to scope-based visibility if available
-            if (item.dynamicVisibility.fallbackScopes) {
-              const hasFallbackScope = item.dynamicVisibility.fallbackScopes.some(scope =>
-                myScopes.includes(scope)
-              );
-              if (hasFallbackScope) {
-                return { label: item.label, href: item.href };
-              }
-            }
-
-            return null;
-          }
-        };
-
-        // Process all items with dynamic visibility checks
-        const processedItems = await Promise.all(
-          filtered.map(checkDynamicVisibility)
-        );
-
-        const finalItems = processedItems.filter(Boolean);
-        setExtNav(finalItems);
-      } catch (err) {
+    loadExtensionNavItems(scopes, navItems)
+      .then(setExtNav)
+      .catch((err) => {
         console.error("Failed to load extension navigation:", err);
         setExtNav([]);
-      }
-    };
-
-    loadExtensionNav();
+      });
   }, [scopes, navItems]);
 
   useEffect(() => {
@@ -277,12 +193,12 @@ const Navbar = () => {
           window.location.href = data.end_session_url;
           return;
         }
-        navigate("/");
+        void navigate("/");
       })
       .catch((err) => {
         console.error(err);
         useUserStore.getState().logout();
-        navigate("/");
+        void navigate("/");
       });
   }
 
@@ -303,7 +219,6 @@ const Navbar = () => {
           <div className="navbar-start !w-fit basis-[80px]">
             <Link to="/">
               <img
-                role="button"
                 src={logo}
                 width="60"
                 height="60"
@@ -314,10 +229,10 @@ const Navbar = () => {
           <div className="navbar-center hidden md:flex">
             <ul className="menu menu-horizontal px-1">
               {navItems.map(
-                ({ name, link, disabled, dropdown, reload }, index) =>
+                ({ name, link, disabled, dropdown, reload }) =>
                   !dropdown ? (
                     <li
-                      key={index}
+                      key={`${name}-${link}`}
                       className={classNames({
                         "pointer-events-none opacity-50": disabled,
                       })}
@@ -327,23 +242,18 @@ const Navbar = () => {
                       </LinkAdapter>
                     </li>
                   ) : (
-                    <li
-                      key={index}
-                      tabIndex={0}
-                      onMouseDown={(e) => e.preventDefault()}
-                    >
-                      <a className="gap-2">
+                    <li key={`${name}-dropdown`} className="nav-dropdown-item">
+                      <button type="button" className="gap-2">
                         {name}
                         <ExpandMoreIcon />
-                      </a>
+                      </button>
                       <ul className="!rounded-box w-52 border border-base-300 bg-base-200 p-2 shadow">
                         {dropdown.map(
                           (
                             { name, link, disabled, external, reload },
-                            index,
                           ) => (
                             <li
-                              key={index}
+                              key={`${name}-${link}`}
                               className={classNames({
                                 "pointer-events-none opacity-50": disabled,
                               })}
@@ -373,20 +283,30 @@ const Navbar = () => {
               )}
               {extNav
                 .filter((e) => !e.branded)
-                .map((e, idx) => (
-                  <li key={`ext-${idx}`}>
+                .map((e) => (
+                  <li key={`ext-${e.href}`}>
                     <LinkAdapter to={e.href} reloadDocument>
                       {e.label}
                     </LinkAdapter>
                   </li>
                 ))}
+              {externalServices.map((e) => (
+                <li
+                  key={e.key}
+                  className={classNames({
+                    "pointer-events-none opacity-50": e.disabled,
+                  })}
+                >
+                  <a href={e.href}>{e.label}</a>
+                </li>
+              ))}
             </ul>
           </div>
           {extNav
             .filter((e) => e.branded)
-            .map((e, idx) => (
+            .map((e) => (
               <Link
-                key={`ext-branded-${idx}`}
+                key={`ext-branded-${e.href}`}
                 to={e.href}
                 reloadDocument
                 className="btn-ghost btn-sm btn-circle btn
@@ -433,9 +353,9 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <div className="dropdown-end dropdown">
-                  <label
-                    tabIndex={0}
+                <div className="group dropdown-end dropdown">
+                  <button
+                    type="button"
                     className="btn-outline btn-sm btn flex-nowrap !px-0.5 align-middle md:gap-2"
                   >
                     <div className="avatar md:mr-1">
@@ -446,14 +366,10 @@ const Navbar = () => {
                     <span className="hidden md:block">
                       {name} {surname}
                     </span>
-                    <label className="swap-rotate swap ">
-                      <input type="checkbox" />
-                      <ExpandMoreIcon className="swap-on" />
-                      <ExpandLessIcon className="swap-off" />
-                    </label>
-                  </label>
+                    <ExpandMoreIcon className="group-focus-within:hidden" />
+                    <ExpandLessIcon className="hidden group-focus-within:block" />
+                  </button>
                   <ul
-                    tabIndex={0}
                     className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-200 p-2 shadow"
                   >
                     <li>
@@ -463,7 +379,7 @@ const Navbar = () => {
                     </li>
                     {!!scopes?.includes("admin") && (
                       <li>
-                        <Link to="/admin/roles">
+                        <Link to="/admin">
                           <SettingsIcon /> Admin
                         </Link>
                       </li>
@@ -482,10 +398,10 @@ const Navbar = () => {
                         </Link>
                       </li>
                     )}
-                    <li onClick={logout}>
-                      <a>
+                    <li>
+                      <button type="button" onClick={logout}>
                         <LogoutIcon /> Log out
-                      </a>
+                      </button>
                     </li>
                   </ul>
                 </div>
@@ -512,10 +428,10 @@ const Navbar = () => {
                 <LinkAdapter to="/arraial">Arraial do DETI</LinkAdapter>
               </li>
             )}
-            {data.map(({ name, link, disabled, dropdown }, index) =>
+            {data.map(({ name, link, disabled, dropdown }) =>
               !dropdown ? (
                 <li
-                  key={index}
+                  key={`${name}-${link}`}
                   className={classNames({
                     "pointer-events-none opacity-50": disabled,
                   })}
@@ -523,16 +439,20 @@ const Navbar = () => {
                   <LinkAdapter to={link}>{name}</LinkAdapter>
                 </li>
               ) : (
-                <li key={index} tabIndex={0}>
-                  <a className="justify-between" onClick={toggleMobileDropdown}>
+                <li key={`${name}-dropdown`}>
+                  <button
+                    type="button"
+                    className="justify-between"
+                    onClick={toggleMobileDropdown}
+                  >
                     {name}
                     <ExpandMoreIcon />
-                  </a>
+                  </button>
                   <ul className="relative left-0 ml-4 flex max-h-0 overflow-hidden !rounded-none border-l-2 border-base-content/50 pl-2 transition-all ease-out">
                     {dropdown.map(
-                      ({ name, link, disabled, external }, index) => (
+                      ({ name, link, disabled, external }) => (
                         <li
-                          key={index}
+                          key={`${name}-${link}`}
                           className={classNames({
                             "pointer-events-none opacity-50": disabled,
                           })}
@@ -550,8 +470,8 @@ const Navbar = () => {
             )}
             {extNav && extNav.length > 0 && (
               <>
-                {extNav.map((e, idx) => (
-                  <li key={`ext-mobile-${idx}`}>
+                {extNav.map((e) => (
+                  <li key={`ext-mobile-${e.href}`}>
                     <LinkAdapter to={e.href} reloadDocument>
                       {e.label}
                     </LinkAdapter>
@@ -559,10 +479,23 @@ const Navbar = () => {
                 ))}
               </>
             )}
+            {externalServices.map((e) => (
+              <li
+                key={`ext-service-mobile-${e.key}`}
+                className={classNames({
+                  "pointer-events-none opacity-50": e.disabled,
+                })}
+              >
+                <a href={e.href}>{e.label}</a>
+              </li>
+            ))}
           </ul>
         </div>
       </nav>
-      <div
+      <button
+        type="button"
+        aria-label="Fechar menu"
+        tabIndex={-1}
         className={classNames("modal", { "modal-open": openMobile })}
         onClick={() => setOpenMobile(false)}
       />

@@ -7,6 +7,8 @@ export default function useArraialRealtime({ onPointsUpdate } = {}) {
   const [wsConnected, setWsConnected] = React.useState(false);
   const [enabled, setEnabled] = React.useState(null);
   const [paused, setPaused] = React.useState(false);
+  const [boostsEnabled, setBoostsEnabled] = React.useState(false);
+  const [milestonesEnabled, setMilestonesEnabled] = React.useState(false);
   const [pointsList, setPointsList] = React.useState([
     { nucleo: "NEEETA", value: 0 },
     { nucleo: "NEECT", value: 0 },
@@ -21,8 +23,11 @@ export default function useArraialRealtime({ onPointsUpdate } = {}) {
         const cfg = await service.getArraialConfig();
         setEnabled(!!cfg?.enabled);
         setPaused(!!cfg?.paused);
+        setBoostsEnabled(!!cfg?.boosts_enabled);
+        setMilestonesEnabled(!!cfg?.milestones_enabled);
         if (cfg?.boosts) setBoosts(cfg.boosts);
       } catch (e) {
+        console.debug("Failed to load Arraial config, assuming enabled:", e);
         setEnabled(true);
       }
     };
@@ -41,7 +46,7 @@ export default function useArraialRealtime({ onPointsUpdate } = {}) {
         });
     };
 
-    initConfig();
+    initConfig().catch((e) => console.debug("Arraial config init failed:", e));
     fetchPoints();
 
     const socket = getArraialSocket();
@@ -57,6 +62,8 @@ export default function useArraialRealtime({ onPointsUpdate } = {}) {
         ) {
           setEnabled(!!data.enabled);
           setPaused(!!data.paused);
+          setBoostsEnabled(!!data.boosts_enabled);
+          setMilestonesEnabled(!!data.milestones_enabled);
         } else if (
           data?.topic === "ARRAIAL_BOOST" &&
           data.boosts &&
@@ -98,6 +105,8 @@ export default function useArraialRealtime({ onPointsUpdate } = {}) {
     wsConnected,
     enabled,
     paused,
+    boostsEnabled,
+    milestonesEnabled,
     pointsList,
     boosts,
     setBoosts,

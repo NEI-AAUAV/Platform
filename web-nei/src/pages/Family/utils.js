@@ -203,7 +203,7 @@ export function formatYear(y, fmt = 'civil') {
     if (!y && y !== 0) return "-";
 
     if (fmt === "academic") {
-        const yearNum = parseInt(y);
+        const yearNum = Number.parseInt(y);
         const yy = yearNum % 100;
         const next = (yy + 1) % 100;
         return `${yy.toString().padStart(2, "0")}/${next.toString().padStart(2, '0')}`;

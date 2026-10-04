@@ -3,10 +3,10 @@ import "./index.css";
 
 const InternshipCard = (props) => {
   return (
-    <div d-flex flex-column flex-wrap>
+    <div className="d-flex flex-column flex-wrap">
       <Card
         className={
-          props.class ? `internship-card ${props.class}` : "internship-card"
+          props.className ? `internship-card ${props.className}` : "internship-card"
         }
       >
         <Card.Body>

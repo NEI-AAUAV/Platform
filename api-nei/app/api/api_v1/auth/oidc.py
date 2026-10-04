@@ -49,6 +49,7 @@ from app import crud
 from app.api import deps
 from app.api.deps import DbSession
 from app.core.config import settings
+from app.integrations.authentik import group_role_name
 from app.models.user import User
 from app.models.user.user_email import UserEmail
 from app.schemas.user import ScopeEnum, UserCreate
@@ -90,6 +91,7 @@ if settings.OIDC_ENABLED:
 
 _STATE_COOKIE = "oauth_state"
 _STATE_MAX_AGE = 600  # 10 minutes
+_IUPI_MAX_LEN = 36  # matches the `user.iupi` column and `UserUpdate`
 
 
 def _signer() -> URLSafeTimedSerializer:
@@ -281,13 +283,7 @@ def _candidates_from_scopes_claim(raw) -> list[str]:
 
 
 def _candidates_from_groups(userinfo: dict) -> list[str]:
-    candidates = []
-    for group in userinfo.get("groups", []):
-        name = group.strip().lower()
-        if name.startswith("nei-"):
-            name = name[4:]
-        candidates.append(name)
-    return candidates
+    return [group_role_name(group) for group in userinfo.get("groups", [])]
 
 
 def _parse_scopes(userinfo: dict) -> list[str]:
@@ -436,7 +432,7 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
 
     _raw_iupi = userinfo.get("iupi")
     iupi: Optional[str] = (
-        _raw_iupi[:64] if isinstance(_raw_iupi, str) and _raw_iupi else None
+        _raw_iupi[:_IUPI_MAX_LEN] if isinstance(_raw_iupi, str) and _raw_iupi else None
     )
     scopes = _parse_scopes(userinfo)
 
@@ -460,12 +456,14 @@ def get_or_create_user_from_oidc(db: Session, userinfo: dict) -> User:
                 email=email,
                 password=None,
                 scopes=scopes,
-                nmec=nmec,
-                iupi=iupi,
             ),
             active=True,
         )
+        # `UserCreate` does not carry these identity fields, so set them here
+        # in the same transaction as the external identity link.
         user.authentik_sub = authentik_sub
+        user.nmec = nmec
+        user.iupi = iupi
         # Persist the external identity link before issuing local credentials.
         db.commit()
         db.refresh(user)
@@ -650,6 +648,7 @@ async def oidc_callback(
         400: {"description": "Account already linked"},
         401: {"description": "Not authenticated"},
         503: {"description": "OIDC authentication is disabled"},
+        404: {"description": "Not found"}, 502: {"description": "Bad gateway"},
     },
 )
 async def start_oidc_link(
@@ -695,6 +694,7 @@ async def start_oidc_link(
         401: {"description": "Invalid or expired state"},
         409: {"description": "Authentik account already linked to another user"},
         503: {"description": "OIDC authentication is disabled"},
+        400: {"description": "Bad request"}, 403: {"description": "Forbidden"}, 404: {"description": "Not found"}, 500: {"description": "Internal server error"}, 502: {"description": "Bad gateway"},
     },
 )
 async def oidc_link_callback(

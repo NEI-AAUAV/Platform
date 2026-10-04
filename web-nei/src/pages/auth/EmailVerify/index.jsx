@@ -29,6 +29,14 @@ function FailedVerification() {
 	);
 }
 
+function CurrentState({ state }) {
+	switch (state) {
+		case "loading": return <Spinner className="flex-grow max-w-lg" />;
+		case "success": return <SuccessfulVerification />;
+		case "failed": return <FailedVerification />;
+	}
+}
+
 export function Component() {
 	const [searchParams] = useSearchParams();
 	const [state, setState] = useState("loading");
@@ -44,21 +52,13 @@ export function Component() {
 		}
 
 		NEIService.verifyEmail({ token })
-			.then(data => setState("success"))
+			.then(() => setState("success"))
 			.catch(() => setState("failed"));
 	}, [searchParams]);
 
-	const Current = () => {
-		switch (state) {
-			case "loading": return <Spinner className="flex-grow max-w-lg" />;
-			case "success": return <SuccessfulVerification />;
-			case "failed": return <FailedVerification />;
-		}
-	}
-
 	return (
 		<div className="flex justify-center">
-			<Current />
+			<CurrentState state={state} />
 		</div>
 	);
 }

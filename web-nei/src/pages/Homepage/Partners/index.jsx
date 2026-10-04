@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import ImageCard from "components/ImageCard"
-import { Col, Row } from "react-bootstrap";
 import { Typewriter } from "react-simple-typewriter";
 import DCard from "../../../components/Cards/DCard";
 import service from 'services/NEIService';
@@ -15,6 +13,9 @@ const Partners = () => {
     service.getPartners()
       .then((data) => {
         setPartners(data);
+      })
+      .catch((error) => {
+        console.error("Failed to load partners", error);
       });
   }, []);
 
@@ -23,7 +24,7 @@ const Partners = () => {
       <h2 className="text-center mb-4"><Typewriter words={["Parceiros"]} loop={1} /></h2>
 
       <div className="flex flex-row gap-20">
-        {partners.map((partner, index) => {
+        {partners.map((partner) => {
           return (
             //     <div key={index}>
             //         <ImageCard
@@ -35,7 +36,7 @@ const Partners = () => {
             //         ></ImageCard>
             //     </div>
             // );
-            <DCard type="partner" key={index} data={partner} />
+            <DCard type="partner" key={partner.id ?? partner.company} data={partner} />
           );
         })}
       </div>

@@ -116,16 +116,6 @@ const NEIService = {
     return await client.post("/auth/login/", data);
   },
 
-  async loginIdP() {
-    return await client.get("/auth/token");
-  },
-
-  async redirectIdP({ oauthToken, oauthVerifier }) {
-    return await client.get("/auth/token/", {
-      params: { oauth_token: oauthToken, oauth_verifier: oauthVerifier },
-    });
-  },
-
   async register(data) {
     // Increase timeout because the reCaptcha takes a while
     return await client.post("/auth/register/", data, { timeout: 15000 });
@@ -173,8 +163,8 @@ const NEIService = {
     return await client.get("/arraial/config");
   },
 
-  async setArraialConfig(enabled, paused = false) {
-    return await client.put("/arraial/config", { enabled, paused });
+  async setArraialConfig(changes) {
+    return await client.put("/arraial/config", changes);
   },
 
   async activateArraialBoost(nucleo) {
@@ -202,7 +192,29 @@ const NEIService = {
     return await client.get("/extensions/manifest");
   },
 
+  // Admin: sessions, activity and system status
+  async signOutEverywhere(userId) {
+    return await client.post(`/admin/users/${userId}/sign-out`);
+  },
+
+  async getAdminActivity(offset = 0, limit = 50) {
+    return await client.get("/admin/activity", { params: { offset, limit } });
+  },
+
+  async getSystemStatus() {
+    return await client.get("/admin/system");
+  },
+
+  // Admin: CMS
+  async getCmsInfo() {
+    return await client.get("/admin/cms");
+  },
+
   // Admin: Authentik groups
+  async getAuthentikStatus() {
+    return await client.get("/admin/authentik/status");
+  },
+
   async getAuthentikGroups() {
     return await client.get("/admin/authentik/groups");
   },

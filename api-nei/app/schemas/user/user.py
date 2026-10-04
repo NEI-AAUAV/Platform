@@ -47,7 +47,7 @@ class AnonymousUserBase(BaseModel):
     github: Optional[AnyHttpUrl] = None  # Optional[constr(max_length=39)]
 
     @field_serializer("linkedin", "github")
-    def serialize_url(value: Optional[AnyHttpUrl]):
+    def serialize_url(self, value: Optional[AnyHttpUrl]):
         if value is None:
             return None
         else:
@@ -80,14 +80,17 @@ class ManagerUserListing(UserListing):
 
 
 class AdminUserListing(ManagerUserListing):
-    iupi: Optional[Annotated[str, StringConstraints(max_length=36)]]
+    iupi: Optional[Annotated[str, StringConstraints(max_length=36)]] = None
     scopes: List[str] = []
     email: Optional[str] = None
     authentik_sub: Optional[str] = None
+    last_login_at: Optional[datetime] = None
 
 
 class UserCreateBase(UserBase):
     name: Annotated[str, StringConstraints(max_length=20)]
+    # The `user.surname` column is NOT NULL, so reject a missing one up front.
+    surname: Annotated[str, StringConstraints(max_length=20)]
     email: Annotated[str, Field(json_schema_extra={"format": "email"})]
 
     @field_validator("email")

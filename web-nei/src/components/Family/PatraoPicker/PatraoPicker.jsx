@@ -56,9 +56,8 @@ const PatraoPicker = ({
 
             // Filter out excluded users
             const excludeSet = new Set(stableExcludeIds);
-            let newItems = (response.items || []).filter(
-                (u) => !excludeSet.has(u.id)
-            );
+            const pageItems = response.items || [];
+            let newItems = pageItems.filter((u) => !excludeSet.has(u.id));
 
             if (resetList || page === 0) {
                 setPatraoList(newItems);
@@ -71,7 +70,9 @@ const PatraoPicker = ({
                 });
             }
 
-            setHasMore(newItems.length === limit);
+            // Judge "is there another page" on the raw page: excluded users are
+            // still part of it, so filtering must not make a full page look short.
+            setHasMore(pageItems.length === limit);
         } catch (err) {
             console.error("Failed to load patrões:", err);
         } finally {
@@ -80,13 +81,13 @@ const PatraoPicker = ({
     }, [debouncedSearch, stableExcludeIds, page]);
 
     useEffect(() => {
-        loadPatraoList();
+        loadPatraoList().catch(console.error);
     }, [loadPatraoList]);
 
     // Ensure selected patrão is in the list
     useEffect(() => {
         if (selectedPatrao && patraoList.length > 0) {
-            const exists = patraoList.find(p => p.id === selectedPatrao.id);
+            const exists = patraoList.some(p => p.id === selectedPatrao.id);
             if (!exists) {
                 setPatraoList(prev => [selectedPatrao, ...prev]);
             }

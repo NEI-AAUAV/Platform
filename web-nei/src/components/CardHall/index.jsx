@@ -69,7 +69,7 @@ const CardHall = ({ place, modality, className,width,refe }) => {
         return (
             <div className={`${className} flex-none w-72`} ref={refe}>
                 <div className={`flex flex-col items-center py-10 ${gradient} rounded-[20px]`}>
-                    <img src="https://i.imgur.com/XLUTJiE.png"/>
+                    <img src="https://i.imgur.com/XLUTJiE.png" alt=""/>
                     <div className="font-bold text-xl text-center p-5">{place}º lugar</div>
                     <div className="flex flex-row font-medium text-md text-center py-1">
                         <img className="aspect-square block max-h-6" src={image} alt="sport img"/>
@@ -84,7 +84,7 @@ const CardHall = ({ place, modality, className,width,refe }) => {
         return(
             <div className={`${className} flex-none w-full`} ref={refe}>
                 <div className={`flex items-center gap-6 ${gradient} rounded-[20px] p-5`}>
-                    <img className=" w-[25%]" src="https://i.imgur.com/XLUTJiE.png"/>
+                    <img className=" w-[25%]" src="https://i.imgur.com/XLUTJiE.png" alt=""/>
                     <div>
                         <div className="font-bold text-lg pb-3">{place}º lugar</div>
                         <div className="flex flex-row font-medium text-md">

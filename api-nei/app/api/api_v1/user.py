@@ -26,6 +26,8 @@ from app.schemas.user.user import (
 
 router = APIRouter()
 
+USER_NOT_FOUND = "User not found."
+
 APIUserListing = Union[
     AnonymousUserListing, UserListing, ManagerUserListing, AdminUserListing
 ]
@@ -88,9 +90,9 @@ def get_curr_user(
     payload: auth.AuthData = Security(auth.verify_token, scopes=[]),
 ):
     """ """
-    id = int(payload.sub)
+    user_id = int(payload.sub)
 
-    user = crud.user.get(db=db, id=id)
+    user = crud.user.get(db=db, id=user_id)
     if not user:
         raise HTTPException(status_code=404, detail="Invalid User")
 
@@ -104,14 +106,14 @@ def get_user_by_id(
     """ """
     user = crud.user.get(db=db, id=id)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found.")
+        raise HTTPException(status_code=404, detail=USER_NOT_FOUND)
 
     ListingType = user_listing_type(auth_data and auth_data.scopes)
 
     return ListingType(**user.dict())
 
 
-# TODO: Does this method still make sense?
+# NOTE: it is unclear whether this method is still needed.
 @router.post(
     "/", status_code=201, response_model=AdminUserListing, responses=auth.auth_responses
 )
@@ -148,7 +150,10 @@ def check_update_fields(update_form: UserUpdate, scopes: Set[str]):
         raise HTTPException(status_code=403, detail="Invalid permissions.")
 
 
-@router.put("/me", status_code=200, response_model=AdminUserListing)
+@router.put("/me", status_code=200, response_model=AdminUserListing, responses={
+        403: {"description": "Invalid permissions."},
+        404: {"description": USER_NOT_FOUND},
+    })
 async def update_curr_user(
     *,
     request: Request,
@@ -167,7 +172,7 @@ async def update_curr_user(
         crud.user.update_locked, db, id=auth_data.sub, obj_in=user
     )
     if not db_user:
-        raise HTTPException(status_code=404, detail="User not found.")
+        raise HTTPException(status_code=404, detail=USER_NOT_FOUND)
 
     form = await request.form()
     if "image" in form:
@@ -180,7 +185,10 @@ async def update_curr_user(
     return db_user
 
 
-@router.put("/{id}", status_code=200, response_model=AdminUserListing)
+@router.put("/{id}", status_code=200, response_model=AdminUserListing, responses={
+        403: {"description": "Invalid permissions."},
+        404: {"description": USER_NOT_FOUND},
+    })
 def update_user(
     *,
     user_in: UserUpdate,
@@ -197,5 +205,5 @@ def update_user(
 
     user = crud.user.update_locked(db=db, id=id, obj_in=user_in)
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found.")
+        raise HTTPException(status_code=404, detail=USER_NOT_FOUND)
     return user

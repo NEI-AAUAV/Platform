@@ -5,6 +5,16 @@ from pydantic import ValidationError
 from app.core.config import Settings
 
 
+@pytest.fixture(autouse=True)
+def _clean_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Settings read the process env; don't let the host's OIDC config leak in."""
+    for name in (
+        "OIDC_ENABLED", "OIDC_CLIENT_ID", "OIDC_CLIENT_SECRET", "OIDC_VERIFY_SSL",
+        "OIDC_DISCOVERY_URL", "PRODUCTION",
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+
 def _settings(**overrides) -> Settings:
     return Settings(_env_file=None, **overrides)
 

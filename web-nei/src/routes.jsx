@@ -4,8 +4,9 @@ import { Navigate } from "react-router-dom";
 
 import config from "config";
 
-import Layout, { FullLayout, CleanLayout } from "./layouts/Layout";
+import Layout, { FullLayout } from "./layouts/Layout";
 import { useUserStore } from "stores/useUserStore";
+import { lazyRoute } from "utils/lazyRoute";
 
 const isProd = config.PRODUCTION;
 
@@ -23,7 +24,7 @@ function ProtectedRoute({
 
   if (!!token !== loggedIn) return <Navigate to={redirect} />;
 
-  if (adminOnly && (!scopes || !scopes.includes("admin"))) {
+  if (adminOnly && (!scopes?.includes("admin"))) {
     return <Navigate to="/forbidden" />;
   }
 
@@ -53,54 +54,54 @@ const routes = [
     path: "/",
     element: <Layout />,
     children: [
-      { path: "/", lazy: () => import("./pages/Homepage") },
-      { path: "/notes", lazy: () => import("./pages/Notes") },
-      { path: "/calendar", lazy: () => import("./pages/Calendar") },
-      { path: "/videos", lazy: () => import("./pages/Videos") },
-      { path: "/videos/:id", lazy: () => import("./pages/Video") },
-      { path: "/teams", lazy: () => import("./pages/Team") },
-      { path: "/rgm", lazy: () => import("./pages/RGM") },
+      { path: "/", lazy: lazyRoute(() => import("./pages/Homepage")) },
+      { path: "/notes", lazy: lazyRoute(() => import("./pages/Notes")) },
+      { path: "/calendar", lazy: lazyRoute(() => import("./pages/Calendar")) },
+      { path: "/videos", lazy: lazyRoute(() => import("./pages/Videos")) },
+      { path: "/videos/:id", lazy: lazyRoute(() => import("./pages/Video")) },
+      { path: "/teams", lazy: lazyRoute(() => import("./pages/Team")) },
+      { path: "/rgm", lazy: lazyRoute(() => import("./pages/RGM")) },
       !isProd && {
         path: "/news/:id?",
-        lazy: () => import("./pages/News/NewsList"),
+        lazy: lazyRoute(() => import("./pages/News/NewsList")),
       },
-      !isProd && { path: "/history", lazy: () => import("./pages/History") },
+      !isProd && { path: "/history", lazy: lazyRoute(() => import("./pages/History")) },
       !isProd && {
         path: "/seniors/:course?",
-        lazy: () => import("./pages/Seniors"),
+        lazy: lazyRoute(() => import("./pages/Seniors")),
       },
-      { path: "/faina", lazy: () => import("./pages/Faina") },
+      { path: "/faina", lazy: lazyRoute(() => import("./pages/Faina")) },
       !isProd && {
         path: "/taca-ua",
-        lazy: () => import("./pages/TacauaHomePage"),
+        lazy: lazyRoute(() => import("./pages/TacauaHomePage")),
       },
       !isProd && {
         path: "/taca-ua/:modalityId/:tab/:competitionId?",
-        lazy: () => import("./pages/SportDetails"),
+        lazy: lazyRoute(() => import("./pages/SportDetails")),
       },
       !isProd && {
         path: "/components",
-        lazy: () => import("./pages/Components"),
+        lazy: lazyRoute(() => import("./pages/Components")),
       },
-      !isProd && { path: "/WSTest", lazy: () => import("./pages/WSTest") },
+      !isProd && { path: "/WSTest", lazy: lazyRoute(() => import("./pages/WSTest")) },
       !isProd && {
         path: "/WStacaua-admin-demo",
-        lazy: () => import("./pages/TacauaAdminDemo"),
+        lazy: lazyRoute(() => import("./pages/TacauaAdminDemo")),
       },
-      { path: "/auth/verify", lazy: () => import("./pages/auth/EmailVerify") },
-      { path: "/auth/reset", lazy: () => import("./pages/auth/ResetPassword") },
-      { path: "/auth/magic", lazy: () => import("./pages/auth/MagicLink") },
+      { path: "/auth/verify", lazy: lazyRoute(() => import("./pages/auth/EmailVerify")) },
+      { path: "/auth/reset", lazy: lazyRoute(() => import("./pages/auth/ResetPassword")) },
+      { path: "/auth/magic", lazy: lazyRoute(() => import("./pages/auth/MagicLink")) },
       // These must be here and not behind the auth checks, because if they aren't
       // the router would automatically redirect to the homepage after login, and
       // the redirection logic wouldn't work.
-      { path: "/auth/login", lazy: () => import("./pages/auth/Login") },
-      { path: "/auth/register", lazy: () => import("./pages/auth/Register") },
-      { path: "/auth/oidc/return", lazy: () => import("./pages/auth/OidcCallback") },
-      { path: "/forbidden", lazy: () => import("./pages/Error403") },
-      { path: "/arraial", lazy: () => import("./pages/Arraial") },
+      { path: "/auth/login", lazy: lazyRoute(() => import("./pages/auth/Login")) },
+      { path: "/auth/register", lazy: lazyRoute(() => import("./pages/auth/Register")) },
+      { path: "/auth/oidc/return", lazy: lazyRoute(() => import("./pages/auth/OidcCallback")) },
+      { path: "/forbidden", lazy: lazyRoute(() => import("./pages/Error403")) },
+      { path: "/arraial", lazy: lazyRoute(() => import("./pages/Arraial")) },
       // { path: "/estagios", element: <Internship /> },
       // { path: "/forms/feedback", element: <FeedbackForm /> },
-      { path: "/*", lazy: () => import("./pages/Error404") },
+      { path: "/*", lazy: lazyRoute(() => import("./pages/Error404")) },
     ],
   },
   {
@@ -113,11 +114,11 @@ const routes = [
     children: [
       {
         path: "/settings/profile",
-        lazy: () => import("./pages/settings/Profile"),
+        lazy: lazyRoute(() => import("./pages/settings/Profile")),
       },
       !isProd && {
         path: "/settings/account",
-        lazy: () => import("./pages/settings/Account"),
+        lazy: lazyRoute(() => import("./pages/settings/Account")),
       },
     ],
   },
@@ -132,7 +133,7 @@ const routes = [
     children: [
       {
         path: "/settings/family",
-        lazy: () => import("./pages/settings/Family"),
+        lazy: lazyRoute(() => import("./pages/settings/Family")),
       },
     ],
   },
@@ -145,8 +146,12 @@ const routes = [
     ),
     children: [
       {
+        path: "/admin",
+        lazy: lazyRoute(() => import("./pages/admin")),
+      },
+      {
         path: "/admin/roles",
-        lazy: () => import("./pages/admin/Roles"),
+        element: <Navigate to="/admin" replace />,
       },
     ],
   },
@@ -160,22 +165,15 @@ const routes = [
     children: [
       {
         path: "/auth/forgot",
-        lazy: () => import("./pages/auth/ForgotPassword"),
+        lazy: lazyRoute(() => import("./pages/auth/ForgotPassword")),
       },
     ],
   },
   {
     path: "/",
     element: <FullLayout />,
-    children: [{ path: "/family", lazy: () => import("./pages/Family") }],
+    children: [{ path: "/family", lazy: lazyRoute(() => import("./pages/Family")) }],
   },
-  // {
-  //   path: "/",
-  //   element: <CleanLayout />,
-  //   children: [
-  //     { path: "/breakthebars", element: <RallyTascas />, children: rallyTascasRoutes },
-  //   ],
-  // },
 ];
 
 export default routes;

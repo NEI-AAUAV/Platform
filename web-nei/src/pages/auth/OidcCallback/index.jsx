@@ -34,21 +34,21 @@ export function Component() {
     }
 
     if (!token) {
-      navigate("/auth/login");
+      void navigate("/auth/login");
       return;
     }
 
     try {
       useUserStore.getState().login({ token });
     } catch {
-      navigate("/auth/login?error=session_failed");
+      void navigate("/auth/login?error=session_failed");
       return;
     }
 
     if (isSafeRedirect(redirect_to)) {
       globalThis.location.replace(redirect_to);
     } else {
-      navigate("/");
+      void navigate("/");
     }
   }, []);
 

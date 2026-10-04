@@ -67,7 +67,7 @@ def get_user_roles_with_details(
     return UserRoleDetailsList(items=items, total=total, skip=skip, limit=limit)
 
 
-@router.get("/user/{user_id}", status_code=200, response_model=UserRoleDetailsList)
+@router.get("/user/{user_id}", status_code=200, response_model=UserRoleDetailsList, responses={404: {"description": "Resource not found"}})
 def get_roles_for_user(
     user_id: int,
     skip: int = Query(default=0, ge=0),
@@ -89,7 +89,7 @@ def get_roles_for_user(
     return UserRoleDetailsList(items=items, total=total, skip=skip, limit=limit)
 
 
-@router.get("/role/{role_id:path}", status_code=200, response_model=UserRoleDetailsList)
+@router.get("/role/{role_id:path}", status_code=200, response_model=UserRoleDetailsList, responses={404: {"description": "Resource not found"}})
 def get_users_for_role(
     role_id: str,
     skip: int = Query(default=0, ge=0),
@@ -111,7 +111,7 @@ def get_users_for_role(
     return UserRoleDetailsList(items=items, total=total, skip=skip, limit=limit)
 
 
-@router.post("/", status_code=201, response_model=UserRoleInDB)
+@router.post("/", status_code=201, response_model=UserRoleInDB, responses={404: {"description": "Resource not found"}, 409: {"description": "Conflict with existing resource"}, 500: {"description": "Internal server error"}})
 def create_user_role(
     obj_in: UserRoleCreate,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
@@ -143,7 +143,7 @@ def create_user_role(
     return user_role
 
 
-@router.delete("/{id}", status_code=204)
+@router.delete("/{id}", status_code=204, responses={404: {"description": "Resource not found"}})
 def delete_user_role(
     id: str,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
