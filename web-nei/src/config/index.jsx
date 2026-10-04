@@ -18,6 +18,11 @@ if (import.meta.env.PROD) {
   WS_SCHEME = scheme.WS;
 }
 
+// Pages are served over HTTPS in production; an http:// external URL would be
+// blocked as mixed content, so upgrade it.
+const secureUrl = (url) =>
+  import.meta.env.PROD ? url.replace(/^http:\/\//, scheme.HTTPS) : url;
+
 const config = {
   PRODUCTION: import.meta.env.PROD,
   HOST,
@@ -31,9 +36,9 @@ const config = {
   ENABLE_GALA: import.meta.env.VITE_ENABLE_GALA === "True",
   // Rally and Gamification are standalone external services (own domain,
   // own auth, own DB) - no longer embedded platform extensions.
-  WEB_RALLY_URL: import.meta.env.VITE_RALLY_URL || "",
+  WEB_RALLY_URL: secureUrl(import.meta.env.VITE_RALLY_URL || ""),
   ENABLE_RALLY: import.meta.env.VITE_ENABLE_RALLY === "True",
-  WEB_GAMIFICATION_URL: import.meta.env.VITE_GAMIFICATION_URL || "",
+  WEB_GAMIFICATION_URL: secureUrl(import.meta.env.VITE_GAMIFICATION_URL || ""),
   ENABLE_GAMIFICATION: import.meta.env.VITE_ENABLE_GAMIFICATION === "True",
   GOOGLE_CALENDAR_API_KEY: import.meta.env.VITE_GOOGLE_CALENDAR_API_KEY || "",
   GOOGLE_CALENDAR_URL: `https://www.googleapis.com/calendar/v3`,
