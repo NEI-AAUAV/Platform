@@ -197,6 +197,7 @@ services:
         RALLY_URL: ${RALLY_URL:-}
         ENABLE_GAMIFICATION: ${ENABLE_GAMIFICATION:-False}
         GAMIFICATION_URL: ${GAMIFICATION_URL:-}
+        GOOGLE_CALENDAR_API_KEY: ${GOOGLE_CALENDAR_API_KEY:-}
     ports:
       - 3000:3000
     networks:

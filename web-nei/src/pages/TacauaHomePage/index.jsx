@@ -51,7 +51,7 @@ export function Component() {
                     <div className="relative bg-gradient-to-b rounded-[20px] from-[#7a7876] to-[#000000]">
                         <img className="object-cover rounded-[20px] mix-blend-overlay" src={backgroundImg} alt=""/>
                         <div className="grid absolute m-8 top-0 backdrop-blur-md backdrop-brightness-50 w-1/3 h-1/3 bg-transparent rounded-[20px] p-8">
-                            <div className="text-2xl font-bold place-self-center"><p>Junta-te ao <t className="text-primary">mágico EI</t></p></div>
+                            <div className="text-2xl font-bold place-self-center"><p>Junta-te ao <span className="text-primary">mágico EI</span></p></div>
                             <div className="grid gap-1 py-8">
                                 <p className="font-bold">A Taça UA está de volta!</p>
                                 <p>Inscreve-te neste formulário e vem defender o teu curso numa das modalidades existentes.</p>
@@ -383,7 +383,7 @@ export function Component() {
                 <div className="relative bg-gradient-to-b rounded-[20px] from-[#7a7876] to-[#000000] w-full h-[650px]">
                         <img className="object-cover rounded-[20px] mix-blend-overlay h-96 h-[650px]" src={backgroundImg} alt=""/>
                         <div className="grid absolute m-5 top-0 backdrop-blur-md backdrop-brightness-50 w-100% bg-transparent rounded-[20px] p-8">
-                            <div className="text-2xl font-bold place-self-center"><p>Junta-te ao <t className="text-primary">mágico EI</t></p></div>
+                            <div className="text-2xl font-bold place-self-center"><p>Junta-te ao <span className="text-primary">mágico EI</span></p></div>
                             <div className="grid gap-1 py-8">
                                 <p className="font-bold">A Taça UA está de volta!</p>
                                 <p>Inscreve-te neste formulário e vem defender o teu curso numa das modalidades existentes.</p>

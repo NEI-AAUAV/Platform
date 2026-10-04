@@ -45,6 +45,8 @@ jobs:
       RALLY_URL: ${{ vars.RALLY_URL }}
       ENABLE_GAMIFICATION: ${{ vars.ENABLE_GAMIFICATION || 'False' }}
       GAMIFICATION_URL: ${{ vars.GAMIFICATION_URL }}
+      # Public browser key for the Google Calendar API, also baked into the image.
+      GOOGLE_CALENDAR_API_KEY: ${{ vars.GOOGLE_CALENDAR_API_KEY }}
 
     steps:
     - name: Fix permissions before checkout

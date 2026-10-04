@@ -253,7 +253,7 @@ const Navbar = () => {
                             { name, link, disabled, external, reload },
                           ) => (
                             <li
-                              key={link}
+                              key={`${name}-${link}`}
                               className={classNames({
                                 "pointer-events-none opacity-50": disabled,
                               })}
@@ -452,7 +452,7 @@ const Navbar = () => {
                     {dropdown.map(
                       ({ name, link, disabled, external }) => (
                         <li
-                          key={link}
+                          key={`${name}-${link}`}
                           className={classNames({
                             "pointer-events-none opacity-50": disabled,
                           })}
