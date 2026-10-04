@@ -11,9 +11,12 @@ from app.models.user import User
 
 class SeniorStudent(Base):
     senior_id: Mapped[int] = mapped_column(
-        ForeignKey(f"{settings.SCHEMA_NAME}.senior.id"), primary_key=True
+        ForeignKey(f"{settings.SCHEMA_NAME}.senior.id", ondelete="CASCADE"),
+        primary_key=True,
     )
-    user_id: Mapped[int] = mapped_column(ForeignKey(User.id), primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey(User.id, ondelete="CASCADE"), primary_key=True
+    )
     quote: Mapped[Optional[str]] = mapped_column(String(280))
     _image: Mapped[Optional[str]] = mapped_column("image", String(2048))
 
