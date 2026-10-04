@@ -21,13 +21,11 @@ export const getSocket = () => {
         };
 
         socket.onmessage = (event) => {
-            var data = JSON.parse(event.data);
+            const data = JSON.parse(event.data);
             // Receive messages
-            switch (data.topic) {
-                case "LIVE_GAMES":
-                    useSocketStore.getState().setGame(data.game);
-                    break;
-                }
+            if (data.topic === "LIVE_GAMES") {
+                useSocketStore.getState().setGame(data.game);
+            }
         }
 
         socket.onclose = (event) => {

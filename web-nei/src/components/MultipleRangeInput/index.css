@@ -1,6 +1,8 @@
 .mulrange {
     --size: 1.5rem;
     --color: var(--bc);
+    position: relative;
+    height: var(--size);
 }
 
 .mulrange.mulrange-xs {
@@ -49,11 +51,6 @@
 
 .mulrange>*:not(.mulrange-control) {
     pointer-events: none;
-}
-
-.mulrange {
-    position: relative;
-    height: var(--size);
 }
 
 .mulrange-control {

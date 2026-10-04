@@ -11,10 +11,10 @@ export default function HistoryList({
   return (
     <div className="mt-2 rounded bg-base-100 p-2">
       <div className="max-h-64 overflow-auto rounded">
-        {logLoading ? (
-          <div className="text-sm opacity-70 p-2">Loading…</div>
-        ) : log.length === 0 ? (
-          <div className="text-sm opacity-70 p-2">No changes.</div>
+        {logLoading || log.length === 0 ? (
+          <div className="text-sm opacity-70 p-2">
+            {logLoading ? "Loading…" : "No changes."}
+          </div>
         ) : (
           <>
             <ul className="space-y-1 text-sm">

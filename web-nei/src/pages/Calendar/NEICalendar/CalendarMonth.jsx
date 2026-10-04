@@ -4,6 +4,10 @@ import { Fragment } from "react";
 import { EventDialog } from "components/Dialog";
 import { dateKey } from "./utils";
 
+function isToday(date) {
+  return dateKey(new Date()) === date;
+}
+
 const CalendarMonth = ({
   month,
   monthEvents,
@@ -11,16 +15,12 @@ const CalendarMonth = ({
   setSelEvent,
   hiddenCategories,
 }) => {
-  function isToday(date) {
-    return dateKey(new Date()) === date;
-  }
-
   if (!monthEvents) return null;
 
   return (
     <div className="grid grid-cols-7 border-l border-t border-base-content/10">
-      {Object.entries(monthEvents).map(([day, events], index) => (
-        <Fragment key={index}>
+      {Object.entries(monthEvents).map(([day, events]) => (
+        <Fragment key={day}>
           <div className="min-h-[120px] border-b border-r border-base-content/10">
             <div
               // onClick={() => showEventModal(day)}
@@ -40,8 +40,9 @@ const CalendarMonth = ({
                 const selected = !!event && event.id === selEvent?.id;
                 const dialogbadge = (
                   <div
+                    aria-hidden={event ? undefined : true}
                     className={classNames(
-                      "relative left-0 z-10 mb-2 cursor-pointer rounded font-medium text-white hover:shadow-md ",
+                      "relative left-0 block w-full text-left z-10 mb-2 cursor-pointer rounded font-medium text-white hover:shadow-md ",
                       { invisible: !event },
                       {
                         "shadow-md": selected,
@@ -56,11 +57,10 @@ const CalendarMonth = ({
                         selected ? 1 : 0.7
                       })`,
                     }}
-                    onClick={() => setSelEvent(event)}
                   >
-                    <p className="h-[24px] overflow-hidden truncate text-clip px-1 text-xs !leading-[24px] sm:text-sm">
+                    <span className="block h-[24px] overflow-hidden truncate text-clip px-1 text-xs !leading-[24px] sm:text-sm">
                       {event?.title}
-                    </p>
+                    </span>
                   </div>
                 );
                 return (
@@ -76,7 +76,7 @@ const CalendarMonth = ({
                       <EventDialog
                         event={event}
                         className="w-full"
-                        onShowChange={(show) => !show && setSelEvent(null)}
+                        onShowChange={(show) => setSelEvent(show ? event : null)}
                       >
                         {dialogbadge}
                       </EventDialog>

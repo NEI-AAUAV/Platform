@@ -93,6 +93,7 @@ const Autocomplete = ({
       <div className="absolute right-3 top-1/2 flex !-translate-y-1/2 items-center gap-2 text-base-content/25">
         {!!value && items.length > 0 && (
           <button
+            type="button"
             className="btn-ghost btn-xs btn-circle btn text-base-content"
             // Hack to prevent calling focus on input
             onMouseDown={(e) => e.preventDefault()}
@@ -113,9 +114,10 @@ const Autocomplete = ({
             {!options?.length && (
               <li className="px-3 py-2 text-sm opacity-60">Sem resultados</li>
             )}
-            {options?.map((item, index) => (
-              <li key={index} tabIndex={index + 1}>
-                <span
+            {options?.map((item) => (
+              <li key={item.key}>
+                <button
+                  type="button"
                   // Hack to prevent calling blur on input
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => setValue(item.key)}
@@ -124,7 +126,7 @@ const Autocomplete = ({
                   })}
                 >
                   {renderOption?.(item) || item.label}
-                </span>
+                </button>
               </li>
             ))}
           </ul>

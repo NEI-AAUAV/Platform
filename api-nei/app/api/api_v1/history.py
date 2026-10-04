@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from typing import Any, List
+from typing import Annotated, Any, List
 
 from app import crud
 from app.api import deps
@@ -11,7 +10,8 @@ router = APIRouter()
 
 @router.get("/", status_code=200, response_model=List[HistoryInDB])
 def get(
-    *, db: Session = Depends(deps.get_db, scope="function"),
-    _ = Depends(deps.cms_cache)
+    *,
+    db: deps.DbSession,
+    _: Annotated[Any, Depends(deps.cms_cache)],
 ) -> Any:
     return crud.history.get_multi(db=db)

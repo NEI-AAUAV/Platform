@@ -2,7 +2,7 @@ import MaterialSymbol from "components/MaterialSymbol";
 import SportModalitySelect from "components/SportModalitySelect";
 import { motion } from "framer-motion";
 import { ModalitiesDataProps } from "pages/SportDetails/index";
-import { ModalitiesByYearAndFrame } from "pages/SportDetails/types";
+import { Modality, ModalitiesByYearAndFrame } from "pages/SportDetails/types";
 import {
   Dispatch,
   ElementRef,
@@ -12,7 +12,6 @@ import {
   useState,
 } from "react";
 import { cn } from "lib/utils";
-import { Modality } from "pages/SportDetails/types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Dialog, DialogTrigger } from "components/ui/dialog";
 import { useToast } from "components/ui/use-toast";
@@ -25,7 +24,6 @@ type SportsSidebarProps = {
   admin: boolean;
   modalitiesByYearAndFrame: ModalitiesByYearAndFrame;
   currentYear: number;
-  modalityId: string | undefined;
   tab: string | undefined;
   competitionId: string | undefined;
   setIsSidebarOpen: any;
@@ -44,7 +42,7 @@ export default function SportsSidebar({
   currentModality,
   sportsList,
   setData,
-}: SportsSidebarProps) {
+}: Readonly<SportsSidebarProps>) {
   const { toast } = useToast();
 
   const [sidebarExpandedYear, setSidebarExpandedYear] =
@@ -125,7 +123,7 @@ export default function SportsSidebar({
             {Object.entries(modalitiesByYearAndFrame)
               .sort((a, b) => (a[0] > b[0] ? -1 : 1))
               .map(([key, value]) => {
-                let year = parseInt(key);
+                let year = Number.parseInt(key);
                 return (
                   <div className="flex flex-col" key={key}>
                     <div className="flex flex-row items-center justify-between">
@@ -203,7 +201,7 @@ export default function SportsSidebar({
                           isSelected={frameArray.some(
                             (frame) => currentModality.id === frame.id
                           )}
-                          competitionId={parseInt(competitionId ?? "0")}
+                          competitionId={Number.parseInt(competitionId ?? "0")}
                           modalityId={frameArray[0].id}
                           tab={tab ?? "games"}
                           setModalCurrent={setModalCurrent}

@@ -111,9 +111,11 @@ export default function UsersAndGroups() {
   useEffect(() => {
     if (statusLoading) return;
     setLoading(true);
-    Promise.all([loadUsers(), status?.groups_managed ? loadGroups() : null]).finally(() =>
-      setLoading(false)
-    );
+    Promise.all([loadUsers(), status?.groups_managed ? loadGroups() : null])
+      .catch((e) => {
+        console.error("Failed to load users and groups:", e);
+      })
+      .finally(() => setLoading(false));
   }, [statusLoading, status, loadUsers, loadGroups]);
 
   const toggleRole = async (user, group) => {
@@ -135,7 +137,7 @@ export default function UsersAndGroups() {
         await service.addUserToAuthentikGroup(group.pk, user.id);
         showSuccess(`Gave ${displayName(user)} the ${group.role} role`);
       }
-      loadGroups();
+      await loadGroups();
     } catch (e) {
       setError(`Failed to change the ${group.role} role: ${e?.message || "Unknown error"}`);
     } finally {

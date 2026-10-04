@@ -3,7 +3,7 @@ Tree API endpoints for Family Tree.
 Provides hierarchical tree structure of users.
 """
 
-from typing import Optional
+from typing import Annotated, Optional
 
 from fastapi import APIRouter, HTTPException, Query
 
@@ -14,18 +14,20 @@ from app.schemas.tree import FamilyTree
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=FamilyTree)
+@router.get("/", status_code=200, response_model=FamilyTree, responses={404: {"description": "Resource not found"}})
 def get_family_tree(
-    root_id: Optional[int] = Query(
-        default=None, 
-        description="Optional user ID to get subtree from. If not specified, returns full tree."
-    ),
-    depth: Optional[int] = Query(
-        default=None, 
-        ge=0, 
-        le=50,
-        description="Maximum depth to return. 0 = only root(s), 1 = root + direct children, etc. None = unlimited."
-    ),
+    root_id: Annotated[
+        Optional[int],
+        Query(description="Optional user ID to get subtree from. If not specified, returns full tree."),
+    ] = None,
+    depth: Annotated[
+        Optional[int],
+        Query(
+            ge=0,
+            le=50,
+            description="Maximum depth to return. 0 = only root(s), 1 = root + direct children, etc. None = unlimited.",
+        ),
+    ] = None,
 ):
     """
     Get the family tree structure.

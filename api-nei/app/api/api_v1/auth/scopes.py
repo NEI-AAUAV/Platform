@@ -21,7 +21,7 @@ class ScopesResponse(BaseModel):
 
 
 @router.get("/scopes", response_model=ScopesResponse)
-async def get_available_scopes():
+def get_available_scopes():
     """
     Get all available OAuth2 scopes including extension scopes.
     

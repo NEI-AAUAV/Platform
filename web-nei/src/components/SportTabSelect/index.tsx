@@ -1,4 +1,3 @@
-import { cn } from "lib/utils";
 import { SportTab } from "pages/SportDetails/types";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -19,7 +18,7 @@ export default function SportTabSelect({
   modalityId,
   competitionId,
   isAdminOnly,
-}: SportTabSelectProps) {
+}: Readonly<SportTabSelectProps>) {
   const navigate = useNavigate();
 
   return (

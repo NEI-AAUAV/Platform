@@ -36,7 +36,7 @@ def create_senior(
     return crud.senior.create(db=db, obj_in=senior_create_in)
 
 
-@router.put("/{id}", status_code=200, response_model=SeniorInDB)
+@router.put("/{id}", status_code=200, response_model=SeniorInDB, responses={404: {"description": "Senior not found"}})
 def update_senior(
     *,
     id: int,
@@ -69,7 +69,7 @@ def get_senior_course_years(
     return crud.senior.get_course_year(db=db, course=course)
 
 
-@router.get("/{course}/{year}", status_code=200, response_model=SeniorInDB)
+@router.get("/{course}/{year}", status_code=200, response_model=SeniorInDB, responses={404: {"description": "Senior not found"}})
 def get_senior_by(
     *,
     db: Session = Depends(deps.get_db, scope="function"),

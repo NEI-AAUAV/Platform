@@ -41,7 +41,7 @@ def list_courses(
     return CourseList(items=items, total=total, skip=skip, limit=limit)
 
 
-@router.get("/{course_id}", status_code=200, response_model=CourseInDB)
+@router.get("/{course_id}", status_code=200, response_model=CourseInDB, responses={404: {"description": "Resource not found"}})
 def get_course(
     course_id: int,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
@@ -53,7 +53,7 @@ def get_course(
     return course
 
 
-@router.post("/", status_code=201, response_model=CourseInDB)
+@router.post("/", status_code=201, response_model=CourseInDB, responses={409: {"description": "Conflict with existing resource"}})
 def create_course(
     course_in: CourseCreate,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
@@ -79,7 +79,7 @@ def create_course(
         )
 
 
-@router.put("/{course_id}", status_code=200, response_model=CourseInDB)
+@router.put("/{course_id}", status_code=200, response_model=CourseInDB, responses={404: {"description": "Resource not found"}, 409: {"description": "Conflict with existing resource"}})
 def update_course(
     course_id: int,
     course_in: CourseUpdate,
@@ -113,7 +113,7 @@ def update_course(
         )
 
 
-@router.delete("/{course_id}", status_code=204)
+@router.delete("/{course_id}", status_code=204, responses={404: {"description": "Resource not found"}})
 def delete_course(
     course_id: int,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),

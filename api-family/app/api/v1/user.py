@@ -87,7 +87,7 @@ def get_years_list(
 
 
 
-@router.get("/{id}", status_code=200, response_model=UserInDB)
+@router.get("/{id}", status_code=200, response_model=UserInDB, responses={404: {"description": "Resource not found"}})
 def get_user(
     id: int,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
@@ -101,7 +101,7 @@ def get_user(
     return user
 
 
-@router.get("/{id}/children", status_code=200, response_model=List[UserInDB])
+@router.get("/{id}/children", status_code=200, response_model=List[UserInDB], responses={404: {"description": "Resource not found"}})
 def get_user_children(
     id: int,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
@@ -116,7 +116,7 @@ def get_user_children(
     return children
 
 
-@router.put("/{id}/image", status_code=200, response_model=UserInDB)
+@router.put("/{id}/image", status_code=200, response_model=UserInDB, responses={400: {"description": "Bad request"}, 404: {"description": "Resource not found"}, 503: {"description": "Service unavailable"}})
 async def update_user_image(
     id: int,
     image: UploadFile = File(None),
@@ -147,7 +147,7 @@ async def update_user_image(
     return updated
 
 
-@router.post("/", status_code=201, response_model=UserInDB)
+@router.post("/", status_code=201, response_model=UserInDB, responses={400: {"description": "Bad request"}})
 def create_user(
     obj_in: UserCreate,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),
@@ -190,7 +190,7 @@ def create_user(
     return user
 
 
-@router.post("/bulk", status_code=201, response_model=BulkCreateResponse)
+@router.post("/bulk", status_code=201, response_model=BulkCreateResponse, responses={400: {"description": "Bad request"}})
 def create_users_bulk(
     users_in: List[UserBulkCreate],
     dry_run: bool = Query(False, description="Preview without creating (no changes saved)"),
@@ -248,7 +248,7 @@ def create_users_bulk(
             seen_nmecs
         )
         
-        data_dict = user_data.dict()
+        data_dict = user_data.model_dump()
         if error_msg:
             errors.append(BulkCreateError(row=idx, data=data_dict, message=error_msg))
         else:
@@ -298,7 +298,7 @@ def _execute_bulk_creation(
             existing_patrao_ids.add(user["_id"])
         except Exception as e:
             msg = e.detail if hasattr(e, 'detail') else str(e)
-            logger.error(f"Error creating user row {idx}: {e}")
+            logger.exception("Error creating user row %s: %s", idx, e)
             errors.append(BulkCreateError(row=idx, data=data_dict, message=msg))
             
     return created_users, errors
@@ -389,7 +389,7 @@ def _build_bulk_response(
     )
 
 
-@router.put("/{id}", status_code=200, response_model=UserInDB)
+@router.put("/{id}", status_code=200, response_model=UserInDB, responses={400: {"description": "Bad request"}, 404: {"description": "Resource not found"}})
 def update_user(
     id: int,
     obj_in: UserUpdate,
@@ -412,6 +412,11 @@ def update_user(
                 status_code=400, 
                 detail=f"Patrão with id {obj_in.patrao_id} not found"
             )
+        if crud_user.check_cycle(id, obj_in.patrao_id):
+            raise HTTPException(
+                status_code=400,
+                detail="Patrão would create a cycle in the family tree"
+            )
     
     # Validate course_id if being updated
     if obj_in.course_id is not None and not crud_course.exists(obj_in.course_id):
@@ -433,7 +438,7 @@ def update_user(
     return user
 
 
-@router.delete("/{id}", status_code=204)
+@router.delete("/{id}", status_code=204, responses={400: {"description": "Bad request"}, 404: {"description": "Resource not found"}})
 def delete_user(
     id: int,
     _=Security(auth.verify_scopes, scopes=[auth.ScopeEnum.MANAGER_FAMILY]),

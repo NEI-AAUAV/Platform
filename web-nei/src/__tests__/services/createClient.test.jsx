@@ -64,7 +64,7 @@ describe('createClient', () => {
     expect(result.headers.Authorization).toMatch(/^Bearer /)
   })
 
-  it('handles request errors', () => {
+  it('handles request errors', async () => {
     createClient('http://test-api.com')
     
     // Get the request interceptor error handler
@@ -73,7 +73,7 @@ describe('createClient', () => {
     
     const result = errorHandler(error)
     
-    expect(result).rejects.toThrow('Request failed')
+    await expect(result).rejects.toThrow('Request failed')
   })
 
   it('processes successful responses', () => {

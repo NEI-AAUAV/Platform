@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { css, jsx } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import classNames from "classnames";
 
 /**
@@ -11,24 +11,19 @@ import classNames from "classnames";
  * @param {Function} onChange callback to be called when a radio is checked/unchecked
  */
 const RadioDropdown = ({ name, value, onChange, children, className, ...props }) => {
-  const [options, setOptions] = useState(props.options);
-
-  // useEffect(() => {
-  //   setOptions(props.options);
-  // }, [props.options]);
+  const [options] = useState(props.options);
 
   return (
     <div className={classNames("dropdown", className?.dropdown)}>
-      <label tabIndex={0} className={classNames("btn", className?.label)}>
+      <button type="button" className={classNames("btn", className?.label)}>
         {children}
-      </label>
+      </button>
       <ul
-        tabIndex={0}
         className="dropdown-content menu rounded-box w-52 border border-base-300 bg-base-200 p-2 font-medium shadow"
       >
         {options?.map(
           ({ value: v, label, color = "var(--p)" }, index) => (
-            <li key={index}>
+            <li key={v}>
               <label>
                 <input
                   type="radio"

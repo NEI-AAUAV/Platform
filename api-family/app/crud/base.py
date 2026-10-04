@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
@@ -47,7 +47,7 @@ class CRUDBase(Generic[CollectionType, CreateSchemaType, UpdateSchemaType, Model
         return docs
 
     def create(self, *, obj_in: CreateSchemaType) -> CollectionType:
-        obj_in_data = obj_in.dict()
+        obj_in_data = obj_in.model_dump()
         if self.pk_auto_increment:
             obj_in_data['_id'] = self.next()
 
@@ -55,12 +55,12 @@ class CRUDBase(Generic[CollectionType, CreateSchemaType, UpdateSchemaType, Model
         return doc
 
     def update(
-        self, *, id: int, obj_in: Union[UpdateSchemaType, Dict[str, Any]]
+        self, *, id: int, obj_in: UpdateSchemaType | Dict[str, Any]
     ) -> CollectionType:
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
-            update_data = obj_in.dict(exclude_unset=True)
+            update_data = obj_in.model_dump(exclude_unset=True)
 
         doc = self.collection.find_one_and_update(
             {'_id': id},

@@ -10,20 +10,22 @@ import service from 'services/NEIService';
 const News = () => {
 
     const [isLoading, setIsLoading] = useState(true);       // used to change message when no news are available
-    const [news, setNews] = useState([]);                   // list of news articles
     const [newsTypes, setNewsTypes] = useState([]);         // list of all news categories
     const [whitelist, setWhitelist] = useState([]);         // list of currently active categories
     const [currPage, setCurrPage] = useState(1);            // current page
     const [totalPages, setTotalPages] = useState(1);        // total number of pages
 
-    const getNews = async (p_num, newsTypes) => {
+    const getNews = (p_num, newsTypes) => {
         service.getNews({ page: p_num, category: newsTypes, size: 9 })
             .then((data) => {
                 setIsLoading(false);
                 setCurrPage(p_num);
                 setTotalPages(data.last);
-                setNews(data.items || []);
             })
+            .catch((error) => {
+                console.error("Failed to load news", error);
+                setIsLoading(false);
+            });
     }
 
     /** Get given news page from API */
@@ -31,12 +33,10 @@ const News = () => {
 
         // check if there are no categories selected
         if (whitelist.length == 0) {
-            setNews([]);
             return;
         }
 
         setIsLoading(true);
-        setNews([]);
 
         getNews(p_num, newsTypes);
     };
@@ -48,11 +48,13 @@ const News = () => {
     useEffect(() => {
         service.getNewsCategories()
             .then(data => {
-                var cats = [];
-                data.data?.forEach(c => cats.push(c));
+                const cats = [...(data.data ?? [])];
                 setNewsTypes(cats);
                 setWhitelist(cats);
             })
+            .catch((error) => {
+                console.error("Failed to load news categories", error);
+            });
     }, []);
 
     return (

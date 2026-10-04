@@ -1,8 +1,10 @@
+import json
 import os
 import pathlib
 
-from pydantic import AnyHttpUrl, BaseSettings, MongoDsn, root_validator, validator
-from typing import List, Optional, Union
+from pydantic import AnyHttpUrl, MongoDsn, field_validator, model_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
+from typing import Annotated, List, Optional
 
 
 # Project Directories
@@ -18,17 +20,21 @@ class Settings(BaseSettings):
     HOST: AnyHttpUrl = ("https://nei.web.ua.pt" if PRODUCTION else
                         "http://localhost:8000")
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = (
+    BACKEND_CORS_ORIGINS: Annotated[List[str], NoDecode] = (
         ["https://nei.web.ua.pt"]
         if PRODUCTION
         else ["http://localhost", "http://localhost:8001", "http://localhost:8002"]
     )
 
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
-    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
-        if isinstance(v, str) and not v.startswith("["):
-            return [i.strip() for i in v.split(",")]
-        elif isinstance(v, (list, str)):
+    @field_validator("BACKEND_CORS_ORIGINS", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: str | List[str]) -> List[str] | str:
+        if isinstance(v, str):
+            v = json.loads(v) if v.startswith("[") else [i.strip() for i in v.split(",")]
+        if isinstance(v, list):
+            # Origins are compared as plain strings by CORSMiddleware: no trailing slash
+            return [str(i).rstrip("/") for i in v]
+        if isinstance(v, str):
             return v
         raise ValueError(v)
 
@@ -44,23 +50,15 @@ class Settings(BaseSettings):
     MONGO_URI: Optional[MongoDsn] = None
     TEST_MONGO_URI: Optional[MongoDsn] = None
 
-    @root_validator
-    def build_mongo_uris(cls, values):
+    @model_validator(mode="after")
+    def build_mongo_uris(self):
         """Build MongoDB URIs with authSource after all fields are validated"""
-        auth_source = values.get('MONGO_AUTH_SOURCE') or values.get('MONGO_DB', 'mongo')
-        mongo_user = values.get('MONGO_USER', 'mongo')
-        mongo_password = values.get('MONGO_PASSWORD', 'mongo')
-        mongo_server = values.get('MONGO_SERVER', 'localhost')
-        mongo_db = values.get('MONGO_DB', 'mongo')
-        
-        values['MONGO_AUTH_SOURCE'] = auth_source
-        values['MONGO_URI'] = f"mongodb://{mongo_user}" \
-                              f":{mongo_password}@{mongo_server}" \
-                              f":27017/{mongo_db}?authSource={auth_source}"
-        values['TEST_MONGO_URI'] = f"mongodb://{mongo_user}" \
-                                   f":{mongo_password}@{mongo_server}" \
-                                   f":27017/{mongo_db}_test?authSource={auth_source}"
-        return values
+        auth_source = self.MONGO_AUTH_SOURCE or self.MONGO_DB
+        self.MONGO_AUTH_SOURCE = auth_source
+        base = f"mongodb://{self.MONGO_USER}:{self.MONGO_PASSWORD}@{self.MONGO_SERVER}:27017"
+        self.MONGO_URI = f"{base}/{self.MONGO_DB}?authSource={auth_source}"
+        self.TEST_MONGO_URI = f"{base}/{self.MONGO_DB}_test?authSource={auth_source}"
+        return self
 
     # Auth settings
     ## Path to JWT signing keys
@@ -76,7 +74,6 @@ class Settings(BaseSettings):
     # Public base URL to serve images (e.g., https://cdn.example.com)
     R2_PUBLIC_BASE_URL: Optional[str] = os.getenv("R2_PUBLIC_BASE_URL")
 
-    class Config:
-        case_sensitive = True
+    model_config = SettingsConfigDict(case_sensitive=True)
 
 settings = Settings()

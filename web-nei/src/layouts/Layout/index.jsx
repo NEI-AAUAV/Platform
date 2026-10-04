@@ -33,4 +33,5 @@ const Layout = () => {
   );
 };
 
-export { Layout as default, FullLayout, CleanLayout };
+export { FullLayout, CleanLayout };
+export default Layout;

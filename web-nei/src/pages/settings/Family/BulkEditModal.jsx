@@ -13,6 +13,7 @@ import MaterialSymbol from "components/MaterialSymbol";
 import FamilyService from "services/FamilyService";
 import { formatYear } from "pages/Family/utils";
 import { getErrorMessage } from "utils/error";
+import { runInChunks } from "utils/concurrency";
 import { BaseModal, useBodyScrollLock, ProgressBar } from "components/Modal";
 import { UserListDisplay, RolePickerModal } from "components/Family";
 import { useToast } from "components/ui/use-toast";
@@ -82,7 +83,7 @@ const BulkEditModal = ({
         if (action === "set_course" && selectedCourse) {
             await FamilyService.updateUser(user.id, {
                 ...user,
-                course_id: parseInt(selectedCourse)
+                course_id: Number.parseInt(selectedCourse)
             });
             return true;
         }
@@ -127,26 +128,34 @@ const BulkEditModal = ({
         setProgress({ current: 0, total: selectedUsers.length });
 
         try {
+            let completed = 0;
+            const results = await runInChunks(
+                selectedUsers,
+                (user) => executeActionForUser(user),
+                {
+                    onSettled: () => {
+                        completed += 1;
+                        setProgress({ current: completed, total: selectedUsers.length });
+                    },
+                }
+            );
+
             let successCount = 0;
             let errorCount = 0;
-            let errorMessages = [];
+            const errorMessages = [];
 
-            for (let i = 0; i < selectedUsers.length; i++) {
-                const user = selectedUsers[i];
-                setProgress({ current: i + 1, total: selectedUsers.length });
-
-                try {
-                    const executed = await executeActionForUser(user);
-                    if (executed) successCount++;
-                } catch (err) {
-                    console.error(`Failed action for ${user.name}:`, err);
-                    errorCount++;
-                    const msg = getErrorMessage(err, "Erro desconhecido");
-                    if (!errorMessages.includes(msg)) {
-                        errorMessages.push(msg);
-                    }
+            results.forEach((result, i) => {
+                if (result.status === "fulfilled") {
+                    if (result.value) successCount++;
+                    return;
                 }
-            }
+                console.error(`Failed action for ${selectedUsers[i].name}:`, result.reason);
+                errorCount++;
+                const msg = getErrorMessage(result.reason, "Erro desconhecido");
+                if (!errorMessages.includes(msg)) {
+                    errorMessages.push(msg);
+                }
+            });
 
             processResults(successCount, errorCount, errorMessages);
         } catch (err) {
@@ -288,7 +297,7 @@ const BulkEditModal = ({
                                                     type="number"
                                                     className="input input-bordered w-24"
                                                     value={roleYear}
-                                                    onChange={(e) => setRoleYear(parseInt(e.target.value) || 0)}
+                                                    onChange={(e) => setRoleYear(Number.parseInt(e.target.value) || 0)}
                                                     min={0}
                                                     max={99}
                                                 />
@@ -332,7 +341,7 @@ const BulkEditModal = ({
                                                 type="number"
                                                 className="input input-bordered w-24"
                                                 value={newYear}
-                                                onChange={(e) => setNewYear(parseInt(e.target.value) || 0)}
+                                                onChange={(e) => setNewYear(Number.parseInt(e.target.value) || 0)}
                                                 min={0}
                                                 max={99}
                                             />

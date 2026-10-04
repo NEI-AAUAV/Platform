@@ -22,6 +22,8 @@ logger = logging.getLogger(__name__)
 
 MONGO_REGEX = "$regex"
 MONGO_LOOKUP = "$lookup"
+MONGO_IF_NULL = "$ifNull"
+START_YEAR_FIELD = "$start_year"
 
 
 class CRUDUser:
@@ -54,7 +56,8 @@ class CRUDUser:
     def _add_search_filter(self, q: dict, search: str) -> None:
         """Add search filters to query."""
         search = search.strip()
-        or_conditions = [{"name": {MONGO_REGEX: search, "$options": "i"}}]
+        # Plain substring search: user input must never be interpreted as a regex.
+        or_conditions = [{"name": {MONGO_REGEX: re.escape(search), "$options": "i"}}]
         
         if search.isdigit():
             search_int = int(search)
@@ -249,8 +252,8 @@ class CRUDUser:
             {"$match": {"start_year": {"$ne": None}}},
             {"$group": {
                 "_id": None,
-                "min_year": {"$min": "$start_year"},
-                "max_year": {"$max": "$start_year"}
+                "min_year": {"$min": START_YEAR_FIELD},
+                "max_year": {"$max": START_YEAR_FIELD}
             }}
         ]
         result = list(self.collection.aggregate(pipeline))
@@ -500,7 +503,7 @@ class CRUDUser:
         # Use $addFields + $ifNull to ensure nulls sort to end (consistent with Python)
         pipeline = [
             {"$addFields": {
-                "_sort_year": {"$ifNull": ["$start_year", INFINITY_SORT_VALUE]}
+                "_sort_year": {MONGO_IF_NULL: [START_YEAR_FIELD, INFINITY_SORT_VALUE]}
             }},
             {"$sort": {"_sort_year": 1}},
             # Lookup user roles with nested lookup to get role details including hidden
@@ -519,11 +522,11 @@ class CRUDUser:
                     }},
                     {"$unwind": {"path": "$role_details", "preserveNullAndEmptyArrays": True}},
                     {"$addFields": {
-                        "hidden": {"$ifNull": ["$role_details.hidden", False]},
+                        "hidden": {MONGO_IF_NULL: ["$role_details.hidden", False]},
                         "role_name": "$role_details.name",
                         "icon": "$role_details.icon",
-                        "year_display_format": {"$ifNull": ["$role_details.year_display_format", "civil"]},
-                        "org_name": {"$ifNull": ["$org_name", "$role_details.short"]}
+                        "year_display_format": {MONGO_IF_NULL: ["$role_details.year_display_format", "civil"]},
+                        "org_name": {MONGO_IF_NULL: ["$org_name", "$role_details.short"]}
                     }},
                     {"$project": {
                         "role_id": 1,
@@ -700,7 +703,7 @@ class CRUDUser:
         next_id = (max_doc["_id"] + 1) if max_doc else 1
         
         # Prepare document
-        doc = obj_in.dict()
+        doc = obj_in.model_dump()
         doc["_id"] = next_id
         
         # Auto-generate faina_name if not provided
@@ -712,7 +715,7 @@ class CRUDUser:
     
     def update(self, *, id: int, obj_in: UserUpdate) -> Optional[dict]:
         """Update user by ID."""
-        update_data = obj_in.dict(exclude_unset=True)
+        update_data = obj_in.model_dump(exclude_unset=True)
         
         if not update_data:
             return self.get(id)

@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import classNames from 'classnames';
+import { keyedByContent } from 'utils/keys';
 import './index.css';
 
 
@@ -7,21 +8,21 @@ const MultipleRangeInput = ({ min = 0, max = 150, step = 25, defaultValues = [[0
 
     const defaultValuesFlat = defaultValues.flat();
     if (!defaultValuesFlat.length || defaultValuesFlat.length % 2 !== 0) {
-        throw Error("The `defaultValues` property must be an array with a pair number of elements");
+        throw new Error("The `defaultValues` property must be an array with a pair number of elements");
     }
     for (let i = 1; i < defaultValuesFlat.length; i++) {
         const sep = defaultValuesFlat[i] - defaultValuesFlat[i - 1];
         if (sep < 0 || sep % step !== 0) {
-            throw Error("The `defaultValues` property must have values in order and separated with a multiple of `step`");
+            throw new Error("The `defaultValues` property must have values in order and separated with a multiple of `step`");
         }
     }
 
     if (size && !['xs', 'sm', 'md', 'lg'].includes(size)) {
-        throw Error("Invalid value for `size` property");
+        throw new Error("Invalid value for `size` property");
     }
 
     if (color && !['primary', 'secondary', 'accent', 'success', 'warning', 'info', 'error'].includes(color)) {
-        throw Error("Invalid value for `color` property");
+        throw new Error("Invalid value for `color` property");
     }
 
     const range = max - min;
@@ -80,18 +81,18 @@ const MultipleRangeInput = ({ min = 0, max = 150, step = 25, defaultValues = [[0
                 onInput={handleInput} onPointerDown={() => { pointerDown.current = true }} />
             <div className='mulrange-slider'></div>
             <div className='mulrange-ranges'>
-                {values.map(([v1, v2], i) =>
-                    <div key={i} style={{ left: `${v1 / range * 100}%`, width: `${(v2 - v1) / range * 100}%` }}></div>
+                {keyedByContent(values, ([v1, v2]) => `${v1}-${v2}`).map(({ item: [v1, v2], key }) =>
+                    <div key={key} style={{ left: `${v1 / range * 100}%`, width: `${(v2 - v1) / range * 100}%` }}></div>
                 )}
             </div>
             <div className='mulrange-handles'>
-                {values.flat().map((v, i) =>
-                    <div key={i} style={{ left: `${v / range * 100}%` }}></div>
+                {keyedByContent(values.flat()).map(({ item: v, key }) =>
+                    <div key={key} style={{ left: `${v / range * 100}%` }}></div>
                 )}
             </div>
         </div>
         <div className="select-none w-full flex justify-between text-xs p-2">
-            {[...Array(ticks)].map((i) => <span key={i}>|</span>)}
+            {Array.from({ length: ticks }, (_, i) => <span key={`tick-${min + i * step}`}>|</span>)}
         </div>
     </>;
 }

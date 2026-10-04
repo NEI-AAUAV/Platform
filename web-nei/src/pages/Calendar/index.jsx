@@ -20,7 +20,7 @@ const Views = {
 
 export function Component() {
   const [categories, setCategories] = useState(
-    // TODO: change active state according to user information
+    // NOTE: change active state according to user information
     Object.entries(data.categories).map(([k, v]) => ({
       ...v,
       key: k,

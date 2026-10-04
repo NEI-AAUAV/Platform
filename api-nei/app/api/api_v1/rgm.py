@@ -9,7 +9,7 @@ from app.schemas.rgm import RgmCategoryEnum, RgmInDB, RgmMandates
 router = APIRouter()
 
 
-@router.get("/", status_code=200, response_model=List[RgmInDB])
+@router.get("/", status_code=200, response_model=List[RgmInDB], responses={400: {"description": "Bad Request"}})
 def get_rgm(
     category: str | None = None,
     mandate: str | None = None,

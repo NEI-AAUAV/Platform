@@ -8,7 +8,7 @@ const defaultTheme =
     ? "dark"
     : "light");
 document.body.setAttribute("class", defaultTheme);
-document.body.setAttribute("data-theme", defaultTheme);
+document.body.dataset.theme = defaultTheme;
 document.documentElement.className = defaultTheme === "dark" ? "dark" : "";
 
 export const useUserStore = create((set, get) => ({
@@ -23,7 +23,7 @@ export const useUserStore = create((set, get) => ({
   setTheme: (theme) => {
     localStorage.setItem("th", theme);
     document.body.setAttribute("class", theme);
-    document.body.setAttribute("data-theme", theme);
+    document.body.dataset.theme = theme;
     document.documentElement.className = theme === "dark" ? "dark" : "";
     set(() => ({ theme }));
   },

@@ -52,7 +52,7 @@ export function useFamilyTree(options = {}) {
     }, [options.depth]);
 
     useEffect(() => {
-        fetchData();
+        fetchData().catch((err) => console.error("Unexpected family tree fetch error:", err));
     }, [fetchData]);
 
     return { users, loading, error, refetch: fetchData, minYear, maxYear };

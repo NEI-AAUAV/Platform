@@ -27,6 +27,8 @@ import readXlsxFile from "read-excel-file";
 import { colors } from "pages/Family/data";
 import Avatar from "components/Avatar";
 import { getErrorMessage } from "utils/error";
+import { runInChunks, focusOnMount } from "utils/concurrency";
+import { keyedByContent } from "utils/keys";
 import { useToast } from "components/ui/use-toast";
 
 // CSV Headers
@@ -93,9 +95,9 @@ const CreatedUserRow = ({ user, userIdx, roles = [], onRemoveRole, onAddRole }) 
             <p className="text-xs text-base-content/50">Ano {user.start_year}</p>
 
             <div className="flex flex-wrap gap-1 mt-2">
-                {roles.map((r, roleIdx) => (
+                {keyedByContent(roles, (r) => `${r.role?.id || r.role?.name || "role"}-${r.year}`).map(({ item: r, key }, roleIdx) => (
                     <RoleChip
-                        key={`${r.role?.id || r.role?.name || "role"}-${r.year}-${roleIdx}`}
+                        key={key}
                         roleName={r.role?.name}
                         year={r.year}
                         onRemove={makeRemoveRoleHandler(onRemoveRole, userIdx, roleIdx)}
@@ -204,14 +206,14 @@ const BulkImportModal = ({
     const patraoSearchResults = useMemo(() => {
         if (!patraoSearch.trim()) return allUsers.slice(0, 8);
         const query = patraoSearch.toLowerCase().trim();
-        const queryNum = parseInt(query);
+        const queryNum = Number.parseInt(query);
 
         return allUsers
             .filter(u => {
                 if (u.name?.toLowerCase().includes(query)) return true;
                 if (u.faina_name?.toLowerCase().includes(query)) return true;
-                if (!isNaN(queryNum) && u.nmec?.toString().includes(query)) return true;
-                if (!isNaN(queryNum) && u.id === queryNum) return true;
+                if (!Number.isNaN(queryNum) && u.nmec?.toString().includes(query)) return true;
+                if (!Number.isNaN(queryNum) && u.id === queryNum) return true;
                 return false;
             })
             .slice(0, 12);
@@ -247,8 +249,8 @@ const BulkImportModal = ({
 
 
         // Try as nmec or ID first
-        const asNum = parseInt(trimmed);
-        if (!isNaN(asNum)) {
+        const asNum = Number.parseInt(trimmed);
+        if (!Number.isNaN(asNum)) {
             if (userMap.byNmec[asNum]) {
 
                 return { id: userMap.byNmec[asNum].id, resolved: true, user: userMap.byNmec[asNum] };
@@ -323,9 +325,9 @@ const BulkImportModal = ({
         // Normalize headers (keys) to handle case sensitivity
         // Check missing headers
         const firstRow = rawRows[0];
-        const headers = Object.keys(firstRow).map(h => h.trim().toLowerCase());
+        const headers = new Set(Object.keys(firstRow).map(h => h.trim().toLowerCase()));
         const requiredHeaders = ["name", "sex", "start_year"];
-        const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
+        const missingHeaders = requiredHeaders.filter(h => !headers.has(h));
 
         if (missingHeaders.length > 0) {
             return { data: [], errors: [{ row: 0, message: `Colunas obrigatorias em falta: ${missingHeaders.join(", ")}` }] };
@@ -350,7 +352,7 @@ const BulkImportModal = ({
             const rowErrors = [];
             if (!row.name) rowErrors.push("nome em falta");
             if (!row.sex || !["M", "F"].includes(row.sex.toUpperCase())) rowErrors.push("sexo invalido (M/F)");
-            if (!row.start_year || isNaN(parseInt(row.start_year))) rowErrors.push("ano invalido");
+            if (!row.start_year || Number.isNaN(Number.parseInt(row.start_year))) rowErrors.push("ano invalido");
 
             // Check duplicate names (frontend side)
             const nameLower = (row.name || "").toLowerCase();
@@ -367,8 +369,8 @@ const BulkImportModal = ({
             const parsed = {
                 name: row.name || "",
                 sex: (row.sex || "").toUpperCase(),
-                start_year: parseInt(row.start_year) || 0,
-                nmec: row.nmec ? parseInt(row.nmec) : null,
+                start_year: Number.parseInt(row.start_year) || 0,
+                nmec: row.nmec ? Number.parseInt(row.nmec) : null,
                 faina_name: row.faina_name || null,
                 patrao_id: patraoResult.id,
                 patrao_input: patraoValue,
@@ -376,7 +378,7 @@ const BulkImportModal = ({
                 patrao_user: patraoResult.user,
                 patrao_ambiguous: patraoResult.ambiguous,
                 patrao_matches: patraoResult.matches,
-                course_id: row.course_id ? parseInt(row.course_id) : null,
+                course_id: row.course_id ? Number.parseInt(row.course_id) : null,
                 _rowIndex: i,
                 _key: `row-${i}-${Date.now()}`,
             };
@@ -498,7 +500,7 @@ const BulkImportModal = ({
                 row.patrao_ambiguous = result.ambiguous;
                 row.patrao_matches = result.matches;
             } else if (field === "start_year" || field === "nmec") {
-                row[field] = value ? parseInt(value) : null;
+                row[field] = value ? Number.parseInt(value) : null;
             } else if (field === "sex") {
                 row[field] = value.toUpperCase();
             } else {
@@ -528,7 +530,7 @@ const BulkImportModal = ({
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
                         onBlur={saveEdit}
-                        autoFocus
+                        ref={focusOnMount}
                     >
                         <option value="M">M</option>
                         <option value="F">F</option>
@@ -544,7 +546,7 @@ const BulkImportModal = ({
                     onBlur={saveEdit}
                     onKeyDown={(e) => e.key === "Enter" && saveEdit()}
                     {...options.inputProps}
-                    autoFocus
+                    ref={focusOnMount}
                 />
             );
         }
@@ -686,10 +688,8 @@ const BulkImportModal = ({
             return { message: row.patrao_ambiguous ? "Patrao ambiguo" : "Patrao nao encontrado" };
         }
 
-        // Check base errors from parsing
-        const baseError = errors.find(e => e.row === row._rowIndex);
-        if (baseError) return baseError;
-
+        // Parse-time errors are deliberately not re-checked here: the rules above are
+        // the same ones, evaluated against the *current* (possibly edited) values.
         return null;
     };
 
@@ -754,26 +754,30 @@ const BulkImportModal = ({
         let successCount = 0;
 
         try {
-            for (let i = 0; i < (results?.created?.length || 0); i++) {
-                const user = results?.created?.[i];
-                if (!user) continue;
-                const roles = userRoles[i] || [];
+            const assignments = (results?.created || []).flatMap((user, i) =>
+                user
+                    ? (userRoles[i] || [])
+                        .filter(roleInfo => roleInfo?.role)
+                        .map(roleInfo => ({ user, roleInfo }))
+                    : []
+            );
 
-                for (const roleInfo of roles) {
-                    if (roleInfo?.role) {
-                        try {
-                            await FamilyService.assignRole({
-                                user_id: user.id,
-                                role_id: roleInfo.role.id,
-                                year: roleInfo.year || new Date().getFullYear() - 2000
-                            });
-                            successCount++;
-                        } catch (err) {
-                            console.error(`Failed to assign role ${roleInfo.role.name} to ${user.name}`, err);
-                        }
-                    }
+            const outcomes = await runInChunks(assignments, ({ user, roleInfo }) =>
+                FamilyService.assignRole({
+                    user_id: user.id,
+                    role_id: roleInfo.role.id,
+                    year: roleInfo.year || new Date().getFullYear() - 2000
+                })
+            );
+
+            outcomes.forEach((outcome, i) => {
+                if (outcome.status === "fulfilled") {
+                    successCount++;
+                } else {
+                    const { user, roleInfo } = assignments[i];
+                    console.error(`Failed to assign role ${roleInfo.role.name} to ${user.name}`, outcome.reason);
                 }
-            }
+            });
             setResults(prev => ({ ...prev, rolesAssigned: successCount }));
         } finally {
             setAssigningRoles(false);
@@ -909,7 +913,9 @@ const BulkImportModal = ({
                                                 <button
                                                     className="badge badge-primary badge-outline font-mono font-bold hover:bg-primary hover:text-primary-content cursor-pointer transition-colors"
                                                     onClick={() => {
-                                                        navigator.clipboard.writeText(u.id);
+                                                        navigator.clipboard.writeText(u.id).catch((err) => {
+                                                            console.error("Failed to copy ID:", err);
+                                                        });
                                                         // Optional: show toast
                                                     }}
                                                     title="Copiar ID"
@@ -1116,7 +1122,7 @@ const BulkImportModal = ({
             // But we need to update updatedUsers by index.
 
             const promises = Object.entries(userPhotos).map(async ([idxStr, file]) => {
-                const idx = parseInt(idxStr);
+                const idx = Number.parseInt(idxStr);
                 const user = results?.created?.[idx];
                 if (!user) return; // Should not happen
 
@@ -1368,8 +1374,8 @@ const BulkImportModal = ({
                     </div>
                     <div className="collapse-content">
                         <div className="max-h-32 overflow-y-auto space-y-1 pr-2">
-                            {warnings.map((w, i) => (
-                                <div key={`${i}-${w.substring(0, 10)}`} className="text-sm p-2 rounded bg-warning/10 border border-warning/10">
+                            {keyedByContent(warnings, (w) => w.substring(0, 10)).map(({ item: w, key }) => (
+                                <div key={key} className="text-sm p-2 rounded bg-warning/10 border border-warning/10">
                                     {w}
                                 </div>
                             ))}
@@ -1454,8 +1460,8 @@ const BulkImportModal = ({
                         </button>
                     </div>
                     <div className="max-h-32 overflow-y-auto space-y-1 border border-error/20 rounded-lg p-2 bg-error/5">
-                        {results?.errors?.map((err, i) => (
-                            <div key={`${err.row}-${i}`} className="text-sm p-2 rounded hover:bg-white/50 flex gap-2">
+                        {keyedByContent(results?.errors, (err) => String(err.row)).map(({ item: err, key }) => (
+                            <div key={key} className="text-sm p-2 rounded hover:bg-white/50 flex gap-2">
                                 <span className="font-mono text-xs font-bold opacity-50 shrink-0">L{err.row + 1}</span>
                                 <span>{getErrorMessage(err, "Erro desconhecido")}</span>
                             </div>

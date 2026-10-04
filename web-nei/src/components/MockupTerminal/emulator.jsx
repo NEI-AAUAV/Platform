@@ -1,4 +1,3 @@
-import { local } from "d3";
 import { sample } from "lodash";
 
 const registeredCommands = {

@@ -13,7 +13,7 @@ export function BaseCard({
   className,
   children,
   index,
-}: Props): JSX.Element {
+}: Readonly<Props>): JSX.Element {
   const Component = as;
   return (
     <Component

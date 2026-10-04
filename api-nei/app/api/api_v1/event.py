@@ -21,6 +21,8 @@ from app.schemas.event import CreateEvent, ListingEvent, UpdateEvent, DetailedEv
 
 router = APIRouter()
 
+EVENT_NOT_FOUND = "Event not found"
+
 
 @router.get("/", status_code=200)
 def get_events(
@@ -33,7 +35,7 @@ def get_events(
     return crud.event.get_multi(db=db)
 
 
-@router.get("/{id}", status_code=200)
+@router.get("/{id}", status_code=200, responses={404: {"description": EVENT_NOT_FOUND}})
 def get_event_by_id(
     *,
     id: int,
@@ -44,11 +46,11 @@ def get_event_by_id(
     """
     event = crud.event.get(db=db, id=id)
     if event is None:
-        raise HTTPException(status_code=404, detail="Event not found")
+        raise HTTPException(status_code=404, detail=EVENT_NOT_FOUND)
     return DetailedEvent.model_validate(event)
 
 
-@router.put("/{id}", status_code=200)
+@router.put("/{id}", status_code=200, responses={404: {"description": EVENT_NOT_FOUND}})
 def update_event(
     *,
     id: int,
@@ -61,7 +63,7 @@ def update_event(
     """
     event = crud.event.update_locked(db=db, id=id, obj_in=event_in)
     if event is None:
-        raise HTTPException(status_code=404, detail="Event not found")
+        raise HTTPException(status_code=404, detail=EVENT_NOT_FOUND)
     return DetailedEvent.model_validate(event)
 
 
@@ -83,7 +85,7 @@ class ImportUsersResult(BaseModel):
     users_created: int
 
 
-@router.post("/{id}", status_code=201)
+@router.post("/{id}", status_code=201, responses={404: {"description": EVENT_NOT_FOUND}})
 def import_users_for_event(
     *,
     id: int,
@@ -97,7 +99,7 @@ def import_users_for_event(
     """
     result = crud.event.import_users(db, id=id, users=users)
     if result is None:
-        raise HTTPException(status_code=404, detail="Event not found")
+        raise HTTPException(status_code=404, detail=EVENT_NOT_FOUND)
     for user, user_email in result.created_users:
         send_magic_link(
             user,
@@ -112,7 +114,7 @@ def import_users_for_event(
     return ImportUsersResult(users_created=len(result.created_users))
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"description": EVENT_NOT_FOUND}})
 def delete_event(
     *,
     id: int,
@@ -124,5 +126,5 @@ def delete_event(
     """
     event = crud.event.delete(db=db, id=id)
     if event is None:
-        raise HTTPException(status_code=404, detail="Event not found")
+        raise HTTPException(status_code=404, detail=EVENT_NOT_FOUND)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

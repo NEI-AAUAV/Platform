@@ -47,6 +47,9 @@ export function Component() {
       setYears(years);
       setSelectedYear(years[0]);
       setLoading(false);
+    }).catch((error) => {
+      console.error("Failed to load team mandates", error);
+      setLoading(false);
     });
   }, []);
 
@@ -65,6 +68,9 @@ export function Component() {
             members,
           }))
       );
+      setLoading(false);
+    }).catch((error) => {
+      console.error("Failed to load team mandate tree", error);
       setLoading(false);
     });
   }, [selectedYear]);

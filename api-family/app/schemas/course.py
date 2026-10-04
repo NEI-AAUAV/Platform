@@ -4,7 +4,7 @@ Course schemas for Family API.
 
 from enum import Enum
 from typing import Optional
-from pydantic import BaseModel, Field, constr
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, constr
 
 
 class DegreeType(str, Enum):
@@ -37,17 +37,19 @@ class CourseUpdate(BaseModel):
 
 class CourseInDB(CourseBase):
     """Course as stored in database."""
-    id: int = Field(..., alias='_id', description="Course ID (MongoDB _id)")
+    id: int = Field(
+        ...,
+        validation_alias=AliasChoices('_id', 'id'), serialization_alias='id',
+        description="Course ID (MongoDB _id)",
+    )
     
-    def dict(self, **kwargs):
-        """Override dict() to always use field names (not aliases) for serialization."""
+    def model_dump(self, **kwargs):
+        """Override model_dump() to always use field names (not aliases) for serialization."""
         # Force by_alias=False to serialize as 'id' instead of '_id'
         kwargs['by_alias'] = False
-        return super().dict(**kwargs)
+        return super().model_dump(**kwargs)
     
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class CourseList(BaseModel):

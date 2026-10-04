@@ -3,7 +3,10 @@ import axios from "axios";
 
 vi.mock("axios", () => ({ default: { get: vi.fn() } }));
 vi.mock("../../config", () => ({
-  default: { GOOGLE_CALENDAR_URL: "https://gcal.test" },
+  default: {
+    GOOGLE_CALENDAR_URL: "https://gcal.test",
+    GOOGLE_CALENDAR_API_KEY: "test-key",
+  },
 }));
 
 import service from "../../services/GoogleCalendarService";

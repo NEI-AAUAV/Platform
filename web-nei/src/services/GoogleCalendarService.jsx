@@ -7,7 +7,7 @@ const calendarIds = [
   // NEI events
   "635146afc8d5f0c65051c051fc2e57ee09f47865da1c528d014e5be284fa5888@group.calendar.google.com",
 ];
-const key = "AIzaSyDnT8fO6ARjx3OxMJCimhenNDLTkGuOmjE";
+const key = config.GOOGLE_CALENDAR_API_KEY;
 
 const GoogleCalendarService = {
   // Documentation:
