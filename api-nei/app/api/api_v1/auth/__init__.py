@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from . import login, register, session, reset, token, magic_link, scopes, oidc
+from . import login, register, session, reset, magic_link, scopes, oidc
 from ._deps import verify_token, auth_responses, AuthData, GetAuthData, get_auth_data
 
 router = APIRouter()
@@ -8,7 +8,6 @@ router.include_router(login.router)
 router.include_router(register.router)
 router.include_router(session.router)
 router.include_router(reset.router)
-router.include_router(token.router)
 router.include_router(magic_link.router)
 router.include_router(scopes.router)
 router.include_router(oidc.router)

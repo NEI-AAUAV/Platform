@@ -12,8 +12,12 @@ import service from "services/NEIService";
 import Tabs from "components/Tabs";
 
 // Animation
-const animationBase = parseFloat(import.meta.env.VITE_ANIMATION_BASE);
-const animationIncrement = parseFloat(import.meta.env.VITE_ANIMATION_INCREMENT);
+const animationBase = Number.parseFloat(import.meta.env.VITE_ANIMATION_BASE);
+const animationIncrement = Number.parseFloat(import.meta.env.VITE_ANIMATION_INCREMENT);
+
+function seniorKey(person) {
+  return person.user_id ?? person.user?.id ?? `${person.user?.name}-${person.user?.surname}`;
+}
 
 export function Component() {
   // Get course from URL parameters
@@ -32,7 +36,7 @@ export function Component() {
 
   useEffect(() => {
     if (!course) {
-      navigate("lei");
+      void navigate("lei");
       return;
     }
     setYears(null); // Hack to update typist title
@@ -53,7 +57,7 @@ export function Component() {
     service
       .getSeniorsCourseYear(course)
       .then((data) => {
-        var anos = data.sort((a, b) => b - a);
+        const anos = data.sort((a, b) => b - a);
         if (anos.length > 0) {
           setYears(anos);
           setSelectedYear(anos[0]);
@@ -68,7 +72,7 @@ export function Component() {
 
   useEffect(() => {
     if (!course) {
-      navigate("lei");
+      void navigate("lei");
       return;
     }
     if (selectedYear === undefined) return;
@@ -123,8 +127,8 @@ export function Component() {
           {namesOnly && <Row>{img}</Row>}
           <Row>
             {namesOnly
-              ? people?.map((person, index) => (
-                <Fragment key={index}>
+              ? people?.map((person) => (
+                <Fragment key={seniorKey(person)}>
                   <TextList
                     colSize={3}
                     text={person.user?.name + " " + person.user?.surname}
@@ -136,8 +140,8 @@ export function Component() {
                   />
                 </Fragment>
               ))
-              : people?.map((person, index) => (
-                <Fragment key={index}>
+              : people?.map((person) => (
+                <Fragment key={seniorKey(person)}>
                   <SeniorsCard
                     name={person.user?.name + " " + person.user?.surname}
                     quote={person.quote}

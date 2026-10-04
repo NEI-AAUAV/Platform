@@ -1,10 +1,6 @@
-import { useState, memo, Fragment, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  useParams,
-  useNavigate,
-} from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import classNames from "classnames";
 import logo from "assets/images/logo.png";
 
@@ -195,7 +191,7 @@ export function Component() {
   function sample(arr) {
     /* Generate a random number with a seed */
     function random() {
-      var x = Math.sin(seed++) * 10000;
+      const x = Math.sin(seed++) * 10000;
       return x - Math.floor(x);
     }
     return arr[Math.floor(random() * arr.length)];

@@ -59,7 +59,7 @@ def health_live() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.get("/health/ready", include_in_schema=False)
+@app.get("/health/ready", include_in_schema=False, responses={503: {"description": "Service unavailable"}})
 def health_ready() -> dict[str, str]:
     try:
         with engine.connect() as connection:
@@ -75,4 +75,4 @@ if __name__ == "__main__":
     # Use this for debugging purposes only
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8080, log_level="debug")
+    uvicorn.run(app, host="127.0.0.1", port=8080, log_level="debug")

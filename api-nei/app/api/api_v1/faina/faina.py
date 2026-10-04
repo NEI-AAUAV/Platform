@@ -36,7 +36,7 @@ def create_faina(
     return crud.faina.create(db=db, obj_in=faina_create_in)
 
 
-@router.put("/{id}", status_code=200, response_model=FainaInDB)
+@router.put("/{id}", status_code=200, response_model=FainaInDB, responses={404: {"description": "Faina Not Found"}})
 def update_faina(
     *,
     id: int,

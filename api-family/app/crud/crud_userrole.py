@@ -155,14 +155,14 @@ class CRUDUserRole:
     
     def create(self, *, obj_in: UserRoleCreate) -> Optional[dict]:
         """Create new user-role association. Returns None if creation fails."""
-        doc = obj_in.dict()
+        doc = obj_in.model_dump()
         result = self.collection.insert_one(doc)
         created = self.get(str(result.inserted_id))
         return created
     
     def update(self, *, id: str, obj_in: UserRoleUpdate) -> Optional[dict]:
         """Update user-role by ID."""
-        update_data = obj_in.dict(exclude_unset=True)
+        update_data = obj_in.model_dump(exclude_unset=True)
         
         if not update_data:
             return self.get(id)

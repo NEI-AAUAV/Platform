@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Carousel from "react-bootstrap/Carousel";
 import { Row, Col } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
-import TextList from "../../components/TextList";
 /* import Tabs from "../../components/Tabs/index.js"; */
 import Game from "./Game";
 import img1 from "./img/unknown.png";
@@ -16,21 +15,17 @@ import Futsal from "../../assets/icons/tacaua/high_contrast/voleibol.svg?react";
 import { Typewriter } from "react-simple-typewriter";
 
 import "./index.css";
-/* import SportTable from "./SportTable"; */
 import DetiHall from "./DetiHall";
 
-const animationBase = parseFloat(import.meta.env.VITE_ANIMATION_BASE);
-const animationIncrement = parseFloat(
+const animationBase = Number.parseFloat(import.meta.env.VITE_ANIMATION_BASE);
+const animationIncrement = Number.parseFloat(
   import.meta.env.VITE_ANIMATION_INCREMENT
 );
 
 export function Component() {
-  const [tabIndicator, setTabIndicator] = useState("Andebol");
-  const [tabIndicatorSex, setTabIndicatorSex] = useState("Masculino");
   /* const [img, setImg] = useState(null); */
   const [anos /* , setAnos */] = useState([]);
   /* const [selectedYear, setSelectedYear] = useState(); */
-  const [data, setData] = useState([]);
   const navigate = useNavigate();
 
   /*setImg(<Image
@@ -69,10 +64,6 @@ export function Component() {
       }}
     />)
   }, [tabIndicator, tabIndicatorSex]);*/
-
-  function changeTab(value) {
-    setTabIndicator(value);
-  }
 
   /* function loadTab() {
     let result1 = [];
@@ -186,7 +177,11 @@ export function Component() {
 
       <div className="d-flex flex-column flex-wrap team-wrapper" y>
         <Row className="modalidades">
-          <div className="modalidade" onClick={() => navigate("/taca-ua/1")}>
+          <button
+            type="button"
+            className="modalidade"
+            onClick={() => void navigate("/taca-ua/1")}
+          >
             <Image
               src={equipa}
               alt=""
@@ -203,8 +198,12 @@ export function Component() {
               <p className="modalidadeText">Futsal Masculino</p>
               <Futsal className="icon" />
             </div>
-          </div>
-          <div className="modalidade" onClick={() => navigate("/taca-ua/1")}>
+          </button>
+          <button
+            type="button"
+            className="modalidade"
+            onClick={() => void navigate("/taca-ua/1")}
+          >
             <Image
               src={equipa}
               alt=""
@@ -221,8 +220,12 @@ export function Component() {
               <p className="modalidadeText">Futsal Masculino</p>
               <Futsal className="icon" />
             </div>
-          </div>
-          <div className="modalidade" onClick={() => navigate("/taca-ua/1")}>
+          </button>
+          <button
+            type="button"
+            className="modalidade"
+            onClick={() => void navigate("/taca-ua/1")}
+          >
             <Image
               src={equipa}
               alt=""
@@ -239,8 +242,12 @@ export function Component() {
               <p className="modalidadeText">Futsal Masculino</p>
               <Futsal className="icon" />
             </div>
-          </div>
-          <div className="modalidade" onClick={() => navigate("/taca-ua/1")}>
+          </button>
+          <button
+            type="button"
+            className="modalidade"
+            onClick={() => void navigate("/taca-ua/1")}
+          >
             <Image
               src={equipa}
               alt=""
@@ -257,8 +264,12 @@ export function Component() {
               <p className="modalidadeText">Futsal Masculino</p>
               <Futsal className="icon" />
             </div>
-          </div>
-          <div className="modalidade" onClick={() => navigate("/taca-ua/1")}>
+          </button>
+          <button
+            type="button"
+            className="modalidade"
+            onClick={() => void navigate("/taca-ua/1")}
+          >
             <Image
               src={equipa}
               alt=""
@@ -275,7 +286,7 @@ export function Component() {
               <p className="modalidadeText">Futsal Masculino</p>
               <Futsal className="icon" />
             </div>
-          </div>
+          </button>
         </Row>
 
         <Row className="games-section">

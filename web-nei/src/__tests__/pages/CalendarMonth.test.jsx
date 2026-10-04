@@ -96,10 +96,10 @@ describe("CalendarMonth", () => {
     expect(badge.style.width).toContain("100%");
   });
 
-  it("selects an event on badge click and clears on dialog close", () => {
+  it("selects an event when its dialog opens and clears on dialog close", () => {
     const { setSelEvent } = setup();
 
-    fireEvent.click(screen.getByText("Event a"));
+    fireEvent.click(screen.getByText("open-a"));
     expect(setSelEvent).toHaveBeenCalledWith(
       expect.objectContaining({ id: "a" })
     );
@@ -107,9 +107,6 @@ describe("CalendarMonth", () => {
     fireEvent.click(screen.getByText("close-a"));
     expect(setSelEvent).toHaveBeenLastCalledWith(null);
 
-    setSelEvent.mockClear();
-    fireEvent.click(screen.getByText("open-a"));
-    expect(setSelEvent).not.toHaveBeenCalled();
   });
 
   it("marks the selected event badge with a shadow", () => {

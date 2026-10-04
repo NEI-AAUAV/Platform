@@ -1,7 +1,5 @@
 import LinkAdapter from "utils/LinkAdapter";
 
-import { motion } from "framer-motion";
-
 /**
  * Component for document
  *
@@ -27,60 +25,6 @@ import { motion } from "framer-motion";
  * @param {ReactElement} Icon optional
  * @returns
  */
-const Document = ({
-  name,
-  description,
-  link,
-  className,
-  Icon,
-  onClick,
-  title,
-  tags,
-  style,
-  iconColor,
-}) => {
-  return (
-    <LinkAdapter
-      to={link}
-      onClick={onClick}
-      title={title ? title : ""}
-      style={style}
-      className={"no-underline " + className}
-    >
-      <div className="h-full rounded-md transition-hover duration-300 hover:-translate-y-1.5 hover:shadow-md hover:brightness-125">
-        <div className="flex p-3 text-left">
-          {!!Icon && <Icon className="min-h-[40px] min-w-[40px]" />}
-          <div className="flex w-[calc(100%-40px)] flex-col pl-4">
-            <h5 className="w-full overflow-hidden text-ellipsis break-keep">
-              {name}
-            </h5>
-            <p className="overflow-hidden text-ellipsis text-sm text-base-content/50">
-              {description}
-            </p>
-            <div className="">
-              {tags &&
-                tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className={"badge my-1 ml-0 mr-2 " + tag.className}
-                    style={tag.color ? { backgroundColor: tag.color } : {}}
-                  >
-                    {tag.name}
-                  </span>
-                ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </LinkAdapter>
-  );
-};
-
-/**
- *
- * @param {ReactElement} Icon optional
- * @returns
- */
 const Document2 = ({
   name,
   description,
@@ -98,7 +42,7 @@ const Document2 = ({
     <LinkAdapter
       to={link}
       onClick={onClick}
-      title={title ? title : ""}
+      title={title || ""}
       style={style}
       className={"p-1 no-underline " + className}
     >
@@ -115,7 +59,7 @@ const Document2 = ({
             }`}
           >
             <div className="mask mask-circle w-6">
-              <img src="https://placeimg.com/192/192/people" />
+              <img src="https://placeimg.com/192/192/people" alt="" />
             </div>
           </div>
         </div>
@@ -125,10 +69,9 @@ const Document2 = ({
           </h5>
 
           <div className="mt-2 flex flex-wrap gap-2">
-            {tags &&
-              tags.map((tag, index) => (
+            {tags?.map((tag) => (
                 <span
-                  key={index}
+                  key={tag.name}
                   className="badge badge-sm"
                   style={tag.color ? { backgroundColor: tag.color } : {}}
                 >

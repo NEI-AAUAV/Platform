@@ -126,7 +126,7 @@ def get_note_curricular_years(
     )
 
 
-@router.get("/", status_code=200, response_model=Page[NoteInDB])
+@router.get("/", status_code=200, response_model=Page[NoteInDB], responses={400: {"description": "Invalid category"}})
 def get_notes(
     *,
     page_params: PageParams = Depends(PageParams),
@@ -163,7 +163,7 @@ def get_notes(
     return Page.create(total, items, page_params)
 
 
-@router.get("/{id}", status_code=200, response_model=NoteInDB)
+@router.get("/{id}", status_code=200, response_model=NoteInDB, responses={404: {"description": "Invalid Note id"}})
 def get_note_by_id(
     *,
     id: int,

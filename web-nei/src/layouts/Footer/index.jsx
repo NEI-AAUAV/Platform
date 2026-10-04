@@ -23,9 +23,9 @@ const Footer = () => (
         </p>
       </div>
       <div className="grid-flow-col gap-2.5 sm:gap-3 md:place-self-center md:justify-self-end">
-        {data.map(({ icon, url, secondary }, index) => (
+        {data.map(({ icon, url, secondary }) => (
           <a
-            key={index}
+            key={url}
             href={url}
             target="_blank"
             className={classNames(
@@ -86,9 +86,9 @@ const MainFooter = () => {
 
           <span className="footer-title mt-4">Social</span>
           <div className="grid grid-flow-col gap-4">
-            {data.map(({ icon, url, secondary }, index) => (
+            {data.map(({ icon, url, secondary }) => (
               <a
-                key={index}
+                key={url}
                 href={url}
                 target="_blank"
                 className={classNames(
@@ -106,4 +106,5 @@ const MainFooter = () => {
   );
 };
 
-export { Footer as default, MainFooter };
+export { MainFooter };
+export default Footer;

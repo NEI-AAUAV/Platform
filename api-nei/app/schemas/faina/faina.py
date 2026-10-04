@@ -31,5 +31,5 @@ class FainaInDB(FainaBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    image: Optional[AnyHttpUrl]
+    image: Optional[AnyHttpUrl] = None
     members: List[FainaMemberInDB]

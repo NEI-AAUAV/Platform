@@ -7,8 +7,8 @@ class MerchBase(BaseModel):
     name: str
     # Nullable in the DB and writable from the CMS.
     image: Optional[str] = None
-    price: Optional[float]
-    number_of_items: Optional[int]
+    price: Optional[float] = None
+    number_of_items: Optional[int] = None
     discontinued: bool
 
 

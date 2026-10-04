@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
 import service from "services/NEIService";
 import Tabs from "components/Tabs";
-import Popover, { UserPopover } from "components/Popover";
 
 import {
   DecorativeSepBottom,
@@ -26,7 +25,7 @@ const item = {
 };
 
 export function Component() {
-  const [people, setPeople] = useState();
+  const [people, setPeople] = useState([]);
   const [tabs, setTabs] = useState([]);
   const [selectedTab, setSelectedTab] = useState();
   const [fainaImg, setFainaImg] = useState(null);
@@ -34,43 +33,49 @@ export function Component() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mandates = [];
-    service.getFainaMandates().then((response) => {
-      for (var i = 0; i < response.length; i++) {
-        mandates.push(response[i].mandate);
-      }
-      if (mandates.length > 0) {
-        setTabs(mandates.reverse());
-        setSelectedTab(mandates[0]);
-      }
-    });
+    service
+      .getFainaMandates()
+      .then((response) => {
+        const mandates = response.map((entry) => entry.mandate);
+        if (mandates.length > 0) {
+          const reversed = mandates.toReversed();
+          setTabs(reversed);
+          setSelectedTab(reversed[0]);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load Faina mandates:", error);
+      });
   }, []);
 
   useEffect(() => {
     setLoading(true);
-    let members = [];
-    service.getFainaMandates().then((response) => {
-      for (var i = 0; i < response.length; i++) {
-        if (response[i].mandate === selectedTab) {
-          if (response[i].image) {
-            setFainaImg(response[i].image);
-          } else {
-            setFainaImg(null);
-          }
-          for (var j = 0; j < response[i].members.length; j++) {
-            const { role, name, member } = response[i].members[j];
-            members.push({
-              role: role.name,
-              // `name` is the display identity; the linked account (if any)
-              // is only a fallback for rows created before it was required.
-              name: name || [member?.name, member?.surname].filter(Boolean).join(" "),
-            });
+    const members = [];
+    service
+      .getFainaMandates()
+      .then((response) => {
+        for (const entry of response) {
+          if (entry.mandate === selectedTab) {
+            setFainaImg(entry.image || null);
+            for (const { role, name, member } of entry.members) {
+              members.push({
+                role: role.name,
+                // `name` is the display identity; the linked account (if any)
+                // is only a fallback for rows created before it was required.
+                name:
+                  name ||
+                  [member?.name, member?.surname].filter(Boolean).join(" "),
+              });
+            }
           }
         }
-      }
-      setPeople(members);
-      setLoading(false);
-    });
+        setPeople(members);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to load Faina members:", error);
+        setLoading(false);
+      });
   }, [selectedTab]);
 
   function customTabRender(tab) {
@@ -120,6 +125,7 @@ export function Component() {
               >
                 <img
                   src={fainaImg}
+                  alt={`Comissão de Faina ${selectedTab?.slice(2) ?? ""}`}
                   className="h-full w-full rounded-lg object-cover object-center shadow-md"
                 />
               </motion.div>
@@ -139,8 +145,8 @@ export function Component() {
             <DecorativeSepMiddle className="text-[#D7A019]" />
 
             <div className="flex flex-col items-center">
-              {people.map((person, index) => (
-                <Fragment key={index}>
+              {people.map((person) => (
+                <Fragment key={`${person.role}-${person.name}`}>
                   {/* <UserPopover
                     className="sm:hover:underline sm:hover:decoration-2"
                     user={person}

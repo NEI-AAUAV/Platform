@@ -41,7 +41,7 @@ const PageNav = ({ numPages, currentPage, pageDelta = 2, handler, className }) =
                     // generating 2 * pageDelta elements, these will be the surrounding
                     // pages that will be shown, plus 3 extra elements, one for the current
                     // page and one for each side ellipsis that might be needed.
-                    Array(2 * pageDelta + 3).fill().map((_, idx) => {
+                    new Array(2 * pageDelta + 3).fill().map((_, idx) => {
                         // The page of the current button is calculated by starting at the
                         // left side of the visible range, which is the current page minus
                         // the number of surrounding to be shown and minus the ellipsis that

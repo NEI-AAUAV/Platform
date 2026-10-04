@@ -17,6 +17,7 @@ import BulkImportModal from "./BulkImportModal";
 import OrphanModal from "./OrphanModal";
 import { organizations, colors } from "pages/Family/config";
 import { getErrorMessage } from "utils/error";
+import { keyedByContent } from "utils/keys";
 import { useUserStore } from "stores/useUserStore";
 import Avatar from "components/Avatar";
 
@@ -26,8 +27,8 @@ const collectMissingPatraoIds = (users, userMap) => {
     const id = u?.patrao_id;
     // Normalize to number for lookup (userMap keys are always numbers)
     if (id !== null && id !== undefined) {
-      const normalizedId = typeof id === 'number' ? id : parseInt(id, 10);
-      if (!isNaN(normalizedId)) {
+      const normalizedId = typeof id === 'number' ? id : Number.parseInt(id, 10);
+      if (!Number.isNaN(normalizedId)) {
         // Check if the patrão exists in userMap by id
         const found = userMap[normalizedId];
         if (!found) {
@@ -48,7 +49,7 @@ const fetchUsersByIds = async (ids) => {
 // Helper to normalize user ID to number
 const normalizeUserId = (id) => {
   if (id === null || id === undefined) return null;
-  return typeof id === 'number' ? id : parseInt(id, 10);
+  return typeof id === 'number' ? id : Number.parseInt(id, 10);
 };
 
 // Helper to extract existing user IDs from previous users list
@@ -56,7 +57,7 @@ const extractExistingIds = (prevUsers) => {
   const existingIds = new Set();
   for (const p of prevUsers) {
     const normalizedId = normalizeUserId(p.id);
-    if (normalizedId !== null && !isNaN(normalizedId)) {
+    if (normalizedId !== null && !Number.isNaN(normalizedId)) {
       existingIds.add(normalizedId);
     }
   }
@@ -68,7 +69,7 @@ const filterUniqueUsers = (normalizedUsers, existingIds) => {
   const unique = [];
   for (const u of normalizedUsers) {
     const normalizedId = normalizeUserId(u.id);
-    if (normalizedId !== null && !isNaN(normalizedId) && !existingIds.has(normalizedId)) {
+    if (normalizedId !== null && !Number.isNaN(normalizedId) && !existingIds.has(normalizedId)) {
       unique.push(u);
     }
   }
@@ -246,7 +247,9 @@ export function Component() {
         console.error("Failed to load initial data:", err);
       }
     }
-    loadInitialData();
+    loadInitialData().catch((err) => {
+      console.error("Failed to load initial data:", err);
+    });
   }, [hasAccess]);
 
   // Create patrão lookup map
@@ -257,8 +260,8 @@ export function Component() {
       const userId = u.id;
       if (userId !== null && userId !== undefined) {
         // Store as number (patrao_id references id, which is always a number)
-        const numId = typeof userId === 'number' ? userId : parseInt(userId, 10);
-        if (!isNaN(numId)) {
+        const numId = typeof userId === 'number' ? userId : Number.parseInt(userId, 10);
+        if (!Number.isNaN(numId)) {
           map[numId] = u;
         }
       }
@@ -274,7 +277,7 @@ export function Component() {
     try {
       const params = { skip: page * limit, limit };
       if (debouncedSearch) params.search = debouncedSearch;
-      if (yearFilter !== "") params.year = parseInt(yearFilter);
+      if (yearFilter !== "") params.year = Number.parseInt(yearFilter);
       if (roleFilterId) params.role_id = roleFilterId;
       if (roleFilterYear) params.role_year = roleFilterYear;
       if (sortBy) {
@@ -296,7 +299,9 @@ export function Component() {
 
   useEffect(() => {
     if (!hasAccess) return;
-    fetchUsers();
+    fetchUsers().catch((err) => {
+      console.error("Failed to load users:", err);
+    });
   }, [fetchUsers, hasAccess]);
 
   // Track fetched patrão IDs to avoid infinite loops
@@ -330,7 +335,7 @@ export function Component() {
     newMissingIds.forEach(id => fetchedPatraoIdsRef.current.add(id));
 
     let cancelled = false;
-    (async () => {
+    void (async () => {
       try {
         // Fetch each missing ID individually (not optimal but ensures correctness)
         // In production, backend should support keys list.
@@ -507,7 +512,7 @@ export function Component() {
       setDeleteModal(null);
       setShowOrphanModal(false);
       setOrphanChildren([]);
-      fetchUsers();
+      await fetchUsers();
       // Refresh lookup
       const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
@@ -541,7 +546,7 @@ export function Component() {
       setDeleteModal(null);
       setShowOrphanModal(false);
       setOrphanChildren([]);
-      fetchUsers();
+      await fetchUsers();
       const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
 
@@ -617,7 +622,7 @@ export function Component() {
     // Use allUsers since it has all cached users
     // Filter by current search/year if applicable
     const matchingUsers = allUsers.filter(u => {
-      if (yearFilter && u.start_year !== parseInt(yearFilter)) return false;
+      if (yearFilter && u.start_year !== Number.parseInt(yearFilter)) return false;
       if (debouncedSearch) {
         const q = debouncedSearch.toLowerCase();
         const matchesName = u.name?.toLowerCase().includes(q);
@@ -654,7 +659,10 @@ export function Component() {
     try {
       const response = await FamilyService.getUsers({ limit: 500 });
       setAllUsers(response.items || []);
-    } catch { }
+    } catch (error) {
+      // The cache refresh is best-effort: the visible page was already refreshed
+      console.warn("Failed to refresh the users cache", error);
+    }
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -667,7 +675,7 @@ export function Component() {
 
     // Academic Format: 23/24
     if (fmt === "academic") {
-      const yearNum = parseInt(y);
+      const yearNum = Number.parseInt(y);
       const yy = yearNum % 100;
       const next = (yy + 1) % 100;
       return `${yy.toString().padStart(2, "0")}/${next.toString().padStart(2, '0')}`;
@@ -744,9 +752,9 @@ export function Component() {
                 <>
                   <div
                     className="h-3 w-3 rounded-full"
-                    style={{ backgroundColor: colors[parseInt(yearFilter) % colors.length] }}
+                    style={{ backgroundColor: colors[Number.parseInt(yearFilter) % colors.length] }}
                   />
-                  <span>Ano {formatYear(parseInt(yearFilter))} ({formatYear(parseInt(yearFilter), 'academic')})</span>
+                  <span>Ano {formatYear(Number.parseInt(yearFilter))} ({formatYear(Number.parseInt(yearFilter), 'academic')})</span>
                 </>
               )}
             </div>
@@ -951,8 +959,8 @@ export function Component() {
                         let patrao = null;
                         if (patraoId !== null && patraoId !== undefined) {
                           // Normalize to number (patrao_id is always a number, but be safe)
-                          const numId = typeof patraoId === 'number' ? patraoId : parseInt(patraoId, 10);
-                          if (!isNaN(numId)) {
+                          const numId = typeof patraoId === 'number' ? patraoId : Number.parseInt(patraoId, 10);
+                          if (!Number.isNaN(numId)) {
                             patrao = userMap[numId] || null;
                             // Debug: log if patrão not found
                             if (!patrao && process.env.NODE_ENV === 'development') {
@@ -1036,10 +1044,10 @@ export function Component() {
                             {/* Insignias */}
                             <td>
                               <div className="flex flex-wrap gap-1">
-                                {(userRoles.length === 0 || userRoles.every(r => r.hidden)) && <span className="text-xs text-base-content/30">-</span>}
-                                {userRoles.filter(role => !role.hidden).map((role, idx) => (
+                                {userRoles.every(r => r.hidden) && <span className="text-xs text-base-content/30">-</span>}
+                                {keyedByContent(userRoles.filter(role => !role.hidden), (role) => role.role_id).map(({ item: role, key }) => (
                                   <RoleIcon
-                                    key={`${role.role_id}_${idx}`}
+                                    key={key}
                                     role={role}
                                     organizations={organizations}
                                     formatYear={formatYear}
@@ -1194,7 +1202,9 @@ export function Component() {
         selectedUsers={selectedUsers}
         onComplete={() => {
           setSelectedIds(new Set());
-          fetchUsers();
+          fetchUsers().catch((err) => {
+            console.error("Failed to reload users:", err);
+          });
         }}
       />
 
@@ -1212,8 +1222,14 @@ export function Component() {
         onClose={() => setShowBulkImport(false)}
         allUsers={allUsers}
         onComplete={() => {
-          fetchUsers();
-          FamilyService.getUsers({ limit: 500 }).then(res => setAllUsers(res.items || []));
+          fetchUsers().catch((err) => {
+            console.error("Failed to reload users:", err);
+          });
+          FamilyService.getUsers({ limit: 500 })
+            .then(res => setAllUsers(res.items || []))
+            .catch((err) => {
+              console.error("Failed to refresh member lookup:", err);
+            });
         }}
       />
 

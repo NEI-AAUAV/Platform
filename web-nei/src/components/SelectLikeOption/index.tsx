@@ -10,9 +10,10 @@ export default function SelectLikeOption({
   isSelected,
   onClick,
   children,
-}: SelectLikeOptionProps) {
+}: Readonly<SelectLikeOptionProps>) {
   return (
-    <div
+    <button
+      type="button"
       className={cn(
         "flex flex-1 cursor-pointer flex-col items-center justify-center gap-1  rounded-lg border border-input bg-base-300 p-3 ring-2 ring-transparent ring-offset-background transition-all",
         isSelected && "border-opacity-0 ring-ring"
@@ -20,6 +21,6 @@ export default function SelectLikeOption({
       onClick={onClick}
     >
       {children}
-    </div>
+    </button>
   );
 }

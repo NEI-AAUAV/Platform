@@ -27,6 +27,7 @@ export default function useArraialRealtime({ onPointsUpdate } = {}) {
         setMilestonesEnabled(!!cfg?.milestones_enabled);
         if (cfg?.boosts) setBoosts(cfg.boosts);
       } catch (e) {
+        console.debug("Failed to load Arraial config, assuming enabled:", e);
         setEnabled(true);
       }
     };
@@ -45,7 +46,7 @@ export default function useArraialRealtime({ onPointsUpdate } = {}) {
         });
     };
 
-    initConfig();
+    initConfig().catch((e) => console.debug("Arraial config init failed:", e));
     fetchPoints();
 
     const socket = getArraialSocket();

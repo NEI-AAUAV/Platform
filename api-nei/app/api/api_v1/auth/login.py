@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from typing import Literal
+from typing import Annotated, Literal
 from sqlalchemy.orm import Session
 from email_validator import validate_email, EmailNotValidError
 
@@ -44,10 +44,11 @@ def _authenticate_user(db: Session, email: str, password: str) -> User | Literal
 @router.post(
     "/login",
     response_model=Token,
-    responses={401: {"description": "Incorrect username or password"}},
+    responses={401: {"description": "Incorrect username or password"}, 400: {"description": "Bad request"}},
 )
 def login(
-    db: Session = Depends(deps.get_db, scope="function"), form_data: OAuth2PasswordRequestForm = Depends()
+    db: Annotated[Session, Depends(deps.get_db, scope="function")],
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ):
     try:
         # OAuth2 requires the password flow field to be named 'username' even though

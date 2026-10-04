@@ -4,7 +4,6 @@ import { Col, Image } from 'react-bootstrap';
 const SeniorsCard = ({name, quote, image, colSizeXs, colSizeMd, colSizeSm, colSizeLg, colSizeXl}) => {
 
     // default colSizes
-    if (!colSizeXs) colSizeXs = 12;
     if (!colSizeSm) colSizeSm = 12;
     if (!colSizeMd) colSizeMd = 4;
     if (!colSizeLg) colSizeLg = 4;

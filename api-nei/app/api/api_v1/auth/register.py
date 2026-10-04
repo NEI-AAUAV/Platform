@@ -10,7 +10,7 @@ from email_validator import validate_email, EmailNotValidError
 from app import crud
 from app.api import deps, email as emailUtils
 from app.api.deps import DbSession
-from app.api.recaptcha import verify_reCaptcha
+from app.api.recaptcha import verify_recaptcha
 from app.schemas.user import UserBase, UserCreate
 from app.core.config import settings
 
@@ -63,6 +63,7 @@ class UserRegisterForm(UserBase):
     """Properties to receive via API on register."""
 
     name: Annotated[str, StringConstraints(max_length=20)]
+    surname: Annotated[str, StringConstraints(max_length=20)]
     email: Annotated[str, Field(json_schema_extra={"format": "email"})]
     password: Annotated[SecretStr, StringConstraints(min_length=8)]
     recaptcha_token: Optional[str] = None
@@ -77,14 +78,14 @@ class UserRegisterForm(UserBase):
 @router.post(
     "/register",
     response_model=Token,
-    responses={409: {"description": "Email already exists"}},
+    responses={409: {"description": "Email already exists"}, 400: {"description": "Bad request"}, 429: {"description": "Too many requests"}},
 )
 async def register(
     form_data: UserRegisterForm,
     background_tasks: BackgroundTasks,
     db: DbSession,
 ):
-    score = await verify_reCaptcha(form_data.recaptcha_token)
+    score = await verify_recaptcha(form_data.recaptcha_token)
 
     if score < settings.RECAPTCHA_REGISTER_THRESHOLD:
         raise HTTPException(

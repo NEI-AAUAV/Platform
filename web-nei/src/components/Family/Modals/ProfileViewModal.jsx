@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import MaterialSymbol from "components/MaterialSymbol";
 import { CloseIcon } from "assets/icons/google";
 import { formatYear } from "pages/Family/utils";
+import { keyedByContent } from "utils/keys";
 import { colors } from "pages/Family/config";
 import heartBorder from "assets/icons/heart_border.svg";
 import Avatar from "components/Avatar";
@@ -230,9 +231,9 @@ const ProfileViewModal = ({ isOpen, user, allUsers, onClose, onNavigateToNode })
                                                             {parentOrg ? `${parentOrg} › ${org}` : org}
                                                         </div>
                                                         <div className="space-y-2">
-                                                            {items.map((ins, idx) => (
+                                                            {keyedByContent(items, (ins) => `${ins.role_name || ins.role || ins.name}-${ins.year}`).map(({ item: ins, key }) => (
                                                                 <div
-                                                                    key={`${ins.role_name || ins.role || ins.name}-${ins.year}-${idx}`}
+                                                                    key={key}
                                                                     className="flex items-center gap-3 p-3 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors"
                                                                 >
                                                                     {/* Dynamic icon from backend */}

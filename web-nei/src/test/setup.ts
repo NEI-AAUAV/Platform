@@ -15,6 +15,9 @@ if (!window.localStorage || typeof window.localStorage.getItem !== 'function') {
   })
 }
 
+// jsdom does not implement scrolling
+window.scrollTo = vi.fn() as unknown as typeof window.scrollTo
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

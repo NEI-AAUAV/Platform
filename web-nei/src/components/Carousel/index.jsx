@@ -1,5 +1,7 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+
+import { keyedByContent } from "utils/keys";
 
 
 const Carousel = ({ children,width,buttons,className }) => {
@@ -74,9 +76,11 @@ const Carousel = ({ children,width,buttons,className }) => {
                 </div>
             </div>
             <div className="flex justify-center py-5 gap-2 w-full">
-                {children.map((s,i) =>{
+                {keyedByContent(children, (s) => s?.key ?? 'slide').map(({ key }, i) =>{
                     return(
                         <button
+                        key={key}
+                        type="button"
                         onClick={() => {
                             setCurrent(i);
                         }}

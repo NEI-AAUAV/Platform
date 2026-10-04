@@ -4,10 +4,10 @@ Dynamic OAuth2 Scheme
 This module provides a dynamic OAuth2 scheme that can be updated with extension scopes.
 """
 
-from typing import Dict, Optional
+from typing import Dict, Optional, cast
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Request
-from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
+from fastapi.openapi.models import OAuth2 as OAuth2Model
 from fastapi.security.utils import get_authorization_scheme_param
 from starlette.status import HTTP_401_UNAUTHORIZED
 from starlette.responses import Response
@@ -36,10 +36,11 @@ class DynamicOAuth2PasswordBearer(OAuth2PasswordBearer):
         current_scopes = self.get_scopes()
         self.scopes = current_scopes
         
-        # Update the flows model for OpenAPI
-        if hasattr(self, 'flows') and self.flows:
-            if hasattr(self.flows, 'password') and self.flows.password:
-                self.flows.password.scopes = current_scopes
+        # Update the flows model for OpenAPI (FastAPI keeps it on `self.model`)
+        model = cast(OAuth2Model, self.model)
+        password_flow = model.flows.password
+        if password_flow:
+            password_flow.scopes = current_scopes
         
         logger.info(f"Updated OAuth2 scopes: {list(current_scopes.keys())}")
     

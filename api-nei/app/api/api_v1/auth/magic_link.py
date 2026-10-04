@@ -9,9 +9,9 @@ from fastapi import (
 
 from jose import JWTError
 from datetime import datetime
+from typing import Annotated
 from loguru import logger
 from pydantic import SecretStr
-from sqlalchemy.orm import Session
 
 from app import crud
 from app.api import deps, email as emailUtils
@@ -81,14 +81,14 @@ def send_magic_link(
 
 @router.post(
     "/magic",
-    responses={401: {"description": "Invalid token"}},
+    responses={401: {"description": "Invalid token"}, 400: {"description": "Bad request"}},
     response_model=OperationSuccessfulResponse,
 )
 def activate_magic_link(
     background_tasks: BackgroundTasks,
     token: str,
-    password: SecretStr = Form(),
-    db: Session = Depends(deps.get_db, scope="function"),
+    password: Annotated[SecretStr, Form()],
+    db: deps.DbSession,
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

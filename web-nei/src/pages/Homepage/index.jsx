@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
@@ -6,9 +6,7 @@ import { loadPolygonMaskPlugin } from "tsparticles-plugin-polygon-mask";
 
 import service from "services/NEIService";
 
-import ReactLogo from "assets/images/theming-gradient.svg";
 // import backgroundAvif from 'assets/images/theming-gradient.png';
-import BackgroundImage from "assets/images/theming-gradient.svg?react";
 
 import MockupTerminal from "components/MockupTerminal";
 import NewsList2 from "../News/NewsList2";
@@ -17,22 +15,18 @@ import Merchandising from "./Merchandising";
 import particlesConfig from "./particles.config";
 import config from "config";
 
-import particlesConf1 from "./particles1.config";
-import particlesConf2 from "./particles2.config";
 import "./index.css";
 // import { PlayArrowIcon } from "assets/icons/google";
 import bg from "assets/images/nei.svg";
-import bg2 from "assets/images/nei-outline2.svg";
 import { motion } from "framer-motion";
 
 // Animation
-const animationBase = parseFloat(import.meta.env.VITE_ANIMATION_BASE);
-const animationIncrement = parseFloat(
+const animationBase = Number.parseFloat(import.meta.env.VITE_ANIMATION_BASE);
+const animationIncrement = Number.parseFloat(
   import.meta.env.VITE_ANIMATION_INCREMENT
 );
 
 export function Component() {
-  const containerRef = [useRef(null), useRef(null)];
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,6 +35,9 @@ export function Component() {
     service.getNews({ size: 3 }).then((data) => {
       setNews(data.items || []);
       setIsLoading(false);
+    }).catch((error) => {
+      console.error("Failed to load news", error);
+      setIsLoading(false);
     });
   }, []);
 
@@ -48,16 +45,6 @@ export function Component() {
     await loadPolygonMaskPlugin(engine); // awaitable
     await loadFull(engine);
   }, []);
-
-  function pauseAnimation() {
-    if (containerRef[0].current?._paused && containerRef[1].current?._paused) {
-      containerRef[0].current.play();
-      containerRef[1].current.play();
-    } else {
-      containerRef[0].current.pause();
-      containerRef[1].current.pause();
-    }
-  }
 
   return (
     <>
@@ -96,6 +83,7 @@ export function Component() {
               <img
                 className="absolute -top-[50px] h-[600px] w-[600px]"
                 src={bg}
+                alt=""
               />
               {/* <Particles
                 container={containerRef[0]}
@@ -149,10 +137,8 @@ export function Component() {
                 className="flex flex-col mx-auto flex-wrap text-center"
               >
                 <h2 className="header-dark mb-4">Notícias</h2>
-                {!!isLoading ? (
+                {isLoading ? (
                   <div
-                    animation="grow"
-                    variant="primary"
                     className="loading mx-auto mb-3"
                     title="A carregar..."
                   />

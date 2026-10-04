@@ -164,8 +164,8 @@ def test_status_requires_admin(client: TestClient, status_code: int):
 
 
 @pytest.mark.parametrize("client", [auth_data(scopes=[ScopeEnum.ADMIN])], indirect=True)
-def test_list_groups_no_authentik_token(client: TestClient):
-    # AUTHENTIK_TOKEN is "" in test environment
+def test_list_groups_no_authentik_token(client: TestClient, monkeypatch):
+    monkeypatch.setattr(settings, "AUTHENTIK_TOKEN", "")
     r = client.get(f"{settings.API_V1_STR}/admin/authentik/groups")
     assert r.status_code == 503
 

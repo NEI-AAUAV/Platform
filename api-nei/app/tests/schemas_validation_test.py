@@ -96,3 +96,16 @@ def test_rgm_response_tolerates_a_legacy_category() -> None:
     )
 
     assert row.category == "CON"
+
+
+@pytest.mark.parametrize("schema_name", ["UserCreate", "UserCreateForEvent"])
+def test_user_creation_requires_surname(schema_name: str) -> None:
+    """The DB column is NOT NULL: a missing surname must be a 422, not a 500."""
+    from pydantic import ValidationError
+
+    from app.schemas.user import user as user_schemas
+
+    schema = getattr(user_schemas, schema_name)
+
+    with pytest.raises(ValidationError, match="surname"):
+        schema(name="Ana", email="ana@ua.pt")

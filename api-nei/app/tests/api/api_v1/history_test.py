@@ -54,7 +54,8 @@ def test_text(client: TestClient) -> None:
     data = r.json()
     assert r.status_code == 200
     for el in data:
-        assert len(el["title"]) > 0 and len(el["body"]) > 0
+        assert len(el["title"]) > 0
+        assert len(el["body"]) > 0
 
 def test_img(client: TestClient) -> None:
     r = client.get(f"{settings.API_V1_STR}/history")

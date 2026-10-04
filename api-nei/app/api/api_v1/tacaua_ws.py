@@ -1,5 +1,5 @@
 from fastapi import Body, WebSocket, APIRouter, WebSocketDisconnect
-from typing import Any, Dict, List
+from typing import Annotated, Any, Dict, List
 from enum import Enum
 import json
 from loguru import logger
@@ -38,10 +38,17 @@ class ConnectionManager:
         await websocket.send_text(message)
 
     async def broadcast(self, connection_type: ConnectionType, message: dict):
+        # A dead socket must not prevent the others from being notified.
+        stale: List[WebSocket] = []
         for websocket in self.active_connections[connection_type]:
-            await websocket.send_json(message)
+            try:
+                await websocket.send_json(message)
+            except Exception:
+                stale.append(websocket)
+        for websocket in stale:
+            self.disconnect(websocket)
 
-    async def change_connection_type(
+    def change_connection_type(
         self, websocket: WebSocket, new_type: ConnectionType
     ):
         for key in self.active_connections:
@@ -101,7 +108,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 @router.post("/ws/broadcast", status_code=200)
-async def websocket_broadcast(*, data_in: dict = Body()):
+async def websocket_broadcast(*, data_in: Annotated[dict, Body()]):
     logger.info(data_in)
     await manager.broadcast(connection_type=ConnectionType.GENERAL, message=data_in)
     return {"status": "success", "message": "All websockets were notified."}

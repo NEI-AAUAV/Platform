@@ -5,13 +5,12 @@ import {
   ExpandMoreIcon,
   DownloadIcon,
 } from "assets/icons/google";
-import { useNavigate } from "react-router-dom";
 import { useLoading } from "utils/hooks";
 import RadioDropdown from "components/RadioDropdown";
 import { useForm, Controller } from "react-hook-form";
 import { isEmpty } from "lodash";
 
-import { Datepicker, Input, FileInput, Select } from "components/form";
+import { Datepicker, Input, FileInput } from "components/form";
 
 import classNames from "classnames";
 
@@ -40,10 +39,9 @@ const genderOptions = [
 
 export function Component() {
   // Define state variables for form inputs
-  const [response, setResponse] = useLoading({ status: null });
+  const [, setResponse] = useLoading({ status: null });
 
   const [user, setUser] = useState(null);
-  const navigate = useNavigate();
 
   const {
     register,
@@ -53,7 +51,7 @@ export function Component() {
     setValue,
     watch,
     control,
-    formState: { errors, dirtyFields, isLoading, isValid },
+    formState: { errors, dirtyFields, isLoading },
   } = useForm({
     mode: "onBlur",
     defaultValues: async () =>
@@ -212,6 +210,7 @@ export function Component() {
           </label>
           {user?.image && watchImage === undefined && (
             <button
+              type="button"
               className="link-hover link-error link mt-2 font-medium"
               onClick={() => setValue("image", null, { shouldDirty: true })}
             >
@@ -280,9 +279,9 @@ export function Component() {
 
         {/* Gender Field */}
         <div className="mb-4">
-          <label className="label">
+          <div className="label">
             <span className="label-text">Gênero</span>
-          </label>
+          </div>
           <Controller
             render={({ field }) => (
               <RadioDropdown
@@ -306,9 +305,9 @@ export function Component() {
         <div className="mb-4">
           {user?.curriculum && watchCurriculum === undefined ? (
             <>
-              <label className="label">
+              <div className="label">
                 <span className="label-text">Currículo</span>
-              </label>
+              </div>
               <div className="flex items-center gap-5">
                 <LinkAdapter
                   className="btn flex grow justify-between"
@@ -318,6 +317,7 @@ export function Component() {
                   <DownloadIcon />
                 </LinkAdapter>
                 <button
+                  type="button"
                   className="link-hover link-error link font-medium"
                   onClick={() =>
                     setValue("curriculum", null, { shouldDirty: true })

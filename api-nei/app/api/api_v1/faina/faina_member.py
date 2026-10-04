@@ -25,7 +25,7 @@ def get_faina_member(
     return crud.faina_member.get_multi(db=db)
 
 
-@router.get("/{id}", status_code=200, response_model=FainaMemberInDB)
+@router.get("/{id}", status_code=200, response_model=FainaMemberInDB, responses={404: {"description": "Faina Member Not Found"}})
 def get_faina_member_by_id(
     *,
     id: int,
@@ -54,7 +54,7 @@ def create_faina_member(
     return crud.faina_member.create(db=db, obj_in=faina_member_create_in)
 
 
-@router.put("/{id}", status_code=200, response_model=FainaMemberInDB)
+@router.put("/{id}", status_code=200, response_model=FainaMemberInDB, responses={404: {"description": "Faina Member Not Found"}})
 def update_faina_member(
     *,
     id: int,

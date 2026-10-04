@@ -317,8 +317,8 @@ export default function RoleManagerModal({ isOpen, onClose }) {
 
     useEffect(() => {
         if (isOpen) {
-            loadTree();
-            loadAvailableYears();
+            loadTree().catch(console.error);
+            loadAvailableYears().catch(console.error);
             setSelectedNode(null);
             setFormData({ name: "", short: "", female_name: "", show: false, super_roles: "", icon: "", hidden: false });
             setIsNew(false);
@@ -362,7 +362,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
     // Reload members when year filter changes
     useEffect(() => {
         if (selectedNode && !isNew && activeTab === "members") {
-            fetchRoleMembers(selectedNode.id, memberYearFilter);
+            fetchRoleMembers(selectedNode.id, memberYearFilter).catch(console.error);
         }
     }, [memberYearFilter, activeTab]);
 
@@ -383,7 +383,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
             hidden: node.hidden || false
         });
         // Pre-fetch members
-        fetchRoleMembers(node.id, null);
+        fetchRoleMembers(node.id, null).catch(console.error);
     };
 
     const handleRemoveRoleFromMember = async (userRoleId) => {
@@ -392,7 +392,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
         try {
             await FamilyService.removeRole(userRoleId);
             // Refresh members list
-            fetchRoleMembers(selectedNode.id, memberYearFilter);
+            fetchRoleMembers(selectedNode.id, memberYearFilter).catch(console.error);
         } catch (err) {
             alert("Erro ao remover: " + getErrorMessage(err, "Erro desconhecido"));
         }
@@ -596,7 +596,7 @@ export default function RoleManagerModal({ isOpen, onClose }) {
                                                     membersLoading={membersLoading}
                                                     availableYears={availableYears}
                                                     memberYearFilter={memberYearFilter}
-                                                    onYearChange={(e) => setMemberYearFilter(e.target.value ? parseInt(e.target.value) : null)}
+                                                    onYearChange={(e) => setMemberYearFilter(e.target.value ? Number.parseInt(e.target.value) : null)}
                                                     yearFormat={selectedNode?.year_display_format}
                                                     onRemove={handleRemoveRoleFromMember}
                                                 />
