@@ -81,6 +81,18 @@ function computeFetchRange(year, month) {
   return [calendarSince, calendarTo];
 }
 
+// Number of calendar days touched by the interval, ignoring the time of day
+// (an event from 23:00 to 23:30 spans 1 day, not 2)
+function daysSpanned(start, end) {
+  const startDay = new Date(
+    start.getFullYear(),
+    start.getMonth(),
+    start.getDate()
+  );
+  const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  return Math.round((endDay - startDay) / (1000 * 60 * 60 * 24)) + 1;
+}
+
 function toWeeklyEvents(items, calendarSince, calendarTo) {
   let events = [];
 
@@ -107,10 +119,7 @@ function toWeeklyEvents(items, calendarSince, calendarTo) {
           weekStart,
           start,
           end,
-          duration:
-            Math.ceil(
-              (weekEnd.getTime() - weekStart.getTime()) / (1000 * 60 * 60 * 24)
-            ) + 1,
+          duration: daysSpanned(weekStart, weekEnd),
         })
       )
     );
