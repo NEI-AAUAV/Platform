@@ -14,6 +14,7 @@ from app.core.config import settings
 from app.core.extension_scopes import load_scopes_from_manifests
 from app.core.dynamic_oauth import dynamic_oauth2_scheme
 from app.integrations.authentik import authentik_client
+from app.integrations.google_drive import drive_client
 
 
 @asynccontextmanager
@@ -25,10 +26,12 @@ async def lifespan(_: FastAPI):
     # Update OAuth2 scheme with extension scopes
     dynamic_oauth2_scheme.update_scopes()
     authentik_client.start()
+    drive_client.start()
     try:
         yield
     finally:
         await authentik_client.close()
+        await drive_client.close()
 
 
 app = FastAPI(
