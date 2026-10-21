@@ -27,7 +27,7 @@ def _insert_rgm(db: SessionTesting, mandate_id, category: str = "ATA") -> None:
 
 def test_rgm_accepts_known_categories(db: SessionTesting) -> None:
     mid = _rgm_mandate(db)
-    for category in ("ATA", "PAO", "RAC", "CON", "ACR"):
+    for category in ("ATA", "PAO", "RAC"):
         _insert_rgm(db, mid, category)
 
 

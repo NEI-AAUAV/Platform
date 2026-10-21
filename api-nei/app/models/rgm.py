@@ -36,8 +36,7 @@ class Rgm(Base):
     def __table_args__(cls):
         return (
             CheckConstraint(
-                "category IN ('ATA', 'PAO', 'RAC', 'CON', 'ACR')",
-                name="category_valid",
+                "category IN ('ATA', 'PAO', 'RAC', 'CON')", name="category_valid"
             ),
             Base.__table_args__,
         )

@@ -29,11 +29,6 @@ const item = {
   },
 };
 
-// Categories shown by name; the rest keep their code (ATA, PAO, RAC, CON).
-const CATEGORY_LABELS = {
-  ACR: "Anexo Complementar RAC",
-};
-
 export function Component() {
   const [docs, setDocs] = useState(null);
   const [tab, setTab] = useState(null);
@@ -147,7 +142,7 @@ export function Component() {
                 <motion.tr key={doc.id} variants={item}>
                   <td>
                     <p className="font-bold">
-                      {CATEGORY_LABELS[doc?.category] ?? doc?.category}{" "}
+                      {doc?.category}{" "}
                       {ataNumber[doc?.id]
                         ? `Número ${ataNumber[doc?.id]}`
                         : doc.mandate}

@@ -18,7 +18,6 @@ class RgmCategoryEnum(str, Enum):
     PAO = "PAO"
     RAC = "RAC"
     CON = "CON"  # convocatória, in use since 2025
-    ACR = "ACR"  # anexo complementar ao RAC
 
 
 class RgmBase(BaseModel):
