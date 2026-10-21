@@ -15,15 +15,20 @@ from app.models.subject import Subject
 from app.models.teacher import Teacher
 from app.models.note_author import NoteAuthor
 
+_ON_DELETE_SET_NULL = "SET NULL"
+
 
 class Note(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     author_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey(User.id, name="fk_author_id"), index=True
+        ForeignKey(User.id, name="fk_author_id", ondelete=_ON_DELETE_SET_NULL),
+        index=True,
     )
     # Author without a Platform account; set instead of `author_id`.
     note_author_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey(NoteAuthor.id, name="fk_note_author_id", ondelete="SET NULL"),
+        ForeignKey(
+            NoteAuthor.id, name="fk_note_author_id", ondelete=_ON_DELETE_SET_NULL
+        ),
         index=True,
     )
     subject_id: Mapped[Optional[int]] = mapped_column(
@@ -31,7 +36,7 @@ class Note(Base):
         index=True,
     )
     teacher_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey(Teacher.id, name="fk_teacher_id"),
+        ForeignKey(Teacher.id, name="fk_teacher_id", ondelete=_ON_DELETE_SET_NULL),
         index=True,
     )
 

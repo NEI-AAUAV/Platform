@@ -11,7 +11,7 @@ from app.db.base_class import Base
 class UserMatriculation(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(
-        ForeignKey(f"{settings.SCHEMA_NAME}.user.id"),
+        ForeignKey(f"{settings.SCHEMA_NAME}.user.id", ondelete="CASCADE"),
         index=True,
     )
     course_id: Mapped[int] = mapped_column(
