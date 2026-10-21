@@ -59,8 +59,8 @@ def test_team_member_update_rejects_unknown_fields() -> None:
         TeamMemberUpdate(role_id=3)
 
 
-@pytest.mark.parametrize("value", ["ATA", "PAO", "RAC"])
-def test_rgm_category_accepts_the_three_valid_values(value: str) -> None:
+@pytest.mark.parametrize("value", ["ATA", "PAO", "RAC", "CON", "ACR"])
+def test_rgm_category_accepts_the_valid_values(value: str) -> None:
     from app.schemas.rgm import RgmCategoryEnum
 
     assert RgmCategoryEnum(value).value == value
