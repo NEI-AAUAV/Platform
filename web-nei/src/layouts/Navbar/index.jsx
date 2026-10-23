@@ -122,9 +122,9 @@ const Navbar = () => {
       resetMenuDropdowns();
     }
     if (windowSize.width < 1024) {
-      setNavItems(dataCompacted(4));
-    } else {
       setNavItems(dataCompacted(5));
+    } else {
+      setNavItems(dataCompacted(6));
     }
   }, [windowSize.width]);
 
