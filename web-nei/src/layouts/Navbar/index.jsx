@@ -229,7 +229,7 @@ const Navbar = () => {
           <div className="navbar-center hidden md:flex">
             <ul className="menu menu-horizontal px-1">
               {navItems.map(
-                ({ name, link, disabled, dropdown, reload }) =>
+                ({ name, link, disabled, dropdown, reload, external }) =>
                   !dropdown ? (
                     <li
                       key={`${name}-${link}`}
@@ -237,8 +237,9 @@ const Navbar = () => {
                         "pointer-events-none opacity-50": disabled,
                       })}
                     >
-                      <LinkAdapter to={link} reload={reload}>
+                      <LinkAdapter to={link} reload={reload} external={external}>
                         {name}
+                        {!!external && <OpenInNewIcon />}
                       </LinkAdapter>
                     </li>
                   ) : (
@@ -428,7 +429,7 @@ const Navbar = () => {
                 <LinkAdapter to="/arraial">Arraial do DETI</LinkAdapter>
               </li>
             )}
-            {data.map(({ name, link, disabled, dropdown }) =>
+            {data.map(({ name, link, disabled, dropdown, external }) =>
               !dropdown ? (
                 <li
                   key={`${name}-${link}`}
@@ -436,7 +437,10 @@ const Navbar = () => {
                     "pointer-events-none opacity-50": disabled,
                   })}
                 >
-                  <LinkAdapter to={link}>{name}</LinkAdapter>
+                  <LinkAdapter to={link} external={external}>
+                    {name}
+                    {!!external && <OpenInNewIcon />}
+                  </LinkAdapter>
                 </li>
               ) : (
                 <li key={`${name}-dropdown`}>

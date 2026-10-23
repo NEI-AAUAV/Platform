@@ -5,10 +5,6 @@ const data = [
     name: "Estudo",
     dropdown: [
       {
-        name: "Calendário",
-        link: "/calendar",
-      },
-      {
         name: "Apontamentos",
         link: "/notes",
       },
@@ -17,6 +13,15 @@ const data = [
         link: "/videos",
       },
     ],
+  },
+  {
+    name: "Calendário",
+    link: "/calendar",
+  },
+  {
+    name: "Drives",
+    link: "https://drivesnei.github.io/Drives-NEI/",
+    external: true,
   },
   {
     name: "NEI",
