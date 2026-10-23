@@ -2,6 +2,10 @@ import config from "config";
 
 const data = [
   {
+    name: "Calendário",
+    link: "/calendar",
+  },
+  {
     name: "Estudo",
     dropdown: [
       {
@@ -12,16 +16,12 @@ const data = [
         name: "Vídeos",
         link: "/videos",
       },
+      {
+        name: "Drives",
+        link: "https://drivesnei.github.io/Drives-NEI/",
+        external: true,
+      },
     ],
-  },
-  {
-    name: "Calendário",
-    link: "/calendar",
-  },
-  {
-    name: "Drives",
-    link: "https://drivesnei.github.io/Drives-NEI/",
-    external: true,
   },
   {
     name: "NEI",
@@ -73,6 +73,11 @@ const data = [
     name: "Taça UA",
     dropdown: [
       {
+        name: "Site Taça UA",
+        link: "https://tacaua.aauav.pt/",
+        external: true,
+      },
+      {
         name: "Resultados",
         link: "https://nei-aauav.github.io/mmr_ta-aua/",
         external: true,
@@ -118,7 +123,16 @@ const data = [
 
 const dataCompacted = (size) => {
   const items = [...data];
-  const otherItems = items.splice(size - 1);
+  // Dropdowns can't nest inside "Outro", so expand grouped items into
+  // their own links, prefixed with the group name.
+  const otherItems = items.splice(size - 1).flatMap((item) =>
+    item.dropdown
+      ? item.dropdown.map((child) => ({
+          ...child,
+          name: `${item.name}: ${child.name}`,
+        }))
+      : [item],
+  );
 
   if (otherItems.length !== 0) {
     items.push({

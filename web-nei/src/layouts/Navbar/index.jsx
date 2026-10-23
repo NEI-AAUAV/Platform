@@ -163,11 +163,9 @@ const Navbar = () => {
 
   /** Dropdown animation for navbar mobile items */
   function toggleMobileDropdown(e) {
-    if (e.target.nodeName === "svg") {
-      e.target.parentElement.click()
-    }
     const nav = navMobileRef.current;
-    const dropdown = e.target.nextSibling;
+    // currentTarget is the button even when the click lands on the icon's svg/path
+    const dropdown = e.currentTarget.nextSibling;
     if (!dropdown) return;
     if (dropdown.style.maxHeight) {
       dropdown.style.maxHeight = null;
