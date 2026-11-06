@@ -1,3 +1,13 @@
+# Docker's json-file driver does not rotate by default. On 2026-11-06
+# db_mongo's log file had reached 26 GB -- 45% of prod's root filesystem --
+# while `docker system df` reported 2 MB of container data, because it counts
+# writable layers and never log files.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 # Defined once so the database, the migration one-shot and the app cannot
 # drift apart: alembic hardcodes no database name, and a POSTGRES_DB set on
 # only one of them would migrate a different database than the app reads.
@@ -9,6 +19,7 @@ x-postgres-env: &postgres_env
 
 services:
   db_pg:
+    logging: *default-logging
     image: postgres:15-alpine
     ports:
       - 5432:5432
@@ -34,6 +45,7 @@ services:
     restart: always
 
   db_mongo:
+    logging: *default-logging
     image: mongo:6.0.27-jammy
     ports:
       - 27017:27017
@@ -58,6 +70,7 @@ services:
   # api_nei starts. Infrastructure's Directus deploy runs AFTER this and only
   # verifies the schema; it never migrates it.
   api_nei_migrate:
+    logging: *default-logging
     image: ghcr.io/nei-aauav/api-nei:${TAG:-latest}
     build:
       context: api-nei
@@ -75,6 +88,7 @@ services:
     restart: "no"
 
   api_nei:
+    logging: *default-logging
     image: ghcr.io/nei-aauav/api-nei:${TAG:-latest}
     build:
       context: api-nei
@@ -153,6 +167,7 @@ services:
   #     - disabled
 
   api_family:
+    logging: *default-logging
     image: ghcr.io/nei-aauav/api-family:${TAG:-latest}
     build:
       context: api-family
@@ -188,6 +203,7 @@ services:
     restart: always
 
   web_nei:
+    logging: *default-logging
     image: ghcr.io/nei-aauav/web-nei:${TAG:-latest}
     build:
       context: web-nei
@@ -205,6 +221,7 @@ services:
     restart: always
 
   ofelia:
+    logging: *default-logging
     image: mcuadros/ofelia:latest
     depends_on:
       - db_pg
