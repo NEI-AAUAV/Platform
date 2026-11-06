@@ -136,7 +136,7 @@ class Settings(BaseSettings):
 
     # OIDC/Authentik settings
     OIDC_ENABLED: bool = False  # Feature flag
-    OIDC_DISCOVERY_URL: str = "https://nei.web.ua.pt/authentik/application/o/nei-platform/.well-known/openid-configuration"
+    OIDC_DISCOVERY_URL: str = "https://auth.neiaauav.com/authentik/application/o/nei-platform/.well-known/openid-configuration"
     OIDC_CLIENT_ID: str = ""
     OIDC_CLIENT_SECRET: str = ""
     OIDC_SCOPES: List[str] = ["openid", "profile", "email", "nei_scopes", "nei_nmec", "nei_iupi"]
@@ -151,7 +151,7 @@ class Settings(BaseSettings):
     GIT_COMMIT: str = ""
 
     # Authentik Admin API
-    AUTHENTIK_URL: str = "https://nei.web.ua.pt/authentik"
+    AUTHENTIK_URL: str = "https://auth.neiaauav.com/authentik"
     AUTHENTIK_TOKEN: str = ""
 
     def _postgres_url(self, database: str) -> str:
