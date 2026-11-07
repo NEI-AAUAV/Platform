@@ -21,8 +21,9 @@ services:
   db_pg:
     logging: *default-logging
     image: postgres:15-alpine
+    # Loopback only: every consumer resolves db_pg over a Docker network.
     ports:
-      - 5432:5432
+      - 127.0.0.1:5432:5432
     environment:
       <<: *postgres_env
     labels:
@@ -47,8 +48,9 @@ services:
   db_mongo:
     logging: *default-logging
     image: mongo:6.0.27-jammy
+    # Loopback only: every consumer resolves db_mongo over a Docker network.
     ports:
-      - 27017:27017
+      - 127.0.0.1:27017:27017
     environment:
       MONGO_INITDB_DATABASE: mongo
       MONGO_INITDB_ROOT_USERNAME: mongo
